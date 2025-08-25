@@ -18,12 +18,12 @@ namespace OpenAI.FineTuning
             Kind = kind;
         }
 
-        internal FineTuningTrainingMethod(InternalFineTuneMethodType kind, InternalFineTuneReinforcementMethod reinforcement, InternalFineTuningJobRequestMethodSupervised supervised, InternalFineTuningJobRequestMethodDpo dpo, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal FineTuningTrainingMethod(InternalFineTuneMethodType kind, InternalFineTuningJobRequestMethodSupervised supervised, InternalFineTuningJobRequestMethodDpo dpo, InternalFineTuneReinforcementMethod reinforcement, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
-            Reinforcement = reinforcement;
             Supervised = supervised;
             Dpo = dpo;
+            Reinforcement = reinforcement;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

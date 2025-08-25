@@ -20,8 +20,8 @@ public partial class FileSearchCallResponseItem
               kind: InternalItemType.FileSearchCall,
               id: null,
               additionalBinaryDataProperties: null,
-              queries.ToList(),
-              results.ToList(),
+              queries: queries.ToList(),
+              results: results.ToList(),
               status: null)
     { }
 }

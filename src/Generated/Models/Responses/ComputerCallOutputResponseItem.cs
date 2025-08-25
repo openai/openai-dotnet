@@ -12,21 +12,21 @@ namespace OpenAI.Responses
     [Experimental("OPENAICUA001")]
     public partial class ComputerCallOutputResponseItem : ResponseItem
     {
-        internal ComputerCallOutputResponseItem(string id, string callId, ComputerOutput output, ComputerCallOutputStatus? status) : base(InternalItemType.ComputerCallOutput, id)
+        internal ComputerCallOutputResponseItem(string id, ComputerCallOutputStatus? status, string callId, ComputerOutput output) : base(InternalItemType.ComputerCallOutput, id)
         {
+            Status = status;
             CallId = callId;
             AcknowledgedSafetyChecks = new ChangeTrackingList<ComputerCallSafetyCheck>();
             Output = output;
-            Status = status;
         }
 
-        internal ComputerCallOutputResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, ComputerOutput output, ComputerCallOutputStatus? status) : base(kind, id, additionalBinaryDataProperties)
+        internal ComputerCallOutputResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, ComputerCallOutputStatus? status, string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, ComputerOutput output) : base(kind, id, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
+            Status = status;
             CallId = callId;
             AcknowledgedSafetyChecks = acknowledgedSafetyChecks ?? new ChangeTrackingList<ComputerCallSafetyCheck>();
             Output = output;
-            Status = status;
         }
 
         public string CallId { get; }

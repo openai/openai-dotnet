@@ -25,13 +25,13 @@ public static partial class OpenAIAudioModelFactory
         transcriptionTokenLogProbabilities ??= new List<AudioTokenLogProbabilityDetails>();
 
         return new AudioTranscription(
-            language,
-            text,
-            words.ToList(),
-            segments.ToList(),
-            "transcribe",
-            duration,
-            transcriptionTokenLogProbabilities.ToList(),
+            language: language,
+            text: text,
+            words: words.ToList(),
+            segments: segments.ToList(),
+            task: "transcribe",
+            duration: duration,
+            transcriptionTokenLogProbabilities: transcriptionTokenLogProbabilities.ToList(),
             additionalBinaryDataProperties: null);
     }
 
@@ -42,11 +42,11 @@ public static partial class OpenAIAudioModelFactory
         segments ??= new List<TranscribedSegment>();
 
         return new AudioTranslation(
-            language,
-            text,
+            language: language,
+            text: text,
             segments: segments.ToList(),
             task: "translate",
-            duration,
+            duration: duration,
             additionalBinaryDataProperties: null);
     }
 
@@ -55,16 +55,16 @@ public static partial class OpenAIAudioModelFactory
     public static TranscribedSegment TranscribedSegment(int id = default, int seekOffset = default, TimeSpan startTime = default, TimeSpan endTime = default, string text = null, ReadOnlyMemory<int> tokenIds = default, float temperature = default, float averageLogProbability = default, float compressionRatio = default, float noSpeechProbability = default)
     {
         return new TranscribedSegment(
-            id,
-            text,
-            temperature,
-            compressionRatio,
-            startTime,
-            endTime,
-            seekOffset,
-            tokenIds,
-            averageLogProbability,
-            noSpeechProbability,
+            id: id,
+            text: text,
+            temperature: temperature,
+            compressionRatio: compressionRatio,
+            startTime: startTime,
+            endTime: endTime,
+            seekOffset: seekOffset,
+            tokenIds: tokenIds,
+            averageLogProbability: averageLogProbability,
+            noSpeechProbability: noSpeechProbability,
             additionalBinaryDataProperties: null);
     }
 

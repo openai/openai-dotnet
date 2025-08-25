@@ -26,6 +26,11 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(InternalRunStepDetailsToolCallsFileSearchObjectFileSearch)} does not support writing '{format}' format.");
             }
+            if (Optional.IsDefined(RankingOptions) && _additionalBinaryDataProperties?.ContainsKey("ranking_options") != true)
+            {
+                writer.WritePropertyName("ranking_options"u8);
+                writer.WriteObjectValue(RankingOptions, options);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (Optional.IsCollectionDefined(Results) && _additionalBinaryDataProperties?.ContainsKey("results") != true)
             {
@@ -36,11 +41,6 @@ namespace OpenAI.Assistants
                     writer.WriteObjectValue(item, options);
                 }
                 writer.WriteEndArray();
-            }
-            if (Optional.IsDefined(RankingOptions) && _additionalBinaryDataProperties?.ContainsKey("ranking_options") != true)
-            {
-                writer.WritePropertyName("ranking_options"u8);
-                writer.WriteObjectValue(RankingOptions, options);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -83,11 +83,20 @@ namespace OpenAI.Assistants
             {
                 return null;
             }
-            IReadOnlyList<RunStepFileSearchResult> results = default;
             FileSearchRankingOptions rankingOptions = default;
+            IReadOnlyList<RunStepFileSearchResult> results = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("ranking_options"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    rankingOptions = FileSearchRankingOptions.DeserializeFileSearchRankingOptions(prop.Value, options);
+                    continue;
+                }
                 if (prop.NameEquals("results"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -102,19 +111,10 @@ namespace OpenAI.Assistants
                     results = array;
                     continue;
                 }
-                if (prop.NameEquals("ranking_options"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    rankingOptions = FileSearchRankingOptions.DeserializeFileSearchRankingOptions(prop.Value, options);
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalRunStepDetailsToolCallsFileSearchObjectFileSearch(results ?? new ChangeTrackingList<RunStepFileSearchResult>(), rankingOptions, additionalBinaryDataProperties);
+            return new InternalRunStepDetailsToolCallsFileSearchObjectFileSearch(rankingOptions, results ?? new ChangeTrackingList<RunStepFileSearchResult>(), additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

@@ -70,13 +70,13 @@ public static partial class OpenAIChatModelFactory
         messageAnnotations ??= new List<ChatMessageAnnotation>();
 
         InternalChatCompletionResponseMessage message = new(
-            refusal,
-            toolCalls.ToList(),
-            messageAnnotations.ToList(),
-            outputAudio,
-            role,
-            content,
-            functionCall,
+            refusal: refusal,
+            toolCalls: toolCalls.ToList(),
+            annotations: messageAnnotations.ToList(),
+            audio: outputAudio,
+            role: role,
+            content: content,
+            functionCall: functionCall,
             additionalBinaryDataProperties: null);
 
         InternalCreateChatCompletionResponseChoiceLogprobs logprobs = new InternalCreateChatCompletionResponseChoiceLogprobs(
@@ -94,14 +94,14 @@ public static partial class OpenAIChatModelFactory
         ];
 
         return new ChatCompletion(
-            id,
-            model,
-            systemFingerprint,
-            usage,
-            "chat.completion",
+            id: id,
+            model: model,
+            systemFingerprint: systemFingerprint,
+            usage: usage,
+            @object: "chat.completion",
             serviceTier: null,
-            choices,
-            createdAt,
+            choices: choices,
+            createdAt: createdAt,
             additionalBinaryDataProperties: null);
     }
 
@@ -222,10 +222,10 @@ public static partial class OpenAIChatModelFactory
     public static ChatOutputAudio ChatOutputAudio(BinaryData audioBytes, string id = null, string transcript = null, DateTimeOffset expiresAt = default)
     {
         return new ChatOutputAudio(
-            id,
-            expiresAt,
-            transcript,
-            audioBytes,
+            id: id,
+            expiresAt: expiresAt,
+            transcript: transcript,
+            audioBytes: audioBytes,
             additionalBinaryDataProperties: null);
     }
 
@@ -287,12 +287,12 @@ public static partial class OpenAIChatModelFactory
         refusalTokenLogProbabilities ??= new List<ChatTokenLogProbabilityDetails>();
 
         InternalChatCompletionStreamResponseDelta delta = new InternalChatCompletionStreamResponseDelta(
-            outputAudioUpdate,
-            functionCallUpdate,
-            toolCallUpdates.ToList(),
-            refusalUpdate,
-            role,
-            contentUpdate,
+            audio: outputAudioUpdate,
+            functionCall: functionCallUpdate,
+            toolCalls: toolCallUpdates.ToList(),
+            refusal: refusalUpdate,
+            role: role,
+            content: contentUpdate,
             additionalBinaryDataProperties: null);
 
         InternalCreateChatCompletionStreamResponseChoiceLogprobs logprobs = new InternalCreateChatCompletionStreamResponseChoiceLogprobs(
@@ -302,22 +302,22 @@ public static partial class OpenAIChatModelFactory
 
         IReadOnlyList<InternalCreateChatCompletionStreamResponseChoice> choices = [
             new InternalCreateChatCompletionStreamResponseChoice(
-                delta,
-                logprobs,
+                delta: delta,
+                logprobs: logprobs,
                 index: 0,
-                finishReason,
+                finishReason: finishReason,
                 additionalBinaryDataProperties: null)
         ];
 
         return new StreamingChatCompletionUpdate(
-            model,
-            systemFingerprint,
-            "chat.completion.chunk",
-            completionId,
+            model: model,
+            systemFingerprint: systemFingerprint,
+            @object: "chat.completion.chunk",
+            completionId: completionId,
             serviceTier: null,
-            choices,
-            createdAt,
-            usage,
+            choices: choices,
+            createdAt: createdAt,
+            usage: usage,
             additionalBinaryDataProperties: null);
     }
 
@@ -348,10 +348,10 @@ public static partial class OpenAIChatModelFactory
         BinaryData audioBytesUpdate = null)
     {
         return new StreamingChatOutputAudioUpdate(
-            id,
-            expiresAt,
-            transcriptUpdate,
-            audioBytesUpdate,
+            id: id,
+            expiresAt: expiresAt,
+            transcriptUpdate: transcriptUpdate,
+            audioBytesUpdate: audioBytesUpdate,
             additionalBinaryDataProperties: null);
     }
 
@@ -365,10 +365,10 @@ public static partial class OpenAIChatModelFactory
             additionalBinaryDataProperties: null);
 
         return new StreamingChatToolCallUpdate(
-            index,
-            function,
-            kind,
-            toolCallId,
+            index: index,
+            function: function,
+            kind: kind,
+            toolCallId: toolCallId,
             additionalBinaryDataProperties: null);
     }
 }

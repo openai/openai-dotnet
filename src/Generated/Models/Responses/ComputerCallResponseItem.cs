@@ -13,21 +13,21 @@ namespace OpenAI.Responses
     [Experimental("OPENAICUA001")]
     public partial class ComputerCallResponseItem : ResponseItem
     {
-        internal ComputerCallResponseItem(string id, string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks, ComputerCallStatus? status) : base(InternalItemType.ComputerCall, id)
+        internal ComputerCallResponseItem(string id, ComputerCallStatus? status, string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks) : base(InternalItemType.ComputerCall, id)
         {
+            Status = status;
             CallId = callId;
             Action = action;
             PendingSafetyChecks = pendingSafetyChecks.ToList();
-            Status = status;
         }
 
-        internal ComputerCallResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, ComputerCallAction action, IList<ComputerCallSafetyCheck> pendingSafetyChecks, ComputerCallStatus? status) : base(kind, id, additionalBinaryDataProperties)
+        internal ComputerCallResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, ComputerCallStatus? status, string callId, ComputerCallAction action, IList<ComputerCallSafetyCheck> pendingSafetyChecks) : base(kind, id, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
+            Status = status;
             CallId = callId;
             Action = action;
             PendingSafetyChecks = pendingSafetyChecks ?? new ChangeTrackingList<ComputerCallSafetyCheck>();
-            Status = status;
         }
 
         public string CallId { get; }

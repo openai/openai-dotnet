@@ -13,19 +13,19 @@ namespace OpenAI.Images
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ImageTokenUsage(int inputTokenCount, int outputTokenCount, int totalTokenCount, ImageInputTokenUsageDetails inputTokenDetails)
+        internal ImageTokenUsage(int totalTokenCount, int inputTokenCount, int outputTokenCount, ImageInputTokenUsageDetails inputTokenDetails)
         {
+            TotalTokenCount = totalTokenCount;
             InputTokenCount = inputTokenCount;
             OutputTokenCount = outputTokenCount;
-            TotalTokenCount = totalTokenCount;
             InputTokenDetails = inputTokenDetails;
         }
 
-        internal ImageTokenUsage(int inputTokenCount, int outputTokenCount, int totalTokenCount, ImageInputTokenUsageDetails inputTokenDetails, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ImageTokenUsage(int totalTokenCount, int inputTokenCount, int outputTokenCount, ImageInputTokenUsageDetails inputTokenDetails, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            TotalTokenCount = totalTokenCount;
             InputTokenCount = inputTokenCount;
             OutputTokenCount = outputTokenCount;
-            TotalTokenCount = totalTokenCount;
             InputTokenDetails = inputTokenDetails;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }

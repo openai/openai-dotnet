@@ -14,7 +14,7 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal RunStep(string id, DateTimeOffset createdAt, string assistantId, string threadId, string runId, RunStepKind kind, RunStepStatus status, RunStepError lastError, DateTimeOffset? expiredAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, RunStepTokenUsage usage, RunStepDetails details)
+        internal RunStep(string id, DateTimeOffset createdAt, string assistantId, string threadId, string runId, RunStepKind kind, RunStepStatus status, RunStepDetails details, RunStepError lastError, DateTimeOffset? expiredAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, RunStepTokenUsage usage)
         {
             Id = id;
             CreatedAt = createdAt;
@@ -23,6 +23,7 @@ namespace OpenAI.Assistants
             RunId = runId;
             Kind = kind;
             Status = status;
+            Details = details;
             LastError = lastError;
             ExpiredAt = expiredAt;
             CancelledAt = cancelledAt;
@@ -30,19 +31,20 @@ namespace OpenAI.Assistants
             CompletedAt = completedAt;
             Metadata = new ChangeTrackingDictionary<string, string>();
             Usage = usage;
-            Details = details;
         }
 
-        internal RunStep(string id, DateTimeOffset createdAt, string assistantId, string threadId, string runId, RunStepKind kind, RunStepStatus status, RunStepError lastError, DateTimeOffset? expiredAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, IReadOnlyDictionary<string, string> metadata, RunStepTokenUsage usage, string @object, RunStepDetails details, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal RunStep(string id, string @object, DateTimeOffset createdAt, string assistantId, string threadId, string runId, RunStepKind kind, RunStepStatus status, RunStepDetails details, RunStepError lastError, DateTimeOffset? expiredAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, IReadOnlyDictionary<string, string> metadata, RunStepTokenUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
+            Object = @object;
             CreatedAt = createdAt;
             AssistantId = assistantId;
             ThreadId = threadId;
             RunId = runId;
             Kind = kind;
             Status = status;
+            Details = details;
             LastError = lastError;
             ExpiredAt = expiredAt;
             CancelledAt = cancelledAt;
@@ -50,8 +52,6 @@ namespace OpenAI.Assistants
             CompletedAt = completedAt;
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Usage = usage;
-            Object = @object;
-            Details = details;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

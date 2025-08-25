@@ -17,13 +17,13 @@ namespace OpenAI.Realtime
         {
         }
 
-        internal ConversationTokenUsage(ConversationInputTokenUsageDetails inputTokenDetails, ConversationOutputTokenUsageDetails outputTokenDetails, int inputTokenCount, int outputTokenCount, int totalTokenCount, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ConversationTokenUsage(int totalTokenCount, int inputTokenCount, int outputTokenCount, ConversationInputTokenUsageDetails inputTokenDetails, ConversationOutputTokenUsageDetails outputTokenDetails, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            InputTokenDetails = inputTokenDetails;
-            OutputTokenDetails = outputTokenDetails;
+            TotalTokenCount = totalTokenCount;
             InputTokenCount = inputTokenCount;
             OutputTokenCount = outputTokenCount;
-            TotalTokenCount = totalTokenCount;
+            InputTokenDetails = inputTokenDetails;
+            OutputTokenDetails = outputTokenDetails;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

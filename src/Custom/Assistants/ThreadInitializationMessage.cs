@@ -13,13 +13,13 @@ public partial class ThreadInitializationMessage : MessageCreationOptions
     /// <param name="content">
     /// The content items that should be included in the message, added to the thread being created.
     /// </param>
-    public ThreadInitializationMessage(MessageRole role, IEnumerable<MessageContent> content) : base(null, null, role, content?.ToList(), null)
+    public ThreadInitializationMessage(MessageRole role, IEnumerable<MessageContent> content) : base(attachments: null, metadata: null, role: role, content: content?.ToList(), additionalBinaryDataProperties: null)
     {
         Argument.AssertNotNull(content, nameof(content));
     }
 
     internal ThreadInitializationMessage(MessageCreationOptions baseOptions)
-        : base(baseOptions.Attachments, baseOptions.Metadata, baseOptions.Role, baseOptions.Content, null)
+        : base(attachments: baseOptions.Attachments, metadata: baseOptions.Metadata, role: baseOptions.Role, content: baseOptions.Content, additionalBinaryDataProperties: null)
     { }
 
     internal ThreadInitializationMessage() : this(default, null)

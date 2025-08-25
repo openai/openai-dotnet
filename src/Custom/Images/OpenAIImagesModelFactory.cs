@@ -14,9 +14,9 @@ public static partial class OpenAIImagesModelFactory
     public static GeneratedImage GeneratedImage(BinaryData imageBytes = null, Uri imageUri = null, string revisedPrompt = null)
     {
         return new GeneratedImage(
-            revisedPrompt,
-            imageBytes,
-            imageUri,
+            revisedPrompt: revisedPrompt,
+            imageBytes: imageBytes,
+            imageUri: imageUri,
             additionalBinaryDataProperties: null);
     }
 

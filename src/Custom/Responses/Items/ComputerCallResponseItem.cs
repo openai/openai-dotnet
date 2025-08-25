@@ -16,6 +16,6 @@ public partial class ComputerCallResponseItem
 
     // CUSTOM: For reuse as an input model
     public ComputerCallResponseItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks)
-        : this(id: null, callId, action, pendingSafetyChecks, status: null)
+        : this(id: null, callId: callId, action: action, pendingSafetyChecks: pendingSafetyChecks, status: null)
     { }
 }

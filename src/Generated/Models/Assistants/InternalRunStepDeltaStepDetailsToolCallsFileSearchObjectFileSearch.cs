@@ -16,11 +16,11 @@ namespace OpenAI.Assistants
         {
         }
 
-        internal InternalRunStepDeltaStepDetailsToolCallsFileSearchObjectFileSearch(IReadOnlyList<RunStepFileSearchResult> results, FileSearchRankingOptions rankingOptions, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalRunStepDeltaStepDetailsToolCallsFileSearchObjectFileSearch(FileSearchRankingOptions rankingOptions, IReadOnlyList<RunStepFileSearchResult> results, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
-            Results = results ?? new ChangeTrackingList<RunStepFileSearchResult>();
             RankingOptions = rankingOptions;
+            Results = results ?? new ChangeTrackingList<RunStepFileSearchResult>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

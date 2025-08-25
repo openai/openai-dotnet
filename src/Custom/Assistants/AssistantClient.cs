@@ -1258,23 +1258,23 @@ public partial class AssistantClient
     {
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
         InternalCreateThreadAndRunRequest internalRequest = new(
-            assistantId,
-            threadOptions,
-            runOptions.InstructionsOverride,
-            runOptions.ToolsOverride,
-            runOptions.Metadata,
-            runOptions.Temperature,
+            assistantId: assistantId,
+            thread: threadOptions,
+            instructions: runOptions.InstructionsOverride,
+            tools: runOptions.ToolsOverride,
+            metadata: runOptions.Metadata,
+            temperature: runOptions.Temperature,
             // TODO: reconcile exposure of the the two different tool_resources, if needed
-            runOptions.NucleusSamplingFactor,
-            runOptions.Stream,
-            runOptions.MaxInputTokenCount,
-            runOptions.MaxOutputTokenCount,
-            runOptions.TruncationStrategy,
-            runOptions.AllowParallelToolCalls,
-            runOptions.ModelOverride,
-            threadOptions.ToolResources,
-            runOptions.ResponseFormat,
-            runOptions.ToolConstraint,
+            topP: runOptions.NucleusSamplingFactor,
+            stream: runOptions.Stream,
+            maxPromptTokens: runOptions.MaxInputTokenCount,
+            maxCompletionTokens: runOptions.MaxOutputTokenCount,
+            truncationStrategy: runOptions.TruncationStrategy,
+            parallelToolCalls: runOptions.AllowParallelToolCalls,
+            model: runOptions.ModelOverride,
+            toolResources: threadOptions.ToolResources,
+            responseFormat: runOptions.ResponseFormat,
+            toolChoice: runOptions.ToolConstraint,
             additionalBinaryDataProperties: null);
         return BinaryContent.Create(internalRequest, ModelSerializationExtensions.WireOptions);
     }

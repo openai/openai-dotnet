@@ -31,6 +31,11 @@ namespace OpenAI.VectorStores
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(Name);
             }
+            if (Optional.IsDefined(ExpirationPolicy) && _additionalBinaryDataProperties?.ContainsKey("expires_after") != true)
+            {
+                writer.WritePropertyName("expires_after"u8);
+                writer.WriteObjectValue(ExpirationPolicy, options);
+            }
             if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
                 writer.WritePropertyName("metadata"u8);
@@ -46,11 +51,6 @@ namespace OpenAI.VectorStores
                     writer.WriteStringValue(item.Value);
                 }
                 writer.WriteEndObject();
-            }
-            if (Optional.IsDefined(ExpirationPolicy) && _additionalBinaryDataProperties?.ContainsKey("expires_after") != true)
-            {
-                writer.WritePropertyName("expires_after"u8);
-                writer.WriteObjectValue(ExpirationPolicy, options);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -94,8 +94,8 @@ namespace OpenAI.VectorStores
                 return null;
             }
             string name = default;
-            IDictionary<string, string> metadata = default;
             VectorStoreExpirationPolicy expirationPolicy = default;
+            IDictionary<string, string> metadata = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -107,6 +107,16 @@ namespace OpenAI.VectorStores
                         continue;
                     }
                     name = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("expires_after"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        expirationPolicy = null;
+                        continue;
+                    }
+                    expirationPolicy = VectorStoreExpirationPolicy.DeserializeVectorStoreExpirationPolicy(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("metadata"u8))
@@ -130,20 +140,10 @@ namespace OpenAI.VectorStores
                     metadata = dictionary;
                     continue;
                 }
-                if (prop.NameEquals("expires_after"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        expirationPolicy = null;
-                        continue;
-                    }
-                    expirationPolicy = VectorStoreExpirationPolicy.DeserializeVectorStoreExpirationPolicy(prop.Value, options);
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new VectorStoreModificationOptions(name, metadata ?? new ChangeTrackingDictionary<string, string>(), expirationPolicy, additionalBinaryDataProperties);
+            return new VectorStoreModificationOptions(name, expirationPolicy, metadata ?? new ChangeTrackingDictionary<string, string>(), additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<VectorStoreModificationOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

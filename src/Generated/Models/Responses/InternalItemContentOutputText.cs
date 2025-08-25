@@ -11,22 +11,22 @@ namespace OpenAI.Responses
 {
     internal partial class InternalItemContentOutputText : ResponseContentPart
     {
-        public InternalItemContentOutputText(IEnumerable<ResponseMessageAnnotation> annotations, string internalText) : base(InternalItemContentType.OutputText)
+        public InternalItemContentOutputText(string internalText, IEnumerable<ResponseMessageAnnotation> annotations) : base(InternalItemContentType.OutputText)
         {
-            Argument.AssertNotNull(annotations, nameof(annotations));
             Argument.AssertNotNull(internalText, nameof(internalText));
+            Argument.AssertNotNull(annotations, nameof(annotations));
 
+            InternalText = internalText;
             Annotations = annotations.ToList();
             Logprobs = new ChangeTrackingList<InternalLogProb>();
-            InternalText = internalText;
         }
 
-        internal InternalItemContentOutputText(InternalItemContentType internalType, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<ResponseMessageAnnotation> annotations, IList<InternalLogProb> logprobs, string internalText) : base(internalType, additionalBinaryDataProperties)
+        internal InternalItemContentOutputText(InternalItemContentType internalType, IDictionary<string, BinaryData> additionalBinaryDataProperties, string internalText, IList<ResponseMessageAnnotation> annotations, IList<InternalLogProb> logprobs) : base(internalType, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
+            InternalText = internalText;
             Annotations = annotations ?? new ChangeTrackingList<ResponseMessageAnnotation>();
             Logprobs = logprobs ?? new ChangeTrackingList<InternalLogProb>();
-            InternalText = internalText;
         }
 
         public IList<ResponseMessageAnnotation> Annotations { get; }

@@ -229,7 +229,8 @@ public class PaginationVisitor : ScmLibraryVisitor
                                 if (binaryExpr.Left is VariableExpression leftVar &&
                                     leftVar.Declaration.RequestedName == "nextToken" &&
                                     binaryExpr.Right is KeywordExpression rightKeyword &&
-                                    rightKeyword.Keyword == "null")
+                                    rightKeyword.Keyword == "null"
+                                    && hasMoreVariable != null)
                                 {
                                     // Create "!hasMore" condition. Note the hasMoreVariable gets assigned earlier in the method statements
                                     // in the WhileStatement handler below.

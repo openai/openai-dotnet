@@ -12,6 +12,7 @@ namespace OpenAI.Images;
 /// </summary>
 [CodeGenType("ImagesResponse")]
 [CodeGenSuppress(nameof(GeneratedImageCollection), typeof(DateTimeOffset))]
+[CodeGenSuppress(nameof(GeneratedImageCollection), typeof(DateTimeOffset), typeof(IList<GeneratedImage>), typeof(ImageTokenUsage), typeof(IDictionary<string, BinaryData>))]
 [CodeGenVisibility(nameof(Data), CodeGenVisibility.Internal)]
 public partial class GeneratedImageCollection : ReadOnlyCollection<GeneratedImage>
 {

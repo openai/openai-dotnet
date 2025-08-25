@@ -11,7 +11,7 @@ namespace OpenAILibraryPlugin
     public class OpenAILibraryGenerator : ScmCodeModelGenerator
     {
         private static OpenAILibraryGenerator? s_instance;
-        internal static OpenAILibraryGenerator Instance => s_instance ?? throw new InvalidOperationException("OpenAILibraryGenerator was not initialized.");
+        internal static new OpenAILibraryGenerator Instance => s_instance ?? throw new InvalidOperationException("OpenAILibraryGenerator was not initialized.");
 
         [ImportingConstructor]
         public OpenAILibraryGenerator(GeneratorContext context) : base(context)

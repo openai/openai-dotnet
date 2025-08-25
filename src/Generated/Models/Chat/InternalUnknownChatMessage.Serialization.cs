@@ -12,7 +12,7 @@ namespace OpenAI.Chat
 {
     internal partial class InternalUnknownChatMessage : IJsonModel<ChatMessage>
     {
-        internal InternalUnknownChatMessage() : this(null, default, null)
+        internal InternalUnknownChatMessage() : this(default, null, null)
         {
         }
 
@@ -45,25 +45,25 @@ namespace OpenAI.Chat
             {
                 return null;
             }
-            ChatMessageContent content = default;
             ChatMessageRole role = default;
+            ChatMessageContent content = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("content"u8))
-                {
-                    DeserializeContentValue(prop, ref content);
-                    continue;
-                }
                 if (prop.NameEquals("role"u8))
                 {
                     role = prop.Value.GetString().ToChatMessageRole();
                     continue;
                 }
+                if (prop.NameEquals("content"u8))
+                {
+                    DeserializeContentValue(prop, ref content);
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalUnknownChatMessage(content, role, additionalBinaryDataProperties);
+            return new InternalUnknownChatMessage(role, content, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<ChatMessage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

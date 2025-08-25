@@ -14,6 +14,6 @@ public partial class ComputerCallOutputResponseItem
 
     // CUSTOM: For reuse as an input model
     internal ComputerCallOutputResponseItem(string callId, ComputerOutput output)
-        : this(id: null, callId, output, status: null)
+        : this(id: null, status: null, callId, output)
     { }
 }

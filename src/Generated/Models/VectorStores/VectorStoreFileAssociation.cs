@@ -14,29 +14,29 @@ namespace OpenAI.VectorStores
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal VectorStoreFileAssociation(DateTimeOffset createdAt, string vectorStoreId, VectorStoreFileAssociationStatus status, VectorStoreFileAssociationError lastError, string fileId, int size)
+        internal VectorStoreFileAssociation(string fileId, int size, DateTimeOffset createdAt, string vectorStoreId, VectorStoreFileAssociationStatus status, VectorStoreFileAssociationError lastError)
         {
+            FileId = fileId;
+            Size = size;
             CreatedAt = createdAt;
             VectorStoreId = vectorStoreId;
             Status = status;
             LastError = lastError;
-            FileId = fileId;
-            Size = size;
             Attributes = new ChangeTrackingDictionary<string, BinaryData>();
         }
 
-        internal VectorStoreFileAssociation(DateTimeOffset createdAt, string vectorStoreId, VectorStoreFileAssociationStatus status, VectorStoreFileAssociationError lastError, string @object, string fileId, int size, IDictionary<string, BinaryData> attributes, FileChunkingStrategy chunkingStrategy, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal VectorStoreFileAssociation(string fileId, string @object, int size, DateTimeOffset createdAt, string vectorStoreId, VectorStoreFileAssociationStatus status, VectorStoreFileAssociationError lastError, FileChunkingStrategy chunkingStrategy, IDictionary<string, BinaryData> attributes, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
+            FileId = fileId;
+            Object = @object;
+            Size = size;
             CreatedAt = createdAt;
             VectorStoreId = vectorStoreId;
             Status = status;
             LastError = lastError;
-            Object = @object;
-            FileId = fileId;
-            Size = size;
-            Attributes = attributes ?? new ChangeTrackingDictionary<string, BinaryData>();
             ChunkingStrategy = chunkingStrategy;
+            Attributes = attributes ?? new ChangeTrackingDictionary<string, BinaryData>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

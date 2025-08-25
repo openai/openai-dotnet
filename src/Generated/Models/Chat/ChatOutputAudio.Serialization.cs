@@ -40,15 +40,15 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("expires_at"u8);
                 writer.WriteNumberValue(ExpiresAt, "U");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("transcript") != true)
-            {
-                writer.WritePropertyName("transcript"u8);
-                writer.WriteStringValue(Transcript);
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("data") != true)
             {
                 writer.WritePropertyName("data"u8);
                 writer.WriteBase64StringValue(AudioBytes.ToArray(), "D");
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("transcript") != true)
+            {
+                writer.WritePropertyName("transcript"u8);
+                writer.WriteStringValue(Transcript);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -93,8 +93,8 @@ namespace OpenAI.Chat
             }
             string id = default;
             DateTimeOffset expiresAt = default;
-            string transcript = default;
             BinaryData audioBytes = default;
+            string transcript = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -108,20 +108,20 @@ namespace OpenAI.Chat
                     expiresAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
-                if (prop.NameEquals("transcript"u8))
-                {
-                    transcript = prop.Value.GetString();
-                    continue;
-                }
                 if (prop.NameEquals("data"u8))
                 {
                     audioBytes = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
                     continue;
                 }
+                if (prop.NameEquals("transcript"u8))
+                {
+                    transcript = prop.Value.GetString();
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ChatOutputAudio(id, expiresAt, transcript, audioBytes, additionalBinaryDataProperties);
+            return new ChatOutputAudio(id, expiresAt, audioBytes, transcript, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<ChatOutputAudio>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

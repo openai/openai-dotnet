@@ -13,50 +13,50 @@ namespace OpenAI.FineTuning
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalFineTuningJob(IDictionary<string, string> metadata, string jobId, string baseModel, string validationFileId, string trainingFileId, IEnumerable<string> resultFileIds, FineTuningStatus status, FineTuningHyperparameters hyperparameters, int? billableTrainedTokenCount, DateTimeOffset createdAt, FineTuningError error, string fineTunedModel, DateTimeOffset? finishedAt, string organizationId, int seed)
+        internal InternalFineTuningJob(string jobId, DateTimeOffset createdAt, FineTuningError error, string fineTunedModel, DateTimeOffset? finishedAt, FineTuningHyperparameters hyperparameters, string baseModel, string organizationId, IEnumerable<string> resultFileIds, FineTuningStatus status, int? billableTrainedTokenCount, string trainingFileId, string validationFileId, int seed, IDictionary<string, string> metadata)
         {
             // Plugin customization: ensure initialization of collections
-            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             JobId = jobId;
+            CreatedAt = createdAt;
+            Error = error;
+            FineTunedModel = fineTunedModel;
+            FinishedAt = finishedAt;
+            Hyperparameters = hyperparameters;
             BaseModel = baseModel;
-            ValidationFileId = validationFileId;
-            TrainingFileId = trainingFileId;
+            OrganizationId = organizationId;
             ResultFileIds = resultFileIds.ToList();
             Status = status;
-            Hyperparameters = hyperparameters;
-            Integrations = new ChangeTrackingList<FineTuningIntegration>();
             BillableTrainedTokenCount = billableTrainedTokenCount;
-            CreatedAt = createdAt;
-            Error = error;
-            FineTunedModel = fineTunedModel;
-            FinishedAt = finishedAt;
-            OrganizationId = organizationId;
+            TrainingFileId = trainingFileId;
+            ValidationFileId = validationFileId;
+            Integrations = new ChangeTrackingList<FineTuningIntegration>();
             Seed = seed;
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
         }
 
-        internal InternalFineTuningJob(IDictionary<string, string> metadata, string jobId, string baseModel, DateTimeOffset? estimatedFinishAt, string validationFileId, string trainingFileId, IReadOnlyList<string> resultFileIds, FineTuningStatus status, string @object, FineTuningHyperparameters hyperparameters, IReadOnlyList<FineTuningIntegration> integrations, int? billableTrainedTokenCount, string userProvidedSuffix, DateTimeOffset createdAt, FineTuningError error, string fineTunedModel, DateTimeOffset? finishedAt, string organizationId, int seed, FineTuningTrainingMethod @method, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalFineTuningJob(string userProvidedSuffix, string jobId, DateTimeOffset createdAt, FineTuningError error, string fineTunedModel, DateTimeOffset? finishedAt, FineTuningHyperparameters hyperparameters, string baseModel, string @object, string organizationId, IReadOnlyList<string> resultFileIds, FineTuningStatus status, int? billableTrainedTokenCount, string trainingFileId, string validationFileId, IReadOnlyList<FineTuningIntegration> integrations, int seed, DateTimeOffset? estimatedFinishAt, FineTuningTrainingMethod @method, IDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
-            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
-            JobId = jobId;
-            BaseModel = baseModel;
-            EstimatedFinishAt = estimatedFinishAt;
-            ValidationFileId = validationFileId;
-            TrainingFileId = trainingFileId;
-            ResultFileIds = resultFileIds ?? new ChangeTrackingList<string>();
-            Status = status;
-            _object = @object;
-            Hyperparameters = hyperparameters;
-            Integrations = integrations ?? new ChangeTrackingList<FineTuningIntegration>();
-            BillableTrainedTokenCount = billableTrainedTokenCount;
             UserProvidedSuffix = userProvidedSuffix;
+            JobId = jobId;
             CreatedAt = createdAt;
             Error = error;
             FineTunedModel = fineTunedModel;
             FinishedAt = finishedAt;
+            Hyperparameters = hyperparameters;
+            BaseModel = baseModel;
+            _object = @object;
             OrganizationId = organizationId;
+            ResultFileIds = resultFileIds ?? new ChangeTrackingList<string>();
+            Status = status;
+            BillableTrainedTokenCount = billableTrainedTokenCount;
+            TrainingFileId = trainingFileId;
+            ValidationFileId = validationFileId;
+            Integrations = integrations ?? new ChangeTrackingList<FineTuningIntegration>();
             Seed = seed;
+            EstimatedFinishAt = estimatedFinishAt;
             Method = @method;
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

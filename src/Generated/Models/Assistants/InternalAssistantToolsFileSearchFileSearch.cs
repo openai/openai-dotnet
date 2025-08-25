@@ -15,10 +15,10 @@ namespace OpenAI.Assistants
         {
         }
 
-        internal InternalAssistantToolsFileSearchFileSearch(FileSearchRankingOptions rankingOptions, int? internalMaxNumResults, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalAssistantToolsFileSearchFileSearch(int? internalMaxNumResults, FileSearchRankingOptions rankingOptions, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            RankingOptions = rankingOptions;
             InternalMaxNumResults = internalMaxNumResults;
+            RankingOptions = rankingOptions;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

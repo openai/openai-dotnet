@@ -14,6 +14,10 @@ namespace OpenAI
     internal static partial class ModelSerializationExtensions
     {
         internal static readonly ModelReaderWriterOptions WireOptions = new ModelReaderWriterOptions("W");
+        internal static readonly JsonDocumentOptions JsonDocumentOptions = new JsonDocumentOptions
+        {
+            MaxDepth = 256
+        };
         private static readonly BinaryData _sentinelValue = BinaryData.FromBytes("\"__EMPTY__\""u8.ToArray());
 
         public static object GetObject(this JsonElement element)

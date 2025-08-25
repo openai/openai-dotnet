@@ -11,10 +11,10 @@ namespace OpenAI.Chat
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ChatFunction(string functionName, string functionDescription, BinaryData functionParameters, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ChatFunction(string functionDescription, string functionName, BinaryData functionParameters, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            FunctionName = functionName;
             FunctionDescription = functionDescription;
+            FunctionName = functionName;
             FunctionParameters = functionParameters;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }

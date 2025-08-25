@@ -32,6 +32,6 @@ public partial class MessageResponseItem
 
     // CUSTOM: For reuse as an input model base
     internal MessageResponseItem(InternalResponsesMessageRole internalRole)
-        : this(id: null, internalRole, status: null)
+        : this(id: null, internalRole: internalRole, status: null)
     { }
 }

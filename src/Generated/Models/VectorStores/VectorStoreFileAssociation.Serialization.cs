@@ -13,7 +13,7 @@ namespace OpenAI.VectorStores
 {
     public partial class VectorStoreFileAssociation : IJsonModel<VectorStoreFileAssociation>
     {
-        internal VectorStoreFileAssociation() : this(default, null, default, null, null, null, default, null, null, null)
+        internal VectorStoreFileAssociation() : this(null, null, default, default, null, default, null, null, null, null)
         {
         }
 
@@ -30,6 +30,21 @@ namespace OpenAI.VectorStores
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(VectorStoreFileAssociation)} does not support writing '{format}' format.");
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
+            {
+                writer.WritePropertyName("id"u8);
+                writer.WriteStringValue(FileId);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            {
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("usage_bytes") != true)
+            {
+                writer.WritePropertyName("usage_bytes"u8);
+                writer.WriteNumberValue(Size);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
@@ -58,20 +73,10 @@ namespace OpenAI.VectorStores
                     writer.WriteNull("last_error"u8);
                 }
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            if (Optional.IsDefined(ChunkingStrategy) && _additionalBinaryDataProperties?.ContainsKey("chunking_strategy") != true)
             {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
-            {
-                writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(FileId);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("usage_bytes") != true)
-            {
-                writer.WritePropertyName("usage_bytes"u8);
-                writer.WriteNumberValue(Size);
+                writer.WritePropertyName("chunking_strategy"u8);
+                writer.WriteObjectValue(ChunkingStrategy, options);
             }
             if (Optional.IsCollectionDefined(Attributes) && _additionalBinaryDataProperties?.ContainsKey("attributes") != true)
             {
@@ -95,11 +100,6 @@ namespace OpenAI.VectorStores
 #endif
                 }
                 writer.WriteEndObject();
-            }
-            if (Optional.IsDefined(ChunkingStrategy) && _additionalBinaryDataProperties?.ContainsKey("chunking_strategy") != true)
-            {
-                writer.WritePropertyName("chunking_strategy"u8);
-                writer.WriteObjectValue(ChunkingStrategy, options);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -142,18 +142,33 @@ namespace OpenAI.VectorStores
             {
                 return null;
             }
+            string fileId = default;
+            string @object = default;
+            int size = default;
             DateTimeOffset createdAt = default;
             string vectorStoreId = default;
             VectorStoreFileAssociationStatus status = default;
             VectorStoreFileAssociationError lastError = default;
-            string @object = default;
-            string fileId = default;
-            int size = default;
-            IDictionary<string, BinaryData> attributes = default;
             FileChunkingStrategy chunkingStrategy = default;
+            IDictionary<string, BinaryData> attributes = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("id"u8))
+                {
+                    fileId = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("object"u8))
+                {
+                    @object = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("usage_bytes"u8))
+                {
+                    size = prop.Value.GetInt32();
+                    continue;
+                }
                 if (prop.NameEquals("created_at"u8))
                 {
                     createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
@@ -179,19 +194,13 @@ namespace OpenAI.VectorStores
                     lastError = VectorStoreFileAssociationError.DeserializeVectorStoreFileAssociationError(prop.Value, options);
                     continue;
                 }
-                if (prop.NameEquals("object"u8))
+                if (prop.NameEquals("chunking_strategy"u8))
                 {
-                    @object = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("id"u8))
-                {
-                    fileId = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("usage_bytes"u8))
-                {
-                    size = prop.Value.GetInt32();
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    chunkingStrategy = FileChunkingStrategy.DeserializeFileChunkingStrategy(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("attributes"u8))
@@ -215,28 +224,19 @@ namespace OpenAI.VectorStores
                     attributes = dictionary;
                     continue;
                 }
-                if (prop.NameEquals("chunking_strategy"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    chunkingStrategy = FileChunkingStrategy.DeserializeFileChunkingStrategy(prop.Value, options);
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new VectorStoreFileAssociation(
+                fileId,
+                @object,
+                size,
                 createdAt,
                 vectorStoreId,
                 status,
                 lastError,
-                @object,
-                fileId,
-                size,
-                attributes ?? new ChangeTrackingDictionary<string, BinaryData>(),
                 chunkingStrategy,
+                attributes ?? new ChangeTrackingDictionary<string, BinaryData>(),
                 additionalBinaryDataProperties);
         }
 

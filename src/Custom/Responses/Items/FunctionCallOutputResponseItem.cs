@@ -18,6 +18,6 @@ public partial class FunctionCallOutputResponseItem
 
     // CUSTOM: For reuse as an input model
     internal FunctionCallOutputResponseItem(string callId, string functionOutput)
-        : this(id: null, callId, functionOutput, status: null)
+        : this(id: null, callId: callId, functionOutput: functionOutput, status: null)
     { }
 }

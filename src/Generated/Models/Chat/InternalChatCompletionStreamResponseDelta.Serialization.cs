@@ -31,6 +31,12 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("audio"u8);
                 writer.WriteObjectValue(Audio, options);
             }
+            // Plugin customization: add Content.IsInnerCollectionDefined() check
+            if (Optional.IsDefined(Content) && Content.IsInnerCollectionDefined() && _additionalBinaryDataProperties?.ContainsKey("content") != true)
+            {
+                writer.WritePropertyName("content"u8);
+                SerializeContentValue(writer, options);
+            }
             if (Optional.IsDefined(FunctionCall) && _additionalBinaryDataProperties?.ContainsKey("function_call") != true)
             {
                 writer.WritePropertyName("function_call"u8);
@@ -47,21 +53,15 @@ namespace OpenAI.Chat
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(Refusal) && _additionalBinaryDataProperties?.ContainsKey("refusal") != true)
-            {
-                writer.WritePropertyName("refusal"u8);
-                writer.WriteStringValue(Refusal);
-            }
             if (Optional.IsDefined(Role) && _additionalBinaryDataProperties?.ContainsKey("role") != true)
             {
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(Role.Value.ToSerialString());
             }
-            // Plugin customization: add Content.IsInnerCollectionDefined() check
-            if (Optional.IsDefined(Content) && Content.IsInnerCollectionDefined() && _additionalBinaryDataProperties?.ContainsKey("content") != true)
+            if (Optional.IsDefined(Refusal) && _additionalBinaryDataProperties?.ContainsKey("refusal") != true)
             {
-                writer.WritePropertyName("content"u8);
-                SerializeContentValue(writer, options);
+                writer.WritePropertyName("refusal"u8);
+                writer.WriteStringValue(Refusal);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -105,11 +105,11 @@ namespace OpenAI.Chat
                 return null;
             }
             StreamingChatOutputAudioUpdate audio = default;
+            ChatMessageContent content = default;
             StreamingChatFunctionCallUpdate functionCall = default;
             IReadOnlyList<StreamingChatToolCallUpdate> toolCalls = default;
-            string refusal = default;
             ChatMessageRole? role = default;
-            ChatMessageContent content = default;
+            string refusal = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -120,6 +120,11 @@ namespace OpenAI.Chat
                         continue;
                     }
                     audio = StreamingChatOutputAudioUpdate.DeserializeStreamingChatOutputAudioUpdate(prop.Value, options);
+                    continue;
+                }
+                if (prop.NameEquals("content"u8))
+                {
+                    DeserializeContentValue(prop, ref content);
                     continue;
                 }
                 if (prop.NameEquals("function_call"u8))
@@ -145,6 +150,15 @@ namespace OpenAI.Chat
                     toolCalls = array;
                     continue;
                 }
+                if (prop.NameEquals("role"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    role = prop.Value.GetString().ToChatMessageRole();
+                    continue;
+                }
                 if (prop.NameEquals("refusal"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -155,30 +169,16 @@ namespace OpenAI.Chat
                     refusal = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("role"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    role = prop.Value.GetString().ToChatMessageRole();
-                    continue;
-                }
-                if (prop.NameEquals("content"u8))
-                {
-                    DeserializeContentValue(prop, ref content);
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalChatCompletionStreamResponseDelta(
                 audio,
+                content,
                 functionCall,
                 toolCalls ?? new ChangeTrackingList<StreamingChatToolCallUpdate>(),
-                refusal,
                 role,
-                content,
+                refusal,
                 additionalBinaryDataProperties);
         }
 

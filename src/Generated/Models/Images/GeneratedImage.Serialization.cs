@@ -28,11 +28,6 @@ namespace OpenAI.Images
             {
                 throw new FormatException($"The model {nameof(GeneratedImage)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(RevisedPrompt) && _additionalBinaryDataProperties?.ContainsKey("revised_prompt") != true)
-            {
-                writer.WritePropertyName("revised_prompt"u8);
-                writer.WriteStringValue(RevisedPrompt);
-            }
             if (Optional.IsDefined(ImageBytes) && _additionalBinaryDataProperties?.ContainsKey("b64_json") != true)
             {
                 writer.WritePropertyName("b64_json"u8);
@@ -42,6 +37,11 @@ namespace OpenAI.Images
             {
                 writer.WritePropertyName("url"u8);
                 writer.WriteStringValue(ImageUri.AbsoluteUri);
+            }
+            if (Optional.IsDefined(RevisedPrompt) && _additionalBinaryDataProperties?.ContainsKey("revised_prompt") != true)
+            {
+                writer.WritePropertyName("revised_prompt"u8);
+                writer.WriteStringValue(RevisedPrompt);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -85,17 +85,12 @@ namespace OpenAI.Images
             {
                 return null;
             }
-            string revisedPrompt = default;
             BinaryData imageBytes = default;
             Uri imageUri = default;
+            string revisedPrompt = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("revised_prompt"u8))
-                {
-                    revisedPrompt = prop.Value.GetString();
-                    continue;
-                }
                 if (prop.NameEquals("b64_json"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -114,10 +109,15 @@ namespace OpenAI.Images
                     imageUri = new Uri(prop.Value.GetString());
                     continue;
                 }
+                if (prop.NameEquals("revised_prompt"u8))
+                {
+                    revisedPrompt = prop.Value.GetString();
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new GeneratedImage(revisedPrompt, imageBytes, imageUri, additionalBinaryDataProperties);
+            return new GeneratedImage(imageBytes, imageUri, revisedPrompt, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<GeneratedImage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

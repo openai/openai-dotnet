@@ -16,15 +16,15 @@ namespace OpenAI.Chat
         {
         }
 
-        internal InternalChatCompletionStreamResponseDelta(StreamingChatOutputAudioUpdate audio, StreamingChatFunctionCallUpdate functionCall, IReadOnlyList<StreamingChatToolCallUpdate> toolCalls, string refusal, ChatMessageRole? role, ChatMessageContent content, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalChatCompletionStreamResponseDelta(StreamingChatOutputAudioUpdate audio, ChatMessageContent content, StreamingChatFunctionCallUpdate functionCall, IReadOnlyList<StreamingChatToolCallUpdate> toolCalls, ChatMessageRole? role, string refusal, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Audio = audio;
+            Content = content ?? new ChatMessageContent();
             FunctionCall = functionCall;
             ToolCalls = toolCalls ?? new ChangeTrackingList<StreamingChatToolCallUpdate>();
-            Refusal = refusal;
             Role = role;
-            Content = content ?? new ChatMessageContent();
+            Refusal = refusal;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

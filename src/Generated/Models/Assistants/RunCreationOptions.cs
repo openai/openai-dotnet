@@ -15,26 +15,26 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal RunCreationOptions(string assistantId, bool? stream, AssistantResponseFormat responseFormat, string modelOverride, string instructionsOverride, string additionalInstructions, IList<MessageCreationOptions> internalMessages, bool? allowParallelToolCalls, IList<ToolDefinition> toolsOverride, IDictionary<string, string> metadata, float? temperature, float? nucleusSamplingFactor, int? maxInputTokenCount, int? maxOutputTokenCount, RunTruncationStrategy truncationStrategy, ToolConstraint toolConstraint, ChatReasoningEffortLevel? reasoningEffortLevel, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal RunCreationOptions(string assistantId, string modelOverride, ChatReasoningEffortLevel? reasoningEffortLevel, string instructionsOverride, string additionalInstructions, IList<MessageCreationOptions> internalMessages, IList<ToolDefinition> toolsOverride, IDictionary<string, string> metadata, float? temperature, float? nucleusSamplingFactor, bool? stream, int? maxInputTokenCount, int? maxOutputTokenCount, RunTruncationStrategy truncationStrategy, ToolConstraint toolConstraint, bool? allowParallelToolCalls, AssistantResponseFormat responseFormat, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             AssistantId = assistantId;
-            Stream = stream;
-            ResponseFormat = responseFormat;
             ModelOverride = modelOverride;
+            ReasoningEffortLevel = reasoningEffortLevel;
             InstructionsOverride = instructionsOverride;
             AdditionalInstructions = additionalInstructions;
             InternalMessages = internalMessages ?? new ChangeTrackingList<MessageCreationOptions>();
-            AllowParallelToolCalls = allowParallelToolCalls;
             ToolsOverride = toolsOverride ?? new ChangeTrackingList<ToolDefinition>();
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Temperature = temperature;
             NucleusSamplingFactor = nucleusSamplingFactor;
+            Stream = stream;
             MaxInputTokenCount = maxInputTokenCount;
             MaxOutputTokenCount = maxOutputTokenCount;
             TruncationStrategy = truncationStrategy;
             ToolConstraint = toolConstraint;
-            ReasoningEffortLevel = reasoningEffortLevel;
+            AllowParallelToolCalls = allowParallelToolCalls;
+            ResponseFormat = responseFormat;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

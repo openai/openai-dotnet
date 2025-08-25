@@ -31,15 +31,15 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(AssistantDeletionResult)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("deleted") != true)
-            {
-                writer.WritePropertyName("deleted"u8);
-                writer.WriteBooleanValue(Deleted);
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(AssistantId);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("deleted") != true)
+            {
+                writer.WritePropertyName("deleted"u8);
+                writer.WriteBooleanValue(Deleted);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
@@ -87,20 +87,20 @@ namespace OpenAI.Assistants
             {
                 return null;
             }
-            bool deleted = default;
             string assistantId = default;
+            bool deleted = default;
             string @object = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("deleted"u8))
-                {
-                    deleted = prop.Value.GetBoolean();
-                    continue;
-                }
                 if (prop.NameEquals("id"u8))
                 {
                     assistantId = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("deleted"u8))
+                {
+                    deleted = prop.Value.GetBoolean();
                     continue;
                 }
                 if (prop.NameEquals("object"u8))
@@ -111,7 +111,7 @@ namespace OpenAI.Assistants
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new AssistantDeletionResult(deleted, assistantId, @object, additionalBinaryDataProperties);
+            return new AssistantDeletionResult(assistantId, deleted, @object, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<AssistantDeletionResult>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
