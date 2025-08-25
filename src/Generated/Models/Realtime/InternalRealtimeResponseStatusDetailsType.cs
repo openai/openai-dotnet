@@ -37,6 +37,8 @@ namespace OpenAI.Realtime
 
         public static implicit operator InternalRealtimeResponseStatusDetailsType(string value) => new InternalRealtimeResponseStatusDetailsType(value);
 
+        public static implicit operator InternalRealtimeResponseStatusDetailsType?(string value) => value == null ? null : new InternalRealtimeResponseStatusDetailsType(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalRealtimeResponseStatusDetailsType other && Equals(other);
 

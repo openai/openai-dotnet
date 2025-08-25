@@ -6,9 +6,7 @@
   "version": "0.1.0",
   "type": "module",
   "dependencies": {
-    "@typespec/openapi3": "^1.0.0",
-    "@open-ai/plugin": "file:codegen",
-    "openai-tsp": "file:"
+    "@open-ai/plugin": "file:codegen"
   },
   "private": true
 }

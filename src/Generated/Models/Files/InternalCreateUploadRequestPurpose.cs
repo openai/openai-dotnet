@@ -37,6 +37,8 @@ namespace OpenAI.Files
 
         public static implicit operator InternalCreateUploadRequestPurpose(string value) => new InternalCreateUploadRequestPurpose(value);
 
+        public static implicit operator InternalCreateUploadRequestPurpose?(string value) => value == null ? null : new InternalCreateUploadRequestPurpose(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateUploadRequestPurpose other && Equals(other);
 

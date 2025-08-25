@@ -54,6 +54,8 @@ namespace OpenAI.Assistants
 
         public static implicit operator RunStatus(string value) => new RunStatus(value);
 
+        public static implicit operator RunStatus?(string value) => value == null ? null : new RunStatus(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is RunStatus other && Equals(other);
 

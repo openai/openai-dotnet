@@ -34,6 +34,8 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalWebSearchPreviewToolSearchContextSize(string value) => new InternalWebSearchPreviewToolSearchContextSize(value);
 
+        public static implicit operator InternalWebSearchPreviewToolSearchContextSize?(string value) => value == null ? null : new InternalWebSearchPreviewToolSearchContextSize(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalWebSearchPreviewToolSearchContextSize other && Equals(other);
 

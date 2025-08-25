@@ -31,6 +31,8 @@ namespace OpenAI.Images
 
         public static implicit operator InternalCreateImageVariationRequestResponseFormat(string value) => new InternalCreateImageVariationRequestResponseFormat(value);
 
+        public static implicit operator InternalCreateImageVariationRequestResponseFormat?(string value) => value == null ? null : new InternalCreateImageVariationRequestResponseFormat(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateImageVariationRequestResponseFormat other && Equals(other);
 

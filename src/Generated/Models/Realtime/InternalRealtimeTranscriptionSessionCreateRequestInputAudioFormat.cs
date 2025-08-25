@@ -34,6 +34,8 @@ namespace OpenAI.Realtime
 
         public static implicit operator InternalRealtimeTranscriptionSessionCreateRequestInputAudioFormat(string value) => new InternalRealtimeTranscriptionSessionCreateRequestInputAudioFormat(value);
 
+        public static implicit operator InternalRealtimeTranscriptionSessionCreateRequestInputAudioFormat?(string value) => value == null ? null : new InternalRealtimeTranscriptionSessionCreateRequestInputAudioFormat(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalRealtimeTranscriptionSessionCreateRequestInputAudioFormat other && Equals(other);
 

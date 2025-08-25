@@ -33,6 +33,8 @@ namespace OpenAI.Chat
 
         public static implicit operator ChatInputAudioFormat(string value) => new ChatInputAudioFormat(value);
 
+        public static implicit operator ChatInputAudioFormat?(string value) => value == null ? null : new ChatInputAudioFormat(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ChatInputAudioFormat other && Equals(other);
 

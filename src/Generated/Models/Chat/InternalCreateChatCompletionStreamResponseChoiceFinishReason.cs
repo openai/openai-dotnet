@@ -40,6 +40,8 @@ namespace OpenAI.Chat
 
         public static implicit operator InternalCreateChatCompletionStreamResponseChoiceFinishReason(string value) => new InternalCreateChatCompletionStreamResponseChoiceFinishReason(value);
 
+        public static implicit operator InternalCreateChatCompletionStreamResponseChoiceFinishReason?(string value) => value == null ? null : new InternalCreateChatCompletionStreamResponseChoiceFinishReason(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateChatCompletionStreamResponseChoiceFinishReason other && Equals(other);
 

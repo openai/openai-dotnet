@@ -31,6 +31,8 @@ namespace OpenAI.Embeddings
 
         public static implicit operator InternalCreateEmbeddingRequestEncodingFormat(string value) => new InternalCreateEmbeddingRequestEncodingFormat(value);
 
+        public static implicit operator InternalCreateEmbeddingRequestEncodingFormat?(string value) => value == null ? null : new InternalCreateEmbeddingRequestEncodingFormat(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateEmbeddingRequestEncodingFormat other && Equals(other);
 

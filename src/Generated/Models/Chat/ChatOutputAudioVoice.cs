@@ -60,6 +60,8 @@ namespace OpenAI.Chat
 
         public static implicit operator ChatOutputAudioVoice(string value) => new ChatOutputAudioVoice(value);
 
+        public static implicit operator ChatOutputAudioVoice?(string value) => value == null ? null : new ChatOutputAudioVoice(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ChatOutputAudioVoice other && Equals(other);
 

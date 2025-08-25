@@ -33,6 +33,8 @@ namespace OpenAI.Images
 
         public static implicit operator GeneratedImageModerationLevel(string value) => new GeneratedImageModerationLevel(value);
 
+        public static implicit operator GeneratedImageModerationLevel?(string value) => value == null ? null : new GeneratedImageModerationLevel(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is GeneratedImageModerationLevel other && Equals(other);
 

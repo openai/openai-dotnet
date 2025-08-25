@@ -208,6 +208,8 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalModelIdsResponses(string value) => new InternalModelIdsResponses(value);
 
+        public static implicit operator InternalModelIdsResponses?(string value) => value == null ? null : new InternalModelIdsResponses(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalModelIdsResponses other && Equals(other);
 

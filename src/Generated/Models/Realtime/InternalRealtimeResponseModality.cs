@@ -31,6 +31,8 @@ namespace OpenAI.Realtime
 
         public static implicit operator InternalRealtimeResponseModality(string value) => new InternalRealtimeResponseModality(value);
 
+        public static implicit operator InternalRealtimeResponseModality?(string value) => value == null ? null : new InternalRealtimeResponseModality(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalRealtimeResponseModality other && Equals(other);
 

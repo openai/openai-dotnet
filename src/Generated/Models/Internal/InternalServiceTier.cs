@@ -37,6 +37,8 @@ namespace OpenAI.Internal
 
         public static implicit operator InternalServiceTier(string value) => new InternalServiceTier(value);
 
+        public static implicit operator InternalServiceTier?(string value) => value == null ? null : new InternalServiceTier(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalServiceTier other && Equals(other);
 
