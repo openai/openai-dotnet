@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -130,5 +131,12 @@ namespace OpenAI.Graders
         }
 
         string IPersistableModel<ValidateGraderResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator ValidateGraderResponse(ClientResult result)
+        {
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeValidateGraderResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
     }
 }

@@ -38,11 +38,4 @@ public partial class VectorStoreFileAssociation
 
     [CodeGenMember("ChunkingStrategy")]
     public FileChunkingStrategy ChunkingStrategy { get; }
-
-    internal static VectorStoreFileAssociation FromClientResult(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeVectorStoreFileAssociation(document.RootElement, ModelSerializationExtensions.WireOptions);
-    }
 }

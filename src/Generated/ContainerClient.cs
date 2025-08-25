@@ -6,6 +6,7 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
 using OpenAI;
 
@@ -22,16 +23,24 @@ namespace OpenAI.Containers
 
         public ClientPipeline Pipeline { get; }
 
-        public virtual ClientResult GetContainers(int? limit = default, string order = default, string after = default, RequestOptions options = null)
+        public virtual CollectionResult GetContainers(int? limit, string order, string after, RequestOptions options)
         {
-            using PipelineMessage message = CreateGetContainersRequest(limit, order, after, options);
-            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+            return new ContainerClientGetContainersCollectionResult(this, limit, order, after, options);
         }
 
-        public virtual async Task<ClientResult> GetContainersAsync(int? limit = default, string order = default, string after = default, RequestOptions options = null)
+        public virtual AsyncCollectionResult GetContainersAsync(int? limit, string order, string after, RequestOptions options)
         {
-            using PipelineMessage message = CreateGetContainersRequest(limit, order, after, options);
-            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+            return new ContainerClientGetContainersAsyncCollectionResult(this, limit, order, after, options);
+        }
+
+        public virtual CollectionResult<ContainerResource> GetContainers(ContainerCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            return new ContainerClientGetContainersCollectionResultOfT(this, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
+
+        public virtual AsyncCollectionResult<ContainerResource> GetContainersAsync(ContainerCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            return new ContainerClientGetContainersAsyncCollectionResultOfT(this, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
         }
 
         public virtual ClientResult CreateContainer(BinaryContent content, RequestOptions options = null)
@@ -50,7 +59,23 @@ namespace OpenAI.Containers
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult GetContainer(string containerId, RequestOptions options = null)
+        public virtual ClientResult<ContainerResource> CreateContainer(CreateContainerBody body, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNull(body, nameof(body));
+
+            ClientResult result = CreateContainer(body, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+            return ClientResult.FromValue((ContainerResource)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<ContainerResource>> CreateContainerAsync(CreateContainerBody body, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNull(body, nameof(body));
+
+            ClientResult result = await CreateContainerAsync(body, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
+            return ClientResult.FromValue((ContainerResource)result, result.GetRawResponse());
+        }
+
+        public virtual ClientResult GetContainer(string containerId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
 
@@ -58,7 +83,7 @@ namespace OpenAI.Containers
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> GetContainerAsync(string containerId, RequestOptions options = null)
+        public virtual async Task<ClientResult> GetContainerAsync(string containerId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
 
@@ -66,7 +91,23 @@ namespace OpenAI.Containers
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult DeleteContainer(string containerId, RequestOptions options = null)
+        public virtual ClientResult<ContainerResource> GetContainer(string containerId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
+
+            ClientResult result = GetContainer(containerId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+            return ClientResult.FromValue((ContainerResource)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<ContainerResource>> GetContainerAsync(string containerId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
+
+            ClientResult result = await GetContainerAsync(containerId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
+            return ClientResult.FromValue((ContainerResource)result, result.GetRawResponse());
+        }
+
+        public virtual ClientResult DeleteContainer(string containerId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
 
@@ -74,12 +115,28 @@ namespace OpenAI.Containers
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> DeleteContainerAsync(string containerId, RequestOptions options = null)
+        public virtual async Task<ClientResult> DeleteContainerAsync(string containerId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
 
             using PipelineMessage message = CreateDeleteContainerRequest(containerId, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<DeleteContainerResponse> DeleteContainer(string containerId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
+
+            ClientResult result = DeleteContainer(containerId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+            return ClientResult.FromValue((DeleteContainerResponse)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<DeleteContainerResponse>> DeleteContainerAsync(string containerId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
+
+            ClientResult result = await DeleteContainerAsync(containerId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
+            return ClientResult.FromValue((DeleteContainerResponse)result, result.GetRawResponse());
         }
 
         public virtual ClientResult CreateContainerFile(string containerId, BinaryContent content, string contentType, RequestOptions options = null)
@@ -100,23 +157,59 @@ namespace OpenAI.Containers
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult GetContainerFiles(string containerId, int? limit = default, string order = default, string after = default, RequestOptions options = null)
+        public virtual CollectionResult GetContainerFiles(string containerId, int? limit, string order, string after, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
 
-            using PipelineMessage message = CreateGetContainerFilesRequest(containerId, limit, order, after, options);
-            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+            return new ContainerClientGetContainerFilesCollectionResult(
+                this,
+                containerId,
+                limit,
+                order,
+                after,
+                options);
         }
 
-        public virtual async Task<ClientResult> GetContainerFilesAsync(string containerId, int? limit = default, string order = default, string after = default, RequestOptions options = null)
+        public virtual AsyncCollectionResult GetContainerFilesAsync(string containerId, int? limit, string order, string after, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
 
-            using PipelineMessage message = CreateGetContainerFilesRequest(containerId, limit, order, after, options);
-            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+            return new ContainerClientGetContainerFilesAsyncCollectionResult(
+                this,
+                containerId,
+                limit,
+                order,
+                after,
+                options);
         }
 
-        public virtual ClientResult GetContainerFile(string containerId, string fileId, RequestOptions options = null)
+        public virtual CollectionResult<ContainerFileResource> GetContainerFiles(string containerId, ContainerFileCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
+
+            return new ContainerClientGetContainerFilesCollectionResultOfT(
+                this,
+                containerId,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.AfterId,
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
+
+        public virtual AsyncCollectionResult<ContainerFileResource> GetContainerFilesAsync(string containerId, ContainerFileCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
+
+            return new ContainerClientGetContainerFilesAsyncCollectionResultOfT(
+                this,
+                containerId,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.AfterId,
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
+
+        public virtual ClientResult GetContainerFile(string containerId, string fileId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
             Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
@@ -125,7 +218,7 @@ namespace OpenAI.Containers
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> GetContainerFileAsync(string containerId, string fileId, RequestOptions options = null)
+        public virtual async Task<ClientResult> GetContainerFileAsync(string containerId, string fileId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
             Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
@@ -134,7 +227,25 @@ namespace OpenAI.Containers
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult DeleteContainerFile(string containerId, string fileId, RequestOptions options = null)
+        public virtual ClientResult<ContainerFileResource> GetContainerFile(string containerId, string fileId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
+            Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
+
+            ClientResult result = GetContainerFile(containerId, fileId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+            return ClientResult.FromValue((ContainerFileResource)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<ContainerFileResource>> GetContainerFileAsync(string containerId, string fileId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
+            Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
+
+            ClientResult result = await GetContainerFileAsync(containerId, fileId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
+            return ClientResult.FromValue((ContainerFileResource)result, result.GetRawResponse());
+        }
+
+        public virtual ClientResult DeleteContainerFile(string containerId, string fileId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
             Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
@@ -143,7 +254,7 @@ namespace OpenAI.Containers
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> DeleteContainerFileAsync(string containerId, string fileId, RequestOptions options = null)
+        public virtual async Task<ClientResult> DeleteContainerFileAsync(string containerId, string fileId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
             Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
@@ -152,7 +263,25 @@ namespace OpenAI.Containers
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult GetContainerFileContent(string containerId, string fileId, RequestOptions options = null)
+        public virtual ClientResult<DeleteContainerFileResponse> DeleteContainerFile(string containerId, string fileId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
+            Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
+
+            ClientResult result = DeleteContainerFile(containerId, fileId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+            return ClientResult.FromValue((DeleteContainerFileResponse)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<DeleteContainerFileResponse>> DeleteContainerFileAsync(string containerId, string fileId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
+            Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
+
+            ClientResult result = await DeleteContainerFileAsync(containerId, fileId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
+            return ClientResult.FromValue((DeleteContainerFileResponse)result, result.GetRawResponse());
+        }
+
+        public virtual ClientResult GetContainerFileContent(string containerId, string fileId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
             Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
@@ -161,13 +290,31 @@ namespace OpenAI.Containers
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> GetContainerFileContentAsync(string containerId, string fileId, RequestOptions options = null)
+        public virtual async Task<ClientResult> GetContainerFileContentAsync(string containerId, string fileId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
             Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
             using PipelineMessage message = CreateGetContainerFileContentRequest(containerId, fileId, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<BinaryData> GetContainerFileContent(string containerId, string fileId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
+            Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
+
+            ClientResult result = GetContainerFileContent(containerId, fileId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+            return ClientResult.FromValue(result.GetRawResponse().Content, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<BinaryData>> GetContainerFileContentAsync(string containerId, string fileId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
+            Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
+
+            ClientResult result = await GetContainerFileContentAsync(containerId, fileId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
+            return ClientResult.FromValue(result.GetRawResponse().Content, result.GetRawResponse());
         }
     }
 }

@@ -143,7 +143,7 @@ public partial class ChatClient
             using BinaryContent content = options.ToBinaryContent();
 
             ClientResult result = await CompleteChatAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-            ChatCompletion chatCompletion = ChatCompletion.FromClientResult(result);
+            ChatCompletion chatCompletion = (ChatCompletion)result;
             scope?.RecordChatCompletion(chatCompletion);
             return ClientResult.FromValue(chatCompletion, result.GetRawResponse());
         }
@@ -172,7 +172,7 @@ public partial class ChatClient
         {
             using BinaryContent content = options.ToBinaryContent();
             ClientResult result = CompleteChat(content, cancellationToken.ToRequestOptions());
-            ChatCompletion chatCompletion = ChatCompletion.FromClientResult(result);
+            ChatCompletion chatCompletion = (ChatCompletion)result;
 
             scope?.RecordChatCompletion(chatCompletion);
             return ClientResult.FromValue(chatCompletion, result.GetRawResponse());
@@ -289,7 +289,7 @@ public partial class ChatClient
         Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
 
         ClientResult result = await GetChatCompletionAsync(completionId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
-        return ClientResult.FromValue(ChatCompletion.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((ChatCompletion)result, result.GetRawResponse());
     }
 
     // CUSTOM:
@@ -301,7 +301,7 @@ public partial class ChatClient
         Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
 
         ClientResult result = GetChatCompletion(completionId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
-        return ClientResult.FromValue(ChatCompletion.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((ChatCompletion)result, result.GetRawResponse());
     }
 
     // CUSTOM:
@@ -314,7 +314,7 @@ public partial class ChatClient
 
         InternalUpdateChatCompletionRequest spreadModel = new InternalUpdateChatCompletionRequest(metadata, null);
         ClientResult result = this.UpdateChatCompletion(completionId, spreadModel, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
-        return ClientResult.FromValue(ChatCompletion.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((ChatCompletion)result, result.GetRawResponse());
     }
 
     // CUSTOM:
@@ -327,7 +327,7 @@ public partial class ChatClient
 
         InternalUpdateChatCompletionRequest spreadModel = new InternalUpdateChatCompletionRequest(metadata, null);
         ClientResult result = await this.UpdateChatCompletionAsync(completionId, spreadModel, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
-        return ClientResult.FromValue(ChatCompletion.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((ChatCompletion)result, result.GetRawResponse());
     }
 
     // CUSTOM:
@@ -339,7 +339,7 @@ public partial class ChatClient
         Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
 
         ClientResult result = await DeleteChatCompletionAsync(completionId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
-        return ClientResult.FromValue(ChatCompletionDeletionResult.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((ChatCompletionDeletionResult)result, result.GetRawResponse());
     }
 
     // CUSTOM:
@@ -351,7 +351,7 @@ public partial class ChatClient
         Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
 
         ClientResult result = DeleteChatCompletion(completionId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
-        return ClientResult.FromValue(ChatCompletionDeletionResult.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((ChatCompletionDeletionResult)result, result.GetRawResponse());
     }
 
     private void CreateChatCompletionOptions(IEnumerable<ChatMessage> messages, ref ChatCompletionOptions options, bool stream = false)

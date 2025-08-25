@@ -14,6 +14,7 @@ namespace OpenAI;
 interface Containers {
   @get
   @operationId("ListContainers")
+  @list
   listContainers(
     ...PageLimitQueryParameter,
     ...PageOrderQueryParameter,
@@ -64,6 +65,7 @@ interface Containers {
   @get
   @route("{container_id}/files")
   @operationId("ListContainerFiles")
+  @list
   listContainerFiles(
     @path
     container_id: string,

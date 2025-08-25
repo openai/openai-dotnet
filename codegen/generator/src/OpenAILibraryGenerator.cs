@@ -33,7 +33,6 @@ namespace OpenAILibraryPlugin
             AddVisitor(new OpenAILibraryVisitor());
             AddVisitor(new VirtualMessageCreationVisitor());
             AddVisitor(new ProhibitedNamespaceVisitor());
-            AddVisitor(new ExplicitConversionFromClientResultVisitor());
             AddVisitor(new ImplicitConversionToBinaryContentVisitor());
             AddVisitor(new ModelSerializationVisitor());
             AddVisitor(new ExperimentalAttributeVisitor());

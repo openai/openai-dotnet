@@ -48,11 +48,4 @@ public partial class ModerationResultCollection : ReadOnlyCollection<ModerationR
         : base([])
     {
     }
-
-    internal static ModerationResultCollection FromClientResult(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeModerationResultCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
-    }
 }

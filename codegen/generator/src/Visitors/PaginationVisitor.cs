@@ -45,6 +45,22 @@ public class PaginationVisitor : ScmLibraryVisitor
         {
             "GetChatCompletionMessagesAsync",
             ("ChatCompletionMessageListDatum", "ChatCompletionMessageCollectionOptions", _chatParamsToReplace)
+        },
+        {
+            "GetContainers",
+            ("ContainerResource", "ContainerCollectionOptions", _chatParamsToReplace)
+        },
+        {
+            "GetContainersAsync",
+            ("ContainerResource", "ContainerCollectionOptions", _chatParamsToReplace)
+        },
+        {
+            "GetContainerFiles",
+            ("ContainerFileResource", "ContainerFileCollectionOptions", _chatParamsToReplace)
+        },
+        {
+            "GetContainerFilesAsync",
+            ("ContainerFileResource", "ContainerFileCollectionOptions", _chatParamsToReplace)
         }
     };
 

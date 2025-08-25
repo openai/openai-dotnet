@@ -4,18 +4,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using OpenAI;
 
 namespace OpenAI.Containers
 {
-    [Experimental("OPENAI001")]
-    public partial class ContainerListResource
+    internal partial class InternalContainerListResource
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ContainerListResource(IEnumerable<ContainerResource> data, string firstId, string lastId, bool hasMore)
+        internal InternalContainerListResource(IEnumerable<ContainerResource> data, string firstId, string lastId, bool hasMore)
         {
             Data = data.ToList();
             FirstId = firstId;
@@ -23,7 +21,7 @@ namespace OpenAI.Containers
             HasMore = hasMore;
         }
 
-        internal ContainerListResource(string @object, IList<ContainerResource> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalContainerListResource(string @object, IList<ContainerResource> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Object = @object;

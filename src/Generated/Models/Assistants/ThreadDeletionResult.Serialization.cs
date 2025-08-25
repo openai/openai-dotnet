@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -145,5 +146,12 @@ namespace OpenAI.Assistants
         }
 
         string IPersistableModel<ThreadDeletionResult>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator ThreadDeletionResult(ClientResult result)
+        {
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeThreadDeletionResult(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
     }
 }

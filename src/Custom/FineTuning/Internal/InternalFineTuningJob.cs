@@ -77,11 +77,4 @@ internal partial class InternalFineTuningJob
     {
         return $"FineTuningJob<{JobId}, {Status}, {CreatedAt}>";
     }
-
-    internal static InternalFineTuningJob FromClientResult(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeInternalFineTuningJob(document.RootElement, ModelSerializationExtensions.WireOptions);
-    }
 }

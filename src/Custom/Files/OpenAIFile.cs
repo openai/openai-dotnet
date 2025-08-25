@@ -46,11 +46,4 @@ public partial class OpenAIFile
     [Obsolete($"This property is obsolete. For details on why a fine-tuning training file failed validation, see the"
         + $" `error` field on the fine-tuning job.")]
     public string StatusDetails { get; }
-
-    internal static OpenAIFile FromClientResult(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeOpenAIFile(document.RootElement, ModelSerializationExtensions.WireOptions);
-    }
 }

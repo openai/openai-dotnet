@@ -58,11 +58,4 @@ public partial class OpenAIEmbeddingCollection : ReadOnlyCollection<OpenAIEmbedd
         : base([])
     {
     }
-
-    internal static OpenAIEmbeddingCollection FromClientResult(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeOpenAIEmbeddingCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
-    }
 }

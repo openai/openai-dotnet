@@ -14,11 +14,4 @@ public partial class ResponseDeletionResult
     // CUSTOM: Made internal.
     [CodeGenMember("Object")]
     internal string Object { get; } = "response.deleted";
-
-    internal static ResponseDeletionResult FromClientResult(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeResponseDeletionResult(document.RootElement, ModelSerializationExtensions.WireOptions);
-    }
 }

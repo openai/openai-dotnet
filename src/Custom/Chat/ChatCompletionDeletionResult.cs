@@ -16,11 +16,4 @@ public partial class ChatCompletionDeletionResult
     // CUSTOM: Renamed.
     [CodeGenMember("Id")]
     public string ChatCompletionId { get; }
-
-    internal static ChatCompletionDeletionResult FromClientResult(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeChatCompletionDeletionResult(document.RootElement, ModelSerializationExtensions.WireOptions);
-    }
 }

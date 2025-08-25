@@ -66,11 +66,4 @@ public partial class ThreadRun
     // CUSTOM: Renamed.
     [CodeGenMember("MaxCompletionTokens")]
     public int? MaxOutputTokenCount { get; }
-
-    internal static ThreadRun FromClientResult(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeThreadRun(document.RootElement, ModelSerializationExtensions.WireOptions);
-    }
 }

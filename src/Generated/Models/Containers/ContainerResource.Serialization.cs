@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -189,5 +190,12 @@ namespace OpenAI.Containers
         }
 
         string IPersistableModel<ContainerResource>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator ContainerResource(ClientResult result)
+        {
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeContainerResource(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
     }
 }
