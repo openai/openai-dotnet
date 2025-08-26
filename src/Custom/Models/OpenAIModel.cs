@@ -19,11 +19,4 @@ public partial class OpenAIModel
     /// <summary> The Unix timestamp (in seconds) when the model was created. </summary>
     [CodeGenMember("Created")]
     public DateTimeOffset CreatedAt { get; }
-
-    internal static OpenAIModel FromClientResult(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeOpenAIModel(document.RootElement, ModelSerializationExtensions.WireOptions);
-    }
 }

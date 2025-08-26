@@ -13,7 +13,7 @@ namespace OpenAI.Containers
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal CreateContainerFileBody()
+        public CreateContainerFileBody()
         {
         }
 
@@ -24,9 +24,9 @@ namespace OpenAI.Containers
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string FileId { get; }
+        public string FileId { get; set; }
 
-        public BinaryData File { get; }
+        public BinaryData File { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

@@ -21,11 +21,4 @@ public partial class VectorStore
     /// </summary>
     [CodeGenMember("ExpiresAfter")]
     public VectorStoreExpirationPolicy ExpirationPolicy { get; }
-
-    internal static VectorStore FromClientResult(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeVectorStore(document.RootElement, ModelSerializationExtensions.WireOptions);
-    }
 }

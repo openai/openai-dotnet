@@ -41,11 +41,4 @@ public partial class GeneratedImageCollection : ReadOnlyCollection<GeneratedImag
     /// </summary>
     [CodeGenMember("Created")]
     public DateTimeOffset CreatedAt { get; }
-
-    internal static GeneratedImageCollection FromClientResult(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeGeneratedImageCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
-    }
 }

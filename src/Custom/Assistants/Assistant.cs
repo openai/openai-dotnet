@@ -25,11 +25,4 @@ public partial class Assistant
     /// </summary>
     [CodeGenMember("TopP")]
     public float? NucleusSamplingFactor { get; }
-
-    internal static Assistant FromClientResult(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeAssistant(document.RootElement, ModelSerializationExtensions.WireOptions);
-    }
 }

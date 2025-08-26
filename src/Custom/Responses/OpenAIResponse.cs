@@ -65,11 +65,4 @@ public partial class OpenAIResponse
                 .Select(outputTextPart => outputTextPart.Text));
         return outputTextSegments.Any() ? string.Join(string.Empty, outputTextSegments) : null;
     }
-
-    internal static OpenAIResponse FromClientResult(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeOpenAIResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
-    }
 }

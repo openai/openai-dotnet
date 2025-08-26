@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -150,5 +151,13 @@ namespace OpenAI.Files
         }
 
         string IPersistableModel<FileDeletionResult>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        [Experimental("OPENAI001")]
+        public static explicit operator FileDeletionResult(ClientResult result)
+        {
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeFileDeletionResult(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
     }
 }

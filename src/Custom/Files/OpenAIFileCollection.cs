@@ -59,11 +59,4 @@ public partial class OpenAIFileCollection : ReadOnlyCollection<OpenAIFile>
         : base([])
     {
     }
-
-    internal static OpenAIFileCollection FromClientResult(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeOpenAIFileCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
-    }
 }
