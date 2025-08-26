@@ -31,7 +31,7 @@ public static partial class OpenAIResponsesModelFactory
         float? temperature = null,
         float? topP = null,
         string previousResponseId = null,
-        bool? background = null,
+        bool? backgroundModeEnabled = null,
         string instructions = null,
         IEnumerable<ResponseTool> tools = null)
     {
@@ -45,7 +45,7 @@ public static partial class OpenAIResponsesModelFactory
             topP: topP,
             serviceTier: null,
             previousResponseId: previousResponseId,
-            background: background,
+            backgroundModeEnabled: backgroundModeEnabled,
             instructions: instructions,
             tools: tools.ToList(),
             id: id,
