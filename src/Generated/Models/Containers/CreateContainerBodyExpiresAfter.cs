@@ -13,7 +13,7 @@ namespace OpenAI.Containers
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal CreateContainerBodyExpiresAfter(int minutes)
+        public CreateContainerBodyExpiresAfter(int minutes)
         {
             Minutes = minutes;
         }

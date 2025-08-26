@@ -14,8 +14,10 @@ namespace OpenAI.Containers
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal CreateContainerBody(string name)
+        public CreateContainerBody(string name)
         {
+            Argument.AssertNotNull(name, nameof(name));
+
             Name = name;
             FileIds = new ChangeTrackingList<string>();
         }
@@ -33,7 +35,7 @@ namespace OpenAI.Containers
 
         public IList<string> FileIds { get; }
 
-        public CreateContainerBodyExpiresAfter ExpiresAfter { get; }
+        public CreateContainerBodyExpiresAfter ExpiresAfter { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

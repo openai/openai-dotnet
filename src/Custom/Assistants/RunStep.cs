@@ -23,11 +23,4 @@ public partial class RunStep
     /// </remarks>
     [CodeGenMember("StepDetails")]
     public RunStepDetails Details { get; }
-
-    internal static RunStep FromClientResult(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeRunStep(document.RootElement, ModelSerializationExtensions.WireOptions);
-    }
 }

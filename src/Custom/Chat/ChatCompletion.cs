@@ -95,11 +95,4 @@ public partial class ChatCompletion
     // CUSTOM: Added Experimental attribute.
     [Experimental("OPENAI001")]
     public IReadOnlyList<ChatMessageAnnotation> Annotations => [.. Choices[0].Message.Annotations];
-
-    internal static ChatCompletion FromClientResult(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeChatCompletion(document.RootElement, ModelSerializationExtensions.WireOptions);
-    }
 }

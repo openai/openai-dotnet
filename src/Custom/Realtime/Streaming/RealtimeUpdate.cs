@@ -11,11 +11,4 @@ namespace OpenAI.Realtime;
 public partial class RealtimeUpdate
 {
     public BinaryData GetRawContent() => ModelReaderWriter.Write(this);
-
-    internal static RealtimeUpdate FromClientResult(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeRealtimeUpdate(document.RootElement, ModelSerializationExtensions.WireOptions);
-    }
 }
