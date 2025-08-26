@@ -133,6 +133,8 @@ namespace OpenAI.Assistants
 
         public static implicit operator InternalAssistantSupportedModels(string value) => new InternalAssistantSupportedModels(value);
 
+        public static implicit operator InternalAssistantSupportedModels?(string value) => value == null ? null : new InternalAssistantSupportedModels(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalAssistantSupportedModels other && Equals(other);
 

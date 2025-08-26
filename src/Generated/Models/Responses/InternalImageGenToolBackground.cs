@@ -34,6 +34,8 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalImageGenToolBackground(string value) => new InternalImageGenToolBackground(value);
 
+        public static implicit operator InternalImageGenToolBackground?(string value) => value == null ? null : new InternalImageGenToolBackground(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalImageGenToolBackground other && Equals(other);
 

@@ -37,6 +37,8 @@ namespace OpenAI.FineTuning
 
         public static implicit operator InternalFineTuneReinforcementHyperparametersReasoningEffort(string value) => new InternalFineTuneReinforcementHyperparametersReasoningEffort(value);
 
+        public static implicit operator InternalFineTuneReinforcementHyperparametersReasoningEffort?(string value) => value == null ? null : new InternalFineTuneReinforcementHyperparametersReasoningEffort(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalFineTuneReinforcementHyperparametersReasoningEffort other && Equals(other);
 

@@ -34,6 +34,8 @@ namespace OpenAI.Evals
 
         public static implicit operator InternalEvalRunDataSourceType(string value) => new InternalEvalRunDataSourceType(value);
 
+        public static implicit operator InternalEvalRunDataSourceType?(string value) => value == null ? null : new InternalEvalRunDataSourceType(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalEvalRunDataSourceType other && Equals(other);
 

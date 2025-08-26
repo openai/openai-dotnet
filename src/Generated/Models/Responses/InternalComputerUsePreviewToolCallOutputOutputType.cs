@@ -28,6 +28,8 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalComputerUsePreviewToolCallOutputOutputType(string value) => new InternalComputerUsePreviewToolCallOutputOutputType(value);
 
+        public static implicit operator InternalComputerUsePreviewToolCallOutputOutputType?(string value) => value == null ? null : new InternalComputerUsePreviewToolCallOutputOutputType(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalComputerUsePreviewToolCallOutputOutputType other && Equals(other);
 

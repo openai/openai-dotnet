@@ -37,6 +37,8 @@ param(
 )
 
 # Set up variables for the PR
+# Track if any warnings were encountered during execution
+$WarningsEncountered = $false
 $RepoOwner = "openai"
 $RepoName = "openai-dotnet"
 $BaseBranch = "main"
@@ -50,6 +52,8 @@ function Write-Log {
 function Write-Warning-Log {
     param([string]$Message)
     Write-Host "$(Get-Date -Format 'yyyy-MM-dd HH:mm:ss'): WARNING: $Message" -ForegroundColor Yellow
+    # Set the global warning flag to track that warnings occurred
+    $script:WarningsEncountered = $true
 }
 
 function Write-Error-Log {
@@ -251,7 +255,11 @@ Update @typespec/http-client-csharp to $PackageVersion
     Write-Log "Creating PR using GitHub CLI"
     $env:GH_TOKEN = $AuthToken
     
+    # Update PR title if warnings were encountered
     $prTitle = "Update @typespec/http-client-csharp to $PackageVersion"
+    if ($WarningsEncountered) {
+        $prTitle = "Succeeded with Issues: $prTitle"
+    }
     $prBody = @"
 This PR automatically updates the TypeSpec HTTP client C# generator version and regenerates the SDK code.
 
@@ -285,6 +293,12 @@ If there are any issues with the generated code, please review the [TypeSpec rel
     }
     
     Write-Log "Successfully created PR: $prUrl"
+    # If warnings were encountered, make the script exit with non-zero code
+    # This will mark the GitHub Action step as failed but still create the PR
+    if ($WarningsEncountered) {
+        Write-Warning-Log "Warnings were encountered during execution. PR was created but marking step as failed."
+        exit 1
+    }
     
 } catch {
     Write-Error-Log "Error creating PR: $_"

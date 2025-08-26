@@ -34,6 +34,8 @@ namespace OpenAI.Audio
 
         public static implicit operator InternalCreateSpeechRequestModel(string value) => new InternalCreateSpeechRequestModel(value);
 
+        public static implicit operator InternalCreateSpeechRequestModel?(string value) => value == null ? null : new InternalCreateSpeechRequestModel(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateSpeechRequestModel other && Equals(other);
 

@@ -34,6 +34,8 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalToolChoiceOptions(string value) => new InternalToolChoiceOptions(value);
 
+        public static implicit operator InternalToolChoiceOptions?(string value) => value == null ? null : new InternalToolChoiceOptions(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalToolChoiceOptions other && Equals(other);
 

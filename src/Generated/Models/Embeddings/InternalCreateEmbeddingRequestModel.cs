@@ -34,6 +34,8 @@ namespace OpenAI.Embeddings
 
         public static implicit operator InternalCreateEmbeddingRequestModel(string value) => new InternalCreateEmbeddingRequestModel(value);
 
+        public static implicit operator InternalCreateEmbeddingRequestModel?(string value) => value == null ? null : new InternalCreateEmbeddingRequestModel(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateEmbeddingRequestModel other && Equals(other);
 

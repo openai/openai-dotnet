@@ -28,6 +28,8 @@ namespace OpenAI.FineTuning
 
         public static implicit operator InternalCreateFineTuningJobRequestHyperparametersNEpochsChoiceEnum(string value) => new InternalCreateFineTuningJobRequestHyperparametersNEpochsChoiceEnum(value);
 
+        public static implicit operator InternalCreateFineTuningJobRequestHyperparametersNEpochsChoiceEnum?(string value) => value == null ? null : new InternalCreateFineTuningJobRequestHyperparametersNEpochsChoiceEnum(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateFineTuningJobRequestHyperparametersNEpochsChoiceEnum other && Equals(other);
 

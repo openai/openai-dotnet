@@ -16,11 +16,4 @@ public partial class MessageDeletionResult
     /// <summary> The object type, which is always `thread.message.deleted`. </summary>
     [CodeGenMember("Object")]
     internal string Object { get; } = "thread.message.deleted";
-
-    internal static MessageDeletionResult FromClientResult(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeMessageDeletionResult(document.RootElement, ModelSerializationExtensions.WireOptions);
-    }
 }

@@ -34,6 +34,8 @@ namespace OpenAI.Assistants
 
         public static implicit operator InternalCreateThreadAndRunRequestToolChoice(string value) => new InternalCreateThreadAndRunRequestToolChoice(value);
 
+        public static implicit operator InternalCreateThreadAndRunRequestToolChoice?(string value) => value == null ? null : new InternalCreateThreadAndRunRequestToolChoice(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateThreadAndRunRequestToolChoice other && Equals(other);
 

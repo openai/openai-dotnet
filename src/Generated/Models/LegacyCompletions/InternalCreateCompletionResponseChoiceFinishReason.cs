@@ -34,6 +34,8 @@ namespace OpenAI.LegacyCompletions
 
         public static implicit operator InternalCreateCompletionResponseChoiceFinishReason(string value) => new InternalCreateCompletionResponseChoiceFinishReason(value);
 
+        public static implicit operator InternalCreateCompletionResponseChoiceFinishReason?(string value) => value == null ? null : new InternalCreateCompletionResponseChoiceFinishReason(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateCompletionResponseChoiceFinishReason other && Equals(other);
 

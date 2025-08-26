@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -145,5 +146,12 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<ResponseDeletionResult>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator ResponseDeletionResult(ClientResult result)
+        {
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeResponseDeletionResult(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
     }
 }

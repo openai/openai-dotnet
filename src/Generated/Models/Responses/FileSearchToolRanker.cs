@@ -33,6 +33,8 @@ namespace OpenAI.Responses
 
         public static implicit operator FileSearchToolRanker(string value) => new FileSearchToolRanker(value);
 
+        public static implicit operator FileSearchToolRanker?(string value) => value == null ? null : new FileSearchToolRanker(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is FileSearchToolRanker other && Equals(other);
 

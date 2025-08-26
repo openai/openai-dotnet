@@ -61,7 +61,7 @@ public partial class FineTuningJob : OperationResult
     internal FineTuningJob(
             ClientPipeline pipeline,
             Uri endpoint,
-            PipelineResponse response) : this(pipeline, endpoint, InternalFineTuningJob.FromClientResult(ClientResult.FromResponse(response)), response)
+            PipelineResponse response) : this(pipeline, endpoint, (InternalFineTuningJob)ClientResult.FromResponse(response), response)
     {
     }
 
@@ -205,7 +205,7 @@ public partial class FineTuningJob : OperationResult
     {
         ClientResult result = await GetJobAsync(cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         var response = result.GetRawResponse();
-        CopyLocalParameters(response, InternalFineTuningJob.FromClientResult(ClientResult.FromResponse(response)));
+        CopyLocalParameters(response, (InternalFineTuningJob)ClientResult.FromResponse(response));
         return result;
     }
 
@@ -214,7 +214,7 @@ public partial class FineTuningJob : OperationResult
     {
         ClientResult result = GetJob(cancellationToken.ToRequestOptions());
         var response = result.GetRawResponse();
-        CopyLocalParameters(response, InternalFineTuningJob.FromClientResult(ClientResult.FromResponse(response)));
+        CopyLocalParameters(response, (InternalFineTuningJob)ClientResult.FromResponse(response));
         return result;
     }
 
@@ -228,7 +228,7 @@ public partial class FineTuningJob : OperationResult
     {
         using PipelineMessage message = _client.CreateCancelFineTuningJobRequest(JobId, cancellationToken.ToRequestOptions());
         PipelineResponse response = _pipeline.ProcessMessage(message, cancellationToken.ToRequestOptions());
-        CopyLocalParameters(response, InternalFineTuningJob.FromClientResult(ClientResult.FromResponse(response)));
+        CopyLocalParameters(response, (InternalFineTuningJob)ClientResult.FromResponse(response));
         return ClientResult.FromResponse(response);
     }
 
@@ -242,7 +242,7 @@ public partial class FineTuningJob : OperationResult
     {
         using PipelineMessage message = _client.CreateCancelFineTuningJobRequest(JobId, cancellationToken.ToRequestOptions());
         PipelineResponse response = await _pipeline.ProcessMessageAsync(message, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        CopyLocalParameters(response, InternalFineTuningJob.FromClientResult(ClientResult.FromResponse(response)));
+        CopyLocalParameters(response, (InternalFineTuningJob)ClientResult.FromResponse(response));
         return ClientResult.FromResponse(response);
     }
 

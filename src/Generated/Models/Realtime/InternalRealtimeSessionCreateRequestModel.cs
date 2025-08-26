@@ -43,6 +43,8 @@ namespace OpenAI.Realtime
 
         public static implicit operator InternalRealtimeSessionCreateRequestModel(string value) => new InternalRealtimeSessionCreateRequestModel(value);
 
+        public static implicit operator InternalRealtimeSessionCreateRequestModel?(string value) => value == null ? null : new InternalRealtimeSessionCreateRequestModel(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalRealtimeSessionCreateRequestModel other && Equals(other);
 
