@@ -1463,7 +1463,7 @@ namespace OpenAI.Chat {
         [Experimental("OPENAI001")]
         public virtual Task<ClientResult<ChatCompletion>> GetChatCompletionAsync(string completionId, CancellationToken cancellationToken = default);
         [Experimental("OPENAI001")]
-        public virtual CollectionResult<ChatCompletionMessageListDatum> GetChatCompletionMessages(string completionId, ChatCompletionCollectionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult<ChatCompletionMessageListDatum> GetChatCompletionMessages(string completionId, ChatCompletionMessageCollectionOptions options = null, CancellationToken cancellationToken = default);
         [Experimental("OPENAI001")]
         public virtual CollectionResult GetChatCompletionMessages(string completionId, string after, int? limit, string order, RequestOptions options);
         [Experimental("OPENAI001")]
@@ -4748,6 +4748,10 @@ namespace OpenAI.Responses {
         public virtual ClientResult<ResponseDeletionResult> DeleteResponse(string responseId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> DeleteResponseAsync(string responseId, RequestOptions options);
         public virtual Task<ClientResult<ResponseDeletionResult>> DeleteResponseAsync(string responseId, CancellationToken cancellationToken = default);
+        public virtual CollectionResult<ResponseItem> GetInputItems(string responseId, ResponseItemCollectionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult GetInputItems(string responseId, int? limit, string order, string after, string before, RequestOptions options);
+        public virtual AsyncCollectionResult<ResponseItem> GetInputItemsAsync(string responseId, ResponseItemCollectionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult GetInputItemsAsync(string responseId, int? limit, string order, string after, string before, RequestOptions options);
         public virtual ClientResult GetResponse(string responseId, bool? stream, int? startingAfter, RequestOptions options);
         public virtual ClientResult<OpenAIResponse> GetResponse(string responseId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GetResponseAsync(string responseId, bool? stream, int? startingAfter, RequestOptions options);
@@ -4998,11 +5002,15 @@ namespace OpenAI.Responses {
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
-    public class ResponseItemCollectionOptions {
+    public class ResponseItemCollectionOptions : IJsonModel<ResponseItemCollectionOptions>, IPersistableModel<ResponseItemCollectionOptions> {
         public string AfterId { get; set; }
         public string BeforeId { get; set; }
         public ResponseItemCollectionOrder? Order { get; set; }
         public int? PageSizeLimit { get; set; }
+        protected virtual ResponseItemCollectionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual ResponseItemCollectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
     public readonly partial struct ResponseItemCollectionOrder : IEquatable<ResponseItemCollectionOrder> {
