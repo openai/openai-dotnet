@@ -22,7 +22,7 @@ public class PaginationVisitor : ScmLibraryVisitor
     private static readonly Dictionary<string, string> _paramReplacementMap = new()
     {
         { "after", "AfterId" },
-        { "before", "LastId" },
+        { "before", "BeforeId" },
         { "limit", "PageSizeLimit" },
         { "order", "Order" },
         { "model", "Model" },
@@ -40,7 +40,7 @@ public class PaginationVisitor : ScmLibraryVisitor
         },
         {
             "GetChatCompletionMessages",
-            ("ChatCompletionMessageListDatum", "ChatCompletionCollectionOptions", _chatParamsToReplace)
+            ("ChatCompletionMessageListDatum", "ChatCompletionMessageCollectionOptions", _chatParamsToReplace)
         },
         {
             "GetChatCompletionMessagesAsync",
@@ -61,6 +61,14 @@ public class PaginationVisitor : ScmLibraryVisitor
         {
             "GetContainerFilesAsync",
             ("ContainerFileResource", "ContainerFileCollectionOptions", _chatParamsToReplace)
+        },
+        {
+            "GetInputItems",
+            ("ResponseItem", "ResponseItemCollectionOptions", _chatParamsToReplace)
+        },
+        {
+            "GetInputItemsAsync",
+            ("ResponseItem", "ResponseItemCollectionOptions", _chatParamsToReplace)
         }
     };
 

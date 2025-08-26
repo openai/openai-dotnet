@@ -176,7 +176,7 @@ namespace OpenAI.Chat
         }
 
         [Experimental("OPENAI001")]
-        public virtual CollectionResult<ChatCompletionMessageListDatum> GetChatCompletionMessages(string completionId, ChatCompletionCollectionOptions options = default, CancellationToken cancellationToken = default)
+        public virtual CollectionResult<ChatCompletionMessageListDatum> GetChatCompletionMessages(string completionId, ChatCompletionMessageCollectionOptions options = default, CancellationToken cancellationToken = default)
         {
             Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
 

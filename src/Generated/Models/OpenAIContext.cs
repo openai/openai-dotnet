@@ -794,6 +794,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(WebSearchUserLocation))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownDotnetResponseWebSearchLocation))]
     [ModelReaderWriterBuildable(typeof(InternalDotnetResponseWebSearchApproximateLocation))]
+    [ModelReaderWriterBuildable(typeof(ResponseItemCollectionOptions))]
     [ModelReaderWriterBuildable(typeof(FileChunkingStrategy))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownDotNetCombinedChunkingStrategyParam))]
     [ModelReaderWriterBuildable(typeof(InternalDotNetCombinedAutoChunkingStrategyParam))]

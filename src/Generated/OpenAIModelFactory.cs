@@ -1160,6 +1160,11 @@ namespace OpenAI
             return new AudioTokenLogProbabilityDetails(token, logProbability, utf8Bytes, additionalBinaryDataProperties: null);
         }
 
+        public static ResponseItemCollectionOptions ResponseItemCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, ResponseItemCollectionOrder? order = default)
+        {
+            return new ResponseItemCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+        }
+
         public static RunGraderRequest RunGraderRequest(BinaryData grader = default, BinaryData item = default, string modelSample = default)
         {
             return new RunGraderRequest(grader, item, modelSample, additionalBinaryDataProperties: null);
