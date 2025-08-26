@@ -1156,6 +1156,25 @@ public class ChatTests : SyncAsyncTestBase
         });
     }
 
+    [Test]
+    public async Task ChatServiceTierWorks()
+    {
+        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, "o3-mini");
+
+        UserChatMessage message = new("Using a comprehensive evaluation of popular media in the 1970s and 1980s, what were the most common sci-fi themes?");
+        ChatCompletionOptions options = new()
+        {
+            ServiceTier = ChatServiceTier.Default,
+        };
+        ClientResult<ChatCompletion> completionResult = IsAsync
+            ? await client.CompleteChatAsync([message], options)
+            : client.CompleteChat([message], options);
+        ChatCompletion completion = completionResult;
+
+        Assert.That(completion, Is.Not.Null);
+        Assert.That(completion.ServiceTier, Is.EqualTo(ChatServiceTier.Default));
+    }
+
     [OneTimeTearDown]
     public void TearDown()
     {

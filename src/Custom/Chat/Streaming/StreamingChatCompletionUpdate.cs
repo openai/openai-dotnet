@@ -27,10 +27,6 @@ public partial class StreamingChatCompletionUpdate
     [CodeGenMember("Id")]
     public string CompletionId { get; }
 
-    // CUSTOM: Made internal.
-    [CodeGenMember("ServiceTier")]
-    internal InternalServiceTier? ServiceTier { get; }
-
     // CUSTOM: Made internal.We only get back a single choice, and instead we flatten the structure for usability.
     [CodeGenMember("Choices")]
     internal IReadOnlyList<InternalCreateChatCompletionStreamResponseChoice> Choices { get; }

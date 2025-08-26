@@ -1503,6 +1503,8 @@ namespace OpenAI.Chat {
         public string Refusal { get; }
         public IReadOnlyList<ChatTokenLogProbabilityDetails> RefusalTokenLogProbabilities { get; }
         public ChatMessageRole Role { get; }
+        [Experimental("OPENAI001")]
+        public ChatServiceTier? ServiceTier { get; }
         public string SystemFingerprint { get; }
         public IReadOnlyList<ChatToolCall> ToolCalls { get; }
         public ChatTokenUsage Usage { get; }
@@ -1615,6 +1617,8 @@ namespace OpenAI.Chat {
         public ChatResponseModalities ResponseModalities { get; set; }
         [Experimental("OPENAI001")]
         public long? Seed { get; set; }
+        [Experimental("OPENAI001")]
+        public ChatServiceTier? ServiceTier { get; set; }
         public IList<string> StopSequences { get; }
         public bool? StoredOutputEnabled { get; set; }
         public float? Temperature { get; set; }
@@ -1963,6 +1967,24 @@ namespace OpenAI.Chat {
         Text = 1,
         Audio = 2
     }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ChatServiceTier : IEquatable<ChatServiceTier> {
+        public ChatServiceTier(string value);
+        public static ChatServiceTier Auto { get; }
+        public static ChatServiceTier Default { get; }
+        public static ChatServiceTier Flex { get; }
+        public static ChatServiceTier Scale { get; }
+        public readonly bool Equals(ChatServiceTier other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ChatServiceTier left, ChatServiceTier right);
+        public static implicit operator ChatServiceTier(string value);
+        public static implicit operator ChatServiceTier?(string value);
+        public static bool operator !=(ChatServiceTier left, ChatServiceTier right);
+        public override readonly string ToString();
+    }
     public class ChatTokenLogProbabilityDetails : IJsonModel<ChatTokenLogProbabilityDetails>, IPersistableModel<ChatTokenLogProbabilityDetails> {
         public float LogProbability { get; }
         public string Token { get; }
@@ -2132,6 +2154,8 @@ namespace OpenAI.Chat {
         public IReadOnlyList<ChatTokenLogProbabilityDetails> RefusalTokenLogProbabilities { get; }
         public string RefusalUpdate { get; }
         public ChatMessageRole? Role { get; }
+        [Experimental("OPENAI001")]
+        public ChatServiceTier? ServiceTier { get; }
         public string SystemFingerprint { get; }
         public IReadOnlyList<StreamingChatToolCallUpdate> ToolCallUpdates { get; }
         public ChatTokenUsage Usage { get; }
@@ -4706,6 +4730,7 @@ namespace OpenAI.Responses {
         public bool ParallelToolCallsEnabled { get; }
         public string PreviousResponseId { get; }
         public ResponseReasoningOptions ReasoningOptions { get; }
+        public ResponseServiceTier? ServiceTier { get; }
         public ResponseStatus? Status { get; }
         public float? Temperature { get; }
         public ResponseTextOptions TextOptions { get; }
@@ -4855,6 +4880,7 @@ namespace OpenAI.Responses {
         public bool? ParallelToolCallsEnabled { get; set; }
         public string PreviousResponseId { get; set; }
         public ResponseReasoningOptions ReasoningOptions { get; set; }
+        public ResponseServiceTier? ServiceTier { get; set; }
         public bool? StoredOutputEnabled { get; set; }
         public float? Temperature { get; set; }
         public ResponseTextOptions TextOptions { get; set; }
@@ -5091,6 +5117,24 @@ namespace OpenAI.Responses {
         public static implicit operator ResponseReasoningSummaryVerbosity(string value);
         public static implicit operator ResponseReasoningSummaryVerbosity?(string value);
         public static bool operator !=(ResponseReasoningSummaryVerbosity left, ResponseReasoningSummaryVerbosity right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ResponseServiceTier : IEquatable<ResponseServiceTier> {
+        public ResponseServiceTier(string value);
+        public static ResponseServiceTier Auto { get; }
+        public static ResponseServiceTier Default { get; }
+        public static ResponseServiceTier Flex { get; }
+        public static ResponseServiceTier Scale { get; }
+        public readonly bool Equals(ResponseServiceTier other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseServiceTier left, ResponseServiceTier right);
+        public static implicit operator ResponseServiceTier(string value);
+        public static implicit operator ResponseServiceTier?(string value);
+        public static bool operator !=(ResponseServiceTier left, ResponseServiceTier right);
         public override readonly string ToString();
     }
     [Experimental("OPENAI001")]

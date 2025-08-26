@@ -96,10 +96,10 @@ public static partial class OpenAIChatModelFactory
         return new ChatCompletion(
             id,
             model,
+            serviceTier: null,
             systemFingerprint,
             usage,
             "chat.completion",
-            serviceTier: null,
             choices,
             createdAt,
             additionalBinaryDataProperties: null);
@@ -311,10 +311,10 @@ public static partial class OpenAIChatModelFactory
 
         return new StreamingChatCompletionUpdate(
             model,
+            serviceTier: null,
             systemFingerprint,
             "chat.completion.chunk",
             completionId,
-            serviceTier: null,
             choices,
             createdAt,
             usage,

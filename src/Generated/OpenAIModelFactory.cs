@@ -484,6 +484,40 @@ namespace OpenAI
             return new ComputerCallSafetyCheck(id, code, message, additionalBinaryDataProperties: null);
         }
 
+        public static OpenAIResponse OpenAIResponse(IDictionary<string, string> metadata = default, float? temperature = default, float? topP = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, bool? background = default, string instructions = default, IEnumerable<ResponseTool> tools = default, string id = default, ResponseStatus? status = default, DateTimeOffset createdAt = default, ResponseError error = default, ResponseTokenUsage usage = default, string endUserId = default, ResponseReasoningOptions reasoningOptions = default, int? maxOutputTokenCount = default, ResponseTextOptions textOptions = default, ResponseTruncationMode? truncationMode = default, ResponseIncompleteStatusDetails incompleteStatusDetails = default, IEnumerable<ResponseItem> outputItems = default, bool parallelToolCallsEnabled = default, ResponseToolChoice toolChoice = default, string model = default, string @object = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+            tools ??= new ChangeTrackingList<ResponseTool>();
+            outputItems ??= new ChangeTrackingList<ResponseItem>();
+
+            return new OpenAIResponse(
+                metadata,
+                temperature,
+                topP,
+                serviceTier,
+                previousResponseId,
+                background,
+                instructions,
+                tools?.ToList(),
+                id,
+                status,
+                createdAt,
+                error,
+                usage,
+                endUserId,
+                reasoningOptions,
+                maxOutputTokenCount,
+                textOptions,
+                truncationMode,
+                incompleteStatusDetails,
+                outputItems?.ToList(),
+                parallelToolCallsEnabled,
+                toolChoice,
+                model,
+                @object,
+                additionalBinaryDataProperties: null);
+        }
+
         public static ResponseError ResponseError(ResponseErrorCode code = default, string message = default)
         {
             return new ResponseError(code, message, additionalBinaryDataProperties: null);

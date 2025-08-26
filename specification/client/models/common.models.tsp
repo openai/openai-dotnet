@@ -145,3 +145,11 @@ alias CollectionAfterQueryParameter = {
    */
   @query @continuationToken afterId?: string;
 };
+
+union DotNetChatServiceTier {
+   ServiceTier
+}
+
+union DotNetResponseServiceTier {
+  ServiceTier
+}

@@ -8,13 +8,12 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
-using OpenAI.Internal;
 
 namespace OpenAI.Chat
 {
     public partial class StreamingChatCompletionUpdate : IJsonModel<StreamingChatCompletionUpdate>
     {
-        internal StreamingChatCompletionUpdate() : this(null, null, null, null, default, null, default, null, null)
+        internal StreamingChatCompletionUpdate() : this(null, default, null, null, null, null, default, null, null)
         {
         }
 
@@ -38,6 +37,11 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(Model);
             }
+            if (Optional.IsDefined(ServiceTier) && _additionalBinaryDataProperties?.ContainsKey("service_tier") != true)
+            {
+                writer.WritePropertyName("service_tier"u8);
+                writer.WriteStringValue(ServiceTier.Value.ToString());
+            }
             if (Optional.IsDefined(SystemFingerprint) && _additionalBinaryDataProperties?.ContainsKey("system_fingerprint") != true)
             {
                 writer.WritePropertyName("system_fingerprint"u8);
@@ -52,11 +56,6 @@ namespace OpenAI.Chat
             {
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(CompletionId);
-            }
-            if (Optional.IsDefined(ServiceTier) && _additionalBinaryDataProperties?.ContainsKey("service_tier") != true)
-            {
-                writer.WritePropertyName("service_tier"u8);
-                writer.WriteStringValue(ServiceTier.Value.ToString());
             }
             if (_additionalBinaryDataProperties?.ContainsKey("choices") != true)
             {
@@ -121,10 +120,10 @@ namespace OpenAI.Chat
                 return null;
             }
             string model = default;
+            ChatServiceTier? serviceTier = default;
             string systemFingerprint = default;
             string @object = default;
             string completionId = default;
-            InternalServiceTier? serviceTier = default;
             IReadOnlyList<InternalCreateChatCompletionStreamResponseChoice> choices = default;
             DateTimeOffset createdAt = default;
             ChatTokenUsage usage = default;
@@ -134,6 +133,15 @@ namespace OpenAI.Chat
                 if (prop.NameEquals("model"u8))
                 {
                     model = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("service_tier"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    serviceTier = new ChatServiceTier(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("system_fingerprint"u8))
@@ -149,16 +157,6 @@ namespace OpenAI.Chat
                 if (prop.NameEquals("id"u8))
                 {
                     completionId = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("service_tier"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        serviceTier = null;
-                        continue;
-                    }
-                    serviceTier = new InternalServiceTier(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("choices"u8))
@@ -191,10 +189,10 @@ namespace OpenAI.Chat
             }
             return new StreamingChatCompletionUpdate(
                 model,
+                serviceTier,
                 systemFingerprint,
                 @object,
                 completionId,
-                serviceTier,
                 choices,
                 createdAt,
                 usage,
