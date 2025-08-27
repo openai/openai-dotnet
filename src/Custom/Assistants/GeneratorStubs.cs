@@ -6,6 +6,13 @@ namespace OpenAI.Assistants;
  * This file stubs and performs minimal customization to generated public types for the OpenAI.Assistants namespace
  * that are not otherwise attributed elsewhere.
  */
+
+[CodeGenType("AssistantCollectionOptions")]
+public partial class AssistantCollectionOptions { }
+
+[CodeGenType("AssistantCollectionOrder")]
+public readonly partial struct AssistantCollectionOrder { }
+
 [CodeGenType("AssistantToolsCode")]
 public partial class CodeInterpreterToolDefinition { }
 
@@ -38,4 +45,3 @@ public readonly partial struct RunStepErrorCode { }
 
 [CodeGenType("RunStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject")]
 public partial class RunStepCodeInterpreterOutput { }
-

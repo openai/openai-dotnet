@@ -18,7 +18,7 @@ namespace OpenAILibraryPlugin.Visitors;
 public class PaginationVisitor : ScmLibraryVisitor
 {
 
-    private static readonly string[] _chatParamsToReplace = ["after", "before", "limit", "order", "model", "metadata"];
+    private static readonly string[] _paginationParamsToReplace = ["after", "before", "limit", "order", "model", "metadata"];
     private static readonly Dictionary<string, string> _paramReplacementMap = new()
     {
         { "after", "AfterId" },
@@ -32,44 +32,52 @@ public class PaginationVisitor : ScmLibraryVisitor
     {
         {
             "GetChatCompletions",
-            ("ChatCompletion", "ChatCompletionCollectionOptions", _chatParamsToReplace)
+            ("ChatCompletion", "ChatCompletionCollectionOptions", _paginationParamsToReplace)
         },
         {
             "GetChatCompletionsAsync",
-            ("ChatCompletion", "ChatCompletionCollectionOptions", _chatParamsToReplace)
+            ("ChatCompletion", "ChatCompletionCollectionOptions", _paginationParamsToReplace)
         },
         {
             "GetChatCompletionMessages",
-            ("ChatCompletionMessageListDatum", "ChatCompletionMessageCollectionOptions", _chatParamsToReplace)
+            ("ChatCompletionMessageListDatum", "ChatCompletionMessageCollectionOptions", _paginationParamsToReplace)
         },
         {
             "GetChatCompletionMessagesAsync",
-            ("ChatCompletionMessageListDatum", "ChatCompletionMessageCollectionOptions", _chatParamsToReplace)
+            ("ChatCompletionMessageListDatum", "ChatCompletionMessageCollectionOptions", _paginationParamsToReplace)
         },
         {
             "GetContainers",
-            ("ContainerResource", "ContainerCollectionOptions", _chatParamsToReplace)
+            ("ContainerResource", "ContainerCollectionOptions", _paginationParamsToReplace)
         },
         {
             "GetContainersAsync",
-            ("ContainerResource", "ContainerCollectionOptions", _chatParamsToReplace)
+            ("ContainerResource", "ContainerCollectionOptions", _paginationParamsToReplace)
         },
         {
             "GetContainerFiles",
-            ("ContainerFileResource", "ContainerFileCollectionOptions", _chatParamsToReplace)
+            ("ContainerFileResource", "ContainerFileCollectionOptions", _paginationParamsToReplace)
         },
         {
             "GetContainerFilesAsync",
-            ("ContainerFileResource", "ContainerFileCollectionOptions", _chatParamsToReplace)
+            ("ContainerFileResource", "ContainerFileCollectionOptions", _paginationParamsToReplace)
         },
         {
             "GetInputItems",
-            ("ResponseItem", "ResponseItemCollectionOptions", _chatParamsToReplace)
+            ("ResponseItem", "ResponseItemCollectionOptions", _paginationParamsToReplace)
         },
         {
             "GetInputItemsAsync",
-            ("ResponseItem", "ResponseItemCollectionOptions", _chatParamsToReplace)
-        }
+            ("ResponseItem", "ResponseItemCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetAssistants",
+            ("Assistant", "AssistantCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetAssistantsAsync",
+            ("Assistant", "AssistantCollectionOptions", _paginationParamsToReplace)
+        },
     };
 
     protected override MethodProvider? VisitMethod(MethodProvider method)
@@ -114,7 +122,7 @@ public class PaginationVisitor : ScmLibraryVisitor
                 int lastRemovedIndex = -1;
                 for (int i = 0; i < newParameters.Count; i++)
                 {
-                    if (_chatParamsToReplace.Contains(newParameters[i].Name))
+                    if (_paginationParamsToReplace.Contains(newParameters[i].Name))
                     {
                         newParameters.RemoveAt(i);
                         lastRemovedIndex = i;

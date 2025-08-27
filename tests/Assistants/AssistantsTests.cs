@@ -1461,7 +1461,7 @@ public class AssistantsTests : SyncAsyncTestBase
         ContinuationToken rehydrationToken = ContinuationToken.FromBytes(rehydrationTokenBytes);
 
         // This starts the collection on the second page.
-        AsyncCollectionResult<Assistant> rehydratedAssistants = client.GetAssistantsAsync(rehydrationToken);
+        AsyncCollectionResult<Assistant> rehydratedAssistants = client.GetAssistantsAsync(new AssistantCollectionOptions{PageSizeLimit=TestPageSizeLimit, Order = AssistantCollectionOrder.Descending, AfterId = rehydrationToken.ToBytes().ToString()});
 
         // We already got the first page, so account for that.
         int count = TestPageSizeLimit;
@@ -1529,7 +1529,7 @@ public class AssistantsTests : SyncAsyncTestBase
         ContinuationToken rehydrationToken = ContinuationToken.FromBytes(rehydrationTokenBytes);
 
         // This starts the collection on the second page.
-        CollectionResult<Assistant> rehydratedAssistants = client.GetAssistants(rehydrationToken);
+        CollectionResult<Assistant> rehydratedAssistants = client.GetAssistants(new AssistantCollectionOptions{ AfterId = rehydrationToken.ToBytes().ToString()});
 
         // We already got the first page, so account for that.
         int count = TestPageSizeLimit;
@@ -1601,7 +1601,11 @@ public class AssistantsTests : SyncAsyncTestBase
         // Call the rehydration method, passing a typed OpenAIPageToken
         ClientResult firstPage = await assistants.GetRawPagesAsync().FirstAsync();
         ContinuationToken nextPageToken = assistants.GetContinuationToken(firstPage);
-        AsyncCollectionResult<Assistant> rehydratedAssistantCollection = client.GetAssistantsAsync(nextPageToken);
+        AsyncCollectionResult<Assistant> rehydratedAssistantCollection = client.GetAssistantsAsync(new AssistantCollectionOptions{
+            AfterId = nextPageToken.ToBytes().ToString(),
+            PageSizeLimit = TestPageSizeLimit,
+            Order = AssistantCollectionOrder.Descending
+        });
 
         // Since we're asking for the next page after the first one, remove the first two items from the 
         // createdAssistants
@@ -1680,7 +1684,7 @@ public class AssistantsTests : SyncAsyncTestBase
         // Call the rehydration method, passing a typed OpenAIPageToken
         ClientResult firstPage = assistants.GetRawPages().First();
         ContinuationToken nextPageToken = assistants.GetContinuationToken(firstPage);
-        CollectionResult<Assistant> rehydratedAssistantCollection = client.GetAssistants(nextPageToken);
+        CollectionResult<Assistant> rehydratedAssistantCollection = client.GetAssistants(new AssistantCollectionOptions{ AfterId = nextPageToken.ToBytes().ToString()});
 
         // Since we're asking for the next page after the first one, remove the first two items from the 
         // createdAssistants

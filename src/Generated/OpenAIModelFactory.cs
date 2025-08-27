@@ -1110,6 +1110,11 @@ namespace OpenAI
             return new ChatToolChoice(additionalBinaryDataProperties: null);
         }
 
+        public static AssistantCollectionOptions AssistantCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, AssistantCollectionOrder? order = default)
+        {
+            return new AssistantCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+        }
+
         public static AudioTranscription AudioTranscription(string language = default, string text = default, IEnumerable<TranscribedWord> words = default, IEnumerable<TranscribedSegment> segments = default, string task = default, TimeSpan? duration = default, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default)
         {
             words ??= new ChangeTrackingList<TranscribedWord>();

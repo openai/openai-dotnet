@@ -21,8 +21,6 @@ namespace OpenAI.Assistants;
 [CodeGenSuppress("ModifyAssistant", typeof(string), typeof(AssistantModificationOptions))]
 [CodeGenSuppress("DeleteAssistantAsync", typeof(string))]
 [CodeGenSuppress("DeleteAssistant", typeof(string))]
-[CodeGenSuppress("GetAssistantsAsync", typeof(int?), typeof(OpenAI.VectorStores.VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("GetAssistants", typeof(int?), typeof(OpenAI.VectorStores.VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
 public partial class AssistantClient
 {
     private readonly InternalAssistantMessageClient _messageSubClient;
@@ -131,92 +129,6 @@ public partial class AssistantClient
 
         ClientResult protocolResult = CreateAssistant(options?.ToBinaryContent(), cancellationToken.ToRequestOptions());
          return ClientResult.FromValue((Assistant)protocolResult, protocolResult.GetRawResponse());
-    }
-
-    /// <summary>
-    /// Gets a page collection holding <see cref="Assistant"/> instances.
-    /// </summary>
-    /// <param name="options"> Options describing the collection to return. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A collection of <see cref="Assistant"/>. </returns>
-    public virtual AsyncCollectionResult<Assistant> GetAssistantsAsync(
-        AssistantCollectionOptions options = default,
-        CancellationToken cancellationToken = default)
-    {
-        AsyncCollectionResult result = GetAssistantsAsync(options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions());
-
-        if (result is not AsyncCollectionResult<Assistant> assistantCollection)
-        {
-            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'AsyncCollectionResult<Assistant>'.");
-        }
-
-        return assistantCollection;
-    }
-
-    /// <summary>
-    /// Rehydrates a page collection holding <see cref="Assistant"/> instances from a page token.
-    /// </summary>
-    /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A collection of <see cref="Assistant"/>. </returns>
-    public virtual AsyncCollectionResult<Assistant> GetAssistantsAsync(
-        ContinuationToken firstPageToken,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
-
-        AssistantCollectionPageToken pageToken = AssistantCollectionPageToken.FromToken(firstPageToken);
-        AsyncCollectionResult result = GetAssistantsAsync(pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken.Before, cancellationToken.ToRequestOptions());
-
-        if (result is not AsyncCollectionResult<Assistant> assistantCollection)
-        {
-            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'AsyncCollectionResult<Assistant>'.");
-        }
-
-        return assistantCollection;
-    }
-
-    /// <summary>
-    /// Gets a page collection holding <see cref="Assistant"/> instances.
-    /// </summary>
-    /// <param name="options"> Options describing the collection to return. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A collection of <see cref="Assistant"/>. </returns>
-    public virtual CollectionResult<Assistant> GetAssistants(
-        AssistantCollectionOptions options = default,
-        CancellationToken cancellationToken = default)
-    {
-        CollectionResult result = GetAssistants(options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions());
-
-        if (result is not CollectionResult<Assistant> assistantCollection)
-        {
-            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'CollectionResult<Assistant>'.");
-        }
-
-        return assistantCollection;
-    }
-
-    /// <summary>
-    /// Rehydrates a page collection holding <see cref="Assistant"/> instances from a page token.
-    /// </summary>
-    /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A collection of <see cref="Assistant"/>. </returns>
-    public virtual CollectionResult<Assistant> GetAssistants(
-        ContinuationToken firstPageToken,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
-
-        AssistantCollectionPageToken pageToken = AssistantCollectionPageToken.FromToken(firstPageToken);
-        CollectionResult result = GetAssistants(pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken.Before, cancellationToken.ToRequestOptions());
-
-        if (result is not CollectionResult<Assistant> assistantCollection)
-        {
-            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'CollectionResult<Assistant>'.");
-        }
-
-        return assistantCollection;
     }
 
     /// <summary>
