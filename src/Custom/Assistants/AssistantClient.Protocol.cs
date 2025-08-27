@@ -44,11 +44,7 @@ public partial class AssistantClient
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> A collection of service responses, each holding a page of values. </returns>
     public virtual AsyncCollectionResult GetMessagesAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
-    {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-
-        return new AsyncMessageCollectionResult(_messageSubClient, options, threadId, limit, order, after, before);
-    }
+        => _messageSubClient.GetMessagesAsync(threadId, limit, order, after, before, options);
 
     /// <summary>
     /// [Protocol Method] Returns a paginated collection of messages for a given thread.
@@ -78,11 +74,7 @@ public partial class AssistantClient
     /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
     /// <returns> A collection of service responses, each holding a page of values. </returns>
     public virtual CollectionResult GetMessages(string threadId, int? limit, string order, string after, string before, RequestOptions options)
-    {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-
-        return new MessageCollectionResult(_messageSubClient, options, threadId, limit, order, after, before);
-    }
+        => _messageSubClient.GetMessages(threadId, limit, order, after, before, options);
 
     /// <inheritdoc cref="InternalAssistantMessageClient.GetMessageAsync"/>
     public virtual Task<ClientResult> GetMessageAsync(string threadId, string messageId, RequestOptions options)

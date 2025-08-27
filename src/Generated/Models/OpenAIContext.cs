@@ -773,6 +773,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalRunStepDeltaStepDetailsToolCallsFunctionObjectFunction))]
     [ModelReaderWriterBuildable(typeof(InternalCreateThreadRequestToolResourcesFileSearchBase))]
     [ModelReaderWriterBuildable(typeof(AssistantCollectionOptions))]
+    [ModelReaderWriterBuildable(typeof(MessageCollectionOptions))]
     [ModelReaderWriterBuildable(typeof(AudioTranscription))]
     [ModelReaderWriterBuildable(typeof(ChatCompletionCollectionOptions))]
     [ModelReaderWriterBuildable(typeof(ChatCompletionMessageCollectionOptions))]

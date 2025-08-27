@@ -16,6 +16,12 @@ public readonly partial struct AssistantCollectionOrder { }
 [CodeGenType("AssistantToolsCode")]
 public partial class CodeInterpreterToolDefinition { }
 
+[CodeGenType("MessageCollectionOptions")]
+public partial class MessageCollectionOptions { }
+
+[CodeGenType("MessageCollectionOrder")]
+public readonly partial struct MessageCollectionOrder { }
+
 [CodeGenType("MessageObjectStatus")]
 public readonly partial struct MessageStatus { }
 

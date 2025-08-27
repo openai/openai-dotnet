@@ -112,7 +112,7 @@ public partial class AssistantClient
         options ??= new();
         options.Model = model;
 
-         ClientResult protocolResult = await CreateAssistantAsync(options?.ToBinaryContent(), cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        ClientResult protocolResult = await CreateAssistantAsync(options?.ToBinaryContent(), cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue((Assistant)protocolResult, protocolResult.GetRawResponse());
     }
 
@@ -128,7 +128,7 @@ public partial class AssistantClient
         options.Model = model;
 
         ClientResult protocolResult = CreateAssistant(options?.ToBinaryContent(), cancellationToken.ToRequestOptions());
-         return ClientResult.FromValue((Assistant)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue((Assistant)protocolResult, protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -231,7 +231,7 @@ public partial class AssistantClient
     public virtual async Task<ClientResult<AssistantThread>> CreateThreadAsync(ThreadCreationOptions options = null, CancellationToken cancellationToken = default)
     {
         ClientResult protocolResult = await CreateThreadAsync(options?.ToBinaryContent(), cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue((AssistantThread)protocolResult, protocolResult.GetRawResponse());;
+        return ClientResult.FromValue((AssistantThread)protocolResult, protocolResult.GetRawResponse()); ;
     }
 
     /// <summary>
@@ -404,41 +404,7 @@ public partial class AssistantClient
         string threadId,
         MessageCollectionOptions options = default,
         CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-
-        AsyncCollectionResult result = GetMessagesAsync(threadId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions());
-
-        if (result is not AsyncCollectionResult<ThreadMessage> collection)
-        {
-            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'AsyncCollectionResult<ThreadMessage>'.");
-        }
-
-        return collection;
-    }
-
-    /// <summary>
-    /// Rehydrates a page collection of <see cref="ThreadMessage"/> instances from a page token.
-    /// </summary>
-    /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A collection of <see cref="ThreadMessage"/>. </returns>
-    public virtual AsyncCollectionResult<ThreadMessage> GetMessagesAsync(
-        ContinuationToken firstPageToken,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
-
-        MessageCollectionPageToken pageToken = MessageCollectionPageToken.FromToken(firstPageToken);
-        AsyncCollectionResult result = GetMessagesAsync(pageToken?.ThreadId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions());
-
-        if (result is not AsyncCollectionResult<ThreadMessage> collection)
-        {
-            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'AsyncCollectionResult<ThreadMessage>'.");
-        }
-
-        return collection;
-    }
+            => _messageSubClient.GetMessagesAsync(threadId, options, cancellationToken);
 
     /// <summary>
     /// Gets a page collection holding <see cref="ThreadMessage"/> instances from an existing <see cref="AssistantThread"/>.
@@ -451,42 +417,7 @@ public partial class AssistantClient
         string threadId,
         MessageCollectionOptions options = default,
         CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-
-        CollectionResult result = GetMessages(threadId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions());
-
-        if (result is not CollectionResult<ThreadMessage> collection)
-        {
-            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'CollectionResult<ThreadMessage>'.");
-        }
-
-        return collection;
-    }
-
-    /// <summary>
-    /// Rehydrates a page collection holding <see cref="ThreadMessage"/> instances from a page token.
-    /// </summary>
-    /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A collection of <see cref="ThreadMessage"/>. </returns>
-    public virtual CollectionResult<ThreadMessage> GetMessages(
-        ContinuationToken firstPageToken,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
-
-        MessageCollectionPageToken pageToken = MessageCollectionPageToken.FromToken(firstPageToken);
-        CollectionResult result = GetMessages(pageToken?.ThreadId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions());
-
-        if (result is not CollectionResult<ThreadMessage> collection)
-        {
-            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'CollectionResult<ThreadMessage>'.");
-        }
-
-        return collection;
-
-    }
+            => _messageSubClient.GetMessages(threadId, options, cancellationToken);
 
     /// <summary>
     /// Gets an existing <see cref="ThreadMessage"/> from a known <see cref="AssistantThread"/>.
@@ -629,7 +560,7 @@ public partial class AssistantClient
         options.Stream = null;
 
         ClientResult protocolResult = CreateRun(threadId, options?.ToBinaryContent(), cancellationToken.ToRequestOptions());
-       return ClientResult.FromValue((ThreadRun)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue((ThreadRun)protocolResult, protocolResult.GetRawResponse());
     }
 
     /// <summary>
