@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using NUnit.Framework.Internal;
 using OpenAI.Assistants;
 using OpenAI.Files;
 using OpenAI.Tests.Utility;
@@ -1529,7 +1530,12 @@ public class AssistantsTests : SyncAsyncTestBase
         ContinuationToken rehydrationToken = ContinuationToken.FromBytes(rehydrationTokenBytes);
 
         // This starts the collection on the second page.
-        CollectionResult<Assistant> rehydratedAssistants = client.GetAssistants(new AssistantCollectionOptions{ AfterId = rehydrationToken.ToBytes().ToString()});
+        CollectionResult<Assistant> rehydratedAssistants = client.GetAssistants(new AssistantCollectionOptions
+        {
+            AfterId = rehydrationToken.ToBytes().ToString(),
+            Order = AssistantCollectionOrder.Descending,
+            PageSizeLimit = TestPageSizeLimit
+        });
 
         // We already got the first page, so account for that.
         int count = TestPageSizeLimit;
@@ -1684,7 +1690,12 @@ public class AssistantsTests : SyncAsyncTestBase
         // Call the rehydration method, passing a typed OpenAIPageToken
         ClientResult firstPage = assistants.GetRawPages().First();
         ContinuationToken nextPageToken = assistants.GetContinuationToken(firstPage);
-        CollectionResult<Assistant> rehydratedAssistantCollection = client.GetAssistants(new AssistantCollectionOptions{ AfterId = nextPageToken.ToBytes().ToString()});
+        CollectionResult<Assistant> rehydratedAssistantCollection = client.GetAssistants(new AssistantCollectionOptions
+        {
+            AfterId = nextPageToken.ToBytes().ToString(),
+            Order = AssistantCollectionOrder.Descending,
+            PageSizeLimit = TestPageSizeLimit
+        });
 
         // Since we're asking for the next page after the first one, remove the first two items from the 
         // createdAssistants
@@ -1723,106 +1734,6 @@ public class AssistantsTests : SyncAsyncTestBase
 
         Assert.That(count, Is.GreaterThanOrEqualTo(TestAssistantCount));
         Assert.That(pageCount, Is.GreaterThanOrEqualTo(TestAssistantCount / TestPageSizeLimit));
-    }
-
-    [Test]
-    public async Task Pagination_CanCastAssistantPageCollectionToConvenienceFromProtocolAsync()
-    {
-        AssertAsyncOnly();
-
-        const int TestAssistantCount = 10;
-        const int TestPageSizeLimit = 2;
-
-        AssistantClient client = GetTestClient();
-
-        // Create assistant collection
-        List<Assistant> createdAssistants = [];
-        for (int i = 0; i < TestAssistantCount; i++)
-        {
-            Assistant assistant = client.CreateAssistant("gpt-4o-mini", new AssistantCreationOptions()
-            {
-                Name = $"Test Assistant {i}"
-            });
-            Validate(assistant);
-            Assert.That(assistant.Name, Is.EqualTo($"Test Assistant {i}"));
-
-            createdAssistants.Add(assistant);
-        }
-
-        // Call the protocol method
-        AsyncCollectionResult assistantsProtocol = client.GetAssistantsAsync(limit: TestPageSizeLimit, order: "desc", after: null, before: null, options: default);
-
-        // Cast to the convenience type
-        AsyncCollectionResult<Assistant> assistants = (AsyncCollectionResult<Assistant>)assistantsProtocol;
-
-        // Since we asked for descending order, reverse the order of createdAssistants.
-        createdAssistants.Reverse();
-
-        int count = 0;
-
-        // Validate that the protocol return type cast to the convenience return type
-        // functions correctly as the convenience return type.
-        await foreach (Assistant assistant in assistants)
-        {
-            Assert.AreEqual(createdAssistants[count++].Id, assistant.Id);
-
-            if (count >= createdAssistants.Count)
-            {
-                break;
-            }
-        }
-
-        Assert.That(count, Is.GreaterThanOrEqualTo(TestAssistantCount));
-    }
-
-    [Test]
-    public void Pagination_CanCastAssistantPageCollectionToConvenienceFromProtocol()
-    {
-        AssertSyncOnly();
-
-        const int TestAssistantCount = 10;
-        const int TestPageSizeLimit = 2;
-
-        AssistantClient client = GetTestClient();
-
-        // Create assistant collection
-        List<Assistant> createdAssistants = [];
-        for (int i = 0; i < TestAssistantCount; i++)
-        {
-            Assistant assistant = client.CreateAssistant("gpt-4o-mini", new AssistantCreationOptions()
-            {
-                Name = $"Test Assistant {i}"
-            });
-            Validate(assistant);
-            Assert.That(assistant.Name, Is.EqualTo($"Test Assistant {i}"));
-
-            createdAssistants.Add(assistant);
-        }
-
-        // Call the protocol method
-        CollectionResult assistantsProtocol = client.GetAssistants(limit: TestPageSizeLimit, order: "desc", after: null, before: null, options: default);
-
-        // Cast to the convenience type
-        CollectionResult<Assistant> assistants = (CollectionResult<Assistant>)assistantsProtocol;
-
-        // Since we asked for descending order, reverse the order of createdAssistants.
-        createdAssistants.Reverse();
-
-        int count = 0;
-
-        // Validate that the protocol return type cast to the convenience return type
-        // functions correctly as the convenience return type.
-        foreach (Assistant assistant in assistants)
-        {
-            Assert.AreEqual(createdAssistants[count++].Id, assistant.Id);
-
-            if (count >= createdAssistants.Count)
-            {
-                break;
-            }
-        }
-
-        Assert.That(count, Is.GreaterThanOrEqualTo(TestAssistantCount));
     }
 
     [Test]
