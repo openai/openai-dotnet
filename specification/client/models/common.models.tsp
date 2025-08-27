@@ -154,3 +154,11 @@ alias CollectionBeforeQueryParameter = {
    */
   @query beforeId?: string;
 };
+
+union DotNetChatServiceTier {
+   ServiceTier
+}
+
+union DotNetResponseServiceTier {
+  ServiceTier
+}

@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
-using OpenAI.Internal;
 
 namespace OpenAI.Chat
 {
@@ -14,11 +13,12 @@ namespace OpenAI.Chat
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ChatCompletionOptions(float? temperature, float? topP, float? frequencyPenalty, float? presencePenalty, ChatWebSearchOptions webSearchOptions, long? seed, IList<ChatTool> tools, IList<ChatMessage> messages, string model, int? n, bool? stream, InternalChatCompletionStreamOptions streamOptions, bool? includeLogProbabilities, int? topLogProbabilityCount, IList<string> stopSequences, IDictionary<int, int> logitBiases, ChatToolChoice toolChoice, ChatFunctionChoice functionChoice, bool? allowParallelToolCalls, string endUserId, int? deprecatedMaxTokens, int? maxOutputTokenCount, IList<ChatFunction> functions, IDictionary<string, string> metadata, bool? storedOutputEnabled, ChatReasoningEffortLevel? reasoningEffortLevel, IList<InternalCreateChatCompletionRequestModality> internalModalities, ChatResponseFormat responseFormat, ChatAudioOptions audioOptions, ChatOutputPrediction outputPrediction, InternalServiceTier? serviceTier, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ChatCompletionOptions(float? temperature, float? topP, ChatServiceTier? serviceTier, float? frequencyPenalty, float? presencePenalty, ChatWebSearchOptions webSearchOptions, long? seed, IList<ChatTool> tools, IList<ChatMessage> messages, string model, int? n, bool? stream, InternalChatCompletionStreamOptions streamOptions, bool? includeLogProbabilities, int? topLogProbabilityCount, IList<string> stopSequences, IDictionary<int, int> logitBiases, ChatToolChoice toolChoice, ChatFunctionChoice functionChoice, bool? allowParallelToolCalls, string endUserId, int? deprecatedMaxTokens, int? maxOutputTokenCount, IList<ChatFunction> functions, IDictionary<string, string> metadata, bool? storedOutputEnabled, ChatReasoningEffortLevel? reasoningEffortLevel, IList<InternalCreateChatCompletionRequestModality> internalModalities, ChatResponseFormat responseFormat, ChatAudioOptions audioOptions, ChatOutputPrediction outputPrediction, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Temperature = temperature;
             TopP = topP;
+            ServiceTier = serviceTier;
             FrequencyPenalty = frequencyPenalty;
             PresencePenalty = presencePenalty;
             WebSearchOptions = webSearchOptions;
@@ -47,13 +47,15 @@ namespace OpenAI.Chat
             ResponseFormat = responseFormat;
             AudioOptions = audioOptions;
             OutputPrediction = outputPrediction;
-            _serviceTier = serviceTier;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public float? Temperature { get; set; }
 
         public float? TopP { get; set; }
+
+        [Experimental("OPENAI001")]
+        public ChatServiceTier? ServiceTier { get; set; }
 
         public float? FrequencyPenalty { get; set; }
 

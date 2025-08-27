@@ -9,13 +9,12 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
-using OpenAI.Internal;
 
 namespace OpenAI.Chat
 {
     public partial class ChatCompletion : IJsonModel<ChatCompletion>
     {
-        internal ChatCompletion() : this(null, null, null, null, null, default, null, default, null)
+        internal ChatCompletion() : this(null, null, default, null, null, null, null, default, null)
         {
         }
 
@@ -44,6 +43,11 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(Model);
             }
+            if (Optional.IsDefined(ServiceTier) && _additionalBinaryDataProperties?.ContainsKey("service_tier") != true)
+            {
+                writer.WritePropertyName("service_tier"u8);
+                writer.WriteStringValue(ServiceTier.Value.ToString());
+            }
             if (Optional.IsDefined(SystemFingerprint) && _additionalBinaryDataProperties?.ContainsKey("system_fingerprint") != true)
             {
                 writer.WritePropertyName("system_fingerprint"u8);
@@ -58,11 +62,6 @@ namespace OpenAI.Chat
             {
                 writer.WritePropertyName("object"u8);
                 writer.WriteStringValue(Object);
-            }
-            if (Optional.IsDefined(ServiceTier) && _additionalBinaryDataProperties?.ContainsKey("service_tier") != true)
-            {
-                writer.WritePropertyName("service_tier"u8);
-                writer.WriteStringValue(ServiceTier.Value.ToString());
             }
             if (_additionalBinaryDataProperties?.ContainsKey("choices") != true)
             {
@@ -123,10 +122,10 @@ namespace OpenAI.Chat
             }
             string id = default;
             string model = default;
+            ChatServiceTier? serviceTier = default;
             string systemFingerprint = default;
             ChatTokenUsage usage = default;
             string @object = default;
-            InternalServiceTier? serviceTier = default;
             IReadOnlyList<InternalCreateChatCompletionResponseChoice> choices = default;
             DateTimeOffset createdAt = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
@@ -140,6 +139,15 @@ namespace OpenAI.Chat
                 if (prop.NameEquals("model"u8))
                 {
                     model = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("service_tier"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    serviceTier = new ChatServiceTier(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("system_fingerprint"u8))
@@ -159,16 +167,6 @@ namespace OpenAI.Chat
                 if (prop.NameEquals("object"u8))
                 {
                     @object = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("service_tier"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        serviceTier = null;
-                        continue;
-                    }
-                    serviceTier = new InternalServiceTier(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("choices"u8))
@@ -192,10 +190,10 @@ namespace OpenAI.Chat
             return new ChatCompletion(
                 id,
                 model,
+                serviceTier,
                 systemFingerprint,
                 usage,
                 @object,
-                serviceTier,
                 choices,
                 createdAt,
                 additionalBinaryDataProperties);

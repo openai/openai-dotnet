@@ -460,6 +460,24 @@ public partial class ResponsesTests : SyncAsyncTestBase
     }
 
     [Test]
+    public async Task ResponseServiceTierWorks()
+    {
+        OpenAIResponseClient client = GetTestClient();
+
+        MessageResponseItem message = ResponseItem.CreateUserMessageItem("Using a comprehensive evaluation of popular media in the 1970s and 1980s, what were the most common sci-fi themes?");
+        ResponseCreationOptions options = new()
+        {
+            ServiceTier = ResponseServiceTier.Default,
+        };
+        OpenAIResponse response = IsAsync
+            ? await client.CreateResponseAsync([message], options)
+            : client.CreateResponse([message], options);
+
+        Assert.That(response, Is.Not.Null);
+        Assert.That(response.ServiceTier, Is.EqualTo(ResponseServiceTier.Default));
+    }
+
+    [Test]
     public async Task OutputTextMethod()
     {
         OpenAIResponseClient client = GetTestClient();

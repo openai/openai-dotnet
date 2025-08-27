@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using OpenAI;
-using OpenAI.Internal;
 
 namespace OpenAI.Responses
 {
@@ -32,7 +31,7 @@ namespace OpenAI.Responses
             ParallelToolCallsEnabled = parallelToolCallsEnabled;
         }
 
-        internal OpenAIResponse(IDictionary<string, string> metadata, float? temperature, float? topP, InternalServiceTier? serviceTier, string previousResponseId, bool? background, string instructions, IList<ResponseTool> tools, string id, ResponseStatus? status, DateTimeOffset createdAt, ResponseError error, ResponseTokenUsage usage, string endUserId, ResponseReasoningOptions reasoningOptions, int? maxOutputTokenCount, ResponseTextOptions textOptions, ResponseTruncationMode? truncationMode, ResponseIncompleteStatusDetails incompleteStatusDetails, IList<ResponseItem> outputItems, bool parallelToolCallsEnabled, ResponseToolChoice toolChoice, string model, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal OpenAIResponse(IDictionary<string, string> metadata, float? temperature, float? topP, ResponseServiceTier? serviceTier, string previousResponseId, bool? background, string instructions, IList<ResponseTool> tools, string id, ResponseStatus? status, DateTimeOffset createdAt, ResponseError error, ResponseTokenUsage usage, string endUserId, ResponseReasoningOptions reasoningOptions, int? maxOutputTokenCount, ResponseTextOptions textOptions, ResponseTruncationMode? truncationMode, ResponseIncompleteStatusDetails incompleteStatusDetails, IList<ResponseItem> outputItems, bool parallelToolCallsEnabled, ResponseToolChoice toolChoice, string model, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -68,7 +67,7 @@ namespace OpenAI.Responses
 
         public float? TopP { get; }
 
-        internal InternalServiceTier? ServiceTier { get; }
+        public ResponseServiceTier? ServiceTier { get; }
 
         public string PreviousResponseId { get; }
 

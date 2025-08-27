@@ -18,3 +18,7 @@ using Azure.ClientGenerator.Core;
 @@visibility(ChatCompletionStreamResponseDelta.tool_calls, Lifecycle.Read);
 
 @@clientName(Chat.createChatCompletion, "CompleteChat");
+
+@@alternateType(CreateChatCompletionRequest.service_tier, DotNetChatServiceTier);
+@@alternateType(CreateChatCompletionResponse.service_tier, DotNetChatServiceTier);
+@@alternateType(CreateChatCompletionStreamResponse.service_tier, DotNetChatServiceTier);
