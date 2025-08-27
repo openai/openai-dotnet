@@ -34,9 +34,9 @@ public static partial class OpenAIImagesModelFactory
         items ??= new List<GeneratedImage>();
 
         return new GeneratedImageCollection(
-            items.ToList(),
-            usage,
-            createdAt,
+            data: items.ToList(),
+            usage: usage,
+            createdAt: createdAt,
             additionalBinaryDataProperties: null);
     }
 }

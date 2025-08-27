@@ -12,7 +12,6 @@ namespace OpenAI.Images;
 /// </summary>
 [CodeGenType("ImagesResponse")]
 [CodeGenSuppress(nameof(GeneratedImageCollection), typeof(DateTimeOffset))]
-[CodeGenSuppress(nameof(GeneratedImageCollection), typeof(DateTimeOffset), typeof(IList<GeneratedImage>), typeof(ImageTokenUsage), typeof(IDictionary<string, BinaryData>))]
 [CodeGenVisibility(nameof(Data), CodeGenVisibility.Internal)]
 public partial class GeneratedImageCollection : ReadOnlyCollection<GeneratedImage>
 {
@@ -22,7 +21,7 @@ public partial class GeneratedImageCollection : ReadOnlyCollection<GeneratedImag
     /// <param name="usage"></param>
     /// <param name="createdAt"></param>
     /// <param name="additionalBinaryDataProperties"> Keeps track of any properties unknown to the library. </param>
-    internal GeneratedImageCollection(IList<GeneratedImage> data, ImageTokenUsage usage, DateTimeOffset createdAt, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+    internal GeneratedImageCollection(DateTimeOffset createdAt, IList<GeneratedImage> data, ImageTokenUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         : base([.. data])
     {
         Usage = usage;

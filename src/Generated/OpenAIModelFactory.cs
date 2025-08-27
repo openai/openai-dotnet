@@ -503,6 +503,59 @@ namespace OpenAI
                 additionalBinaryDataProperties: null);
         }
 
+        public static RunGraderRequest RunGraderRequest(BinaryData grader = default, BinaryData item = default, string modelSample = default)
+        {
+            return new RunGraderRequest(grader, item, modelSample, additionalBinaryDataProperties: null);
+        }
+
+        public static RunGraderResponse RunGraderResponse(float reward = default, RunGraderResponseMetadata metadata = default, BinaryData subRewards = default, BinaryData modelGraderTokenUsagePerModel = default)
+        {
+            return new RunGraderResponse(reward, metadata, subRewards, modelGraderTokenUsagePerModel, additionalBinaryDataProperties: null);
+        }
+
+        public static RunGraderResponseMetadata RunGraderResponseMetadata(string name = default, string kind = default, RunGraderResponseMetadataErrors errors = default, float executionTime = default, BinaryData scores = default, int? tokenUsage = default, string sampledModelName = default)
+        {
+            return new RunGraderResponseMetadata(
+                name,
+                kind,
+                errors,
+                executionTime,
+                scores,
+                tokenUsage,
+                sampledModelName,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static RunGraderResponseMetadataErrors RunGraderResponseMetadataErrors(bool formulaParseError = default, bool sampleParseError = default, bool truncatedObservationError = default, bool unresponsiveRewardError = default, bool invalidVariableError = default, bool otherError = default, bool pythonGraderServerError = default, string pythonGraderServerErrorType = default, bool pythonGraderRuntimeError = default, string pythonGraderRuntimeErrorDetails = default, bool modelGraderServerError = default, bool modelGraderRefusalError = default, bool modelGraderParseError = default, string modelGraderServerErrorDetails = default)
+        {
+            return new RunGraderResponseMetadataErrors(
+                formulaParseError,
+                sampleParseError,
+                truncatedObservationError,
+                unresponsiveRewardError,
+                invalidVariableError,
+                otherError,
+                pythonGraderServerError,
+                pythonGraderServerErrorType,
+                pythonGraderRuntimeError,
+                pythonGraderRuntimeErrorDetails,
+                modelGraderServerError,
+                modelGraderRefusalError,
+                modelGraderParseError,
+                modelGraderServerErrorDetails,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static ValidateGraderRequest ValidateGraderRequest(BinaryData grader = default)
+        {
+            return new ValidateGraderRequest(grader, additionalBinaryDataProperties: null);
+        }
+
+        public static ValidateGraderResponse ValidateGraderResponse(BinaryData grader = default)
+        {
+            return new ValidateGraderResponse(grader, additionalBinaryDataProperties: null);
+        }
+
         public static FileSearchToolRankingOptions FileSearchToolRankingOptions(FileSearchToolRanker? ranker = default, float? scoreThreshold = default)
         {
             return new FileSearchToolRankingOptions(ranker, scoreThreshold, additionalBinaryDataProperties: null);
@@ -595,11 +648,11 @@ namespace OpenAI
                 additionalBinaryDataProperties: null);
         }
 
-        public static GeneratedImageCollection GeneratedImageCollection(IEnumerable<GeneratedImage> data = default, ImageTokenUsage usage = default, DateTimeOffset createdAt = default)
+        public static GeneratedImageCollection GeneratedImageCollection(DateTimeOffset createdAt = default, IEnumerable<GeneratedImage> data = default, ImageTokenUsage usage = default)
         {
             data ??= new ChangeTrackingList<GeneratedImage>();
 
-            return new GeneratedImageCollection(data.ToList(), usage, createdAt, additionalBinaryDataProperties: null);
+            return new GeneratedImageCollection(createdAt, data.ToList(), usage, additionalBinaryDataProperties: null);
         }
 
         public static GeneratedImage GeneratedImage(BinaryData imageBytes = default, Uri imageUri = default, string revisedPrompt = default)
