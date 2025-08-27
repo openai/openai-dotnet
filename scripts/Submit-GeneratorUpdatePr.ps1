@@ -214,6 +214,16 @@ try {
         Write-Warning-Log "OpenAI code generation failed: $_"
     }
     Pop-Location
+
+     # Export the API
+    Write-Log "Updating API"
+    Push-Location "."
+    try {
+        pwsh scripts/Export-Api.ps1
+    } catch {
+        Write-Warning-Log "Exporting API failed: $_"
+    }
+    Pop-Location
     
     # Check if there are changes to commit
     $gitStatus = git status --porcelain
@@ -230,6 +240,7 @@ try {
     Write-Log "Adding and committing changes"
     git add codegen/package.json
     git add codegen/generator/src/OpenAI.Library.Plugin.csproj
+    git add api
     git add package-lock.json
     git add ./ # Add any generated code changes
     
