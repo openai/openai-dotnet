@@ -130,10 +130,8 @@ namespace OpenAI.Assistants {
         public virtual ClientResult<ThreadMessage> GetMessage(string threadId, string messageId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GetMessageAsync(string threadId, string messageId, RequestOptions options);
         public virtual Task<ClientResult<ThreadMessage>> GetMessageAsync(string threadId, string messageId, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<ThreadMessage> GetMessages(ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
         public virtual CollectionResult<ThreadMessage> GetMessages(string threadId, MessageCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual CollectionResult GetMessages(string threadId, int? limit, string order, string after, string before, RequestOptions options);
-        public virtual AsyncCollectionResult<ThreadMessage> GetMessagesAsync(ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<ThreadMessage> GetMessagesAsync(string threadId, MessageCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult GetMessagesAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options);
         public virtual ClientResult GetRun(string threadId, string runId, RequestOptions options);
@@ -367,11 +365,15 @@ namespace OpenAI.Assistants {
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
-    public class MessageCollectionOptions {
+    public class MessageCollectionOptions : IJsonModel<MessageCollectionOptions>, IPersistableModel<MessageCollectionOptions> {
         public string AfterId { get; set; }
         public string BeforeId { get; set; }
         public MessageCollectionOrder? Order { get; set; }
         public int? PageSizeLimit { get; set; }
+        protected virtual MessageCollectionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual MessageCollectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
     public readonly partial struct MessageCollectionOrder : IEquatable<MessageCollectionOrder> {
@@ -385,6 +387,7 @@ namespace OpenAI.Assistants {
         public override readonly int GetHashCode();
         public static bool operator ==(MessageCollectionOrder left, MessageCollectionOrder right);
         public static implicit operator MessageCollectionOrder(string value);
+        public static implicit operator MessageCollectionOrder?(string value);
         public static bool operator !=(MessageCollectionOrder left, MessageCollectionOrder right);
         public override readonly string ToString();
     }
