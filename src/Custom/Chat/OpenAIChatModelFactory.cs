@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 
 namespace OpenAI.Chat;
 
@@ -58,6 +57,7 @@ public static partial class OpenAIChatModelFactory
         IEnumerable<ChatTokenLogProbabilityDetails> refusalTokenLogProbabilities = null,
         DateTimeOffset createdAt = default,
         string model = null,
+        ChatServiceTier? serviceTier = default,
         string systemFingerprint = null,
         ChatTokenUsage usage = default,
         ChatOutputAudio outputAudio = default,
@@ -96,10 +96,10 @@ public static partial class OpenAIChatModelFactory
         return new ChatCompletion(
             id: id,
             model: model,
+            serviceTier: serviceTier,
             systemFingerprint: systemFingerprint,
             usage: usage,
             @object: "chat.completion",
-            serviceTier: null,
             choices: choices,
             createdAt: createdAt,
             additionalBinaryDataProperties: null);
@@ -277,6 +277,7 @@ public static partial class OpenAIChatModelFactory
         ChatFinishReason? finishReason = default,
         DateTimeOffset createdAt = default,
         string model = null,
+        ChatServiceTier? serviceTier = default,
         string systemFingerprint = null,
         ChatTokenUsage usage = default,
         StreamingChatOutputAudioUpdate outputAudioUpdate = default)
@@ -311,10 +312,10 @@ public static partial class OpenAIChatModelFactory
 
         return new StreamingChatCompletionUpdate(
             model: model,
+            serviceTier: serviceTier,
             systemFingerprint: systemFingerprint,
             @object: "chat.completion.chunk",
             completionId: completionId,
-            serviceTier: null,
             choices: choices,
             createdAt: createdAt,
             usage: usage,

@@ -4,9 +4,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using OpenAI;
-using OpenAI.Internal;
 
 namespace OpenAI.Chat
 {
@@ -22,7 +22,7 @@ namespace OpenAI.Chat
             Model = model;
         }
 
-        internal ChatCompletion(string id, IReadOnlyList<InternalCreateChatCompletionResponseChoice> choices, DateTimeOffset createdAt, string model, InternalServiceTier? serviceTier, string systemFingerprint, string @object, ChatTokenUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ChatCompletion(string id, IReadOnlyList<InternalCreateChatCompletionResponseChoice> choices, DateTimeOffset createdAt, string model, ChatServiceTier? serviceTier, string systemFingerprint, string @object, ChatTokenUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
@@ -39,6 +39,9 @@ namespace OpenAI.Chat
         public string Id { get; }
 
         public string Model { get; }
+
+        [Experimental("OPENAI001")]
+        public ChatServiceTier? ServiceTier { get; }
 
         public string SystemFingerprint { get; }
 

@@ -594,6 +594,40 @@ namespace OpenAI
             return new ComputerCallSafetyCheck(id, code, message, additionalBinaryDataProperties: null);
         }
 
+        public static OpenAIResponse OpenAIResponse(IDictionary<string, string> metadata = default, float? temperature = default, float? topP = default, string endUserId = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? background = default, int? maxOutputTokenCount = default, string instructions = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, string id = default, string @object = default, ResponseStatus? status = default, DateTimeOffset createdAt = default, ResponseError error = default, ResponseIncompleteStatusDetails incompleteStatusDetails = default, IEnumerable<ResponseItem> outputItems = default, ResponseTokenUsage usage = default, bool parallelToolCallsEnabled = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+            tools ??= new ChangeTrackingList<ResponseTool>();
+            outputItems ??= new ChangeTrackingList<ResponseItem>();
+
+            return new OpenAIResponse(
+                metadata,
+                temperature,
+                topP,
+                endUserId,
+                serviceTier,
+                previousResponseId,
+                model,
+                reasoningOptions,
+                background,
+                maxOutputTokenCount,
+                instructions,
+                textOptions,
+                tools.ToList(),
+                toolChoice,
+                truncationMode,
+                id,
+                @object,
+                status,
+                createdAt,
+                error,
+                incompleteStatusDetails,
+                outputItems.ToList(),
+                usage,
+                parallelToolCallsEnabled,
+                additionalBinaryDataProperties: null);
+        }
+
         public static ResponseError ResponseError(ResponseErrorCode code = default, string message = default)
         {
             return new ResponseError(code, message, additionalBinaryDataProperties: null);

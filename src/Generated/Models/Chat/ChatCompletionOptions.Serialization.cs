@@ -8,13 +8,12 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
-using OpenAI.Internal;
 
 namespace OpenAI.Chat
 {
     public partial class ChatCompletionOptions : IJsonModel<ChatCompletionOptions>
     {
-        public ChatCompletionOptions() : this(null, default, default, null, null, null, null, default, default, default, default, null, default, null, null, default, default, null, null, default, default, default, null, default, null, null, null, default, null, null, default, null)
+        public ChatCompletionOptions() : this(null, default, default, null, default, null, null, null, default, default, default, default, null, default, null, null, default, default, null, null, default, default, default, null, default, null, null, null, default, null, null, null)
         {
         }
 
@@ -63,6 +62,11 @@ namespace OpenAI.Chat
             {
                 writer.WritePropertyName("user"u8);
                 writer.WriteStringValue(EndUserId);
+            }
+            if (Optional.IsDefined(ServiceTier) && _additionalBinaryDataProperties?.ContainsKey("service_tier") != true)
+            {
+                writer.WritePropertyName("service_tier"u8);
+                writer.WriteStringValue(ServiceTier.Value.ToString());
             }
             // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
             if (Optional.IsCollectionDefined(Messages) && _additionalBinaryDataProperties?.ContainsKey("messages") != true)
@@ -211,11 +215,6 @@ namespace OpenAI.Chat
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(_serviceTier) && _additionalBinaryDataProperties?.ContainsKey("service_tier") != true)
-            {
-                writer.WritePropertyName("service_tier"u8);
-                writer.WriteStringValue(_serviceTier.Value.ToString());
-            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
@@ -262,6 +261,7 @@ namespace OpenAI.Chat
             float? temperature = default;
             float? topP = default;
             string endUserId = default;
+            ChatServiceTier? serviceTier = default;
             IList<ChatMessage> messages = default;
             string model = default;
             IList<InternalCreateChatCompletionRequestModality> internalModalities = default;
@@ -288,7 +288,6 @@ namespace OpenAI.Chat
             bool? allowParallelToolCalls = default;
             ChatFunctionChoice functionChoice = default;
             IList<ChatFunction> functions = default;
-            InternalServiceTier? serviceTier = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -336,6 +335,15 @@ namespace OpenAI.Chat
                 if (prop.NameEquals("user"u8))
                 {
                     endUserId = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("service_tier"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    serviceTier = new ChatServiceTier(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("messages"u8))
@@ -590,15 +598,6 @@ namespace OpenAI.Chat
                     functions = array;
                     continue;
                 }
-                if (prop.NameEquals("service_tier"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    serviceTier = new InternalServiceTier(prop.Value.GetString());
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
@@ -607,6 +606,7 @@ namespace OpenAI.Chat
                 temperature,
                 topP,
                 endUserId,
+                serviceTier,
                 messages,
                 model,
                 internalModalities ?? new ChangeTrackingList<InternalCreateChatCompletionRequestModality>(),
@@ -633,7 +633,6 @@ namespace OpenAI.Chat
                 allowParallelToolCalls,
                 functionChoice,
                 functions ?? new ChangeTrackingList<ChatFunction>(),
-                serviceTier,
                 additionalBinaryDataProperties);
         }
 

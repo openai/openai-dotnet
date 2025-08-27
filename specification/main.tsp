@@ -10,6 +10,7 @@ import "./client/graders.client.tsp";
 import "./client/images.client.tsp";
 import "./client/messages.client.tsp";
 import "./client/moderations.client.tsp";
+import "./client/responses.client.tsp";
 import "./client/runs.client.tsp";
 import "./client/threads.client.tsp";
 import "./client/vector-stores.client.tsp";
