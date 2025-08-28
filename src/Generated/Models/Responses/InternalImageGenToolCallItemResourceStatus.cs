@@ -37,6 +37,8 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalImageGenToolCallItemResourceStatus(string value) => new InternalImageGenToolCallItemResourceStatus(value);
 
+        public static implicit operator InternalImageGenToolCallItemResourceStatus?(string value) => value == null ? null : new InternalImageGenToolCallItemResourceStatus(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalImageGenToolCallItemResourceStatus other && Equals(other);
 

@@ -16,11 +16,4 @@ public partial class ThreadDeletionResult
     /// <summary> The object type, which is always `thread.deleted`. </summary>
     [CodeGenMember("Object")]
     internal string Object { get; } = "thread.deleted";
-
-    internal static ThreadDeletionResult FromClientResult(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeThreadDeletionResult(document.RootElement, ModelSerializationExtensions.WireOptions);
-    }
 }

@@ -31,6 +31,8 @@ namespace OpenAI.Assistants
 
         public static implicit operator InternalMessageObjectRole(string value) => new InternalMessageObjectRole(value);
 
+        public static implicit operator InternalMessageObjectRole?(string value) => value == null ? null : new InternalMessageObjectRole(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalMessageObjectRole other && Equals(other);
 

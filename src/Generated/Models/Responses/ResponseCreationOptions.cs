@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
-using OpenAI.Internal;
 
 namespace OpenAI.Responses
 {
@@ -15,7 +14,7 @@ namespace OpenAI.Responses
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ResponseCreationOptions(IDictionary<string, string> metadata, float? temperature, float? topP, InternalServiceTier? serviceTier, string previousResponseId, bool? background, string instructions, IList<InternalIncludable> include, string model, IList<ResponseItem> input, bool? stream, string endUserId, ResponseReasoningOptions reasoningOptions, int? maxOutputTokenCount, ResponseTextOptions textOptions, ResponseTruncationMode? truncationMode, bool? parallelToolCallsEnabled, bool? storedOutputEnabled, ResponseToolChoice toolChoice, IList<ResponseTool> tools, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ResponseCreationOptions(IDictionary<string, string> metadata, float? temperature, float? topP, ResponseServiceTier? serviceTier, string previousResponseId, bool? background, string instructions, IList<InternalIncludable> include, string model, IList<ResponseItem> input, bool? stream, string endUserId, ResponseReasoningOptions reasoningOptions, int? maxOutputTokenCount, ResponseTextOptions textOptions, ResponseTruncationMode? truncationMode, bool? parallelToolCallsEnabled, bool? storedOutputEnabled, ResponseToolChoice toolChoice, IList<ResponseTool> tools, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -47,7 +46,7 @@ namespace OpenAI.Responses
 
         public float? TopP { get; set; }
 
-        internal InternalServiceTier? ServiceTier { get; set; }
+        public ResponseServiceTier? ServiceTier { get; set; }
 
         public string PreviousResponseId { get; set; }
 

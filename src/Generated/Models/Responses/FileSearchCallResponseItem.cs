@@ -13,11 +13,12 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class FileSearchCallResponseItem : ResponseItem
     {
-        internal FileSearchCallResponseItem(string id, IEnumerable<string> queries, FileSearchCallStatus? status) : base(InternalItemType.FileSearchCall, id)
+        public FileSearchCallResponseItem(IEnumerable<string> queries) : base(InternalItemType.FileSearchCall)
         {
+            Argument.AssertNotNull(queries, nameof(queries));
+
             Queries = queries.ToList();
             Results = new ChangeTrackingList<FileSearchCallResult>();
-            Status = status;
         }
 
         internal FileSearchCallResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<string> queries, IList<FileSearchCallResult> results, FileSearchCallStatus? status) : base(kind, id, additionalBinaryDataProperties)
@@ -30,6 +31,6 @@ namespace OpenAI.Responses
 
         public IList<string> Queries { get; }
 
-        public IList<FileSearchCallResult> Results { get; }
+        public IList<FileSearchCallResult> Results { get; set; }
     }
 }

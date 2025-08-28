@@ -21,10 +21,6 @@ public partial class ChatCompletion
     [CodeGenMember("Object")]
     internal string Object { get; } = "chat.completion";
 
-    // CUSTOM: Made internal.
-    [CodeGenMember("ServiceTier")]
-    internal InternalServiceTier? ServiceTier { get; }
-
     // CUSTOM: Made internal. We only get back a single choice, and instead we flatten the structure for usability.
     [CodeGenMember("Choices")]
     internal IReadOnlyList<InternalCreateChatCompletionResponseChoice> Choices { get; }
@@ -99,11 +95,4 @@ public partial class ChatCompletion
     // CUSTOM: Added Experimental attribute.
     [Experimental("OPENAI001")]
     public IReadOnlyList<ChatMessageAnnotation> Annotations => [.. Choices[0].Message.Annotations];
-
-    internal static ChatCompletion FromClientResult(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeChatCompletion(document.RootElement, ModelSerializationExtensions.WireOptions);
-    }
 }

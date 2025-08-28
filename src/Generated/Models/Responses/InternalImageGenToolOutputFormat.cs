@@ -34,6 +34,8 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalImageGenToolOutputFormat(string value) => new InternalImageGenToolOutputFormat(value);
 
+        public static implicit operator InternalImageGenToolOutputFormat?(string value) => value == null ? null : new InternalImageGenToolOutputFormat(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalImageGenToolOutputFormat other && Equals(other);
 

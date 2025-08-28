@@ -28,6 +28,8 @@ namespace OpenAI.FineTuning
 
         public static implicit operator InternalCreateFineTuningJobRequestIntegrationType(string value) => new InternalCreateFineTuningJobRequestIntegrationType(value);
 
+        public static implicit operator InternalCreateFineTuningJobRequestIntegrationType?(string value) => value == null ? null : new InternalCreateFineTuningJobRequestIntegrationType(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalCreateFineTuningJobRequestIntegrationType other && Equals(other);
 

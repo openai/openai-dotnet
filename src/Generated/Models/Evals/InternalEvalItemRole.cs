@@ -37,6 +37,8 @@ namespace OpenAI.Evals
 
         public static implicit operator InternalEvalItemRole(string value) => new InternalEvalItemRole(value);
 
+        public static implicit operator InternalEvalItemRole?(string value) => value == null ? null : new InternalEvalItemRole(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalEvalItemRole other && Equals(other);
 

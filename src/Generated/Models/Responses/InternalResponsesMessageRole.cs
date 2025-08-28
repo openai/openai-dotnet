@@ -37,6 +37,8 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalResponsesMessageRole(string value) => new InternalResponsesMessageRole(value);
 
+        public static implicit operator InternalResponsesMessageRole?(string value) => value == null ? null : new InternalResponsesMessageRole(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalResponsesMessageRole other && Equals(other);
 

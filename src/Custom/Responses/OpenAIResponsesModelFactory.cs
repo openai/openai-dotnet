@@ -30,6 +30,7 @@ public static partial class OpenAIResponsesModelFactory
         IDictionary<string, string> metadata = null,
         float? temperature = null,
         float? topP = null,
+        ResponseServiceTier? serviceTier = null,
         string previousResponseId = null,
         bool? background = null,
         string instructions = null,
@@ -43,7 +44,7 @@ public static partial class OpenAIResponsesModelFactory
             metadata: metadata,
             temperature: temperature,
             topP: topP,
-            serviceTier: null,
+            serviceTier,
             previousResponseId: previousResponseId,
             background: background,
             instructions: instructions,
@@ -74,13 +75,14 @@ public static partial class OpenAIResponsesModelFactory
         MessageRole role = MessageRole.Assistant,
         MessageStatus? status = null)
     {
-        // Convert the public MessageRole to the internal role type
-        InternalResponsesMessageRole internalRole = role.ToSerialString();
-        
-        return new MessageResponseItem(
+        MessageResponseItem item = new(
+            kind: InternalItemType.Message,
             id: id,
-            internalRole: internalRole,
-            status: status);
+            additionalBinaryDataProperties: null,
+            status: status,
+            internalRole: role.ToString());
+
+        return item;
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Responses.ReasoningResponseItem"/>. </summary>

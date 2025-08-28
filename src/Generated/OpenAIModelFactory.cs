@@ -301,6 +301,63 @@ namespace OpenAI
             return new ChatCompletionDeletionResult(deleted, @object, chatCompletionId, additionalBinaryDataProperties: null);
         }
 
+        public static ContainerResource ContainerResource(string id = default, string @object = default, string name = default, DateTimeOffset createdAt = default, string status = default, ContainerResourceExpiresAfter expiresAfter = default)
+        {
+            return new ContainerResource(
+                id,
+                @object,
+                name,
+                createdAt,
+                status,
+                expiresAfter,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static ContainerResourceExpiresAfter ContainerResourceExpiresAfter(string anchor = default, int? minutes = default)
+        {
+            return new ContainerResourceExpiresAfter(anchor, minutes, additionalBinaryDataProperties: null);
+        }
+
+        public static CreateContainerBody CreateContainerBody(string name = default, IEnumerable<string> fileIds = default, CreateContainerBodyExpiresAfter expiresAfter = default)
+        {
+            fileIds ??= new ChangeTrackingList<string>();
+
+            return new CreateContainerBody(name, fileIds?.ToList(), expiresAfter, additionalBinaryDataProperties: null);
+        }
+
+        public static CreateContainerBodyExpiresAfter CreateContainerBodyExpiresAfter(string anchor = default, int minutes = default)
+        {
+            return new CreateContainerBodyExpiresAfter(anchor, minutes, additionalBinaryDataProperties: null);
+        }
+
+        public static DeleteContainerResponse DeleteContainerResponse(string id = default, string @object = default, bool deleted = default)
+        {
+            return new DeleteContainerResponse(id, @object, deleted, additionalBinaryDataProperties: null);
+        }
+
+        public static CreateContainerFileBody CreateContainerFileBody(string fileId = default, BinaryData @file = default)
+        {
+            return new CreateContainerFileBody(fileId, @file, additionalBinaryDataProperties: null);
+        }
+
+        public static ContainerFileResource ContainerFileResource(string id = default, string @object = default, string containerId = default, DateTimeOffset createdAt = default, int bytes = default, string path = default, string source = default)
+        {
+            return new ContainerFileResource(
+                id,
+                @object,
+                containerId,
+                createdAt,
+                bytes,
+                path,
+                source,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static DeleteContainerFileResponse DeleteContainerFileResponse(string id = default, string @object = default, bool deleted = default)
+        {
+            return new DeleteContainerFileResponse(id, @object, deleted, additionalBinaryDataProperties: null);
+        }
+
         public static OpenAIEmbeddingCollection OpenAIEmbeddingCollection(IEnumerable<OpenAIEmbedding> data = default, string model = default, string @object = default, EmbeddingTokenUsage usage = default)
         {
             data ??= new ChangeTrackingList<OpenAIEmbedding>();
@@ -462,7 +519,7 @@ namespace OpenAI
             return new InternalUnknownAnnotation(kind.ToResponseMessageAnnotationKind(), additionalBinaryDataProperties: null);
         }
 
-        public static FileSearchCallResult FileSearchCallResult(string fileId = default, string text = default, string filename = default, float? score = default, IReadOnlyDictionary<string, BinaryData> attributes = default)
+        public static FileSearchCallResult FileSearchCallResult(string fileId = default, string text = default, string filename = default, IDictionary<string, BinaryData> attributes = default, float? score = default)
         {
             attributes ??= new ChangeTrackingDictionary<string, BinaryData>();
 
@@ -470,8 +527,8 @@ namespace OpenAI
                 fileId,
                 text,
                 filename,
-                score,
                 attributes,
+                score,
                 additionalBinaryDataProperties: null);
         }
 
@@ -483,6 +540,40 @@ namespace OpenAI
         public static ComputerCallSafetyCheck ComputerCallSafetyCheck(string id = default, string code = default, string message = default)
         {
             return new ComputerCallSafetyCheck(id, code, message, additionalBinaryDataProperties: null);
+        }
+
+        public static OpenAIResponse OpenAIResponse(IDictionary<string, string> metadata = default, float? temperature = default, float? topP = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, bool? background = default, string instructions = default, IEnumerable<ResponseTool> tools = default, string id = default, ResponseStatus? status = default, DateTimeOffset createdAt = default, ResponseError error = default, ResponseTokenUsage usage = default, string endUserId = default, ResponseReasoningOptions reasoningOptions = default, int? maxOutputTokenCount = default, ResponseTextOptions textOptions = default, ResponseTruncationMode? truncationMode = default, ResponseIncompleteStatusDetails incompleteStatusDetails = default, IEnumerable<ResponseItem> outputItems = default, bool parallelToolCallsEnabled = default, ResponseToolChoice toolChoice = default, string model = default, string @object = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+            tools ??= new ChangeTrackingList<ResponseTool>();
+            outputItems ??= new ChangeTrackingList<ResponseItem>();
+
+            return new OpenAIResponse(
+                metadata,
+                temperature,
+                topP,
+                serviceTier,
+                previousResponseId,
+                background,
+                instructions,
+                tools?.ToList(),
+                id,
+                status,
+                createdAt,
+                error,
+                usage,
+                endUserId,
+                reasoningOptions,
+                maxOutputTokenCount,
+                textOptions,
+                truncationMode,
+                incompleteStatusDetails,
+                outputItems?.ToList(),
+                parallelToolCallsEnabled,
+                toolChoice,
+                model,
+                @object,
+                additionalBinaryDataProperties: null);
         }
 
         public static ResponseError ResponseError(ResponseErrorCode code = default, string message = default)
@@ -1094,92 +1185,24 @@ namespace OpenAI
             return new ChatCompletionMessageCollectionOptions(afterId, pageSizeLimit, order, additionalBinaryDataProperties: null);
         }
 
+        public static ContainerCollectionOptions ContainerCollectionOptions(string afterId = default, int? pageSizeLimit = default, ContainerCollectionOrder? order = default)
+        {
+            return new ContainerCollectionOptions(afterId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+        }
+
+        public static ContainerFileCollectionOptions ContainerFileCollectionOptions(string afterId = default, int? pageSizeLimit = default, ContainerCollectionOrder? order = default)
+        {
+            return new ContainerFileCollectionOptions(afterId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+        }
+
         public static AudioTokenLogProbabilityDetails AudioTokenLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)
         {
             return new AudioTokenLogProbabilityDetails(token, logProbability, utf8Bytes, additionalBinaryDataProperties: null);
         }
 
-        public static ContainerListResource ContainerListResource(string @object = default, IEnumerable<ContainerResource> data = default, string firstId = default, string lastId = default, bool hasMore = default)
+        public static ResponseItemCollectionOptions ResponseItemCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, ResponseItemCollectionOrder? order = default)
         {
-            data ??= new ChangeTrackingList<ContainerResource>();
-
-            return new ContainerListResource(
-                @object,
-                data?.ToList(),
-                firstId,
-                lastId,
-                hasMore,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static ContainerResource ContainerResource(string id = default, string @object = default, string name = default, DateTimeOffset createdAt = default, string status = default, ContainerResourceExpiresAfter expiresAfter = default)
-        {
-            return new ContainerResource(
-                id,
-                @object,
-                name,
-                createdAt,
-                status,
-                expiresAfter,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static ContainerResourceExpiresAfter ContainerResourceExpiresAfter(string anchor = default, int? minutes = default)
-        {
-            return new ContainerResourceExpiresAfter(anchor, minutes, additionalBinaryDataProperties: null);
-        }
-
-        public static CreateContainerBody CreateContainerBody(string name = default, IEnumerable<string> fileIds = default, CreateContainerBodyExpiresAfter expiresAfter = default)
-        {
-            fileIds ??= new ChangeTrackingList<string>();
-
-            return new CreateContainerBody(name, fileIds?.ToList(), expiresAfter, additionalBinaryDataProperties: null);
-        }
-
-        public static CreateContainerBodyExpiresAfter CreateContainerBodyExpiresAfter(string anchor = default, int minutes = default)
-        {
-            return new CreateContainerBodyExpiresAfter(anchor, minutes, additionalBinaryDataProperties: null);
-        }
-
-        public static DeleteContainerResponse DeleteContainerResponse(string id = default, string @object = default, bool deleted = default)
-        {
-            return new DeleteContainerResponse(id, @object, deleted, additionalBinaryDataProperties: null);
-        }
-
-        public static CreateContainerFileBody CreateContainerFileBody(string fileId = default, BinaryData @file = default)
-        {
-            return new CreateContainerFileBody(fileId, @file, additionalBinaryDataProperties: null);
-        }
-
-        public static ContainerFileResource ContainerFileResource(string id = default, string @object = default, string containerId = default, DateTimeOffset createdAt = default, int bytes = default, string path = default, string source = default)
-        {
-            return new ContainerFileResource(
-                id,
-                @object,
-                containerId,
-                createdAt,
-                bytes,
-                path,
-                source,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static ContainerFileListResource ContainerFileListResource(string @object = default, IEnumerable<ContainerFileResource> data = default, string firstId = default, string lastId = default, bool hasMore = default)
-        {
-            data ??= new ChangeTrackingList<ContainerFileResource>();
-
-            return new ContainerFileListResource(
-                @object,
-                data?.ToList(),
-                firstId,
-                lastId,
-                hasMore,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static DeleteContainerFileResponse DeleteContainerFileResponse(string id = default, string @object = default, bool deleted = default)
-        {
-            return new DeleteContainerFileResponse(id, @object, deleted, additionalBinaryDataProperties: null);
+            return new ResponseItemCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
         }
 
         public static RunGraderRequest RunGraderRequest(BinaryData grader = default, BinaryData item = default, string modelSample = default)

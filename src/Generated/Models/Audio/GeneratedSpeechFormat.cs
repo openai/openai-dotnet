@@ -43,6 +43,8 @@ namespace OpenAI.Audio
 
         public static implicit operator GeneratedSpeechFormat(string value) => new GeneratedSpeechFormat(value);
 
+        public static implicit operator GeneratedSpeechFormat?(string value) => value == null ? null : new GeneratedSpeechFormat(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is GeneratedSpeechFormat other && Equals(other);
 

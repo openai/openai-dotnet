@@ -46,6 +46,8 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalItemContentType(string value) => new InternalItemContentType(value);
 
+        public static implicit operator InternalItemContentType?(string value) => value == null ? null : new InternalItemContentType(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalItemContentType other && Equals(other);
 

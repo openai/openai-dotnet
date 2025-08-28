@@ -36,6 +36,8 @@ namespace OpenAI.VectorStores
 
         public static implicit operator VectorStoreFileAssociationErrorCode(string value) => new VectorStoreFileAssociationErrorCode(value);
 
+        public static implicit operator VectorStoreFileAssociationErrorCode?(string value) => value == null ? null : new VectorStoreFileAssociationErrorCode(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is VectorStoreFileAssociationErrorCode other && Equals(other);
 

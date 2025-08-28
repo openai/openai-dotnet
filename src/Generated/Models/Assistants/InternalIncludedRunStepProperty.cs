@@ -28,6 +28,8 @@ namespace OpenAI.Assistants
 
         public static implicit operator InternalIncludedRunStepProperty(string value) => new InternalIncludedRunStepProperty(value);
 
+        public static implicit operator InternalIncludedRunStepProperty?(string value) => value == null ? null : new InternalIncludedRunStepProperty(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalIncludedRunStepProperty other && Equals(other);
 

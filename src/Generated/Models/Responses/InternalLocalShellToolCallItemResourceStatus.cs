@@ -34,6 +34,8 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalLocalShellToolCallItemResourceStatus(string value) => new InternalLocalShellToolCallItemResourceStatus(value);
 
+        public static implicit operator InternalLocalShellToolCallItemResourceStatus?(string value) => value == null ? null : new InternalLocalShellToolCallItemResourceStatus(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalLocalShellToolCallItemResourceStatus other && Equals(other);
 

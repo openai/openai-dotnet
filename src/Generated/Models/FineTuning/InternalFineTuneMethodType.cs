@@ -34,6 +34,8 @@ namespace OpenAI.FineTuning
 
         public static implicit operator InternalFineTuneMethodType(string value) => new InternalFineTuneMethodType(value);
 
+        public static implicit operator InternalFineTuneMethodType?(string value) => value == null ? null : new InternalFineTuneMethodType(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalFineTuneMethodType other && Equals(other);
 

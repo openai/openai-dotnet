@@ -190,6 +190,8 @@ namespace OpenAI.Internal
 
         public static implicit operator InternalModelIdsShared(string value) => new InternalModelIdsShared(value);
 
+        public static implicit operator InternalModelIdsShared?(string value) => value == null ? null : new InternalModelIdsShared(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalModelIdsShared other && Equals(other);
 

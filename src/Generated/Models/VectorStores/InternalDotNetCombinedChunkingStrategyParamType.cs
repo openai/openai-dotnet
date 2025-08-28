@@ -34,6 +34,8 @@ namespace OpenAI.VectorStores
 
         public static implicit operator InternalDotNetCombinedChunkingStrategyParamType(string value) => new InternalDotNetCombinedChunkingStrategyParamType(value);
 
+        public static implicit operator InternalDotNetCombinedChunkingStrategyParamType?(string value) => value == null ? null : new InternalDotNetCombinedChunkingStrategyParamType(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalDotNetCombinedChunkingStrategyParamType other && Equals(other);
 

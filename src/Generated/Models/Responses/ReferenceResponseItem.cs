@@ -11,6 +11,10 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ReferenceResponseItem : ResponseItem
     {
+        internal ReferenceResponseItem() : this(InternalItemType.ItemReference, null, null)
+        {
+        }
+
         internal ReferenceResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, id, additionalBinaryDataProperties)
         {
         }

@@ -34,6 +34,8 @@ namespace OpenAI.Realtime
 
         public static implicit operator InternalRealtimeItemType(string value) => new InternalRealtimeItemType(value);
 
+        public static implicit operator InternalRealtimeItemType?(string value) => value == null ? null : new InternalRealtimeItemType(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalRealtimeItemType other && Equals(other);
 

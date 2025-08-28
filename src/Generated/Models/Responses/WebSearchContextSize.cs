@@ -36,6 +36,8 @@ namespace OpenAI.Responses
 
         public static implicit operator WebSearchContextSize(string value) => new WebSearchContextSize(value);
 
+        public static implicit operator WebSearchContextSize?(string value) => value == null ? null : new WebSearchContextSize(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is WebSearchContextSize other && Equals(other);
 

@@ -34,6 +34,8 @@ namespace OpenAI.Internal
 
         public static implicit operator InternalWebSearchContextSize(string value) => new InternalWebSearchContextSize(value);
 
+        public static implicit operator InternalWebSearchContextSize?(string value) => value == null ? null : new InternalWebSearchContextSize(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalWebSearchContextSize other && Equals(other);
 

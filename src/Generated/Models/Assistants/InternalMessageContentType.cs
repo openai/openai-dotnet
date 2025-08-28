@@ -37,6 +37,8 @@ namespace OpenAI.Assistants
 
         public static implicit operator InternalMessageContentType(string value) => new InternalMessageContentType(value);
 
+        public static implicit operator InternalMessageContentType?(string value) => value == null ? null : new InternalMessageContentType(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalMessageContentType other && Equals(other);
 
