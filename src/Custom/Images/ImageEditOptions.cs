@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
 namespace OpenAI.Images;
@@ -67,6 +68,16 @@ public partial class ImageEditOptions
     // CUSTOM: Made internal. This value comes from a parameter on the client method.
     /// <summary> The number of images to generate. Must be between 1 and 10. </summary>
     internal long? N { get; set; }
+
+    // CUSTOM: Changed property type.
+    [Experimental("OPENAI001")]
+    [CodeGenMember("Background")]
+    public GeneratedImageBackground? Background { get; set; }
+
+    // CUSTOM: Changed property type.
+    [Experimental("OPENAI001")]
+    [CodeGenMember("Quality")]
+    public GeneratedImageQuality? Quality { get; set; }
 
     // CUSTOM: Changed property type.
     /// <summary> The size of the generated images. Must be one of `256x256`, `512x512`, or `1024x1024`. </summary>

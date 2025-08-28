@@ -32,16 +32,6 @@ namespace OpenAI.Images
             {
                 throw new FormatException($"The model {nameof(ImageEditOptions)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Background) && _additionalBinaryDataProperties?.ContainsKey("background") != true)
-            {
-                writer.WritePropertyName("background"u8);
-                writer.WriteStringValue(Background.Value.ToString());
-            }
-            if (Optional.IsDefined(Quality) && _additionalBinaryDataProperties?.ContainsKey("quality") != true)
-            {
-                writer.WritePropertyName("quality"u8);
-                writer.WriteStringValue(Quality.Value.ToString());
-            }
             if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
             {
                 writer.WritePropertyName("model"u8);
@@ -73,6 +63,16 @@ namespace OpenAI.Images
             {
                 writer.WritePropertyName("n"u8);
                 writer.WriteNumberValue(N.Value);
+            }
+            if (Optional.IsDefined(Background) && _additionalBinaryDataProperties?.ContainsKey("background") != true)
+            {
+                writer.WritePropertyName("background"u8);
+                writer.WriteStringValue(Background.Value.ToString());
+            }
+            if (Optional.IsDefined(Quality) && _additionalBinaryDataProperties?.ContainsKey("quality") != true)
+            {
+                writer.WritePropertyName("quality"u8);
+                writer.WriteStringValue(Quality.Value.ToString());
             }
             if (Optional.IsDefined(Size) && _additionalBinaryDataProperties?.ContainsKey("size") != true)
             {
@@ -131,39 +131,19 @@ namespace OpenAI.Images
             {
                 return null;
             }
-            InternalCreateImageEditRequestBackground? background = default;
-            InternalCreateImageEditRequestQuality? quality = default;
             InternalCreateImageEditRequestModel? model = default;
             BinaryData image = default;
             string prompt = default;
             BinaryData mask = default;
             long? n = default;
+            GeneratedImageBackground? background = default;
+            GeneratedImageQuality? quality = default;
             GeneratedImageSize? size = default;
             GeneratedImageFormat? responseFormat = default;
             string endUserId = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("background"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        background = null;
-                        continue;
-                    }
-                    background = new InternalCreateImageEditRequestBackground(prop.Value.GetString());
-                    continue;
-                }
-                if (prop.NameEquals("quality"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        quality = null;
-                        continue;
-                    }
-                    quality = new InternalCreateImageEditRequestQuality(prop.Value.GetString());
-                    continue;
-                }
                 if (prop.NameEquals("model"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -203,6 +183,26 @@ namespace OpenAI.Images
                     n = prop.Value.GetInt64();
                     continue;
                 }
+                if (prop.NameEquals("background"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        background = null;
+                        continue;
+                    }
+                    background = new GeneratedImageBackground(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("quality"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        quality = null;
+                        continue;
+                    }
+                    quality = new GeneratedImageQuality(prop.Value.GetString());
+                    continue;
+                }
                 if (prop.NameEquals("size"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -232,13 +232,13 @@ namespace OpenAI.Images
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ImageEditOptions(
-                background,
-                quality,
                 model,
                 image,
                 prompt,
                 mask,
                 n,
+                background,
+                quality,
                 size,
                 responseFormat,
                 endUserId,
