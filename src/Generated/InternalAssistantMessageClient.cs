@@ -5,7 +5,7 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Threading.Tasks;
+using System.Threading;
 using OpenAI;
 
 namespace OpenAI.Assistants
@@ -26,20 +26,60 @@ namespace OpenAI.Assistants
 
         public ClientPipeline Pipeline { get; }
 
-        public virtual ClientResult GetMessages(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+        public virtual CollectionResult GetMessages(string threadId, int? limit, string order, string after, string before, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-            using PipelineMessage message = CreateGetMessagesRequest(threadId, limit, order, after, before, options);
-            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+            return new InternalAssistantMessageClientGetMessagesCollectionResult(
+                this,
+                threadId,
+                limit,
+                order,
+                after,
+                before,
+                options);
         }
 
-        public virtual async Task<ClientResult> GetMessagesAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+        public virtual AsyncCollectionResult GetMessagesAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-            using PipelineMessage message = CreateGetMessagesRequest(threadId, limit, order, after, before, options);
-            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+            return new InternalAssistantMessageClientGetMessagesAsyncCollectionResult(
+                this,
+                threadId,
+                limit,
+                order,
+                after,
+                before,
+                options);
+        }
+
+        public virtual CollectionResult<ThreadMessage> GetMessages(string threadId, MessageCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+
+            return new InternalAssistantMessageClientGetMessagesCollectionResultOfT(
+                this,
+                threadId,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.AfterId,
+                options?.BeforeId,
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
+
+        public virtual AsyncCollectionResult<ThreadMessage> GetMessagesAsync(string threadId, MessageCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+
+            return new InternalAssistantMessageClientGetMessagesAsyncCollectionResultOfT(
+                this,
+                threadId,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.AfterId,
+                options?.BeforeId,
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
         }
     }
 }

@@ -29,6 +29,7 @@ interface Messages {
   @operationId("listMessages")
   @tag("Assistants")
   @summary("Returns a list of messages for a given thread.")
+  @list
   listMessages(
     ...AcceptJsonHeader,
     ...AssistantsBetaHeader,

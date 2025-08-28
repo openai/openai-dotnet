@@ -5,6 +5,8 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using OpenAI;
 
@@ -26,20 +28,204 @@ namespace OpenAI.Assistants
 
         public ClientPipeline Pipeline { get; }
 
-        public virtual ClientResult GetRuns(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+        public virtual CollectionResult GetRuns(string threadId, int? limit, string order, string after, string before, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
 
-            using PipelineMessage message = CreateGetRunsRequest(threadId, limit, order, after, before, options);
+            return new InternalAssistantRunClientGetRunsCollectionResult(
+                this,
+                threadId,
+                limit,
+                order,
+                after,
+                before,
+                options);
+        }
+
+        public virtual AsyncCollectionResult GetRunsAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+
+            return new InternalAssistantRunClientGetRunsAsyncCollectionResult(
+                this,
+                threadId,
+                limit,
+                order,
+                after,
+                before,
+                options);
+        }
+
+        public virtual CollectionResult<ThreadRun> GetRuns(string threadId, RunCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+
+            return new InternalAssistantRunClientGetRunsCollectionResultOfT(
+                this,
+                threadId,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.AfterId,
+                options?.BeforeId,
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
+
+        public virtual AsyncCollectionResult<ThreadRun> GetRunsAsync(string threadId, RunCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+
+            return new InternalAssistantRunClientGetRunsAsyncCollectionResultOfT(
+                this,
+                threadId,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.AfterId,
+                options?.BeforeId,
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
+
+        public virtual ClientResult GetRun(string threadId, string runId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+            Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
+            using PipelineMessage message = CreateGetRunRequest(threadId, runId, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> GetRunsAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+        public virtual async Task<ClientResult> GetRunAsync(string threadId, string runId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+            Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-            using PipelineMessage message = CreateGetRunsRequest(threadId, limit, order, after, before, options);
+            using PipelineMessage message = CreateGetRunRequest(threadId, runId, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<ThreadRun> GetRun(string threadId, string runId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+            Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
+            ClientResult result = GetRun(threadId, runId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+            return ClientResult.FromValue((ThreadRun)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<ThreadRun>> GetRunAsync(string threadId, string runId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+            Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
+            ClientResult result = await GetRunAsync(threadId, runId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
+            return ClientResult.FromValue((ThreadRun)result, result.GetRawResponse());
+        }
+
+        public virtual CollectionResult GetRunSteps(string threadId, string runId, int? limit, string order, string after, string before, IEnumerable<InternalIncludedRunStepProperty> include, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+            Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
+            return new InternalAssistantRunClientGetRunStepsCollectionResult(
+                this,
+                threadId,
+                runId,
+                limit,
+                order,
+                after,
+                before,
+                include,
+                options);
+        }
+
+        public virtual AsyncCollectionResult GetRunStepsAsync(string threadId, string runId, int? limit, string order, string after, string before, IEnumerable<InternalIncludedRunStepProperty> include, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+            Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
+            return new InternalAssistantRunClientGetRunStepsAsyncCollectionResult(
+                this,
+                threadId,
+                runId,
+                limit,
+                order,
+                after,
+                before,
+                include,
+                options);
+        }
+
+        public virtual CollectionResult<RunStep> GetRunSteps(string threadId, string runId, RunStepCollectionOptions options = default, IEnumerable<InternalIncludedRunStepProperty> include = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+            Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
+            return new InternalAssistantRunClientGetRunStepsCollectionResultOfT(
+                this,
+                threadId,
+                runId,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.AfterId,
+                options?.BeforeId,
+                include,
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
+
+        public virtual AsyncCollectionResult<RunStep> GetRunStepsAsync(string threadId, string runId, RunStepCollectionOptions options = default, IEnumerable<InternalIncludedRunStepProperty> include = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+            Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+
+            return new InternalAssistantRunClientGetRunStepsAsyncCollectionResultOfT(
+                this,
+                threadId,
+                runId,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.AfterId,
+                options?.BeforeId,
+                include,
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
+
+        public virtual ClientResult GetRunStep(string threadId, string runId, string stepId, IEnumerable<InternalIncludedRunStepProperty> include, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+            Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+            Argument.AssertNotNullOrEmpty(stepId, nameof(stepId));
+
+            using PipelineMessage message = CreateGetRunStepRequest(threadId, runId, stepId, include, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> GetRunStepAsync(string threadId, string runId, string stepId, IEnumerable<InternalIncludedRunStepProperty> include, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+            Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+            Argument.AssertNotNullOrEmpty(stepId, nameof(stepId));
+
+            using PipelineMessage message = CreateGetRunStepRequest(threadId, runId, stepId, include, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<RunStep> GetRunStep(string threadId, string runId, string stepId, IEnumerable<InternalIncludedRunStepProperty> include = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+            Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+            Argument.AssertNotNullOrEmpty(stepId, nameof(stepId));
+
+            ClientResult result = GetRunStep(threadId, runId, stepId, include, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+            return ClientResult.FromValue((RunStep)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<RunStep>> GetRunStepAsync(string threadId, string runId, string stepId, IEnumerable<InternalIncludedRunStepProperty> include = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
+            Argument.AssertNotNullOrEmpty(runId, nameof(runId));
+            Argument.AssertNotNullOrEmpty(stepId, nameof(stepId));
+
+            ClientResult result = await GetRunStepAsync(threadId, runId, stepId, include, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
+            return ClientResult.FromValue((RunStep)result, result.GetRawResponse());
         }
     }
 }

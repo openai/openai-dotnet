@@ -6,6 +6,7 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
 using OpenAI;
 
@@ -21,6 +22,50 @@ namespace OpenAI.Assistants
         }
 
         public ClientPipeline Pipeline { get; }
+
+        public virtual CollectionResult GetAssistants(int? limit, string order, string after, string before, RequestOptions options)
+        {
+            return new AssistantClientGetAssistantsCollectionResult(
+                this,
+                limit,
+                order,
+                after,
+                before,
+                options);
+        }
+
+        public virtual AsyncCollectionResult GetAssistantsAsync(int? limit, string order, string after, string before, RequestOptions options)
+        {
+            return new AssistantClientGetAssistantsAsyncCollectionResult(
+                this,
+                limit,
+                order,
+                after,
+                before,
+                options);
+        }
+
+        public virtual CollectionResult<Assistant> GetAssistants(AssistantCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            return new AssistantClientGetAssistantsCollectionResultOfT(
+                this,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.AfterId,
+                options?.BeforeId,
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
+
+        public virtual AsyncCollectionResult<Assistant> GetAssistantsAsync(AssistantCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            return new AssistantClientGetAssistantsAsyncCollectionResultOfT(
+                this,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.AfterId,
+                options?.BeforeId,
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
 
         public virtual ClientResult CreateAssistant(BinaryContent content, RequestOptions options = null)
         {
