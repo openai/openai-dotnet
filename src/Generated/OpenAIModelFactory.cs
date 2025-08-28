@@ -571,7 +571,7 @@ namespace OpenAI
             return new InternalUnknownAnnotation(kind.ToResponseMessageAnnotationKind(), additionalBinaryDataProperties: null);
         }
 
-        public static FileSearchCallResult FileSearchCallResult(string fileId = default, string text = default, string filename = default, IReadOnlyDictionary<string, BinaryData> attributes = default, float? score = default)
+        public static FileSearchCallResult FileSearchCallResult(string fileId = default, string text = default, string filename = default, IDictionary<string, BinaryData> attributes = default, float? score = default)
         {
             attributes ??= new ChangeTrackingDictionary<string, BinaryData>();
 

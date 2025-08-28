@@ -30,6 +30,7 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(MessageResponseItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
+            // Plugin customization: remove options.Format != "W" check
             // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
             if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
             {

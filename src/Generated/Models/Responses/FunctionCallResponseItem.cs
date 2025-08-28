@@ -5,15 +5,19 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using OpenAI;
 
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
     public partial class FunctionCallResponseItem : ResponseItem
     {
-        internal FunctionCallResponseItem(string id, FunctionCallStatus? status, string callId, string functionName, BinaryData functionArguments) : base(InternalItemType.FunctionCall, id)
+        public FunctionCallResponseItem(string callId, string functionName, BinaryData functionArguments) : base(InternalItemType.FunctionCall)
         {
-            Status = status;
+            Argument.AssertNotNull(callId, nameof(callId));
+            Argument.AssertNotNull(functionName, nameof(functionName));
+            Argument.AssertNotNull(functionArguments, nameof(functionArguments));
+
             CallId = callId;
             FunctionName = functionName;
             FunctionArguments = functionArguments;
@@ -27,6 +31,10 @@ namespace OpenAI.Responses
             FunctionArguments = functionArguments;
         }
 
-        public string CallId { get; }
+        public string CallId { get; set; }
+
+        public string FunctionName { get; set; }
+
+        public BinaryData FunctionArguments { get; set; }
     }
 }

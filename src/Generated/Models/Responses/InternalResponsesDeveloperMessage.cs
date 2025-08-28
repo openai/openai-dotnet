@@ -11,8 +11,10 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponsesDeveloperMessage : MessageResponseItem
     {
-        internal InternalResponsesDeveloperMessage(string id, MessageStatus? status, IEnumerable<ResponseContentPart> internalContent) : base(id, status, InternalResponsesMessageRole.Developer)
+        public InternalResponsesDeveloperMessage(IEnumerable<ResponseContentPart> internalContent) : base(InternalResponsesMessageRole.Developer)
         {
+            Argument.AssertNotNull(internalContent, nameof(internalContent));
+
             InternalContent = internalContent.ToList();
         }
 

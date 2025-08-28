@@ -113,7 +113,7 @@ namespace OpenAI.Responses
             string fileId = default;
             string text = default;
             string filename = default;
-            IReadOnlyDictionary<string, BinaryData> attributes = default;
+            IDictionary<string, BinaryData> attributes = default;
             float? score = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())

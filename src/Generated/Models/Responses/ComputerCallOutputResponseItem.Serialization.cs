@@ -31,6 +31,7 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(ComputerCallOutputResponseItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
+            // Plugin customization: remove options.Format != "W" check
             // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
             if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
@@ -84,7 +85,7 @@ namespace OpenAI.Responses
             ComputerCallOutputStatus? status = default;
             string callId = default;
             IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks = default;
-            ComputerOutput output = default;
+            ComputerCallOutput output = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -123,7 +124,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("output"u8))
                 {
-                    output = ComputerOutput.DeserializeComputerOutput(prop.Value, options);
+                    output = ComputerCallOutput.DeserializeComputerCallOutput(prop.Value, options);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

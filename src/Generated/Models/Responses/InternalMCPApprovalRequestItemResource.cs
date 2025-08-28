@@ -4,13 +4,18 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Responses
 {
     internal partial class InternalMCPApprovalRequestItemResource : ResponseItem
     {
-        internal InternalMCPApprovalRequestItemResource(string id, string serverLabel, string name, string arguments) : base(InternalItemType.McpApprovalRequest, id)
+        public InternalMCPApprovalRequestItemResource(string serverLabel, string name, string arguments) : base(InternalItemType.McpApprovalRequest)
         {
+            Argument.AssertNotNull(serverLabel, nameof(serverLabel));
+            Argument.AssertNotNull(name, nameof(name));
+            Argument.AssertNotNull(arguments, nameof(arguments));
+
             ServerLabel = serverLabel;
             Name = name;
             Arguments = arguments;
@@ -23,10 +28,10 @@ namespace OpenAI.Responses
             Arguments = arguments;
         }
 
-        public string ServerLabel { get; }
+        public string ServerLabel { get; set; }
 
-        public string Name { get; }
+        public string Name { get; set; }
 
-        public string Arguments { get; }
+        public string Arguments { get; set; }
     }
 }

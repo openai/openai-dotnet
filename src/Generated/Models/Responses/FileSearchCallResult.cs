@@ -18,7 +18,7 @@ namespace OpenAI.Responses
         {
         }
 
-        internal FileSearchCallResult(string fileId, string text, string filename, IReadOnlyDictionary<string, BinaryData> attributes, float? score, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal FileSearchCallResult(string fileId, string text, string filename, IDictionary<string, BinaryData> attributes, float? score, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             FileId = fileId;
@@ -34,6 +34,8 @@ namespace OpenAI.Responses
         public string Text { get; set; }
 
         public string Filename { get; set; }
+
+        public IDictionary<string, BinaryData> Attributes { get; }
 
         public float? Score { get; set; }
 
