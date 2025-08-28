@@ -5,6 +5,7 @@ using System.Text.Json;
 
 namespace OpenAI.Responses;
 
+[CodeGenSerialization(nameof(FunctionArguments), SerializationValueHook = nameof(SerializeFunctionArgumentsValue), DeserializationValueHook = nameof(DeserializeFunctionArgumentsValue))]
 public partial class FunctionCallResponseItem : IJsonModel<FunctionCallResponseItem>
 {
     // CUSTOM: The REST API serializes this as a string.

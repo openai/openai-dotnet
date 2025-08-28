@@ -1,14 +1,15 @@
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses;
 
-// CUSTOM:
-// - Added Experimental attribute.
-// - Renamed.
+// CUSTOM: Renamed.
 [CodeGenType("ResponsesMessageItemResource")]
 public partial class MessageResponseItem
 {
+    // CUSTOM: Made nullable since this is a read-only property.
+    [CodeGenMember("Status")]
+    public MessageStatus? Status { get; }
+
     // CUSTOM: Expose public enum type with 'Unknown' using internal extensible role.
     [CodeGenMember("Role")]
     internal InternalResponsesMessageRole InternalRole { get; set; }
@@ -18,10 +19,6 @@ public partial class MessageResponseItem
         private set => InternalRole = value.ToSerialString();
     }
 
-    // CUSTOM: Retain optionality of OpenAPI read-only property value
-    [CodeGenMember("Status")]
-    public MessageStatus? Status { get; }
-
     // CUSTOM: Recombined content from derived types.
     public IList<ResponseContentPart> Content
         => (this as InternalResponsesUserMessage)?.InternalContent
@@ -29,9 +26,4 @@ public partial class MessageResponseItem
         ?? (this as InternalResponsesSystemMessage)?.InternalContent
         ?? (this as InternalResponsesAssistantMessage)?.InternalContent
         ?? [];
-
-    // CUSTOM: For reuse as an input model base
-    internal MessageResponseItem(InternalResponsesMessageRole internalRole)
-        : this(id: null, internalRole, status: null)
-    { }
 }

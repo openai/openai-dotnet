@@ -41,7 +41,7 @@ namespace OpenAI.Responses
 
         InternalComputerToolCallOutputItemOutputComputerScreenshot IJsonModel<InternalComputerToolCallOutputItemOutputComputerScreenshot>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalComputerToolCallOutputItemOutputComputerScreenshot)JsonModelCreateCore(ref reader, options);
 
-        protected override ComputerOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected override ComputerCallOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalComputerToolCallOutputItemOutputComputerScreenshot>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -101,7 +101,7 @@ namespace OpenAI.Responses
 
         InternalComputerToolCallOutputItemOutputComputerScreenshot IPersistableModel<InternalComputerToolCallOutputItemOutputComputerScreenshot>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalComputerToolCallOutputItemOutputComputerScreenshot)PersistableModelCreateCore(data, options);
 
-        protected override ComputerOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected override ComputerCallOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalComputerToolCallOutputItemOutputComputerScreenshot>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)

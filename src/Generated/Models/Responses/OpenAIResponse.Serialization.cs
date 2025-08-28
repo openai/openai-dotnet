@@ -8,7 +8,6 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
-using OpenAI.Internal;
 
 namespace OpenAI.Responses
 {
@@ -259,7 +258,7 @@ namespace OpenAI.Responses
             IDictionary<string, string> metadata = default;
             float? temperature = default;
             float? topP = default;
-            InternalServiceTier? serviceTier = default;
+            ResponseServiceTier? serviceTier = default;
             string previousResponseId = default;
             bool? background = default;
             string instructions = default;
@@ -331,7 +330,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    serviceTier = new InternalServiceTier(prop.Value.GetString());
+                    serviceTier = new ResponseServiceTier(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("previous_response_id"u8))

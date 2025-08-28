@@ -7,9 +7,9 @@ namespace OpenAI.Responses;
 // - Added Experimental attribute.
 // - Renamed.
 [CodeGenType("ComputerToolCallOutputItemOutput")]
-public partial class ComputerOutput
+public partial class ComputerCallOutput
 {
-    public static ComputerOutput CreateScreenshotOutput(Uri screenshotImageUri)
+    public static ComputerCallOutput CreateScreenshotOutput(Uri screenshotImageUri)
     {
         Argument.AssertNotNull(screenshotImageUri, nameof(screenshotImageUri));
 
@@ -19,7 +19,7 @@ public partial class ComputerOutput
         };
     }
 
-    public static ComputerOutput CreateScreenshotOutput(string screenshotImageFileId)
+    public static ComputerCallOutput CreateScreenshotOutput(string screenshotImageFileId)
     {
         Argument.AssertNotNull(screenshotImageFileId, nameof(screenshotImageFileId));
 
@@ -29,7 +29,7 @@ public partial class ComputerOutput
         };
     }
 
-    public static ComputerOutput CreateScreenshotOutput(BinaryData screenshotImageBytes, string screenshotImageBytesMediaType)
+    public static ComputerCallOutput CreateScreenshotOutput(BinaryData screenshotImageBytes, string screenshotImageBytesMediaType)
     {
         Argument.AssertNotNull(screenshotImageBytes, nameof(screenshotImageBytes));
         Argument.AssertNotNull(screenshotImageBytesMediaType, nameof(screenshotImageBytesMediaType));

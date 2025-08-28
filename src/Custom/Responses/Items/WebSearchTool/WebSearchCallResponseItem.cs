@@ -1,14 +1,10 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace OpenAI.Responses;
 
-// CUSTOM:
-// - Added Experimental attribute.
-// - Renamed.
+// CUSTOM: Renamed.
 [CodeGenType("WebSearchToolCallItemResource")]
 public partial class WebSearchCallResponseItem
 {
-    // CUSTOM: Retain optionality of OpenAPI read-only property value
+    // CUSTOM: Made nullable since this is a read-only property.
     [CodeGenMember("Status")]
     public WebSearchCallStatus? Status { get; }
 }

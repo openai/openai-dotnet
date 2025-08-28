@@ -51,6 +51,7 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("output"u8);
                 writer.WriteObjectValue(Output, options);
             }
+            // Plugin customization: remove options.Format != "W" check
             // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
             if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
@@ -83,7 +84,7 @@ namespace OpenAI.Responses
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string callId = default;
             IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks = default;
-            ComputerOutput output = default;
+            ComputerCallOutput output = default;
             ComputerCallOutputStatus? status = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -118,7 +119,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("output"u8))
                 {
-                    output = ComputerOutput.DeserializeComputerOutput(prop.Value, options);
+                    output = ComputerCallOutput.DeserializeComputerCallOutput(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("status"u8))

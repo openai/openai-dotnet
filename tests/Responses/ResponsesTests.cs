@@ -155,9 +155,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
                     BinaryData screenshotBytes = BinaryData.FromBytes(File.ReadAllBytes(screenshotPath));
                     ResponseItem screenshotReply = ResponseItem.CreateComputerCallOutputItem(
                         computerCall.CallId,
-                        [],
-                        screenshotBytes,
-                        "image/png");
+                        ComputerCallOutput.CreateScreenshotOutput(screenshotBytes,"image/png"));
 
                     responseOptions.PreviousResponseId = response.Id;
                     response = await client.CreateResponseAsync([screenshotReply], responseOptions);
@@ -457,6 +455,24 @@ public partial class ResponsesTests : SyncAsyncTestBase
 
         ClientResultException expectedException = Assert.ThrowsAsync<ClientResultException>(async () => await client.GetResponseAsync(response.Id));
         Assert.That(expectedException.Message, Does.Contain("not found"));
+    }
+
+    [Test]
+    public async Task ResponseServiceTierWorks()
+    {
+        OpenAIResponseClient client = GetTestClient();
+
+        MessageResponseItem message = ResponseItem.CreateUserMessageItem("Using a comprehensive evaluation of popular media in the 1970s and 1980s, what were the most common sci-fi themes?");
+        ResponseCreationOptions options = new()
+        {
+            ServiceTier = ResponseServiceTier.Default,
+        };
+        OpenAIResponse response = IsAsync
+            ? await client.CreateResponseAsync([message], options)
+            : client.CreateResponse([message], options);
+
+        Assert.That(response, Is.Not.Null);
+        Assert.That(response.ServiceTier, Is.EqualTo(ResponseServiceTier.Default));
     }
 
     [Test]
