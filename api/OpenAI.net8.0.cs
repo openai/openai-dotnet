@@ -4600,10 +4600,21 @@ namespace OpenAI.Responses {
         Forward = 4
     }
     [Experimental("OPENAICUA001")]
+    public class ComputerCallOutput : IJsonModel<ComputerCallOutput>, IPersistableModel<ComputerCallOutput> {
+        public static ComputerCallOutput CreateScreenshotOutput(BinaryData screenshotImageBytes, string screenshotImageBytesMediaType);
+        public static ComputerCallOutput CreateScreenshotOutput(string screenshotImageFileId);
+        public static ComputerCallOutput CreateScreenshotOutput(Uri screenshotImageUri);
+        protected virtual ComputerCallOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual ComputerCallOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAICUA001")]
     public class ComputerCallOutputResponseItem : ResponseItem, IJsonModel<ComputerCallOutputResponseItem>, IPersistableModel<ComputerCallOutputResponseItem> {
+        public ComputerCallOutputResponseItem(string callId, ComputerCallOutput output);
         public IList<ComputerCallSafetyCheck> AcknowledgedSafetyChecks { get; }
-        public string CallId { get; }
-        public ComputerOutput Output { get; }
+        public string CallId { get; set; }
+        public ComputerCallOutput Output { get; set; }
         public ComputerCallOutputStatus? Status { get; }
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -4619,8 +4630,8 @@ namespace OpenAI.Responses {
     [Experimental("OPENAICUA001")]
     public class ComputerCallResponseItem : ResponseItem, IJsonModel<ComputerCallResponseItem>, IPersistableModel<ComputerCallResponseItem> {
         public ComputerCallResponseItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks);
-        public ComputerCallAction Action { get; }
-        public string CallId { get; }
+        public ComputerCallAction Action { get; set; }
+        public string CallId { get; set; }
         public IList<ComputerCallSafetyCheck> PendingSafetyChecks { get; }
         public ComputerCallStatus? Status { get; }
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -4646,16 +4657,6 @@ namespace OpenAI.Responses {
         Incomplete = 2
     }
     [Experimental("OPENAICUA001")]
-    public class ComputerOutput : IJsonModel<ComputerOutput>, IPersistableModel<ComputerOutput> {
-        public static ComputerOutput CreateScreenshotOutput(BinaryData screenshotImageBytes, string screenshotImageBytesMediaType);
-        public static ComputerOutput CreateScreenshotOutput(string screenshotImageFileId);
-        public static ComputerOutput CreateScreenshotOutput(Uri screenshotImageUri);
-        protected virtual ComputerOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual ComputerOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    [Experimental("OPENAICUA001")]
     public readonly partial struct ComputerToolEnvironment : IEquatable<ComputerToolEnvironment> {
         public ComputerToolEnvironment(string value);
         public static ComputerToolEnvironment Browser { get; }
@@ -4676,8 +4677,9 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class FileSearchCallResponseItem : ResponseItem, IJsonModel<FileSearchCallResponseItem>, IPersistableModel<FileSearchCallResponseItem> {
+        public FileSearchCallResponseItem(IEnumerable<string> queries);
         public IList<string> Queries { get; }
-        public IList<FileSearchCallResult> Results { get; }
+        public IList<FileSearchCallResult> Results { get; set; }
         public FileSearchCallStatus? Status { get; }
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -4686,7 +4688,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class FileSearchCallResult : IJsonModel<FileSearchCallResult>, IPersistableModel<FileSearchCallResult> {
-        public IReadOnlyDictionary<string, BinaryData> Attributes { get; }
+        public IDictionary<string, BinaryData> Attributes { get; }
         public string FileId { get; set; }
         public string Filename { get; set; }
         public float? Score { get; set; }
@@ -4731,7 +4733,8 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class FunctionCallOutputResponseItem : ResponseItem, IJsonModel<FunctionCallOutputResponseItem>, IPersistableModel<FunctionCallOutputResponseItem> {
-        public string CallId { get; }
+        public FunctionCallOutputResponseItem(string callId, string functionOutput);
+        public string CallId { get; set; }
         public string FunctionOutput { get; set; }
         public FunctionCallOutputStatus? Status { get; }
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -4747,7 +4750,8 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class FunctionCallResponseItem : ResponseItem, IJsonModel<FunctionCallResponseItem>, IPersistableModel<FunctionCallResponseItem> {
-        public string CallId { get; }
+        public FunctionCallResponseItem(string callId, string functionName, BinaryData functionArguments);
+        public string CallId { get; set; }
         public BinaryData FunctionArguments { get; set; }
         public string FunctionName { get; set; }
         public FunctionCallStatus? Status { get; }
@@ -4873,9 +4877,9 @@ namespace OpenAI.Responses {
     public class ReasoningResponseItem : ResponseItem, IJsonModel<ReasoningResponseItem>, IPersistableModel<ReasoningResponseItem> {
         public ReasoningResponseItem(IEnumerable<ReasoningSummaryPart> summaryParts);
         public ReasoningResponseItem(string summaryText);
-        public string EncryptedContent { get; }
+        public string EncryptedContent { get; set; }
         public ReasoningStatus? Status { get; }
-        public IReadOnlyList<ReasoningSummaryPart> SummaryParts { get; }
+        public IList<ReasoningSummaryPart> SummaryParts { get; }
         public string GetSummaryText();
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -4890,7 +4894,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ReasoningSummaryPart : IJsonModel<ReasoningSummaryPart>, IPersistableModel<ReasoningSummaryPart> {
-        public static ReasoningSummaryPart CreateTextPart(string text);
+        public static ReasoningSummaryTextPart CreateTextPart(string text);
         protected virtual ReasoningSummaryPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ReasoningSummaryPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -5078,14 +5082,10 @@ namespace OpenAI.Responses {
         [Experimental("OPENAICUA001")]
         public static ComputerCallResponseItem CreateComputerCallItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks);
         [Experimental("OPENAICUA001")]
-        public static ComputerCallOutputResponseItem CreateComputerCallOutputItem(string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, BinaryData screenshotImageBytes, string screenshotImageBytesMediaType);
-        [Experimental("OPENAICUA001")]
-        public static ComputerCallOutputResponseItem CreateComputerCallOutputItem(string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, string screenshotImageFileId);
-        [Experimental("OPENAICUA001")]
-        public static ComputerCallOutputResponseItem CreateComputerCallOutputItem(string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, Uri screenshotImageUri);
+        public static ComputerCallOutputResponseItem CreateComputerCallOutputItem(string callId, ComputerCallOutput output);
         public static MessageResponseItem CreateDeveloperMessageItem(IEnumerable<ResponseContentPart> contentParts);
         public static MessageResponseItem CreateDeveloperMessageItem(string inputTextContent);
-        public static FileSearchCallResponseItem CreateFileSearchCallItem(IEnumerable<string> queries, IEnumerable<FileSearchCallResult> results);
+        public static FileSearchCallResponseItem CreateFileSearchCallItem(IEnumerable<string> queries);
         public static FunctionCallResponseItem CreateFunctionCallItem(string callId, string functionName, BinaryData functionArguments);
         public static FunctionCallOutputResponseItem CreateFunctionCallOutputItem(string callId, string functionOutput);
         public static ReasoningResponseItem CreateReasoningItem(IEnumerable<ReasoningSummaryPart> summaryParts);
@@ -5557,6 +5557,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class WebSearchCallResponseItem : ResponseItem, IJsonModel<WebSearchCallResponseItem>, IPersistableModel<WebSearchCallResponseItem> {
+        public WebSearchCallResponseItem();
         public WebSearchCallStatus? Status { get; }
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);

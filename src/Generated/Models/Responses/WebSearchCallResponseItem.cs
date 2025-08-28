@@ -11,9 +11,8 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class WebSearchCallResponseItem : ResponseItem
     {
-        internal WebSearchCallResponseItem(string id, WebSearchCallStatus? status) : base(InternalItemType.WebSearchCall, id)
+        public WebSearchCallResponseItem() : this(InternalItemType.WebSearchCall, null, null, default)
         {
-            Status = status;
         }
 
         internal WebSearchCallResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, WebSearchCallStatus? status) : base(kind, id, additionalBinaryDataProperties)

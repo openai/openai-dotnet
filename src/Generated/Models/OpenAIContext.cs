@@ -356,7 +356,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalComputerActionWait))]
     [ModelReaderWriterBuildable(typeof(InternalComputerActionKeyPress))]
     [ModelReaderWriterBuildable(typeof(InternalComputerUsePreviewToolCallOutputItemParam))]
-    [ModelReaderWriterBuildable(typeof(ComputerOutput))]
+    [ModelReaderWriterBuildable(typeof(ComputerCallOutput))]
     [ModelReaderWriterBuildable(typeof(InternalUnknownComputerToolCallOutputItemOutput))]
     [ModelReaderWriterBuildable(typeof(InternalComputerToolCallOutputItemOutputComputerScreenshot))]
     [ModelReaderWriterBuildable(typeof(InternalWebSearchToolCallItemParam))]

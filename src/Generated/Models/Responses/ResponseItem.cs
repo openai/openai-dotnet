@@ -13,10 +13,9 @@ namespace OpenAI.Responses
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected ResponseItem(InternalItemType kind, string id)
+        private protected ResponseItem(InternalItemType kind)
         {
             Kind = kind;
-            Id = id;
         }
 
         internal ResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties)
