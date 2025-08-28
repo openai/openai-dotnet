@@ -116,6 +116,74 @@ public partial class AssistantClient
     public virtual ClientResult CreateRun(string threadId, BinaryContent content, RequestOptions options = null)
         => _runSubClient.CreateRun(threadId, content, options);
 
+    /// <summary>
+    /// [Protocol Method] Returns a paginated collection of runs belonging to a thread.
+    /// </summary>
+    /// <param name="threadId"> The ID of the thread the run belongs to. </param>
+    /// <param name="limit">
+    /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
+    /// default is 20.
+    /// </param>
+    /// <param name="order">
+    /// Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
+    /// for descending order. Allowed values: "asc" | "desc"
+    /// </param>
+    /// <param name="after">
+    /// A cursor for use in pagination. `after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+    /// subsequent call can include after=obj_foo in order to fetch the next page of the list.
+    /// </param>
+    /// <param name="before">
+    /// A cursor for use in pagination. `before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+    /// subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+    /// </param>
+    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="threadId"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="threadId"/> is an empty string, and was expected to be non-empty. </exception>
+    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
+    public virtual AsyncCollectionResult GetRunsAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+        => _runSubClient.GetRunsAsync(threadId, limit, order, after, before, options);
+
+    /// <summary>
+    /// [Protocol Method] Returns a paginated collection of runs belonging to a thread.
+    /// </summary>
+    /// <param name="threadId"> The ID of the thread the run belongs to. </param>
+    /// <param name="limit">
+    /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
+    /// default is 20.
+    /// </param>
+    /// <param name="order">
+    /// Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
+    /// for descending order. Allowed values: "asc" | "desc"
+    /// </param>
+    /// <param name="after">
+    /// A cursor for use in pagination. `after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+    /// subsequent call can include after=obj_foo in order to fetch the next page of the list.
+    /// </param>
+    /// <param name="before">
+    /// A cursor for use in pagination. `before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+    /// subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+    /// </param>
+    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="threadId"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="threadId"/> is an empty string, and was expected to be non-empty. </exception>
+    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
+    public virtual CollectionResult GetRuns(string threadId, int? limit, string order, string after, string before, RequestOptions options)
+        => _runSubClient.GetRuns(threadId, limit, order, after, before, options);
+
+    /// <inheritdoc cref="InternalAssistantRunClient.GetRunAsync(string, string, RequestOptions)"/>
+    public virtual Task<ClientResult> GetRunAsync(string threadId, string runId, RequestOptions options)
+        => _runSubClient.GetRunAsync(threadId, runId, options);
+
+    public virtual ClientResult GetRun(string threadId, string runId, RequestOptions options)
+        => _runSubClient.GetRun(threadId, runId, options);
+
+    /// <inheritdoc cref="InternalAssistantRunClient.GetRun(string, string, RequestOptions)"/>
     /// <inheritdoc cref="InternalAssistantRunClient.ModifyRunAsync"/>
     public virtual Task<ClientResult> ModifyRunAsync(string threadId, string runId, BinaryContent content, RequestOptions options = null)
         => _runSubClient.ModifyRunAsync(threadId, runId, content, options);
@@ -139,6 +207,96 @@ public partial class AssistantClient
     /// <inheritdoc cref="InternalAssistantRunClient.SubmitToolOutputsToRun"/>
     public virtual ClientResult SubmitToolOutputsToRun(string threadId, string runId, BinaryContent content, RequestOptions options = null)
         => _runSubClient.SubmitToolOutputsToRun(threadId, runId, content, options);
+
+    /// <summary>
+    /// [Protocol Method] Returns a paginated collection of run steps belonging to a run.
+    /// </summary>
+    /// <param name="threadId"> The ID of the thread the run and run steps belong to. </param>
+    /// <param name="runId"> The ID of the run the run steps belong to. </param>
+    /// <param name="limit">
+    /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
+    /// default is 20.
+    /// </param>
+    /// <param name="order">
+    /// Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
+    /// for descending order. Allowed values: "asc" | "desc"
+    /// </param>
+    /// <param name="after">
+    /// A cursor for use in pagination. `after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+    /// subsequent call can include after=obj_foo in order to fetch the next page of the list.
+    /// </param>
+    /// <param name="before">
+    /// A cursor for use in pagination. `before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+    /// subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+    /// </param>
+    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="threadId"/> or <paramref name="runId"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
+    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
+    public virtual AsyncCollectionResult GetRunStepsAsync(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
+        => _runSubClient.GetRunStepsAsync(threadId, runId, limit, order, after, before, [InternalIncludedRunStepProperty.FileSearchResultContent], options);
+
+    /// <summary>
+    /// [Protocol Method] Returns a paginated collection of run steps belonging to a run.
+    /// </summary>
+    /// <param name="threadId"> The ID of the thread the run and run steps belong to. </param>
+    /// <param name="runId"> The ID of the run the run steps belong to. </param>
+    /// <param name="limit">
+    /// A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
+    /// default is 20.
+    /// </param>
+    /// <param name="order">
+    /// Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
+    /// for descending order. Allowed values: "asc" | "desc"
+    /// </param>
+    /// <param name="after">
+    /// A cursor for use in pagination. `after` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+    /// subsequent call can include after=obj_foo in order to fetch the next page of the list.
+    /// </param>
+    /// <param name="before">
+    /// A cursor for use in pagination. `before` is an object ID that defines your place in the list.
+    /// For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
+    /// subsequent call can include before=obj_foo in order to fetch the previous page of the list.
+    /// </param>
+    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="threadId"/> or <paramref name="runId"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="threadId"/> or <paramref name="runId"/> is an empty string, and was expected to be non-empty. </exception>
+    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
+    /// <returns> A collection of service responses, each holding a page of values. </returns>
+    public virtual CollectionResult GetRunSteps(string threadId, string runId, int? limit, string order, string after, string before, RequestOptions options)
+        => _runSubClient.GetRunSteps(threadId, runId, limit, order, after, before, [InternalIncludedRunStepProperty.FileSearchResultContent], options);
+
+    /// <summary>
+    /// [Protocol Method] Retrieves a run step.
+    /// </summary>
+    /// <param name="threadId"> The ID of the thread to which the run and run step belongs. </param>
+    /// <param name="runId"> The ID of the run to which the run step belongs. </param>
+    /// <param name="stepId"> The ID of the run step to retrieve. </param>
+    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="threadId"/>, <paramref name="runId"/> or <paramref name="stepId"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="threadId"/>, <paramref name="runId"/> or <paramref name="stepId"/> is an empty string, and was expected to be non-empty. </exception>
+    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
+    /// <returns> The response returned from the service. </returns>
+    public virtual Task<ClientResult> GetRunStepAsync(string threadId, string runId, string stepId, RequestOptions options)
+        => _runSubClient.GetRunStepAsync(threadId, runId, stepId, [InternalIncludedRunStepProperty.FileSearchResultContent], options);
+
+    /// <summary>
+    /// [Protocol Method] Retrieves a run step.
+    /// </summary>
+    /// <param name="threadId"> The ID of the thread to which the run and run step belongs. </param>
+    /// <param name="runId"> The ID of the run to which the run step belongs. </param>
+    /// <param name="stepId"> The ID of the run step to retrieve. </param>
+    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="threadId"/>, <paramref name="runId"/> or <paramref name="stepId"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="threadId"/>, <paramref name="runId"/> or <paramref name="stepId"/> is an empty string, and was expected to be non-empty. </exception>
+    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
+    /// <returns> The response returned from the service. </returns>
+    public virtual ClientResult GetRunStep(string threadId, string runId, string stepId, RequestOptions options)
+        => _runSubClient.GetRunStep(threadId, runId, stepId, [InternalIncludedRunStepProperty.FileSearchResultContent], options);
 
     /// <inheritdoc cref="InternalAssistantThreadClient.CreateThreadAsync"/>
     public virtual Task<ClientResult> CreateThreadAsync(BinaryContent content, RequestOptions options = null)
