@@ -31,6 +31,12 @@ public partial class MessageFailureDetails { }
 [CodeGenType("MessageObjectIncompleteDetailsReason")]
 public readonly partial struct MessageFailureReason { }
 
+[CodeGenType("RunCollectionOptions")]
+public partial class RunCollectionOptions { }
+
+[CodeGenType("RunCollectionOrder")]
+public readonly partial struct RunCollectionOrder { }
+
 [CodeGenType("RunObjectLastError1")]
 public partial class RunError { }
 
@@ -39,6 +45,12 @@ public readonly partial struct RunErrorCode { }
 
 [CodeGenType("RunObjectIncompleteDetails1")]
 public partial class RunIncompleteDetails { }
+
+[CodeGenType("RunStepCollectionOptions")]
+public partial class RunStepCollectionOptions { }
+
+[CodeGenType("RunStepCollectionOrder")]
+public readonly partial struct RunStepCollectionOrder { }
 
 [CodeGenType("RunStepObjectStatus")]
 public readonly partial struct RunStepStatus { }

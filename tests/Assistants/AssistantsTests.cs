@@ -1462,7 +1462,13 @@ public class AssistantsTests : SyncAsyncTestBase
         ContinuationToken rehydrationToken = ContinuationToken.FromBytes(rehydrationTokenBytes);
 
         // This starts the collection on the second page.
-        AsyncCollectionResult<Assistant> rehydratedAssistants = client.GetAssistantsAsync(new AssistantCollectionOptions{PageSizeLimit=TestPageSizeLimit, Order = AssistantCollectionOrder.Descending, AfterId = rehydrationToken.ToBytes().ToString()});
+        AsyncCollectionResult<Assistant> rehydratedAssistants = client.GetAssistantsAsync(
+            new AssistantCollectionOptions
+            {
+                PageSizeLimit = TestPageSizeLimit,
+                Order = AssistantCollectionOrder.Descending,
+                AfterId = rehydrationToken.ToBytes().ToString()
+            });
 
         // We already got the first page, so account for that.
         int count = TestPageSizeLimit;
@@ -1530,12 +1536,13 @@ public class AssistantsTests : SyncAsyncTestBase
         ContinuationToken rehydrationToken = ContinuationToken.FromBytes(rehydrationTokenBytes);
 
         // This starts the collection on the second page.
-        CollectionResult<Assistant> rehydratedAssistants = client.GetAssistants(new AssistantCollectionOptions
-        {
-            AfterId = rehydrationToken.ToBytes().ToString(),
-            Order = AssistantCollectionOrder.Descending,
-            PageSizeLimit = TestPageSizeLimit
-        });
+        CollectionResult<Assistant> rehydratedAssistants = client.GetAssistants(
+            new AssistantCollectionOptions
+            {
+                AfterId = rehydrationToken.ToBytes().ToString(),
+                Order = AssistantCollectionOrder.Descending,
+                PageSizeLimit = TestPageSizeLimit
+            });
 
         // We already got the first page, so account for that.
         int count = TestPageSizeLimit;
@@ -1607,7 +1614,8 @@ public class AssistantsTests : SyncAsyncTestBase
         // Call the rehydration method, passing a typed OpenAIPageToken
         ClientResult firstPage = await assistants.GetRawPagesAsync().FirstAsync();
         ContinuationToken nextPageToken = assistants.GetContinuationToken(firstPage);
-        AsyncCollectionResult<Assistant> rehydratedAssistantCollection = client.GetAssistantsAsync(new AssistantCollectionOptions{
+        AsyncCollectionResult<Assistant> rehydratedAssistantCollection = client.GetAssistantsAsync(new AssistantCollectionOptions
+        {
             AfterId = nextPageToken.ToBytes().ToString(),
             PageSizeLimit = TestPageSizeLimit,
             Order = AssistantCollectionOrder.Descending
@@ -1802,7 +1810,15 @@ public class AssistantsTests : SyncAsyncTestBase
 
             // Simulate rehydration of the collection
             ContinuationToken rehydrationToken = results.GetContinuationToken(await results.GetRawPagesAsync().FirstOrDefaultAsync());
-            results = client.GetRunStepsAsync(rehydrationToken);
+            results = client.GetRunStepsAsync(
+                run.ThreadId,
+                run.Id,
+                new()
+                {
+                    AfterId = rehydrationToken.ToBytes().ToString(),
+                    PageSizeLimit = numPerPage
+                }
+            );
             rehydratedRunSteps = await results
                 .Select(r => r.Id)
                 .ToListAsync();
@@ -1812,7 +1828,7 @@ public class AssistantsTests : SyncAsyncTestBase
     }
 
     [Test]
-    public void Pagination_CanRehydrateRunStepPageCollectionFromBytes()
+    public async Task Pagination_CanRehydrateRunStepPageCollectionFromBytes()
     {
         AssertSyncOnly();
 
@@ -1877,7 +1893,16 @@ public class AssistantsTests : SyncAsyncTestBase
 
             // Simulate rehydration of the collection
             ContinuationToken rehydrationToken = results.GetContinuationToken(results.GetRawPages().FirstOrDefault());
-            rehydratedRunSteps = client.GetRunSteps(rehydrationToken)
+            rehydratedRunSteps = (await client.GetRunStepsAsync(
+                run.ThreadId,
+                run.Id,
+                new()
+                {
+                    AfterId = rehydrationToken.ToBytes().ToString(),
+                    PageSizeLimit = numPerPage
+                }
+            )
+                .ToListAsync())
                 .Select(r => r.Id)
                 .ToList();
         }

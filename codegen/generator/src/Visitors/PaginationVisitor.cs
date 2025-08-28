@@ -86,6 +86,22 @@ public class PaginationVisitor : ScmLibraryVisitor
             "GetMessagesAsync",
             ("ThreadMessage", "MessageCollectionOptions", _paginationParamsToReplace)
         },
+        {
+            "GetRuns",
+            ("ThreadRun", "RunCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetRunsAsync",
+            ("ThreadRun", "RunCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetRunSteps",
+            ("RunStep", "RunStepCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetRunStepsAsync",
+            ("RunStep", "RunStepCollectionOptions", _paginationParamsToReplace)
+        }
     };
 
     protected override MethodProvider? VisitMethod(MethodProvider method)

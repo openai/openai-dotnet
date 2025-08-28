@@ -1154,6 +1154,16 @@ namespace OpenAI
             return new MessageCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
         }
 
+        public static RunCollectionOptions RunCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, RunCollectionOrder? order = default)
+        {
+            return new RunCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+        }
+
+        public static RunStepCollectionOptions RunStepCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, RunStepCollectionOrder? order = default)
+        {
+            return new RunStepCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+        }
+
         public static AudioTranscription AudioTranscription(string language = default, string text = default, IEnumerable<TranscribedWord> words = default, IEnumerable<TranscribedSegment> segments = default, string task = default, TimeSpan? duration = default, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default)
         {
             words ??= new ChangeTrackingList<TranscribedWord>();
