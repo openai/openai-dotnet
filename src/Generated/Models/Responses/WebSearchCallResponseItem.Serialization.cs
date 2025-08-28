@@ -12,10 +12,6 @@ namespace OpenAI.Responses
 {
     public partial class WebSearchCallResponseItem : IJsonModel<WebSearchCallResponseItem>
     {
-        internal WebSearchCallResponseItem() : this(InternalItemType.WebSearchCall, null, null, default)
-        {
-        }
-
         void IJsonModel<WebSearchCallResponseItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -31,6 +27,7 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(WebSearchCallResponseItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
+            // Plugin customization: remove options.Format != "W" check
             // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
             if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
             {

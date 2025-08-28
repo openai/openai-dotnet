@@ -41,11 +41,6 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("filename"u8);
                 writer.WriteStringValue(Filename);
             }
-            if (Optional.IsDefined(Score) && _additionalBinaryDataProperties?.ContainsKey("score") != true)
-            {
-                writer.WritePropertyName("score"u8);
-                writer.WriteNumberValue(Score.Value);
-            }
             if (Optional.IsCollectionDefined(Attributes) && _additionalBinaryDataProperties?.ContainsKey("attributes") != true)
             {
                 writer.WritePropertyName("attributes"u8);
@@ -68,6 +63,11 @@ namespace OpenAI.Responses
 #endif
                 }
                 writer.WriteEndObject();
+            }
+            if (Optional.IsDefined(Score) && _additionalBinaryDataProperties?.ContainsKey("score") != true)
+            {
+                writer.WritePropertyName("score"u8);
+                writer.WriteNumberValue(Score.Value);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -113,8 +113,8 @@ namespace OpenAI.Responses
             string fileId = default;
             string text = default;
             string filename = default;
+            IDictionary<string, BinaryData> attributes = default;
             float? score = default;
-            IReadOnlyDictionary<string, BinaryData> attributes = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -131,15 +131,6 @@ namespace OpenAI.Responses
                 if (prop.NameEquals("filename"u8))
                 {
                     filename = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("score"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    score = prop.Value.GetSingle();
                     continue;
                 }
                 if (prop.NameEquals("attributes"u8))
@@ -163,6 +154,15 @@ namespace OpenAI.Responses
                     attributes = dictionary;
                     continue;
                 }
+                if (prop.NameEquals("score"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    score = prop.Value.GetSingle();
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
@@ -170,8 +170,8 @@ namespace OpenAI.Responses
                 fileId,
                 text,
                 filename,
-                score,
                 attributes ?? new ChangeTrackingDictionary<string, BinaryData>(),
+                score,
                 additionalBinaryDataProperties);
         }
 

@@ -10,7 +10,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalComputerUsePreviewToolCallOutputItemParam : InternalItemParam
     {
-        public InternalComputerUsePreviewToolCallOutputItemParam(string callId, ComputerOutput output) : base(InternalItemType.ComputerCallOutput)
+        public InternalComputerUsePreviewToolCallOutputItemParam(string callId, ComputerCallOutput output) : base(InternalItemType.ComputerCallOutput)
         {
             Argument.AssertNotNull(callId, nameof(callId));
             Argument.AssertNotNull(output, nameof(output));
@@ -20,7 +20,7 @@ namespace OpenAI.Responses
             Output = output;
         }
 
-        internal InternalComputerUsePreviewToolCallOutputItemParam(InternalItemType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, ComputerOutput output) : base(kind, additionalBinaryDataProperties)
+        internal InternalComputerUsePreviewToolCallOutputItemParam(InternalItemType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, ComputerCallOutput output) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             CallId = callId;
@@ -32,6 +32,6 @@ namespace OpenAI.Responses
 
         public IList<ComputerCallSafetyCheck> AcknowledgedSafetyChecks { get; }
 
-        public ComputerOutput Output { get; }
+        public ComputerCallOutput Output { get; }
     }
 }
