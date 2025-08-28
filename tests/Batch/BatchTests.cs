@@ -5,7 +5,9 @@ using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using static OpenAI.Tests.TestHelpers;
@@ -19,6 +21,7 @@ namespace OpenAI.Tests.Batch;
 public class BatchTests : SyncAsyncTestBase
 {
     private static BatchClient GetTestClient() => GetTestClient<BatchClient>(TestScenario.Batch);
+    private static readonly DateTimeOffset s_2024 = new(2024, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
     public BatchTests(bool isAsync) : base(isAsync)
     {
@@ -86,6 +89,69 @@ public class BatchTests : SyncAsyncTestBase
         }
 
         Assert.GreaterOrEqual(pageCount, 1);
+    }
+
+    [Test]
+    public async Task ListBatchesAsync_WithOptions_PageSizeLimitAndItems()
+    {
+        BatchClient client = GetTestClient();
+
+        BatchCollectionOptions options = new()
+        {
+            PageSizeLimit = 2,
+        };
+
+        int itemCount = await ValidateSomeJobsAsync(client, options, maxItems: 3);
+        Assert.That(itemCount, Is.GreaterThan(0));
+
+        int pageCount = await ValidatePageSizesAsync(client, options, maxPages: 2, maxPageSize: 2);
+        Assert.That(pageCount, Is.GreaterThan(0));
+    }
+
+    [Test]
+    public async Task ListBatchesAsync_WithOptions_AfterIdStartsFromNextPage()
+    {
+        BatchClient client = GetTestClient();
+
+        // First fetch: get the first page and capture ids + last_id
+        BatchCollectionOptions firstOptions = new()
+        {
+            PageSizeLimit = 2,
+        };
+        (string afterId, HashSet<string> firstPageIds) = await GetFirstPageCursorAndIdsAsync(client, firstOptions);
+        Assert.That(afterId, Is.Not.Null.And.Not.Empty);
+        Assert.That(firstPageIds.Count, Is.GreaterThan(0));
+
+        // Second fetch: start after the last id from the first page
+        BatchCollectionOptions secondOptions = new()
+        {
+            AfterId = afterId,
+            PageSizeLimit = 2,
+        };
+        await AssertNoOverlapWithFirstPageAsync(client, secondOptions, firstPageIds);
+    }
+
+    [Test]
+    public void ListBatchesAsync_HonorsCancellationToken()
+    {
+        BatchClient client = GetTestClient();
+        var cts = new System.Threading.CancellationTokenSource();
+        cts.Cancel();
+
+        BatchCollectionOptions options = new() { PageSizeLimit = 1 };
+        
+        if (IsAsync)
+        {
+            var collection = client.GetBatchesAsync(options, cts.Token);
+            var enumerator = collection.GetRawPagesAsync().GetAsyncEnumerator();
+            Assert.ThrowsAsync<TaskCanceledException>(async () => await enumerator.MoveNextAsync().AsTask());
+        }
+        else
+        {
+            var collection = client.GetBatches(options, cts.Token);
+            using var enumerator = collection.GetRawPages().GetEnumerator();
+            Assert.Throws<OperationCanceledException>(() => enumerator.MoveNext());
+        }
     }
 
     [Test]
@@ -241,5 +307,132 @@ public class BatchTests : SyncAsyncTestBase
         Assert.AreEqual(originalOperationJson.RootElement.GetProperty("id").GetString(), rehydratedOperationJson.RootElement.GetProperty("id").GetString());
         Assert.AreEqual(originalOperationJson.RootElement.GetProperty("created_at").GetInt64(), rehydratedOperationJson.RootElement.GetProperty("created_at").GetInt64());
         Assert.AreEqual(originalOperationJson.RootElement.GetProperty("status").GetString(), rehydratedOperationJson.RootElement.GetProperty("status").GetString());
+    }
+
+    // Helper methods to minimize duplication between sync/async test paths
+    private async Task<int> ValidateSomeJobsAsync(BatchClient client, BatchCollectionOptions options, int maxItems)
+    {
+        int itemCount = 0;
+        if (IsAsync)
+        {
+            AsyncCollectionResult<BatchJob> collection = client.GetBatchesAsync(options);
+            await foreach (BatchJob job in collection)
+            {
+                AssertBasicJobFields(job);
+                itemCount++;
+                if (itemCount >= maxItems) break;
+            }
+        }
+        else
+        {
+            CollectionResult<BatchJob> collection = client.GetBatches(options);
+            foreach (BatchJob job in collection)
+            {
+                AssertBasicJobFields(job);
+                itemCount++;
+                if (itemCount >= maxItems) break;
+            }
+        }
+        return itemCount;
+    }
+
+    private async Task<int> ValidatePageSizesAsync(BatchClient client, BatchCollectionOptions options, int maxPages, int maxPageSize)
+    {
+        int pageCount = 0;
+        if (IsAsync)
+        {
+            AsyncCollectionResult<BatchJob> collection = client.GetBatchesAsync(options);
+            await foreach (ClientResult page in collection.GetRawPagesAsync())
+            {
+                using JsonDocument doc = JsonDocument.Parse(page.GetRawResponse().Content);
+                JsonElement data = doc.RootElement.GetProperty("data");
+                Assert.That(data.GetArrayLength(), Is.LessThanOrEqualTo(maxPageSize));
+                pageCount++;
+                if (pageCount >= maxPages) break;
+            }
+        }
+        else
+        {
+            CollectionResult<BatchJob> collection = client.GetBatches(options);
+            foreach (ClientResult page in collection.GetRawPages())
+            {
+                using JsonDocument doc = JsonDocument.Parse(page.GetRawResponse().Content);
+                JsonElement data = doc.RootElement.GetProperty("data");
+                Assert.That(data.GetArrayLength(), Is.LessThanOrEqualTo(maxPageSize));
+                pageCount++;
+                if (pageCount >= maxPages) break;
+            }
+        }
+        return pageCount;
+    }
+
+    private async Task<(string afterId, HashSet<string> firstPageIds)> GetFirstPageCursorAndIdsAsync(BatchClient client, BatchCollectionOptions options)
+    {
+        ClientResult firstPageResult = null;
+        if (IsAsync)
+        {
+            AsyncCollectionResult<BatchJob> firstCollection = client.GetBatchesAsync(options);
+            await foreach (ClientResult page in firstCollection.GetRawPagesAsync())
+            {
+                firstPageResult = page;
+                break;
+            }
+        }
+        else
+        {
+            CollectionResult<BatchJob> firstCollection = client.GetBatches(options);
+            foreach (ClientResult page in firstCollection.GetRawPages())
+            {
+                firstPageResult = page;
+                break;
+            }
+        }
+        Assert.That(firstPageResult, Is.Not.Null);
+
+        using JsonDocument firstDoc = JsonDocument.Parse(firstPageResult.GetRawResponse().Content);
+        JsonElement firstRoot = firstDoc.RootElement;
+        JsonElement firstData = firstRoot.GetProperty("data");
+        string afterId = firstRoot.TryGetProperty("last_id", out var lastIdProp) ? lastIdProp.GetString() : null;
+        var firstPageIds = firstData.EnumerateArray().Select(e => e.GetProperty("id").GetString()).ToHashSet();
+        
+        return (afterId, firstPageIds);
+    }
+
+    private async Task AssertNoOverlapWithFirstPageAsync(BatchClient client, BatchCollectionOptions options, HashSet<string> firstPageIds)
+    {
+        ClientResult secondPageResult = null;
+        if (IsAsync)
+        {
+            AsyncCollectionResult<BatchJob> secondCollection = client.GetBatchesAsync(options);
+            await foreach (ClientResult page in secondCollection.GetRawPagesAsync())
+            {
+                secondPageResult = page;
+                break;
+            }
+        }
+        else
+        {
+            CollectionResult<BatchJob> secondCollection = client.GetBatches(options);
+            foreach (ClientResult page in secondCollection.GetRawPages())
+            {
+                secondPageResult = page;
+                break;
+            }
+        }
+        Assert.That(secondPageResult, Is.Not.Null);
+        
+        using JsonDocument secondDoc = JsonDocument.Parse(secondPageResult.GetRawResponse().Content);
+        JsonElement secondData = secondDoc.RootElement.GetProperty("data");
+        foreach (var item in secondData.EnumerateArray())
+        {
+            string id = item.GetProperty("id").GetString();
+            Assert.That(firstPageIds.Contains(id), Is.False, "Items after the provided cursor should not repeat the first page items.");
+        }
+    }
+
+    private static void AssertBasicJobFields(BatchJob job)
+    {
+        Assert.That(job.Id, Is.Not.Null.And.Not.Empty);
+        Assert.That(job.CreatedAt, Is.GreaterThan(s_2024));
     }
 }
