@@ -1318,7 +1318,7 @@ namespace OpenAI.Chat {
         public virtual ClientResult<ChatCompletion> GetChatCompletion(string completionId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GetChatCompletionAsync(string completionId, RequestOptions options);
         public virtual Task<ClientResult<ChatCompletion>> GetChatCompletionAsync(string completionId, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<ChatCompletionMessageListDatum> GetChatCompletionMessages(string completionId, ChatCompletionCollectionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult<ChatCompletionMessageListDatum> GetChatCompletionMessages(string completionId, ChatCompletionMessageCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual CollectionResult GetChatCompletionMessages(string completionId, string after, int? limit, string order, RequestOptions options);
         public virtual AsyncCollectionResult<ChatCompletionMessageListDatum> GetChatCompletionMessagesAsync(string completionId, ChatCompletionMessageCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult GetChatCompletionMessagesAsync(string completionId, string after, int? limit, string order, RequestOptions options);
@@ -5177,7 +5177,7 @@ namespace OpenAI.VectorStores {
         public string AfterId { get; set; }
         public string BeforeId { get; set; }
         public VectorStoreFileStatusFilter? Filter { get; set; }
-        public VectorStoreCollectionOrder? Order { get; set; }
+        public VectorStoreFileAssociationOrder? Order { get; set; }
         public int? PageSizeLimit { get; set; }
         protected virtual VectorStoreFileAssociationCollectionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -5206,6 +5206,21 @@ namespace OpenAI.VectorStores {
         public static implicit operator VectorStoreFileAssociationErrorCode(string value);
         public static implicit operator VectorStoreFileAssociationErrorCode?(string value);
         public static bool operator !=(VectorStoreFileAssociationErrorCode left, VectorStoreFileAssociationErrorCode right);
+        public override readonly string ToString();
+    }
+    public readonly partial struct VectorStoreFileAssociationOrder : IEquatable<VectorStoreFileAssociationOrder> {
+        public VectorStoreFileAssociationOrder(string value);
+        public static VectorStoreFileAssociationOrder Ascending { get; }
+        public static VectorStoreFileAssociationOrder Descending { get; }
+        public readonly bool Equals(VectorStoreFileAssociationOrder other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(VectorStoreFileAssociationOrder left, VectorStoreFileAssociationOrder right);
+        public static implicit operator VectorStoreFileAssociationOrder(string value);
+        public static implicit operator VectorStoreFileAssociationOrder?(string value);
+        public static bool operator !=(VectorStoreFileAssociationOrder left, VectorStoreFileAssociationOrder right);
         public override readonly string ToString();
     }
     public enum VectorStoreFileAssociationStatus {

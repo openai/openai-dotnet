@@ -516,12 +516,12 @@ public class VectorStoresTests : SyncAsyncTestBase
         // Test Order property - Ascending vs Descending
         var ascendingOptions = new VectorStoreFileAssociationCollectionOptions 
         { 
-            Order = VectorStoreCollectionOrder.Ascending,
+            Order = VectorStoreFileAssociationOrder.Ascending,
             PageSizeLimit = 5 
         };
         var descendingOptions = new VectorStoreFileAssociationCollectionOptions 
         { 
-            Order = VectorStoreCollectionOrder.Descending,
+            Order = VectorStoreFileAssociationOrder.Descending,
             PageSizeLimit = 5 
         };
 
@@ -564,7 +564,7 @@ public class VectorStoresTests : SyncAsyncTestBase
             var afterOptions = new VectorStoreFileAssociationCollectionOptions 
             { 
                 AfterId = firstAssociation,
-                Order = VectorStoreCollectionOrder.Ascending 
+                Order = VectorStoreFileAssociationOrder.Ascending 
             };
 
             List<string> afterIds = new List<string>();
@@ -586,7 +586,7 @@ public class VectorStoresTests : SyncAsyncTestBase
             var beforeOptions = new VectorStoreFileAssociationCollectionOptions 
             { 
                 BeforeId = lastAssociation,
-                Order = VectorStoreCollectionOrder.Ascending 
+                Order = VectorStoreFileAssociationOrder.Ascending 
             };
 
             List<string> beforeIds = new List<string>();

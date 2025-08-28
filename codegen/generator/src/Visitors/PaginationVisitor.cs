@@ -41,7 +41,7 @@ public class PaginationVisitor : ScmLibraryVisitor
         },
         {
             "GetChatCompletionMessages",
-            ("ChatCompletionMessageListDatum", "ChatCompletionCollectionOptions", _paginationParamsToReplace)
+            ("ChatCompletionMessageListDatum", "ChatCompletionMessageCollectionOptions", _paginationParamsToReplace)
         },
         {
             "GetChatCompletionMessagesAsync",
