@@ -10,18 +10,18 @@ namespace OpenAI.Chat
 {
     public partial class AssistantChatMessage : ChatMessage
     {
-        internal AssistantChatMessage() : this(null, ChatMessageRole.Assistant, null, null, null, null, null, null)
+        internal AssistantChatMessage() : this(ChatMessageRole.Assistant, null, null, null, null, null, null, null)
         {
         }
 
-        internal AssistantChatMessage(ChatMessageContent content, ChatMessageRole role, IDictionary<string, BinaryData> additionalBinaryDataProperties, string refusal, string participantName, IList<ChatToolCall> toolCalls, ChatFunctionCall functionCall, ChatOutputAudioReference outputAudioReference) : base(content, role, additionalBinaryDataProperties)
+        internal AssistantChatMessage(ChatMessageRole role, ChatMessageContent content, IDictionary<string, BinaryData> additionalBinaryDataProperties, string refusal, string participantName, ChatOutputAudioReference outputAudioReference, IList<ChatToolCall> toolCalls, ChatFunctionCall functionCall) : base(role, content, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Refusal = refusal;
             ParticipantName = participantName;
+            OutputAudioReference = outputAudioReference;
             ToolCalls = toolCalls ?? new ChangeTrackingList<ChatToolCall>();
             FunctionCall = functionCall;
-            OutputAudioReference = outputAudioReference;
         }
 
         public string Refusal { get; set; }

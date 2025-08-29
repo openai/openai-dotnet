@@ -35,25 +35,25 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("input_tokens"u8);
                 writer.WriteNumberValue(InputTokenCount);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("output_tokens") != true)
-            {
-                writer.WritePropertyName("output_tokens"u8);
-                writer.WriteNumberValue(OutputTokenCount);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("total_tokens") != true)
-            {
-                writer.WritePropertyName("total_tokens"u8);
-                writer.WriteNumberValue(TotalTokenCount);
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("input_tokens_details") != true)
             {
                 writer.WritePropertyName("input_tokens_details"u8);
                 writer.WriteObjectValue(InputTokenDetails, options);
             }
+            if (_additionalBinaryDataProperties?.ContainsKey("output_tokens") != true)
+            {
+                writer.WritePropertyName("output_tokens"u8);
+                writer.WriteNumberValue(OutputTokenCount);
+            }
             if (_additionalBinaryDataProperties?.ContainsKey("output_tokens_details") != true)
             {
                 writer.WritePropertyName("output_tokens_details"u8);
                 writer.WriteObjectValue(OutputTokenDetails, options);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("total_tokens") != true)
+            {
+                writer.WritePropertyName("total_tokens"u8);
+                writer.WriteNumberValue(TotalTokenCount);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -97,10 +97,10 @@ namespace OpenAI.Responses
                 return null;
             }
             int inputTokenCount = default;
-            int outputTokenCount = default;
-            int totalTokenCount = default;
             ResponseInputTokenUsageDetails inputTokenDetails = default;
+            int outputTokenCount = default;
             ResponseOutputTokenUsageDetails outputTokenDetails = default;
+            int totalTokenCount = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -109,19 +109,14 @@ namespace OpenAI.Responses
                     inputTokenCount = prop.Value.GetInt32();
                     continue;
                 }
-                if (prop.NameEquals("output_tokens"u8))
-                {
-                    outputTokenCount = prop.Value.GetInt32();
-                    continue;
-                }
-                if (prop.NameEquals("total_tokens"u8))
-                {
-                    totalTokenCount = prop.Value.GetInt32();
-                    continue;
-                }
                 if (prop.NameEquals("input_tokens_details"u8))
                 {
                     inputTokenDetails = ResponseInputTokenUsageDetails.DeserializeResponseInputTokenUsageDetails(prop.Value, options);
+                    continue;
+                }
+                if (prop.NameEquals("output_tokens"u8))
+                {
+                    outputTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("output_tokens_details"u8))
@@ -129,15 +124,20 @@ namespace OpenAI.Responses
                     outputTokenDetails = ResponseOutputTokenUsageDetails.DeserializeResponseOutputTokenUsageDetails(prop.Value, options);
                     continue;
                 }
+                if (prop.NameEquals("total_tokens"u8))
+                {
+                    totalTokenCount = prop.Value.GetInt32();
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ResponseTokenUsage(
                 inputTokenCount,
-                outputTokenCount,
-                totalTokenCount,
                 inputTokenDetails,
+                outputTokenCount,
                 outputTokenDetails,
+                totalTokenCount,
                 additionalBinaryDataProperties);
         }
 

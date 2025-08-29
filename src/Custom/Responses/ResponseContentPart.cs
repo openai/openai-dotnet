@@ -94,7 +94,7 @@ public partial class ResponseContentPart
 
     public static ResponseContentPart CreateOutputTextPart(string text, IEnumerable<ResponseMessageAnnotation> annotations)
     {
-        return new InternalItemContentOutputText(annotations, text);
+        return new InternalItemContentOutputText(text, annotations);
     }
 
     public static ResponseContentPart CreateRefusalPart(string refusal)

@@ -15,27 +15,27 @@ namespace OpenAI.Realtime
         internal InternalRealtimeResponse(IDictionary<string, string> metadata)
         {
             // Plugin customization: ensure initialization of collections
-            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Output = new ChangeTrackingList<RealtimeItem>();
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Modalities = new ChangeTrackingList<InternalRealtimeResponseModality>();
         }
 
-        internal InternalRealtimeResponse(string id, string @object, ConversationStatus? status, ConversationStatusDetails statusDetails, IDictionary<string, string> metadata, ConversationTokenUsage usage, string conversationId, float? temperature, BinaryData maxOutputTokens, IReadOnlyList<RealtimeItem> output, IReadOnlyList<InternalRealtimeResponseModality> modalities, ConversationVoice? voice, RealtimeAudioFormat? outputAudioFormat, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalRealtimeResponse(string id, string @object, ConversationStatus? status, ConversationStatusDetails statusDetails, IReadOnlyList<RealtimeItem> output, IDictionary<string, string> metadata, ConversationTokenUsage usage, string conversationId, ConversationVoice? voice, IReadOnlyList<InternalRealtimeResponseModality> modalities, RealtimeAudioFormat? outputAudioFormat, float? temperature, BinaryData maxOutputTokens, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
             Object = @object;
             Status = status;
             StatusDetails = statusDetails;
+            Output = output ?? new ChangeTrackingList<RealtimeItem>();
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Usage = usage;
             ConversationId = conversationId;
+            Voice = voice;
+            Modalities = modalities ?? new ChangeTrackingList<InternalRealtimeResponseModality>();
+            OutputAudioFormat = outputAudioFormat;
             Temperature = temperature;
             MaxOutputTokens = maxOutputTokens;
-            Output = output ?? new ChangeTrackingList<RealtimeItem>();
-            Modalities = modalities ?? new ChangeTrackingList<InternalRealtimeResponseModality>();
-            Voice = voice;
-            OutputAudioFormat = outputAudioFormat;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

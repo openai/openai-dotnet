@@ -65,7 +65,7 @@ public partial class ResponseItem
         return new InternalResponsesAssistantMessage(
             internalContent:
             [
-                new InternalItemContentOutputText(annotations ?? [], outputTextContent),
+                new InternalItemContentOutputText(outputTextContent, annotations ?? []),
             ]);
     }
 

@@ -33,11 +33,6 @@ namespace OpenAI.Files
             {
                 throw new FormatException($"The model {nameof(FileDeletionResult)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("deleted") != true)
-            {
-                writer.WritePropertyName("deleted"u8);
-                writer.WriteBooleanValue(Deleted);
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
                 writer.WritePropertyName("id"u8);
@@ -47,6 +42,11 @@ namespace OpenAI.Files
             {
                 writer.WritePropertyName("object"u8);
                 writer.WriteStringValue(Object);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("deleted") != true)
+            {
+                writer.WritePropertyName("deleted"u8);
+                writer.WriteBooleanValue(Deleted);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -90,17 +90,12 @@ namespace OpenAI.Files
             {
                 return null;
             }
-            bool deleted = default;
             string fileId = default;
             string @object = default;
+            bool deleted = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("deleted"u8))
-                {
-                    deleted = prop.Value.GetBoolean();
-                    continue;
-                }
                 if (prop.NameEquals("id"u8))
                 {
                     fileId = prop.Value.GetString();
@@ -111,10 +106,15 @@ namespace OpenAI.Files
                     @object = prop.Value.GetString();
                     continue;
                 }
+                if (prop.NameEquals("deleted"u8))
+                {
+                    deleted = prop.Value.GetBoolean();
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new FileDeletionResult(deleted, fileId, @object, additionalBinaryDataProperties);
+            return new FileDeletionResult(fileId, @object, deleted, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<FileDeletionResult>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

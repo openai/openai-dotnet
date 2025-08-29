@@ -16,7 +16,7 @@ public partial class VectorStoreExpirationPolicy
     public VectorStoreExpirationAnchor Anchor { get; set; } = VectorStoreExpirationAnchor.LastActiveAt;
 
     public VectorStoreExpirationPolicy(VectorStoreExpirationAnchor anchor, int days)
-        : this(days, anchor, null)
+        : this(days: days, anchor: anchor, additionalBinaryDataProperties: null)
     {
     }
 }

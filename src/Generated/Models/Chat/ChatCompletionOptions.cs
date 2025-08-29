@@ -13,40 +13,40 @@ namespace OpenAI.Chat
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ChatCompletionOptions(float? temperature, float? topP, ChatServiceTier? serviceTier, float? frequencyPenalty, float? presencePenalty, ChatWebSearchOptions webSearchOptions, long? seed, IList<ChatTool> tools, IList<ChatMessage> messages, string model, int? n, bool? stream, InternalChatCompletionStreamOptions streamOptions, bool? includeLogProbabilities, int? topLogProbabilityCount, IList<string> stopSequences, IDictionary<int, int> logitBiases, ChatToolChoice toolChoice, ChatFunctionChoice functionChoice, bool? allowParallelToolCalls, string endUserId, int? deprecatedMaxTokens, int? maxOutputTokenCount, IList<ChatFunction> functions, IDictionary<string, string> metadata, bool? storedOutputEnabled, ChatReasoningEffortLevel? reasoningEffortLevel, IList<InternalCreateChatCompletionRequestModality> internalModalities, ChatResponseFormat responseFormat, ChatAudioOptions audioOptions, ChatOutputPrediction outputPrediction, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ChatCompletionOptions(IDictionary<string, string> metadata, float? temperature, float? topP, string endUserId, ChatServiceTier? serviceTier, IList<ChatMessage> messages, string model, IList<InternalCreateChatCompletionRequestModality> internalModalities, ChatReasoningEffortLevel? reasoningEffortLevel, int? maxOutputTokenCount, float? frequencyPenalty, float? presencePenalty, ChatWebSearchOptions webSearchOptions, int? topLogProbabilityCount, ChatResponseFormat responseFormat, ChatAudioOptions audioOptions, bool? storedOutputEnabled, bool? stream, IList<string> stopSequences, IDictionary<int, int> logitBiases, bool? includeLogProbabilities, int? deprecatedMaxTokens, int? n, ChatOutputPrediction outputPrediction, long? seed, InternalChatCompletionStreamOptions streamOptions, IList<ChatTool> tools, ChatToolChoice toolChoice, bool? allowParallelToolCalls, ChatFunctionChoice functionChoice, IList<ChatFunction> functions, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Temperature = temperature;
             TopP = topP;
+            EndUserId = endUserId;
             ServiceTier = serviceTier;
+            Messages = messages ?? new ChangeTrackingList<ChatMessage>();
+            Model = model;
+            InternalModalities = internalModalities ?? new ChangeTrackingList<InternalCreateChatCompletionRequestModality>();
+            ReasoningEffortLevel = reasoningEffortLevel;
+            MaxOutputTokenCount = maxOutputTokenCount;
             FrequencyPenalty = frequencyPenalty;
             PresencePenalty = presencePenalty;
             WebSearchOptions = webSearchOptions;
-            Seed = seed;
-            Tools = tools ?? new ChangeTrackingList<ChatTool>();
-            Messages = messages ?? new ChangeTrackingList<ChatMessage>();
-            Model = model;
-            N = n;
-            Stream = stream;
-            StreamOptions = streamOptions;
-            IncludeLogProbabilities = includeLogProbabilities;
             TopLogProbabilityCount = topLogProbabilityCount;
-            StopSequences = stopSequences ?? new ChangeTrackingList<string>();
-            LogitBiases = logitBiases ?? new ChangeTrackingDictionary<int, int>();
-            ToolChoice = toolChoice;
-            FunctionChoice = functionChoice;
-            AllowParallelToolCalls = allowParallelToolCalls;
-            EndUserId = endUserId;
-            _deprecatedMaxTokens = deprecatedMaxTokens;
-            MaxOutputTokenCount = maxOutputTokenCount;
-            Functions = functions ?? new ChangeTrackingList<ChatFunction>();
-            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
-            StoredOutputEnabled = storedOutputEnabled;
-            ReasoningEffortLevel = reasoningEffortLevel;
-            InternalModalities = internalModalities ?? new ChangeTrackingList<InternalCreateChatCompletionRequestModality>();
             ResponseFormat = responseFormat;
             AudioOptions = audioOptions;
+            StoredOutputEnabled = storedOutputEnabled;
+            Stream = stream;
+            StopSequences = stopSequences ?? new ChangeTrackingList<string>();
+            LogitBiases = logitBiases ?? new ChangeTrackingDictionary<int, int>();
+            IncludeLogProbabilities = includeLogProbabilities;
+            _deprecatedMaxTokens = deprecatedMaxTokens;
+            N = n;
             OutputPrediction = outputPrediction;
+            Seed = seed;
+            StreamOptions = streamOptions;
+            Tools = tools ?? new ChangeTrackingList<ChatTool>();
+            ToolChoice = toolChoice;
+            AllowParallelToolCalls = allowParallelToolCalls;
+            FunctionChoice = functionChoice;
+            Functions = functions ?? new ChangeTrackingList<ChatFunction>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

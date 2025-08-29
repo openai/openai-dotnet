@@ -14,24 +14,24 @@ namespace OpenAI.Chat
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal StreamingChatCompletionUpdate(string model, string completionId, IEnumerable<InternalCreateChatCompletionStreamResponseChoice> choices, DateTimeOffset createdAt)
+        internal StreamingChatCompletionUpdate(string completionId, IEnumerable<InternalCreateChatCompletionStreamResponseChoice> choices, DateTimeOffset createdAt, string model)
         {
-            Model = model;
             CompletionId = completionId;
             Choices = choices.ToList();
             CreatedAt = createdAt;
+            Model = model;
         }
 
-        internal StreamingChatCompletionUpdate(string model, ChatServiceTier? serviceTier, string systemFingerprint, string @object, string completionId, IReadOnlyList<InternalCreateChatCompletionStreamResponseChoice> choices, DateTimeOffset createdAt, ChatTokenUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal StreamingChatCompletionUpdate(string completionId, IReadOnlyList<InternalCreateChatCompletionStreamResponseChoice> choices, DateTimeOffset createdAt, string model, ChatServiceTier? serviceTier, string systemFingerprint, string @object, ChatTokenUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
+            CompletionId = completionId;
+            Choices = choices ?? new ChangeTrackingList<InternalCreateChatCompletionStreamResponseChoice>();
+            CreatedAt = createdAt;
             Model = model;
             ServiceTier = serviceTier;
             SystemFingerprint = systemFingerprint;
             Object = @object;
-            CompletionId = completionId;
-            Choices = choices ?? new ChangeTrackingList<InternalCreateChatCompletionStreamResponseChoice>();
-            CreatedAt = createdAt;
             Usage = usage;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }

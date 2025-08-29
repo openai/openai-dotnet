@@ -31,11 +31,6 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
             }
-            if (Optional.IsDefined(ExpiresAt) && _additionalBinaryDataProperties?.ContainsKey("expires_at") != true)
-            {
-                writer.WritePropertyName("expires_at"u8);
-                writer.WriteNumberValue(ExpiresAt.Value, "U");
-            }
             if (Optional.IsDefined(TranscriptUpdate) && _additionalBinaryDataProperties?.ContainsKey("transcript") != true)
             {
                 writer.WritePropertyName("transcript"u8);
@@ -45,6 +40,11 @@ namespace OpenAI.Chat
             {
                 writer.WritePropertyName("data"u8);
                 writer.WriteBase64StringValue(AudioBytesUpdate.ToArray(), "D");
+            }
+            if (Optional.IsDefined(ExpiresAt) && _additionalBinaryDataProperties?.ContainsKey("expires_at") != true)
+            {
+                writer.WritePropertyName("expires_at"u8);
+                writer.WriteNumberValue(ExpiresAt.Value, "U");
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -88,24 +88,15 @@ namespace OpenAI.Chat
                 return null;
             }
             string id = default;
-            DateTimeOffset? expiresAt = default;
             string transcriptUpdate = default;
             BinaryData audioBytesUpdate = default;
+            DateTimeOffset? expiresAt = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("id"u8))
                 {
                     id = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("expires_at"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    expiresAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("transcript"u8))
@@ -122,10 +113,19 @@ namespace OpenAI.Chat
                     audioBytesUpdate = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
                     continue;
                 }
+                if (prop.NameEquals("expires_at"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    expiresAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new StreamingChatOutputAudioUpdate(id, expiresAt, transcriptUpdate, audioBytesUpdate, additionalBinaryDataProperties);
+            return new StreamingChatOutputAudioUpdate(id, transcriptUpdate, audioBytesUpdate, expiresAt, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<StreamingChatOutputAudioUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

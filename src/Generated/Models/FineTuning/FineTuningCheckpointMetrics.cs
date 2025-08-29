@@ -17,15 +17,15 @@ namespace OpenAI.FineTuning
         {
         }
 
-        internal FineTuningCheckpointMetrics(float? trainLoss, float? trainMeanTokenAccuracy, float? validLoss, float? validMeanTokenAccuracy, float? fullValidLoss, float? fullValidMeanTokenAccuracy, int stepNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal FineTuningCheckpointMetrics(int stepNumber, float? trainLoss, float? trainMeanTokenAccuracy, float? validLoss, float? validMeanTokenAccuracy, float? fullValidLoss, float? fullValidMeanTokenAccuracy, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            StepNumber = stepNumber;
             TrainLoss = trainLoss;
             TrainMeanTokenAccuracy = trainMeanTokenAccuracy;
             ValidLoss = validLoss;
             ValidMeanTokenAccuracy = validMeanTokenAccuracy;
             FullValidLoss = fullValidLoss;
             FullValidMeanTokenAccuracy = fullValidMeanTokenAccuracy;
-            StepNumber = stepNumber;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

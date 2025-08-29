@@ -21,12 +21,12 @@ namespace OpenAI.Responses
             Results = new ChangeTrackingList<FileSearchCallResult>();
         }
 
-        internal FileSearchCallResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<string> queries, IList<FileSearchCallResult> results, FileSearchCallStatus? status) : base(kind, id, additionalBinaryDataProperties)
+        internal FileSearchCallResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, FileSearchCallStatus? status, IList<string> queries, IList<FileSearchCallResult> results) : base(kind, id, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
+            Status = status;
             Queries = queries ?? new ChangeTrackingList<string>();
             Results = results ?? new ChangeTrackingList<FileSearchCallResult>();
-            Status = status;
         }
 
         public IList<string> Queries { get; }

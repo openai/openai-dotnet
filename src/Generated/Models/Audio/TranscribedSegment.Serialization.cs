@@ -35,20 +35,10 @@ namespace OpenAI.Audio
                 writer.WritePropertyName("id"u8);
                 writer.WriteNumberValue(Id);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("seek") != true)
             {
-                writer.WritePropertyName("text"u8);
-                writer.WriteStringValue(Text);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("temperature") != true)
-            {
-                writer.WritePropertyName("temperature"u8);
-                writer.WriteNumberValue(Temperature);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("compression_ratio") != true)
-            {
-                writer.WritePropertyName("compression_ratio"u8);
-                writer.WriteNumberValue(CompressionRatio);
+                writer.WritePropertyName("seek"u8);
+                writer.WriteNumberValue(SeekOffset);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("start") != true)
             {
@@ -60,10 +50,10 @@ namespace OpenAI.Audio
                 writer.WritePropertyName("end"u8);
                 writer.WriteNumberValue(Convert.ToDouble(EndTime.ToString("s\\.FFF")));
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("seek") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
             {
-                writer.WritePropertyName("seek"u8);
-                writer.WriteNumberValue(SeekOffset);
+                writer.WritePropertyName("text"u8);
+                writer.WriteStringValue(Text);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("tokens") != true)
             {
@@ -75,10 +65,20 @@ namespace OpenAI.Audio
                 }
                 writer.WriteEndArray();
             }
+            if (_additionalBinaryDataProperties?.ContainsKey("temperature") != true)
+            {
+                writer.WritePropertyName("temperature"u8);
+                writer.WriteNumberValue(Temperature);
+            }
             if (_additionalBinaryDataProperties?.ContainsKey("avg_logprob") != true)
             {
                 writer.WritePropertyName("avg_logprob"u8);
                 writer.WriteNumberValue(AverageLogProbability);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("compression_ratio") != true)
+            {
+                writer.WritePropertyName("compression_ratio"u8);
+                writer.WriteNumberValue(CompressionRatio);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("no_speech_prob") != true)
             {
@@ -127,14 +127,14 @@ namespace OpenAI.Audio
                 return default;
             }
             int id = default;
-            string text = default;
-            float temperature = default;
-            float compressionRatio = default;
+            int seekOffset = default;
             TimeSpan startTime = default;
             TimeSpan endTime = default;
-            int seekOffset = default;
+            string text = default;
             ReadOnlyMemory<int> tokenIds = default;
+            float temperature = default;
             float averageLogProbability = default;
+            float compressionRatio = default;
             float noSpeechProbability = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -144,19 +144,9 @@ namespace OpenAI.Audio
                     id = prop.Value.GetInt32();
                     continue;
                 }
-                if (prop.NameEquals("text"u8))
+                if (prop.NameEquals("seek"u8))
                 {
-                    text = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("temperature"u8))
-                {
-                    temperature = prop.Value.GetSingle();
-                    continue;
-                }
-                if (prop.NameEquals("compression_ratio"u8))
-                {
-                    compressionRatio = prop.Value.GetSingle();
+                    seekOffset = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("start"u8))
@@ -169,9 +159,9 @@ namespace OpenAI.Audio
                     endTime = TimeSpan.FromSeconds(prop.Value.GetDouble());
                     continue;
                 }
-                if (prop.NameEquals("seek"u8))
+                if (prop.NameEquals("text"u8))
                 {
-                    seekOffset = prop.Value.GetInt32();
+                    text = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("tokens"u8))
@@ -190,9 +180,19 @@ namespace OpenAI.Audio
                     tokenIds = new ReadOnlyMemory<int>(array);
                     continue;
                 }
+                if (prop.NameEquals("temperature"u8))
+                {
+                    temperature = prop.Value.GetSingle();
+                    continue;
+                }
                 if (prop.NameEquals("avg_logprob"u8))
                 {
                     averageLogProbability = prop.Value.GetSingle();
+                    continue;
+                }
+                if (prop.NameEquals("compression_ratio"u8))
+                {
+                    compressionRatio = prop.Value.GetSingle();
                     continue;
                 }
                 if (prop.NameEquals("no_speech_prob"u8))
@@ -205,14 +205,14 @@ namespace OpenAI.Audio
             }
             return new TranscribedSegment(
                 id,
-                text,
-                temperature,
-                compressionRatio,
+                seekOffset,
                 startTime,
                 endTime,
-                seekOffset,
+                text,
                 tokenIds,
+                temperature,
                 averageLogProbability,
+                compressionRatio,
                 noSpeechProbability,
                 additionalBinaryDataProperties);
         }

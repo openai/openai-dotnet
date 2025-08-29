@@ -21,11 +21,11 @@ namespace OpenAI.Responses
             FunctionOutput = functionOutput;
         }
 
-        internal FunctionCallOutputResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, string functionOutput, FunctionCallOutputStatus? status) : base(kind, id, additionalBinaryDataProperties)
+        internal FunctionCallOutputResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, FunctionCallOutputStatus? status, string callId, string functionOutput) : base(kind, id, additionalBinaryDataProperties)
         {
+            Status = status;
             CallId = callId;
             FunctionOutput = functionOutput;
-            Status = status;
         }
 
         public string CallId { get; set; }

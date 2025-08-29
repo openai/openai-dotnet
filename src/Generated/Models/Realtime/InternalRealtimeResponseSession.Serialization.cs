@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeResponseSession : IJsonModel<InternalRealtimeResponseSession>
     {
-        internal InternalRealtimeResponseSession() : this(null, null, null, null, null, default, default, null, null, null, null, null, default, default, null, null)
+        internal InternalRealtimeResponseSession() : this(null, null, null, null, null, default, default, default, null, null, null, null, null, default, null, null)
         {
         }
 
@@ -59,6 +59,11 @@ namespace OpenAI.Realtime
             {
                 writer.WritePropertyName("instructions"u8);
                 writer.WriteStringValue(Instructions);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("voice") != true)
+            {
+                writer.WritePropertyName("voice"u8);
+                writer.WriteStringValue(Voice.ToString());
             }
             if (_additionalBinaryDataProperties?.ContainsKey("input_audio_format") != true)
             {
@@ -118,11 +123,6 @@ namespace OpenAI.Realtime
             {
                 writer.WritePropertyName("temperature"u8);
                 writer.WriteNumberValue(Temperature);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("voice") != true)
-            {
-                writer.WritePropertyName("voice"u8);
-                writer.WriteStringValue(Voice.ToString());
             }
             if (_additionalBinaryDataProperties?.ContainsKey("max_response_output_tokens") != true)
             {
@@ -189,6 +189,7 @@ namespace OpenAI.Realtime
             string model = default;
             IList<InternalRealtimeRequestSessionModality> modalities = default;
             string instructions = default;
+            ConversationVoice voice = default;
             RealtimeAudioFormat inputAudioFormat = default;
             RealtimeAudioFormat outputAudioFormat = default;
             InputTranscriptionOptions inputAudioTranscription = default;
@@ -197,7 +198,6 @@ namespace OpenAI.Realtime
             IList<ConversationTool> tools = default;
             BinaryData toolChoice = default;
             float temperature = default;
-            ConversationVoice voice = default;
             BinaryData maxResponseOutputTokens = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -230,6 +230,11 @@ namespace OpenAI.Realtime
                 if (prop.NameEquals("instructions"u8))
                 {
                     instructions = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("voice"u8))
+                {
+                    voice = new ConversationVoice(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("input_audio_format"u8))
@@ -282,11 +287,6 @@ namespace OpenAI.Realtime
                     temperature = prop.Value.GetSingle();
                     continue;
                 }
-                if (prop.NameEquals("voice"u8))
-                {
-                    voice = new ConversationVoice(prop.Value.GetString());
-                    continue;
-                }
                 if (prop.NameEquals("max_response_output_tokens"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -306,6 +306,7 @@ namespace OpenAI.Realtime
                 model,
                 modalities,
                 instructions,
+                voice,
                 inputAudioFormat,
                 outputAudioFormat,
                 inputAudioTranscription,
@@ -314,7 +315,6 @@ namespace OpenAI.Realtime
                 tools,
                 toolChoice,
                 temperature,
-                voice,
                 maxResponseOutputTokens,
                 additionalBinaryDataProperties);
         }
