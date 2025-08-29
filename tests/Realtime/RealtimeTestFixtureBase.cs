@@ -32,11 +32,15 @@ public class RealtimeTestFixtureBase : SyncAsyncTestBase
 
     public static string GetTestModel() => GetModelForScenario(TestScenario.Realtime);
 
-    public static RealtimeClient GetTestClient()
+    public static RealtimeClient GetTestClient(bool excludeDumpPolicy = false)
     {
-        RealtimeClient client = GetTestClient<RealtimeClient>(TestScenario.Realtime);
+        RealtimeClient client = GetTestClient<RealtimeClient>(
+            scenario: TestScenario.Realtime,
+            excludeDumpPolicy: excludeDumpPolicy);
+
         client.OnSendingCommand += (_, data) => PrintMessageData(data, "> ");
         client.OnReceivingCommand += (_, data) => PrintMessageData(data, "  < ");
+
         return client;
     }
 

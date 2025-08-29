@@ -23,7 +23,7 @@ internal partial class InternalAssistantMessageClient
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
     /// <summary> Initializes a new instance of <see cref="InternalAssistantMessageClient"/>. </summary>
-    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
     public InternalAssistantMessageClient(ApiKeyCredential credential) : this(credential, new OpenAIClientOptions())
     {
@@ -33,7 +33,7 @@ internal partial class InternalAssistantMessageClient
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
     /// <summary> Initializes a new instance of <see cref="InternalAssistantMessageClient"/>. </summary>
-    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
     public InternalAssistantMessageClient(ApiKeyCredential credential, OpenAIClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)

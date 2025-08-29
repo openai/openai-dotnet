@@ -1,7 +1,6 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.ComponentModel;
 using System.Threading.Tasks;
 
 namespace OpenAI.Realtime;
@@ -43,8 +42,8 @@ public partial class RealtimeClient
     /// <returns></returns>
     public virtual async Task<RealtimeSession> StartSessionAsync(string model, string intent, RequestOptions options)
     {
-        Uri fullEndpoint = BuildSessionEndpoint(_baseEndpoint, model, intent);
-        RealtimeSession provisionalSession = new(this, fullEndpoint, _credential);
+        Uri fullEndpoint = BuildSessionEndpoint(_webSocketEndpoint, model, intent);
+        RealtimeSession provisionalSession = new(this, fullEndpoint, _keyCredential);
         try
         {
             await provisionalSession.ConnectAsync(options).ConfigureAwait(false);
