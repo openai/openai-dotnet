@@ -19,10 +19,6 @@ namespace OpenAI.VectorStores;
 [CodeGenSuppress("CreateVectorStoreAsync", typeof(VectorStoreCreationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("CreateVectorStoreFile", typeof(string), typeof(InternalCreateVectorStoreFileRequest), typeof(CancellationToken))]
 [CodeGenSuppress("CreateVectorStore", typeof(VectorStoreCreationOptions), typeof(CancellationToken))]
-[CodeGenSuppress("GetVectorStoresAsync", typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("GetVectorStores", typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("GetVectorStoreFilesAsync", typeof(string), typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?), typeof(CancellationToken))]
-[CodeGenSuppress("GetVectorStoreFiles", typeof(string), typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?), typeof(CancellationToken))]
 [CodeGenSuppress("CreateVectorStoreFileAsync", typeof(string), typeof(InternalCreateVectorStoreFileRequest), typeof(CancellationToken))]
 [CodeGenSuppress("CreateVectorStoreFileBatch", typeof(string), typeof(InternalCreateVectorStoreFileBatchRequest), typeof(CancellationToken))]
 [CodeGenSuppress("CreateVectorStoreFileBatchAsync", typeof(string), typeof(InternalCreateVectorStoreFileBatchRequest), typeof(CancellationToken))]
@@ -40,8 +36,6 @@ namespace OpenAI.VectorStores;
 [CodeGenSuppress("GetVectorStoreFileBatch", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("CancelBatchFileJobAsync", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("CancelBatchFileJob", typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("GetFilesInVectorStoreBatchAsync", typeof(string), typeof(string), typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?), typeof(CancellationToken))]
-[CodeGenSuppress("GetFilesInVectorStoreBatch", typeof(string), typeof(string), typeof(int?), typeof(VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(VectorStoreFileStatusFilter?), typeof(CancellationToken))]
 public partial class VectorStoreClient
 {
     // CUSTOM: Added as a convenience.
@@ -255,68 +249,6 @@ public partial class VectorStoreClient
     }
 
     /// <summary>
-    /// Gets a page collection holding <see cref="VectorStore"/> instances for the configured organization.
-    /// </summary>
-    /// <param name="options"> Options describing the collection to return. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A collection of <see cref="VectorStore"/>. </returns>
-    public virtual AsyncCollectionResult<VectorStore> GetVectorStoresAsync(
-        VectorStoreCollectionOptions options = default,
-        CancellationToken cancellationToken = default)
-    {
-        return GetVectorStoresAsync(options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
-            as AsyncCollectionResult<VectorStore>;
-    }
-
-    /// <summary>
-    /// Rehydrates a page collection holding <see cref="VectorStore"/> instances from a page token.
-    /// </summary>
-    /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A collection of <see cref="VectorStore"/>. </returns>
-    public virtual AsyncCollectionResult<VectorStore> GetVectorStoresAsync(
-        ContinuationToken firstPageToken,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
-
-        VectorStoreCollectionPageToken pageToken = VectorStoreCollectionPageToken.FromToken(firstPageToken);
-        return GetVectorStoresAsync(pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions())
-            as AsyncCollectionResult<VectorStore>;
-    }
-
-    /// <summary>
-    /// Gets a page collection holding <see cref="VectorStore"/> instances for the configured organization.
-    /// </summary>
-    /// <param name="options"> Options describing the collection to return. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A collection of <see cref="VectorStore"/>. </returns>
-    public virtual CollectionResult<VectorStore> GetVectorStores(
-        VectorStoreCollectionOptions options = default,
-        CancellationToken cancellationToken = default)
-    {
-        return GetVectorStores(options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions())
-            as CollectionResult<VectorStore>;
-    }
-
-    /// <summary>
-    /// Rehydrates a page collection holding <see cref="VectorStore"/> instances from a page token.
-    /// </summary>
-    /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A collection of <see cref="VectorStore"/>. </returns>
-    public virtual CollectionResult<VectorStore> GetVectorStores(
-        ContinuationToken firstPageToken,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
-
-        VectorStoreCollectionPageToken pageToken = VectorStoreCollectionPageToken.FromToken(firstPageToken);
-        return GetVectorStores(pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, cancellationToken.ToRequestOptions())
-            as CollectionResult<VectorStore>;
-    }
-
-    /// <summary>
     /// Associates a single, uploaded file with a vector store, beginning ingestion of the file into the vector store.
     /// </summary>
     /// <param name="waitUntilCompleted"> Value indicating whether the method
@@ -378,82 +310,6 @@ public partial class VectorStoreClient
         InternalUpdateVectorStoreFileAttributesRequest spreadModel = new InternalUpdateVectorStoreFileAttributesRequest(attributes, null);
         ClientResult result = await UpdateVectorStoreFileAttributesAsync(vectorStoreId, fileId, spreadModel, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
         return ClientResult.FromValue((VectorStoreFileAssociation)result, result.GetRawResponse());
-    }
-
-    /// <summary>
-    /// Gets a page collection holding <see cref="VectorStoreFileAssociation"/> instances that represent file inclusions in the
-    /// specified vector store.
-    /// </summary>
-    /// <param name="vectorStoreId">
-    /// The ID of the vector store to enumerate the file associations of.
-    /// </param>
-    /// <param name="options"> Options describing the collection to return. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A collection of <see cref="VectorStoreFileAssociation"/>. </returns>
-    public virtual AsyncCollectionResult<VectorStoreFileAssociation> GetFileAssociationsAsync(
-        string vectorStoreId,
-        VectorStoreFileAssociationCollectionOptions options = default,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-
-        return GetFileAssociationsAsync(vectorStoreId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, options?.Filter?.ToString(), cancellationToken.ToRequestOptions())
-            as AsyncCollectionResult<VectorStoreFileAssociation>;
-    }
-
-    /// <summary>
-    /// Rehydrates a page collection holding <see cref="VectorStoreFileAssociation"/> instances from a page token.
-    /// </summary>
-    /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A collection of <see cref="VectorStoreFileAssociation"/>. </returns>
-    public virtual AsyncCollectionResult<VectorStoreFileAssociation> GetFileAssociationsAsync(
-        ContinuationToken firstPageToken,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
-
-        VectorStoreFileCollectionPageToken pageToken = VectorStoreFileCollectionPageToken.FromToken(firstPageToken);
-        return GetFileAssociationsAsync(pageToken?.VectorStoreId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, pageToken?.Filter, cancellationToken.ToRequestOptions())
-            as AsyncCollectionResult<VectorStoreFileAssociation>;
-    }
-
-    /// <summary>
-    /// Gets a page collection holding <see cref="VectorStoreFileAssociation"/> instances that represent file inclusions in the
-    /// specified vector store.
-    /// </summary>
-    /// <param name="vectorStoreId">
-    /// The ID of the vector store to enumerate the file associations of.
-    /// </param>
-    /// <param name="options"> Options describing the collection to return. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A collection of <see cref="VectorStoreFileAssociation"/>. </returns>
-    public virtual CollectionResult<VectorStoreFileAssociation> GetFileAssociations(
-        string vectorStoreId,
-        VectorStoreFileAssociationCollectionOptions options = default,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-
-        return GetFileAssociations(vectorStoreId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, options?.Filter?.ToString(), cancellationToken.ToRequestOptions())
-            as CollectionResult<VectorStoreFileAssociation>;
-    }
-
-    /// <summary>
-    /// Rehydrates a page collection holding <see cref="VectorStoreFileAssociation"/> instances from a page token.
-    /// </summary>
-    /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A collection of <see cref="VectorStoreFileAssociation"/>. </returns>
-    public virtual CollectionResult<VectorStoreFileAssociation> GetFileAssociations(
-        ContinuationToken firstPageToken,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
-
-        VectorStoreFileCollectionPageToken pageToken = VectorStoreFileCollectionPageToken.FromToken(firstPageToken);
-        return GetFileAssociations(pageToken?.VectorStoreId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, pageToken?.Filter, cancellationToken.ToRequestOptions())
-            as CollectionResult<VectorStoreFileAssociation>;
     }
 
     /// <summary>
@@ -592,139 +448,6 @@ public partial class VectorStoreClient
         RequestOptions options = cancellationToken.ToRequestOptions();
 
         return CreateBatchFileJob(vectorStoreId, content, waitUntilCompleted, options);
-    }
-
-    /// <summary>
-    /// Gets a page collection of file associations associated with a vector store batch file job, representing the files
-    /// that were scheduled for ingestion into the vector store.
-    /// </summary>
-    /// <param name="vectorStoreId">
-    /// The ID of the vector store into which the file batch was scheduled for ingestion.
-    /// </param>
-    /// <param name="batchJobId">
-    /// The ID of the batch file job that was previously scheduled.
-    /// </param>
-    /// <param name="options"> Options describing the collection to return. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A collection of <see cref="VectorStoreFileAssociation"/>. </returns>
-    public virtual AsyncCollectionResult<VectorStoreFileAssociation> GetFileAssociationsAsync(
-        string vectorStoreId,
-        string batchJobId,
-        VectorStoreFileAssociationCollectionOptions options = default,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-        Argument.AssertNotNullOrEmpty(batchJobId, nameof(batchJobId));
-
-        return GetFileAssociationsAsync(vectorStoreId, batchJobId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, options?.Filter?.ToString(), cancellationToken.ToRequestOptions())
-            as AsyncCollectionResult<VectorStoreFileAssociation>;
-    }
-
-    /// <summary>
-    /// Rehydrates a page collection of file associations from a page token.
-    /// </summary>
-    /// <param name="vectorStoreId">
-    /// The ID of the vector store into which the file batch was scheduled for ingestion.
-    /// </param>
-    /// <param name="batchJobId">
-    /// The ID of the batch file job that was previously scheduled.
-    /// </param>
-    /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A collection of <see cref="VectorStoreFileAssociation"/>. </returns>
-    public virtual AsyncCollectionResult<VectorStoreFileAssociation> GetFileAssociationsAsync(
-        string vectorStoreId,
-        string batchJobId,
-        ContinuationToken firstPageToken,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
-
-        VectorStoreFileBatchCollectionPageToken pageToken = VectorStoreFileBatchCollectionPageToken.FromToken(firstPageToken);
-
-        if (vectorStoreId != pageToken.VectorStoreId)
-        {
-            throw new ArgumentException(
-                "Invalid page token. 'vectorStoreId' value does not match page token value.",
-                nameof(vectorStoreId));
-        }
-
-        if (batchJobId != pageToken.BatchId)
-        {
-            throw new ArgumentException(
-                "Invalid page token. 'batchJobId' value does not match page token value.",
-                nameof(vectorStoreId));
-        }
-
-        return GetFileAssociationsAsync(vectorStoreId, batchJobId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, pageToken?.Filter, cancellationToken.ToRequestOptions())
-            as AsyncCollectionResult<VectorStoreFileAssociation>;
-    }
-
-    /// <summary>
-    /// Gets a page collection of file associations associated with a vector store batch file job, representing the files
-    /// that were scheduled for ingestion into the vector store.
-    /// </summary>
-    /// <param name="vectorStoreId">
-    /// The ID of the vector store into which the file batch was scheduled for ingestion.
-    /// </param>
-    /// <param name="batchJobId">
-    /// The ID of the batch file job that was previously scheduled.
-    /// </param>
-    /// <param name="options"> Options describing the collection to return. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A collection of <see cref="VectorStoreFileAssociation"/>. </returns>
-    public virtual CollectionResult<VectorStoreFileAssociation> GetFileAssociations(
-        string vectorStoreId,
-        string batchJobId,
-        VectorStoreFileAssociationCollectionOptions options = default,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-        Argument.AssertNotNullOrEmpty(batchJobId, nameof(batchJobId));
-
-        return GetFileAssociations(vectorStoreId, batchJobId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, options?.Filter?.ToString(), cancellationToken.ToRequestOptions())
-            as CollectionResult<VectorStoreFileAssociation>;
-    }
-
-    /// <summary>
-    /// Rehydrates a page collection of file associations from a page token.
-    /// that were scheduled for ingestion into the vector store.
-    /// </summary>
-    /// <param name="vectorStoreId">
-    /// The ID of the vector store into which the file batch was scheduled for ingestion.
-    /// </param>
-    /// <param name="batchJobId">
-    /// The ID of the batch file job that was previously scheduled.
-    /// </param>
-    /// <param name="firstPageToken"> Page token corresponding to the first page of the collection to rehydrate. </param>
-    /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A collection of <see cref="VectorStoreFileAssociation"/>. </returns>
-    public virtual CollectionResult<VectorStoreFileAssociation> GetFileAssociations(
-        string vectorStoreId,
-        string batchJobId,
-        ContinuationToken firstPageToken,
-        CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNull(firstPageToken, nameof(firstPageToken));
-
-        VectorStoreFileBatchCollectionPageToken pageToken = VectorStoreFileBatchCollectionPageToken.FromToken(firstPageToken);
-
-        if (vectorStoreId != pageToken.VectorStoreId)
-        {
-            throw new ArgumentException(
-                "Invalid page token. 'vectorStoreId' value does not match page token value.",
-                nameof(vectorStoreId));
-        }
-
-        if (batchJobId != pageToken.BatchId)
-        {
-            throw new ArgumentException(
-                "Invalid page token. 'batchJobId' value does not match page token value.",
-                nameof(vectorStoreId));
-        }
-
-        return GetFileAssociations(vectorStoreId, batchJobId, pageToken?.Limit, pageToken?.Order, pageToken?.After, pageToken?.Before, pageToken?.Filter, cancellationToken.ToRequestOptions())
-            as CollectionResult<VectorStoreFileAssociation>;
     }
 
     /// <summary>
