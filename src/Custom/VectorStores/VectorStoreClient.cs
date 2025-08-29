@@ -164,7 +164,7 @@ public partial class VectorStoreClient
     /// <param name="vectorStoreId"> The ID of the vector store to retrieve. </param>
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <returns> A representation of an existing <see cref="VectorStore"/>. </returns>
-    internal virtual async Task<ClientResult<VectorStore>> GetVectorStoreAsync(string vectorStoreId, CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<VectorStore>> GetVectorStoreAsync(string vectorStoreId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
 
