@@ -119,6 +119,12 @@ public partial class EmbeddingClient
     [Experimental("OPENAI001")]
     public string Model => _model;
 
+    /// <summary>
+    /// Gets the endpoint URI for the service.
+    /// </summary>
+    [Experimental("OPENAI001")]
+    public Uri Endpoint => _endpoint;
+
     // CUSTOM: Added to simplify generating a single embedding from a string input.
     /// <summary> Generates an embedding representing the text input. </summary>
     /// <param name="input"> The text input to generate an embedding for. </param>

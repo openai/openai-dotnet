@@ -158,6 +158,12 @@ public partial class OpenAIClient
     }
 
     /// <summary>
+    /// Gets the endpoint URI for the service.
+    /// </summary>
+    [Experimental("OPENAI001")]
+    public Uri Endpoint => _endpoint;
+
+    /// <summary>
     /// Gets a new instance of <see cref="AssistantClient"/> that reuses the client configuration details provided to
     /// the <see cref="OpenAIClient"/> instance.
     /// </summary>

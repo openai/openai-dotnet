@@ -83,6 +83,13 @@ public partial class AssistantClient
         _threadSubClient = new(Pipeline, options);
     }
 
+    /// <summary>
+    /// Gets the endpoint URI for the service.
+    /// </summary>
+    [Experimental("OPENAI001")]
+    public Uri Endpoint => _endpoint;
+
+
     // CUSTOM:
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
@@ -114,7 +121,7 @@ public partial class AssistantClient
         options ??= new();
         options.Model = model;
 
-         ClientResult protocolResult = await CreateAssistantAsync(options?.ToBinaryContent(), cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        ClientResult protocolResult = await CreateAssistantAsync(options?.ToBinaryContent(), cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue((Assistant)protocolResult, protocolResult.GetRawResponse());
     }
 
@@ -130,7 +137,7 @@ public partial class AssistantClient
         options.Model = model;
 
         ClientResult protocolResult = CreateAssistant(options?.ToBinaryContent(), cancellationToken.ToRequestOptions());
-         return ClientResult.FromValue((Assistant)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue((Assistant)protocolResult, protocolResult.GetRawResponse());
     }
 
     /// <summary>
@@ -319,7 +326,7 @@ public partial class AssistantClient
     public virtual async Task<ClientResult<AssistantThread>> CreateThreadAsync(ThreadCreationOptions options = null, CancellationToken cancellationToken = default)
     {
         ClientResult protocolResult = await CreateThreadAsync(options?.ToBinaryContent(), cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue((AssistantThread)protocolResult, protocolResult.GetRawResponse());;
+        return ClientResult.FromValue((AssistantThread)protocolResult, protocolResult.GetRawResponse()); ;
     }
 
     /// <summary>
@@ -717,7 +724,7 @@ public partial class AssistantClient
         options.Stream = null;
 
         ClientResult protocolResult = CreateRun(threadId, options?.ToBinaryContent(), cancellationToken.ToRequestOptions());
-       return ClientResult.FromValue((ThreadRun)protocolResult, protocolResult.GetRawResponse());
+        return ClientResult.FromValue((ThreadRun)protocolResult, protocolResult.GetRawResponse());
     }
 
     /// <summary>

@@ -95,6 +95,12 @@ public partial class BatchClient
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
+    /// <summary>
+    /// Gets the endpoint URI for the service.
+    /// </summary>
+    [Experimental("OPENAI001")]
+    public Uri Endpoint => _endpoint;
+
     internal virtual CreateBatchOperation CreateCreateBatchOperation(string batchId, string status, PipelineResponse response)
     {
         return new CreateBatchOperation(this, _endpoint, batchId, status, response);

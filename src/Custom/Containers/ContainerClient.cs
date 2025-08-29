@@ -77,4 +77,10 @@ public partial class ContainerClient
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
+    /// <summary>
+    /// Gets the endpoint URI for the service.
+    /// </summary>
+    [Experimental("OPENAI001")]
+    public Uri Endpoint => _endpoint;
+
 }

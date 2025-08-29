@@ -111,6 +111,12 @@ public partial class VectorStoreClient
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
+    /// <summary>
+    /// Gets the endpoint URI for the service.
+    /// </summary>
+    [Experimental("OPENAI001")]
+    public Uri Endpoint => _endpoint;
+
     internal virtual CreateVectorStoreOperation CreateCreateVectorStoreOperation(ClientResult<VectorStore> result)
     {
         return new CreateVectorStoreOperation(this, _endpoint, result);

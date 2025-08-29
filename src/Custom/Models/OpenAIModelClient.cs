@@ -91,6 +91,12 @@ public partial class OpenAIModelClient
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
+    /// <summary>
+    /// Gets the endpoint URI for the service.
+    /// </summary>
+    [Experimental("OPENAI001")]
+    public Uri Endpoint => _endpoint;
+
     /// <summary> Gets basic information about each of the models that are currently available, such as their corresponding owner and availability. </summary>
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     public virtual async Task<ClientResult<OpenAIModelCollection>> GetModelsAsync(CancellationToken cancellationToken = default)
