@@ -1204,7 +1204,7 @@ namespace OpenAI
             return new VectorStoreCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
         }
 
-        public static VectorStoreFileAssociationCollectionOptions VectorStoreFileAssociationCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, VectorStoreFileAssociationOrder? order = default, VectorStoreFileStatusFilter? filter = default)
+        public static VectorStoreFileAssociationCollectionOptions VectorStoreFileAssociationCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, VectorStoreFileAssociationCollectionOrder? order = default, VectorStoreFileStatusFilter? filter = default)
         {
             return new VectorStoreFileAssociationCollectionOptions(
                 afterId,

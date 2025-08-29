@@ -70,7 +70,7 @@ namespace OpenAI.VectorStores
             string afterId = default;
             string beforeId = default;
             int? pageSizeLimit = default;
-            VectorStoreFileAssociationOrder? order = default;
+            VectorStoreFileAssociationCollectionOrder? order = default;
             VectorStoreFileStatusFilter? filter = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())

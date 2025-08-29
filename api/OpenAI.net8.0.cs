@@ -5875,12 +5875,28 @@ namespace OpenAI.VectorStores {
         public string AfterId { get; set; }
         public string BeforeId { get; set; }
         public VectorStoreFileStatusFilter? Filter { get; set; }
-        public VectorStoreFileAssociationOrder? Order { get; set; }
+        public VectorStoreFileAssociationCollectionOrder? Order { get; set; }
         public int? PageSizeLimit { get; set; }
         protected virtual VectorStoreFileAssociationCollectionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual VectorStoreFileAssociationCollectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct VectorStoreFileAssociationCollectionOrder : IEquatable<VectorStoreFileAssociationCollectionOrder> {
+        public VectorStoreFileAssociationCollectionOrder(string value);
+        public static VectorStoreFileAssociationCollectionOrder Ascending { get; }
+        public static VectorStoreFileAssociationCollectionOrder Descending { get; }
+        public readonly bool Equals(VectorStoreFileAssociationCollectionOrder other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(VectorStoreFileAssociationCollectionOrder left, VectorStoreFileAssociationCollectionOrder right);
+        public static implicit operator VectorStoreFileAssociationCollectionOrder(string value);
+        public static implicit operator VectorStoreFileAssociationCollectionOrder?(string value);
+        public static bool operator !=(VectorStoreFileAssociationCollectionOrder left, VectorStoreFileAssociationCollectionOrder right);
+        public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
     public class VectorStoreFileAssociationError : IJsonModel<VectorStoreFileAssociationError>, IPersistableModel<VectorStoreFileAssociationError> {
@@ -5906,22 +5922,6 @@ namespace OpenAI.VectorStores {
         public static implicit operator VectorStoreFileAssociationErrorCode(string value);
         public static implicit operator VectorStoreFileAssociationErrorCode?(string value);
         public static bool operator !=(VectorStoreFileAssociationErrorCode left, VectorStoreFileAssociationErrorCode right);
-        public override readonly string ToString();
-    }
-    [Experimental("OPENAI001")]
-    public readonly partial struct VectorStoreFileAssociationOrder : IEquatable<VectorStoreFileAssociationOrder> {
-        public VectorStoreFileAssociationOrder(string value);
-        public static VectorStoreFileAssociationOrder Ascending { get; }
-        public static VectorStoreFileAssociationOrder Descending { get; }
-        public readonly bool Equals(VectorStoreFileAssociationOrder other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(VectorStoreFileAssociationOrder left, VectorStoreFileAssociationOrder right);
-        public static implicit operator VectorStoreFileAssociationOrder(string value);
-        public static implicit operator VectorStoreFileAssociationOrder?(string value);
-        public static bool operator !=(VectorStoreFileAssociationOrder left, VectorStoreFileAssociationOrder right);
         public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
