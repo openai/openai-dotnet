@@ -13,20 +13,20 @@ namespace OpenAI.Chat
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ChatOutputAudio(string id, DateTimeOffset expiresAt, string transcript, BinaryData audioBytes)
+        internal ChatOutputAudio(string id, DateTimeOffset expiresAt, BinaryData audioBytes, string transcript)
         {
             Id = id;
             ExpiresAt = expiresAt;
-            Transcript = transcript;
             AudioBytes = audioBytes;
+            Transcript = transcript;
         }
 
-        internal ChatOutputAudio(string id, DateTimeOffset expiresAt, string transcript, BinaryData audioBytes, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ChatOutputAudio(string id, DateTimeOffset expiresAt, BinaryData audioBytes, string transcript, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
             ExpiresAt = expiresAt;
-            Transcript = transcript;
             AudioBytes = audioBytes;
+            Transcript = transcript;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

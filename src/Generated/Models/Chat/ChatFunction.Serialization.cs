@@ -32,15 +32,15 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(ChatFunction)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
-            {
-                writer.WritePropertyName("name"u8);
-                writer.WriteStringValue(FunctionName);
-            }
             if (Optional.IsDefined(FunctionDescription) && _additionalBinaryDataProperties?.ContainsKey("description") != true)
             {
                 writer.WritePropertyName("description"u8);
                 writer.WriteStringValue(FunctionDescription);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
+            {
+                writer.WritePropertyName("name"u8);
+                writer.WriteStringValue(FunctionName);
             }
             if (Optional.IsDefined(FunctionParameters) && _additionalBinaryDataProperties?.ContainsKey("parameters") != true)
             {
@@ -96,20 +96,20 @@ namespace OpenAI.Chat
             {
                 return null;
             }
-            string functionName = default;
             string functionDescription = default;
+            string functionName = default;
             BinaryData functionParameters = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("name"u8))
-                {
-                    functionName = prop.Value.GetString();
-                    continue;
-                }
                 if (prop.NameEquals("description"u8))
                 {
                     functionDescription = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("name"u8))
+                {
+                    functionName = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("parameters"u8))
@@ -124,7 +124,7 @@ namespace OpenAI.Chat
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ChatFunction(functionName, functionDescription, functionParameters, additionalBinaryDataProperties);
+            return new ChatFunction(functionDescription, functionName, functionParameters, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<ChatFunction>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

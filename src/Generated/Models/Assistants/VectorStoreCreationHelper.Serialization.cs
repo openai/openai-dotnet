@@ -42,6 +42,11 @@ namespace OpenAI.Assistants
                 }
                 writer.WriteEndArray();
             }
+            if (Optional.IsDefined(ChunkingStrategy) && _additionalBinaryDataProperties?.ContainsKey("chunking_strategy") != true)
+            {
+                writer.WritePropertyName("chunking_strategy"u8);
+                writer.WriteObjectValue(ChunkingStrategy, options);
+            }
             if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
                 writer.WritePropertyName("metadata"u8);
@@ -57,11 +62,6 @@ namespace OpenAI.Assistants
                     writer.WriteStringValue(item.Value);
                 }
                 writer.WriteEndObject();
-            }
-            if (Optional.IsDefined(ChunkingStrategy) && _additionalBinaryDataProperties?.ContainsKey("chunking_strategy") != true)
-            {
-                writer.WritePropertyName("chunking_strategy"u8);
-                writer.WriteObjectValue(ChunkingStrategy, options);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -105,8 +105,8 @@ namespace OpenAI.Assistants
                 return null;
             }
             IList<string> fileIds = default;
-            IDictionary<string, string> metadata = default;
             FileChunkingStrategy chunkingStrategy = default;
+            IDictionary<string, string> metadata = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -131,6 +131,15 @@ namespace OpenAI.Assistants
                     fileIds = array;
                     continue;
                 }
+                if (prop.NameEquals("chunking_strategy"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    chunkingStrategy = FileChunkingStrategy.DeserializeFileChunkingStrategy(prop.Value, options);
+                    continue;
+                }
                 if (prop.NameEquals("metadata"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -152,19 +161,10 @@ namespace OpenAI.Assistants
                     metadata = dictionary;
                     continue;
                 }
-                if (prop.NameEquals("chunking_strategy"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    chunkingStrategy = FileChunkingStrategy.DeserializeFileChunkingStrategy(prop.Value, options);
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new VectorStoreCreationHelper(fileIds ?? new ChangeTrackingList<string>(), metadata ?? new ChangeTrackingDictionary<string, string>(), chunkingStrategy, additionalBinaryDataProperties);
+            return new VectorStoreCreationHelper(fileIds ?? new ChangeTrackingList<string>(), chunkingStrategy, metadata ?? new ChangeTrackingDictionary<string, string>(), additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<VectorStoreCreationHelper>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

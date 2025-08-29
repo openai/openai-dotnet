@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class ComputerCallOutputResponseItem : IJsonModel<ComputerCallOutputResponseItem>
     {
-        internal ComputerCallOutputResponseItem() : this(InternalItemType.ComputerCallOutput, null, null, null, null, null, default)
+        internal ComputerCallOutputResponseItem() : this(InternalItemType.ComputerCallOutput, null, null, default, null, null, null)
         {
         }
 
@@ -31,6 +31,13 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(ComputerCallOutputResponseItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
+            // Plugin customization: remove options.Format != "W" check
+            // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
+            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
+            {
+                writer.WritePropertyName("status"u8);
+                writer.WriteStringValue(Status.Value.ToSerialString());
+            }
             if (_additionalBinaryDataProperties?.ContainsKey("call_id") != true)
             {
                 writer.WritePropertyName("call_id"u8);
@@ -50,13 +57,6 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("output"u8);
                 writer.WriteObjectValue(Output, options);
-            }
-            // Plugin customization: remove options.Format != "W" check
-            // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
-            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
-            {
-                writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.Value.ToSerialString());
             }
         }
 
@@ -82,10 +82,10 @@ namespace OpenAI.Responses
             InternalItemType kind = default;
             string id = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            ComputerCallOutputStatus? status = default;
             string callId = default;
             IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks = default;
             ComputerCallOutput output = default;
-            ComputerCallOutputStatus? status = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -96,6 +96,11 @@ namespace OpenAI.Responses
                 if (prop.NameEquals("id"u8))
                 {
                     id = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("status"u8))
+                {
+                    status = prop.Value.GetString().ToComputerCallOutputStatus();
                     continue;
                 }
                 if (prop.NameEquals("call_id"u8))
@@ -122,11 +127,6 @@ namespace OpenAI.Responses
                     output = ComputerCallOutput.DeserializeComputerCallOutput(prop.Value, options);
                     continue;
                 }
-                if (prop.NameEquals("status"u8))
-                {
-                    status = prop.Value.GetString().ToComputerCallOutputStatus();
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
@@ -134,10 +134,10 @@ namespace OpenAI.Responses
                 kind,
                 id,
                 additionalBinaryDataProperties,
+                status,
                 callId,
                 acknowledgedSafetyChecks ?? new ChangeTrackingList<ComputerCallSafetyCheck>(),
-                output,
-                status);
+                output);
         }
 
         BinaryData IPersistableModel<ComputerCallOutputResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

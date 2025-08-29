@@ -26,11 +26,6 @@ namespace OpenAI.Realtime
             {
                 throw new FormatException($"The model {nameof(ConversationStatusDetails)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Kind) && _additionalBinaryDataProperties?.ContainsKey("type") != true)
-            {
-                writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind.Value.ToString());
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
@@ -87,22 +82,12 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            InternalRealtimeResponseStatusDetailsType? kind = default;
             ConversationStatus statusKind = default;
             ConversationIncompleteReason? incompleteReason = default;
             InternalRealtimeResponseStatusDetailsError error = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("type"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    kind = new InternalRealtimeResponseStatusDetailsType(prop.Value.GetString());
-                    continue;
-                }
                 if (prop.NameEquals("type"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -133,7 +118,7 @@ namespace OpenAI.Realtime
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ConversationStatusDetails(kind, statusKind, incompleteReason, error, additionalBinaryDataProperties);
+            return new ConversationStatusDetails(statusKind, incompleteReason, error, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<ConversationStatusDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

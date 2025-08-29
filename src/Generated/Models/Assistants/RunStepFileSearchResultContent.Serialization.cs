@@ -30,15 +30,15 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(RunStepFileSearchResultContent)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
-            {
-                writer.WritePropertyName("text"u8);
-                writer.WriteStringValue(Text);
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToSerialString());
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
+            {
+                writer.WritePropertyName("text"u8);
+                writer.WriteStringValue(Text);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -81,25 +81,25 @@ namespace OpenAI.Assistants
             {
                 return null;
             }
-            string text = default;
             RunStepFileSearchResultContentKind kind = default;
+            string text = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("text"u8))
-                {
-                    text = prop.Value.GetString();
-                    continue;
-                }
                 if (prop.NameEquals("type"u8))
                 {
                     kind = prop.Value.GetString().ToRunStepFileSearchResultContentKind();
                     continue;
                 }
+                if (prop.NameEquals("text"u8))
+                {
+                    text = prop.Value.GetString();
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new RunStepFileSearchResultContent(text, kind, additionalBinaryDataProperties);
+            return new RunStepFileSearchResultContent(kind, text, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<RunStepFileSearchResultContent>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

@@ -14,27 +14,27 @@ namespace OpenAI.Chat
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ChatCompletionMessageListDatum(string content, string refusal, string id, ChatMessageRole role)
+        internal ChatCompletionMessageListDatum(string content, string refusal, ChatMessageRole role, string id)
         {
             Content = content;
             Refusal = refusal;
             ToolCalls = new ChangeTrackingList<ChatToolCall>();
             Annotations = new ChangeTrackingList<ChatMessageAnnotation>();
-            Id = id;
             Role = role;
+            Id = id;
         }
 
-        internal ChatCompletionMessageListDatum(string content, string refusal, IReadOnlyList<ChatToolCall> toolCalls, IReadOnlyList<ChatMessageAnnotation> annotations, InternalChatCompletionResponseMessageFunctionCall functionCall, string id, ChatMessageRole role, ChatOutputAudio outputAudio, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ChatCompletionMessageListDatum(string content, string refusal, IReadOnlyList<ChatToolCall> toolCalls, IReadOnlyList<ChatMessageAnnotation> annotations, ChatMessageRole role, InternalChatCompletionResponseMessageFunctionCall functionCall, ChatOutputAudio outputAudio, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Content = content;
             Refusal = refusal;
             ToolCalls = toolCalls ?? new ChangeTrackingList<ChatToolCall>();
             Annotations = annotations ?? new ChangeTrackingList<ChatMessageAnnotation>();
-            FunctionCall = functionCall;
-            Id = id;
             Role = role;
+            FunctionCall = functionCall;
             OutputAudio = outputAudio;
+            Id = id;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

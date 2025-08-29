@@ -16,17 +16,17 @@ namespace OpenAI.FineTuning
         {
             Argument.AssertNotNull(project, nameof(project));
 
-            Tags = new ChangeTrackingList<string>();
             Project = project;
+            Tags = new ChangeTrackingList<string>();
         }
 
-        internal InternalCreateFineTuningJobRequestWandbIntegrationWandb(string name, string entity, IList<string> tags, string project, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalCreateFineTuningJobRequestWandbIntegrationWandb(string project, string name, string entity, IList<string> tags, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
+            Project = project;
             Name = name;
             Entity = entity;
             Tags = tags ?? new ChangeTrackingList<string>();
-            Project = project;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

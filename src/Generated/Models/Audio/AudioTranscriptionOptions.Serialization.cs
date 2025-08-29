@@ -29,6 +29,16 @@ namespace OpenAI.Audio
             {
                 throw new FormatException($"The model {nameof(AudioTranscriptionOptions)} does not support writing '{format}' format.");
             }
+            if (_additionalBinaryDataProperties?.ContainsKey("file") != true)
+            {
+                writer.WritePropertyName("file"u8);
+                writer.WriteBase64StringValue(File.ToArray(), "D");
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
+            {
+                writer.WritePropertyName("model"u8);
+                writer.WriteStringValue(Model.ToString());
+            }
             if (Optional.IsDefined(Language) && _additionalBinaryDataProperties?.ContainsKey("language") != true)
             {
                 writer.WritePropertyName("language"u8);
@@ -49,20 +59,15 @@ namespace OpenAI.Audio
                 writer.WritePropertyName("temperature"u8);
                 writer.WriteNumberValue(Temperature.Value);
             }
-            if (Optional.IsDefined(ChunkingStrategy) && _additionalBinaryDataProperties?.ContainsKey("chunking_strategy") != true)
+            if (Optional.IsCollectionDefined(InternalInclude) && _additionalBinaryDataProperties?.ContainsKey("include[]") != true)
             {
-                writer.WritePropertyName("chunking_strategy"u8);
-                writer.WriteObjectValue(ChunkingStrategy, options);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("file") != true)
-            {
-                writer.WritePropertyName("file"u8);
-                writer.WriteBase64StringValue(File.ToArray(), "D");
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
-            {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model.ToString());
+                writer.WritePropertyName("include[]"u8);
+                writer.WriteStartArray();
+                foreach (InternalTranscriptionInclude item in InternalInclude)
+                {
+                    writer.WriteStringValue(item.ToString());
+                }
+                writer.WriteEndArray();
             }
             if (Optional.IsCollectionDefined(InternalTimestampGranularities) && _additionalBinaryDataProperties?.ContainsKey("timestamp_granularities[]") != true)
             {
@@ -91,15 +96,10 @@ namespace OpenAI.Audio
                 writer.WritePropertyName("stream"u8);
                 writer.WriteBooleanValue(Stream.Value);
             }
-            if (Optional.IsCollectionDefined(InternalInclude) && _additionalBinaryDataProperties?.ContainsKey("include[]") != true)
+            if (Optional.IsDefined(ChunkingStrategy) && _additionalBinaryDataProperties?.ContainsKey("chunking_strategy") != true)
             {
-                writer.WritePropertyName("include[]"u8);
-                writer.WriteStartArray();
-                foreach (InternalTranscriptionInclude item in InternalInclude)
-                {
-                    writer.WriteStringValue(item.ToString());
-                }
-                writer.WriteEndArray();
+                writer.WritePropertyName("chunking_strategy"u8);
+                writer.WriteObjectValue(ChunkingStrategy, options);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -143,19 +143,29 @@ namespace OpenAI.Audio
             {
                 return null;
             }
+            BinaryData @file = default;
+            InternalCreateTranscriptionRequestModel model = default;
             string language = default;
             string prompt = default;
             AudioTranscriptionFormat? responseFormat = default;
             float? temperature = default;
-            InternalVadConfig chunkingStrategy = default;
-            BinaryData @file = default;
-            InternalCreateTranscriptionRequestModel model = default;
+            IList<InternalTranscriptionInclude> internalInclude = default;
             IList<BinaryData> internalTimestampGranularities = default;
             bool? stream = default;
-            IList<InternalTranscriptionInclude> internalInclude = default;
+            InternalVadConfig chunkingStrategy = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("file"u8))
+                {
+                    @file = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
+                    continue;
+                }
+                if (prop.NameEquals("model"u8))
+                {
+                    model = new InternalCreateTranscriptionRequestModel(prop.Value.GetString());
+                    continue;
+                }
                 if (prop.NameEquals("language"u8))
                 {
                     language = prop.Value.GetString();
@@ -184,24 +194,18 @@ namespace OpenAI.Audio
                     temperature = prop.Value.GetSingle();
                     continue;
                 }
-                if (prop.NameEquals("chunking_strategy"u8))
+                if (prop.NameEquals("include[]"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        chunkingStrategy = null;
                         continue;
                     }
-                    chunkingStrategy = InternalVadConfig.DeserializeInternalVadConfig(prop.Value, options);
-                    continue;
-                }
-                if (prop.NameEquals("file"u8))
-                {
-                    @file = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
-                    continue;
-                }
-                if (prop.NameEquals("model"u8))
-                {
-                    model = new InternalCreateTranscriptionRequestModel(prop.Value.GetString());
+                    List<InternalTranscriptionInclude> array = new List<InternalTranscriptionInclude>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        array.Add(new InternalTranscriptionInclude(item.GetString()));
+                    }
+                    internalInclude = array;
                     continue;
                 }
                 if (prop.NameEquals("timestamp_granularities[]"u8))
@@ -235,34 +239,30 @@ namespace OpenAI.Audio
                     stream = prop.Value.GetBoolean();
                     continue;
                 }
-                if (prop.NameEquals("include[]"u8))
+                if (prop.NameEquals("chunking_strategy"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        chunkingStrategy = null;
                         continue;
                     }
-                    List<InternalTranscriptionInclude> array = new List<InternalTranscriptionInclude>();
-                    foreach (var item in prop.Value.EnumerateArray())
-                    {
-                        array.Add(new InternalTranscriptionInclude(item.GetString()));
-                    }
-                    internalInclude = array;
+                    chunkingStrategy = InternalVadConfig.DeserializeInternalVadConfig(prop.Value, options);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new AudioTranscriptionOptions(
+                @file,
+                model,
                 language,
                 prompt,
                 responseFormat,
                 temperature,
-                chunkingStrategy,
-                @file,
-                model,
+                internalInclude ?? new ChangeTrackingList<InternalTranscriptionInclude>(),
                 internalTimestampGranularities ?? new ChangeTrackingList<BinaryData>(),
                 stream,
-                internalInclude ?? new ChangeTrackingList<InternalTranscriptionInclude>(),
+                chunkingStrategy,
                 additionalBinaryDataProperties);
         }
 

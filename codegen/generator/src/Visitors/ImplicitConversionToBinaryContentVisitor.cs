@@ -9,7 +9,7 @@ namespace OpenAILibraryPlugin.Visitors;
 /// </summary>
 public class ImplicitConversionToBinaryContentVisitor : ScmLibraryVisitor
 {
-    protected override MethodProvider VisitMethod(MethodProvider method)
+    protected override MethodProvider? VisitMethod(MethodProvider method)
     {
         if (method.Signature.Modifiers.HasFlag(MethodSignatureModifiers.Implicit) &&
             method.Signature.Modifiers.HasFlag(MethodSignatureModifiers.Operator) &&

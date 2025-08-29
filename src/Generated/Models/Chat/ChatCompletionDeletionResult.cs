@@ -13,17 +13,17 @@ namespace OpenAI.Chat
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ChatCompletionDeletionResult(bool deleted, string chatCompletionId)
+        internal ChatCompletionDeletionResult(string chatCompletionId, bool deleted)
         {
-            Deleted = deleted;
             ChatCompletionId = chatCompletionId;
+            Deleted = deleted;
         }
 
-        internal ChatCompletionDeletionResult(bool deleted, string @object, string chatCompletionId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ChatCompletionDeletionResult(string @object, string chatCompletionId, bool deleted, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Deleted = deleted;
             Object = @object;
             ChatCompletionId = chatCompletionId;
+            Deleted = deleted;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

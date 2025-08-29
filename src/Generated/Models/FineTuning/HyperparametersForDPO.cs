@@ -17,12 +17,12 @@ namespace OpenAI.FineTuning
         {
         }
 
-        internal HyperparametersForDPO(BinaryData batchSize, BinaryData nEpochs, BinaryData learningRateMultiplier, BinaryData beta, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal HyperparametersForDPO(BinaryData beta, BinaryData batchSize, BinaryData learningRateMultiplier, BinaryData nEpochs, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            _BatchSize = batchSize;
-            _NEpochs = nEpochs;
-            _LearningRateMultiplier = learningRateMultiplier;
             _Beta = beta;
+            _BatchSize = batchSize;
+            _LearningRateMultiplier = learningRateMultiplier;
+            _NEpochs = nEpochs;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

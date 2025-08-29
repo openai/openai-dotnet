@@ -38,18 +38,6 @@ namespace OpenAI.FineTuning
                 }
 #endif
             }
-            if (Optional.IsDefined(_NEpochs) && _additionalBinaryDataProperties?.ContainsKey("n_epochs") != true)
-            {
-                writer.WritePropertyName("n_epochs"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(_NEpochs);
-#else
-                using (JsonDocument document = JsonDocument.Parse(_NEpochs))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
-            }
             if (Optional.IsDefined(_LearningRateMultiplier) && _additionalBinaryDataProperties?.ContainsKey("learning_rate_multiplier") != true)
             {
                 writer.WritePropertyName("learning_rate_multiplier"u8);
@@ -57,6 +45,18 @@ namespace OpenAI.FineTuning
                 writer.WriteRawValue(_LearningRateMultiplier);
 #else
                 using (JsonDocument document = JsonDocument.Parse(_LearningRateMultiplier))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
+#endif
+            }
+            if (Optional.IsDefined(_NEpochs) && _additionalBinaryDataProperties?.ContainsKey("n_epochs") != true)
+            {
+                writer.WritePropertyName("n_epochs"u8);
+#if NET6_0_OR_GREATER
+                writer.WriteRawValue(_NEpochs);
+#else
+                using (JsonDocument document = JsonDocument.Parse(_NEpochs))
                 {
                     JsonSerializer.Serialize(writer, document.RootElement);
                 }
@@ -104,8 +104,8 @@ namespace OpenAI.FineTuning
                 return null;
             }
             BinaryData batchSize = default;
-            BinaryData nEpochs = default;
             BinaryData learningRateMultiplier = default;
+            BinaryData nEpochs = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -118,15 +118,6 @@ namespace OpenAI.FineTuning
                     batchSize = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
-                if (prop.NameEquals("n_epochs"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    nEpochs = BinaryData.FromString(prop.Value.GetRawText());
-                    continue;
-                }
                 if (prop.NameEquals("learning_rate_multiplier"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -136,10 +127,19 @@ namespace OpenAI.FineTuning
                     learningRateMultiplier = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
+                if (prop.NameEquals("n_epochs"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    nEpochs = BinaryData.FromString(prop.Value.GetRawText());
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new HyperparametersForSupervised(batchSize, nEpochs, learningRateMultiplier, additionalBinaryDataProperties);
+            return new HyperparametersForSupervised(batchSize, learningRateMultiplier, nEpochs, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<HyperparametersForSupervised>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

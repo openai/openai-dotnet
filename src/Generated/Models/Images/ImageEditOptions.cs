@@ -11,18 +11,18 @@ namespace OpenAI.Images
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ImageEditOptions(InternalCreateImageEditRequestBackground? background, InternalCreateImageEditRequestQuality? quality, InternalCreateImageEditRequestModel? model, BinaryData image, string prompt, BinaryData mask, long? n, GeneratedImageSize? size, GeneratedImageFormat? responseFormat, string endUserId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ImageEditOptions(BinaryData image, string prompt, BinaryData mask, InternalCreateImageEditRequestBackground? background, InternalCreateImageEditRequestModel? model, long? n, GeneratedImageSize? size, GeneratedImageFormat? responseFormat, string endUserId, InternalCreateImageEditRequestQuality? quality, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Background = background;
-            Quality = quality;
-            Model = model;
             Image = image;
             Prompt = prompt;
             Mask = mask;
+            Background = background;
+            Model = model;
             N = n;
             Size = size;
             ResponseFormat = responseFormat;
             EndUserId = endUserId;
+            Quality = quality;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
