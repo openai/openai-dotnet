@@ -7,6 +7,7 @@ namespace OpenAI {
         public OpenAIClient(AuthenticationPolicy authenticationPolicy);
         protected internal OpenAIClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public OpenAIClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual AssistantClient GetAssistantClient();
         public virtual AudioClient GetAudioClient(string model);
@@ -64,6 +65,7 @@ namespace OpenAI.Assistants {
         public AssistantClient(AuthenticationPolicy authenticationPolicy);
         protected internal AssistantClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public AssistantClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult CancelRun(string threadId, string runId, RequestOptions options);
         public virtual ClientResult<ThreadRun> CancelRun(string threadId, string runId, CancellationToken cancellationToken = default);
@@ -989,6 +991,7 @@ namespace OpenAI.Audio {
         public AudioClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public AudioClient(string model, AuthenticationPolicy authenticationPolicy);
         public AudioClient(string model, string apiKey);
+        public Uri Endpoint { get; }
         public string Model { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult GenerateSpeech(BinaryContent content, RequestOptions options = null);
@@ -1237,6 +1240,7 @@ namespace OpenAI.Batch {
         public BatchClient(AuthenticationPolicy authenticationPolicy);
         protected internal BatchClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public BatchClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual CreateBatchOperation CreateBatch(BinaryContent content, bool waitUntilCompleted, RequestOptions options = null);
         public virtual Task<CreateBatchOperation> CreateBatchAsync(BinaryContent content, bool waitUntilCompleted, RequestOptions options = null);
@@ -1298,6 +1302,7 @@ namespace OpenAI.Chat {
         public ChatClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public ChatClient(string model, AuthenticationPolicy authenticationPolicy);
         public ChatClient(string model, string apiKey);
+        public Uri Endpoint { get; }
         public string Model { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult<ChatCompletion> CompleteChat(params ChatMessage[] messages);
@@ -1961,6 +1966,7 @@ namespace OpenAI.Containers {
         public ContainerClient(AuthenticationPolicy authenticationPolicy);
         protected internal ContainerClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public ContainerClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult<ContainerResource> CreateContainer(CreateContainerBody body, CancellationToken cancellationToken = default);
         public virtual ClientResult CreateContainer(BinaryContent content, RequestOptions options = null);
@@ -2123,6 +2129,7 @@ namespace OpenAI.Embeddings {
         public EmbeddingClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public EmbeddingClient(string model, AuthenticationPolicy authenticationPolicy);
         public EmbeddingClient(string model, string apiKey);
+        public Uri Endpoint { get; }
         public string Model { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult<OpenAIEmbedding> GenerateEmbedding(string input, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default);
@@ -2182,6 +2189,7 @@ namespace OpenAI.Evals {
         public EvaluationClient(AuthenticationPolicy authenticationPolicy);
         protected internal EvaluationClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public EvaluationClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult CancelEvaluationRun(string evaluationId, string evaluationRunId, RequestOptions options);
         public virtual Task<ClientResult> CancelEvaluationRunAsync(string evaluationId, string evaluationRunId, RequestOptions options);
@@ -2282,6 +2290,7 @@ namespace OpenAI.Files {
         public OpenAIFileClient(AuthenticationPolicy authenticationPolicy);
         protected internal OpenAIFileClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public OpenAIFileClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult AddUploadPart(string uploadId, BinaryContent content, string contentType, RequestOptions options = null);
         public virtual Task<ClientResult> AddUploadPartAsync(string uploadId, BinaryContent content, string contentType, RequestOptions options = null);
@@ -2369,6 +2378,7 @@ namespace OpenAI.FineTuning {
         protected internal FineTuningClient(ClientPipeline pipeline, OpenAIClientOptions options);
         protected internal FineTuningClient(ClientPipeline pipeline, Uri endpoint);
         public FineTuningClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult CreateFineTuningCheckpointPermission(string fineTunedModelCheckpoint, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult> CreateFineTuningCheckpointPermissionAsync(string fineTunedModelCheckpoint, BinaryContent content, RequestOptions options = null);
@@ -2670,6 +2680,7 @@ namespace OpenAI.Graders {
         public GraderClient(AuthenticationPolicy authenticationPolicy);
         protected internal GraderClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public GraderClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult RunGrader(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult> RunGraderAsync(BinaryContent content, RequestOptions options = null);
@@ -3013,6 +3024,7 @@ namespace OpenAI.Images {
         public ImageClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public ImageClient(string model, AuthenticationPolicy authenticationPolicy);
         public ImageClient(string model, string apiKey);
+        public Uri Endpoint { get; }
         public string Model { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult<GeneratedImage> GenerateImage(string prompt, ImageGenerationOptions options = null, CancellationToken cancellationToken = default);
@@ -3136,6 +3148,7 @@ namespace OpenAI.Models {
         public OpenAIModelClient(AuthenticationPolicy authenticationPolicy);
         protected internal OpenAIModelClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public OpenAIModelClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult DeleteModel(string model, RequestOptions options);
         public virtual ClientResult<ModelDeletionResult> DeleteModel(string model, CancellationToken cancellationToken = default);
@@ -3176,6 +3189,7 @@ namespace OpenAI.Moderations {
         public ModerationClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public ModerationClient(string model, AuthenticationPolicy authenticationPolicy);
         public ModerationClient(string model, string apiKey);
+        public Uri Endpoint { get; }
         public string Model { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult ClassifyText(BinaryContent content, RequestOptions options = null);
@@ -3767,6 +3781,7 @@ namespace OpenAI.Realtime {
         public RealtimeClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public RealtimeClient(ApiKeyCredential credential);
         protected internal RealtimeClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public event EventHandler<BinaryData> OnReceivingCommand { add; remove; }
         public event EventHandler<BinaryData> OnSendingCommand { add; remove; }
@@ -4255,6 +4270,7 @@ namespace OpenAI.Responses {
         public OpenAIResponseClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public OpenAIResponseClient(string model, AuthenticationPolicy authenticationPolicy);
         public OpenAIResponseClient(string model, string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult CancelResponse(string responseId, RequestOptions options);
         public virtual ClientResult<OpenAIResponse> CancelResponse(string responseId, CancellationToken cancellationToken = default);
@@ -5083,6 +5099,7 @@ namespace OpenAI.VectorStores {
         public VectorStoreClient(AuthenticationPolicy authenticationPolicy);
         protected internal VectorStoreClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public VectorStoreClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual AddFileToVectorStoreOperation AddFileToVectorStore(string vectorStoreId, BinaryContent content, bool waitUntilCompleted, RequestOptions options = null);
         public virtual AddFileToVectorStoreOperation AddFileToVectorStore(string vectorStoreId, string fileId, bool waitUntilCompleted, CancellationToken cancellationToken = default);
