@@ -94,6 +94,12 @@ public partial class OpenAIFileClient
         _internalUploadsClient = new(pipeline, options);
     }
 
+    /// <summary>
+    /// Gets the endpoint URI for the service.
+    /// </summary>
+    [Experimental("OPENAI001")]
+    public Uri Endpoint => _endpoint;
+
     /// <summary> Uploads a file that can be used across various operations. </summary>
     /// <remarks> Individual files can be up to 512 MB, and the size of all files uploaded by one organization can be up to 100 GB. </remarks>
     /// <param name="file"> The file stream to upload. </param>

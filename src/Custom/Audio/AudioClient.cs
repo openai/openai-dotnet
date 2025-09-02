@@ -116,6 +116,12 @@ public partial class AudioClient
     [Experimental("OPENAI001")]
     public string Model => _model;
 
+    /// <summary>
+    /// Gets the endpoint URI for the service.
+    /// </summary>
+    [Experimental("OPENAI001")]
+    public Uri Endpoint => _endpoint;
+
     #region GenerateSpeech
 
     /// <summary> Generates a life-like, spoken audio recording of the input text. </summary>

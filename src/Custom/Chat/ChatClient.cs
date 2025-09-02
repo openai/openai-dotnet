@@ -124,6 +124,12 @@ public partial class ChatClient
     [Experimental("OPENAI001")]
     public string Model => _model;
 
+    /// <summary>
+    /// Gets the endpoint URI for the service.
+    /// </summary>
+    [Experimental("OPENAI001")]
+    public Uri Endpoint => _endpoint;
+
     /// <summary> Generates a completion for the given chat. </summary>
     /// <param name="messages"> The messages comprising the chat so far. </param>
     /// <param name="options"> The options to configure the chat completion. </param>
