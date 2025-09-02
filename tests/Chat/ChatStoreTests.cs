@@ -981,5 +981,8 @@ public class ChatStoreToolTests : SyncAsyncTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    private static ChatClient GetTestClient(string overrideModel = null) => GetTestClient<ChatClient>(TestScenario.Chat, overrideModel);
+    private static ChatClient GetTestClient(string overrideModel = null)
+        => GetTestClient<ChatClient>(
+            scenario: TestScenario.Chat,
+            overrideModel: overrideModel);
 }
