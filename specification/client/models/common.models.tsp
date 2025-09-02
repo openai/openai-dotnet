@@ -15,16 +15,6 @@ union DotNetResponseReasoningEffortLevel {
   ReasoningEffort,
 }
 
-@access(Access.public)
-@usage(Usage.input | Usage.output)
-union DotNetResponseWebSearchContextSize {
-  // WebSearchPreviewTool.search_context_size,
-  low: "low",
-
-  medium: "medium",
-  high: "high",
-}
-
 // ResponseFormat
 
 @access(Access.public)
