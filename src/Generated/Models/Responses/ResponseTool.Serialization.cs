@@ -81,13 +81,13 @@ namespace OpenAI.Responses
                 switch (discriminator.GetString())
                 {
                     case "function":
-                        return InternalFunctionTool.DeserializeInternalFunctionTool(element, options);
+                        return FunctionTool.DeserializeFunctionTool(element, options);
                     case "file_search":
-                        return InternalFileSearchTool.DeserializeInternalFileSearchTool(element, options);
+                        return FileSearchTool.DeserializeFileSearchTool(element, options);
                     case "computer_use_preview":
-                        return InternalComputerUsePreviewTool.DeserializeInternalComputerUsePreviewTool(element, options);
+                        return ComputerTool.DeserializeComputerTool(element, options);
                     case "web_search_preview":
-                        return InternalWebSearchTool.DeserializeInternalWebSearchTool(element, options);
+                        return WebSearchTool.DeserializeWebSearchTool(element, options);
                     case "code_interpreter":
                         return InternalCodeInterpreterTool.DeserializeInternalCodeInterpreterTool(element, options);
                     case "image_generation":
