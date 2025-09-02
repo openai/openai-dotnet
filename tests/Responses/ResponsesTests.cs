@@ -115,9 +115,9 @@ public partial class ResponsesTests : SyncAsyncTestBase
         Assert.That(messageContentPart, Is.Not.Null);
         Assert.That(messageContentPart.Text, Does.Contain("pizza"));
         Assert.That(messageContentPart.OutputTextAnnotations, Is.Not.Null.And.Not.Empty);
-        Assert.That(messageContentPart.OutputTextAnnotations[0].FileCitationFileId, Is.EqualTo(testFile.Id));
-        Assert.That(messageContentPart.OutputTextAnnotations[0].FileCitationIndex, Is.GreaterThan(0));
-
+        FileCitationAnnotation annotation = messageContentPart.OutputTextAnnotations[0] as FileCitationAnnotation;
+        Assert.That(annotation.FileId, Is.EqualTo(testFile.Id));
+        Assert.That(annotation.Index, Is.GreaterThan(0));
 
         await foreach (ResponseItem inputItem in client.GetResponseInputItemsAsync(response.Id))
         {
