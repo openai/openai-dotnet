@@ -30,3 +30,10 @@ using Azure.ClientGenerator.Core;
 @@visibility(WebSearchToolCallItemResource.status, Lifecycle.Read);
 
 @@visibility(ResponsesMessageItemResource.status, Lifecycle.Read);
+
+@@clientName(FileSearchTool.max_num_results, "MaxResultCount");
+
+@@clientName(FunctionTool.name, "FunctionName");
+@@clientName(FunctionTool.description, "FunctionDescription");
+@@clientName(FunctionTool.parameters, "FunctionParameters");
+@@clientName(FunctionTool.strict, "StrictModeEnabled");
