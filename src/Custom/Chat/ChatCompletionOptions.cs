@@ -28,16 +28,15 @@ public partial class ChatCompletionOptions
     /// The available derived classes include <see cref="AssistantChatMessage"/>, <see cref="FunctionChatMessage"/>, <see cref="SystemChatMessage"/>, <see cref="ToolChatMessage"/> and <see cref="UserChatMessage"/>.
     /// </summary>
     [CodeGenMember("Messages")]
-    internal IList<ChatMessage> Messages { get; set; }
+    public IList<ChatMessage> Messages { get; internal set; }
 
     // CUSTOM:
-    // - Made internal. This value comes from a parameter on the client method.
     // - Added setter.
     /// <summary>
     /// ID of the model to use. See the <see href="https://platform.openai.com/docs/models/model-endpoint-compatibility">model endpoint compatibility</see> table for details on which models work with the Chat API.
     /// </summary>
     [CodeGenMember("Model")]
-    internal string Model { get; set; }
+    public string Model { get; set; }
 
     // CUSTOM: Made internal. We only ever request a single choice.
     /// <summary> How many chat completion choices to generate for each input message. Note that you will be charged based on the number of generated tokens across all of the choices. Keep `n` as `1` to minimize costs. </summary>
@@ -47,7 +46,7 @@ public partial class ChatCompletionOptions
     // CUSTOM: Made internal. We set this manually based on the client method that is called.
     /// <summary> If set, partial message deltas will be sent, like in ChatGPT. Tokens will be sent as data-only [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format) as they become available, with the stream terminated by a `data: [DONE]` message. [Example Python code](https://cookbook.openai.com/examples/how_to_stream_completions). </summary>
     [CodeGenMember("Stream")]
-    internal bool? Stream { get; set; }
+    public bool? Stream { get; internal set; }
 
     /// <summary> Gets or sets the stream options. </summary>
     [CodeGenMember("StreamOptions")]

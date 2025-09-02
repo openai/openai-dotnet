@@ -57,6 +57,21 @@ public class ChatTests : SyncAsyncTestBase
     }
 
     [Test]
+    public async Task HelloWorldChatWithOverridenModel()
+    {
+        ChatClient client = GetTestClient();
+        IEnumerable<ChatMessage> messages = [new UserChatMessage("Hello, world!")];
+        ChatCompletionOptions options = new() { Model = "o3-mini" };
+        ClientResult<ChatCompletion> result = IsAsync
+            ? await client.CompleteChatAsync(messages, options)
+            : client.CompleteChat(messages, options);
+        Assert.That(result, Is.InstanceOf<ClientResult<ChatCompletion>>());
+        Assert.That(result.Value.Content[0].Kind, Is.EqualTo(ChatMessageContentPartKind.Text));
+        Assert.That(result.Value.Content[0].Text.Length, Is.GreaterThan(0));
+        Assert.That(result.Value.Model, Does.StartWith("o3-mini"));
+    }
+
+    [Test]
     public async Task MultiMessageChat()
     {
         ChatClient client = GetTestClient();
