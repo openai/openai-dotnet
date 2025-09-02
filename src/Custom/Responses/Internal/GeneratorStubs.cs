@@ -1,8 +1,5 @@
 namespace OpenAI.Responses;
 
-[CodeGenType("AnnotationFileCitation")] internal partial class InternalAnnotationFileCitation {}
-[CodeGenType("AnnotationFilePath")] internal partial class InternalAnnotationFilePath {}
-[CodeGenType("AnnotationUrlCitation")] internal partial class InternalAnnotationUrlCitation {}
 [CodeGenType("ApproximateLocation")] internal partial class InternalApproximateLocation {}
 [CodeGenType("ComparisonFilter")] internal partial class InternalComparisonFilter {}
 [CodeGenType("ComparisonFilterEquals")] internal partial class InternalComparisonFilterEquals {}

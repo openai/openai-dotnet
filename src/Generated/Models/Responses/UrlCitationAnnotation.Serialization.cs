@@ -10,13 +10,13 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalAnnotationUrlCitation : IJsonModel<InternalAnnotationUrlCitation>
+    public partial class UrlCitationAnnotation : IJsonModel<UrlCitationAnnotation>
     {
-        internal InternalAnnotationUrlCitation() : this(ResponseMessageAnnotationKind.UriCitation, null, null, default, default, null)
+        internal UrlCitationAnnotation() : this(ResponseMessageAnnotationKind.UriCitation, null, null, default, default, null)
         {
         }
 
-        void IJsonModel<InternalAnnotationUrlCitation>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<UrlCitationAnnotation>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
@@ -25,10 +25,10 @@ namespace OpenAI.Responses
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalAnnotationUrlCitation>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<UrlCitationAnnotation>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalAnnotationUrlCitation)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(UrlCitationAnnotation)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
             if (_additionalBinaryDataProperties?.ContainsKey("url") != true)
@@ -53,20 +53,20 @@ namespace OpenAI.Responses
             }
         }
 
-        InternalAnnotationUrlCitation IJsonModel<InternalAnnotationUrlCitation>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalAnnotationUrlCitation)JsonModelCreateCore(ref reader, options);
+        UrlCitationAnnotation IJsonModel<UrlCitationAnnotation>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (UrlCitationAnnotation)JsonModelCreateCore(ref reader, options);
 
         protected override ResponseMessageAnnotation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalAnnotationUrlCitation>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<UrlCitationAnnotation>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalAnnotationUrlCitation)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(UrlCitationAnnotation)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalAnnotationUrlCitation(document.RootElement, options);
+            return DeserializeUrlCitationAnnotation(document.RootElement, options);
         }
 
-        internal static InternalAnnotationUrlCitation DeserializeInternalAnnotationUrlCitation(JsonElement element, ModelReaderWriterOptions options)
+        internal static UrlCitationAnnotation DeserializeUrlCitationAnnotation(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -108,7 +108,7 @@ namespace OpenAI.Responses
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalAnnotationUrlCitation(
+            return new UrlCitationAnnotation(
                 kind,
                 additionalBinaryDataProperties,
                 url,
@@ -117,37 +117,37 @@ namespace OpenAI.Responses
                 title);
         }
 
-        BinaryData IPersistableModel<InternalAnnotationUrlCitation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<UrlCitationAnnotation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalAnnotationUrlCitation>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<UrlCitationAnnotation>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(InternalAnnotationUrlCitation)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(UrlCitationAnnotation)} does not support writing '{options.Format}' format.");
             }
         }
 
-        InternalAnnotationUrlCitation IPersistableModel<InternalAnnotationUrlCitation>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalAnnotationUrlCitation)PersistableModelCreateCore(data, options);
+        UrlCitationAnnotation IPersistableModel<UrlCitationAnnotation>.Create(BinaryData data, ModelReaderWriterOptions options) => (UrlCitationAnnotation)PersistableModelCreateCore(data, options);
 
         protected override ResponseMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalAnnotationUrlCitation>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<UrlCitationAnnotation>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalAnnotationUrlCitation(document.RootElement, options);
+                        return DeserializeUrlCitationAnnotation(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalAnnotationUrlCitation)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(UrlCitationAnnotation)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<InternalAnnotationUrlCitation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<UrlCitationAnnotation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

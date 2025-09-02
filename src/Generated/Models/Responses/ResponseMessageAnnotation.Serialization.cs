@@ -81,11 +81,11 @@ namespace OpenAI.Responses
                 switch (discriminator.GetString())
                 {
                     case "file_citation":
-                        return InternalAnnotationFileCitation.DeserializeInternalAnnotationFileCitation(element, options);
+                        return FileCitationAnnotation.DeserializeFileCitationAnnotation(element, options);
                     case "url_citation":
-                        return InternalAnnotationUrlCitation.DeserializeInternalAnnotationUrlCitation(element, options);
+                        return UrlCitationAnnotation.DeserializeUrlCitationAnnotation(element, options);
                     case "file_path":
-                        return InternalAnnotationFilePath.DeserializeInternalAnnotationFilePath(element, options);
+                        return FilePathAnnotation.DeserializeFilePathAnnotation(element, options);
                 }
             }
             return InternalUnknownAnnotation.DeserializeInternalUnknownAnnotation(element, options);

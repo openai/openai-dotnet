@@ -10,13 +10,13 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalAnnotationFilePath : IJsonModel<InternalAnnotationFilePath>
+    public partial class FilePathAnnotation : IJsonModel<FilePathAnnotation>
     {
-        internal InternalAnnotationFilePath() : this(ResponseMessageAnnotationKind.FilePath, null, null, default)
+        internal FilePathAnnotation() : this(ResponseMessageAnnotationKind.FilePath, null, null, default)
         {
         }
 
-        void IJsonModel<InternalAnnotationFilePath>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<FilePathAnnotation>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
@@ -25,10 +25,10 @@ namespace OpenAI.Responses
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalAnnotationFilePath>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<FilePathAnnotation>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalAnnotationFilePath)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(FilePathAnnotation)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
             if (_additionalBinaryDataProperties?.ContainsKey("file_id") != true)
@@ -43,20 +43,20 @@ namespace OpenAI.Responses
             }
         }
 
-        InternalAnnotationFilePath IJsonModel<InternalAnnotationFilePath>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalAnnotationFilePath)JsonModelCreateCore(ref reader, options);
+        FilePathAnnotation IJsonModel<FilePathAnnotation>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (FilePathAnnotation)JsonModelCreateCore(ref reader, options);
 
         protected override ResponseMessageAnnotation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalAnnotationFilePath>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<FilePathAnnotation>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalAnnotationFilePath)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(FilePathAnnotation)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalAnnotationFilePath(document.RootElement, options);
+            return DeserializeFilePathAnnotation(document.RootElement, options);
         }
 
-        internal static InternalAnnotationFilePath DeserializeInternalAnnotationFilePath(JsonElement element, ModelReaderWriterOptions options)
+        internal static FilePathAnnotation DeserializeFilePathAnnotation(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -86,40 +86,40 @@ namespace OpenAI.Responses
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalAnnotationFilePath(kind, additionalBinaryDataProperties, fileId, index);
+            return new FilePathAnnotation(kind, additionalBinaryDataProperties, fileId, index);
         }
 
-        BinaryData IPersistableModel<InternalAnnotationFilePath>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<FilePathAnnotation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalAnnotationFilePath>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<FilePathAnnotation>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(InternalAnnotationFilePath)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(FilePathAnnotation)} does not support writing '{options.Format}' format.");
             }
         }
 
-        InternalAnnotationFilePath IPersistableModel<InternalAnnotationFilePath>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalAnnotationFilePath)PersistableModelCreateCore(data, options);
+        FilePathAnnotation IPersistableModel<FilePathAnnotation>.Create(BinaryData data, ModelReaderWriterOptions options) => (FilePathAnnotation)PersistableModelCreateCore(data, options);
 
         protected override ResponseMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalAnnotationFilePath>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<FilePathAnnotation>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalAnnotationFilePath(document.RootElement, options);
+                        return DeserializeFilePathAnnotation(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalAnnotationFilePath)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(FilePathAnnotation)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<InternalAnnotationFilePath>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<FilePathAnnotation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

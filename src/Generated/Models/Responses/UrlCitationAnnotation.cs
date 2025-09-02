@@ -4,13 +4,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalAnnotationUrlCitation : ResponseMessageAnnotation
+    [Experimental("OPENAI001")]
+    public partial class UrlCitationAnnotation : ResponseMessageAnnotation
     {
-        public InternalAnnotationUrlCitation(Uri url, int startIndex, int endIndex, string title) : base(ResponseMessageAnnotationKind.UriCitation)
+        public UrlCitationAnnotation(Uri url, int startIndex, int endIndex, string title) : base(ResponseMessageAnnotationKind.UriCitation)
         {
             Argument.AssertNotNull(url, nameof(url));
             Argument.AssertNotNull(title, nameof(title));
@@ -21,7 +23,7 @@ namespace OpenAI.Responses
             Title = title;
         }
 
-        internal InternalAnnotationUrlCitation(ResponseMessageAnnotationKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, Uri url, int startIndex, int endIndex, string title) : base(kind, additionalBinaryDataProperties)
+        internal UrlCitationAnnotation(ResponseMessageAnnotationKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, Uri url, int startIndex, int endIndex, string title) : base(kind, additionalBinaryDataProperties)
         {
             Url = url;
             StartIndex = startIndex;
