@@ -31,6 +31,8 @@ namespace OpenAI.Realtime
 
         public static implicit operator InternalRealtimeSessionCreateRequestInputAudioNoiseReductionType(string value) => new InternalRealtimeSessionCreateRequestInputAudioNoiseReductionType(value);
 
+        public static implicit operator InternalRealtimeSessionCreateRequestInputAudioNoiseReductionType?(string value) => value == null ? null : new InternalRealtimeSessionCreateRequestInputAudioNoiseReductionType(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalRealtimeSessionCreateRequestInputAudioNoiseReductionType other && Equals(other);
 

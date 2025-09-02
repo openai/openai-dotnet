@@ -11,7 +11,7 @@ namespace OpenAI.Embeddings;
 [CodeGenSuppress("Data")]
 [CodeGenSuppress(nameof(OpenAIEmbeddingCollection))]
 [CodeGenSuppress(nameof(OpenAIEmbeddingCollection), typeof(string), typeof(EmbeddingTokenUsage))]
-[CodeGenSuppress(nameof(OpenAIEmbeddingCollection), typeof(string), typeof(EmbeddingTokenUsage),  typeof(string), typeof(IDictionary<string, BinaryData>))]
+[CodeGenSuppress(nameof(OpenAIEmbeddingCollection), typeof(string), typeof(string), typeof(EmbeddingTokenUsage), typeof(IDictionary<string, BinaryData>))]
 public partial class OpenAIEmbeddingCollection : ReadOnlyCollection<OpenAIEmbedding>
 {
     // CUSTOM: Made private. This property does not add value in the context of a strongly-typed class.
@@ -57,12 +57,5 @@ public partial class OpenAIEmbeddingCollection : ReadOnlyCollection<OpenAIEmbedd
     internal OpenAIEmbeddingCollection()
         : base([])
     {
-    }
-
-    internal static OpenAIEmbeddingCollection FromClientResult(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeOpenAIEmbeddingCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
     }
 }

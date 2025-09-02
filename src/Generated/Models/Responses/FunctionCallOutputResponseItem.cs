@@ -5,26 +5,31 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using OpenAI;
 
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
     public partial class FunctionCallOutputResponseItem : ResponseItem
     {
-        internal FunctionCallOutputResponseItem(string id, string callId, string functionOutput, FunctionCallOutputStatus? status) : base(InternalItemType.FunctionCallOutput, id)
+        public FunctionCallOutputResponseItem(string callId, string functionOutput) : base(InternalItemType.FunctionCallOutput)
         {
+            Argument.AssertNotNull(callId, nameof(callId));
+            Argument.AssertNotNull(functionOutput, nameof(functionOutput));
+
             CallId = callId;
             FunctionOutput = functionOutput;
-            Status = status;
         }
 
-        internal FunctionCallOutputResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, string functionOutput, FunctionCallOutputStatus? status) : base(kind, id, additionalBinaryDataProperties)
+        internal FunctionCallOutputResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, FunctionCallOutputStatus? status, string callId, string functionOutput) : base(kind, id, additionalBinaryDataProperties)
         {
+            Status = status;
             CallId = callId;
             FunctionOutput = functionOutput;
-            Status = status;
         }
 
-        public string CallId { get; }
+        public string CallId { get; set; }
+
+        public string FunctionOutput { get; set; }
     }
 }

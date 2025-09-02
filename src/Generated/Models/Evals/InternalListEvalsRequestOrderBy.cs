@@ -31,6 +31,8 @@ namespace OpenAI.Evals
 
         public static implicit operator InternalListEvalsRequestOrderBy(string value) => new InternalListEvalsRequestOrderBy(value);
 
+        public static implicit operator InternalListEvalsRequestOrderBy?(string value) => value == null ? null : new InternalListEvalsRequestOrderBy(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalListEvalsRequestOrderBy other && Equals(other);
 

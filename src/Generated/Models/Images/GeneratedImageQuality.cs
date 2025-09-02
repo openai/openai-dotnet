@@ -43,6 +43,8 @@ namespace OpenAI.Images
 
         public static implicit operator GeneratedImageQuality(string value) => new GeneratedImageQuality(value);
 
+        public static implicit operator GeneratedImageQuality?(string value) => value == null ? null : new GeneratedImageQuality(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is GeneratedImageQuality other && Equals(other);
 

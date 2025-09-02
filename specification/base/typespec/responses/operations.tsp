@@ -82,6 +82,7 @@ interface Responses {
   @operationId("listInputItems")
   @get
   @route("{response_id}/input_items")
+  @list
   listInputItems(
     @path
     @example("resp_677efb5139a88190b512bc3fef8e535d")

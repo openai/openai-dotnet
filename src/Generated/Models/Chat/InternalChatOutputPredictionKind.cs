@@ -28,6 +28,8 @@ namespace OpenAI.Chat
 
         public static implicit operator InternalChatOutputPredictionKind(string value) => new InternalChatOutputPredictionKind(value);
 
+        public static implicit operator InternalChatOutputPredictionKind?(string value) => value == null ? null : new InternalChatOutputPredictionKind(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalChatOutputPredictionKind other && Equals(other);
 

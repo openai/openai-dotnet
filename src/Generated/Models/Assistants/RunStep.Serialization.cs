@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -12,7 +13,7 @@ namespace OpenAI.Assistants
 {
     public partial class RunStep : IJsonModel<RunStep>
     {
-        internal RunStep() : this(null, default, null, null, null, default, default, null, default, default, default, default, null, null, null, null, null)
+        internal RunStep() : this(null, null, default, null, null, null, default, default, null, null, default, default, default, default, null, null, null)
         {
         }
 
@@ -34,6 +35,11 @@ namespace OpenAI.Assistants
             {
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            {
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
@@ -64,6 +70,11 @@ namespace OpenAI.Assistants
             {
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.ToString());
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("step_details") != true)
+            {
+                writer.WritePropertyName("step_details"u8);
+                writer.WriteObjectValue(Details, options);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("last_error") != true)
             {
@@ -154,16 +165,6 @@ namespace OpenAI.Assistants
                     writer.WriteNull("usage"u8);
                 }
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
-            {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("step_details") != true)
-            {
-                writer.WritePropertyName("step_details"u8);
-                writer.WriteObjectValue(Details, options);
-            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
@@ -206,12 +207,14 @@ namespace OpenAI.Assistants
                 return null;
             }
             string id = default;
+            string @object = default;
             DateTimeOffset createdAt = default;
             string assistantId = default;
             string threadId = default;
             string runId = default;
             RunStepKind kind = default;
             RunStepStatus status = default;
+            RunStepDetails details = default;
             RunStepError lastError = default;
             DateTimeOffset? expiredAt = default;
             DateTimeOffset? cancelledAt = default;
@@ -219,14 +222,17 @@ namespace OpenAI.Assistants
             DateTimeOffset? completedAt = default;
             IReadOnlyDictionary<string, string> metadata = default;
             RunStepTokenUsage usage = default;
-            string @object = default;
-            RunStepDetails details = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("id"u8))
                 {
                     id = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("object"u8))
+                {
+                    @object = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("created_at"u8))
@@ -257,6 +263,11 @@ namespace OpenAI.Assistants
                 if (prop.NameEquals("status"u8))
                 {
                     status = new RunStepStatus(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("step_details"u8))
+                {
+                    details = RunStepDetails.DeserializeRunStepDetails(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("last_error"u8))
@@ -341,27 +352,19 @@ namespace OpenAI.Assistants
                     usage = RunStepTokenUsage.DeserializeRunStepTokenUsage(prop.Value, options);
                     continue;
                 }
-                if (prop.NameEquals("object"u8))
-                {
-                    @object = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("step_details"u8))
-                {
-                    details = RunStepDetails.DeserializeRunStepDetails(prop.Value, options);
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new RunStep(
                 id,
+                @object,
                 createdAt,
                 assistantId,
                 threadId,
                 runId,
                 kind,
                 status,
+                details,
                 lastError,
                 expiredAt,
                 cancelledAt,
@@ -369,8 +372,6 @@ namespace OpenAI.Assistants
                 completedAt,
                 metadata,
                 usage,
-                @object,
-                details,
                 additionalBinaryDataProperties);
         }
 
@@ -406,5 +407,12 @@ namespace OpenAI.Assistants
         }
 
         string IPersistableModel<RunStep>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator RunStep(ClientResult result)
+        {
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeRunStep(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
     }
 }

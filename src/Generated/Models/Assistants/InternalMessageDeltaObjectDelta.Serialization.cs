@@ -26,6 +26,11 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(InternalMessageDeltaObjectDelta)} does not support writing '{format}' format.");
             }
+            if (Optional.IsDefined(Role) && _additionalBinaryDataProperties?.ContainsKey("role") != true)
+            {
+                writer.WritePropertyName("role"u8);
+                writer.WriteStringValue(Role.Value.ToSerialString());
+            }
             if (Optional.IsCollectionDefined(Content) && _additionalBinaryDataProperties?.ContainsKey("content") != true)
             {
                 writer.WritePropertyName("content"u8);
@@ -35,11 +40,6 @@ namespace OpenAI.Assistants
                     writer.WriteObjectValue(item, options);
                 }
                 writer.WriteEndArray();
-            }
-            if (Optional.IsDefined(Role) && _additionalBinaryDataProperties?.ContainsKey("role") != true)
-            {
-                writer.WritePropertyName("role"u8);
-                writer.WriteStringValue(Role.Value.ToSerialString());
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -82,11 +82,20 @@ namespace OpenAI.Assistants
             {
                 return null;
             }
-            IList<InternalMessageDeltaContent> content = default;
             MessageRole? role = default;
+            IList<InternalMessageDeltaContent> content = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("role"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    role = prop.Value.GetString().ToMessageRole();
+                    continue;
+                }
                 if (prop.NameEquals("content"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -101,19 +110,10 @@ namespace OpenAI.Assistants
                     content = array;
                     continue;
                 }
-                if (prop.NameEquals("role"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    role = prop.Value.GetString().ToMessageRole();
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalMessageDeltaObjectDelta(content ?? new ChangeTrackingList<InternalMessageDeltaContent>(), role, additionalBinaryDataProperties);
+            return new InternalMessageDeltaObjectDelta(role, content ?? new ChangeTrackingList<InternalMessageDeltaContent>(), additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalMessageDeltaObjectDelta>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

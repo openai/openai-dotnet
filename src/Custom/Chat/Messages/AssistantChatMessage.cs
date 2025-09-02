@@ -21,7 +21,15 @@ public partial class AssistantChatMessage : ChatMessage
     ///     The collection of content items associated with the message.
     /// </param>
     public AssistantChatMessage(IEnumerable<ChatMessageContentPart> contentParts)
-        : this(new ChatMessageContent(contentParts), ChatMessageRole.Assistant, null, null, null, null, null, null)
+        : this(
+              content: new ChatMessageContent(contentParts),
+              role: ChatMessageRole.Assistant,
+              additionalBinaryDataProperties: null,
+              refusal: null,
+              participantName: null,
+              toolCalls: null,
+              functionCall: null,
+              outputAudioReference: null)
     {
         Argument.AssertNotNullOrEmpty(contentParts, nameof(contentParts));
     }
@@ -34,7 +42,15 @@ public partial class AssistantChatMessage : ChatMessage
     ///     The collection of text and image content items associated with the message.
     /// </param>
     public AssistantChatMessage(params ChatMessageContentPart[] contentParts)
-        : this(new ChatMessageContent(contentParts), ChatMessageRole.Assistant, null, null, null, null, null, null)
+        : this(
+              content: new ChatMessageContent(contentParts),
+              role: ChatMessageRole.Assistant,
+              additionalBinaryDataProperties: null,
+              refusal: null,
+              participantName: null,
+              toolCalls: null,
+              functionCall: null,
+              outputAudioReference: null)
     {
         Argument.AssertNotNullOrEmpty(contentParts, nameof(contentParts));
     }
@@ -45,7 +61,15 @@ public partial class AssistantChatMessage : ChatMessage
     /// </summary>
     /// <param name="content"> The text content of the message. </param>
     public AssistantChatMessage(string content)
-        : this(new ChatMessageContent([content]), ChatMessageRole.Assistant, null, null, null, null, null, null)
+        : this(
+              content: new ChatMessageContent([content]),
+              role: ChatMessageRole.Assistant,
+              additionalBinaryDataProperties: null,
+              refusal: null,
+              participantName: null,
+              toolCalls: null,
+              functionCall: null,
+              outputAudioReference: null)
     {
         Argument.AssertNotNull(content, nameof(content));
     }
@@ -56,7 +80,15 @@ public partial class AssistantChatMessage : ChatMessage
     /// </summary>
     /// <param name="toolCalls"> The <c>tool_calls</c> made by the model. </param>
     public AssistantChatMessage(IEnumerable<ChatToolCall> toolCalls)
-        : this(null, ChatMessageRole.Assistant, null, null, null, null, null, null)
+         : this(
+              content: null,
+              role: ChatMessageRole.Assistant,
+              additionalBinaryDataProperties: null,
+              refusal: null,
+              participantName: null,
+              toolCalls: null,
+              functionCall: null,
+              outputAudioReference: null)
     {
         Argument.AssertNotNullOrEmpty(toolCalls, nameof(toolCalls));
 
@@ -73,7 +105,15 @@ public partial class AssistantChatMessage : ChatMessage
     /// <param name="functionCall"> The <c>function_call</c> made by the model. </param>
     [Obsolete($"This constructor is obsolete. Please use the constructor that takes an IEnumerable<ChatToolCall> parameter instead.")]
     public AssistantChatMessage(ChatFunctionCall functionCall)
-        : this(null, ChatMessageRole.Assistant, null, null, null, null, functionCall, null)
+         : this(
+              content: null,
+              role: ChatMessageRole.Assistant,
+              additionalBinaryDataProperties: null,
+              refusal: null,
+              participantName: null,
+              toolCalls: null,
+              functionCall: functionCall,
+              outputAudioReference: null)
     {
         Argument.AssertNotNull(functionCall, nameof(functionCall));
     }
@@ -85,7 +125,15 @@ public partial class AssistantChatMessage : ChatMessage
     /// <param name="outputAudioReference"> The <c>audio</c> reference with an <c>id</c>, produced by the model. </param>
     [Experimental("OPENAI001")]
     public AssistantChatMessage(ChatOutputAudioReference outputAudioReference)
-        : this(null, ChatMessageRole.Assistant, null, null, null, null, null, outputAudioReference)
+         : this(
+              content: null,
+              role: ChatMessageRole.Assistant,
+              additionalBinaryDataProperties: null,
+              refusal: null,
+              participantName: null,
+              toolCalls: null,
+              functionCall: null,
+              outputAudioReference: outputAudioReference)
     {
         Argument.AssertNotNull(outputAudioReference, nameof(outputAudioReference));
     }
@@ -106,13 +154,13 @@ public partial class AssistantChatMessage : ChatMessage
     /// </exception>
     public AssistantChatMessage(ChatCompletion chatCompletion)
         : this(
-              chatCompletion?.Content,
-              ChatMessageRole.Assistant,
-              null,
-              chatCompletion?.Refusal,
-              null,
-              null,
-              chatCompletion?.FunctionCall,
+              content: chatCompletion?.Content,
+              role: ChatMessageRole.Assistant,
+              additionalBinaryDataProperties: null,
+              refusal: chatCompletion?.Refusal,
+              participantName: null,
+              toolCalls: null,
+              functionCall: chatCompletion?.FunctionCall,
               outputAudioReference: chatCompletion?.OutputAudio is not null
                 ? new(chatCompletion.OutputAudio.Id)
                 : null)

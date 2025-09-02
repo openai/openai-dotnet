@@ -15,11 +15,11 @@ namespace OpenAI.Chat
         {
         }
 
-        internal InternalChatCompletionRequestMessageContentPartFileFile(string filename, string fileId, string internalFileData, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalChatCompletionRequestMessageContentPartFileFile(string filename, string internalFileData, string fileId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Filename = filename;
-            FileId = fileId;
             InternalFileData = internalFileData;
+            FileId = fileId;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

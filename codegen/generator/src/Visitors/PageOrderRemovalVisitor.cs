@@ -99,23 +99,20 @@ public class PageOrderRemovalVisitor : ScmLibraryVisitor
             additionalProperties: null,
             modelAsStruct: true,
             serializationOptions: new());
-        return new InputParameter(
+        return new InputQueryParameter(
             name: "order",
-            nameInRequest: "order",
+            serializedName: "order",
             summary: "",
             doc: "",
-            inputModelType,
-            InputRequestLocation.Query,
+            type: inputModelType,
             defaultValue: null,
-            InputParameterKind.Spread,
+            scope: InputParameterScope.Spread,
             isRequired: false,
+            isReadOnly: false,
             isApiVersion: false,
-            isContentType: false,
-            isEndpoint: false,
-            skipUrlEncoding: false,
             explode: true,
-            arraySerializationDelimiter: null,
-            headerCollectionPrefix: null,
-            serverUrlTemplate: null);
+            access: null,
+            collectionFormat: null,
+            arraySerializationDelimiter: null);
     }
 }

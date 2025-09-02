@@ -34,7 +34,7 @@ public partial class OpenAIFileClient
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
     /// <summary> Initializes a new instance of <see cref="OpenAIFileClient"/>. </summary>
-    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
     public OpenAIFileClient(ApiKeyCredential credential) : this(credential, new OpenAIClientOptions())
     {
@@ -44,7 +44,7 @@ public partial class OpenAIFileClient
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
     /// <summary> Initializes a new instance of <see cref="OpenAIFileClient"/>. </summary>
-    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
     public OpenAIFileClient(ApiKeyCredential credential, OpenAIClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
@@ -118,7 +118,7 @@ public partial class OpenAIFileClient
 
         using MultiPartFormDataBinaryContent content = options.ToMultipartContent(file, filename);
         ClientResult result = await UploadFileAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue(OpenAIFile.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((OpenAIFile)result, result.GetRawResponse());
     }
 
     /// <summary> Uploads a file that can be used across various operations. </summary>
@@ -145,7 +145,7 @@ public partial class OpenAIFileClient
 
         using MultiPartFormDataBinaryContent content = options.ToMultipartContent(file, filename);
         ClientResult result = UploadFile(content, content.ContentType, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue(OpenAIFile.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((OpenAIFile)result, result.GetRawResponse());
     }
 
     /// <summary> Uploads a file that can be used across various operations. </summary>
@@ -227,7 +227,7 @@ public partial class OpenAIFileClient
     public virtual async Task<ClientResult<OpenAIFileCollection>> GetFilesAsync(CancellationToken cancellationToken = default)
     {
         ClientResult result = await GetFilesAsync(null, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue(OpenAIFileCollection.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((OpenAIFileCollection)result, result.GetRawResponse());
     }
 
     /// <summary> Gets basic information about each of the files belonging to the user's organization. </summary>
@@ -235,7 +235,7 @@ public partial class OpenAIFileClient
     public virtual ClientResult<OpenAIFileCollection> GetFiles(CancellationToken cancellationToken = default)
     {
         ClientResult result = GetFiles(null, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue(OpenAIFileCollection.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((OpenAIFileCollection)result, result.GetRawResponse());
     }
 
     /// <summary> Gets basic information about each of the files belonging to the user's organization. </summary>
@@ -244,7 +244,7 @@ public partial class OpenAIFileClient
     public virtual async Task<ClientResult<OpenAIFileCollection>> GetFilesAsync(FilePurpose purpose, CancellationToken cancellationToken = default)
     {
         ClientResult result = await GetFilesAsync(purpose.ToSerialString(), cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue(OpenAIFileCollection.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((OpenAIFileCollection)result, result.GetRawResponse());
     }
 
     /// <summary> Gets basic information about each of the files belonging to the user's organization. </summary>
@@ -253,7 +253,7 @@ public partial class OpenAIFileClient
     public virtual ClientResult<OpenAIFileCollection> GetFiles(FilePurpose purpose, CancellationToken cancellationToken = default)
     {
         ClientResult result = GetFiles(purpose.ToSerialString(), cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue(OpenAIFileCollection.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((OpenAIFileCollection)result, result.GetRawResponse());
     }
 
     /// <summary> Gets basic information about the specified file. </summary>
@@ -266,7 +266,7 @@ public partial class OpenAIFileClient
         Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
         ClientResult result = await GetFileAsync(fileId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue(OpenAIFile.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((OpenAIFile)result, result.GetRawResponse());
     }
 
     /// <summary> Gets basic information about the specified file. </summary>
@@ -279,7 +279,7 @@ public partial class OpenAIFileClient
         Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
         ClientResult result = GetFile(fileId, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue(OpenAIFile.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((OpenAIFile)result, result.GetRawResponse());
     }
 
     /// <summary> Deletes the specified file. </summary>
@@ -292,7 +292,7 @@ public partial class OpenAIFileClient
         Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
         ClientResult result = await DeleteFileAsync(fileId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue(FileDeletionResult.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((FileDeletionResult)result, result.GetRawResponse());
     }
 
     /// <summary> Deletes the specified file. </summary>
@@ -305,7 +305,7 @@ public partial class OpenAIFileClient
         Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
         ClientResult result = DeleteFile(fileId, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue(FileDeletionResult.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((FileDeletionResult)result, result.GetRawResponse());
     }
 
     /// <summary> Downloads the content of the specified file. </summary>

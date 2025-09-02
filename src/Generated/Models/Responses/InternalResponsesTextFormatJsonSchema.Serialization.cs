@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponsesTextFormatJsonSchema : IJsonModel<InternalResponsesTextFormatJsonSchema>
     {
-        internal InternalResponsesTextFormatJsonSchema() : this(InternalResponsesTextFormatType.JsonSchema, null, null, null, default, null)
+        internal InternalResponsesTextFormatJsonSchema() : this(InternalResponsesTextFormatType.JsonSchema, null, null, null, null, default)
         {
         }
 
@@ -41,11 +41,6 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(Name);
             }
-            if (Optional.IsDefined(Strict) && _additionalBinaryDataProperties?.ContainsKey("strict") != true)
-            {
-                writer.WritePropertyName("strict"u8);
-                writer.WriteBooleanValue(Strict.Value);
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("schema") != true)
             {
                 writer.WritePropertyName("schema"u8);
@@ -57,6 +52,11 @@ namespace OpenAI.Responses
                     JsonSerializer.Serialize(writer, document.RootElement);
                 }
 #endif
+            }
+            if (Optional.IsDefined(Strict) && _additionalBinaryDataProperties?.ContainsKey("strict") != true)
+            {
+                writer.WritePropertyName("strict"u8);
+                writer.WriteBooleanValue(Strict.Value);
             }
         }
 
@@ -83,8 +83,8 @@ namespace OpenAI.Responses
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string description = default;
             string name = default;
-            bool? strict = default;
             BinaryData schema = default;
+            bool? strict = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -102,6 +102,11 @@ namespace OpenAI.Responses
                     name = prop.Value.GetString();
                     continue;
                 }
+                if (prop.NameEquals("schema"u8))
+                {
+                    schema = BinaryData.FromString(prop.Value.GetRawText());
+                    continue;
+                }
                 if (prop.NameEquals("strict"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -112,11 +117,6 @@ namespace OpenAI.Responses
                     strict = prop.Value.GetBoolean();
                     continue;
                 }
-                if (prop.NameEquals("schema"u8))
-                {
-                    schema = BinaryData.FromString(prop.Value.GetRawText());
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
@@ -125,8 +125,8 @@ namespace OpenAI.Responses
                 additionalBinaryDataProperties,
                 description,
                 name,
-                strict,
-                schema);
+                schema,
+                strict);
         }
 
         BinaryData IPersistableModel<InternalResponsesTextFormatJsonSchema>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

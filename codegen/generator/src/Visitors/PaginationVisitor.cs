@@ -18,33 +18,82 @@ namespace OpenAILibraryPlugin.Visitors;
 public class PaginationVisitor : ScmLibraryVisitor
 {
 
-    private static readonly string[] _chatParamsToReplace = ["after", "before", "limit", "order", "model", "metadata"];
+    private static readonly string[] _paginationParamsToReplace = ["after", "before", "limit", "order", "model", "metadata", "filter"];
     private static readonly Dictionary<string, string> _paramReplacementMap = new()
     {
         { "after", "AfterId" },
-        { "before", "LastId" },
+        { "before", "BeforeId" },
         { "limit", "PageSizeLimit" },
         { "order", "Order" },
         { "model", "Model" },
-        { "metadata", "Metadata" }
+        { "metadata", "Metadata" },
+        { "filter", "Filter" }
     };
     private static readonly Dictionary<string, (string ReturnType, string OptionsType, string[] ParamsToReplace)> _optionsReplacements = new()
     {
         {
             "GetChatCompletions",
-            ("ChatCompletion", "ChatCompletionCollectionOptions", _chatParamsToReplace)
+            ("ChatCompletion", "ChatCompletionCollectionOptions", _paginationParamsToReplace)
         },
         {
             "GetChatCompletionsAsync",
-            ("ChatCompletion", "ChatCompletionCollectionOptions", _chatParamsToReplace)
+            ("ChatCompletion", "ChatCompletionCollectionOptions", _paginationParamsToReplace)
         },
         {
             "GetChatCompletionMessages",
-            ("ChatCompletionMessageListDatum", "ChatCompletionCollectionOptions", _chatParamsToReplace)
+            ("ChatCompletionMessageListDatum", "ChatCompletionMessageCollectionOptions", _paginationParamsToReplace)
         },
         {
             "GetChatCompletionMessagesAsync",
-            ("ChatCompletionMessageListDatum", "ChatCompletionMessageCollectionOptions", _chatParamsToReplace)
+            ("ChatCompletionMessageListDatum", "ChatCompletionMessageCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetVectorStores",
+            ("VectorStore", "VectorStoreCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetVectorStoresAsync",
+            ("VectorStore", "VectorStoreCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetFileAssociations",
+            ("VectorStoreFileAssociation", "VectorStoreFileAssociationCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetFileAssociationsAsync",
+            ("VectorStoreFileAssociation", "VectorStoreFileAssociationCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetFileAssociationsInBatch",
+            ("VectorStoreFileAssociation", "VectorStoreFileAssociationCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetFileAssociationsInBatchAsync",
+            ("VectorStoreFileAssociation", "VectorStoreFileAssociationCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetContainers",
+            ("ContainerResource", "ContainerCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetContainersAsync",
+            ("ContainerResource", "ContainerCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetContainerFiles",
+            ("ContainerFileResource", "ContainerFileCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetContainerFilesAsync",
+            ("ContainerFileResource", "ContainerFileCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetInputItems",
+            ("ResponseItem", "ResponseItemCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetInputItemsAsync",
+            ("ResponseItem", "ResponseItemCollectionOptions", _paginationParamsToReplace)
         }
     };
 
@@ -90,7 +139,7 @@ public class PaginationVisitor : ScmLibraryVisitor
                 int lastRemovedIndex = -1;
                 for (int i = 0; i < newParameters.Count; i++)
                 {
-                    if (_chatParamsToReplace.Contains(newParameters[i].Name))
+                    if (_paginationParamsToReplace.Contains(newParameters[i].Name))
                     {
                         newParameters.RemoveAt(i);
                         lastRemovedIndex = i;
@@ -205,7 +254,8 @@ public class PaginationVisitor : ScmLibraryVisitor
                                 if (binaryExpr.Left is VariableExpression leftVar &&
                                     leftVar.Declaration.RequestedName == "nextToken" &&
                                     binaryExpr.Right is KeywordExpression rightKeyword &&
-                                    rightKeyword.Keyword == "null")
+                                    rightKeyword.Keyword == "null"
+                                    && hasMoreVariable != null)
                                 {
                                     // Create "!hasMore" condition. Note the hasMoreVariable gets assigned earlier in the method statements
                                     // in the WhileStatement handler below.

@@ -39,6 +39,8 @@ namespace OpenAI.Realtime
 
         public static implicit operator SemanticEagernessLevel(string value) => new SemanticEagernessLevel(value);
 
+        public static implicit operator SemanticEagernessLevel?(string value) => value == null ? null : new SemanticEagernessLevel(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is SemanticEagernessLevel other && Equals(other);
 

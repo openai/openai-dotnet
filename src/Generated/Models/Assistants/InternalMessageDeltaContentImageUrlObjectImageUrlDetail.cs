@@ -34,6 +34,8 @@ namespace OpenAI.Assistants
 
         public static implicit operator InternalMessageDeltaContentImageUrlObjectImageUrlDetail(string value) => new InternalMessageDeltaContentImageUrlObjectImageUrlDetail(value);
 
+        public static implicit operator InternalMessageDeltaContentImageUrlObjectImageUrlDetail?(string value) => value == null ? null : new InternalMessageDeltaContentImageUrlObjectImageUrlDetail(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalMessageDeltaContentImageUrlObjectImageUrlDetail other && Equals(other);
 

@@ -32,30 +32,30 @@ namespace OpenAI.Images
             {
                 throw new FormatException($"The model {nameof(ImageVariationOptions)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
-            {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model.Value.ToString());
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("image") != true)
             {
                 writer.WritePropertyName("image"u8);
                 writer.WriteBase64StringValue(Image.ToArray(), "D");
+            }
+            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
+            {
+                writer.WritePropertyName("model"u8);
+                writer.WriteStringValue(Model.Value.ToString());
             }
             if (Optional.IsDefined(N) && _additionalBinaryDataProperties?.ContainsKey("n") != true)
             {
                 writer.WritePropertyName("n"u8);
                 writer.WriteNumberValue(N.Value);
             }
-            if (Optional.IsDefined(Size) && _additionalBinaryDataProperties?.ContainsKey("size") != true)
-            {
-                writer.WritePropertyName("size"u8);
-                writer.WriteStringValue(Size.Value.ToString());
-            }
             if (Optional.IsDefined(ResponseFormat) && _additionalBinaryDataProperties?.ContainsKey("response_format") != true)
             {
                 writer.WritePropertyName("response_format"u8);
                 writer.WriteStringValue(ResponseFormat.Value.ToString());
+            }
+            if (Optional.IsDefined(Size) && _additionalBinaryDataProperties?.ContainsKey("size") != true)
+            {
+                writer.WritePropertyName("size"u8);
+                writer.WriteStringValue(Size.Value.ToString());
             }
             if (Optional.IsDefined(EndUserId) && _additionalBinaryDataProperties?.ContainsKey("user") != true)
             {
@@ -104,15 +104,20 @@ namespace OpenAI.Images
             {
                 return null;
             }
-            InternalCreateImageVariationRequestModel? model = default;
             BinaryData image = default;
+            InternalCreateImageVariationRequestModel? model = default;
             long? n = default;
-            GeneratedImageSize? size = default;
             GeneratedImageFormat? responseFormat = default;
+            GeneratedImageSize? size = default;
             string endUserId = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("image"u8))
+                {
+                    image = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
+                    continue;
+                }
                 if (prop.NameEquals("model"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -121,11 +126,6 @@ namespace OpenAI.Images
                         continue;
                     }
                     model = new InternalCreateImageVariationRequestModel(prop.Value.GetString());
-                    continue;
-                }
-                if (prop.NameEquals("image"u8))
-                {
-                    image = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
                     continue;
                 }
                 if (prop.NameEquals("n"u8))
@@ -138,16 +138,6 @@ namespace OpenAI.Images
                     n = prop.Value.GetInt64();
                     continue;
                 }
-                if (prop.NameEquals("size"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        size = null;
-                        continue;
-                    }
-                    size = new GeneratedImageSize(prop.Value.GetString());
-                    continue;
-                }
                 if (prop.NameEquals("response_format"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -156,6 +146,16 @@ namespace OpenAI.Images
                         continue;
                     }
                     responseFormat = new GeneratedImageFormat(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("size"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        size = null;
+                        continue;
+                    }
+                    size = new GeneratedImageSize(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("user"u8))
@@ -167,11 +167,11 @@ namespace OpenAI.Images
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ImageVariationOptions(
-                model,
                 image,
+                model,
                 n,
-                size,
                 responseFormat,
+                size,
                 endUserId,
                 additionalBinaryDataProperties);
         }

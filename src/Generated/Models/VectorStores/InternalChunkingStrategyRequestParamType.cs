@@ -31,6 +31,8 @@ namespace OpenAI.VectorStores
 
         public static implicit operator InternalChunkingStrategyRequestParamType(string value) => new InternalChunkingStrategyRequestParamType(value);
 
+        public static implicit operator InternalChunkingStrategyRequestParamType?(string value) => value == null ? null : new InternalChunkingStrategyRequestParamType(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalChunkingStrategyRequestParamType other && Equals(other);
 

@@ -58,6 +58,8 @@ namespace OpenAI.Internal
 
         public static implicit operator InternalVoiceIdsShared(string value) => new InternalVoiceIdsShared(value);
 
+        public static implicit operator InternalVoiceIdsShared?(string value) => value == null ? null : new InternalVoiceIdsShared(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalVoiceIdsShared other && Equals(other);
 

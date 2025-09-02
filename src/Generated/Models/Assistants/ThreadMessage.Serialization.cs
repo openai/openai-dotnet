@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -12,7 +13,7 @@ namespace OpenAI.Assistants
 {
     public partial class ThreadMessage : IJsonModel<ThreadMessage>
     {
-        internal ThreadMessage() : this(null, default, null, default, null, default, default, null, null, null, null, null, default, null, null)
+        internal ThreadMessage() : this(null, null, default, null, default, null, default, default, default, null, null, null, null, null, null)
         {
         }
 
@@ -34,6 +35,11 @@ namespace OpenAI.Assistants
             {
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            {
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
@@ -86,6 +92,11 @@ namespace OpenAI.Assistants
                     writer.WriteNull("incomplete_at"u8);
                 }
             }
+            if (_additionalBinaryDataProperties?.ContainsKey("role") != true)
+            {
+                writer.WritePropertyName("role"u8);
+                writer.WriteStringValue(Role.ToSerialString());
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties?.ContainsKey("content") != true)
             {
@@ -121,33 +132,6 @@ namespace OpenAI.Assistants
                     writer.WriteNull("run_id"u8);
                 }
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties?.ContainsKey("metadata") != true)
-            {
-                writer.WritePropertyName("metadata"u8);
-                writer.WriteStartObject();
-                foreach (var item in Metadata)
-                {
-                    writer.WritePropertyName(item.Key);
-                    if (item.Value == null)
-                    {
-                        writer.WriteNullValue();
-                        continue;
-                    }
-                    writer.WriteStringValue(item.Value);
-                }
-                writer.WriteEndObject();
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
-            {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("role") != true)
-            {
-                writer.WritePropertyName("role"u8);
-                writer.WriteStringValue(Role.ToSerialString());
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("attachments") != true)
             {
                 if (Optional.IsCollectionDefined(Attachments))
@@ -164,6 +148,23 @@ namespace OpenAI.Assistants
                 {
                     writer.WriteNull("attachments"u8);
                 }
+            }
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties?.ContainsKey("metadata") != true)
+            {
+                writer.WritePropertyName("metadata"u8);
+                writer.WriteStartObject();
+                foreach (var item in Metadata)
+                {
+                    writer.WritePropertyName(item.Key);
+                    if (item.Value == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
+                    writer.WriteStringValue(item.Value);
+                }
+                writer.WriteEndObject();
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -207,25 +208,30 @@ namespace OpenAI.Assistants
                 return null;
             }
             string id = default;
+            string @object = default;
             DateTimeOffset createdAt = default;
             string threadId = default;
             MessageStatus status = default;
             MessageFailureDetails incompleteDetails = default;
             DateTimeOffset? completedAt = default;
             DateTimeOffset? incompleteAt = default;
+            MessageRole role = default;
             IReadOnlyList<MessageContent> content = default;
             string assistantId = default;
             string runId = default;
-            IReadOnlyDictionary<string, string> metadata = default;
-            string @object = default;
-            MessageRole role = default;
             IReadOnlyList<MessageCreationAttachment> attachments = default;
+            IReadOnlyDictionary<string, string> metadata = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("id"u8))
                 {
                     id = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("object"u8))
+                {
+                    @object = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("created_at"u8))
@@ -273,6 +279,11 @@ namespace OpenAI.Assistants
                     incompleteAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
+                if (prop.NameEquals("role"u8))
+                {
+                    role = prop.Value.GetString().ToMessageRole();
+                    continue;
+                }
                 if (prop.NameEquals("content"u8))
                 {
                     List<MessageContent> array = new List<MessageContent>();
@@ -303,6 +314,21 @@ namespace OpenAI.Assistants
                     runId = prop.Value.GetString();
                     continue;
                 }
+                if (prop.NameEquals("attachments"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        attachments = new ChangeTrackingList<MessageCreationAttachment>();
+                        continue;
+                    }
+                    List<MessageCreationAttachment> array = new List<MessageCreationAttachment>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        array.Add(MessageCreationAttachment.DeserializeMessageCreationAttachment(item, options));
+                    }
+                    attachments = array;
+                    continue;
+                }
                 if (prop.NameEquals("metadata"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -325,49 +351,24 @@ namespace OpenAI.Assistants
                     metadata = dictionary;
                     continue;
                 }
-                if (prop.NameEquals("object"u8))
-                {
-                    @object = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("role"u8))
-                {
-                    role = prop.Value.GetString().ToMessageRole();
-                    continue;
-                }
-                if (prop.NameEquals("attachments"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        attachments = new ChangeTrackingList<MessageCreationAttachment>();
-                        continue;
-                    }
-                    List<MessageCreationAttachment> array = new List<MessageCreationAttachment>();
-                    foreach (var item in prop.Value.EnumerateArray())
-                    {
-                        array.Add(MessageCreationAttachment.DeserializeMessageCreationAttachment(item, options));
-                    }
-                    attachments = array;
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ThreadMessage(
                 id,
+                @object,
                 createdAt,
                 threadId,
                 status,
                 incompleteDetails,
                 completedAt,
                 incompleteAt,
+                role,
                 content,
                 assistantId,
                 runId,
-                metadata,
-                @object,
-                role,
                 attachments,
+                metadata,
                 additionalBinaryDataProperties);
         }
 
@@ -403,5 +404,12 @@ namespace OpenAI.Assistants
         }
 
         string IPersistableModel<ThreadMessage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator ThreadMessage(ClientResult result)
+        {
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeThreadMessage(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
     }
 }

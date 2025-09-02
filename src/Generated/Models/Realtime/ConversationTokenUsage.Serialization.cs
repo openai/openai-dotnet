@@ -26,15 +26,10 @@ namespace OpenAI.Realtime
             {
                 throw new FormatException($"The model {nameof(ConversationTokenUsage)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(InputTokenDetails) && _additionalBinaryDataProperties?.ContainsKey("input_token_details") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("total_tokens") != true)
             {
-                writer.WritePropertyName("input_token_details"u8);
-                writer.WriteObjectValue(InputTokenDetails, options);
-            }
-            if (Optional.IsDefined(OutputTokenDetails) && _additionalBinaryDataProperties?.ContainsKey("output_token_details") != true)
-            {
-                writer.WritePropertyName("output_token_details"u8);
-                writer.WriteObjectValue(OutputTokenDetails, options);
+                writer.WritePropertyName("total_tokens"u8);
+                writer.WriteNumberValue(TotalTokenCount);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("input_tokens") != true)
             {
@@ -46,10 +41,15 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("output_tokens"u8);
                 writer.WriteNumberValue(OutputTokenCount);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("total_tokens") != true)
+            if (Optional.IsDefined(InputTokenDetails) && _additionalBinaryDataProperties?.ContainsKey("input_token_details") != true)
             {
-                writer.WritePropertyName("total_tokens"u8);
-                writer.WriteNumberValue(TotalTokenCount);
+                writer.WritePropertyName("input_token_details"u8);
+                writer.WriteObjectValue(InputTokenDetails, options);
+            }
+            if (Optional.IsDefined(OutputTokenDetails) && _additionalBinaryDataProperties?.ContainsKey("output_token_details") != true)
+            {
+                writer.WritePropertyName("output_token_details"u8);
+                writer.WriteObjectValue(OutputTokenDetails, options);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -92,30 +92,21 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            ConversationInputTokenUsageDetails inputTokenDetails = default;
-            ConversationOutputTokenUsageDetails outputTokenDetails = default;
+            int totalTokenCount = default;
             int inputTokenCount = default;
             int outputTokenCount = default;
-            int totalTokenCount = default;
+            ConversationInputTokenUsageDetails inputTokenDetails = default;
+            ConversationOutputTokenUsageDetails outputTokenDetails = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("input_token_details"u8))
+                if (prop.NameEquals("total_tokens"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    inputTokenDetails = ConversationInputTokenUsageDetails.DeserializeConversationInputTokenUsageDetails(prop.Value, options);
-                    continue;
-                }
-                if (prop.NameEquals("output_token_details"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    outputTokenDetails = ConversationOutputTokenUsageDetails.DeserializeConversationOutputTokenUsageDetails(prop.Value, options);
+                    totalTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("input_tokens"u8))
@@ -136,24 +127,33 @@ namespace OpenAI.Realtime
                     outputTokenCount = prop.Value.GetInt32();
                     continue;
                 }
-                if (prop.NameEquals("total_tokens"u8))
+                if (prop.NameEquals("input_token_details"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    totalTokenCount = prop.Value.GetInt32();
+                    inputTokenDetails = ConversationInputTokenUsageDetails.DeserializeConversationInputTokenUsageDetails(prop.Value, options);
+                    continue;
+                }
+                if (prop.NameEquals("output_token_details"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    outputTokenDetails = ConversationOutputTokenUsageDetails.DeserializeConversationOutputTokenUsageDetails(prop.Value, options);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ConversationTokenUsage(
-                inputTokenDetails,
-                outputTokenDetails,
+                totalTokenCount,
                 inputTokenCount,
                 outputTokenCount,
-                totalTokenCount,
+                inputTokenDetails,
+                outputTokenDetails,
                 additionalBinaryDataProperties);
         }
 

@@ -519,14 +519,19 @@ await foreach (StreamingResponseUpdate update
             },
         }))
 {
-    if (update is StreamingResponseItemUpdate itemUpdate
+    if (update is StreamingResponseOutputItemAddedUpdate itemUpdate
         && itemUpdate.Item is ReasoningResponseItem reasoningItem)
     {
         Console.WriteLine($"[Reasoning] ({reasoningItem.Status})");
     }
-    else if (update is StreamingResponseContentPartDeltaUpdate deltaUpdate)
+    else if (update is StreamingResponseOutputItemAddedUpdate itemDone
+        && itemDone.Item is ReasoningResponseItem reasoningDone)
     {
-        Console.Write(deltaUpdate.Text);
+        Console.WriteLine($"[Reasoning DONE] ({reasoningDone.Status})");
+    }
+    else if (update is StreamingResponseOutputTextDeltaUpdate delta)
+    {
+        Console.Write(delta.Delta);
     }
 }
 ```

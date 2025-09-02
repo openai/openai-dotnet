@@ -32,6 +32,11 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(ParticipantName);
             }
+            if (Optional.IsDefined(OutputAudioReference) && _additionalBinaryDataProperties?.ContainsKey("audio") != true)
+            {
+                writer.WritePropertyName("audio"u8);
+                writer.WriteObjectValue(OutputAudioReference, options);
+            }
             if (Optional.IsCollectionDefined(ToolCalls) && _additionalBinaryDataProperties?.ContainsKey("tool_calls") != true)
             {
                 writer.WritePropertyName("tool_calls"u8);
@@ -46,11 +51,6 @@ namespace OpenAI.Chat
             {
                 writer.WritePropertyName("function_call"u8);
                 writer.WriteObjectValue(FunctionCall, options);
-            }
-            if (Optional.IsDefined(OutputAudioReference) && _additionalBinaryDataProperties?.ContainsKey("audio") != true)
-            {
-                writer.WritePropertyName("audio"u8);
-                writer.WriteObjectValue(OutputAudioReference, options);
             }
         }
 
@@ -74,24 +74,24 @@ namespace OpenAI.Chat
             {
                 return null;
             }
-            ChatMessageContent content = default;
             ChatMessageRole role = default;
+            ChatMessageContent content = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string refusal = default;
             string participantName = default;
+            ChatOutputAudioReference outputAudioReference = default;
             IList<ChatToolCall> toolCalls = default;
             ChatFunctionCall functionCall = default;
-            ChatOutputAudioReference outputAudioReference = default;
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("content"u8))
-                {
-                    DeserializeContentValue(prop, ref content);
-                    continue;
-                }
                 if (prop.NameEquals("role"u8))
                 {
                     role = prop.Value.GetString().ToChatMessageRole();
+                    continue;
+                }
+                if (prop.NameEquals("content"u8))
+                {
+                    DeserializeContentValue(prop, ref content);
                     continue;
                 }
                 if (prop.NameEquals("refusal"u8))
@@ -107,6 +107,16 @@ namespace OpenAI.Chat
                 if (prop.NameEquals("name"u8))
                 {
                     participantName = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("audio"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        outputAudioReference = null;
+                        continue;
+                    }
+                    outputAudioReference = ChatOutputAudioReference.DeserializeChatOutputAudioReference(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("tool_calls"u8))
@@ -133,28 +143,18 @@ namespace OpenAI.Chat
                     functionCall = ChatFunctionCall.DeserializeChatFunctionCall(prop.Value, options);
                     continue;
                 }
-                if (prop.NameEquals("audio"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        outputAudioReference = null;
-                        continue;
-                    }
-                    outputAudioReference = ChatOutputAudioReference.DeserializeChatOutputAudioReference(prop.Value, options);
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new AssistantChatMessage(
-                content,
                 role,
+                content,
                 additionalBinaryDataProperties,
                 refusal,
                 participantName,
+                outputAudioReference,
                 toolCalls ?? new ChangeTrackingList<ChatToolCall>(),
-                functionCall,
-                outputAudioReference);
+                functionCall);
         }
 
         BinaryData IPersistableModel<AssistantChatMessage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class FunctionCallOutputResponseItem : IJsonModel<FunctionCallOutputResponseItem>
     {
-        internal FunctionCallOutputResponseItem() : this(InternalItemType.FunctionCallOutput, null, null, null, null, default)
+        internal FunctionCallOutputResponseItem() : this(InternalItemType.FunctionCallOutput, null, null, default, null, null)
         {
         }
 
@@ -31,6 +31,13 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(FunctionCallOutputResponseItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
+            // Plugin customization: remove options.Format != "W" check
+            // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
+            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
+            {
+                writer.WritePropertyName("status"u8);
+                writer.WriteStringValue(Status.Value.ToSerialString());
+            }
             if (_additionalBinaryDataProperties?.ContainsKey("call_id") != true)
             {
                 writer.WritePropertyName("call_id"u8);
@@ -40,12 +47,6 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("output"u8);
                 writer.WriteStringValue(FunctionOutput);
-            }
-            // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
-            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
-            {
-                writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.Value.ToSerialString());
             }
         }
 
@@ -71,9 +72,9 @@ namespace OpenAI.Responses
             InternalItemType kind = default;
             string id = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            FunctionCallOutputStatus? status = default;
             string callId = default;
             string functionOutput = default;
-            FunctionCallOutputStatus? status = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -86,6 +87,11 @@ namespace OpenAI.Responses
                     id = prop.Value.GetString();
                     continue;
                 }
+                if (prop.NameEquals("status"u8))
+                {
+                    status = prop.Value.GetString().ToFunctionCallOutputStatus();
+                    continue;
+                }
                 if (prop.NameEquals("call_id"u8))
                 {
                     callId = prop.Value.GetString();
@@ -96,11 +102,6 @@ namespace OpenAI.Responses
                     functionOutput = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("status"u8))
-                {
-                    status = prop.Value.GetString().ToFunctionCallOutputStatus();
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
@@ -108,9 +109,9 @@ namespace OpenAI.Responses
                 kind,
                 id,
                 additionalBinaryDataProperties,
+                status,
                 callId,
-                functionOutput,
-                status);
+                functionOutput);
         }
 
         BinaryData IPersistableModel<FunctionCallOutputResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

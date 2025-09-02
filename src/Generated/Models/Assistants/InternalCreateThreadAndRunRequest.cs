@@ -21,13 +21,15 @@ namespace OpenAI.Assistants
             Metadata = new ChangeTrackingDictionary<string, string>();
         }
 
-        internal InternalCreateThreadAndRunRequest(string assistantId, ThreadCreationOptions thread, string instructions, IList<ToolDefinition> tools, IDictionary<string, string> metadata, float? temperature, float? topP, bool? stream, int? maxPromptTokens, int? maxCompletionTokens, RunTruncationStrategy truncationStrategy, bool? parallelToolCalls, string model, ToolResources toolResources, AssistantResponseFormat responseFormat, ToolConstraint toolChoice, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalCreateThreadAndRunRequest(string assistantId, ThreadCreationOptions thread, string model, string instructions, IList<ToolDefinition> tools, ToolResources toolResources, IDictionary<string, string> metadata, float? temperature, float? topP, bool? stream, int? maxPromptTokens, int? maxCompletionTokens, RunTruncationStrategy truncationStrategy, ToolConstraint toolChoice, bool? parallelToolCalls, AssistantResponseFormat responseFormat, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             AssistantId = assistantId;
             Thread = thread;
+            Model = model;
             Instructions = instructions;
             Tools = tools ?? new ChangeTrackingList<ToolDefinition>();
+            ToolResources = toolResources;
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Temperature = temperature;
             TopP = topP;
@@ -35,11 +37,9 @@ namespace OpenAI.Assistants
             MaxPromptTokens = maxPromptTokens;
             MaxCompletionTokens = maxCompletionTokens;
             TruncationStrategy = truncationStrategy;
-            ParallelToolCalls = parallelToolCalls;
-            Model = model;
-            ToolResources = toolResources;
-            ResponseFormat = responseFormat;
             ToolChoice = toolChoice;
+            ParallelToolCalls = parallelToolCalls;
+            ResponseFormat = responseFormat;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

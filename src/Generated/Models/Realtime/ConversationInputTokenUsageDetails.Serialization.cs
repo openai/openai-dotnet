@@ -26,11 +26,6 @@ namespace OpenAI.Realtime
             {
                 throw new FormatException($"The model {nameof(ConversationInputTokenUsageDetails)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("audio_tokens") != true)
-            {
-                writer.WritePropertyName("audio_tokens"u8);
-                writer.WriteNumberValue(AudioTokenCount);
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("cached_tokens") != true)
             {
                 writer.WritePropertyName("cached_tokens"u8);
@@ -40,6 +35,11 @@ namespace OpenAI.Realtime
             {
                 writer.WritePropertyName("text_tokens"u8);
                 writer.WriteNumberValue(TextTokenCount);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("audio_tokens") != true)
+            {
+                writer.WritePropertyName("audio_tokens"u8);
+                writer.WriteNumberValue(AudioTokenCount);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -82,21 +82,12 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            int audioTokenCount = default;
             int cachedTokenCount = default;
             int textTokenCount = default;
+            int audioTokenCount = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("audio_tokens"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    audioTokenCount = prop.Value.GetInt32();
-                    continue;
-                }
                 if (prop.NameEquals("cached_tokens"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -115,10 +106,19 @@ namespace OpenAI.Realtime
                     textTokenCount = prop.Value.GetInt32();
                     continue;
                 }
+                if (prop.NameEquals("audio_tokens"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    audioTokenCount = prop.Value.GetInt32();
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ConversationInputTokenUsageDetails(audioTokenCount, cachedTokenCount, textTokenCount, additionalBinaryDataProperties);
+            return new ConversationInputTokenUsageDetails(cachedTokenCount, textTokenCount, audioTokenCount, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<ConversationInputTokenUsageDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

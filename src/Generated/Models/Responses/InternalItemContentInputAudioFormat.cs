@@ -31,6 +31,8 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalItemContentInputAudioFormat(string value) => new InternalItemContentInputAudioFormat(value);
 
+        public static implicit operator InternalItemContentInputAudioFormat?(string value) => value == null ? null : new InternalItemContentInputAudioFormat(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalItemContentInputAudioFormat other && Equals(other);
 

@@ -40,7 +40,7 @@ public partial class EmbeddingClient
     // - Demoted the endpoint parameter to be a property in the options class.
     /// <summary> Initializes a new instance of <see cref="EmbeddingClient"/>. </summary>
     /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
-    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="credential"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
     public EmbeddingClient(string model, ApiKeyCredential credential) : this(model, credential, new OpenAIClientOptions())
@@ -53,7 +53,7 @@ public partial class EmbeddingClient
     // - Demoted the endpoint parameter to be a property in the options class.
     /// <summary> Initializes a new instance of <see cref="EmbeddingClient"/>. </summary>
     /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
-    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="credential"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
@@ -135,7 +135,7 @@ public partial class EmbeddingClient
 
         using BinaryContent content = options.ToBinaryContent();
         ClientResult result = await GenerateEmbeddingsAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue(OpenAIEmbeddingCollection.FromClientResult(result).FirstOrDefault(), result.GetRawResponse());
+        return ClientResult.FromValue(((OpenAIEmbeddingCollection)result).FirstOrDefault(), result.GetRawResponse());
     }
 
     // CUSTOM: Added to simplify generating a single embedding from a string input.
@@ -154,7 +154,7 @@ public partial class EmbeddingClient
 
         using BinaryContent content = options.ToBinaryContent();
         ClientResult result = GenerateEmbeddings(content, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue(OpenAIEmbeddingCollection.FromClientResult(result).FirstOrDefault(), result.GetRawResponse());
+        return ClientResult.FromValue(((OpenAIEmbeddingCollection)result).FirstOrDefault(), result.GetRawResponse());
     }
 
     // CUSTOM: Added to simplify passing the input as a collection of strings instead of BinaryData.
@@ -173,7 +173,7 @@ public partial class EmbeddingClient
 
         using BinaryContent content = options.ToBinaryContent();
         ClientResult result = await GenerateEmbeddingsAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue(OpenAIEmbeddingCollection.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((OpenAIEmbeddingCollection)result, result.GetRawResponse());
 
     }
 
@@ -193,7 +193,7 @@ public partial class EmbeddingClient
 
         using BinaryContent content = options.ToBinaryContent();
         ClientResult result = GenerateEmbeddings(content, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue(OpenAIEmbeddingCollection.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((OpenAIEmbeddingCollection)result, result.GetRawResponse());
     }
 
     // CUSTOM: Added to simplify passing the input as a collection of ReadOnlyMemory tokens instead of BinaryData.
@@ -212,7 +212,7 @@ public partial class EmbeddingClient
 
         using BinaryContent content = options.ToBinaryContent();
         ClientResult result = await GenerateEmbeddingsAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue(OpenAIEmbeddingCollection.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((OpenAIEmbeddingCollection)result, result.GetRawResponse());
     }
 
     // CUSTOM: Added to simplify passing the input as a collection of ReadOnlyMemory of tokens instead of BinaryData.
@@ -231,7 +231,7 @@ public partial class EmbeddingClient
 
         using BinaryContent content = options.ToBinaryContent();
         ClientResult result = GenerateEmbeddings(content, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue(OpenAIEmbeddingCollection.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((OpenAIEmbeddingCollection)result, result.GetRawResponse());
     }
 
     private void CreateEmbeddingGenerationOptions(string input, ref EmbeddingGenerationOptions options)

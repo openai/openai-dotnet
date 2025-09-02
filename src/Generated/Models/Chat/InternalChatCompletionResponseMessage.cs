@@ -12,28 +12,28 @@ namespace OpenAI.Chat
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalChatCompletionResponseMessage(string refusal, ChatMessageRole role, ChatMessageContent content)
+        internal InternalChatCompletionResponseMessage(ChatMessageContent content, string refusal, ChatMessageRole role)
         {
             // Plugin customization: ensure initialization of collections
+            Content = content ?? new ChatMessageContent();
             ContentParts = new ChangeTrackingList<ChatMessageContentPart>();
             Refusal = refusal;
             ToolCalls = new ChangeTrackingList<ChatToolCall>();
             Annotations = new ChangeTrackingList<ChatMessageAnnotation>();
             Role = role;
-            Content = content ?? new ChatMessageContent();
         }
 
-        internal InternalChatCompletionResponseMessage(IList<ChatMessageContentPart> contentParts, string refusal, IReadOnlyList<ChatToolCall> toolCalls, IReadOnlyList<ChatMessageAnnotation> annotations, ChatOutputAudio audio, ChatMessageRole role, ChatMessageContent content, ChatFunctionCall functionCall, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalChatCompletionResponseMessage(ChatMessageContent content, IList<ChatMessageContentPart> contentParts, string refusal, IReadOnlyList<ChatToolCall> toolCalls, IReadOnlyList<ChatMessageAnnotation> annotations, ChatMessageRole role, ChatFunctionCall functionCall, ChatOutputAudio audio, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
+            Content = content ?? new ChatMessageContent();
             ContentParts = contentParts ?? new ChangeTrackingList<ChatMessageContentPart>();
             Refusal = refusal;
             ToolCalls = toolCalls ?? new ChangeTrackingList<ChatToolCall>();
             Annotations = annotations ?? new ChangeTrackingList<ChatMessageAnnotation>();
-            Audio = audio;
             Role = role;
-            Content = content ?? new ChatMessageContent();
             FunctionCall = functionCall;
+            Audio = audio;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

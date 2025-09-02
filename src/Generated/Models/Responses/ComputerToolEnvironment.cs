@@ -42,6 +42,8 @@ namespace OpenAI.Responses
 
         public static implicit operator ComputerToolEnvironment(string value) => new ComputerToolEnvironment(value);
 
+        public static implicit operator ComputerToolEnvironment?(string value) => value == null ? null : new ComputerToolEnvironment(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ComputerToolEnvironment other && Equals(other);
 

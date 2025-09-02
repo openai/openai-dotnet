@@ -21,7 +21,7 @@ public partial class GeneratedImageCollection : ReadOnlyCollection<GeneratedImag
     /// <param name="usage"></param>
     /// <param name="createdAt"></param>
     /// <param name="additionalBinaryDataProperties"> Keeps track of any properties unknown to the library. </param>
-    internal GeneratedImageCollection(IList<GeneratedImage> data, ImageTokenUsage usage, DateTimeOffset createdAt, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+    internal GeneratedImageCollection(DateTimeOffset createdAt, IList<GeneratedImage> data, ImageTokenUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         : base([.. data])
     {
         Usage = usage;
@@ -41,11 +41,4 @@ public partial class GeneratedImageCollection : ReadOnlyCollection<GeneratedImag
     /// </summary>
     [CodeGenMember("Created")]
     public DateTimeOffset CreatedAt { get; }
-
-    internal static GeneratedImageCollection FromClientResult(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeGeneratedImageCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
-    }
 }

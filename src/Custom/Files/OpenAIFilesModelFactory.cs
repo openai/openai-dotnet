@@ -14,9 +14,9 @@ public static partial class OpenAIFilesModelFactory
     public static FileDeletionResult FileDeletionResult(string fileId = null, bool deleted = default)
     {
         return new FileDeletionResult(
-            deleted,
-            fileId,
-            "file",
+            deleted: deleted,
+            fileId: fileId,
+            @object: "file",
             additionalBinaryDataProperties: null);
     }
 

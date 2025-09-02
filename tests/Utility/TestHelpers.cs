@@ -3,6 +3,7 @@ using OpenAI.Assistants;
 using OpenAI.Audio;
 using OpenAI.Batch;
 using OpenAI.Chat;
+using OpenAI.Containers;
 using OpenAI.Embeddings;
 using OpenAI.Files;
 using OpenAI.FineTuning;
@@ -35,6 +36,7 @@ internal static class TestHelpers
         Audio_Gpt_4o_Mini_Transcribe,
         Batch,
         Chat,
+        Containers,
         Embeddings,
         Files,
         FineTuning,
@@ -66,6 +68,7 @@ internal static class TestHelpers
         TestScenario.TopLevel => null,
         TestScenario.Realtime => "gpt-4o-realtime-preview-2024-10-01",
         TestScenario.Responses => "gpt-4o-mini",
+        TestScenario.Containers => "gpt-4o-mini",
         _ => throw new NotImplementedException(),
     };
 
@@ -74,11 +77,20 @@ internal static class TestHelpers
     public static ApiKeyCredential GetTestApiKeyCredential()
         => new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-    public static T GetTestClient<T>(TestScenario scenario, string overrideModel = null, OpenAIClientOptions options = default)
+    public static T GetTestClient<T>(
+        TestScenario scenario,
+        string overrideModel = null,
+        bool excludeDumpPolicy = false,
+        OpenAIClientOptions options = default)
     {
         options ??= new();
         ApiKeyCredential credential = GetTestApiKeyCredential();
-        options.AddPolicy(GetDumpPolicy(), PipelinePosition.BeforeTransport);
+
+        if (!excludeDumpPolicy)
+        {
+            options.AddPolicy(GetDumpPolicy(), PipelinePosition.BeforeTransport);
+        }
+
         string model = overrideModel ?? GetModelForScenario(scenario);
         object clientObject = scenario switch
         {
@@ -90,6 +102,9 @@ internal static class TestHelpers
             TestScenario.Audio_Gpt_4o_Mini_Transcribe => new AudioClient(model, credential, options),
             TestScenario.Batch => new BatchClient(credential, options),
             TestScenario.Chat => new ChatClient(model, credential, options),
+#pragma warning disable OPENAI001
+            TestScenario.Containers => new ContainerClient(credential, options),
+#pragma warning restore OPENAI001
             TestScenario.Embeddings => new EmbeddingClient(model, credential, options),
             TestScenario.Files => new OpenAIFileClient(credential, options),
             TestScenario.FineTuning => new FineTuningClient(credential, options),

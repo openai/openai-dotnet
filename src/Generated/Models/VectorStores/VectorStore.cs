@@ -26,20 +26,20 @@ namespace OpenAI.VectorStores
             Metadata = new ChangeTrackingDictionary<string, string>();
         }
 
-        internal VectorStore(string id, DateTimeOffset createdAt, string name, int usageBytes, VectorStoreFileCounts fileCounts, VectorStoreStatus status, DateTimeOffset? expiresAt, DateTimeOffset? lastActiveAt, IReadOnlyDictionary<string, string> metadata, string @object, VectorStoreExpirationPolicy expirationPolicy, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal VectorStore(string id, string @object, DateTimeOffset createdAt, string name, int usageBytes, VectorStoreFileCounts fileCounts, VectorStoreStatus status, VectorStoreExpirationPolicy expirationPolicy, DateTimeOffset? expiresAt, DateTimeOffset? lastActiveAt, IReadOnlyDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
+            Object = @object;
             CreatedAt = createdAt;
             Name = name;
             UsageBytes = usageBytes;
             FileCounts = fileCounts;
             Status = status;
+            ExpirationPolicy = expirationPolicy;
             ExpiresAt = expiresAt;
             LastActiveAt = lastActiveAt;
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
-            Object = @object;
-            ExpirationPolicy = expirationPolicy;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

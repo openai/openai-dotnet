@@ -184,6 +184,8 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalResponseStreamEventType(string value) => new InternalResponseStreamEventType(value);
 
+        public static implicit operator InternalResponseStreamEventType?(string value) => value == null ? null : new InternalResponseStreamEventType(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalResponseStreamEventType other && Equals(other);
 

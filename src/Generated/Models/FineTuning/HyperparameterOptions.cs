@@ -15,11 +15,11 @@ namespace OpenAI.FineTuning
         {
         }
 
-        internal HyperparameterOptions(HyperparameterEpochCount epochCount, HyperparameterBatchSize batchSize, HyperparameterLearningRate learningRate, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal HyperparameterOptions(HyperparameterBatchSize batchSize, HyperparameterLearningRate learningRate, HyperparameterEpochCount epochCount, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            EpochCount = epochCount;
             BatchSize = batchSize;
             LearningRate = learningRate;
+            EpochCount = epochCount;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

@@ -37,6 +37,8 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalImageGenToolQuality(string value) => new InternalImageGenToolQuality(value);
 
+        public static implicit operator InternalImageGenToolQuality?(string value) => value == null ? null : new InternalImageGenToolQuality(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalImageGenToolQuality other && Equals(other);
 

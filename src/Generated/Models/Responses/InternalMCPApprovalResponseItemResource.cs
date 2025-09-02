@@ -4,13 +4,16 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Responses
 {
     internal partial class InternalMCPApprovalResponseItemResource : ResponseItem
     {
-        internal InternalMCPApprovalResponseItemResource(string id, string approvalRequestId, bool approve) : base(InternalItemType.McpApprovalResponse, id)
+        public InternalMCPApprovalResponseItemResource(string approvalRequestId, bool approve) : base(InternalItemType.McpApprovalResponse)
         {
+            Argument.AssertNotNull(approvalRequestId, nameof(approvalRequestId));
+
             ApprovalRequestId = approvalRequestId;
             Approve = approve;
         }
@@ -22,10 +25,10 @@ namespace OpenAI.Responses
             Reason = reason;
         }
 
-        public string ApprovalRequestId { get; }
+        public string ApprovalRequestId { get; set; }
 
-        public bool Approve { get; }
+        public bool Approve { get; set; }
 
-        public string Reason { get; }
+        public string Reason { get; set; }
     }
 }

@@ -28,6 +28,8 @@ namespace OpenAI.Responses
 
         public static implicit operator InternalReasoningItemSummaryPartType(string value) => new InternalReasoningItemSummaryPartType(value);
 
+        public static implicit operator InternalReasoningItemSummaryPartType?(string value) => value == null ? null : new InternalReasoningItemSummaryPartType(value);
+
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is InternalReasoningItemSummaryPartType other && Equals(other);
 

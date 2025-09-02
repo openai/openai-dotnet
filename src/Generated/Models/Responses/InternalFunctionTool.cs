@@ -10,22 +10,22 @@ namespace OpenAI.Responses
 {
     internal partial class InternalFunctionTool : ResponseTool
     {
-        public InternalFunctionTool(string name, bool? strict, BinaryData parameters) : base(InternalToolType.Function)
+        public InternalFunctionTool(string name, BinaryData parameters, bool? strict) : base(InternalToolType.Function)
         {
             Argument.AssertNotNull(name, nameof(name));
             Argument.AssertNotNull(parameters, nameof(parameters));
 
             Name = name;
-            Strict = strict;
             Parameters = parameters;
+            Strict = strict;
         }
 
-        internal InternalFunctionTool(InternalToolType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string description, bool? strict, BinaryData parameters) : base(kind, additionalBinaryDataProperties)
+        internal InternalFunctionTool(InternalToolType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name, string description, BinaryData parameters, bool? strict) : base(kind, additionalBinaryDataProperties)
         {
             Name = name;
             Description = description;
-            Strict = strict;
             Parameters = parameters;
+            Strict = strict;
         }
 
         public string Name { get; set; }

@@ -107,9 +107,6 @@ public partial class ChatCompletionOptions
     [CodeGenMember("ParallelToolCalls")]
     public bool? AllowParallelToolCalls { get; set; }
 
-    [CodeGenMember("ServiceTier")]
-    internal InternalServiceTier? _serviceTier;
-
     // CUSTOM: Renamed.
     /// <summary>
     ///     A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse.

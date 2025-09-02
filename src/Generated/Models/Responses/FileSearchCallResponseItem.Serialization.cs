@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class FileSearchCallResponseItem : IJsonModel<FileSearchCallResponseItem>
     {
-        internal FileSearchCallResponseItem() : this(InternalItemType.FileSearchCall, null, null, null, null, default)
+        internal FileSearchCallResponseItem() : this(InternalItemType.FileSearchCall, null, null, default, null, null)
         {
         }
 
@@ -31,6 +31,13 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(FileSearchCallResponseItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
+            // Plugin customization: remove options.Format != "W" check
+            // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
+            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
+            {
+                writer.WritePropertyName("status"u8);
+                writer.WriteStringValue(Status.Value.ToSerialString());
+            }
             if (_additionalBinaryDataProperties?.ContainsKey("queries") != true)
             {
                 writer.WritePropertyName("queries"u8);
@@ -56,12 +63,6 @@ namespace OpenAI.Responses
                 }
                 writer.WriteEndArray();
             }
-            // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
-            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
-            {
-                writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.Value.ToSerialString());
-            }
         }
 
         FileSearchCallResponseItem IJsonModel<FileSearchCallResponseItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (FileSearchCallResponseItem)JsonModelCreateCore(ref reader, options);
@@ -86,9 +87,9 @@ namespace OpenAI.Responses
             InternalItemType kind = default;
             string id = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            FileSearchCallStatus? status = default;
             IList<string> queries = default;
             IList<FileSearchCallResult> results = default;
-            FileSearchCallStatus? status = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -99,6 +100,11 @@ namespace OpenAI.Responses
                 if (prop.NameEquals("id"u8))
                 {
                     id = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("status"u8))
+                {
+                    status = prop.Value.GetString().ToFileSearchCallStatus();
                     continue;
                 }
                 if (prop.NameEquals("queries"u8))
@@ -132,11 +138,6 @@ namespace OpenAI.Responses
                     results = array;
                     continue;
                 }
-                if (prop.NameEquals("status"u8))
-                {
-                    status = prop.Value.GetString().ToFileSearchCallStatus();
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
@@ -144,9 +145,9 @@ namespace OpenAI.Responses
                 kind,
                 id,
                 additionalBinaryDataProperties,
+                status,
                 queries,
-                results ?? new ChangeTrackingList<FileSearchCallResult>(),
-                status);
+                results ?? new ChangeTrackingList<FileSearchCallResult>());
         }
 
         BinaryData IPersistableModel<FileSearchCallResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

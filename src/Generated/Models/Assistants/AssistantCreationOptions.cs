@@ -15,20 +15,20 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal AssistantCreationOptions(string name, string description, string instructions, IDictionary<string, string> metadata, float? temperature, string model, IList<ToolDefinition> tools, ToolResources toolResources, AssistantResponseFormat responseFormat, float? nucleusSamplingFactor, ChatReasoningEffortLevel? reasoningEffortLevel, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal AssistantCreationOptions(string model, string name, string description, string instructions, ChatReasoningEffortLevel? reasoningEffortLevel, IList<ToolDefinition> tools, ToolResources toolResources, IDictionary<string, string> metadata, float? temperature, float? nucleusSamplingFactor, AssistantResponseFormat responseFormat, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
+            Model = model;
             Name = name;
             Description = description;
             Instructions = instructions;
-            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
-            Temperature = temperature;
-            Model = model;
+            ReasoningEffortLevel = reasoningEffortLevel;
             Tools = tools ?? new ChangeTrackingList<ToolDefinition>();
             ToolResources = toolResources;
-            ResponseFormat = responseFormat;
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
+            Temperature = temperature;
             NucleusSamplingFactor = nucleusSamplingFactor;
-            ReasoningEffortLevel = reasoningEffortLevel;
+            ResponseFormat = responseFormat;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
