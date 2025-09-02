@@ -4298,7 +4298,12 @@ namespace OpenAI.Realtime {
         protected RealtimeClient();
         public RealtimeClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public RealtimeClient(ApiKeyCredential credential);
+        [Experimental("OPENAI001")]
+        public RealtimeClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        [Experimental("OPENAI001")]
+        public RealtimeClient(AuthenticationPolicy authenticationPolicy);
         protected internal RealtimeClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        public RealtimeClient(string apiKey);
         public ClientPipeline Pipeline { get; }
         public event EventHandler<BinaryData> OnReceivingCommand { add; remove; }
         public event EventHandler<BinaryData> OnSendingCommand { add; remove; }
