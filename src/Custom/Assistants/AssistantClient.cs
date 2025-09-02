@@ -39,7 +39,7 @@ public partial class AssistantClient
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
     /// <summary> Initializes a new instance of <see cref="AssistantClient"/>. </summary>
-    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
     public AssistantClient(ApiKeyCredential credential) : this(credential, new OpenAIClientOptions())
     {
@@ -49,7 +49,7 @@ public partial class AssistantClient
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
     /// <summary> Initializes a new instance of <see cref="AssistantClient"/>. </summary>
-    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
     public AssistantClient(ApiKeyCredential credential, OpenAIClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
@@ -951,23 +951,23 @@ public partial class AssistantClient
     {
         Argument.AssertNotNullOrEmpty(assistantId, nameof(assistantId));
         InternalCreateThreadAndRunRequest internalRequest = new(
-            assistantId,
-            threadOptions,
-            runOptions.InstructionsOverride,
-            runOptions.ToolsOverride,
-            runOptions.Metadata,
-            runOptions.Temperature,
+            assistantId: assistantId,
+            thread: threadOptions,
+            instructions: runOptions.InstructionsOverride,
+            tools: runOptions.ToolsOverride,
+            metadata: runOptions.Metadata,
+            temperature: runOptions.Temperature,
             // TODO: reconcile exposure of the the two different tool_resources, if needed
-            runOptions.NucleusSamplingFactor,
-            runOptions.Stream,
-            runOptions.MaxInputTokenCount,
-            runOptions.MaxOutputTokenCount,
-            runOptions.TruncationStrategy,
-            runOptions.AllowParallelToolCalls,
-            runOptions.ModelOverride,
-            threadOptions.ToolResources,
-            runOptions.ResponseFormat,
-            runOptions.ToolConstraint,
+            topP: runOptions.NucleusSamplingFactor,
+            stream: runOptions.Stream,
+            maxPromptTokens: runOptions.MaxInputTokenCount,
+            maxCompletionTokens: runOptions.MaxOutputTokenCount,
+            truncationStrategy: runOptions.TruncationStrategy,
+            parallelToolCalls: runOptions.AllowParallelToolCalls,
+            model: runOptions.ModelOverride,
+            toolResources: threadOptions.ToolResources,
+            responseFormat: runOptions.ResponseFormat,
+            toolChoice: runOptions.ToolConstraint,
             additionalBinaryDataProperties: null);
         return BinaryContent.Create(internalRequest, ModelSerializationExtensions.WireOptions);
     }

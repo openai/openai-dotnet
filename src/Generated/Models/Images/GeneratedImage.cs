@@ -15,11 +15,11 @@ namespace OpenAI.Images
         {
         }
 
-        internal GeneratedImage(string revisedPrompt, BinaryData imageBytes, Uri imageUri, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal GeneratedImage(BinaryData imageBytes, Uri imageUri, string revisedPrompt, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            RevisedPrompt = revisedPrompt;
             ImageBytes = imageBytes;
             ImageUri = imageUri;
+            RevisedPrompt = revisedPrompt;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

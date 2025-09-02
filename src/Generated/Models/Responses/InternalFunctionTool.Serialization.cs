@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalFunctionTool : IJsonModel<InternalFunctionTool>
     {
-        internal InternalFunctionTool() : this(InternalToolType.Function, null, null, null, default, null)
+        internal InternalFunctionTool() : this(InternalToolType.Function, null, null, null, null, default)
         {
         }
 
@@ -41,18 +41,6 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("description"u8);
                 writer.WriteStringValue(Description);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("strict") != true)
-            {
-                if (Optional.IsDefined(Strict))
-                {
-                    writer.WritePropertyName("strict"u8);
-                    writer.WriteBooleanValue(Strict.Value);
-                }
-                else
-                {
-                    writer.WriteNull("strict"u8);
-                }
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("parameters") != true)
             {
                 if (Optional.IsDefined(Parameters))
@@ -70,6 +58,18 @@ namespace OpenAI.Responses
                 else
                 {
                     writer.WriteNull("parameters"u8);
+                }
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("strict") != true)
+            {
+                if (Optional.IsDefined(Strict))
+                {
+                    writer.WritePropertyName("strict"u8);
+                    writer.WriteBooleanValue(Strict.Value);
+                }
+                else
+                {
+                    writer.WriteNull("strict"u8);
                 }
             }
         }
@@ -97,8 +97,8 @@ namespace OpenAI.Responses
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string name = default;
             string description = default;
-            bool? strict = default;
             BinaryData parameters = default;
+            bool? strict = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -121,16 +121,6 @@ namespace OpenAI.Responses
                     description = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("strict"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        strict = null;
-                        continue;
-                    }
-                    strict = prop.Value.GetBoolean();
-                    continue;
-                }
                 if (prop.NameEquals("parameters"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -141,6 +131,16 @@ namespace OpenAI.Responses
                     parameters = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
+                if (prop.NameEquals("strict"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        strict = null;
+                        continue;
+                    }
+                    strict = prop.Value.GetBoolean();
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
@@ -149,8 +149,8 @@ namespace OpenAI.Responses
                 additionalBinaryDataProperties,
                 name,
                 description,
-                strict,
-                parameters);
+                parameters,
+                strict);
         }
 
         BinaryData IPersistableModel<InternalFunctionTool>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

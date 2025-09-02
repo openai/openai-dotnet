@@ -20,12 +20,12 @@ namespace OpenAI.VectorStores
             Attributes = new ChangeTrackingDictionary<string, BinaryData>();
         }
 
-        internal InternalCreateVectorStoreFileRequest(string fileId, IDictionary<string, BinaryData> attributes, FileChunkingStrategy chunkingStrategy, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalCreateVectorStoreFileRequest(string fileId, FileChunkingStrategy chunkingStrategy, IDictionary<string, BinaryData> attributes, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             FileId = fileId;
-            Attributes = attributes ?? new ChangeTrackingDictionary<string, BinaryData>();
             ChunkingStrategy = chunkingStrategy;
+            Attributes = attributes ?? new ChangeTrackingDictionary<string, BinaryData>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

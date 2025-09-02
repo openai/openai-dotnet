@@ -38,20 +38,20 @@ namespace OpenAI.Models
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("owned_by") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("created") != true)
             {
-                writer.WritePropertyName("owned_by"u8);
-                writer.WriteStringValue(OwnedBy);
+                writer.WritePropertyName("created"u8);
+                writer.WriteNumberValue(CreatedAt, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
                 writer.WriteStringValue(Object);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("created") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("owned_by") != true)
             {
-                writer.WritePropertyName("created"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WritePropertyName("owned_by"u8);
+                writer.WriteStringValue(OwnedBy);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -96,9 +96,9 @@ namespace OpenAI.Models
                 return null;
             }
             string id = default;
-            string ownedBy = default;
-            string @object = default;
             DateTimeOffset createdAt = default;
+            string @object = default;
+            string ownedBy = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -107,9 +107,9 @@ namespace OpenAI.Models
                     id = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("owned_by"u8))
+                if (prop.NameEquals("created"u8))
                 {
-                    ownedBy = prop.Value.GetString();
+                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("object"u8))
@@ -117,15 +117,15 @@ namespace OpenAI.Models
                     @object = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("created"u8))
+                if (prop.NameEquals("owned_by"u8))
                 {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    ownedBy = prop.Value.GetString();
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new OpenAIModel(id, ownedBy, @object, createdAt, additionalBinaryDataProperties);
+            return new OpenAIModel(id, createdAt, @object, ownedBy, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<OpenAIModel>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

@@ -11,19 +11,19 @@ namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeResponseMessageItem : InternalRealtimeResponseItem
     {
-        internal InternalRealtimeResponseMessageItem(string id, ConversationItemStatus status, ConversationMessageRole role, IEnumerable<ConversationContentPart> content) : base(InternalRealtimeItemType.Message, id)
+        internal InternalRealtimeResponseMessageItem(string id, ConversationMessageRole role, IEnumerable<ConversationContentPart> content, ConversationItemStatus status) : base(InternalRealtimeItemType.Message, id)
         {
-            Status = status;
             Role = role;
             Content = content.ToList();
+            Status = status;
         }
 
-        internal InternalRealtimeResponseMessageItem(string @object, InternalRealtimeItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, ConversationItemStatus status, ConversationMessageRole role, IReadOnlyList<ConversationContentPart> content) : base(@object, kind, id, additionalBinaryDataProperties)
+        internal InternalRealtimeResponseMessageItem(string @object, InternalRealtimeItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, ConversationMessageRole role, IReadOnlyList<ConversationContentPart> content, ConversationItemStatus status) : base(@object, kind, id, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
-            Status = status;
             Role = role;
             Content = content ?? new ChangeTrackingList<ConversationContentPart>();
+            Status = status;
         }
 
         public ConversationItemStatus Status { get; }

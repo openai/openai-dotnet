@@ -32,11 +32,6 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("logprobs"u8);
                 writer.WriteObjectValue(Logprobs, options);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("index") != true)
-            {
-                writer.WritePropertyName("index"u8);
-                writer.WriteNumberValue(Index);
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("finish_reason") != true)
             {
                 if (Optional.IsDefined(FinishReason))
@@ -48,6 +43,11 @@ namespace OpenAI.Chat
                 {
                     writer.WriteNull("finish_reason"u8);
                 }
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("index") != true)
+            {
+                writer.WritePropertyName("index"u8);
+                writer.WriteNumberValue(Index);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)

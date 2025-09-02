@@ -12,7 +12,7 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalCreateThreadAndRunRequest : IJsonModel<InternalCreateThreadAndRunRequest>
     {
-        internal InternalCreateThreadAndRunRequest() : this(null, null, null, null, null, default, default, default, default, default, null, default, null, null, null, null, null)
+        internal InternalCreateThreadAndRunRequest() : this(null, null, null, null, null, null, null, default, default, default, default, default, null, null, default, null, null)
         {
         }
 
@@ -40,6 +40,11 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("thread"u8);
                 writer.WriteObjectValue(Thread, options);
             }
+            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
+            {
+                writer.WritePropertyName("model"u8);
+                writer.WriteStringValue(Model);
+            }
             if (Optional.IsDefined(Instructions) && _additionalBinaryDataProperties?.ContainsKey("instructions") != true)
             {
                 writer.WritePropertyName("instructions"u8);
@@ -54,6 +59,11 @@ namespace OpenAI.Assistants
                     writer.WriteObjectValue(item, options);
                 }
                 writer.WriteEndArray();
+            }
+            if (Optional.IsDefined(ToolResources) && _additionalBinaryDataProperties?.ContainsKey("tool_resources") != true)
+            {
+                writer.WritePropertyName("tool_resources"u8);
+                writer.WriteObjectValue(ToolResources, options);
             }
             if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
@@ -101,30 +111,20 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("truncation_strategy"u8);
                 writer.WriteObjectValue(TruncationStrategy, options);
             }
+            if (Optional.IsDefined(ToolChoice) && _additionalBinaryDataProperties?.ContainsKey("tool_choice") != true)
+            {
+                writer.WritePropertyName("tool_choice"u8);
+                writer.WriteObjectValue(ToolChoice, options);
+            }
             if (Optional.IsDefined(ParallelToolCalls) && _additionalBinaryDataProperties?.ContainsKey("parallel_tool_calls") != true)
             {
                 writer.WritePropertyName("parallel_tool_calls"u8);
                 writer.WriteBooleanValue(ParallelToolCalls.Value);
             }
-            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
-            {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model);
-            }
-            if (Optional.IsDefined(ToolResources) && _additionalBinaryDataProperties?.ContainsKey("tool_resources") != true)
-            {
-                writer.WritePropertyName("tool_resources"u8);
-                writer.WriteObjectValue(ToolResources, options);
-            }
             if (Optional.IsDefined(ResponseFormat) && _additionalBinaryDataProperties?.ContainsKey("response_format") != true)
             {
                 writer.WritePropertyName("response_format"u8);
                 writer.WriteObjectValue(ResponseFormat, options);
-            }
-            if (Optional.IsDefined(ToolChoice) && _additionalBinaryDataProperties?.ContainsKey("tool_choice") != true)
-            {
-                writer.WritePropertyName("tool_choice"u8);
-                writer.WriteObjectValue(ToolChoice, options);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -169,8 +169,10 @@ namespace OpenAI.Assistants
             }
             string assistantId = default;
             ThreadCreationOptions thread = default;
+            string model = default;
             string instructions = default;
             IList<ToolDefinition> tools = default;
+            ToolResources toolResources = default;
             IDictionary<string, string> metadata = default;
             float? temperature = default;
             float? topP = default;
@@ -178,11 +180,9 @@ namespace OpenAI.Assistants
             int? maxPromptTokens = default;
             int? maxCompletionTokens = default;
             RunTruncationStrategy truncationStrategy = default;
-            bool? parallelToolCalls = default;
-            string model = default;
-            ToolResources toolResources = default;
-            AssistantResponseFormat responseFormat = default;
             ToolConstraint toolChoice = default;
+            bool? parallelToolCalls = default;
+            AssistantResponseFormat responseFormat = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -198,6 +198,16 @@ namespace OpenAI.Assistants
                         continue;
                     }
                     thread = ThreadCreationOptions.DeserializeThreadCreationOptions(prop.Value, options);
+                    continue;
+                }
+                if (prop.NameEquals("model"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        model = null;
+                        continue;
+                    }
+                    model = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("instructions"u8))
@@ -222,6 +232,16 @@ namespace OpenAI.Assistants
                         array.Add(ToolDefinition.DeserializeToolDefinition(item, options));
                     }
                     tools = array;
+                    continue;
+                }
+                if (prop.NameEquals("tool_resources"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        toolResources = null;
+                        continue;
+                    }
+                    toolResources = ToolResources.DeserializeToolResources(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("metadata"u8))
@@ -305,6 +325,16 @@ namespace OpenAI.Assistants
                     truncationStrategy = RunTruncationStrategy.DeserializeRunTruncationStrategy(prop.Value, options);
                     continue;
                 }
+                if (prop.NameEquals("tool_choice"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        toolChoice = null;
+                        continue;
+                    }
+                    toolChoice = ToolConstraint.DeserializeToolConstraint(prop.Value, options);
+                    continue;
+                }
                 if (prop.NameEquals("parallel_tool_calls"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -312,26 +342,6 @@ namespace OpenAI.Assistants
                         continue;
                     }
                     parallelToolCalls = prop.Value.GetBoolean();
-                    continue;
-                }
-                if (prop.NameEquals("model"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        model = null;
-                        continue;
-                    }
-                    model = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("tool_resources"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        toolResources = null;
-                        continue;
-                    }
-                    toolResources = ToolResources.DeserializeToolResources(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("response_format"u8))
@@ -344,24 +354,16 @@ namespace OpenAI.Assistants
                     responseFormat = AssistantResponseFormat.DeserializeAssistantResponseFormat(prop.Value, options);
                     continue;
                 }
-                if (prop.NameEquals("tool_choice"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        toolChoice = null;
-                        continue;
-                    }
-                    toolChoice = ToolConstraint.DeserializeToolConstraint(prop.Value, options);
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalCreateThreadAndRunRequest(
                 assistantId,
                 thread,
+                model,
                 instructions,
                 tools ?? new ChangeTrackingList<ToolDefinition>(),
+                toolResources,
                 metadata ?? new ChangeTrackingDictionary<string, string>(),
                 temperature,
                 topP,
@@ -369,11 +371,9 @@ namespace OpenAI.Assistants
                 maxPromptTokens,
                 maxCompletionTokens,
                 truncationStrategy,
-                parallelToolCalls,
-                model,
-                toolResources,
-                responseFormat,
                 toolChoice,
+                parallelToolCalls,
+                responseFormat,
                 additionalBinaryDataProperties);
         }
 

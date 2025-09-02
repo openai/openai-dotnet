@@ -3778,7 +3778,10 @@ namespace OpenAI.Realtime {
         protected RealtimeClient();
         public RealtimeClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public RealtimeClient(ApiKeyCredential credential);
+        public RealtimeClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public RealtimeClient(AuthenticationPolicy authenticationPolicy);
         protected internal RealtimeClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        public RealtimeClient(string apiKey);
         public ClientPipeline Pipeline { get; }
         public event EventHandler<BinaryData> OnReceivingCommand { add; remove; }
         public event EventHandler<BinaryData> OnSendingCommand { add; remove; }
@@ -5124,24 +5127,19 @@ namespace OpenAI.VectorStores {
         public virtual ClientResult<VectorStoreFileAssociation> GetFileAssociation(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GetFileAssociationAsync(string vectorStoreId, string fileId, RequestOptions options);
         public virtual Task<ClientResult<VectorStoreFileAssociation>> GetFileAssociationAsync(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<VectorStoreFileAssociation> GetFileAssociations(ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
         public virtual CollectionResult<VectorStoreFileAssociation> GetFileAssociations(string vectorStoreId, VectorStoreFileAssociationCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual CollectionResult GetFileAssociations(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options);
-        public virtual CollectionResult<VectorStoreFileAssociation> GetFileAssociations(string vectorStoreId, string batchJobId, VectorStoreFileAssociationCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<VectorStoreFileAssociation> GetFileAssociations(string vectorStoreId, string batchJobId, ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
-        public virtual CollectionResult GetFileAssociations(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options);
-        public virtual AsyncCollectionResult<VectorStoreFileAssociation> GetFileAssociationsAsync(ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<VectorStoreFileAssociation> GetFileAssociationsAsync(string vectorStoreId, VectorStoreFileAssociationCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult GetFileAssociationsAsync(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options);
-        public virtual AsyncCollectionResult<VectorStoreFileAssociation> GetFileAssociationsAsync(string vectorStoreId, string batchJobId, VectorStoreFileAssociationCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult<VectorStoreFileAssociation> GetFileAssociationsAsync(string vectorStoreId, string batchJobId, ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult GetFileAssociationsAsync(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options);
+        public virtual CollectionResult<VectorStoreFileAssociation> GetFileAssociationsInBatch(string vectorStoreId, string batchId, VectorStoreFileAssociationCollectionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult GetFileAssociationsInBatch(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options);
+        public virtual AsyncCollectionResult<VectorStoreFileAssociation> GetFileAssociationsInBatchAsync(string vectorStoreId, string batchId, VectorStoreFileAssociationCollectionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult GetFileAssociationsInBatchAsync(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options);
         public virtual ClientResult<VectorStore> GetVectorStore(string vectorStoreId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult<VectorStore>> GetVectorStoreAsync(string vectorStoreId, CancellationToken cancellationToken = default);
         public virtual CollectionResult<VectorStore> GetVectorStores(VectorStoreCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<VectorStore> GetVectorStores(ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
         public virtual CollectionResult GetVectorStores(int? limit, string order, string after, string before, RequestOptions options);
         public virtual AsyncCollectionResult<VectorStore> GetVectorStoresAsync(VectorStoreCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult<VectorStore> GetVectorStoresAsync(ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult GetVectorStoresAsync(int? limit, string order, string after, string before, RequestOptions options);
         public virtual ClientResult<VectorStore> ModifyVectorStore(string vectorStoreId, VectorStoreModificationOptions options, CancellationToken cancellationToken = default);
         public virtual ClientResult ModifyVectorStore(string vectorStoreId, BinaryContent content, RequestOptions options = null);
@@ -5160,11 +5158,15 @@ namespace OpenAI.VectorStores {
         public virtual Task<ClientResult> UpdateVectorStoreFileAttributesAsync(string vectorStoreId, string fileId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<VectorStoreFileAssociation>> UpdateVectorStoreFileAttributesAsync(string vectorStoreId, string fileId, IDictionary<string, BinaryData> attributes, CancellationToken cancellationToken = default);
     }
-    public class VectorStoreCollectionOptions {
+    public class VectorStoreCollectionOptions : IJsonModel<VectorStoreCollectionOptions>, IPersistableModel<VectorStoreCollectionOptions> {
         public string AfterId { get; set; }
         public string BeforeId { get; set; }
         public VectorStoreCollectionOrder? Order { get; set; }
         public int? PageSizeLimit { get; set; }
+        protected virtual VectorStoreCollectionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual VectorStoreCollectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public readonly partial struct VectorStoreCollectionOrder : IEquatable<VectorStoreCollectionOrder> {
         public VectorStoreCollectionOrder(string value);
@@ -5229,12 +5231,16 @@ namespace OpenAI.VectorStores {
         protected virtual VectorStoreFileAssociation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
-    public class VectorStoreFileAssociationCollectionOptions {
+    public class VectorStoreFileAssociationCollectionOptions : IJsonModel<VectorStoreFileAssociationCollectionOptions>, IPersistableModel<VectorStoreFileAssociationCollectionOptions> {
         public string AfterId { get; set; }
         public string BeforeId { get; set; }
         public VectorStoreFileStatusFilter? Filter { get; set; }
         public VectorStoreFileAssociationCollectionOrder? Order { get; set; }
         public int? PageSizeLimit { get; set; }
+        protected virtual VectorStoreFileAssociationCollectionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual VectorStoreFileAssociationCollectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public readonly partial struct VectorStoreFileAssociationCollectionOrder : IEquatable<VectorStoreFileAssociationCollectionOrder> {
         public VectorStoreFileAssociationCollectionOrder(string value);
@@ -5247,6 +5253,7 @@ namespace OpenAI.VectorStores {
         public override readonly int GetHashCode();
         public static bool operator ==(VectorStoreFileAssociationCollectionOrder left, VectorStoreFileAssociationCollectionOrder right);
         public static implicit operator VectorStoreFileAssociationCollectionOrder(string value);
+        public static implicit operator VectorStoreFileAssociationCollectionOrder?(string value);
         public static bool operator !=(VectorStoreFileAssociationCollectionOrder left, VectorStoreFileAssociationCollectionOrder right);
         public override readonly string ToString();
     }

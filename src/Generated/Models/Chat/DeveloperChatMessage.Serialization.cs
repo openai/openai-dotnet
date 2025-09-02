@@ -46,20 +46,20 @@ namespace OpenAI.Chat
             {
                 return null;
             }
-            ChatMessageContent content = default;
             ChatMessageRole role = default;
+            ChatMessageContent content = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string participantName = default;
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("content"u8))
-                {
-                    DeserializeContentValue(prop, ref content);
-                    continue;
-                }
                 if (prop.NameEquals("role"u8))
                 {
                     role = prop.Value.GetString().ToChatMessageRole();
+                    continue;
+                }
+                if (prop.NameEquals("content"u8))
+                {
+                    DeserializeContentValue(prop, ref content);
                     continue;
                 }
                 if (prop.NameEquals("name"u8))
@@ -70,7 +70,7 @@ namespace OpenAI.Chat
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new DeveloperChatMessage(content, role, additionalBinaryDataProperties, participantName);
+            return new DeveloperChatMessage(role, content, additionalBinaryDataProperties, participantName);
         }
 
         BinaryData IPersistableModel<DeveloperChatMessage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

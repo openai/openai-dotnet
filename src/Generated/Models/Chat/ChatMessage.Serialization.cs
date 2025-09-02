@@ -13,7 +13,7 @@ namespace OpenAI.Chat
     [PersistableModelProxy(typeof(InternalUnknownChatMessage))]
     public partial class ChatMessage : IJsonModel<ChatMessage>
     {
-        internal ChatMessage() : this(null, default, null)
+        internal ChatMessage() : this(default, null, null)
         {
         }
 
@@ -25,16 +25,16 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(ChatMessage)} does not support writing '{format}' format.");
             }
+            if (_additionalBinaryDataProperties?.ContainsKey("role") != true)
+            {
+                writer.WritePropertyName("role"u8);
+                writer.WriteStringValue(Role.ToSerialString());
+            }
             // Plugin customization: add Content.IsInnerCollectionDefined() check
             if (Optional.IsDefined(Content) && Content.IsInnerCollectionDefined() && _additionalBinaryDataProperties?.ContainsKey("content") != true)
             {
                 writer.WritePropertyName("content"u8);
                 SerializeContentValue(writer, options);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("role") != true)
-            {
-                writer.WritePropertyName("role"u8);
-                writer.WriteStringValue(Role.ToSerialString());
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)

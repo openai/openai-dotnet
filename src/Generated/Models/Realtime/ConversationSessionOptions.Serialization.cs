@@ -31,6 +31,16 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("instructions"u8);
                 writer.WriteStringValue(Instructions);
             }
+            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
+            {
+                writer.WritePropertyName("model"u8);
+                writer.WriteStringValue(Model.Value.ToString());
+            }
+            if (Optional.IsDefined(Voice) && _additionalBinaryDataProperties?.ContainsKey("voice") != true)
+            {
+                writer.WritePropertyName("voice"u8);
+                writer.WriteStringValue(Voice.Value.ToString());
+            }
             if (Optional.IsDefined(InputAudioFormat) && _additionalBinaryDataProperties?.ContainsKey("input_audio_format") != true)
             {
                 writer.WritePropertyName("input_audio_format"u8);
@@ -40,6 +50,21 @@ namespace OpenAI.Realtime
             {
                 writer.WritePropertyName("output_audio_format"u8);
                 writer.WriteStringValue(OutputAudioFormat.Value.ToString());
+            }
+            if (Optional.IsDefined(InputTranscriptionOptions) && _additionalBinaryDataProperties?.ContainsKey("input_audio_transcription") != true)
+            {
+                writer.WritePropertyName("input_audio_transcription"u8);
+                writer.WriteObjectValue(InputTranscriptionOptions, options);
+            }
+            if (Optional.IsDefined(TurnDetectionOptions) && _additionalBinaryDataProperties?.ContainsKey("turn_detection") != true)
+            {
+                writer.WritePropertyName("turn_detection"u8);
+                writer.WriteObjectValue(TurnDetectionOptions, options);
+            }
+            if (Optional.IsDefined(InputNoiseReductionOptions) && _additionalBinaryDataProperties?.ContainsKey("input_audio_noise_reduction") != true)
+            {
+                writer.WritePropertyName("input_audio_noise_reduction"u8);
+                writer.WriteObjectValue(InputNoiseReductionOptions, options);
             }
             if (Optional.IsCollectionDefined(Tools) && _additionalBinaryDataProperties?.ContainsKey("tools") != true)
             {
@@ -55,31 +80,6 @@ namespace OpenAI.Realtime
             {
                 writer.WritePropertyName("temperature"u8);
                 writer.WriteNumberValue(Temperature.Value);
-            }
-            if (Optional.IsDefined(Voice) && _additionalBinaryDataProperties?.ContainsKey("voice") != true)
-            {
-                writer.WritePropertyName("voice"u8);
-                writer.WriteStringValue(Voice.Value.ToString());
-            }
-            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
-            {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model.Value.ToString());
-            }
-            if (Optional.IsDefined(TurnDetectionOptions) && _additionalBinaryDataProperties?.ContainsKey("turn_detection") != true)
-            {
-                writer.WritePropertyName("turn_detection"u8);
-                writer.WriteObjectValue(TurnDetectionOptions, options);
-            }
-            if (Optional.IsDefined(InputTranscriptionOptions) && _additionalBinaryDataProperties?.ContainsKey("input_audio_transcription") != true)
-            {
-                writer.WritePropertyName("input_audio_transcription"u8);
-                writer.WriteObjectValue(InputTranscriptionOptions, options);
-            }
-            if (Optional.IsDefined(InputNoiseReductionOptions) && _additionalBinaryDataProperties?.ContainsKey("input_audio_noise_reduction") != true)
-            {
-                writer.WritePropertyName("input_audio_noise_reduction"u8);
-                writer.WriteObjectValue(InputNoiseReductionOptions, options);
             }
             if (Optional.IsCollectionDefined(_internalModalities) && _additionalBinaryDataProperties?.ContainsKey("modalities") != true)
             {
@@ -157,15 +157,15 @@ namespace OpenAI.Realtime
                 return null;
             }
             string instructions = default;
+            InternalRealtimeRequestSessionModel? model = default;
+            ConversationVoice? voice = default;
             RealtimeAudioFormat? inputAudioFormat = default;
             RealtimeAudioFormat? outputAudioFormat = default;
+            InputTranscriptionOptions inputTranscriptionOptions = default;
+            TurnDetectionOptions turnDetectionOptions = default;
+            InputNoiseReductionOptions inputNoiseReductionOptions = default;
             IList<ConversationTool> tools = default;
             float? temperature = default;
-            ConversationVoice? voice = default;
-            InternalRealtimeRequestSessionModel? model = default;
-            TurnDetectionOptions turnDetectionOptions = default;
-            InputTranscriptionOptions inputTranscriptionOptions = default;
-            InputNoiseReductionOptions inputNoiseReductionOptions = default;
             IList<InternalRealtimeRequestSessionModality> internalModalities = default;
             BinaryData internalToolChoice = default;
             BinaryData maxResponseOutputTokens = default;
@@ -175,6 +175,24 @@ namespace OpenAI.Realtime
                 if (prop.NameEquals("instructions"u8))
                 {
                     instructions = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("model"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    model = new InternalRealtimeRequestSessionModel(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("voice"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    voice = new ConversationVoice(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("input_audio_format"u8))
@@ -193,6 +211,35 @@ namespace OpenAI.Realtime
                         continue;
                     }
                     outputAudioFormat = new RealtimeAudioFormat(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("input_audio_transcription"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        inputTranscriptionOptions = null;
+                        continue;
+                    }
+                    inputTranscriptionOptions = InputTranscriptionOptions.DeserializeInputTranscriptionOptions(prop.Value, options);
+                    continue;
+                }
+                if (prop.NameEquals("turn_detection"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        turnDetectionOptions = null;
+                        continue;
+                    }
+                    turnDetectionOptions = TurnDetectionOptions.DeserializeTurnDetectionOptions(prop.Value, options);
+                    continue;
+                }
+                if (prop.NameEquals("input_audio_noise_reduction"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    inputNoiseReductionOptions = InputNoiseReductionOptions.DeserializeInputNoiseReductionOptions(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("tools"u8))
@@ -216,53 +263,6 @@ namespace OpenAI.Realtime
                         continue;
                     }
                     temperature = prop.Value.GetSingle();
-                    continue;
-                }
-                if (prop.NameEquals("voice"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    voice = new ConversationVoice(prop.Value.GetString());
-                    continue;
-                }
-                if (prop.NameEquals("model"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    model = new InternalRealtimeRequestSessionModel(prop.Value.GetString());
-                    continue;
-                }
-                if (prop.NameEquals("turn_detection"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        turnDetectionOptions = null;
-                        continue;
-                    }
-                    turnDetectionOptions = TurnDetectionOptions.DeserializeTurnDetectionOptions(prop.Value, options);
-                    continue;
-                }
-                if (prop.NameEquals("input_audio_transcription"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        inputTranscriptionOptions = null;
-                        continue;
-                    }
-                    inputTranscriptionOptions = InputTranscriptionOptions.DeserializeInputTranscriptionOptions(prop.Value, options);
-                    continue;
-                }
-                if (prop.NameEquals("input_audio_noise_reduction"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    inputNoiseReductionOptions = InputNoiseReductionOptions.DeserializeInputNoiseReductionOptions(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("modalities"u8))
@@ -302,15 +302,15 @@ namespace OpenAI.Realtime
             }
             return new ConversationSessionOptions(
                 instructions,
+                model,
+                voice,
                 inputAudioFormat,
                 outputAudioFormat,
+                inputTranscriptionOptions,
+                turnDetectionOptions,
+                inputNoiseReductionOptions,
                 tools ?? new ChangeTrackingList<ConversationTool>(),
                 temperature,
-                voice,
-                model,
-                turnDetectionOptions,
-                inputTranscriptionOptions,
-                inputNoiseReductionOptions,
                 internalModalities,
                 internalToolChoice,
                 maxResponseOutputTokens,

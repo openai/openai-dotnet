@@ -13,19 +13,19 @@ namespace OpenAI.Audio
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal AudioTranscriptionOptions(string language, string prompt, AudioTranscriptionFormat? responseFormat, float? temperature, InternalVadConfig chunkingStrategy, BinaryData @file, InternalCreateTranscriptionRequestModel model, IList<BinaryData> internalTimestampGranularities, bool? stream, IList<InternalTranscriptionInclude> internalInclude, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal AudioTranscriptionOptions(BinaryData @file, InternalCreateTranscriptionRequestModel model, string language, string prompt, AudioTranscriptionFormat? responseFormat, float? temperature, IList<InternalTranscriptionInclude> internalInclude, IList<BinaryData> internalTimestampGranularities, bool? stream, InternalVadConfig chunkingStrategy, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
+            File = @file;
+            Model = model;
             Language = language;
             Prompt = prompt;
             ResponseFormat = responseFormat;
             Temperature = temperature;
-            ChunkingStrategy = chunkingStrategy;
-            File = @file;
-            Model = model;
+            InternalInclude = internalInclude ?? new ChangeTrackingList<InternalTranscriptionInclude>();
             InternalTimestampGranularities = internalTimestampGranularities ?? new ChangeTrackingList<BinaryData>();
             Stream = stream;
-            InternalInclude = internalInclude ?? new ChangeTrackingList<InternalTranscriptionInclude>();
+            ChunkingStrategy = chunkingStrategy;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

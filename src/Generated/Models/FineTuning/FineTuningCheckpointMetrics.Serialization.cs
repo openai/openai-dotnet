@@ -26,6 +26,11 @@ namespace OpenAI.FineTuning
             {
                 throw new FormatException($"The model {nameof(FineTuningCheckpointMetrics)} does not support writing '{format}' format.");
             }
+            if (_additionalBinaryDataProperties?.ContainsKey("step") != true)
+            {
+                writer.WritePropertyName("step"u8);
+                writer.WriteNumberValue(StepNumber);
+            }
             if (Optional.IsDefined(TrainLoss) && _additionalBinaryDataProperties?.ContainsKey("train_loss") != true)
             {
                 writer.WritePropertyName("train_loss"u8);
@@ -55,11 +60,6 @@ namespace OpenAI.FineTuning
             {
                 writer.WritePropertyName("full_valid_mean_token_accuracy"u8);
                 writer.WriteNumberValue(FullValidMeanTokenAccuracy.Value);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("step") != true)
-            {
-                writer.WritePropertyName("step"u8);
-                writer.WriteNumberValue(StepNumber);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -102,16 +102,25 @@ namespace OpenAI.FineTuning
             {
                 return null;
             }
+            int stepNumber = default;
             float? trainLoss = default;
             float? trainMeanTokenAccuracy = default;
             float? validLoss = default;
             float? validMeanTokenAccuracy = default;
             float? fullValidLoss = default;
             float? fullValidMeanTokenAccuracy = default;
-            int stepNumber = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("step"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    stepNumber = prop.Value.GetInt32();
+                    continue;
+                }
                 if (prop.NameEquals("train_loss"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -166,26 +175,17 @@ namespace OpenAI.FineTuning
                     fullValidMeanTokenAccuracy = prop.Value.GetSingle();
                     continue;
                 }
-                if (prop.NameEquals("step"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    stepNumber = prop.Value.GetInt32();
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new FineTuningCheckpointMetrics(
+                stepNumber,
                 trainLoss,
                 trainMeanTokenAccuracy,
                 validLoss,
                 validMeanTokenAccuracy,
                 fullValidLoss,
                 fullValidMeanTokenAccuracy,
-                stepNumber,
                 additionalBinaryDataProperties);
         }
 

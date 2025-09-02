@@ -6,3 +6,8 @@ using Azure.ClientGenerator.Core;
 
 @@convenientAPI(Graders.runGrader, false);
 @@convenientAPI(Graders.validateGrader, false);
+
+@@usage(RunGraderRequest, Usage.json);
+@@usage(RunGraderResponse, Usage.output);
+@@usage(ValidateGraderRequest, Usage.json);
+@@usage(ValidateGraderResponse, Usage.output);

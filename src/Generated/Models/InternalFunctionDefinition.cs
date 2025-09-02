@@ -18,12 +18,12 @@ namespace OpenAI
             Name = name;
         }
 
-        internal InternalFunctionDefinition(string description, string name, bool? strict, BinaryData parameters, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalFunctionDefinition(string description, string name, BinaryData parameters, bool? strict, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Description = description;
             Name = name;
-            Strict = strict;
             Parameters = parameters;
+            Strict = strict;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

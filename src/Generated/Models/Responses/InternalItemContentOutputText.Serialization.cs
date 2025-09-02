@@ -31,6 +31,11 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalItemContentOutputText)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
+            if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
+            {
+                writer.WritePropertyName("text"u8);
+                writer.WriteStringValue(InternalText);
+            }
             if (_additionalBinaryDataProperties?.ContainsKey("annotations") != true)
             {
                 writer.WritePropertyName("annotations"u8);
@@ -50,11 +55,6 @@ namespace OpenAI.Responses
                     writer.WriteObjectValue(item, options);
                 }
                 writer.WriteEndArray();
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
-            {
-                writer.WritePropertyName("text"u8);
-                writer.WriteStringValue(InternalText);
             }
         }
 
@@ -79,14 +79,19 @@ namespace OpenAI.Responses
             }
             InternalItemContentType internalType = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            string internalText = default;
             IList<ResponseMessageAnnotation> annotations = default;
             IList<InternalLogProb> logprobs = default;
-            string internalText = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
                     internalType = new InternalItemContentType(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("text"u8))
+                {
+                    internalText = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("annotations"u8))
@@ -113,15 +118,10 @@ namespace OpenAI.Responses
                     logprobs = array;
                     continue;
                 }
-                if (prop.NameEquals("text"u8))
-                {
-                    internalText = prop.Value.GetString();
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalItemContentOutputText(internalType, additionalBinaryDataProperties, annotations, logprobs ?? new ChangeTrackingList<InternalLogProb>(), internalText);
+            return new InternalItemContentOutputText(internalType, additionalBinaryDataProperties, internalText, annotations, logprobs ?? new ChangeTrackingList<InternalLogProb>());
         }
 
         BinaryData IPersistableModel<InternalItemContentOutputText>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

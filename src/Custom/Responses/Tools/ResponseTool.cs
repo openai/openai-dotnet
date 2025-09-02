@@ -13,7 +13,7 @@ public partial class ResponseTool
 {
     public static ResponseTool CreateFunctionTool(string functionName, string functionDescription, BinaryData functionParameters, bool functionSchemaIsStrict = false)
     {
-        return new InternalFunctionTool(functionName, functionSchemaIsStrict, functionParameters)
+        return new InternalFunctionTool(functionName, functionParameters, functionSchemaIsStrict)
         {
             Description = functionDescription
         };

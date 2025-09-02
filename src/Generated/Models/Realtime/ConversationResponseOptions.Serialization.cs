@@ -51,6 +51,16 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("temperature"u8);
                 writer.WriteNumberValue(Temperature.Value);
             }
+            if (Optional.IsDefined(MaxOutputTokens) && _additionalBinaryDataProperties?.ContainsKey("max_output_tokens") != true)
+            {
+                writer.WritePropertyName("max_output_tokens"u8);
+                writer.WriteObjectValue(MaxOutputTokens, options);
+            }
+            if (Optional.IsDefined(ConversationSelection) && _additionalBinaryDataProperties?.ContainsKey("conversation") != true)
+            {
+                writer.WritePropertyName("conversation"u8);
+                writer.WriteStringValue(ConversationSelection.Value.ToString());
+            }
             if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
                 writer.WritePropertyName("metadata"u8);
@@ -66,16 +76,6 @@ namespace OpenAI.Realtime
                     writer.WriteStringValue(item.Value);
                 }
                 writer.WriteEndObject();
-            }
-            if (Optional.IsDefined(ConversationSelection) && _additionalBinaryDataProperties?.ContainsKey("conversation") != true)
-            {
-                writer.WritePropertyName("conversation"u8);
-                writer.WriteStringValue(ConversationSelection.Value.ToString());
-            }
-            if (Optional.IsDefined(MaxOutputTokens) && _additionalBinaryDataProperties?.ContainsKey("max_output_tokens") != true)
-            {
-                writer.WritePropertyName("max_output_tokens"u8);
-                writer.WriteObjectValue(MaxOutputTokens, options);
             }
             if (Optional.IsCollectionDefined(OverrideItems) && _additionalBinaryDataProperties?.ContainsKey("input") != true)
             {
@@ -159,9 +159,9 @@ namespace OpenAI.Realtime
             RealtimeAudioFormat? outputAudioFormat = default;
             IList<ConversationTool> tools = default;
             float? temperature = default;
-            IDictionary<string, string> metadata = default;
-            ResponseConversationSelection? conversationSelection = default;
             ConversationMaxTokensChoice maxOutputTokens = default;
+            ResponseConversationSelection? conversationSelection = default;
+            IDictionary<string, string> metadata = default;
             IList<RealtimeItem> overrideItems = default;
             ConversationVoice? voice = default;
             IList<InternalRealtimeRequestSessionModality> internalModalities = default;
@@ -206,6 +206,24 @@ namespace OpenAI.Realtime
                     temperature = prop.Value.GetSingle();
                     continue;
                 }
+                if (prop.NameEquals("max_output_tokens"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    maxOutputTokens = ConversationMaxTokensChoice.DeserializeConversationMaxTokensChoice(prop.Value, options);
+                    continue;
+                }
+                if (prop.NameEquals("conversation"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    conversationSelection = new ResponseConversationSelection(prop.Value.GetString());
+                    continue;
+                }
                 if (prop.NameEquals("metadata"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -225,24 +243,6 @@ namespace OpenAI.Realtime
                         }
                     }
                     metadata = dictionary;
-                    continue;
-                }
-                if (prop.NameEquals("conversation"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    conversationSelection = new ResponseConversationSelection(prop.Value.GetString());
-                    continue;
-                }
-                if (prop.NameEquals("max_output_tokens"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    maxOutputTokens = ConversationMaxTokensChoice.DeserializeConversationMaxTokensChoice(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("input"u8))
@@ -299,9 +299,9 @@ namespace OpenAI.Realtime
                 outputAudioFormat,
                 tools ?? new ChangeTrackingList<ConversationTool>(),
                 temperature,
-                metadata ?? new ChangeTrackingDictionary<string, string>(),
-                conversationSelection,
                 maxOutputTokens,
+                conversationSelection,
+                metadata ?? new ChangeTrackingDictionary<string, string>(),
                 overrideItems ?? new ChangeTrackingList<RealtimeItem>(),
                 voice,
                 internalModalities,

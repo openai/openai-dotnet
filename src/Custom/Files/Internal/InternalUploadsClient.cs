@@ -8,12 +8,19 @@ namespace OpenAI.Files;
 [CodeGenSuppress("InternalUploadsClient", typeof(ClientPipeline), typeof(ApiKeyCredential), typeof(Uri))]
 internal partial class InternalUploadsClient
 {
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="InternalUploadsClient"/>. </summary>
+    /// <param name="apiKey"> The API key to authenticate with the service. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="apiKey"/> is null. </exception>
+    public InternalUploadsClient(string apiKey) : this(new ApiKeyCredential(apiKey), new OpenAIClientOptions())
+    {
+    }
 
     // CUSTOM:
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
     /// <summary> Initializes a new instance of <see cref="InternalUploadsClient"/>. </summary>
-    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
     internal InternalUploadsClient(ApiKeyCredential credential) : this(credential, new OpenAIClientOptions())
     {
@@ -23,7 +30,7 @@ internal partial class InternalUploadsClient
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
     /// <summary> Initializes a new instance of <see cref="InternalUploadsClient"/>. </summary>
-    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
     internal InternalUploadsClient(ApiKeyCredential credential, OpenAIClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)

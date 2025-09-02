@@ -14,7 +14,7 @@ namespace OpenAI.Chat
 {
     public partial class ChatCompletion : IJsonModel<ChatCompletion>
     {
-        internal ChatCompletion() : this(null, null, default, null, null, null, null, default, null)
+        internal ChatCompletion() : this(null, null, default, null, default, null, null, null, null)
         {
         }
 
@@ -38,6 +38,21 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
             }
+            if (_additionalBinaryDataProperties?.ContainsKey("choices") != true)
+            {
+                writer.WritePropertyName("choices"u8);
+                writer.WriteStartArray();
+                foreach (InternalCreateChatCompletionResponseChoice item in Choices)
+                {
+                    writer.WriteObjectValue(item, options);
+                }
+                writer.WriteEndArray();
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("created") != true)
+            {
+                writer.WritePropertyName("created"u8);
+                writer.WriteNumberValue(CreatedAt, "U");
+            }
             if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
             {
                 writer.WritePropertyName("model"u8);
@@ -53,30 +68,15 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("system_fingerprint"u8);
                 writer.WriteStringValue(SystemFingerprint);
             }
-            if (Optional.IsDefined(Usage) && _additionalBinaryDataProperties?.ContainsKey("usage") != true)
-            {
-                writer.WritePropertyName("usage"u8);
-                writer.WriteObjectValue(Usage, options);
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
                 writer.WriteStringValue(Object);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("choices") != true)
+            if (Optional.IsDefined(Usage) && _additionalBinaryDataProperties?.ContainsKey("usage") != true)
             {
-                writer.WritePropertyName("choices"u8);
-                writer.WriteStartArray();
-                foreach (InternalCreateChatCompletionResponseChoice item in Choices)
-                {
-                    writer.WriteObjectValue(item, options);
-                }
-                writer.WriteEndArray();
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("created") != true)
-            {
-                writer.WritePropertyName("created"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
+                writer.WritePropertyName("usage"u8);
+                writer.WriteObjectValue(Usage, options);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -121,19 +121,34 @@ namespace OpenAI.Chat
                 return null;
             }
             string id = default;
+            IReadOnlyList<InternalCreateChatCompletionResponseChoice> choices = default;
+            DateTimeOffset createdAt = default;
             string model = default;
             ChatServiceTier? serviceTier = default;
             string systemFingerprint = default;
-            ChatTokenUsage usage = default;
             string @object = default;
-            IReadOnlyList<InternalCreateChatCompletionResponseChoice> choices = default;
-            DateTimeOffset createdAt = default;
+            ChatTokenUsage usage = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("id"u8))
                 {
                     id = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("choices"u8))
+                {
+                    List<InternalCreateChatCompletionResponseChoice> array = new List<InternalCreateChatCompletionResponseChoice>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        array.Add(InternalCreateChatCompletionResponseChoice.DeserializeInternalCreateChatCompletionResponseChoice(item, options));
+                    }
+                    choices = array;
+                    continue;
+                }
+                if (prop.NameEquals("created"u8))
+                {
+                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("model"u8))
@@ -155,6 +170,11 @@ namespace OpenAI.Chat
                     systemFingerprint = prop.Value.GetString();
                     continue;
                 }
+                if (prop.NameEquals("object"u8))
+                {
+                    @object = prop.Value.GetString();
+                    continue;
+                }
                 if (prop.NameEquals("usage"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -164,38 +184,18 @@ namespace OpenAI.Chat
                     usage = ChatTokenUsage.DeserializeChatTokenUsage(prop.Value, options);
                     continue;
                 }
-                if (prop.NameEquals("object"u8))
-                {
-                    @object = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("choices"u8))
-                {
-                    List<InternalCreateChatCompletionResponseChoice> array = new List<InternalCreateChatCompletionResponseChoice>();
-                    foreach (var item in prop.Value.EnumerateArray())
-                    {
-                        array.Add(InternalCreateChatCompletionResponseChoice.DeserializeInternalCreateChatCompletionResponseChoice(item, options));
-                    }
-                    choices = array;
-                    continue;
-                }
-                if (prop.NameEquals("created"u8))
-                {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ChatCompletion(
                 id,
+                choices,
+                createdAt,
                 model,
                 serviceTier,
                 systemFingerprint,
-                usage,
                 @object,
-                choices,
-                createdAt,
+                usage,
                 additionalBinaryDataProperties);
         }
 

@@ -69,7 +69,7 @@ public partial class ChatMessage
 
     // CUSTOM: Made internal.
     internal ChatMessage(ChatMessageRole role)
-        : this(null, role, null)
+        : this(content: null, role: role, additionalBinaryDataProperties: null)
     { }
  
     #region SystemChatMessage
