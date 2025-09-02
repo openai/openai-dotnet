@@ -15,49 +15,49 @@ namespace OpenAI.Responses
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal OpenAIResponse(IDictionary<string, string> metadata, float? temperature, float? topP, string id, DateTimeOffset createdAt, ResponseError error, string endUserId, ResponseIncompleteStatusDetails incompleteStatusDetails, IEnumerable<ResponseItem> outputItems, bool parallelToolCallsEnabled)
+        internal OpenAIResponse(IDictionary<string, string> metadata, float? temperature, float? topP, string endUserId, string id, DateTimeOffset createdAt, ResponseError error, ResponseIncompleteStatusDetails incompleteStatusDetails, IEnumerable<ResponseItem> outputItems, bool parallelToolCallsEnabled)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Temperature = temperature;
             TopP = topP;
+            EndUserId = endUserId;
             Tools = new ChangeTrackingList<ResponseTool>();
             Id = id;
             CreatedAt = createdAt;
             Error = error;
-            EndUserId = endUserId;
             IncompleteStatusDetails = incompleteStatusDetails;
             OutputItems = outputItems.ToList();
             ParallelToolCallsEnabled = parallelToolCallsEnabled;
         }
 
-        internal OpenAIResponse(IDictionary<string, string> metadata, float? temperature, float? topP, ResponseServiceTier? serviceTier, string previousResponseId, bool? background, string instructions, IList<ResponseTool> tools, string id, ResponseStatus? status, DateTimeOffset createdAt, ResponseError error, ResponseTokenUsage usage, string endUserId, ResponseReasoningOptions reasoningOptions, int? maxOutputTokenCount, ResponseTextOptions textOptions, ResponseTruncationMode? truncationMode, ResponseIncompleteStatusDetails incompleteStatusDetails, IList<ResponseItem> outputItems, bool parallelToolCallsEnabled, ResponseToolChoice toolChoice, string model, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal OpenAIResponse(IDictionary<string, string> metadata, float? temperature, float? topP, string endUserId, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? background, int? maxOutputTokenCount, string instructions, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncationMode, string id, string @object, ResponseStatus? status, DateTimeOffset createdAt, ResponseError error, ResponseIncompleteStatusDetails incompleteStatusDetails, IList<ResponseItem> outputItems, ResponseTokenUsage usage, bool parallelToolCallsEnabled, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Temperature = temperature;
             TopP = topP;
+            EndUserId = endUserId;
             ServiceTier = serviceTier;
             PreviousResponseId = previousResponseId;
+            Model = model;
+            ReasoningOptions = reasoningOptions;
             Background = background;
+            MaxOutputTokenCount = maxOutputTokenCount;
             Instructions = instructions;
+            TextOptions = textOptions;
             Tools = tools ?? new ChangeTrackingList<ResponseTool>();
+            ToolChoice = toolChoice;
+            TruncationMode = truncationMode;
             Id = id;
+            Object = @object;
             Status = status;
             CreatedAt = createdAt;
             Error = error;
-            Usage = usage;
-            EndUserId = endUserId;
-            ReasoningOptions = reasoningOptions;
-            MaxOutputTokenCount = maxOutputTokenCount;
-            TextOptions = textOptions;
-            TruncationMode = truncationMode;
             IncompleteStatusDetails = incompleteStatusDetails;
             OutputItems = outputItems ?? new ChangeTrackingList<ResponseItem>();
+            Usage = usage;
             ParallelToolCallsEnabled = parallelToolCallsEnabled;
-            ToolChoice = toolChoice;
-            Model = model;
-            Object = @object;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

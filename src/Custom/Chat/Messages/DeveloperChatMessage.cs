@@ -23,7 +23,7 @@ public partial class DeveloperChatMessage : ChatMessage
     ///     The collection of content items associated with the message.
     /// </param>
     public DeveloperChatMessage(IEnumerable<ChatMessageContentPart> contentParts)
-        : this(new ChatMessageContent(contentParts), ChatMessageRole.Developer, null, null)
+        : this(content: new ChatMessageContent(contentParts), role: ChatMessageRole.Developer, participantName: null, additionalBinaryDataProperties: null)
     { }
 
     /// <summary>
@@ -34,7 +34,7 @@ public partial class DeveloperChatMessage : ChatMessage
     ///     The collection of content items associated with the message.
     /// </param>
     public DeveloperChatMessage(params ChatMessageContentPart[] contentParts)
-        : this(new ChatMessageContent(contentParts), ChatMessageRole.Developer, null, null)
+        : this(content: new ChatMessageContent(contentParts), role: ChatMessageRole.Developer, participantName: null, additionalBinaryDataProperties: null)
     {
         Argument.AssertNotNullOrEmpty(contentParts, nameof(contentParts));
     }
@@ -44,7 +44,7 @@ public partial class DeveloperChatMessage : ChatMessage
     /// </summary>
     /// <param name="content"> The text content of the message. </param>
     public DeveloperChatMessage(string content)
-        : this(new ChatMessageContent([content]), ChatMessageRole.Developer, null, null)
+        : this(content: new ChatMessageContent([content]), role: ChatMessageRole.Developer, participantName: null, additionalBinaryDataProperties: null)
     {
         Argument.AssertNotNull(content, nameof(content));
     }

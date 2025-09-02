@@ -13,7 +13,7 @@ namespace OpenAI.Assistants
 {
     public partial class AssistantThread : IJsonModel<AssistantThread>
     {
-        internal AssistantThread() : this(null, default, null, null, null, null)
+        internal AssistantThread() : this(null, null, default, null, null, null)
         {
         }
 
@@ -36,10 +36,27 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
             }
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            {
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object);
+            }
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
                 writer.WriteNumberValue(CreatedAt, "U");
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("tool_resources") != true)
+            {
+                if (Optional.IsDefined(ToolResources))
+                {
+                    writer.WritePropertyName("tool_resources"u8);
+                    writer.WriteObjectValue(ToolResources, options);
+                }
+                else
+                {
+                    writer.WriteNull("tool_resources"u8);
+                }
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties?.ContainsKey("metadata") != true)
@@ -57,23 +74,6 @@ namespace OpenAI.Assistants
                     writer.WriteStringValue(item.Value);
                 }
                 writer.WriteEndObject();
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
-            {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("tool_resources") != true)
-            {
-                if (Optional.IsDefined(ToolResources))
-                {
-                    writer.WritePropertyName("tool_resources"u8);
-                    writer.WriteObjectValue(ToolResources, options);
-                }
-                else
-                {
-                    writer.WriteNull("tool_resources"u8);
-                }
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -117,10 +117,10 @@ namespace OpenAI.Assistants
                 return null;
             }
             string id = default;
-            DateTimeOffset createdAt = default;
-            IReadOnlyDictionary<string, string> metadata = default;
             string @object = default;
+            DateTimeOffset createdAt = default;
             ToolResources toolResources = default;
+            IReadOnlyDictionary<string, string> metadata = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -129,9 +129,24 @@ namespace OpenAI.Assistants
                     id = prop.Value.GetString();
                     continue;
                 }
+                if (prop.NameEquals("object"u8))
+                {
+                    @object = prop.Value.GetString();
+                    continue;
+                }
                 if (prop.NameEquals("created_at"u8))
                 {
                     createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    continue;
+                }
+                if (prop.NameEquals("tool_resources"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        toolResources = null;
+                        continue;
+                    }
+                    toolResources = ToolResources.DeserializeToolResources(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("metadata"u8))
@@ -156,30 +171,15 @@ namespace OpenAI.Assistants
                     metadata = dictionary;
                     continue;
                 }
-                if (prop.NameEquals("object"u8))
-                {
-                    @object = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("tool_resources"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        toolResources = null;
-                        continue;
-                    }
-                    toolResources = ToolResources.DeserializeToolResources(prop.Value, options);
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new AssistantThread(
                 id,
-                createdAt,
-                metadata,
                 @object,
+                createdAt,
                 toolResources,
+                metadata,
                 additionalBinaryDataProperties);
         }
 

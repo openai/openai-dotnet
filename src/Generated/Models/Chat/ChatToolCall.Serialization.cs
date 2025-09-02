@@ -37,15 +37,15 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("function") != true)
-            {
-                writer.WritePropertyName("function"u8);
-                writer.WriteObjectValue(Function, options);
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToSerialString());
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("function") != true)
+            {
+                writer.WritePropertyName("function"u8);
+                writer.WriteObjectValue(Function, options);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -90,8 +90,8 @@ namespace OpenAI.Chat
                 return null;
             }
             string id = default;
-            InternalChatCompletionMessageToolCallFunction function = default;
             ChatToolCallKind kind = default;
+            InternalChatCompletionMessageToolCallFunction function = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -100,20 +100,20 @@ namespace OpenAI.Chat
                     id = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("function"u8))
-                {
-                    function = InternalChatCompletionMessageToolCallFunction.DeserializeInternalChatCompletionMessageToolCallFunction(prop.Value, options);
-                    continue;
-                }
                 if (prop.NameEquals("type"u8))
                 {
                     kind = prop.Value.GetString().ToChatToolCallKind();
                     continue;
                 }
+                if (prop.NameEquals("function"u8))
+                {
+                    function = InternalChatCompletionMessageToolCallFunction.DeserializeInternalChatCompletionMessageToolCallFunction(prop.Value, options);
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ChatToolCall(id, function, kind, additionalBinaryDataProperties);
+            return new ChatToolCall(id, kind, function, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<ChatToolCall>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

@@ -30,15 +30,15 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(InternalChatCompletionRequestMessageContentPartImageImageUrl)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Detail) && _additionalBinaryDataProperties?.ContainsKey("detail") != true)
-            {
-                writer.WritePropertyName("detail"u8);
-                writer.WriteStringValue(Detail.Value.ToString());
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("url") != true)
             {
                 writer.WritePropertyName("url"u8);
                 writer.WriteStringValue(InternalUrl);
+            }
+            if (Optional.IsDefined(Detail) && _additionalBinaryDataProperties?.ContainsKey("detail") != true)
+            {
+                writer.WritePropertyName("detail"u8);
+                writer.WriteStringValue(Detail.Value.ToString());
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -81,11 +81,16 @@ namespace OpenAI.Chat
             {
                 return null;
             }
-            ChatImageDetailLevel? detail = default;
             string internalUrl = default;
+            ChatImageDetailLevel? detail = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("url"u8))
+                {
+                    internalUrl = prop.Value.GetString();
+                    continue;
+                }
                 if (prop.NameEquals("detail"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -95,15 +100,10 @@ namespace OpenAI.Chat
                     detail = new ChatImageDetailLevel(prop.Value.GetString());
                     continue;
                 }
-                if (prop.NameEquals("url"u8))
-                {
-                    internalUrl = prop.Value.GetString();
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalChatCompletionRequestMessageContentPartImageImageUrl(detail, internalUrl, additionalBinaryDataProperties);
+            return new InternalChatCompletionRequestMessageContentPartImageImageUrl(internalUrl, detail, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalChatCompletionRequestMessageContentPartImageImageUrl>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

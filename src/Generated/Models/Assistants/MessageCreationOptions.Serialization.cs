@@ -12,7 +12,7 @@ namespace OpenAI.Assistants
 {
     public partial class MessageCreationOptions : IJsonModel<MessageCreationOptions>
     {
-        public MessageCreationOptions() : this(null, null, default, null, null)
+        public MessageCreationOptions() : this(default, null, null, null, null)
         {
         }
 
@@ -29,6 +29,16 @@ namespace OpenAI.Assistants
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(MessageCreationOptions)} does not support writing '{format}' format.");
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("role") != true)
+            {
+                writer.WritePropertyName("role"u8);
+                writer.WriteStringValue(Role.ToSerialString());
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("content") != true)
+            {
+                writer.WritePropertyName("content"u8);
+                SerializeContent(writer, options);
             }
             if (Optional.IsCollectionDefined(Attachments) && _additionalBinaryDataProperties?.ContainsKey("attachments") != true)
             {
@@ -55,16 +65,6 @@ namespace OpenAI.Assistants
                     writer.WriteStringValue(item.Value);
                 }
                 writer.WriteEndObject();
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("role") != true)
-            {
-                writer.WritePropertyName("role"u8);
-                writer.WriteStringValue(Role.ToSerialString());
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("content") != true)
-            {
-                writer.WritePropertyName("content"u8);
-                SerializeContent(writer, options);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -107,13 +107,28 @@ namespace OpenAI.Assistants
             {
                 return null;
             }
-            IList<MessageCreationAttachment> attachments = default;
-            IDictionary<string, string> metadata = default;
             MessageRole role = default;
             IList<MessageContent> content = default;
+            IList<MessageCreationAttachment> attachments = default;
+            IDictionary<string, string> metadata = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("role"u8))
+                {
+                    role = prop.Value.GetString().ToMessageRole();
+                    continue;
+                }
+                if (prop.NameEquals("content"u8))
+                {
+                    List<MessageContent> array = new List<MessageContent>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        array.Add(MessageContent.DeserializeMessageContent(item, options));
+                    }
+                    content = array;
+                    continue;
+                }
                 if (prop.NameEquals("attachments"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -149,25 +164,10 @@ namespace OpenAI.Assistants
                     metadata = dictionary;
                     continue;
                 }
-                if (prop.NameEquals("role"u8))
-                {
-                    role = prop.Value.GetString().ToMessageRole();
-                    continue;
-                }
-                if (prop.NameEquals("content"u8))
-                {
-                    List<MessageContent> array = new List<MessageContent>();
-                    foreach (var item in prop.Value.EnumerateArray())
-                    {
-                        array.Add(MessageContent.DeserializeMessageContent(item, options));
-                    }
-                    content = array;
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new MessageCreationOptions(attachments ?? new ChangeTrackingList<MessageCreationAttachment>(), metadata ?? new ChangeTrackingDictionary<string, string>(), role, content, additionalBinaryDataProperties);
+            return new MessageCreationOptions(role, content, attachments ?? new ChangeTrackingList<MessageCreationAttachment>(), metadata ?? new ChangeTrackingDictionary<string, string>(), additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<MessageCreationOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

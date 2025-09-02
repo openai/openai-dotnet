@@ -13,7 +13,7 @@ namespace OpenAI.Chat
 {
     public partial class StreamingChatCompletionUpdate : IJsonModel<StreamingChatCompletionUpdate>
     {
-        internal StreamingChatCompletionUpdate() : this(null, default, null, null, null, null, default, null, null)
+        internal StreamingChatCompletionUpdate() : this(null, null, default, null, default, null, null, null, null)
         {
         }
 
@@ -31,26 +31,6 @@ namespace OpenAI.Chat
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(StreamingChatCompletionUpdate)} does not support writing '{format}' format.");
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
-            {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model);
-            }
-            if (Optional.IsDefined(ServiceTier) && _additionalBinaryDataProperties?.ContainsKey("service_tier") != true)
-            {
-                writer.WritePropertyName("service_tier"u8);
-                writer.WriteStringValue(ServiceTier.Value.ToString());
-            }
-            if (Optional.IsDefined(SystemFingerprint) && _additionalBinaryDataProperties?.ContainsKey("system_fingerprint") != true)
-            {
-                writer.WritePropertyName("system_fingerprint"u8);
-                writer.WriteStringValue(SystemFingerprint);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
-            {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
@@ -71,6 +51,26 @@ namespace OpenAI.Chat
             {
                 writer.WritePropertyName("created"u8);
                 writer.WriteNumberValue(CreatedAt, "U");
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
+            {
+                writer.WritePropertyName("model"u8);
+                writer.WriteStringValue(Model);
+            }
+            if (Optional.IsDefined(ServiceTier) && _additionalBinaryDataProperties?.ContainsKey("service_tier") != true)
+            {
+                writer.WritePropertyName("service_tier"u8);
+                writer.WriteStringValue(ServiceTier.Value.ToString());
+            }
+            if (Optional.IsDefined(SystemFingerprint) && _additionalBinaryDataProperties?.ContainsKey("system_fingerprint") != true)
+            {
+                writer.WritePropertyName("system_fingerprint"u8);
+                writer.WriteStringValue(SystemFingerprint);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            {
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object);
             }
             if (Optional.IsDefined(Usage) && _additionalBinaryDataProperties?.ContainsKey("usage") != true)
             {
@@ -119,17 +119,37 @@ namespace OpenAI.Chat
             {
                 return null;
             }
+            string completionId = default;
+            IReadOnlyList<InternalCreateChatCompletionStreamResponseChoice> choices = default;
+            DateTimeOffset createdAt = default;
             string model = default;
             ChatServiceTier? serviceTier = default;
             string systemFingerprint = default;
             string @object = default;
-            string completionId = default;
-            IReadOnlyList<InternalCreateChatCompletionStreamResponseChoice> choices = default;
-            DateTimeOffset createdAt = default;
             ChatTokenUsage usage = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("id"u8))
+                {
+                    completionId = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("choices"u8))
+                {
+                    List<InternalCreateChatCompletionStreamResponseChoice> array = new List<InternalCreateChatCompletionStreamResponseChoice>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        array.Add(InternalCreateChatCompletionStreamResponseChoice.DeserializeInternalCreateChatCompletionStreamResponseChoice(item, options));
+                    }
+                    choices = array;
+                    continue;
+                }
+                if (prop.NameEquals("created"u8))
+                {
+                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    continue;
+                }
                 if (prop.NameEquals("model"u8))
                 {
                     model = prop.Value.GetString();
@@ -154,26 +174,6 @@ namespace OpenAI.Chat
                     @object = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("id"u8))
-                {
-                    completionId = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("choices"u8))
-                {
-                    List<InternalCreateChatCompletionStreamResponseChoice> array = new List<InternalCreateChatCompletionStreamResponseChoice>();
-                    foreach (var item in prop.Value.EnumerateArray())
-                    {
-                        array.Add(InternalCreateChatCompletionStreamResponseChoice.DeserializeInternalCreateChatCompletionStreamResponseChoice(item, options));
-                    }
-                    choices = array;
-                    continue;
-                }
-                if (prop.NameEquals("created"u8))
-                {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
-                    continue;
-                }
                 if (prop.NameEquals("usage"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -188,13 +188,13 @@ namespace OpenAI.Chat
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new StreamingChatCompletionUpdate(
+                completionId,
+                choices,
+                createdAt,
                 model,
                 serviceTier,
                 systemFingerprint,
                 @object,
-                completionId,
-                choices,
-                createdAt,
                 usage,
                 additionalBinaryDataProperties);
         }

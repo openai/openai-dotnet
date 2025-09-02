@@ -30,6 +30,11 @@ namespace OpenAI.FineTuning
             {
                 throw new FormatException($"The model {nameof(InternalCreateFineTuningJobRequestWandbIntegrationWandb)} does not support writing '{format}' format.");
             }
+            if (_additionalBinaryDataProperties?.ContainsKey("project") != true)
+            {
+                writer.WritePropertyName("project"u8);
+                writer.WriteStringValue(Project);
+            }
             if (Optional.IsDefined(Name) && _additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
                 writer.WritePropertyName("name"u8);
@@ -54,11 +59,6 @@ namespace OpenAI.FineTuning
                     writer.WriteStringValue(item);
                 }
                 writer.WriteEndArray();
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("project") != true)
-            {
-                writer.WritePropertyName("project"u8);
-                writer.WriteStringValue(Project);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -101,13 +101,18 @@ namespace OpenAI.FineTuning
             {
                 return null;
             }
+            string project = default;
             string name = default;
             string entity = default;
             IList<string> tags = default;
-            string project = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("project"u8))
+                {
+                    project = prop.Value.GetString();
+                    continue;
+                }
                 if (prop.NameEquals("name"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -149,15 +154,10 @@ namespace OpenAI.FineTuning
                     tags = array;
                     continue;
                 }
-                if (prop.NameEquals("project"u8))
-                {
-                    project = prop.Value.GetString();
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalCreateFineTuningJobRequestWandbIntegrationWandb(name, entity, tags ?? new ChangeTrackingList<string>(), project, additionalBinaryDataProperties);
+            return new InternalCreateFineTuningJobRequestWandbIntegrationWandb(project, name, entity, tags ?? new ChangeTrackingList<string>(), additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalCreateFineTuningJobRequestWandbIntegrationWandb>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

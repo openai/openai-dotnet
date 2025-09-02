@@ -30,18 +30,6 @@ namespace OpenAI.FineTuning
             {
                 throw new FormatException($"The model {nameof(FineTuningHyperparameters)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(_EpochCount) && _additionalBinaryDataProperties?.ContainsKey("n_epochs") != true)
-            {
-                writer.WritePropertyName("n_epochs"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(_EpochCount);
-#else
-                using (JsonDocument document = JsonDocument.Parse(_EpochCount))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
-            }
             if (Optional.IsDefined(_BatchSize) && _additionalBinaryDataProperties?.ContainsKey("batch_size") != true)
             {
                 writer.WritePropertyName("batch_size"u8);
@@ -61,6 +49,18 @@ namespace OpenAI.FineTuning
                 writer.WriteRawValue(_LearningRateMultiplier);
 #else
                 using (JsonDocument document = JsonDocument.Parse(_LearningRateMultiplier))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
+#endif
+            }
+            if (Optional.IsDefined(_EpochCount) && _additionalBinaryDataProperties?.ContainsKey("n_epochs") != true)
+            {
+                writer.WritePropertyName("n_epochs"u8);
+#if NET6_0_OR_GREATER
+                writer.WriteRawValue(_EpochCount);
+#else
+                using (JsonDocument document = JsonDocument.Parse(_EpochCount))
                 {
                     JsonSerializer.Serialize(writer, document.RootElement);
                 }
@@ -107,21 +107,12 @@ namespace OpenAI.FineTuning
             {
                 return default;
             }
-            BinaryData epochCount = default;
             BinaryData batchSize = default;
             BinaryData learningRateMultiplier = default;
+            BinaryData epochCount = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("n_epochs"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    epochCount = BinaryData.FromString(prop.Value.GetRawText());
-                    continue;
-                }
                 if (prop.NameEquals("batch_size"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -141,10 +132,19 @@ namespace OpenAI.FineTuning
                     learningRateMultiplier = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
+                if (prop.NameEquals("n_epochs"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    epochCount = BinaryData.FromString(prop.Value.GetRawText());
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new FineTuningHyperparameters(epochCount, batchSize, learningRateMultiplier, additionalBinaryDataProperties);
+            return new FineTuningHyperparameters(batchSize, learningRateMultiplier, epochCount, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<FineTuningHyperparameters>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

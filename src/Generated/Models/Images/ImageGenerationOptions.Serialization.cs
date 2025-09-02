@@ -32,6 +32,21 @@ namespace OpenAI.Images
             {
                 throw new FormatException($"The model {nameof(ImageGenerationOptions)} does not support writing '{format}' format.");
             }
+            if (_additionalBinaryDataProperties?.ContainsKey("prompt") != true)
+            {
+                writer.WritePropertyName("prompt"u8);
+                writer.WriteStringValue(Prompt);
+            }
+            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
+            {
+                writer.WritePropertyName("model"u8);
+                writer.WriteStringValue(Model.Value.ToString());
+            }
+            if (Optional.IsDefined(N) && _additionalBinaryDataProperties?.ContainsKey("n") != true)
+            {
+                writer.WritePropertyName("n"u8);
+                writer.WriteNumberValue(N.Value);
+            }
             if (Optional.IsDefined(Quality) && _additionalBinaryDataProperties?.ContainsKey("quality") != true)
             {
                 writer.WritePropertyName("quality"u8);
@@ -42,10 +57,25 @@ namespace OpenAI.Images
                 writer.WritePropertyName("response_format"u8);
                 writer.WriteStringValue(ResponseFormat.Value.ToString());
             }
+            if (Optional.IsDefined(OutputFileFormat) && _additionalBinaryDataProperties?.ContainsKey("output_format") != true)
+            {
+                writer.WritePropertyName("output_format"u8);
+                writer.WriteStringValue(OutputFileFormat.Value.ToString());
+            }
+            if (Optional.IsDefined(OutputCompressionFactor) && _additionalBinaryDataProperties?.ContainsKey("output_compression") != true)
+            {
+                writer.WritePropertyName("output_compression"u8);
+                writer.WriteNumberValue(OutputCompressionFactor.Value);
+            }
             if (Optional.IsDefined(Size) && _additionalBinaryDataProperties?.ContainsKey("size") != true)
             {
                 writer.WritePropertyName("size"u8);
                 writer.WriteStringValue(Size.Value.ToString());
+            }
+            if (Optional.IsDefined(ModerationLevel) && _additionalBinaryDataProperties?.ContainsKey("moderation") != true)
+            {
+                writer.WritePropertyName("moderation"u8);
+                writer.WriteStringValue(ModerationLevel.Value.ToString());
             }
             if (Optional.IsDefined(Background) && _additionalBinaryDataProperties?.ContainsKey("background") != true)
             {
@@ -57,40 +87,10 @@ namespace OpenAI.Images
                 writer.WritePropertyName("style"u8);
                 writer.WriteStringValue(Style.Value.ToString());
             }
-            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
-            {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model.Value.ToString());
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("prompt") != true)
-            {
-                writer.WritePropertyName("prompt"u8);
-                writer.WriteStringValue(Prompt);
-            }
-            if (Optional.IsDefined(N) && _additionalBinaryDataProperties?.ContainsKey("n") != true)
-            {
-                writer.WritePropertyName("n"u8);
-                writer.WriteNumberValue(N.Value);
-            }
             if (Optional.IsDefined(EndUserId) && _additionalBinaryDataProperties?.ContainsKey("user") != true)
             {
                 writer.WritePropertyName("user"u8);
                 writer.WriteStringValue(EndUserId);
-            }
-            if (Optional.IsDefined(OutputCompressionFactor) && _additionalBinaryDataProperties?.ContainsKey("output_compression") != true)
-            {
-                writer.WritePropertyName("output_compression"u8);
-                writer.WriteNumberValue(OutputCompressionFactor.Value);
-            }
-            if (Optional.IsDefined(OutputFileFormat) && _additionalBinaryDataProperties?.ContainsKey("output_format") != true)
-            {
-                writer.WritePropertyName("output_format"u8);
-                writer.WriteStringValue(OutputFileFormat.Value.ToString());
-            }
-            if (Optional.IsDefined(ModerationLevel) && _additionalBinaryDataProperties?.ContainsKey("moderation") != true)
-            {
-                writer.WritePropertyName("moderation"u8);
-                writer.WriteStringValue(ModerationLevel.Value.ToString());
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -134,21 +134,46 @@ namespace OpenAI.Images
             {
                 return null;
             }
+            string prompt = default;
+            InternalCreateImageRequestModel? model = default;
+            long? n = default;
             GeneratedImageQuality? quality = default;
             GeneratedImageFormat? responseFormat = default;
+            GeneratedImageFileFormat? outputFileFormat = default;
+            int? outputCompressionFactor = default;
             GeneratedImageSize? size = default;
+            GeneratedImageModerationLevel? moderationLevel = default;
             GeneratedImageBackground? background = default;
             GeneratedImageStyle? style = default;
-            InternalCreateImageRequestModel? model = default;
-            string prompt = default;
-            long? n = default;
             string endUserId = default;
-            int? outputCompressionFactor = default;
-            GeneratedImageFileFormat? outputFileFormat = default;
-            GeneratedImageModerationLevel? moderationLevel = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("prompt"u8))
+                {
+                    prompt = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("model"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        model = null;
+                        continue;
+                    }
+                    model = new InternalCreateImageRequestModel(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("n"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        n = null;
+                        continue;
+                    }
+                    n = prop.Value.GetInt64();
+                    continue;
+                }
                 if (prop.NameEquals("quality"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -169,6 +194,26 @@ namespace OpenAI.Images
                     responseFormat = new GeneratedImageFormat(prop.Value.GetString());
                     continue;
                 }
+                if (prop.NameEquals("output_format"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        outputFileFormat = null;
+                        continue;
+                    }
+                    outputFileFormat = new GeneratedImageFileFormat(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("output_compression"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        outputCompressionFactor = null;
+                        continue;
+                    }
+                    outputCompressionFactor = prop.Value.GetInt32();
+                    continue;
+                }
                 if (prop.NameEquals("size"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -177,6 +222,16 @@ namespace OpenAI.Images
                         continue;
                     }
                     size = new GeneratedImageSize(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("moderation"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        moderationLevel = null;
+                        continue;
+                    }
+                    moderationLevel = new GeneratedImageModerationLevel(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("background"u8))
@@ -199,82 +254,27 @@ namespace OpenAI.Images
                     style = new GeneratedImageStyle(prop.Value.GetString());
                     continue;
                 }
-                if (prop.NameEquals("model"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        model = null;
-                        continue;
-                    }
-                    model = new InternalCreateImageRequestModel(prop.Value.GetString());
-                    continue;
-                }
-                if (prop.NameEquals("prompt"u8))
-                {
-                    prompt = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("n"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        n = null;
-                        continue;
-                    }
-                    n = prop.Value.GetInt64();
-                    continue;
-                }
                 if (prop.NameEquals("user"u8))
                 {
                     endUserId = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("output_compression"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        outputCompressionFactor = null;
-                        continue;
-                    }
-                    outputCompressionFactor = prop.Value.GetInt32();
-                    continue;
-                }
-                if (prop.NameEquals("output_format"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        outputFileFormat = null;
-                        continue;
-                    }
-                    outputFileFormat = new GeneratedImageFileFormat(prop.Value.GetString());
-                    continue;
-                }
-                if (prop.NameEquals("moderation"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        moderationLevel = null;
-                        continue;
-                    }
-                    moderationLevel = new GeneratedImageModerationLevel(prop.Value.GetString());
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ImageGenerationOptions(
+                prompt,
+                model,
+                n,
                 quality,
                 responseFormat,
+                outputFileFormat,
+                outputCompressionFactor,
                 size,
+                moderationLevel,
                 background,
                 style,
-                model,
-                prompt,
-                n,
                 endUserId,
-                outputCompressionFactor,
-                outputFileFormat,
-                moderationLevel,
                 additionalBinaryDataProperties);
         }
 

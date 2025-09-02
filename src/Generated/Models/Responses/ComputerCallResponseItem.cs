@@ -24,13 +24,13 @@ namespace OpenAI.Responses
             PendingSafetyChecks = pendingSafetyChecks.ToList();
         }
 
-        internal ComputerCallResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, ComputerCallAction action, IList<ComputerCallSafetyCheck> pendingSafetyChecks, ComputerCallStatus? status) : base(kind, id, additionalBinaryDataProperties)
+        internal ComputerCallResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, ComputerCallStatus? status, string callId, ComputerCallAction action, IList<ComputerCallSafetyCheck> pendingSafetyChecks) : base(kind, id, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
+            Status = status;
             CallId = callId;
             Action = action;
             PendingSafetyChecks = pendingSafetyChecks ?? new ChangeTrackingList<ComputerCallSafetyCheck>();
-            Status = status;
         }
 
         public string CallId { get; set; }

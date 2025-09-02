@@ -17,11 +17,11 @@ namespace OpenAI.Responses
         {
         }
 
-        internal ResponseReasoningOptions(InternalReasoningGenerateSummary? generateSummary, ResponseReasoningEffortLevel? reasoningEffortLevel, ResponseReasoningSummaryVerbosity? reasoningSummaryVerbosity, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ResponseReasoningOptions(ResponseReasoningEffortLevel? reasoningEffortLevel, ResponseReasoningSummaryVerbosity? reasoningSummaryVerbosity, InternalReasoningGenerateSummary? generateSummary, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            GenerateSummary = generateSummary;
             ReasoningEffortLevel = reasoningEffortLevel;
             ReasoningSummaryVerbosity = reasoningSummaryVerbosity;
+            GenerateSummary = generateSummary;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

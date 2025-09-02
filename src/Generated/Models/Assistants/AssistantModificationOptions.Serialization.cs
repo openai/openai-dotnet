@@ -27,6 +27,16 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(AssistantModificationOptions)} does not support writing '{format}' format.");
             }
+            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
+            {
+                writer.WritePropertyName("model"u8);
+                writer.WriteStringValue(Model);
+            }
+            if (Optional.IsDefined(ReasoningEffortLevel) && _additionalBinaryDataProperties?.ContainsKey("reasoning_effort") != true)
+            {
+                writer.WritePropertyName("reasoning_effort"u8);
+                writer.WriteStringValue(ReasoningEffortLevel.Value.ToString());
+            }
             if (Optional.IsDefined(Name) && _additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
                 writer.WritePropertyName("name"u8);
@@ -41,6 +51,21 @@ namespace OpenAI.Assistants
             {
                 writer.WritePropertyName("instructions"u8);
                 writer.WriteStringValue(Instructions);
+            }
+            if (Optional.IsCollectionDefined(DefaultTools) && _additionalBinaryDataProperties?.ContainsKey("tools") != true)
+            {
+                writer.WritePropertyName("tools"u8);
+                writer.WriteStartArray();
+                foreach (ToolDefinition item in DefaultTools)
+                {
+                    writer.WriteObjectValue(item, options);
+                }
+                writer.WriteEndArray();
+            }
+            if (Optional.IsDefined(ToolResources) && _additionalBinaryDataProperties?.ContainsKey("tool_resources") != true)
+            {
+                writer.WritePropertyName("tool_resources"u8);
+                writer.WriteObjectValue(ToolResources, options);
             }
             if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
@@ -63,40 +88,15 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("temperature"u8);
                 writer.WriteNumberValue(Temperature.Value);
             }
-            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
-            {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model);
-            }
-            if (Optional.IsCollectionDefined(DefaultTools) && _additionalBinaryDataProperties?.ContainsKey("tools") != true)
-            {
-                writer.WritePropertyName("tools"u8);
-                writer.WriteStartArray();
-                foreach (ToolDefinition item in DefaultTools)
-                {
-                    writer.WriteObjectValue(item, options);
-                }
-                writer.WriteEndArray();
-            }
-            if (Optional.IsDefined(ToolResources) && _additionalBinaryDataProperties?.ContainsKey("tool_resources") != true)
-            {
-                writer.WritePropertyName("tool_resources"u8);
-                writer.WriteObjectValue(ToolResources, options);
-            }
-            if (Optional.IsDefined(ResponseFormat) && _additionalBinaryDataProperties?.ContainsKey("response_format") != true)
-            {
-                writer.WritePropertyName("response_format"u8);
-                writer.WriteObjectValue(ResponseFormat, options);
-            }
             if (Optional.IsDefined(NucleusSamplingFactor) && _additionalBinaryDataProperties?.ContainsKey("top_p") != true)
             {
                 writer.WritePropertyName("top_p"u8);
                 writer.WriteNumberValue(NucleusSamplingFactor.Value);
             }
-            if (Optional.IsDefined(ReasoningEffortLevel) && _additionalBinaryDataProperties?.ContainsKey("reasoning_effort") != true)
+            if (Optional.IsDefined(ResponseFormat) && _additionalBinaryDataProperties?.ContainsKey("response_format") != true)
             {
-                writer.WritePropertyName("reasoning_effort"u8);
-                writer.WriteStringValue(ReasoningEffortLevel.Value.ToString());
+                writer.WritePropertyName("response_format"u8);
+                writer.WriteObjectValue(ResponseFormat, options);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -139,20 +139,35 @@ namespace OpenAI.Assistants
             {
                 return null;
             }
+            string model = default;
+            ChatReasoningEffortLevel? reasoningEffortLevel = default;
             string name = default;
             string description = default;
             string instructions = default;
-            IDictionary<string, string> metadata = default;
-            float? temperature = default;
-            string model = default;
             IList<ToolDefinition> defaultTools = default;
             ToolResources toolResources = default;
-            AssistantResponseFormat responseFormat = default;
+            IDictionary<string, string> metadata = default;
+            float? temperature = default;
             float? nucleusSamplingFactor = default;
-            ChatReasoningEffortLevel? reasoningEffortLevel = default;
+            AssistantResponseFormat responseFormat = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("model"u8))
+                {
+                    model = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("reasoning_effort"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        reasoningEffortLevel = null;
+                        continue;
+                    }
+                    reasoningEffortLevel = new ChatReasoningEffortLevel(prop.Value.GetString());
+                    continue;
+                }
                 if (prop.NameEquals("name"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -181,6 +196,30 @@ namespace OpenAI.Assistants
                         continue;
                     }
                     instructions = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("tools"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    List<ToolDefinition> array = new List<ToolDefinition>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        array.Add(ToolDefinition.DeserializeToolDefinition(item, options));
+                    }
+                    defaultTools = array;
+                    continue;
+                }
+                if (prop.NameEquals("tool_resources"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        toolResources = null;
+                        continue;
+                    }
+                    toolResources = ToolResources.DeserializeToolResources(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("metadata"u8))
@@ -214,33 +253,14 @@ namespace OpenAI.Assistants
                     temperature = prop.Value.GetSingle();
                     continue;
                 }
-                if (prop.NameEquals("model"u8))
-                {
-                    model = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("tools"u8))
+                if (prop.NameEquals("top_p"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        nucleusSamplingFactor = null;
                         continue;
                     }
-                    List<ToolDefinition> array = new List<ToolDefinition>();
-                    foreach (var item in prop.Value.EnumerateArray())
-                    {
-                        array.Add(ToolDefinition.DeserializeToolDefinition(item, options));
-                    }
-                    defaultTools = array;
-                    continue;
-                }
-                if (prop.NameEquals("tool_resources"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        toolResources = null;
-                        continue;
-                    }
-                    toolResources = ToolResources.DeserializeToolResources(prop.Value, options);
+                    nucleusSamplingFactor = prop.Value.GetSingle();
                     continue;
                 }
                 if (prop.NameEquals("response_format"u8))
@@ -253,41 +273,21 @@ namespace OpenAI.Assistants
                     responseFormat = AssistantResponseFormat.DeserializeAssistantResponseFormat(prop.Value, options);
                     continue;
                 }
-                if (prop.NameEquals("top_p"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        nucleusSamplingFactor = null;
-                        continue;
-                    }
-                    nucleusSamplingFactor = prop.Value.GetSingle();
-                    continue;
-                }
-                if (prop.NameEquals("reasoning_effort"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        reasoningEffortLevel = null;
-                        continue;
-                    }
-                    reasoningEffortLevel = new ChatReasoningEffortLevel(prop.Value.GetString());
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new AssistantModificationOptions(
+                model,
+                reasoningEffortLevel,
                 name,
                 description,
                 instructions,
-                metadata ?? new ChangeTrackingDictionary<string, string>(),
-                temperature,
-                model,
                 defaultTools ?? new ChangeTrackingList<ToolDefinition>(),
                 toolResources,
-                responseFormat,
+                metadata ?? new ChangeTrackingDictionary<string, string>(),
+                temperature,
                 nucleusSamplingFactor,
-                reasoningEffortLevel,
+                responseFormat,
                 additionalBinaryDataProperties);
         }
 

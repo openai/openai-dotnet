@@ -18,16 +18,16 @@ namespace OpenAI.Realtime
         {
         }
 
-        internal ConversationResponseOptions(string instructions, RealtimeAudioFormat? outputAudioFormat, IList<ConversationTool> tools, float? temperature, IDictionary<string, string> metadata, ResponseConversationSelection? conversationSelection, ConversationMaxTokensChoice maxOutputTokens, IList<RealtimeItem> overrideItems, ConversationVoice? voice, IList<InternalRealtimeRequestSessionModality> internalModalities, BinaryData internalToolChoice, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ConversationResponseOptions(string instructions, RealtimeAudioFormat? outputAudioFormat, IList<ConversationTool> tools, float? temperature, ConversationMaxTokensChoice maxOutputTokens, ResponseConversationSelection? conversationSelection, IDictionary<string, string> metadata, IList<RealtimeItem> overrideItems, ConversationVoice? voice, IList<InternalRealtimeRequestSessionModality> internalModalities, BinaryData internalToolChoice, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Instructions = instructions;
             OutputAudioFormat = outputAudioFormat;
             Tools = tools ?? new ChangeTrackingList<ConversationTool>();
             Temperature = temperature;
-            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
-            ConversationSelection = conversationSelection;
             MaxOutputTokens = maxOutputTokens;
+            ConversationSelection = conversationSelection;
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             OverrideItems = overrideItems ?? new ChangeTrackingList<RealtimeItem>();
             Voice = voice;
             _internalModalities = internalModalities ?? new ChangeTrackingList<InternalRealtimeRequestSessionModality>();

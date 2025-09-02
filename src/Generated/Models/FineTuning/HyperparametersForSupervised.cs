@@ -17,11 +17,11 @@ namespace OpenAI.FineTuning
         {
         }
 
-        internal HyperparametersForSupervised(BinaryData batchSize, BinaryData nEpochs, BinaryData learningRateMultiplier, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal HyperparametersForSupervised(BinaryData batchSize, BinaryData learningRateMultiplier, BinaryData nEpochs, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             _BatchSize = batchSize;
-            _NEpochs = nEpochs;
             _LearningRateMultiplier = learningRateMultiplier;
+            _NEpochs = nEpochs;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

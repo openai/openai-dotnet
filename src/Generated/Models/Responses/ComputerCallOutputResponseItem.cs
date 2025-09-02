@@ -22,13 +22,13 @@ namespace OpenAI.Responses
             Output = output;
         }
 
-        internal ComputerCallOutputResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, ComputerCallOutput output, ComputerCallOutputStatus? status) : base(kind, id, additionalBinaryDataProperties)
+        internal ComputerCallOutputResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, ComputerCallOutputStatus? status, string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, ComputerCallOutput output) : base(kind, id, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
+            Status = status;
             CallId = callId;
             AcknowledgedSafetyChecks = acknowledgedSafetyChecks ?? new ChangeTrackingList<ComputerCallSafetyCheck>();
             Output = output;
-            Status = status;
         }
 
         public string CallId { get; set; }

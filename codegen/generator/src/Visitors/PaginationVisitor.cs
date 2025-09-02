@@ -18,7 +18,7 @@ namespace OpenAILibraryPlugin.Visitors;
 public class PaginationVisitor : ScmLibraryVisitor
 {
 
-    private static readonly string[] _paginationParamsToReplace = ["after", "before", "limit", "order", "model", "metadata"];
+    private static readonly string[] _paginationParamsToReplace = ["after", "before", "limit", "order", "model", "metadata", "filter"];
     private static readonly Dictionary<string, string> _paramReplacementMap = new()
     {
         { "after", "AfterId" },
@@ -26,7 +26,8 @@ public class PaginationVisitor : ScmLibraryVisitor
         { "limit", "PageSizeLimit" },
         { "order", "Order" },
         { "model", "Model" },
-        { "metadata", "Metadata" }
+        { "metadata", "Metadata" },
+        { "filter", "Filter" }
     };
     private static readonly Dictionary<string, (string ReturnType, string OptionsType, string[] ParamsToReplace)> _optionsReplacements = new()
     {
@@ -53,6 +54,30 @@ public class PaginationVisitor : ScmLibraryVisitor
         {
             "GetBatchesAsync",
             ("BatchJob", "BatchCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetVectorStores",
+            ("VectorStore", "VectorStoreCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetVectorStoresAsync",
+            ("VectorStore", "VectorStoreCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetFileAssociations",
+            ("VectorStoreFileAssociation", "VectorStoreFileAssociationCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetFileAssociationsAsync",
+            ("VectorStoreFileAssociation", "VectorStoreFileAssociationCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetFileAssociationsInBatch",
+            ("VectorStoreFileAssociation", "VectorStoreFileAssociationCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetFileAssociationsInBatchAsync",
+            ("VectorStoreFileAssociation", "VectorStoreFileAssociationCollectionOptions", _paginationParamsToReplace)
         },
         {
             "GetContainers",
@@ -237,7 +262,8 @@ public class PaginationVisitor : ScmLibraryVisitor
                                 if (binaryExpr.Left is VariableExpression leftVar &&
                                     leftVar.Declaration.RequestedName == "nextToken" &&
                                     binaryExpr.Right is KeywordExpression rightKeyword &&
-                                    rightKeyword.Keyword == "null")
+                                    rightKeyword.Keyword == "null"
+                                    && hasMoreVariable != null)
                                 {
                                     // Create "!hasMore" condition. Note the hasMoreVariable gets assigned earlier in the method statements
                                     // in the WhileStatement handler below.

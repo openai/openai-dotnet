@@ -33,15 +33,15 @@ namespace OpenAI.Models
             {
                 throw new FormatException($"The model {nameof(ModelDeletionResult)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("deleted") != true)
-            {
-                writer.WritePropertyName("deleted"u8);
-                writer.WriteBooleanValue(Deleted);
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(ModelId);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("deleted") != true)
+            {
+                writer.WritePropertyName("deleted"u8);
+                writer.WriteBooleanValue(Deleted);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
@@ -90,20 +90,20 @@ namespace OpenAI.Models
             {
                 return null;
             }
-            bool deleted = default;
             string modelId = default;
+            bool deleted = default;
             string @object = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("deleted"u8))
-                {
-                    deleted = prop.Value.GetBoolean();
-                    continue;
-                }
                 if (prop.NameEquals("id"u8))
                 {
                     modelId = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("deleted"u8))
+                {
+                    deleted = prop.Value.GetBoolean();
                     continue;
                 }
                 if (prop.NameEquals("object"u8))
@@ -114,7 +114,7 @@ namespace OpenAI.Models
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ModelDeletionResult(deleted, modelId, @object, additionalBinaryDataProperties);
+            return new ModelDeletionResult(modelId, deleted, @object, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<ModelDeletionResult>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

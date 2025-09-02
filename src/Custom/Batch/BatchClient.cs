@@ -38,7 +38,7 @@ public partial class BatchClient
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
     /// <summary> Initializes a new instance of <see cref="BatchClient"/>. </summary>
-    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
     public BatchClient(ApiKeyCredential credential) : this(credential, new OpenAIClientOptions())
     {
@@ -47,7 +47,7 @@ public partial class BatchClient
     /// <summary>
     /// Initializes a new instance of <see cref="BatchClient"/> that will use an API key when authenticating.
     /// </summary>
-    /// <param name="credential"> The API key used to authenticate with the service endpoint. </param>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <param name="options"> Additional options to customize the client. </param>
     /// <exception cref="ArgumentNullException"> The provided <paramref name="credential"/> was null. </exception>
     public BatchClient(ApiKeyCredential credential, OpenAIClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)

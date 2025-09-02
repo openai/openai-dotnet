@@ -17,9 +17,8 @@ namespace OpenAI.Realtime
         {
         }
 
-        internal ConversationStatusDetails(InternalRealtimeResponseStatusDetailsType? kind, ConversationStatus statusKind, ConversationIncompleteReason? incompleteReason, InternalRealtimeResponseStatusDetailsError error, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ConversationStatusDetails(ConversationStatus statusKind, ConversationIncompleteReason? incompleteReason, InternalRealtimeResponseStatusDetailsError error, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Kind = kind;
             StatusKind = statusKind;
             IncompleteReason = incompleteReason;
             Error = error;
