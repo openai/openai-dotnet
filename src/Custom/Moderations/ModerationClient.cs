@@ -119,6 +119,12 @@ public partial class ModerationClient
     [Experimental("OPENAI001")]
     public string Model => _model;
 
+    /// <summary>
+    /// Gets the endpoint URI for the service.
+    /// </summary>
+    [Experimental("OPENAI001")]
+    public Uri Endpoint => _endpoint;
+
     /// <summary> Classifies if the text input is potentially harmful across several categories. </summary>
     /// <param name="input"> The text input to classify. </param>
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
