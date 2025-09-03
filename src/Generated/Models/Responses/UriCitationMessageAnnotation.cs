@@ -10,28 +10,26 @@ using OpenAI;
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
-    public partial class UrlCitationAnnotation : ResponseMessageAnnotation
+    public partial class UriCitationMessageAnnotation : ResponseMessageAnnotation
     {
-        public UrlCitationAnnotation(Uri url, int startIndex, int endIndex, string title) : base(ResponseMessageAnnotationKind.UriCitation)
+        public UriCitationMessageAnnotation(Uri uri, int startIndex, int endIndex, string title) : base(ResponseMessageAnnotationKind.UriCitation)
         {
-            Argument.AssertNotNull(url, nameof(url));
+            Argument.AssertNotNull(uri, nameof(uri));
             Argument.AssertNotNull(title, nameof(title));
 
-            Url = url;
+            Uri = uri;
             StartIndex = startIndex;
             EndIndex = endIndex;
             Title = title;
         }
 
-        internal UrlCitationAnnotation(ResponseMessageAnnotationKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, Uri url, int startIndex, int endIndex, string title) : base(kind, additionalBinaryDataProperties)
+        internal UriCitationMessageAnnotation(ResponseMessageAnnotationKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, Uri uri, int startIndex, int endIndex, string title) : base(kind, additionalBinaryDataProperties)
         {
-            Url = url;
+            Uri = uri;
             StartIndex = startIndex;
             EndIndex = endIndex;
             Title = title;
         }
-
-        public Uri Url { get; set; }
 
         public int StartIndex { get; set; }
 

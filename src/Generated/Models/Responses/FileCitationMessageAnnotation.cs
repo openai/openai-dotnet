@@ -10,9 +10,9 @@ using OpenAI;
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
-    public partial class FileCitationAnnotation : ResponseMessageAnnotation
+    public partial class FileCitationMessageAnnotation : ResponseMessageAnnotation
     {
-        public FileCitationAnnotation(string fileId, int index) : base(ResponseMessageAnnotationKind.FileCitation)
+        public FileCitationMessageAnnotation(string fileId, int index) : base(ResponseMessageAnnotationKind.FileCitation)
         {
             Argument.AssertNotNull(fileId, nameof(fileId));
 
@@ -20,7 +20,7 @@ namespace OpenAI.Responses
             Index = index;
         }
 
-        internal FileCitationAnnotation(ResponseMessageAnnotationKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string fileId, int index) : base(kind, additionalBinaryDataProperties)
+        internal FileCitationMessageAnnotation(ResponseMessageAnnotationKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string fileId, int index) : base(kind, additionalBinaryDataProperties)
         {
             FileId = fileId;
             Index = index;

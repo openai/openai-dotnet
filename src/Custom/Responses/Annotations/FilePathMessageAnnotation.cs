@@ -3,6 +3,6 @@
 // CUSTOM:
 // - Renamed.
 [CodeGenType("AnnotationFilePath")]
-public partial class FilePathAnnotation
+public partial class FilePathMessageAnnotation
 {
 }

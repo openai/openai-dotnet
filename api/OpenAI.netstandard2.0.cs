@@ -4141,8 +4141,8 @@ namespace OpenAI.Responses {
         public static bool operator !=(ComputerToolEnvironment left, ComputerToolEnvironment right);
         public override readonly string ToString();
     }
-    public class FileCitationAnnotation : ResponseMessageAnnotation, IJsonModel<FileCitationAnnotation>, IPersistableModel<FileCitationAnnotation> {
-        public FileCitationAnnotation(string fileId, int index);
+    public class FileCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<FileCitationMessageAnnotation>, IPersistableModel<FileCitationMessageAnnotation> {
+        public FileCitationMessageAnnotation(string fileId, int index);
         public string FileId { get; set; }
         public int Index { get; set; }
         protected override ResponseMessageAnnotation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -4150,8 +4150,8 @@ namespace OpenAI.Responses {
         protected override ResponseMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
-    public class FilePathAnnotation : ResponseMessageAnnotation, IJsonModel<FilePathAnnotation>, IPersistableModel<FilePathAnnotation> {
-        public FilePathAnnotation(string fileId, int index);
+    public class FilePathMessageAnnotation : ResponseMessageAnnotation, IJsonModel<FilePathMessageAnnotation>, IPersistableModel<FilePathMessageAnnotation> {
+        public FilePathMessageAnnotation(string fileId, int index);
         public string FileId { get; set; }
         public int Index { get; set; }
         protected override ResponseMessageAnnotation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -4976,12 +4976,12 @@ namespace OpenAI.Responses {
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
-    public class UrlCitationAnnotation : ResponseMessageAnnotation, IJsonModel<UrlCitationAnnotation>, IPersistableModel<UrlCitationAnnotation> {
-        public UrlCitationAnnotation(Uri url, int startIndex, int endIndex, string title);
+    public class UriCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<UriCitationMessageAnnotation>, IPersistableModel<UriCitationMessageAnnotation> {
+        public UriCitationMessageAnnotation(Uri uri, int startIndex, int endIndex, string title);
         public int EndIndex { get; set; }
         public int StartIndex { get; set; }
         public string Title { get; set; }
-        public Uri Url { get; set; }
+        public Uri Uri { get; set; }
         protected override ResponseMessageAnnotation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override ResponseMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);

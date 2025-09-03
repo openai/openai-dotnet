@@ -115,7 +115,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
         Assert.That(messageContentPart, Is.Not.Null);
         Assert.That(messageContentPart.Text, Does.Contain("pizza"));
         Assert.That(messageContentPart.OutputTextAnnotations, Is.Not.Null.And.Not.Empty);
-        FileCitationAnnotation annotation = messageContentPart.OutputTextAnnotations[0] as FileCitationAnnotation;
+        FileCitationMessageAnnotation annotation = messageContentPart.OutputTextAnnotations[0] as FileCitationMessageAnnotation;
         Assert.That(annotation.FileId, Is.EqualTo(testFile.Id));
         Assert.That(annotation.Index, Is.GreaterThan(0));
 

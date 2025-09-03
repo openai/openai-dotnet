@@ -571,25 +571,25 @@ namespace OpenAI
             return new InternalUnknownAnnotation(kind.ToResponseMessageAnnotationKind(), additionalBinaryDataProperties: null);
         }
 
-        public static FileCitationAnnotation FileCitationAnnotation(string fileId = default, int index = default)
+        public static FileCitationMessageAnnotation FileCitationMessageAnnotation(string fileId = default, int index = default)
         {
-            return new FileCitationAnnotation(ResponseMessageAnnotationKind.FileCitation, additionalBinaryDataProperties: null, fileId, index);
+            return new FileCitationMessageAnnotation(ResponseMessageAnnotationKind.FileCitation, additionalBinaryDataProperties: null, fileId, index);
         }
 
-        public static UrlCitationAnnotation UrlCitationAnnotation(Uri url = default, int startIndex = default, int endIndex = default, string title = default)
+        public static UriCitationMessageAnnotation UriCitationMessageAnnotation(Uri uri = default, int startIndex = default, int endIndex = default, string title = default)
         {
-            return new UrlCitationAnnotation(
+            return new UriCitationMessageAnnotation(
                 ResponseMessageAnnotationKind.UriCitation,
                 additionalBinaryDataProperties: null,
-                url,
+                uri,
                 startIndex,
                 endIndex,
                 title);
         }
 
-        public static FilePathAnnotation FilePathAnnotation(string fileId = default, int index = default)
+        public static FilePathMessageAnnotation FilePathMessageAnnotation(string fileId = default, int index = default)
         {
-            return new FilePathAnnotation(ResponseMessageAnnotationKind.FilePath, additionalBinaryDataProperties: null, fileId, index);
+            return new FilePathMessageAnnotation(ResponseMessageAnnotationKind.FilePath, additionalBinaryDataProperties: null, fileId, index);
         }
 
         public static FileSearchCallResult FileSearchCallResult(string fileId = default, string text = default, string filename = default, IDictionary<string, BinaryData> attributes = default, float? score = default)

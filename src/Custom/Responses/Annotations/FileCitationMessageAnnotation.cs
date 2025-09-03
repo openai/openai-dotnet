@@ -3,6 +3,6 @@
 // CUSTOM:
 // - Renamed.
 [CodeGenType("AnnotationFileCitation")]
-public partial class FileCitationAnnotation
+public partial class FileCitationMessageAnnotation
 {
 }
