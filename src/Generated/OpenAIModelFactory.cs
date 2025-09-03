@@ -571,6 +571,27 @@ namespace OpenAI
             return new InternalUnknownAnnotation(kind.ToResponseMessageAnnotationKind(), additionalBinaryDataProperties: null);
         }
 
+        public static FileCitationMessageAnnotation FileCitationMessageAnnotation(string fileId = default, int index = default)
+        {
+            return new FileCitationMessageAnnotation(ResponseMessageAnnotationKind.FileCitation, additionalBinaryDataProperties: null, fileId, index);
+        }
+
+        public static UriCitationMessageAnnotation UriCitationMessageAnnotation(Uri uri = default, int startIndex = default, int endIndex = default, string title = default)
+        {
+            return new UriCitationMessageAnnotation(
+                ResponseMessageAnnotationKind.UriCitation,
+                additionalBinaryDataProperties: null,
+                uri,
+                startIndex,
+                endIndex,
+                title);
+        }
+
+        public static FilePathMessageAnnotation FilePathMessageAnnotation(string fileId = default, int index = default)
+        {
+            return new FilePathMessageAnnotation(ResponseMessageAnnotationKind.FilePath, additionalBinaryDataProperties: null, fileId, index);
+        }
+
         public static FileSearchCallResult FileSearchCallResult(string fileId = default, string text = default, string filename = default, IDictionary<string, BinaryData> attributes = default, float? score = default)
         {
             attributes ??= new ChangeTrackingDictionary<string, BinaryData>();

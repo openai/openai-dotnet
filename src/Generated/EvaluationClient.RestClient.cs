@@ -19,10 +19,6 @@ namespace OpenAI.Evals
 
         internal virtual PipelineMessage CreateGetEvalsRequest(string after, int? limit, string order, string orderBy, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "GET";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/evals", false);
@@ -42,7 +38,8 @@ namespace OpenAI.Evals
             {
                 uri.AppendQuery("order_by", orderBy, true);
             }
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;
@@ -50,14 +47,11 @@ namespace OpenAI.Evals
 
         internal virtual PipelineMessage CreateCreateEvalRequest(BinaryContent content, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier201;
-            PipelineRequest request = message.Request;
-            request.Method = "POST";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/evals", false);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier201);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Content-Type", "application/json");
             request.Headers.Set("Accept", "application/json");
             request.Content = content;
@@ -67,15 +61,12 @@ namespace OpenAI.Evals
 
         internal virtual PipelineMessage CreateGetEvalRequest(string evalId, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "GET";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/evals/", false);
             uri.AppendPath(evalId, true);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;
@@ -83,15 +74,12 @@ namespace OpenAI.Evals
 
         internal virtual PipelineMessage CreateUpdateEvalRequest(string evalId, BinaryContent content, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "POST";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/evals/", false);
             uri.AppendPath(evalId, true);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Content-Type", "application/json");
             request.Headers.Set("Accept", "application/json");
             request.Content = content;
@@ -101,15 +89,12 @@ namespace OpenAI.Evals
 
         internal virtual PipelineMessage CreateDeleteEvalRequest(string evalId, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "DELETE";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/evals/", false);
             uri.AppendPath(evalId, true);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "DELETE", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;
@@ -117,10 +102,6 @@ namespace OpenAI.Evals
 
         internal virtual PipelineMessage CreateGetEvalRunsRequest(string evalId, string after, int? limit, string order, string status, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "GET";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/evals/", false);
@@ -142,7 +123,8 @@ namespace OpenAI.Evals
             {
                 uri.AppendQuery("status", status, true);
             }
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;
@@ -150,16 +132,13 @@ namespace OpenAI.Evals
 
         internal virtual PipelineMessage CreateCreateEvalRunRequest(string evalId, BinaryContent content, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier201;
-            PipelineRequest request = message.Request;
-            request.Method = "POST";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/evals/", false);
             uri.AppendPath(evalId, true);
             uri.AppendPath("/runs", false);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier201);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Content-Type", "application/json");
             request.Headers.Set("Accept", "application/json");
             request.Content = content;
@@ -169,17 +148,14 @@ namespace OpenAI.Evals
 
         internal virtual PipelineMessage CreateGetEvalRunRequest(string evalId, string runId, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "GET";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/evals/", false);
             uri.AppendPath(evalId, true);
             uri.AppendPath("/runs/", false);
             uri.AppendPath(runId, true);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;
@@ -187,17 +163,14 @@ namespace OpenAI.Evals
 
         internal virtual PipelineMessage CreateCancelEvalRunRequest(string evalId, string runId, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "POST";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/evals/", false);
             uri.AppendPath(evalId, true);
             uri.AppendPath("/runs/", false);
             uri.AppendPath(runId, true);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;
@@ -205,17 +178,14 @@ namespace OpenAI.Evals
 
         internal virtual PipelineMessage CreateDeleteEvalRunRequest(string evalId, string runId, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "DELETE";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/evals/", false);
             uri.AppendPath(evalId, true);
             uri.AppendPath("/runs/", false);
             uri.AppendPath(runId, true);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "DELETE", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;
@@ -223,10 +193,6 @@ namespace OpenAI.Evals
 
         internal virtual PipelineMessage CreateGetEvalRunOutputItemsRequest(string evalId, string runId, string after, int? limit, string status, string order, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "GET";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/evals/", false);
@@ -250,7 +216,8 @@ namespace OpenAI.Evals
             {
                 uri.AppendQuery("order", order, true);
             }
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;
@@ -258,10 +225,6 @@ namespace OpenAI.Evals
 
         internal virtual PipelineMessage CreateGetEvalRunOutputItemRequest(string evalId, string runId, string outputItemId, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "GET";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/evals/", false);
@@ -270,7 +233,8 @@ namespace OpenAI.Evals
             uri.AppendPath(runId, true);
             uri.AppendPath("/output_items/", false);
             uri.AppendPath(outputItemId, true);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;

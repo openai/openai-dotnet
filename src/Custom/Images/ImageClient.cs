@@ -117,6 +117,12 @@ public partial class ImageClient
     [Experimental("OPENAI001")]
     public string Model => _model;
 
+    /// <summary>
+    /// Gets the endpoint URI for the service.
+    /// </summary>
+    [Experimental("OPENAI001")]
+    public Uri Endpoint => _endpoint;
+
     #region GenerateImages
 
     /// <summary> Generates an image based on a prompt. </summary>
