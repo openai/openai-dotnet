@@ -7,6 +7,7 @@ namespace OpenAI {
         public OpenAIClient(AuthenticationPolicy authenticationPolicy);
         protected internal OpenAIClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public OpenAIClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual AssistantClient GetAssistantClient();
         public virtual AudioClient GetAudioClient(string model);
@@ -64,6 +65,7 @@ namespace OpenAI.Assistants {
         public AssistantClient(AuthenticationPolicy authenticationPolicy);
         protected internal AssistantClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public AssistantClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult CancelRun(string threadId, string runId, RequestOptions options);
         public virtual ClientResult<ThreadRun> CancelRun(string threadId, string runId, CancellationToken cancellationToken = default);
@@ -989,6 +991,7 @@ namespace OpenAI.Audio {
         public AudioClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public AudioClient(string model, AuthenticationPolicy authenticationPolicy);
         public AudioClient(string model, string apiKey);
+        public Uri Endpoint { get; }
         public string Model { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult GenerateSpeech(BinaryContent content, RequestOptions options = null);
@@ -1237,6 +1240,7 @@ namespace OpenAI.Batch {
         public BatchClient(AuthenticationPolicy authenticationPolicy);
         protected internal BatchClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public BatchClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual CreateBatchOperation CreateBatch(BinaryContent content, bool waitUntilCompleted, RequestOptions options = null);
         public virtual Task<CreateBatchOperation> CreateBatchAsync(BinaryContent content, bool waitUntilCompleted, RequestOptions options = null);
@@ -1332,6 +1336,7 @@ namespace OpenAI.Chat {
         public ChatClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public ChatClient(string model, AuthenticationPolicy authenticationPolicy);
         public ChatClient(string model, string apiKey);
+        public Uri Endpoint { get; }
         public string Model { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult<ChatCompletion> CompleteChat(params ChatMessage[] messages);
@@ -1995,6 +2000,7 @@ namespace OpenAI.Containers {
         public ContainerClient(AuthenticationPolicy authenticationPolicy);
         protected internal ContainerClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public ContainerClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult<ContainerResource> CreateContainer(CreateContainerBody body, CancellationToken cancellationToken = default);
         public virtual ClientResult CreateContainer(BinaryContent content, RequestOptions options = null);
@@ -2157,6 +2163,7 @@ namespace OpenAI.Embeddings {
         public EmbeddingClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public EmbeddingClient(string model, AuthenticationPolicy authenticationPolicy);
         public EmbeddingClient(string model, string apiKey);
+        public Uri Endpoint { get; }
         public string Model { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult<OpenAIEmbedding> GenerateEmbedding(string input, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default);
@@ -2216,6 +2223,7 @@ namespace OpenAI.Evals {
         public EvaluationClient(AuthenticationPolicy authenticationPolicy);
         protected internal EvaluationClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public EvaluationClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult CancelEvaluationRun(string evaluationId, string evaluationRunId, RequestOptions options);
         public virtual Task<ClientResult> CancelEvaluationRunAsync(string evaluationId, string evaluationRunId, RequestOptions options);
@@ -2316,6 +2324,7 @@ namespace OpenAI.Files {
         public OpenAIFileClient(AuthenticationPolicy authenticationPolicy);
         protected internal OpenAIFileClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public OpenAIFileClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult AddUploadPart(string uploadId, BinaryContent content, string contentType, RequestOptions options = null);
         public virtual Task<ClientResult> AddUploadPartAsync(string uploadId, BinaryContent content, string contentType, RequestOptions options = null);
@@ -2403,6 +2412,7 @@ namespace OpenAI.FineTuning {
         protected internal FineTuningClient(ClientPipeline pipeline, OpenAIClientOptions options);
         protected internal FineTuningClient(ClientPipeline pipeline, Uri endpoint);
         public FineTuningClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult CreateFineTuningCheckpointPermission(string fineTunedModelCheckpoint, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult> CreateFineTuningCheckpointPermissionAsync(string fineTunedModelCheckpoint, BinaryContent content, RequestOptions options = null);
@@ -2704,6 +2714,7 @@ namespace OpenAI.Graders {
         public GraderClient(AuthenticationPolicy authenticationPolicy);
         protected internal GraderClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public GraderClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult RunGrader(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult> RunGraderAsync(BinaryContent content, RequestOptions options = null);
@@ -3047,6 +3058,7 @@ namespace OpenAI.Images {
         public ImageClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public ImageClient(string model, AuthenticationPolicy authenticationPolicy);
         public ImageClient(string model, string apiKey);
+        public Uri Endpoint { get; }
         public string Model { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult<GeneratedImage> GenerateImage(string prompt, ImageGenerationOptions options = null, CancellationToken cancellationToken = default);
@@ -3170,6 +3182,7 @@ namespace OpenAI.Models {
         public OpenAIModelClient(AuthenticationPolicy authenticationPolicy);
         protected internal OpenAIModelClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public OpenAIModelClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult DeleteModel(string model, RequestOptions options);
         public virtual ClientResult<ModelDeletionResult> DeleteModel(string model, CancellationToken cancellationToken = default);
@@ -3210,6 +3223,7 @@ namespace OpenAI.Moderations {
         public ModerationClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public ModerationClient(string model, AuthenticationPolicy authenticationPolicy);
         public ModerationClient(string model, string apiKey);
+        public Uri Endpoint { get; }
         public string Model { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult ClassifyText(BinaryContent content, RequestOptions options = null);
@@ -3804,6 +3818,7 @@ namespace OpenAI.Realtime {
         public RealtimeClient(AuthenticationPolicy authenticationPolicy);
         protected internal RealtimeClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public RealtimeClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public event EventHandler<BinaryData> OnReceivingCommand { add; remove; }
         public event EventHandler<BinaryData> OnSendingCommand { add; remove; }
@@ -4132,6 +4147,16 @@ namespace OpenAI.Responses {
         Completed = 1,
         Incomplete = 2
     }
+    public class ComputerTool : ResponseTool, IJsonModel<ComputerTool>, IPersistableModel<ComputerTool> {
+        public ComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight);
+        public int DisplayHeight { get; set; }
+        public int DisplayWidth { get; set; }
+        public ComputerToolEnvironment Environment { get; set; }
+        protected override ResponseTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
     public readonly partial struct ComputerToolEnvironment : IEquatable<ComputerToolEnvironment> {
         public ComputerToolEnvironment(string value);
         public static ComputerToolEnvironment Browser { get; }
@@ -4149,6 +4174,24 @@ namespace OpenAI.Responses {
         public static implicit operator ComputerToolEnvironment?(string value);
         public static bool operator !=(ComputerToolEnvironment left, ComputerToolEnvironment right);
         public override readonly string ToString();
+    }
+    public class FileCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<FileCitationMessageAnnotation>, IPersistableModel<FileCitationMessageAnnotation> {
+        public FileCitationMessageAnnotation(string fileId, int index);
+        public string FileId { get; set; }
+        public int Index { get; set; }
+        protected override ResponseMessageAnnotation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class FilePathMessageAnnotation : ResponseMessageAnnotation, IJsonModel<FilePathMessageAnnotation>, IPersistableModel<FilePathMessageAnnotation> {
+        public FilePathMessageAnnotation(string fileId, int index);
+        public string FileId { get; set; }
+        public int Index { get; set; }
+        protected override ResponseMessageAnnotation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class FileSearchCallResponseItem : ResponseItem, IJsonModel<FileSearchCallResponseItem>, IPersistableModel<FileSearchCallResponseItem> {
         public FileSearchCallResponseItem(IEnumerable<string> queries);
@@ -4177,6 +4220,17 @@ namespace OpenAI.Responses {
         Completed = 2,
         Incomplete = 3,
         Failed = 4
+    }
+    public class FileSearchTool : ResponseTool, IJsonModel<FileSearchTool>, IPersistableModel<FileSearchTool> {
+        public FileSearchTool(IEnumerable<string> vectorStoreIds);
+        public BinaryData Filters { get; set; }
+        public int? MaxResultCount { get; set; }
+        public FileSearchToolRankingOptions RankingOptions { get; set; }
+        public IList<string> VectorStoreIds { get; }
+        protected override ResponseTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public readonly partial struct FileSearchToolRanker : IEquatable<FileSearchToolRanker> {
         public FileSearchToolRanker(string value);
@@ -4231,6 +4285,17 @@ namespace OpenAI.Responses {
         InProgress = 0,
         Completed = 1,
         Incomplete = 2
+    }
+    public class FunctionTool : ResponseTool, IJsonModel<FunctionTool>, IPersistableModel<FunctionTool> {
+        public FunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled);
+        public string FunctionDescription { get; set; }
+        public string FunctionName { get; set; }
+        public BinaryData FunctionParameters { get; set; }
+        public bool? StrictModeEnabled { get; set; }
+        protected override ResponseTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class MessageResponseItem : ResponseItem, IJsonModel<MessageResponseItem>, IPersistableModel<MessageResponseItem> {
         public IList<ResponseContentPart> Content { get; }
@@ -4292,6 +4357,7 @@ namespace OpenAI.Responses {
         public OpenAIResponseClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public OpenAIResponseClient(string model, AuthenticationPolicy authenticationPolicy);
         public OpenAIResponseClient(string model, string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult CancelResponse(string responseId, RequestOptions options);
         public virtual ClientResult<OpenAIResponse> CancelResponse(string responseId, CancellationToken cancellationToken = default);
@@ -4569,15 +4635,7 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class ResponseMessageAnnotation : IJsonModel<ResponseMessageAnnotation>, IPersistableModel<ResponseMessageAnnotation> {
-        public string FileCitationFileId { get; }
-        public int? FileCitationIndex { get; }
-        public string FilePathFileId { get; }
-        public int? FilePathIndex { get; }
         public ResponseMessageAnnotationKind Kind { get; }
-        public int? UriCitationEndIndex { get; }
-        public int? UriCitationStartIndex { get; }
-        public string UriCitationTitle { get; }
-        public Uri UriCitationUri { get; }
         protected virtual ResponseMessageAnnotation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ResponseMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -4696,10 +4754,10 @@ namespace OpenAI.Responses {
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ResponseTool : IJsonModel<ResponseTool>, IPersistableModel<ResponseTool> {
-        public static ResponseTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight);
-        public static ResponseTool CreateFileSearchTool(IEnumerable<string> vectorStoreIds, int? maxResultCount = null, FileSearchToolRankingOptions rankingOptions = null, BinaryData filters = null);
-        public static ResponseTool CreateFunctionTool(string functionName, string functionDescription, BinaryData functionParameters, bool functionSchemaIsStrict = false);
-        public static ResponseTool CreateWebSearchTool(WebSearchUserLocation userLocation = null, WebSearchContextSize? searchContextSize = null);
+        public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight);
+        public static FileSearchTool CreateFileSearchTool(IEnumerable<string> vectorStoreIds, int? maxResultCount = null, FileSearchToolRankingOptions rankingOptions = null, BinaryData filters = null);
+        public static FunctionTool CreateFunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled, string functionDescription = null);
+        public static WebSearchTool CreateWebSearchTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null);
         protected virtual ResponseTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -4952,6 +5010,17 @@ namespace OpenAI.Responses {
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
+    public class UriCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<UriCitationMessageAnnotation>, IPersistableModel<UriCitationMessageAnnotation> {
+        public UriCitationMessageAnnotation(Uri uri, int startIndex, int endIndex, string title);
+        public int EndIndex { get; set; }
+        public int StartIndex { get; set; }
+        public string Title { get; set; }
+        public Uri Uri { get; set; }
+        protected override ResponseMessageAnnotation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
     public class WebSearchCallResponseItem : ResponseItem, IJsonModel<WebSearchCallResponseItem>, IPersistableModel<WebSearchCallResponseItem> {
         public WebSearchCallResponseItem();
         public WebSearchCallStatus? Status { get; }
@@ -4966,27 +5035,47 @@ namespace OpenAI.Responses {
         Completed = 2,
         Failed = 3
     }
-    public readonly partial struct WebSearchContextSize : IEquatable<WebSearchContextSize> {
-        public WebSearchContextSize(string value);
-        public static WebSearchContextSize High { get; }
-        public static WebSearchContextSize Low { get; }
-        public static WebSearchContextSize Medium { get; }
-        public readonly bool Equals(WebSearchContextSize other);
+    public class WebSearchTool : ResponseTool, IJsonModel<WebSearchTool>, IPersistableModel<WebSearchTool> {
+        public WebSearchTool();
+        public WebSearchToolContextSize? SearchContextSize { get; set; }
+        public WebSearchToolLocation UserLocation { get; set; }
+        protected override ResponseTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class WebSearchToolApproximateLocation : WebSearchToolLocation, IJsonModel<WebSearchToolApproximateLocation>, IPersistableModel<WebSearchToolApproximateLocation> {
+        public WebSearchToolApproximateLocation();
+        public string City { get; set; }
+        public string Country { get; set; }
+        public string Region { get; set; }
+        public string Timezone { get; set; }
+        protected override WebSearchToolLocation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override WebSearchToolLocation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct WebSearchToolContextSize : IEquatable<WebSearchToolContextSize> {
+        public WebSearchToolContextSize(string value);
+        public static WebSearchToolContextSize High { get; }
+        public static WebSearchToolContextSize Low { get; }
+        public static WebSearchToolContextSize Medium { get; }
+        public readonly bool Equals(WebSearchToolContextSize other);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly bool Equals(object obj);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly int GetHashCode();
-        public static bool operator ==(WebSearchContextSize left, WebSearchContextSize right);
-        public static implicit operator WebSearchContextSize(string value);
-        public static implicit operator WebSearchContextSize?(string value);
-        public static bool operator !=(WebSearchContextSize left, WebSearchContextSize right);
+        public static bool operator ==(WebSearchToolContextSize left, WebSearchToolContextSize right);
+        public static implicit operator WebSearchToolContextSize(string value);
+        public static implicit operator WebSearchToolContextSize?(string value);
+        public static bool operator !=(WebSearchToolContextSize left, WebSearchToolContextSize right);
         public override readonly string ToString();
     }
-    public class WebSearchUserLocation : IJsonModel<WebSearchUserLocation>, IPersistableModel<WebSearchUserLocation> {
-        public static WebSearchUserLocation CreateApproximateLocation(string country = null, string region = null, string city = null, string timezone = null);
-        protected virtual WebSearchUserLocation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+    public class WebSearchToolLocation : IJsonModel<WebSearchToolLocation>, IPersistableModel<WebSearchToolLocation> {
+        public static WebSearchToolApproximateLocation CreateApproximateLocation(string country = null, string region = null, string city = null, string timezone = null);
+        protected virtual WebSearchToolLocation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual WebSearchUserLocation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual WebSearchToolLocation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
 }
@@ -5120,6 +5209,7 @@ namespace OpenAI.VectorStores {
         public VectorStoreClient(AuthenticationPolicy authenticationPolicy);
         protected internal VectorStoreClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public VectorStoreClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual AddFileToVectorStoreOperation AddFileToVectorStore(string vectorStoreId, BinaryContent content, bool waitUntilCompleted, RequestOptions options = null);
         public virtual AddFileToVectorStoreOperation AddFileToVectorStore(string vectorStoreId, string fileId, bool waitUntilCompleted, CancellationToken cancellationToken = default);

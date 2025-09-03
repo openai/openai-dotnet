@@ -97,6 +97,12 @@ public partial class RealtimeClient
     }
 
     /// <summary>
+    /// Gets the endpoint URI for the service.
+    /// </summary>
+    [Experimental("OPENAI001")]
+    public Uri Endpoint => _endpoint;
+
+    /// <summary>
     /// Starts a new <see cref="RealtimeSession"/> for multimodal conversation.
     /// </summary>
     /// <remarks>

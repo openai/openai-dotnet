@@ -17,14 +17,11 @@ namespace OpenAI.Responses
 
         internal virtual PipelineMessage CreateCreateResponseRequest(BinaryContent content, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "POST";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/responses", false);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json, text/event-stream");
             request.Headers.Set("Content-Type", "application/json");
             request.Content = content;
@@ -34,10 +31,6 @@ namespace OpenAI.Responses
 
         internal virtual PipelineMessage CreateGetResponseRequest(string responseId, IEnumerable<InternalIncludable> includables, bool? stream, int? startingAfter, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "GET";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/responses/", false);
@@ -57,7 +50,8 @@ namespace OpenAI.Responses
             {
                 uri.AppendQuery("starting_after", TypeFormatters.ConvertToString(startingAfter, null), true);
             }
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json, text/event-stream");
             message.Apply(options);
             return message;
@@ -65,15 +59,12 @@ namespace OpenAI.Responses
 
         internal virtual PipelineMessage CreateDeleteResponseRequest(string responseId, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "DELETE";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/responses/", false);
             uri.AppendPath(responseId, true);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "DELETE", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;
@@ -81,16 +72,13 @@ namespace OpenAI.Responses
 
         internal virtual PipelineMessage CreateCancelResponseRequest(string responseId, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "POST";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/responses/", false);
             uri.AppendPath(responseId, true);
             uri.AppendPath("/cancel", false);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;
@@ -98,10 +86,6 @@ namespace OpenAI.Responses
 
         internal virtual PipelineMessage CreateGetInputItemsRequest(string responseId, int? limit, string order, string after, string before, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "GET";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/responses/", false);
@@ -123,7 +107,8 @@ namespace OpenAI.Responses
             {
                 uri.AppendQuery("before", before, true);
             }
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;
