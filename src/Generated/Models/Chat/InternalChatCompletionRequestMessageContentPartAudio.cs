@@ -22,6 +22,6 @@ namespace OpenAI.Chat
             InputAudio = inputAudio;
         }
 
-        internal InternalChatCompletionRequestMessageContentPartAudioInputAudio InputAudio { get; }
+        internal InternalChatCompletionRequestMessageContentPartAudioInputAudio InputAudio { get; set; }
     }
 }
