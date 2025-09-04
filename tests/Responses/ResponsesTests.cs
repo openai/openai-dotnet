@@ -66,9 +66,9 @@ public partial class ResponsesTests : SyncAsyncTestBase
         {
             FileIdsToDelete.Add(file.Id);
         }
-        if (input is CreateVectorStoreOperation operation)
+        if (input is VectorStore vectorStore)
         {
-            VectorStoreIdsToDelete.Add(operation.VectorStoreId);
+            VectorStoreIdsToDelete.Add(vectorStore.Id);
         }
     }
 
@@ -85,13 +85,12 @@ public partial class ResponsesTests : SyncAsyncTestBase
         Validate(testFile);
 
         VectorStoreClient vscClient = GetTestClient<VectorStoreClient>(TestScenario.VectorStores);
-        CreateVectorStoreOperation createStoreOp = await vscClient.CreateVectorStoreAsync(
-            waitUntilCompleted: true,
+        VectorStore vectorStore = await vscClient.CreateVectorStoreAsync(
             new VectorStoreCreationOptions()
             {
                 FileIds = { testFile.Id },
             });
-        Validate(createStoreOp);
+        Validate(vectorStore);
 
         OpenAIResponseClient client = GetTestClient();
 
@@ -101,7 +100,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
             {
                 Tools =
                 {
-                    ResponseTool.CreateFileSearchTool(vectorStoreIds: [createStoreOp.VectorStoreId]),
+                    ResponseTool.CreateFileSearchTool(vectorStoreIds: [vectorStore.Id]),
                 }
             });
         Assert.That(response.OutputItems?.Count, Is.EqualTo(2));
