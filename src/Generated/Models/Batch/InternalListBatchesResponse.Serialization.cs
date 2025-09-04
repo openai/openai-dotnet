@@ -35,7 +35,7 @@ namespace OpenAI.Batch
             {
                 writer.WritePropertyName("data"u8);
                 writer.WriteStartArray();
-                foreach (InternalBatchJob item in Data)
+                foreach (BatchJob item in Data)
                 {
                     writer.WriteObjectValue(item, options);
                 }
@@ -102,7 +102,7 @@ namespace OpenAI.Batch
             {
                 return null;
             }
-            IList<InternalBatchJob> data = default;
+            IList<BatchJob> data = default;
             string firstId = default;
             string lastId = default;
             bool hasMore = default;
@@ -112,10 +112,10 @@ namespace OpenAI.Batch
             {
                 if (prop.NameEquals("data"u8))
                 {
-                    List<InternalBatchJob> array = new List<InternalBatchJob>();
+                    List<BatchJob> array = new List<BatchJob>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(InternalBatchJob.DeserializeInternalBatchJob(item, options));
+                        array.Add(BatchJob.DeserializeBatchJob(item, options));
                     }
                     data = array;
                     continue;

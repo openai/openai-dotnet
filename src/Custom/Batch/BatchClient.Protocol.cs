@@ -6,8 +6,6 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Batch;
 
-[CodeGenSuppress("GetBatches", typeof(string), typeof(int?), typeof(RequestOptions))]
-[CodeGenSuppress("GetBatchesAsync", typeof(string), typeof(int?), typeof(RequestOptions))]
 public partial class BatchClient
 {
     /// <summary>
@@ -65,31 +63,5 @@ public partial class BatchClient
 
         CreateBatchOperation operation = this.CreateCreateBatchOperation(batchId, status, response);
         return operation.WaitUntil(waitUntilCompleted, options);
-    }
-
-    /// <summary>
-    /// [Protocol Method] List your organization's batches.
-    /// </summary>
-    /// <param name="after"> A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list. </param>
-    /// <param name="limit"> A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20. </param>
-    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> The response returned from the service. </returns>
-    public virtual AsyncCollectionResult GetBatchesAsync(string after, int? limit, RequestOptions options)
-    {
-        return new AsyncBatchCollectionResult(this, Pipeline, options, limit, after);
-    }
-
-    /// <summary>
-    /// [Protocol Method] List your organization's batches.
-    /// </summary>
-    /// <param name="after"> A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list. </param>
-    /// <param name="limit"> A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20. </param>
-    /// <param name="options"> The request options, which can override default behaviors of the client pipeline on a per-call basis. </param>
-    /// <exception cref="ClientResultException"> Service returned a non-success status code. </exception>
-    /// <returns> The response returned from the service. </returns>
-    public virtual CollectionResult GetBatches(string after, int? limit, RequestOptions options)
-    {
-        return new BatchCollectionResult(this, Pipeline, options, limit, after);
     }
 }
