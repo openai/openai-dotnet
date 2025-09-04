@@ -12,20 +12,12 @@ namespace OpenAI.Assistants;
 [CodeGenSuppress("CreateThreadAndRun", typeof(InternalCreateThreadAndRunRequest), typeof(CancellationToken))]
 [CodeGenSuppress("CreateRunAsync", typeof(string), typeof(RunCreationOptions), typeof(IEnumerable<InternalIncludedRunStepProperty>), typeof(CancellationToken))]
 [CodeGenSuppress("CreateRun", typeof(string), typeof(RunCreationOptions), typeof(IEnumerable<InternalIncludedRunStepProperty>), typeof(CancellationToken))]
-[CodeGenSuppress("GetRunsAsync", typeof(string), typeof(int?), typeof(OpenAI.VectorStores.VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("GetRuns", typeof(string), typeof(int?), typeof(OpenAI.VectorStores.VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("GetRunAsync", typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("GetRun", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("ModifyRunAsync", typeof(string), typeof(string), typeof(RunModificationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("ModifyRun", typeof(string), typeof(string), typeof(RunModificationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("CancelRunAsync", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("CancelRun", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("SubmitToolOutputsToRunAsync", typeof(string), typeof(string),  typeof(InternalSubmitToolOutputsRunRequest), typeof(CancellationToken))]
 [CodeGenSuppress("SubmitToolOutputsToRun", typeof(string), typeof(string),  typeof(InternalSubmitToolOutputsRunRequest), typeof(CancellationToken))]
-[CodeGenSuppress("GetRunStepsAsync", typeof(string), typeof(string), typeof(int?), typeof(OpenAI.VectorStores.VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(IEnumerable<InternalIncludedRunStepProperty>), typeof(CancellationToken))]
-[CodeGenSuppress("GetRunSteps", typeof(string), typeof(string), typeof(int?), typeof(OpenAI.VectorStores.VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(IEnumerable<InternalIncludedRunStepProperty>), typeof(CancellationToken))]
-[CodeGenSuppress("GetRunStepAsync", typeof(string), typeof(string), typeof(string), typeof(IEnumerable<InternalIncludedRunStepProperty>), typeof(CancellationToken))]
-[CodeGenSuppress("GetRunStep", typeof(string), typeof(string), typeof(string),  typeof(IEnumerable<InternalIncludedRunStepProperty>), typeof(CancellationToken))]
 internal partial class InternalAssistantRunClient
 {
     // CUSTOM:

@@ -224,9 +224,9 @@ model ListRunsResponse {
   // Tool customization: add a clear enum enforcement of constrained 'object' label
   object: "list";
 
-  data: RunObject[];
+  @pageItems data: RunObject[];
   first_id: string;
-  last_id: string;
+  @continuationToken last_id: string;
   has_more: boolean;
 }
 
@@ -234,9 +234,9 @@ model ListRunStepsResponse {
   // Tool customization: add a clear enum enforcement of constrained 'object' label
   object: "list";
 
-  data: RunStepObject[];
+  @pageItems data: RunStepObject[];
   first_id: string;
-  last_id: string;
+  @continuationToken last_id: string;
   has_more: boolean;
 }
 

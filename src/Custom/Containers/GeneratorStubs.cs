@@ -17,7 +17,7 @@ public partial class CreateContainerBody
     }
 }
 [CodeGenType("ContainerCollectionOptions")] public partial class ContainerCollectionOptions { }
-[CodeGenType("ContainerCollectionOrder")] public partial struct ContainerCollectionOrder { }
+[CodeGenType("ContainerCollectionOrder")] public readonly partial struct ContainerCollectionOrder { }
 [CodeGenType("ContainerFileCollectionOptions")] public partial class ContainerFileCollectionOptions { }
 [CodeGenType("ContainerFileResource")] public partial class ContainerFileResource { }
 [CodeGenType("CreateContainerBodyExpiresAfter")] public partial class CreateContainerBodyExpiresAfter { }
