@@ -279,7 +279,7 @@ try {
     }
 
     Set-Location $specificationFolderPath
-    Invoke-ScriptWithLogging { npx tsp compile . --trace @typespec/http-client-csharp }
+    Invoke-ScriptWithLogging { npx tsp compile . --stats --trace @typespec/http-client-csharp }
 }
 finally {
     Pop-Location
