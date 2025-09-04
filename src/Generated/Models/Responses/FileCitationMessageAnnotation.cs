@@ -12,21 +12,32 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class FileCitationMessageAnnotation : ResponseMessageAnnotation
     {
-        public FileCitationMessageAnnotation(string fileId, int index) : base(ResponseMessageAnnotationKind.FileCitation)
-        {
-            Argument.AssertNotNull(fileId, nameof(fileId));
+		// <GP> Adding missing constructor with filename
+		public FileCitationMessageAnnotation(string filename, string fileId, int index) : base(ResponseMessageAnnotationKind.FileCitation)
+		{
+			Argument.AssertNotNull(filename, nameof(filename));
+			Argument.AssertNotNull(fileId, nameof(fileId));
 
+            Filename = filename;
+			FileId = fileId;
+			Index = index;
+		}
+
+		// </GP> Adding missing filename
+		internal FileCitationMessageAnnotation(ResponseMessageAnnotationKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string fileName, string fileId, int index) : base(kind, additionalBinaryDataProperties)
+        {
+            Filename = fileName;
             FileId = fileId;
             Index = index;
         }
+        // </GP>
 
-        internal FileCitationMessageAnnotation(ResponseMessageAnnotationKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string fileId, int index) : base(kind, additionalBinaryDataProperties)
-        {
-            FileId = fileId;
-            Index = index;
-        }
 
-        public string FileId { get; set; }
+        // <GP> Adding missing filename
+		public string Filename { get; set; }
+		// </GP> Adding missing filename
+
+		public string FileId { get; set; }
 
         public int Index { get; set; }
     }

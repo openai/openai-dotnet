@@ -571,10 +571,12 @@ namespace OpenAI
             return new InternalUnknownAnnotation(kind.ToResponseMessageAnnotationKind(), additionalBinaryDataProperties: null);
         }
 
-        public static FileCitationMessageAnnotation FileCitationMessageAnnotation(string fileId = default, int index = default)
+        // <GP> Adding missing filename
+        public static FileCitationMessageAnnotation FileCitationMessageAnnotation(string filename = default, string fileId = default, int index = default)
         {
-            return new FileCitationMessageAnnotation(ResponseMessageAnnotationKind.FileCitation, additionalBinaryDataProperties: null, fileId, index);
+            return new FileCitationMessageAnnotation(ResponseMessageAnnotationKind.FileCitation, additionalBinaryDataProperties: null, filename, fileId, index);
         }
+        // </GP>
 
         public static UriCitationMessageAnnotation UriCitationMessageAnnotation(Uri uri = default, int startIndex = default, int endIndex = default, string title = default)
         {
