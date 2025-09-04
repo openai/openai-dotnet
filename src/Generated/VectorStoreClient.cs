@@ -117,6 +117,24 @@ namespace OpenAI.VectorStores
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
+        public virtual ClientResult AddFileBatchToVectorStore(string vectorStoreId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateAddFileBatchToVectorStoreRequest(vectorStoreId, content, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> AddFileBatchToVectorStoreAsync(string vectorStoreId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateAddFileBatchToVectorStoreRequest(vectorStoreId, content, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
         public virtual ClientResult CancelBatchFileJob(string vectorStoreId, string batchId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
@@ -261,6 +279,24 @@ namespace OpenAI.VectorStores
                 options?.BeforeId,
                 options?.Filter?.ToString(),
                 cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
+
+        public virtual ClientResult AddFileToVectorStore(string vectorStoreId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateAddFileToVectorStoreRequest(vectorStoreId, content, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> AddFileToVectorStoreAsync(string vectorStoreId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateAddFileToVectorStoreRequest(vectorStoreId, content, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
         public virtual ClientResult GetFileAssociation(string vectorStoreId, string fileId, RequestOptions options)

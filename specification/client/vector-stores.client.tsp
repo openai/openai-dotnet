@@ -15,3 +15,5 @@ using Azure.ClientGenerator.Core;
 @@clientName(VectorStores.listVectorStores, "GetVectorStores");
 @@clientName(VectorStores.listVectorStoreFiles, "GetFileAssociations");
 @@clientName(VectorStores.listFilesInVectorStoreBatch, "GetFileAssociationsInBatch");
+@@clientName(VectorStores.createVectorStoreFile, "AddFileToVectorStore");
+@@clientName(VectorStores.createVectorStoreFileBatch, "AddFileBatchToVectorStore");
