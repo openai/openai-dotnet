@@ -116,24 +116,24 @@ public partial class ResponseItem
         return new ReferenceResponseItem(id);
     }
 
-    public static MCPToolCallApprovalRequestItem CreateMCPApprovalRequestItem(string serverLabel, string name, BinaryData arguments)
+    public static McpToolCallApprovalRequestItem CreateMcpApprovalRequestItem(string serverLabel, string name, BinaryData arguments)
     {
-        return new MCPToolCallApprovalRequestItem(serverLabel, name, arguments);
+        return new McpToolCallApprovalRequestItem(serverLabel, name, arguments);
     }
 
-    public static MCPToolCallApprovalResponseItem CreateMCPApprovalResponseItem(string approvalRequestId, bool approved)
+    public static McpToolCallApprovalResponseItem CreateMcpApprovalResponseItem(string approvalRequestId, bool approved)
     {
-        return new MCPToolCallApprovalResponseItem(approvalRequestId, approved);
+        return new McpToolCallApprovalResponseItem(approvalRequestId, approved);
     }
 
-    public static MCPToolCallItem CreateMCPToolCallItem(string serverLabel, string name, BinaryData arguments)
+    public static McpToolCallItem CreateMcpToolCallItem(string serverLabel, string name, BinaryData arguments)
     {
-        return new MCPToolCallItem(serverLabel, name, arguments);
+        return new McpToolCallItem(serverLabel, name, arguments);
     }
 
-    public static MCPToolDefinitionListItem CreateMCPToolDefinitionListItem(string serverLabel, IEnumerable<MCPToolDefinition> toolDefinitions)
+    public static McpToolDefinitionListItem CreateMcpToolDefinitionListItem(string serverLabel, IEnumerable<McpToolDefinition> toolDefinitions)
     {
-        return new MCPToolDefinitionListItem(serverLabel, toolDefinitions);
+        return new McpToolDefinitionListItem(serverLabel, toolDefinitions);
     }
 
 }

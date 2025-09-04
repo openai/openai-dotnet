@@ -11,7 +11,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalMCPListToolsItemParam : InternalItemParam
     {
-        public InternalMCPListToolsItemParam(string serverLabel, IEnumerable<MCPToolDefinition> tools) : base(InternalItemType.McpListTools)
+        public InternalMCPListToolsItemParam(string serverLabel, IEnumerable<McpToolDefinition> tools) : base(InternalItemType.McpListTools)
         {
             Argument.AssertNotNull(serverLabel, nameof(serverLabel));
             Argument.AssertNotNull(tools, nameof(tools));
@@ -20,17 +20,17 @@ namespace OpenAI.Responses
             Tools = tools.ToList();
         }
 
-        internal InternalMCPListToolsItemParam(InternalItemType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string serverLabel, IList<MCPToolDefinition> tools, string error) : base(kind, additionalBinaryDataProperties)
+        internal InternalMCPListToolsItemParam(InternalItemType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string serverLabel, IList<McpToolDefinition> tools, string error) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             ServerLabel = serverLabel;
-            Tools = tools ?? new ChangeTrackingList<MCPToolDefinition>();
+            Tools = tools ?? new ChangeTrackingList<McpToolDefinition>();
             Error = error;
         }
 
         public string ServerLabel { get; }
 
-        public IList<MCPToolDefinition> Tools { get; }
+        public IList<McpToolDefinition> Tools { get; }
 
         public string Error { get; set; }
     }

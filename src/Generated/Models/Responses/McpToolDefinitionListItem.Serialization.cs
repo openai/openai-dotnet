@@ -10,13 +10,13 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalMCPListToolsItemParam : IJsonModel<InternalMCPListToolsItemParam>
+    public partial class McpToolDefinitionListItem : IJsonModel<McpToolDefinitionListItem>
     {
-        internal InternalMCPListToolsItemParam() : this(InternalItemType.McpListTools, null, null, null, null)
+        internal McpToolDefinitionListItem() : this(InternalItemType.McpListTools, null, null, null, null, null)
         {
         }
 
-        void IJsonModel<InternalMCPListToolsItemParam>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<McpToolDefinitionListItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
@@ -25,10 +25,10 @@ namespace OpenAI.Responses
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalMCPListToolsItemParam>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<McpToolDefinitionListItem>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalMCPListToolsItemParam)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(McpToolDefinitionListItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
             if (_additionalBinaryDataProperties?.ContainsKey("server_label") != true)
@@ -40,7 +40,7 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("tools"u8);
                 writer.WriteStartArray();
-                foreach (McpToolDefinition item in Tools)
+                foreach (McpToolDefinition item in ToolDefinitions)
                 {
                     writer.WriteObjectValue(item, options);
                 }
@@ -49,39 +49,52 @@ namespace OpenAI.Responses
             if (Optional.IsDefined(Error) && _additionalBinaryDataProperties?.ContainsKey("error") != true)
             {
                 writer.WritePropertyName("error"u8);
-                writer.WriteStringValue(Error);
+#if NET6_0_OR_GREATER
+                writer.WriteRawValue(Error);
+#else
+                using (JsonDocument document = JsonDocument.Parse(Error))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
+#endif
             }
         }
 
-        InternalMCPListToolsItemParam IJsonModel<InternalMCPListToolsItemParam>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalMCPListToolsItemParam)JsonModelCreateCore(ref reader, options);
+        McpToolDefinitionListItem IJsonModel<McpToolDefinitionListItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (McpToolDefinitionListItem)JsonModelCreateCore(ref reader, options);
 
-        protected override InternalItemParam JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalMCPListToolsItemParam>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<McpToolDefinitionListItem>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalMCPListToolsItemParam)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(McpToolDefinitionListItem)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalMCPListToolsItemParam(document.RootElement, options);
+            return DeserializeMcpToolDefinitionListItem(document.RootElement, options);
         }
 
-        internal static InternalMCPListToolsItemParam DeserializeInternalMCPListToolsItemParam(JsonElement element, ModelReaderWriterOptions options)
+        internal static McpToolDefinitionListItem DeserializeMcpToolDefinitionListItem(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalItemType kind = default;
+            string id = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string serverLabel = default;
-            IList<McpToolDefinition> tools = default;
-            string error = default;
+            IList<McpToolDefinition> toolDefinitions = default;
+            BinaryData error = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
                     kind = new InternalItemType(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("id"u8))
+                {
+                    id = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("server_label"u8))
@@ -96,56 +109,61 @@ namespace OpenAI.Responses
                     {
                         array.Add(McpToolDefinition.DeserializeMcpToolDefinition(item, options));
                     }
-                    tools = array;
+                    toolDefinitions = array;
                     continue;
                 }
                 if (prop.NameEquals("error"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        error = null;
                         continue;
                     }
-                    error = prop.Value.GetString();
+                    error = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalMCPListToolsItemParam(kind, additionalBinaryDataProperties, serverLabel, tools, error);
+            return new McpToolDefinitionListItem(
+                kind,
+                id,
+                additionalBinaryDataProperties,
+                serverLabel,
+                toolDefinitions,
+                error);
         }
 
-        BinaryData IPersistableModel<InternalMCPListToolsItemParam>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<McpToolDefinitionListItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalMCPListToolsItemParam>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<McpToolDefinitionListItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(InternalMCPListToolsItemParam)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(McpToolDefinitionListItem)} does not support writing '{options.Format}' format.");
             }
         }
 
-        InternalMCPListToolsItemParam IPersistableModel<InternalMCPListToolsItemParam>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalMCPListToolsItemParam)PersistableModelCreateCore(data, options);
+        McpToolDefinitionListItem IPersistableModel<McpToolDefinitionListItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (McpToolDefinitionListItem)PersistableModelCreateCore(data, options);
 
-        protected override InternalItemParam PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalMCPListToolsItemParam>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<McpToolDefinitionListItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalMCPListToolsItemParam(document.RootElement, options);
+                        return DeserializeMcpToolDefinitionListItem(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalMCPListToolsItemParam)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(McpToolDefinitionListItem)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<InternalMCPListToolsItemParam>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<McpToolDefinitionListItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }
