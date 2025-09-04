@@ -17,11 +17,11 @@ namespace OpenAI.Realtime
         {
         }
 
-        internal ConversationInputTokenUsageDetails(int audioTokenCount, int cachedTokenCount, int textTokenCount, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ConversationInputTokenUsageDetails(int cachedTokenCount, int textTokenCount, int audioTokenCount, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            AudioTokenCount = audioTokenCount;
             CachedTokenCount = cachedTokenCount;
             TextTokenCount = textTokenCount;
+            AudioTokenCount = audioTokenCount;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

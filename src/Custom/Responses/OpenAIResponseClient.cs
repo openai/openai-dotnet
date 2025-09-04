@@ -2,6 +2,7 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,8 +17,6 @@ namespace OpenAI.Responses;
 [CodeGenSuppress("CreateResponse", typeof(ResponseCreationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("GetResponse", typeof(string), typeof(string), typeof(IEnumerable<InternalIncludable>), typeof(bool?), typeof(int?), typeof(CancellationToken))]
 [CodeGenSuppress("GetResponseAsync", typeof(string), typeof(string), typeof(IEnumerable<InternalIncludable>), typeof(bool?), typeof(int?), typeof(CancellationToken))]
-[CodeGenSuppress("GetInputItems", typeof(string), typeof(int?), typeof(OpenAI.VectorStores.VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("GetInputItemsAsync", typeof(string), typeof(int?), typeof(OpenAI.VectorStores.VectorStoreCollectionOrder?), typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("DeleteResponse", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("DeleteResponseAsync", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("CancelResponse", typeof(string), typeof(IEnumerable<InternalIncludable>), typeof(bool?), typeof(int?), typeof(CancellationToken))]
@@ -44,7 +43,7 @@ public partial class OpenAIResponseClient
     // - Demoted the endpoint parameter to be a property in the options class.
     /// <summary> Initializes a new instance of <see cref="OpenAIResponseClient"/>. </summary>
     /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
-    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="credential"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
     public OpenAIResponseClient(string model, ApiKeyCredential credential) : this(model, credential, new OpenAIClientOptions())
@@ -57,7 +56,7 @@ public partial class OpenAIResponseClient
     // - Demoted the endpoint parameter to be a property in the options class.
     /// <summary> Initializes a new instance of <see cref="OpenAIResponseClient"/>. </summary>
     /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
-    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="credential"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
@@ -114,13 +113,19 @@ public partial class OpenAIResponseClient
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
+    /// <summary>
+    /// Gets the endpoint URI for the service.
+    /// </summary>
+    [Experimental("OPENAI001")]
+    public Uri Endpoint => _endpoint;
+
     public virtual async Task<ClientResult<OpenAIResponse>> CreateResponseAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(inputItems, nameof(inputItems));
 
         using BinaryContent content = CreatePerCallOptions(options, inputItems, stream: false).ToBinaryContent();
         ClientResult protocolResult = await CreateResponseAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        OpenAIResponse convenienceValue = OpenAIResponse.FromClientResult(protocolResult);
+        OpenAIResponse convenienceValue = (OpenAIResponse)protocolResult;
         return ClientResult.FromValue(convenienceValue, protocolResult.GetRawResponse());
     }
 
@@ -130,7 +135,7 @@ public partial class OpenAIResponseClient
 
         using BinaryContent content = CreatePerCallOptions(options, inputItems, stream: false).ToBinaryContent();
         ClientResult protocolResult = CreateResponse(content, cancellationToken.ToRequestOptions());
-        OpenAIResponse convenienceValue = OpenAIResponse.FromClientResult(protocolResult);
+        OpenAIResponse convenienceValue = (OpenAIResponse)protocolResult;
         return ClientResult.FromValue(convenienceValue, protocolResult.GetRawResponse());
     }
 
@@ -202,7 +207,7 @@ public partial class OpenAIResponseClient
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
         ClientResult protocolResult = await GetResponseAsync(responseId, stream: null, startingAfter: null, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        OpenAIResponse convenienceResult = OpenAIResponse.FromClientResult(protocolResult);
+        OpenAIResponse convenienceResult = (OpenAIResponse)protocolResult;
         return ClientResult.FromValue(convenienceResult, protocolResult.GetRawResponse());
     }
 
@@ -211,7 +216,7 @@ public partial class OpenAIResponseClient
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
         ClientResult protocolResult = GetResponse(responseId, stream: null, startingAfter: null, cancellationToken.ToRequestOptions());
-        OpenAIResponse convenienceResult = OpenAIResponse.FromClientResult(protocolResult);
+        OpenAIResponse convenienceResult = (OpenAIResponse)protocolResult;
         return ClientResult.FromValue(convenienceResult, protocolResult.GetRawResponse());
     }
 
@@ -268,7 +273,7 @@ public partial class OpenAIResponseClient
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
         ClientResult result = await DeleteResponseAsync(responseId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
-        return ClientResult.FromValue(ResponseDeletionResult.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((ResponseDeletionResult)result, result.GetRawResponse());
     }
 
     public virtual ClientResult<ResponseDeletionResult> DeleteResponse(string responseId, CancellationToken cancellationToken = default)
@@ -276,7 +281,7 @@ public partial class OpenAIResponseClient
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
         ClientResult result = DeleteResponse(responseId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
-        return ClientResult.FromValue(ResponseDeletionResult.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((ResponseDeletionResult)result, result.GetRawResponse());
     }
 
     public virtual async Task<ClientResult<OpenAIResponse>> CancelResponseAsync(string responseId, CancellationToken cancellationToken = default)
@@ -284,7 +289,7 @@ public partial class OpenAIResponseClient
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
         ClientResult protocolResult = await CancelResponseAsync(responseId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        OpenAIResponse convenienceResult = OpenAIResponse.FromClientResult(protocolResult);
+        OpenAIResponse convenienceResult = (OpenAIResponse)protocolResult;
         return ClientResult.FromValue(convenienceResult, protocolResult.GetRawResponse());
     }
 
@@ -293,7 +298,7 @@ public partial class OpenAIResponseClient
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
         ClientResult protocolResult = CancelResponse(responseId, cancellationToken.ToRequestOptions());
-        OpenAIResponse convenienceResult = OpenAIResponse.FromClientResult(protocolResult);
+        OpenAIResponse convenienceResult = (OpenAIResponse)protocolResult;
         return ClientResult.FromValue(convenienceResult, protocolResult.GetRawResponse());
     }
 

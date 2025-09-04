@@ -10,14 +10,8 @@ namespace OpenAILibraryPlugin
     [ExportMetadata("GeneratorName", nameof(OpenAILibraryGenerator))]
     public class OpenAILibraryGenerator : ScmCodeModelGenerator
     {
-        private static OpenAILibraryGenerator? s_instance;
-        internal static OpenAILibraryGenerator Instance => s_instance ?? throw new InvalidOperationException("OpenAILibraryGenerator was not initialized.");
-
         [ImportingConstructor]
-        public OpenAILibraryGenerator(GeneratorContext context) : base(context)
-        {
-            s_instance = this;
-        }
+        public OpenAILibraryGenerator(GeneratorContext context) : base(context) { }
 
         protected override void Configure()
         {
@@ -33,7 +27,6 @@ namespace OpenAILibraryPlugin
             AddVisitor(new OpenAILibraryVisitor());
             AddVisitor(new VirtualMessageCreationVisitor());
             AddVisitor(new ProhibitedNamespaceVisitor());
-            AddVisitor(new ExplicitConversionFromClientResultVisitor());
             AddVisitor(new ImplicitConversionToBinaryContentVisitor());
             AddVisitor(new ModelSerializationVisitor());
             AddVisitor(new ExperimentalAttributeVisitor());

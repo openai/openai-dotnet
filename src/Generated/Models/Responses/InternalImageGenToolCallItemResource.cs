@@ -9,7 +9,7 @@ namespace OpenAI.Responses
 {
 	public partial class InternalImageGenToolCallItemResource : ResponseItem
     {
-        internal InternalImageGenToolCallItemResource(string id, InternalImageGenToolCallItemResourceStatus status, string result) : base(InternalItemType.ImageGenerationCall, id)
+        internal InternalImageGenToolCallItemResource(InternalImageGenToolCallItemResourceStatus status, string result) : base(InternalItemType.ImageGenerationCall)
         {
             Status = status;
             Result = result;
@@ -21,8 +21,8 @@ namespace OpenAI.Responses
             Result = result;
         }
 
-        internal InternalImageGenToolCallItemResourceStatus Status { get; }
+        internal InternalImageGenToolCallItemResourceStatus Status { get; set; }
 
-        public string Result { get; }
+        public string Result { get; set; }
     }
 }

@@ -101,7 +101,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
             {
                 Tools =
                 {
-                    ResponseTool.CreateFileSearchTool([createStoreOp.VectorStoreId], null),
+                    ResponseTool.CreateFileSearchTool(vectorStoreIds: [createStoreOp.VectorStoreId]),
                 }
             });
         Assert.That(response.OutputItems?.Count, Is.EqualTo(2));
@@ -155,9 +155,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
                     BinaryData screenshotBytes = BinaryData.FromBytes(File.ReadAllBytes(screenshotPath));
                     ResponseItem screenshotReply = ResponseItem.CreateComputerCallOutputItem(
                         computerCall.CallId,
-                        [],
-                        screenshotBytes,
-                        "image/png");
+                        ComputerCallOutput.CreateScreenshotOutput(screenshotBytes,"image/png"));
 
                     responseOptions.PreviousResponseId = response.Id;
                     response = await client.CreateResponseAsync([screenshotReply], responseOptions);
@@ -227,8 +225,8 @@ public partial class ResponsesTests : SyncAsyncTestBase
             Tools =
             {
                 ResponseTool.CreateWebSearchTool(
-                    WebSearchUserLocation.CreateApproximateLocation(city: "San Francisco"),
-                    WebSearchContextSize.Low)
+                    userLocation: WebSearchToolLocation.CreateApproximateLocation(city: "San Francisco"),
+                    searchContextSize: WebSearchToolContextSize.Low)
             }
         };
 
@@ -334,7 +332,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
                           }
                         }
                         """),
-                    functionSchemaIsStrict: false),
+                    strictModeEnabled: false),
             },
             TruncationMode = ResponseTruncationMode.Auto,
         };
@@ -460,6 +458,24 @@ public partial class ResponsesTests : SyncAsyncTestBase
     }
 
     [Test]
+    public async Task ResponseServiceTierWorks()
+    {
+        OpenAIResponseClient client = GetTestClient();
+
+        MessageResponseItem message = ResponseItem.CreateUserMessageItem("Using a comprehensive evaluation of popular media in the 1970s and 1980s, what were the most common sci-fi themes?");
+        ResponseCreationOptions options = new()
+        {
+            ServiceTier = ResponseServiceTier.Default,
+        };
+        OpenAIResponse response = IsAsync
+            ? await client.CreateResponseAsync([message], options)
+            : client.CreateResponse([message], options);
+
+        Assert.That(response, Is.Not.Null);
+        Assert.That(response.ServiceTier, Is.EqualTo(ResponseServiceTier.Default));
+    }
+
+    [Test]
     public async Task OutputTextMethod()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -475,7 +491,14 @@ public partial class ResponsesTests : SyncAsyncTestBase
             "How's the weather?",
             new ResponseCreationOptions()
             {
-                Tools = { ResponseTool.CreateFunctionTool("get_weather", "gets the weather", BinaryData.FromString("{}")) },
+                Tools =
+                {
+                    ResponseTool.CreateFunctionTool(
+                        functionName: "get_weather",
+                        functionDescription: "gets the weather",
+                        functionParameters: BinaryData.FromString("{}"),
+                        strictModeEnabled: false)
+                },
                 ToolChoice = ResponseToolChoice.CreateRequiredChoice(),
             });
         Assert.That(response.GetOutputText(), Is.Null);
@@ -885,24 +908,24 @@ public partial class ResponsesTests : SyncAsyncTestBase
 
     private static readonly string s_GetWeatherAtLocationToolName = "get_weather_at_location";
     private static readonly ResponseTool s_GetWeatherAtLocationTool = ResponseTool.CreateFunctionTool(
-            s_GetWeatherAtLocationToolName,
-            "Gets the weather at a specified location, optionally specifying units for temperature",
-            BinaryData.FromString("""
-                {
-                    "type": "object",
-                    "properties": {
-                    "location": {
-                        "type": "string"
-                    },
-                    "unit": {
-                        "type": "string",
-                        "enum": ["C", "F", "K"]
-                    }
-                    },
-                    "required": ["location"]
+        functionName: s_GetWeatherAtLocationToolName,
+        functionDescription: "Gets the weather at a specified location, optionally specifying units for temperature",
+        functionParameters: BinaryData.FromString("""
+            {
+                "type": "object",
+                "properties": {
+                "location": {
+                    "type": "string"
+                },
+                "unit": {
+                    "type": "string",
+                    "enum": ["C", "F", "K"]
                 }
-                """),
-            false);
+                },
+                "required": ["location"]
+            }
+            """),
+        strictModeEnabled: false);
 
     private static OpenAIResponseClient GetTestClient(string overrideModel = null) => GetTestClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel);
 }

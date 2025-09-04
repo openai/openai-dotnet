@@ -13,7 +13,7 @@ namespace OpenAI.FineTuning
 {
     internal partial class InternalFineTuningJob : IJsonModel<InternalFineTuningJob>
     {
-        internal InternalFineTuningJob() : this(null, null, null, default, null, null, null, default, null, default, null, default, null, default, null, null, default, null, default, null, null)
+        internal InternalFineTuningJob() : this(null, null, default, null, null, default, default, null, null, null, null, default, default, null, null, null, default, default, null, null, null)
         {
         }
 
@@ -31,117 +31,15 @@ namespace OpenAI.FineTuning
             {
                 throw new FormatException($"The model {nameof(InternalFineTuningJob)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("metadata") != true)
+            if (Optional.IsDefined(UserProvidedSuffix) && _additionalBinaryDataProperties?.ContainsKey("user_provided_suffix") != true)
             {
-                if (Optional.IsCollectionDefined(Metadata))
-                {
-                    writer.WritePropertyName("metadata"u8);
-                    writer.WriteStartObject();
-                    foreach (var item in Metadata)
-                    {
-                        writer.WritePropertyName(item.Key);
-                        if (item.Value == null)
-                        {
-                            writer.WriteNullValue();
-                            continue;
-                        }
-                        writer.WriteStringValue(item.Value);
-                    }
-                    writer.WriteEndObject();
-                }
-                else
-                {
-                    writer.WriteNull("metadata"u8);
-                }
+                writer.WritePropertyName("user_provided_suffix"u8);
+                writer.WriteStringValue(UserProvidedSuffix);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(JobId);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
-            {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(BaseModel);
-            }
-            if (Optional.IsDefined(EstimatedFinishAt) && _additionalBinaryDataProperties?.ContainsKey("estimated_finish") != true)
-            {
-                writer.WritePropertyName("estimated_finish"u8);
-                writer.WriteNumberValue(EstimatedFinishAt.Value, "U");
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("validation_file") != true)
-            {
-                if (Optional.IsDefined(ValidationFileId))
-                {
-                    writer.WritePropertyName("validation_file"u8);
-                    writer.WriteStringValue(ValidationFileId);
-                }
-                else
-                {
-                    writer.WriteNull("validation_file"u8);
-                }
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("training_file") != true)
-            {
-                writer.WritePropertyName("training_file"u8);
-                writer.WriteStringValue(TrainingFileId);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("result_files") != true)
-            {
-                writer.WritePropertyName("result_files"u8);
-                writer.WriteStartArray();
-                foreach (string item in ResultFileIds)
-                {
-                    if (item == null)
-                    {
-                        writer.WriteNullValue();
-                        continue;
-                    }
-                    writer.WriteStringValue(item);
-                }
-                writer.WriteEndArray();
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
-            {
-                writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.ToString());
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
-            {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(_object);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("hyperparameters") != true)
-            {
-                writer.WritePropertyName("hyperparameters"u8);
-                writer.WriteObjectValue(Hyperparameters, options);
-            }
-            if (Optional.IsCollectionDefined(Integrations) && _additionalBinaryDataProperties?.ContainsKey("integrations") != true)
-            {
-                writer.WritePropertyName("integrations"u8);
-                writer.WriteStartArray();
-                foreach (FineTuningIntegration item in Integrations)
-                {
-                    writer.WriteObjectValue(item, options);
-                }
-                writer.WriteEndArray();
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("trained_tokens") != true)
-            {
-                if (Optional.IsDefined(BillableTrainedTokenCount))
-                {
-                    writer.WritePropertyName("trained_tokens"u8);
-                    writer.WriteNumberValue(BillableTrainedTokenCount.Value);
-                }
-                else
-                {
-                    writer.WriteNull("trained_tokens"u8);
-                }
-            }
-            if (Optional.IsDefined(UserProvidedSuffix) && _additionalBinaryDataProperties?.ContainsKey("user_provided_suffix") != true)
-            {
-                writer.WritePropertyName("user_provided_suffix"u8);
-                writer.WriteStringValue(UserProvidedSuffix);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
@@ -184,20 +82,122 @@ namespace OpenAI.FineTuning
                     writer.WriteNull("finished_at"u8);
                 }
             }
+            if (_additionalBinaryDataProperties?.ContainsKey("hyperparameters") != true)
+            {
+                writer.WritePropertyName("hyperparameters"u8);
+                writer.WriteObjectValue(Hyperparameters, options);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
+            {
+                writer.WritePropertyName("model"u8);
+                writer.WriteStringValue(BaseModel);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            {
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(_object);
+            }
             if (_additionalBinaryDataProperties?.ContainsKey("organization_id") != true)
             {
                 writer.WritePropertyName("organization_id"u8);
                 writer.WriteStringValue(OrganizationId);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("result_files") != true)
+            {
+                writer.WritePropertyName("result_files"u8);
+                writer.WriteStartArray();
+                foreach (string item in ResultFileIds)
+                {
+                    if (item == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
+                    writer.WriteStringValue(item);
+                }
+                writer.WriteEndArray();
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
+            {
+                writer.WritePropertyName("status"u8);
+                writer.WriteStringValue(Status.ToString());
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("trained_tokens") != true)
+            {
+                if (Optional.IsDefined(BillableTrainedTokenCount))
+                {
+                    writer.WritePropertyName("trained_tokens"u8);
+                    writer.WriteNumberValue(BillableTrainedTokenCount.Value);
+                }
+                else
+                {
+                    writer.WriteNull("trained_tokens"u8);
+                }
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("training_file") != true)
+            {
+                writer.WritePropertyName("training_file"u8);
+                writer.WriteStringValue(TrainingFileId);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("validation_file") != true)
+            {
+                if (Optional.IsDefined(ValidationFileId))
+                {
+                    writer.WritePropertyName("validation_file"u8);
+                    writer.WriteStringValue(ValidationFileId);
+                }
+                else
+                {
+                    writer.WriteNull("validation_file"u8);
+                }
+            }
+            if (Optional.IsCollectionDefined(Integrations) && _additionalBinaryDataProperties?.ContainsKey("integrations") != true)
+            {
+                writer.WritePropertyName("integrations"u8);
+                writer.WriteStartArray();
+                foreach (FineTuningIntegration item in Integrations)
+                {
+                    writer.WriteObjectValue(item, options);
+                }
+                writer.WriteEndArray();
             }
             if (_additionalBinaryDataProperties?.ContainsKey("seed") != true)
             {
                 writer.WritePropertyName("seed"u8);
                 writer.WriteNumberValue(Seed);
             }
+            if (Optional.IsDefined(EstimatedFinishAt) && _additionalBinaryDataProperties?.ContainsKey("estimated_finish") != true)
+            {
+                writer.WritePropertyName("estimated_finish"u8);
+                writer.WriteNumberValue(EstimatedFinishAt.Value, "U");
+            }
             if (Optional.IsDefined(Method) && _additionalBinaryDataProperties?.ContainsKey("method") != true)
             {
                 writer.WritePropertyName("method"u8);
                 writer.WriteObjectValue(Method, options);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("metadata") != true)
+            {
+                if (Optional.IsCollectionDefined(Metadata))
+                {
+                    writer.WritePropertyName("metadata"u8);
+                    writer.WriteStartObject();
+                    foreach (var item in Metadata)
+                    {
+                        writer.WritePropertyName(item.Key);
+                        if (item.Value == null)
+                        {
+                            writer.WriteNullValue();
+                            continue;
+                        }
+                        writer.WriteStringValue(item.Value);
+                    }
+                    writer.WriteEndObject();
+                }
+                else
+                {
+                    writer.WriteNull("metadata"u8);
+                }
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -240,142 +240,29 @@ namespace OpenAI.FineTuning
             {
                 return null;
             }
-            IDictionary<string, string> metadata = default;
-            string jobId = default;
-            string baseModel = default;
-            DateTimeOffset? estimatedFinishAt = default;
-            string validationFileId = default;
-            string trainingFileId = default;
-            IReadOnlyList<string> resultFileIds = default;
-            FineTuningStatus status = default;
-            string @object = default;
-            FineTuningHyperparameters hyperparameters = default;
-            IReadOnlyList<FineTuningIntegration> integrations = default;
-            int? billableTrainedTokenCount = default;
             string userProvidedSuffix = default;
+            string jobId = default;
             DateTimeOffset createdAt = default;
             FineTuningError error = default;
             string fineTunedModel = default;
             DateTimeOffset? finishedAt = default;
+            FineTuningHyperparameters hyperparameters = default;
+            string baseModel = default;
+            string @object = default;
             string organizationId = default;
+            IReadOnlyList<string> resultFileIds = default;
+            FineTuningStatus status = default;
+            int? billableTrainedTokenCount = default;
+            string trainingFileId = default;
+            string validationFileId = default;
+            IReadOnlyList<FineTuningIntegration> integrations = default;
             int seed = default;
+            DateTimeOffset? estimatedFinishAt = default;
             FineTuningTrainingMethod @method = default;
+            IDictionary<string, string> metadata = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("metadata"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        metadata = new ChangeTrackingDictionary<string, string>();
-                        continue;
-                    }
-                    Dictionary<string, string> dictionary = new Dictionary<string, string>();
-                    foreach (var prop0 in prop.Value.EnumerateObject())
-                    {
-                        if (prop0.Value.ValueKind == JsonValueKind.Null)
-                        {
-                            dictionary.Add(prop0.Name, null);
-                        }
-                        else
-                        {
-                            dictionary.Add(prop0.Name, prop0.Value.GetString());
-                        }
-                    }
-                    metadata = dictionary;
-                    continue;
-                }
-                if (prop.NameEquals("id"u8))
-                {
-                    jobId = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("model"u8))
-                {
-                    baseModel = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("estimated_finish"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        estimatedFinishAt = null;
-                        continue;
-                    }
-                    estimatedFinishAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
-                    continue;
-                }
-                if (prop.NameEquals("validation_file"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        validationFileId = null;
-                        continue;
-                    }
-                    validationFileId = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("training_file"u8))
-                {
-                    trainingFileId = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("result_files"u8))
-                {
-                    List<string> array = new List<string>();
-                    foreach (var item in prop.Value.EnumerateArray())
-                    {
-                        if (item.ValueKind == JsonValueKind.Null)
-                        {
-                            array.Add(null);
-                        }
-                        else
-                        {
-                            array.Add(item.GetString());
-                        }
-                    }
-                    resultFileIds = array;
-                    continue;
-                }
-                if (prop.NameEquals("status"u8))
-                {
-                    status = new FineTuningStatus(prop.Value.GetString());
-                    continue;
-                }
-                if (prop.NameEquals("object"u8))
-                {
-                    @object = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("hyperparameters"u8))
-                {
-                    hyperparameters = FineTuningHyperparameters.DeserializeFineTuningHyperparameters(prop.Value, options);
-                    continue;
-                }
-                if (prop.NameEquals("integrations"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    List<FineTuningIntegration> array = new List<FineTuningIntegration>();
-                    foreach (var item in prop.Value.EnumerateArray())
-                    {
-                        array.Add(FineTuningIntegration.DeserializeFineTuningIntegration(item, options));
-                    }
-                    integrations = array;
-                    continue;
-                }
-                if (prop.NameEquals("trained_tokens"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        billableTrainedTokenCount = null;
-                        continue;
-                    }
-                    billableTrainedTokenCount = prop.Value.GetInt32();
-                    continue;
-                }
                 if (prop.NameEquals("user_provided_suffix"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -384,6 +271,11 @@ namespace OpenAI.FineTuning
                         continue;
                     }
                     userProvidedSuffix = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("id"u8))
+                {
+                    jobId = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("created_at"u8))
@@ -421,14 +313,100 @@ namespace OpenAI.FineTuning
                     finishedAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
+                if (prop.NameEquals("hyperparameters"u8))
+                {
+                    hyperparameters = FineTuningHyperparameters.DeserializeFineTuningHyperparameters(prop.Value, options);
+                    continue;
+                }
+                if (prop.NameEquals("model"u8))
+                {
+                    baseModel = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("object"u8))
+                {
+                    @object = prop.Value.GetString();
+                    continue;
+                }
                 if (prop.NameEquals("organization_id"u8))
                 {
                     organizationId = prop.Value.GetString();
                     continue;
                 }
+                if (prop.NameEquals("result_files"u8))
+                {
+                    List<string> array = new List<string>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        if (item.ValueKind == JsonValueKind.Null)
+                        {
+                            array.Add(null);
+                        }
+                        else
+                        {
+                            array.Add(item.GetString());
+                        }
+                    }
+                    resultFileIds = array;
+                    continue;
+                }
+                if (prop.NameEquals("status"u8))
+                {
+                    status = new FineTuningStatus(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("trained_tokens"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        billableTrainedTokenCount = null;
+                        continue;
+                    }
+                    billableTrainedTokenCount = prop.Value.GetInt32();
+                    continue;
+                }
+                if (prop.NameEquals("training_file"u8))
+                {
+                    trainingFileId = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("validation_file"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        validationFileId = null;
+                        continue;
+                    }
+                    validationFileId = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("integrations"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    List<FineTuningIntegration> array = new List<FineTuningIntegration>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        array.Add(FineTuningIntegration.DeserializeFineTuningIntegration(item, options));
+                    }
+                    integrations = array;
+                    continue;
+                }
                 if (prop.NameEquals("seed"u8))
                 {
                     seed = prop.Value.GetInt32();
+                    continue;
+                }
+                if (prop.NameEquals("estimated_finish"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        estimatedFinishAt = null;
+                        continue;
+                    }
+                    estimatedFinishAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("method"u8))
@@ -440,30 +418,52 @@ namespace OpenAI.FineTuning
                     @method = FineTuningTrainingMethod.DeserializeFineTuningTrainingMethod(prop.Value, options);
                     continue;
                 }
+                if (prop.NameEquals("metadata"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        metadata = new ChangeTrackingDictionary<string, string>();
+                        continue;
+                    }
+                    Dictionary<string, string> dictionary = new Dictionary<string, string>();
+                    foreach (var prop0 in prop.Value.EnumerateObject())
+                    {
+                        if (prop0.Value.ValueKind == JsonValueKind.Null)
+                        {
+                            dictionary.Add(prop0.Name, null);
+                        }
+                        else
+                        {
+                            dictionary.Add(prop0.Name, prop0.Value.GetString());
+                        }
+                    }
+                    metadata = dictionary;
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalFineTuningJob(
-                metadata,
-                jobId,
-                baseModel,
-                estimatedFinishAt,
-                validationFileId,
-                trainingFileId,
-                resultFileIds,
-                status,
-                @object,
-                hyperparameters,
-                integrations ?? new ChangeTrackingList<FineTuningIntegration>(),
-                billableTrainedTokenCount,
                 userProvidedSuffix,
+                jobId,
                 createdAt,
                 error,
                 fineTunedModel,
                 finishedAt,
+                hyperparameters,
+                baseModel,
+                @object,
                 organizationId,
+                resultFileIds,
+                status,
+                billableTrainedTokenCount,
+                trainingFileId,
+                validationFileId,
+                integrations ?? new ChangeTrackingList<FineTuningIntegration>(),
                 seed,
+                estimatedFinishAt,
                 @method,
+                metadata,
                 additionalBinaryDataProperties);
         }
 

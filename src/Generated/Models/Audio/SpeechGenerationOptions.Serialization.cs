@@ -32,16 +32,6 @@ namespace OpenAI.Audio
             {
                 throw new FormatException($"The model {nameof(SpeechGenerationOptions)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Instructions) && _additionalBinaryDataProperties?.ContainsKey("instructions") != true)
-            {
-                writer.WritePropertyName("instructions"u8);
-                writer.WriteStringValue(Instructions);
-            }
-            if (Optional.IsDefined(ResponseFormat) && _additionalBinaryDataProperties?.ContainsKey("response_format") != true)
-            {
-                writer.WritePropertyName("response_format"u8);
-                writer.WriteStringValue(ResponseFormat.Value.ToString());
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
             {
                 writer.WritePropertyName("model"u8);
@@ -52,10 +42,20 @@ namespace OpenAI.Audio
                 writer.WritePropertyName("input"u8);
                 writer.WriteStringValue(Input);
             }
+            if (Optional.IsDefined(Instructions) && _additionalBinaryDataProperties?.ContainsKey("instructions") != true)
+            {
+                writer.WritePropertyName("instructions"u8);
+                writer.WriteStringValue(Instructions);
+            }
             if (_additionalBinaryDataProperties?.ContainsKey("voice") != true)
             {
                 writer.WritePropertyName("voice"u8);
                 writer.WriteStringValue(Voice.ToString());
+            }
+            if (Optional.IsDefined(ResponseFormat) && _additionalBinaryDataProperties?.ContainsKey("response_format") != true)
+            {
+                writer.WritePropertyName("response_format"u8);
+                writer.WriteStringValue(ResponseFormat.Value.ToString());
             }
             if (Optional.IsDefined(SpeedRatio) && _additionalBinaryDataProperties?.ContainsKey("speed") != true)
             {
@@ -104,29 +104,15 @@ namespace OpenAI.Audio
             {
                 return null;
             }
-            string instructions = default;
-            GeneratedSpeechFormat? responseFormat = default;
             InternalCreateSpeechRequestModel model = default;
             string input = default;
+            string instructions = default;
             GeneratedSpeechVoice voice = default;
+            GeneratedSpeechFormat? responseFormat = default;
             float? speedRatio = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("instructions"u8))
-                {
-                    instructions = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("response_format"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    responseFormat = new GeneratedSpeechFormat(prop.Value.GetString());
-                    continue;
-                }
                 if (prop.NameEquals("model"u8))
                 {
                     model = new InternalCreateSpeechRequestModel(prop.Value.GetString());
@@ -137,9 +123,23 @@ namespace OpenAI.Audio
                     input = prop.Value.GetString();
                     continue;
                 }
+                if (prop.NameEquals("instructions"u8))
+                {
+                    instructions = prop.Value.GetString();
+                    continue;
+                }
                 if (prop.NameEquals("voice"u8))
                 {
                     voice = new GeneratedSpeechVoice(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("response_format"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    responseFormat = new GeneratedSpeechFormat(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("speed"u8))
@@ -155,11 +155,11 @@ namespace OpenAI.Audio
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new SpeechGenerationOptions(
-                instructions,
-                responseFormat,
                 model,
                 input,
+                instructions,
                 voice,
+                responseFormat,
                 speedRatio,
                 additionalBinaryDataProperties);
         }

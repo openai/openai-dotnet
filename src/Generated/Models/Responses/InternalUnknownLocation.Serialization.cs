@@ -10,13 +10,13 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalUnknownLocation : IJsonModel<InternalLocation>
+    internal partial class InternalUnknownLocation : IJsonModel<WebSearchToolLocation>
     {
         internal InternalUnknownLocation() : this(default, null)
         {
         }
 
-        void IJsonModel<InternalLocation>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<WebSearchToolLocation>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
@@ -25,25 +25,25 @@ namespace OpenAI.Responses
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalLocation>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<WebSearchToolLocation>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalLocation)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(WebSearchToolLocation)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
         }
 
-        InternalLocation IJsonModel<InternalLocation>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        WebSearchToolLocation IJsonModel<WebSearchToolLocation>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected override InternalLocation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected override WebSearchToolLocation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalLocation>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<WebSearchToolLocation>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalLocation)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(WebSearchToolLocation)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalLocation(document.RootElement, options);
+            return DeserializeWebSearchToolLocation(document.RootElement, options);
         }
 
         internal static InternalUnknownLocation DeserializeInternalUnknownLocation(JsonElement element, ModelReaderWriterOptions options)
@@ -67,37 +67,37 @@ namespace OpenAI.Responses
             return new InternalUnknownLocation(kind, additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<InternalLocation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<WebSearchToolLocation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalLocation>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<WebSearchToolLocation>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(InternalLocation)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(WebSearchToolLocation)} does not support writing '{options.Format}' format.");
             }
         }
 
-        InternalLocation IPersistableModel<InternalLocation>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        WebSearchToolLocation IPersistableModel<WebSearchToolLocation>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        protected override InternalLocation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected override WebSearchToolLocation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalLocation>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<WebSearchToolLocation>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalLocation(document.RootElement, options);
+                        return DeserializeWebSearchToolLocation(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalLocation)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(WebSearchToolLocation)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<InternalLocation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<WebSearchToolLocation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

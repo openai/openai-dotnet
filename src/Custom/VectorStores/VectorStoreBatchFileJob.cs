@@ -22,11 +22,4 @@ public partial class VectorStoreBatchFileJob
     /// <summary> Gets the file counts. </summary>
     [CodeGenMember("Counts")]
     public VectorStoreFileCounts FileCounts { get; }
-
-    internal static VectorStoreBatchFileJob FromClientResult(ClientResult result)
-    {
-        using PipelineResponse response = result.GetRawResponse();
-        using JsonDocument document = JsonDocument.Parse(response.Content);
-        return DeserializeVectorStoreBatchFileJob(document.RootElement, ModelSerializationExtensions.WireOptions);
-    }
 }

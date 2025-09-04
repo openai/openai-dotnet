@@ -17,7 +17,7 @@ public class ContentInnerCollectionDefinedVisitor : ScmLibraryVisitor
 {
     private const string Comment = "Plugin customization: add Content.IsInnerCollectionDefined() check";
 
-    protected override MethodProvider VisitMethod(MethodProvider method)
+    protected override MethodProvider? VisitMethod(MethodProvider method)
     {
         if (method.Signature.Name != "JsonModelWriteCore"
             || method.BodyStatements is not MethodBodyStatements methodBodyStatements)

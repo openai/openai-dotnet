@@ -65,8 +65,8 @@ namespace OpenAI.Responses
             InternalItemType kind = default;
             string id = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            InternalResponsesMessageRole internalRole = default;
             MessageStatus? status = default;
+            InternalResponsesMessageRole internalRole = default;
             IList<ResponseContentPart> internalContent = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -80,14 +80,14 @@ namespace OpenAI.Responses
                     id = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("role"u8))
-                {
-                    internalRole = new InternalResponsesMessageRole(prop.Value.GetString());
-                    continue;
-                }
                 if (prop.NameEquals("status"u8))
                 {
                     status = prop.Value.GetString().ToMessageStatus();
+                    continue;
+                }
+                if (prop.NameEquals("role"u8))
+                {
+                    internalRole = new InternalResponsesMessageRole(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("content"u8))
@@ -107,8 +107,8 @@ namespace OpenAI.Responses
                 kind,
                 id,
                 additionalBinaryDataProperties,
-                internalRole,
                 status,
+                internalRole,
                 internalContent);
         }
 

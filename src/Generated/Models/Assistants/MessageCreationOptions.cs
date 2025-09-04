@@ -14,13 +14,13 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal MessageCreationOptions(IList<MessageCreationAttachment> attachments, IDictionary<string, string> metadata, MessageRole role, IList<MessageContent> content, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal MessageCreationOptions(MessageRole role, IList<MessageContent> content, IList<MessageCreationAttachment> attachments, IDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
-            Attachments = attachments ?? new ChangeTrackingList<MessageCreationAttachment>();
-            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Role = role;
             Content = content ?? new ChangeTrackingList<MessageContent>();
+            Attachments = attachments ?? new ChangeTrackingList<MessageCreationAttachment>();
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

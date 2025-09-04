@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -28,6 +29,11 @@ namespace OpenAI.Images
             {
                 throw new FormatException($"The model {nameof(GeneratedImageCollection)} does not support writing '{format}' format.");
             }
+            if (_additionalBinaryDataProperties?.ContainsKey("created") != true)
+            {
+                writer.WritePropertyName("created"u8);
+                writer.WriteNumberValue(CreatedAt, "U");
+            }
             if (Optional.IsCollectionDefined(Data) && _additionalBinaryDataProperties?.ContainsKey("data") != true)
             {
                 writer.WritePropertyName("data"u8);
@@ -42,11 +48,6 @@ namespace OpenAI.Images
             {
                 writer.WritePropertyName("usage"u8);
                 writer.WriteObjectValue(Usage, options);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("created") != true)
-            {
-                writer.WritePropertyName("created"u8);
-                writer.WriteNumberValue(CreatedAt, "U");
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -90,12 +91,17 @@ namespace OpenAI.Images
             {
                 return null;
             }
+            DateTimeOffset createdAt = default;
             IList<GeneratedImage> data = default;
             ImageTokenUsage usage = default;
-            DateTimeOffset createdAt = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("created"u8))
+                {
+                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    continue;
+                }
                 if (prop.NameEquals("data"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -119,15 +125,10 @@ namespace OpenAI.Images
                     usage = ImageTokenUsage.DeserializeImageTokenUsage(prop.Value, options);
                     continue;
                 }
-                if (prop.NameEquals("created"u8))
-                {
-                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new GeneratedImageCollection(data ?? new ChangeTrackingList<GeneratedImage>(), usage, createdAt, additionalBinaryDataProperties);
+            return new GeneratedImageCollection(createdAt, data ?? new ChangeTrackingList<GeneratedImage>(), usage, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<GeneratedImageCollection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -164,5 +165,13 @@ namespace OpenAI.Images
         }
 
         string IPersistableModel<GeneratedImageCollection>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        [Experimental("OPENAI001")]
+        public static explicit operator GeneratedImageCollection(ClientResult result)
+        {
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeGeneratedImageCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
     }
 }

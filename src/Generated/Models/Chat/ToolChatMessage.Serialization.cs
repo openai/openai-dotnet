@@ -13,7 +13,7 @@ namespace OpenAI.Chat
 {
     public partial class ToolChatMessage : IJsonModel<ToolChatMessage>
     {
-        internal ToolChatMessage() : this(null, ChatMessageRole.Tool, null, null)
+        internal ToolChatMessage() : this(ChatMessageRole.Tool, null, null, null)
         {
         }
 
@@ -53,20 +53,20 @@ namespace OpenAI.Chat
             {
                 return null;
             }
-            ChatMessageContent content = default;
             ChatMessageRole role = default;
+            ChatMessageContent content = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string toolCallId = default;
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("content"u8))
-                {
-                    DeserializeContentValue(prop, ref content);
-                    continue;
-                }
                 if (prop.NameEquals("role"u8))
                 {
                     role = prop.Value.GetString().ToChatMessageRole();
+                    continue;
+                }
+                if (prop.NameEquals("content"u8))
+                {
+                    DeserializeContentValue(prop, ref content);
                     continue;
                 }
                 if (prop.NameEquals("tool_call_id"u8))
@@ -77,7 +77,7 @@ namespace OpenAI.Chat
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ToolChatMessage(content, role, additionalBinaryDataProperties, toolCallId);
+            return new ToolChatMessage(role, content, additionalBinaryDataProperties, toolCallId);
         }
 
         BinaryData IPersistableModel<ToolChatMessage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

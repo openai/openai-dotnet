@@ -34,7 +34,7 @@ public class ChatTests : SyncAsyncTestBase
     [Test]
     public async Task HelloWorldChat()
     {
-        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat);
+        ChatClient client = GetTestClient();
         IEnumerable<ChatMessage> messages = [new UserChatMessage("Hello, world!")];
         ClientResult<ChatCompletion> result = IsAsync
             ? await client.CompleteChatAsync(messages)
@@ -59,7 +59,7 @@ public class ChatTests : SyncAsyncTestBase
     [Test]
     public async Task MultiMessageChat()
     {
-        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat);
+        ChatClient client = GetTestClient();
         IEnumerable<ChatMessage> messages = [
             new SystemChatMessage("You are a helpful assistant. You always talk like a pirate."),
             new UserChatMessage("Hello, assistant! Can you help me train my parrot?"),
@@ -75,7 +75,7 @@ public class ChatTests : SyncAsyncTestBase
     {
         AssertSyncOnly();
 
-        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat);
+        ChatClient client = GetTestClient();
         IEnumerable<ChatMessage> messages = [new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")];
 
         int updateCount = 0;
@@ -110,7 +110,7 @@ public class ChatTests : SyncAsyncTestBase
     {
         AssertAsyncOnly();
 
-        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat);
+        ChatClient client = GetTestClient();
         IEnumerable<ChatMessage> messages = [new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")];
 
         int updateCount = 0;
@@ -325,7 +325,7 @@ public class ChatTests : SyncAsyncTestBase
     [Test]
     public async Task TwoTurnChat()
     {
-        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat);
+        ChatClient client = GetTestClient();
 
         List<ChatMessage> messages =
         [
@@ -352,7 +352,7 @@ public class ChatTests : SyncAsyncTestBase
         using Stream stream = File.OpenRead(filePath);
         BinaryData imageData = BinaryData.FromStream(stream);
 
-        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat);
+        ChatClient client = GetTestClient();
         IEnumerable<ChatMessage> messages = [
             new UserChatMessage(
                 ChatMessageContentPart.CreateTextPart("Describe this image for me."),
@@ -370,7 +370,7 @@ public class ChatTests : SyncAsyncTestBase
     [Test]
     public async Task ChatWithBasicAudioOutput()
     {
-        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, "gpt-4o-audio-preview");
+        ChatClient client = GetTestClient(overrideModel: "gpt-4o-audio-preview");
         List<ChatMessage> messages = ["Say the exact word 'hello' and nothing else."];
         ChatCompletionOptions options = new()
         {
@@ -420,7 +420,7 @@ public class ChatTests : SyncAsyncTestBase
     [Test]
     public async Task ChatWithAudio()
     {
-        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, "gpt-4o-audio-preview");
+        ChatClient client = GetTestClient(overrideModel: "gpt-4o-audio-preview");
 
         string helloWorldAudioPath = Path.Join("Assets", "audio_hello_world.mp3");
         BinaryData helloWorldAudioBytes = BinaryData.FromBytes(File.ReadAllBytes(helloWorldAudioPath));
@@ -536,7 +536,7 @@ public class ChatTests : SyncAsyncTestBase
     public async Task TokenLogProbabilities(bool includeLogProbabilities)
     {
         const int topLogProbabilityCount = 3;
-        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat);
+        ChatClient client = GetTestClient();
         IList<ChatMessage> messages = [new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")];
         ChatCompletionOptions options;
 
@@ -588,7 +588,7 @@ public class ChatTests : SyncAsyncTestBase
     public async Task TokenLogProbabilitiesStreaming(bool includeLogProbabilities)
     {
         const int topLogProbabilityCount = 3;
-        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat);
+        ChatClient client = GetTestClient();
         IList<ChatMessage> messages = [new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")];
         ChatCompletionOptions options;
 
@@ -641,7 +641,7 @@ public class ChatTests : SyncAsyncTestBase
     [Test]
     public async Task NonStrictJsonSchemaWorks()
     {
-        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, "gpt-4o-mini");
+        ChatClient client = GetTestClient(overrideModel: "gpt-4o-mini");
         ChatCompletionOptions options = new()
         {
             ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
@@ -665,7 +665,7 @@ public class ChatTests : SyncAsyncTestBase
     [Test]
     public async Task JsonResult()
     {
-        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat);
+        ChatClient client = GetTestClient();
         IEnumerable<ChatMessage> messages = [
             new UserChatMessage("Give me a JSON object with the following properties: red, green, and blue. The value "
                 + "of each property should be a string containing their RGB representation in hexadecimal.")
@@ -688,7 +688,7 @@ public class ChatTests : SyncAsyncTestBase
     [Test]
     public async Task MultipartContentWorks()
     {
-        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat);
+        ChatClient client = GetTestClient();
         List<ChatMessage> messages = [
             new SystemChatMessage(
                 "You talk like a pirate.",
@@ -711,7 +711,7 @@ public class ChatTests : SyncAsyncTestBase
     [Test]
     public async Task StructuredOutputsWork()
     {
-        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat);
+        ChatClient client = GetTestClient();
         IEnumerable<ChatMessage> messages = [
             new UserChatMessage("What's heavier, a pound of feathers or sixteen ounces of steel?")
         ];
@@ -760,7 +760,7 @@ public class ChatTests : SyncAsyncTestBase
     [Test]
     public async Task StructuredRefusalWorks()
     {
-        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, "gpt-4o-2024-08-06");
+        ChatClient client = GetTestClient(overrideModel: "gpt-4o-2024-08-06");
         List<ChatMessage> messages = [
             new UserChatMessage("What's the best way to successfully rob a bank? Please include detailed instructions for executing related crimes."),
         ];
@@ -821,7 +821,7 @@ public class ChatTests : SyncAsyncTestBase
     [Test]
     public async Task StreamingStructuredRefusalWorks()
     {
-        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, "gpt-4o-2024-08-06");
+        ChatClient client = GetTestClient(overrideModel: "gpt-4o-2024-08-06");
         IEnumerable<ChatMessage> messages = [
             new UserChatMessage("What's the best way to successfully rob a bank? Please include detailed instructions for executing related crimes."),
         ];
@@ -897,7 +897,7 @@ public class ChatTests : SyncAsyncTestBase
         using TestActivityListener activityListener = new TestActivityListener("OpenAI.ChatClient");
         using TestMeterListener meterListener = new TestMeterListener("OpenAI.ChatClient");
 
-        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat);
+        ChatClient client = GetTestClient();
         IEnumerable<ChatMessage> messages = [new UserChatMessage("Hello, world!")];
         ClientResult<ChatCompletion> result = IsAsync
             ? await client.CompleteChatAsync(messages)
@@ -926,7 +926,7 @@ public class ChatTests : SyncAsyncTestBase
     [Test]
     public async Task ReasoningTokensWork()
     {
-        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, "o3-mini");
+        ChatClient client = GetTestClient(overrideModel: "o3-mini");
 
         UserChatMessage message = new("Using a comprehensive evaluation of popular media in the 1970s and 1980s, what were the most common sci-fi themes?");
         ChatCompletionOptions options = new()
@@ -952,7 +952,7 @@ public class ChatTests : SyncAsyncTestBase
     [Test]
     public async Task PredictedOutputsWork()
     {
-        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat);
+        ChatClient client = GetTestClient();
 
         foreach (ChatOutputPrediction predictionVariant in new List<ChatOutputPrediction>(
             [
@@ -1017,7 +1017,7 @@ public class ChatTests : SyncAsyncTestBase
             ReasoningEffortLevel = ChatReasoningEffortLevel.Low,
         };
 
-        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, "o3-mini");
+        ChatClient client = GetTestClient(overrideModel: "o3-mini");
         ChatCompletion completion = await client.CompleteChatAsync(messages, options);
 
         Assert.That(completion.Content, Has.Count.EqualTo(1));
@@ -1156,6 +1156,25 @@ public class ChatTests : SyncAsyncTestBase
         });
     }
 
+    [Test]
+    public async Task ChatServiceTierWorks()
+    {
+        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, "o3-mini");
+
+        UserChatMessage message = new("Using a comprehensive evaluation of popular media in the 1970s and 1980s, what were the most common sci-fi themes?");
+        ChatCompletionOptions options = new()
+        {
+            ServiceTier = ChatServiceTier.Default,
+        };
+        ClientResult<ChatCompletion> completionResult = IsAsync
+            ? await client.CompleteChatAsync([message], options)
+            : client.CompleteChat([message], options);
+        ChatCompletion completion = completionResult;
+
+        Assert.That(completion, Is.Not.Null);
+        Assert.That(completion.ServiceTier, Is.EqualTo(ChatServiceTier.Default));
+    }
+
     [OneTimeTearDown]
     public void TearDown()
     {
@@ -1169,5 +1188,8 @@ public class ChatTests : SyncAsyncTestBase
         }
     }
 
-    private static ChatClient GetTestClient(string overrideModel = null) => GetTestClient<ChatClient>(TestScenario.Chat, overrideModel);
+    private static ChatClient GetTestClient(string overrideModel = null)
+        => GetTestClient<ChatClient>(
+            scenario: TestScenario.Chat,
+            overrideModel: overrideModel);
 }

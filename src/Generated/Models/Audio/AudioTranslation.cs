@@ -12,22 +12,22 @@ namespace OpenAI.Audio
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal AudioTranslation(string language, string text, TimeSpan? duration)
+        internal AudioTranslation(string language, TimeSpan? duration, string text)
         {
             Language = language;
+            Duration = duration;
             Text = text;
             Segments = new ChangeTrackingList<TranscribedSegment>();
-            Duration = duration;
         }
 
-        internal AudioTranslation(string language, string text, IReadOnlyList<TranscribedSegment> segments, string task, TimeSpan? duration, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal AudioTranslation(string task, string language, TimeSpan? duration, string text, IReadOnlyList<TranscribedSegment> segments, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
+            Task = task;
             Language = language;
+            Duration = duration;
             Text = text;
             Segments = segments ?? new ChangeTrackingList<TranscribedSegment>();
-            Task = task;
-            Duration = duration;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

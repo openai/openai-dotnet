@@ -41,7 +41,7 @@ public partial class ChatClient
     // - Demoted the endpoint parameter to be a property in the options class.
     /// <summary> Initializes a new instance of <see cref="ChatClient"/>. </summary>
     /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
-    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="credential"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
     public ChatClient(string model, ApiKeyCredential credential) : this(model, credential, new OpenAIClientOptions())
@@ -55,7 +55,7 @@ public partial class ChatClient
     // - Added telemetry support.
     /// <summary> Initializes a new instance of <see cref="ChatClient"/>. </summary>
     /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
-    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="credential"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
@@ -124,6 +124,12 @@ public partial class ChatClient
     [Experimental("OPENAI001")]
     public string Model => _model;
 
+    /// <summary>
+    /// Gets the endpoint URI for the service.
+    /// </summary>
+    [Experimental("OPENAI001")]
+    public Uri Endpoint => _endpoint;
+
     /// <summary> Generates a completion for the given chat. </summary>
     /// <param name="messages"> The messages comprising the chat so far. </param>
     /// <param name="options"> The options to configure the chat completion. </param>
@@ -143,7 +149,7 @@ public partial class ChatClient
             using BinaryContent content = options.ToBinaryContent();
 
             ClientResult result = await CompleteChatAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-            ChatCompletion chatCompletion = ChatCompletion.FromClientResult(result);
+            ChatCompletion chatCompletion = (ChatCompletion)result;
             scope?.RecordChatCompletion(chatCompletion);
             return ClientResult.FromValue(chatCompletion, result.GetRawResponse());
         }
@@ -172,7 +178,7 @@ public partial class ChatClient
         {
             using BinaryContent content = options.ToBinaryContent();
             ClientResult result = CompleteChat(content, cancellationToken.ToRequestOptions());
-            ChatCompletion chatCompletion = ChatCompletion.FromClientResult(result);
+            ChatCompletion chatCompletion = (ChatCompletion)result;
 
             scope?.RecordChatCompletion(chatCompletion);
             return ClientResult.FromValue(chatCompletion, result.GetRawResponse());
@@ -289,7 +295,7 @@ public partial class ChatClient
         Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
 
         ClientResult result = await GetChatCompletionAsync(completionId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
-        return ClientResult.FromValue(ChatCompletion.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((ChatCompletion)result, result.GetRawResponse());
     }
 
     // CUSTOM:
@@ -301,7 +307,7 @@ public partial class ChatClient
         Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
 
         ClientResult result = GetChatCompletion(completionId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
-        return ClientResult.FromValue(ChatCompletion.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((ChatCompletion)result, result.GetRawResponse());
     }
 
     // CUSTOM:
@@ -314,7 +320,7 @@ public partial class ChatClient
 
         InternalUpdateChatCompletionRequest spreadModel = new InternalUpdateChatCompletionRequest(metadata, null);
         ClientResult result = this.UpdateChatCompletion(completionId, spreadModel, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
-        return ClientResult.FromValue(ChatCompletion.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((ChatCompletion)result, result.GetRawResponse());
     }
 
     // CUSTOM:
@@ -327,7 +333,7 @@ public partial class ChatClient
 
         InternalUpdateChatCompletionRequest spreadModel = new InternalUpdateChatCompletionRequest(metadata, null);
         ClientResult result = await this.UpdateChatCompletionAsync(completionId, spreadModel, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
-        return ClientResult.FromValue(ChatCompletion.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((ChatCompletion)result, result.GetRawResponse());
     }
 
     // CUSTOM:
@@ -339,7 +345,7 @@ public partial class ChatClient
         Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
 
         ClientResult result = await DeleteChatCompletionAsync(completionId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
-        return ClientResult.FromValue(ChatCompletionDeletionResult.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((ChatCompletionDeletionResult)result, result.GetRawResponse());
     }
 
     // CUSTOM:
@@ -351,7 +357,7 @@ public partial class ChatClient
         Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
 
         ClientResult result = DeleteChatCompletion(completionId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
-        return ClientResult.FromValue(ChatCompletionDeletionResult.FromClientResult(result), result.GetRawResponse());
+        return ClientResult.FromValue((ChatCompletionDeletionResult)result, result.GetRawResponse());
     }
 
     private void CreateChatCompletionOptions(IEnumerable<ChatMessage> messages, ref ChatCompletionOptions options, bool stream = false)

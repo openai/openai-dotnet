@@ -37,20 +37,20 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("index"u8);
                 writer.WriteNumberValue(Index);
             }
-            if (Optional.IsDefined(Function) && _additionalBinaryDataProperties?.ContainsKey("function") != true)
+            if (Optional.IsDefined(ToolCallId) && _additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
-                writer.WritePropertyName("function"u8);
-                writer.WriteObjectValue(Function, options);
+                writer.WritePropertyName("id"u8);
+                writer.WriteStringValue(ToolCallId);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToSerialString());
             }
-            if (Optional.IsDefined(ToolCallId) && _additionalBinaryDataProperties?.ContainsKey("id") != true)
+            if (Optional.IsDefined(Function) && _additionalBinaryDataProperties?.ContainsKey("function") != true)
             {
-                writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(ToolCallId);
+                writer.WritePropertyName("function"u8);
+                writer.WriteObjectValue(Function, options);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -95,9 +95,9 @@ namespace OpenAI.Chat
                 return null;
             }
             int index = default;
-            InternalChatCompletionMessageToolCallChunkFunction function = default;
-            ChatToolCallKind kind = default;
             string toolCallId = default;
+            ChatToolCallKind kind = default;
+            InternalChatCompletionMessageToolCallChunkFunction function = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -106,13 +106,9 @@ namespace OpenAI.Chat
                     index = prop.Value.GetInt32();
                     continue;
                 }
-                if (prop.NameEquals("function"u8))
+                if (prop.NameEquals("id"u8))
                 {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    function = InternalChatCompletionMessageToolCallChunkFunction.DeserializeInternalChatCompletionMessageToolCallChunkFunction(prop.Value, options);
+                    toolCallId = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("type"u8))
@@ -124,15 +120,19 @@ namespace OpenAI.Chat
                     kind = prop.Value.GetString().ToChatToolCallKind();
                     continue;
                 }
-                if (prop.NameEquals("id"u8))
+                if (prop.NameEquals("function"u8))
                 {
-                    toolCallId = prop.Value.GetString();
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    function = InternalChatCompletionMessageToolCallChunkFunction.DeserializeInternalChatCompletionMessageToolCallChunkFunction(prop.Value, options);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new StreamingChatToolCallUpdate(index, function, kind, toolCallId, additionalBinaryDataProperties);
+            return new StreamingChatToolCallUpdate(index, toolCallId, kind, function, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<StreamingChatToolCallUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

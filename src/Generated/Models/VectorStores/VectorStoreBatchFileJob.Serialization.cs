@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -30,6 +31,11 @@ namespace OpenAI.VectorStores
             {
                 throw new FormatException($"The model {nameof(VectorStoreBatchFileJob)} does not support writing '{format}' format.");
             }
+            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
+            {
+                writer.WritePropertyName("id"u8);
+                writer.WriteStringValue(BatchId);
+            }
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
@@ -44,11 +50,6 @@ namespace OpenAI.VectorStores
             {
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.ToString());
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
-            {
-                writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(BatchId);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("file_counts") != true)
             {
@@ -101,15 +102,20 @@ namespace OpenAI.VectorStores
             {
                 return null;
             }
+            string batchId = default;
             DateTimeOffset createdAt = default;
             string vectorStoreId = default;
             VectorStoreBatchFileJobStatus status = default;
-            string batchId = default;
             VectorStoreFileCounts fileCounts = default;
             object @object = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("id"u8))
+                {
+                    batchId = prop.Value.GetString();
+                    continue;
+                }
                 if (prop.NameEquals("created_at"u8))
                 {
                     createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
@@ -123,11 +129,6 @@ namespace OpenAI.VectorStores
                 if (prop.NameEquals("status"u8))
                 {
                     status = new VectorStoreBatchFileJobStatus(prop.Value.GetString());
-                    continue;
-                }
-                if (prop.NameEquals("id"u8))
-                {
-                    batchId = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("file_counts"u8))
@@ -144,10 +145,10 @@ namespace OpenAI.VectorStores
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new VectorStoreBatchFileJob(
+                batchId,
                 createdAt,
                 vectorStoreId,
                 status,
-                batchId,
                 fileCounts,
                 @object,
                 additionalBinaryDataProperties);
@@ -185,5 +186,12 @@ namespace OpenAI.VectorStores
         }
 
         string IPersistableModel<VectorStoreBatchFileJob>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator VectorStoreBatchFileJob(ClientResult result)
+        {
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeVectorStoreBatchFileJob(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
     }
 }

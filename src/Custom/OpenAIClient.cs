@@ -99,7 +99,7 @@ public partial class OpenAIClient
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
     /// <summary> Initializes a new instance of <see cref="OpenAIClient"/>. </summary>
-    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
     public OpenAIClient(ApiKeyCredential credential) : this(credential, new OpenAIClientOptions())
     {
@@ -109,7 +109,7 @@ public partial class OpenAIClient
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
     /// <summary> Initializes a new instance of <see cref="OpenAIClient"/>. </summary>
-    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
     public OpenAIClient(ApiKeyCredential credential, OpenAIClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
@@ -156,6 +156,12 @@ public partial class OpenAIClient
         _endpoint = OpenAIClient.GetEndpoint(options);
         _options = options;
     }
+
+    /// <summary>
+    /// Gets the endpoint URI for the service.
+    /// </summary>
+    [Experimental("OPENAI001")]
+    public Uri Endpoint => _endpoint;
 
     /// <summary>
     /// Gets a new instance of <see cref="AssistantClient"/> that reuses the client configuration details provided to

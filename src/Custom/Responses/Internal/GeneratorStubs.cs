@@ -3,7 +3,6 @@ namespace OpenAI.Responses;
 [CodeGenType("AnnotationFileCitation")] internal partial class InternalAnnotationFileCitation {}
 [CodeGenType("AnnotationFilePath")] internal partial class InternalAnnotationFilePath {}
 [CodeGenType("AnnotationUrlCitation")] internal partial class InternalAnnotationUrlCitation {}
-[CodeGenType("ApproximateLocation")] internal partial class InternalApproximateLocation {}
 [CodeGenType("ComparisonFilter")] internal partial class InternalComparisonFilter {}
 [CodeGenType("ComparisonFilterEquals")] internal partial class InternalComparisonFilterEquals {}
 [CodeGenType("ComparisonFilterGreaterThan")] internal partial class InternalComparisonFilterGreaterThan {}
@@ -29,12 +28,9 @@ namespace OpenAI.Responses;
 [CodeGenType("ComputerToolCallOutputItemOutputComputerScreenshot")] internal partial class InternalComputerToolCallOutputItemOutputComputerScreenshot {}
 [CodeGenType("ComputerToolCallOutputItemOutputType")] internal readonly partial struct InternalComputerUsePreviewToolCallOutputOutputType {}
 [CodeGenType("ComputerToolCallOutputItemParam")] internal partial class InternalComputerUsePreviewToolCallOutputItemParam {}
-[CodeGenType("ComputerUsePreviewTool")] internal partial class InternalComputerUsePreviewTool {}
 [CodeGenType("Coordinate")] internal partial class InternalCoordinate {}
 [CodeGenType("DeleteResponseResponseObject")] internal readonly partial struct InternalDeleteResponseResponseObject {}
 [CodeGenType("DotNetCombinedChunkingStrategyParamType2")] internal readonly partial struct InternalDotNetCombinedChunkingStrategyParamType2 {}
-[CodeGenType("DotnetResponseWebSearchApproximateLocation")] internal partial class InternalDotnetResponseWebSearchApproximateLocation {}
-[CodeGenType("FileSearchTool")] internal partial class InternalFileSearchTool {}
 [CodeGenType("FileSearchToolCallItemParam")] internal partial class InternalFileSearchToolCallItemParam {}
 [CodeGenType("FunctionToolCallItemParam")] internal partial class InternalFunctionToolCallItemParam {}
 [CodeGenType("FunctionToolCallOutputItemParam")] internal partial class InternalFunctionToolCallOutputItemParam {}
@@ -47,7 +43,6 @@ namespace OpenAI.Responses;
 [CodeGenType("ItemParam")] internal partial class InternalItemParam {}
 [CodeGenType("ItemReferenceItemParam")] internal partial class InternalItemReferenceItemParam {}
 [CodeGenType("ItemType")] internal readonly partial struct InternalItemType {}
-[CodeGenType("Location")] internal partial class InternalLocation {}
 [CodeGenType("LocationType")] internal readonly partial struct InternalWebSearchUserLocationKind {}
 [CodeGenType("ModelIdsResponses")] internal readonly partial struct InternalModelIdsResponses {}
 [CodeGenType("RankingOptionsRanker1")] internal readonly partial struct InternalRankingOptionsRanker1 {}
@@ -86,7 +81,6 @@ namespace OpenAI.Responses;
 [CodeGenType("UnknownCompoundFilter")] internal partial class  InternalUnknownCompoundFilter {}
 [CodeGenType("UnknownComputerAction")] internal partial class InternalUnknownComputerAction {}
 [CodeGenType("UnknownComputerToolCallOutputItemOutput")] internal partial class InternalUnknownComputerToolCallOutputItemOutput {}
-[CodeGenType("UnknownDotnetResponseWebSearchLocation")] internal partial class InternalUnknownDotnetResponseWebSearchLocation {}
 [CodeGenType("UnknownItemContent")] internal partial class InternalUnknownItemContent {}
 [CodeGenType("UnknownItemParam")] internal partial class InternalUnknownItemParam {}
 [CodeGenType("UnknownItemResource")] public partial class InternalUnknownItemResource {}
@@ -98,7 +92,6 @@ namespace OpenAI.Responses;
 [CodeGenType("UnknownResponseTextFormatConfiguration")] internal partial class InternalUnknownResponseTextFormatConfiguration {}
 [CodeGenType("UnknownTool")] internal partial class InternalUnknownTool {}
 [CodeGenType("UnknownToolChoiceObject")] internal partial class InternalUnknownToolChoiceObject {}
-[CodeGenType("WebSearchPreviewToolSearchContextSize")] internal readonly partial struct InternalWebSearchPreviewToolSearchContextSize {}
 [CodeGenType("WebSearchToolCallItemParam")] internal partial class InternalWebSearchToolCallItemParam {}
 [CodeGenType("CodeInterpreterToolAutoType")] internal readonly partial struct InternalCodeInterpreterToolAutoType {}
 [CodeGenType("ImageGenToolModel")] internal readonly partial struct InternalImageGenToolModel {}

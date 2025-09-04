@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeResponseMessageItem : IJsonModel<InternalRealtimeResponseMessageItem>
     {
-        internal InternalRealtimeResponseMessageItem() : this(null, InternalRealtimeItemType.Message, null, null, default, default, null)
+        internal InternalRealtimeResponseMessageItem() : this(null, InternalRealtimeItemType.Message, null, null, default, null, default)
         {
         }
 
@@ -31,11 +31,6 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(InternalRealtimeResponseMessageItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
-            {
-                writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.ToString());
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("role") != true)
             {
                 writer.WritePropertyName("role"u8);
@@ -50,6 +45,11 @@ namespace OpenAI.Realtime
                     writer.WriteObjectValue(item, options);
                 }
                 writer.WriteEndArray();
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
+            {
+                writer.WritePropertyName("status"u8);
+                writer.WriteStringValue(Status.ToString());
             }
         }
 
@@ -76,9 +76,9 @@ namespace OpenAI.Realtime
             InternalRealtimeItemType kind = default;
             string id = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            ConversationItemStatus status = default;
             ConversationMessageRole role = default;
             IReadOnlyList<ConversationContentPart> content = default;
+            ConversationItemStatus status = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("object"u8))
@@ -101,11 +101,6 @@ namespace OpenAI.Realtime
                     id = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("status"u8))
-                {
-                    status = new ConversationItemStatus(prop.Value.GetString());
-                    continue;
-                }
                 if (prop.NameEquals("role"u8))
                 {
                     role = new ConversationMessageRole(prop.Value.GetString());
@@ -121,6 +116,11 @@ namespace OpenAI.Realtime
                     content = array;
                     continue;
                 }
+                if (prop.NameEquals("status"u8))
+                {
+                    status = new ConversationItemStatus(prop.Value.GetString());
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
@@ -129,9 +129,9 @@ namespace OpenAI.Realtime
                 kind,
                 id,
                 additionalBinaryDataProperties,
-                status,
                 role,
-                content);
+                content,
+                status);
         }
 
         BinaryData IPersistableModel<InternalRealtimeResponseMessageItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

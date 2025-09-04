@@ -11,8 +11,11 @@ namespace OpenAI.Responses
 {
     public partial class InternalCodeInterpreterToolCallItemResource : ResponseItem
     {
-        internal InternalCodeInterpreterToolCallItemResource(string id, InternalCodeInterpreterToolCallItemResourceStatus status, string code, IEnumerable<BinaryData> results) : base(InternalItemType.CodeInterpreterCall, id)
+        internal InternalCodeInterpreterToolCallItemResource(InternalCodeInterpreterToolCallItemResourceStatus status, string code, IEnumerable<BinaryData> results) : base(InternalItemType.CodeInterpreterCall)
         {
+            Argument.AssertNotNull(code, nameof(code));
+            Argument.AssertNotNull(results, nameof(results));
+
             Status = status;
             Code = code;
             Results = results.ToList();
@@ -27,11 +30,11 @@ namespace OpenAI.Responses
             Results = results ?? new ChangeTrackingList<BinaryData>();
         }
 
-        internal InternalCodeInterpreterToolCallItemResourceStatus Status { get; }
+        internal InternalCodeInterpreterToolCallItemResourceStatus Status { get; set; }
 
-        public string ContainerId { get; }
+        public string ContainerId { get; set; }
 
-        public string Code { get; }
+        public string Code { get; set; }
 
         public IList<BinaryData> Results { get; }
     }

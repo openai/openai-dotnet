@@ -9,7 +9,7 @@ namespace OpenAI.Chat
 {
     public partial class FunctionChatMessage : ChatMessage
     {
-        internal FunctionChatMessage(ChatMessageContent content, ChatMessageRole role, IDictionary<string, BinaryData> additionalBinaryDataProperties, string functionName) : base(content, role, additionalBinaryDataProperties)
+        internal FunctionChatMessage(ChatMessageRole role, ChatMessageContent content, IDictionary<string, BinaryData> additionalBinaryDataProperties, string functionName) : base(role, content, additionalBinaryDataProperties)
         {
             FunctionName = functionName;
         }

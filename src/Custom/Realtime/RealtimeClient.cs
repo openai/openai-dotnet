@@ -20,35 +20,87 @@ public partial class RealtimeClient
     public event EventHandler<BinaryData> OnSendingCommand;
     public event EventHandler<BinaryData> OnReceivingCommand;
 
-    private readonly ApiKeyCredential _credential;
-    private readonly Uri _baseEndpoint;
+    private readonly ApiKeyCredential _keyCredential;
+    private readonly Uri _webSocketEndpoint;
 
-    /// <summary>
-    /// Creates a new instance of <see cref="RealtimeClient"/> using an API key for authentication.
-    /// </summary>
-    /// <param name="credential"> The API key to use for authentication. </param>
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="RealtimeClient"/>. </summary>
+    /// <param name="apiKey"> The API key to authenticate with the service. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="apiKey"/> is null. </exception>
+    public RealtimeClient(string apiKey) : this(new ApiKeyCredential(apiKey), new OpenAIClientOptions())
+    {
+    }
+
+    // CUSTOM:
+    // - Used a custom pipeline.
+    // - Demoted the endpoint parameter to be a property in the options class.
+    /// <summary> Initializes a new instance of <see cref="RealtimeClient"/>. </summary>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
     public RealtimeClient(ApiKeyCredential credential) : this(credential, new OpenAIClientOptions())
     {
     }
 
-    /// <summary>
-    /// Creates a new instance of <see cref="RealtimeClient"/> using an API key for authentication.
-    /// </summary>
-    /// <param name="credential"> The API key to use for authentication. </param>
-    /// <param name="options"> Additional options for configuring the client. </param>
-    public RealtimeClient(ApiKeyCredential credential, OpenAIClientOptions options)
+    // CUSTOM:
+    // - Used a custom pipeline.
+    // - Demoted the endpoint parameter to be a property in the options class.
+    /// <summary> Initializes a new instance of <see cref="RealtimeClient"/>. </summary>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
+    public RealtimeClient(ApiKeyCredential credential, OpenAIClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
     {
-        Argument.AssertNotNull(credential, nameof(credential));
-        Argument.AssertNotNull(options, nameof(options));
-
-        _credential = credential;
-        _baseEndpoint = GetBaseEndpoint(options);
+        _keyCredential = credential;
     }
 
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="RealtimeClient"/>. </summary>
+    /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
+    [Experimental("OPENAI001")]
+    public RealtimeClient(AuthenticationPolicy authenticationPolicy) : this(authenticationPolicy, new OpenAIClientOptions())
+    {
+    }
+
+    // CUSTOM: Added as a convenience.
+    /// <summary> Initializes a new instance of <see cref="RealtimeClient"/>. </summary>
+    /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
+    [Experimental("OPENAI001")]
+    public RealtimeClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
+    {
+        Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
+        options ??= new OpenAIClientOptions();
+
+        Pipeline = OpenAIClient.CreatePipeline(authenticationPolicy, options);
+        _endpoint = OpenAIClient.GetEndpoint(options);
+        _webSocketEndpoint = GetWebSocketEndpoint(options);
+    }
+
+    // CUSTOM:
+    // - Used a custom pipeline.
+    // - Demoted the endpoint parameter to be a property in the options class.
+    // - Made protected.
+    /// <summary> Initializes a new instance of <see cref="RealtimeClient"/>. </summary>
+    /// <param name="pipeline"> The HTTP pipeline to send and receive REST requests and responses. </param>
+    /// <param name="options"> The options to configure the client. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> is null. </exception>
     protected internal RealtimeClient(ClientPipeline pipeline, OpenAIClientOptions options)
     {
-        throw new NotImplementedException("Pipeline-based initialization of WS-based client not available");
+        Argument.AssertNotNull(pipeline, nameof(pipeline));
+        options ??= new OpenAIClientOptions();
+
+        Pipeline = pipeline;
+        _endpoint = OpenAIClient.GetEndpoint(options);
+        _webSocketEndpoint = GetWebSocketEndpoint(options);
     }
+
+    /// <summary>
+    /// Gets the endpoint URI for the service.
+    /// </summary>
+    [Experimental("OPENAI001")]
+    public Uri Endpoint => _endpoint;
 
     /// <summary>
     /// Starts a new <see cref="RealtimeSession"/> for multimodal conversation.
@@ -123,7 +175,7 @@ public partial class RealtimeClient
         return StartTranscriptionSessionAsync(cancellationToken).ConfigureAwait(false).GetAwaiter().GetResult();
     }
 
-    private static Uri GetBaseEndpoint(OpenAIClientOptions options)
+    private static Uri GetWebSocketEndpoint(OpenAIClientOptions options)
     {
         UriBuilder uriBuilder = new(options?.Endpoint ?? new("https://api.openai.com/v1"));
         uriBuilder.Scheme = uriBuilder.Scheme.ToLowerInvariant() switch

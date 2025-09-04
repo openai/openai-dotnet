@@ -26,11 +26,6 @@ namespace OpenAI.Responses
             {
                 throw new FormatException($"The model {nameof(ResponseReasoningOptions)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(GenerateSummary) && _additionalBinaryDataProperties?.ContainsKey("generate_summary") != true)
-            {
-                writer.WritePropertyName("generate_summary"u8);
-                writer.WriteStringValue(GenerateSummary.Value.ToString());
-            }
             if (Optional.IsDefined(ReasoningEffortLevel) && _additionalBinaryDataProperties?.ContainsKey("effort") != true)
             {
                 writer.WritePropertyName("effort"u8);
@@ -40,6 +35,11 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("summary"u8);
                 writer.WriteStringValue(ReasoningSummaryVerbosity.Value.ToString());
+            }
+            if (Optional.IsDefined(GenerateSummary) && _additionalBinaryDataProperties?.ContainsKey("generate_summary") != true)
+            {
+                writer.WritePropertyName("generate_summary"u8);
+                writer.WriteStringValue(GenerateSummary.Value.ToString());
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -82,22 +82,12 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalReasoningGenerateSummary? generateSummary = default;
             ResponseReasoningEffortLevel? reasoningEffortLevel = default;
             ResponseReasoningSummaryVerbosity? reasoningSummaryVerbosity = default;
+            InternalReasoningGenerateSummary? generateSummary = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("generate_summary"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        generateSummary = null;
-                        continue;
-                    }
-                    generateSummary = new InternalReasoningGenerateSummary(prop.Value.GetString());
-                    continue;
-                }
                 if (prop.NameEquals("effort"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -118,10 +108,20 @@ namespace OpenAI.Responses
                     reasoningSummaryVerbosity = new ResponseReasoningSummaryVerbosity(prop.Value.GetString());
                     continue;
                 }
+                if (prop.NameEquals("generate_summary"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        generateSummary = null;
+                        continue;
+                    }
+                    generateSummary = new InternalReasoningGenerateSummary(prop.Value.GetString());
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ResponseReasoningOptions(generateSummary, reasoningEffortLevel, reasoningSummaryVerbosity, additionalBinaryDataProperties);
+            return new ResponseReasoningOptions(reasoningEffortLevel, reasoningSummaryVerbosity, generateSummary, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<ResponseReasoningOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -35,15 +36,15 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("deleted") != true)
-            {
-                writer.WritePropertyName("deleted"u8);
-                writer.WriteBooleanValue(Deleted);
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
                 writer.WriteStringValue(Object);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("deleted") != true)
+            {
+                writer.WritePropertyName("deleted"u8);
+                writer.WriteBooleanValue(Deleted);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -87,8 +88,8 @@ namespace OpenAI.Responses
                 return null;
             }
             string id = default;
-            bool deleted = default;
             string @object = default;
+            bool deleted = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -97,20 +98,20 @@ namespace OpenAI.Responses
                     id = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("deleted"u8))
-                {
-                    deleted = prop.Value.GetBoolean();
-                    continue;
-                }
                 if (prop.NameEquals("object"u8))
                 {
                     @object = prop.Value.GetString();
                     continue;
                 }
+                if (prop.NameEquals("deleted"u8))
+                {
+                    deleted = prop.Value.GetBoolean();
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ResponseDeletionResult(id, deleted, @object, additionalBinaryDataProperties);
+            return new ResponseDeletionResult(id, @object, deleted, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<ResponseDeletionResult>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -145,5 +146,12 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<ResponseDeletionResult>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator ResponseDeletionResult(ClientResult result)
+        {
+            using PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content);
+            return DeserializeResponseDeletionResult(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
     }
 }
