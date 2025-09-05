@@ -17,9 +17,9 @@ using Azure.ClientGenerator.Core;
 @@visibility(FileSearchToolCallItemResource.status, Lifecycle.Read);
 
 @@visibility(FunctionToolCallItemResource.status, Lifecycle.Read);
+@@alternateType(FunctionToolCallItemResource.arguments, unknown);
 @@clientName(FunctionToolCallItemResource.name, "FunctionName");
 @@clientName(FunctionToolCallItemResource.arguments, "FunctionArguments");
-@@alternateType(FunctionToolCallItemResource.arguments, unknown);
 
 @@visibility(FunctionToolCallOutputItemResource.status, Lifecycle.Read);
 @@clientName(FunctionToolCallOutputItemResource.output, "FunctionOutput");
@@ -37,3 +37,31 @@ using Azure.ClientGenerator.Core;
 @@clientName(FunctionTool.description, "FunctionDescription");
 @@clientName(FunctionTool.parameters, "FunctionParameters");
 @@clientName(FunctionTool.strict, "StrictModeEnabled");
+
+@@alternateType(MCPApprovalRequestItemResource.arguments, unknown);
+@@clientName(MCPApprovalRequestItemResource.name, "ToolName");
+@@clientName(MCPApprovalRequestItemResource.arguments, "ToolArguments");
+
+@@clientName(MCPApprovalResponseItemResource.approve, "Approved");
+
+@@alternateType(MCPCallItemResource.arguments, unknown);
+@@alternateType(MCPCallItemResource.error, unknown);
+@@clientName(MCPCallItemResource.name, "ToolName");
+@@clientName(MCPCallItemResource.arguments, "ToolArguments");
+@@clientName(MCPCallItemResource.output, "ToolOutput");
+
+@@alternateType(MCPListToolsItemResource.error, unknown);
+@@clientName(MCPListToolsItemResource.tools, "ToolDefinitions");
+
+@@alternateType(MCPTool.server_url, url);
+@@clientName(MCPTool.server_url, "ServerUri");
+
+@@alternateType(ResponseFunctionCallArgumentsDoneEvent.arguments, unknown);
+// @@clientName(ResponseFunctionCallArgumentsDoneEvent.arguments, "FunctionArguments");
+
+@@alternateType(ResponseFunctionCallArgumentsDeltaEvent.delta, unknown);
+
+@@alternateType(ResponseMCPCallArgumentsDoneEvent.arguments, unknown);
+// @@clientName(ResponseMCPCallArgumentsDoneEvent.arguments, "ToolArguments");
+
+@@alternateType(ResponseMCPCallArgumentsDeltaEvent.delta, unknown);

@@ -95,7 +95,7 @@ namespace OpenAI.Responses
                     case "local_shell":
                         return InternalLocalShellTool.DeserializeInternalLocalShellTool(element, options);
                     case "mcp":
-                        return InternalMCPTool.DeserializeInternalMCPTool(element, options);
+                        return McpTool.DeserializeMcpTool(element, options);
                 }
             }
             return InternalUnknownTool.DeserializeInternalUnknownTool(element, options);

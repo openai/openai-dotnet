@@ -58,4 +58,20 @@ public partial class ResponseTool
             userLocation: userLocation,
             searchContextSize: searchContextSize);
     }
+
+    // CUSTOM: Added factory method a a convenience.
+    public static McpTool CreateMcpTool(string serverLabel, Uri serverUri, IDictionary<string, string> headers = null, McpToolFilter allowedTools = null, McpToolCallApprovalPolicy toolCallApprovalPolicy = null)
+    {
+        Argument.AssertNotNull(serverLabel, nameof(serverLabel));
+        Argument.AssertNotNull(serverUri, nameof(serverUri));
+
+        return new McpTool(
+            kind: InternalToolType.Mcp,
+            additionalBinaryDataProperties: null,
+            serverLabel: serverLabel,
+            serverUri: serverUri,
+            headers: headers,
+            allowedTools: allowedTools,
+            toolCallApprovalPolicy: toolCallApprovalPolicy);
+    }
 }

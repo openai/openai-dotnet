@@ -10,6 +10,7 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using static OpenAI.Tests.TestHelpers;
@@ -729,7 +730,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
     }
 
     [Test]
-    public async Task FunctionCall()
+    public async Task FunctionCallWorks()
     {
         OpenAIResponseClient client = GetTestClient();
 
@@ -777,6 +778,56 @@ public partial class ResponsesTests : SyncAsyncTestBase
     }
 
     [Test]
+    public async Task FunctionCallStreamingWorks()
+    {
+        OpenAIResponseClient client = GetTestClient();
+
+        ResponseCreationOptions options = new()
+        {
+            Tools = { s_GetWeatherAtLocationTool }
+        };
+
+        AsyncCollectionResult<StreamingResponseUpdate> responseUpdates = client.CreateResponseStreamingAsync(
+            "What should I wear for the weather in San Francisco right now?",
+            options);
+
+        int functionCallArgumentsDeltaUpdateCount = 0;
+        int functionCallArgumentsDoneUpdateCount = 0;
+
+        StringBuilder argumentsBuilder = new StringBuilder();
+
+        await foreach (StreamingResponseUpdate update in responseUpdates)
+        {
+            if (update is StreamingResponseFunctionCallArgumentsDeltaUpdate functionCallArgumentsDeltaUpdate)
+            {
+                functionCallArgumentsDeltaUpdateCount++;
+
+                BinaryData delta = functionCallArgumentsDeltaUpdate.Delta;
+                Assert.That(delta, Is.Not.Null);
+
+                if (!delta.ToMemory().IsEmpty)
+                {
+                    argumentsBuilder.AppendLine(functionCallArgumentsDeltaUpdate.Delta.ToString());
+                }
+            }
+
+            if (update is StreamingResponseFunctionCallArgumentsDoneUpdate functionCallArgumentsDoneUpdate)
+            {
+                functionCallArgumentsDoneUpdateCount++;
+
+                BinaryData functionArguments = functionCallArgumentsDoneUpdate.FunctionArguments;
+                Assert.That(functionArguments, Is.Not.Null);
+                Assert.That(functionArguments.ToString(), Is.EqualTo(argumentsBuilder.ToString().ReplaceLineEndings(string.Empty)));
+
+                argumentsBuilder.Clear();
+            }
+        }
+
+        Assert.That(functionCallArgumentsDoneUpdateCount, Is.GreaterThan(0));
+        Assert.That(functionCallArgumentsDeltaUpdateCount, Is.GreaterThanOrEqualTo(functionCallArgumentsDoneUpdateCount));
+    }
+
+    [Test]
     public async Task MaxTokens()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -794,25 +845,6 @@ public partial class ResponsesTests : SyncAsyncTestBase
         MessageResponseItem message = response?.OutputItems?.FirstOrDefault() as MessageResponseItem; ;
         Assert.That(message?.Content?.FirstOrDefault(), Is.Not.Null);
         Assert.That(message?.Status, Is.EqualTo(MessageStatus.Incomplete));
-    }
-
-    [Test]
-    public async Task FunctionCallStreaming()
-    {
-        OpenAIResponseClient client = GetTestClient();
-
-        await foreach (StreamingResponseUpdate update
-            in client.CreateResponseStreamingAsync(
-                "What should I wear for the weather in San Francisco right now?",
-                new ResponseCreationOptions() { Tools = { s_GetWeatherAtLocationTool } }))
-        {
-            if (update is StreamingResponseCreatedUpdate responseCreatedUpdate)
-            {
-            }
-            else if (update is StreamingResponseFunctionCallArgumentsDeltaUpdate functionCallArgumentsDeltaUpdate)
-            {
-            }
-        }
     }
 
     [Test]
