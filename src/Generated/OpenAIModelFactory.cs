@@ -737,6 +737,22 @@ namespace OpenAI
             return new ImageInputTokenUsageDetails(textTokenCount, imageTokenCount, additionalBinaryDataProperties: null);
         }
 
+        public static ImageEditOptions ImageEditOptions(BinaryData image = default, string prompt = default, BinaryData mask = default, GeneratedImageBackground? background = default, InternalCreateImageEditRequestModel? model = default, long? n = default, GeneratedImageSize? size = default, GeneratedImageFormat? responseFormat = default, string endUserId = default, GeneratedImageQuality? quality = default)
+        {
+            return new ImageEditOptions(
+                image,
+                prompt,
+                mask,
+                background,
+                model,
+                n,
+                size,
+                responseFormat,
+                endUserId,
+                quality,
+                additionalBinaryDataProperties: null);
+        }
+
         public static ImageVariationOptions ImageVariationOptions(BinaryData image = default, InternalCreateImageVariationRequestModel? model = default, long? n = default, GeneratedImageFormat? responseFormat = default, GeneratedImageSize? size = default, string endUserId = default)
         {
             return new ImageVariationOptions(
