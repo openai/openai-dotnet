@@ -17,8 +17,8 @@ namespace OpenAI.VectorStores;
 [CodeGenSuppress("AddFileToVectorStoreAsync", typeof(string), typeof(InternalCreateVectorStoreFileRequest), typeof(CancellationToken))]
 [CodeGenSuppress("AddFileBatchToVectorStore", typeof(string), typeof(InternalCreateVectorStoreFileBatchRequest), typeof(CancellationToken))]
 [CodeGenSuppress("AddFileBatchToVectorStoreAsync", typeof(string), typeof(InternalCreateVectorStoreFileBatchRequest), typeof(CancellationToken))]
-[CodeGenSuppress("RemoveFileFromStore", typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("RemoveFileFromStoreAsync", typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("RemoveFileFromVectorStore", typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("RemoveFileFromVectorStoreAsync", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("GetVectorStoreFile", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("GetVectorStoreFileAsync", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("GetVectorStoreFileBatch", typeof(string), typeof(string), typeof(CancellationToken))]
@@ -336,9 +336,9 @@ public partial class VectorStoreClient
     /// <param name="fileId"> The ID of the file to remove from the vector store. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A <see cref="FileFromStoreRemovalResult"/> instance. </returns>
-    public virtual async Task<ClientResult<FileFromStoreRemovalResult>> RemoveFileFromStoreAsync(string vectorStoreId, string fileId, CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<FileFromStoreRemovalResult>> RemoveFileFromVectorStoreAsync(string vectorStoreId, string fileId, CancellationToken cancellationToken = default)
     {
-        ClientResult protocolResult = await RemoveFileFromStoreAsync(vectorStoreId, fileId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        ClientResult protocolResult = await RemoveFileFromVectorStoreAsync(vectorStoreId, fileId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         PipelineResponse protocolResponse = protocolResult?.GetRawResponse();
         FileFromStoreRemovalResult value = (FileFromStoreRemovalResult)protocolResult;
         return ClientResult.FromValue(value, protocolResponse);
@@ -355,9 +355,9 @@ public partial class VectorStoreClient
     /// <param name="fileId"> The ID of the file to remove from the vector store. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
     /// <returns> A <see cref="FileFromStoreRemovalResult"/> instance. </returns>
-    public virtual ClientResult<FileFromStoreRemovalResult> RemoveFileFromStore(string vectorStoreId, string fileId, CancellationToken cancellationToken = default)
+    public virtual ClientResult<FileFromStoreRemovalResult> RemoveFileFromVectorStore(string vectorStoreId, string fileId, CancellationToken cancellationToken = default)
     {
-        ClientResult protocolResult = RemoveFileFromStore(vectorStoreId, fileId, cancellationToken.ToRequestOptions());
+        ClientResult protocolResult = RemoveFileFromVectorStore(vectorStoreId, fileId, cancellationToken.ToRequestOptions());
         PipelineResponse protocolResponse = protocolResult?.GetRawResponse();
         FileFromStoreRemovalResult value = (FileFromStoreRemovalResult)protocolResult;
         return ClientResult.FromValue(value, protocolResponse);

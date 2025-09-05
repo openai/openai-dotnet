@@ -245,7 +245,7 @@ namespace OpenAI.VectorStores
             return message;
         }
 
-        internal virtual PipelineMessage CreateRemoveFileFromStoreRequest(string vectorStoreId, string fileId, RequestOptions options)
+        internal virtual PipelineMessage CreateRemoveFileFromVectorStoreRequest(string vectorStoreId, string fileId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);

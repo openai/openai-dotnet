@@ -351,21 +351,21 @@ namespace OpenAI.VectorStores
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult RemoveFileFromStore(string vectorStoreId, string fileId, RequestOptions options)
+        public virtual ClientResult RemoveFileFromVectorStore(string vectorStoreId, string fileId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
             Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
-            using PipelineMessage message = CreateRemoveFileFromStoreRequest(vectorStoreId, fileId, options);
+            using PipelineMessage message = CreateRemoveFileFromVectorStoreRequest(vectorStoreId, fileId, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> RemoveFileFromStoreAsync(string vectorStoreId, string fileId, RequestOptions options)
+        public virtual async Task<ClientResult> RemoveFileFromVectorStoreAsync(string vectorStoreId, string fileId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
             Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
-            using PipelineMessage message = CreateRemoveFileFromStoreRequest(vectorStoreId, fileId, options);
+            using PipelineMessage message = CreateRemoveFileFromVectorStoreRequest(vectorStoreId, fileId, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 

@@ -225,8 +225,8 @@ public class VectorStoresTests : SyncAsyncTestBase
         }
 
         FileFromStoreRemovalResult removalResult = IsAsync
-            ? await client.RemoveFileFromStoreAsync(vectorStore.Id, files[0].Id)
-            : client.RemoveFileFromStore(vectorStore.Id, files[0].Id);
+            ? await client.RemoveFileFromVectorStoreAsync(vectorStore.Id, files[0].Id)
+            : client.RemoveFileFromVectorStore(vectorStore.Id, files[0].Id);
         Assert.That(removalResult.FileId, Is.EqualTo(files[0].Id));
         Assert.True(removalResult.Removed);
         _vectorStoreFilesToRemove.RemoveAt(0);
@@ -282,7 +282,7 @@ public class VectorStoresTests : SyncAsyncTestBase
             });
         }
 
-        FileFromStoreRemovalResult removalResult = await client.RemoveFileFromStoreAsync(vectorStore.Id, files[0].Id);
+        FileFromStoreRemovalResult removalResult = await client.RemoveFileFromVectorStoreAsync(vectorStore.Id, files[0].Id);
         Assert.That(removalResult.FileId, Is.EqualTo(files[0].Id));
         Assert.True(removalResult.Removed);
         _vectorStoreFilesToRemove.RemoveAt(0);
@@ -362,7 +362,7 @@ public class VectorStoresTests : SyncAsyncTestBase
             });
         }
 
-        FileFromStoreRemovalResult removalResult = client.RemoveFileFromStore(vectorStore.Id, files[0].Id);
+        FileFromStoreRemovalResult removalResult = client.RemoveFileFromVectorStore(vectorStore.Id, files[0].Id);
         Assert.That(removalResult.FileId, Is.EqualTo(files[0].Id));
         Assert.True(removalResult.Removed);
         _vectorStoreFilesToRemove.RemoveAt(0);
@@ -896,7 +896,7 @@ public class VectorStoresTests : SyncAsyncTestBase
         }
         foreach (VectorStoreFile vectorStoreFile in _vectorStoreFilesToRemove)
         {
-            ClientResult protocolResult = vectorStoreClient.RemoveFileFromStore(vectorStoreFile.VectorStoreId, vectorStoreFile.FileId, requestOptions);
+            ClientResult protocolResult = vectorStoreClient.RemoveFileFromVectorStore(vectorStoreFile.VectorStoreId, vectorStoreFile.FileId, requestOptions);
             Console.WriteLine($"Cleanup: {vectorStoreFile.FileId}<->{vectorStoreFile.VectorStoreId} => {protocolResult?.GetRawResponse()?.Status}");
         }
         foreach (OpenAIFile file in _filesToDelete)

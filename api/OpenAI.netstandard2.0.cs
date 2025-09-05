@@ -5148,10 +5148,10 @@ namespace OpenAI.VectorStores {
         public virtual ClientResult ModifyVectorStore(string vectorStoreId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<VectorStore>> ModifyVectorStoreAsync(string vectorStoreId, VectorStoreModificationOptions options, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> ModifyVectorStoreAsync(string vectorStoreId, BinaryContent content, RequestOptions options = null);
-        public virtual ClientResult RemoveFileFromStore(string vectorStoreId, string fileId, RequestOptions options);
-        public virtual ClientResult<FileFromStoreRemovalResult> RemoveFileFromStore(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
-        public virtual Task<ClientResult> RemoveFileFromStoreAsync(string vectorStoreId, string fileId, RequestOptions options);
-        public virtual Task<ClientResult<FileFromStoreRemovalResult>> RemoveFileFromStoreAsync(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
+        public virtual ClientResult RemoveFileFromVectorStore(string vectorStoreId, string fileId, RequestOptions options);
+        public virtual ClientResult<FileFromStoreRemovalResult> RemoveFileFromVectorStore(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> RemoveFileFromVectorStoreAsync(string vectorStoreId, string fileId, RequestOptions options);
+        public virtual Task<ClientResult<FileFromStoreRemovalResult>> RemoveFileFromVectorStoreAsync(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
         public virtual ClientResult RetrieveVectorStoreFileContent(string vectorStoreId, string fileId, RequestOptions options);
         public virtual Task<ClientResult> RetrieveVectorStoreFileContentAsync(string vectorStoreId, string fileId, RequestOptions options);
         public virtual ClientResult SearchVectorStore(string vectorStoreId, BinaryContent content, RequestOptions options = null);
