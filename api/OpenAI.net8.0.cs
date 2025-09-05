@@ -4428,6 +4428,7 @@ namespace OpenAI.Realtime {
         public virtual void TruncateItem(string itemId, int contentPartIndex, TimeSpan audioDuration, CancellationToken cancellationToken = default);
         public virtual Task TruncateItemAsync(string itemId, int contentPartIndex, TimeSpan audioDuration, CancellationToken cancellationToken = default);
     }
+    [Experimental("OPENAI002")]
     public class RealtimeSessionOptions {
         public Uri Endpoint { get; set; }
         public IDictionary<string, string> Headers { get; }

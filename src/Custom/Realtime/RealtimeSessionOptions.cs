@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Realtime;
 
+[Experimental("OPENAI002")]
 public class RealtimeSessionOptions
 {
     public RealtimeSessionOptions()
