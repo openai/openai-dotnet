@@ -14,7 +14,7 @@ namespace OpenAI.Responses
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ResponseCreationOptions(IDictionary<string, string> metadata, float? temperature, float? topP, string endUserId, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? background, int? maxOutputTokenCount, string instructions, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncationMode, IList<ResponseItem> input, IList<InternalIncludable> include, bool? parallelToolCallsEnabled, bool? storedOutputEnabled, bool? stream, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ResponseCreationOptions(IDictionary<string, string> metadata, float? temperature, float? topP, string endUserId, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? backgroundModeEnabled, int? maxOutputTokenCount, string instructions, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncationMode, IList<ResponseItem> input, IList<InternalIncludable> include, bool? parallelToolCallsEnabled, bool? storedOutputEnabled, bool? stream, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -25,7 +25,7 @@ namespace OpenAI.Responses
             PreviousResponseId = previousResponseId;
             Model = model;
             ReasoningOptions = reasoningOptions;
-            Background = background;
+            BackgroundModeEnabled = backgroundModeEnabled;
             MaxOutputTokenCount = maxOutputTokenCount;
             Instructions = instructions;
             TextOptions = textOptions;
@@ -49,8 +49,6 @@ namespace OpenAI.Responses
         public ResponseServiceTier? ServiceTier { get; set; }
 
         public string PreviousResponseId { get; set; }
-
-        public bool? Background { get; set; }
 
         public string Instructions { get; set; }
 

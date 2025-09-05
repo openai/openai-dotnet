@@ -14,7 +14,7 @@ public partial class ResponseExamples
     [Test]
     public async Task Example01_SimpleResponseAsync()
     {
-        OpenAIResponseClient client = new(model: "gpt-4o", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        OpenAIResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         OpenAIResponse response = await client.CreateResponseAsync("Say 'this is a test.'");
 

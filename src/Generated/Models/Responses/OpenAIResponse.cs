@@ -31,7 +31,7 @@ namespace OpenAI.Responses
             ParallelToolCallsEnabled = parallelToolCallsEnabled;
         }
 
-        internal OpenAIResponse(IDictionary<string, string> metadata, float? temperature, float? topP, string endUserId, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? background, int? maxOutputTokenCount, string instructions, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncationMode, string id, string @object, ResponseStatus? status, DateTimeOffset createdAt, ResponseError error, ResponseIncompleteStatusDetails incompleteStatusDetails, IList<ResponseItem> outputItems, ResponseTokenUsage usage, bool parallelToolCallsEnabled, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal OpenAIResponse(IDictionary<string, string> metadata, float? temperature, float? topP, string endUserId, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? backgroundModeEnabled, int? maxOutputTokenCount, string instructions, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncationMode, string id, string @object, ResponseStatus? status, DateTimeOffset createdAt, ResponseError error, ResponseIncompleteStatusDetails incompleteStatusDetails, IList<ResponseItem> outputItems, ResponseTokenUsage usage, bool parallelToolCallsEnabled, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -42,7 +42,7 @@ namespace OpenAI.Responses
             PreviousResponseId = previousResponseId;
             Model = model;
             ReasoningOptions = reasoningOptions;
-            Background = background;
+            BackgroundModeEnabled = backgroundModeEnabled;
             MaxOutputTokenCount = maxOutputTokenCount;
             Instructions = instructions;
             TextOptions = textOptions;
@@ -70,8 +70,6 @@ namespace OpenAI.Responses
         public ResponseServiceTier? ServiceTier { get; }
 
         public string PreviousResponseId { get; }
-
-        public bool? Background { get; }
 
         public string Instructions { get; }
 
