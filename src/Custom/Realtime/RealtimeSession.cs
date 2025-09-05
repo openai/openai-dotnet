@@ -25,16 +25,13 @@ public partial class RealtimeSession : IDisposable
 
     internal bool ShouldBufferTurnResponseData { get; set; }
 
-    protected internal RealtimeSession(
-        RealtimeClient parentClient,
-        Uri endpoint,
-        ApiKeyCredential credential)
+    protected internal RealtimeSession(ApiKeyCredential credential, RealtimeClient parentClient, Uri endpoint, string model, string intent)
     {
         Argument.AssertNotNull(endpoint, nameof(endpoint));
         Argument.AssertNotNull(credential, nameof(credential));
 
         _parentClient = parentClient;
-        _endpoint = endpoint;
+        _endpoint = BuildSessionEndpoint(endpoint, model, intent);
         _credential = credential;
     }
 
