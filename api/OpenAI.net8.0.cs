@@ -5948,37 +5948,6 @@ namespace OpenAI.VectorStores {
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
-    public class VectorStoreBatchFileJob : IJsonModel<VectorStoreBatchFileJob>, IPersistableModel<VectorStoreBatchFileJob> {
-        public string BatchId { get; }
-        public DateTimeOffset CreatedAt { get; }
-        public VectorStoreFileCounts FileCounts { get; }
-        public VectorStoreBatchFileJobStatus Status { get; }
-        public string VectorStoreId { get; }
-        protected virtual VectorStoreBatchFileJob JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        public static explicit operator VectorStoreBatchFileJob(ClientResult result);
-        protected virtual VectorStoreBatchFileJob PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    [Experimental("OPENAI001")]
-    public readonly partial struct VectorStoreBatchFileJobStatus : IEquatable<VectorStoreBatchFileJobStatus> {
-        public VectorStoreBatchFileJobStatus(string value);
-        public static VectorStoreBatchFileJobStatus Cancelled { get; }
-        public static VectorStoreBatchFileJobStatus Completed { get; }
-        public static VectorStoreBatchFileJobStatus Failed { get; }
-        public static VectorStoreBatchFileJobStatus InProgress { get; }
-        public readonly bool Equals(VectorStoreBatchFileJobStatus other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(VectorStoreBatchFileJobStatus left, VectorStoreBatchFileJobStatus right);
-        public static implicit operator VectorStoreBatchFileJobStatus(string value);
-        public static implicit operator VectorStoreBatchFileJobStatus?(string value);
-        public static bool operator !=(VectorStoreBatchFileJobStatus left, VectorStoreBatchFileJobStatus right);
-        public override readonly string ToString();
-    }
-    [Experimental("OPENAI001")]
     public class VectorStoreClient {
         protected VectorStoreClient();
         public VectorStoreClient(ApiKeyCredential credential, OpenAIClientOptions options);
@@ -5991,17 +5960,17 @@ namespace OpenAI.VectorStores {
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult AddFileBatchToVectorStore(string vectorStoreId, BinaryContent content, RequestOptions options = null);
-        public virtual ClientResult<VectorStoreBatchFileJob> AddFileBatchToVectorStore(string vectorStoreId, IEnumerable<string> fileIds, CancellationToken cancellationToken = default);
+        public virtual ClientResult<VectorStoreFileBatch> AddFileBatchToVectorStore(string vectorStoreId, IEnumerable<string> fileIds, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> AddFileBatchToVectorStoreAsync(string vectorStoreId, BinaryContent content, RequestOptions options = null);
-        public virtual Task<ClientResult<VectorStoreBatchFileJob>> AddFileBatchToVectorStoreAsync(string vectorStoreId, IEnumerable<string> fileIds, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult<VectorStoreFileBatch>> AddFileBatchToVectorStoreAsync(string vectorStoreId, IEnumerable<string> fileIds, CancellationToken cancellationToken = default);
         public virtual ClientResult AddFileToVectorStore(string vectorStoreId, BinaryContent content, RequestOptions options = null);
-        public virtual ClientResult<VectorStoreFileAssociation> AddFileToVectorStore(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
+        public virtual ClientResult<VectorStoreFile> AddFileToVectorStore(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> AddFileToVectorStoreAsync(string vectorStoreId, BinaryContent content, RequestOptions options = null);
-        public virtual Task<ClientResult<VectorStoreFileAssociation>> AddFileToVectorStoreAsync(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
-        public virtual ClientResult CancelBatchFileJob(string vectorStoreId, string batchId, RequestOptions options);
-        public virtual ClientResult<VectorStoreBatchFileJob> CancelBatchFileJob(string vectorStoreId, string batchJobId, CancellationToken cancellationToken = default);
-        public virtual Task<ClientResult> CancelBatchFileJobAsync(string vectorStoreId, string batchId, RequestOptions options);
-        public virtual Task<ClientResult<VectorStoreBatchFileJob>> CancelBatchFileJobAsync(string vectorStoreId, string batchJobId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult<VectorStoreFile>> AddFileToVectorStoreAsync(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
+        public virtual ClientResult CancelVectorStoreFileBatch(string vectorStoreId, string batchId, RequestOptions options);
+        public virtual ClientResult<VectorStoreFileBatch> CancelVectorStoreFileBatch(string vectorStoreId, string batchId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> CancelVectorStoreFileBatchAsync(string vectorStoreId, string batchId, RequestOptions options);
+        public virtual Task<ClientResult<VectorStoreFileBatch>> CancelVectorStoreFileBatchAsync(string vectorStoreId, string batchId, CancellationToken cancellationToken = default);
         public virtual ClientResult<VectorStore> CreateVectorStore(VectorStoreCreationOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult CreateVectorStore(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<VectorStore>> CreateVectorStoreAsync(VectorStoreCreationOptions options = null, CancellationToken cancellationToken = default);
@@ -6010,22 +5979,26 @@ namespace OpenAI.VectorStores {
         public virtual ClientResult<VectorStoreDeletionResult> DeleteVectorStore(string vectorStoreId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> DeleteVectorStoreAsync(string vectorStoreId, RequestOptions options);
         public virtual Task<ClientResult<VectorStoreDeletionResult>> DeleteVectorStoreAsync(string vectorStoreId, CancellationToken cancellationToken = default);
-        public virtual ClientResult<VectorStoreBatchFileJob> GetBatchFileJob(string vectorStoreId, string batchJobId, CancellationToken cancellationToken = default);
-        public virtual Task<ClientResult<VectorStoreBatchFileJob>> GetBatchFileJobAsync(string vectorStoreId, string batchJobId, CancellationToken cancellationToken = default);
-        public virtual ClientResult GetFileAssociation(string vectorStoreId, string fileId, RequestOptions options);
-        public virtual ClientResult<VectorStoreFileAssociation> GetFileAssociation(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
-        public virtual Task<ClientResult> GetFileAssociationAsync(string vectorStoreId, string fileId, RequestOptions options);
-        public virtual Task<ClientResult<VectorStoreFileAssociation>> GetFileAssociationAsync(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<VectorStoreFileAssociation> GetFileAssociations(string vectorStoreId, VectorStoreFileAssociationCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult GetFileAssociations(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options);
-        public virtual AsyncCollectionResult<VectorStoreFileAssociation> GetFileAssociationsAsync(string vectorStoreId, VectorStoreFileAssociationCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult GetFileAssociationsAsync(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options);
-        public virtual CollectionResult<VectorStoreFileAssociation> GetFileAssociationsInBatch(string vectorStoreId, string batchId, VectorStoreFileAssociationCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult GetFileAssociationsInBatch(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options);
-        public virtual AsyncCollectionResult<VectorStoreFileAssociation> GetFileAssociationsInBatchAsync(string vectorStoreId, string batchId, VectorStoreFileAssociationCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult GetFileAssociationsInBatchAsync(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options);
+        public virtual ClientResult GetVectorStore(string vectorStoreId, RequestOptions options);
         public virtual ClientResult<VectorStore> GetVectorStore(string vectorStoreId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> GetVectorStoreAsync(string vectorStoreId, RequestOptions options);
         public virtual Task<ClientResult<VectorStore>> GetVectorStoreAsync(string vectorStoreId, CancellationToken cancellationToken = default);
+        public virtual ClientResult GetVectorStoreFile(string vectorStoreId, string fileId, RequestOptions options);
+        public virtual ClientResult<VectorStoreFile> GetVectorStoreFile(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> GetVectorStoreFileAsync(string vectorStoreId, string fileId, RequestOptions options);
+        public virtual Task<ClientResult<VectorStoreFile>> GetVectorStoreFileAsync(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
+        public virtual ClientResult GetVectorStoreFileBatch(string vectorStoreId, string batchId, RequestOptions options);
+        public virtual ClientResult<VectorStoreFileBatch> GetVectorStoreFileBatch(string vectorStoreId, string batchId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> GetVectorStoreFileBatchAsync(string vectorStoreId, string batchId, RequestOptions options);
+        public virtual Task<ClientResult<VectorStoreFileBatch>> GetVectorStoreFileBatchAsync(string vectorStoreId, string batchId, CancellationToken cancellationToken = default);
+        public virtual CollectionResult<VectorStoreFile> GetVectorStoreFiles(string vectorStoreId, VectorStoreFileCollectionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult GetVectorStoreFiles(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options);
+        public virtual AsyncCollectionResult<VectorStoreFile> GetVectorStoreFilesAsync(string vectorStoreId, VectorStoreFileCollectionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult GetVectorStoreFilesAsync(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options);
+        public virtual CollectionResult<VectorStoreFile> GetVectorStoreFilesInBatch(string vectorStoreId, string batchId, VectorStoreFileCollectionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult GetVectorStoreFilesInBatch(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options);
+        public virtual AsyncCollectionResult<VectorStoreFile> GetVectorStoreFilesInBatchAsync(string vectorStoreId, string batchId, VectorStoreFileCollectionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult GetVectorStoreFilesInBatchAsync(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options);
         public virtual CollectionResult<VectorStore> GetVectorStores(VectorStoreCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual CollectionResult GetVectorStores(int? limit, string order, string after, string before, RequestOptions options);
         public virtual AsyncCollectionResult<VectorStore> GetVectorStoresAsync(VectorStoreCollectionOptions options = null, CancellationToken cancellationToken = default);
@@ -6034,18 +6007,18 @@ namespace OpenAI.VectorStores {
         public virtual ClientResult ModifyVectorStore(string vectorStoreId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<VectorStore>> ModifyVectorStoreAsync(string vectorStoreId, VectorStoreModificationOptions options, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> ModifyVectorStoreAsync(string vectorStoreId, BinaryContent content, RequestOptions options = null);
-        public virtual ClientResult RemoveFileFromStore(string vectorStoreId, string fileId, RequestOptions options);
-        public virtual ClientResult<FileFromStoreRemovalResult> RemoveFileFromStore(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
-        public virtual Task<ClientResult> RemoveFileFromStoreAsync(string vectorStoreId, string fileId, RequestOptions options);
-        public virtual Task<ClientResult<FileFromStoreRemovalResult>> RemoveFileFromStoreAsync(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
+        public virtual ClientResult RemoveFileFromVectorStore(string vectorStoreId, string fileId, RequestOptions options);
+        public virtual ClientResult<FileFromStoreRemovalResult> RemoveFileFromVectorStore(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> RemoveFileFromVectorStoreAsync(string vectorStoreId, string fileId, RequestOptions options);
+        public virtual Task<ClientResult<FileFromStoreRemovalResult>> RemoveFileFromVectorStoreAsync(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
         public virtual ClientResult RetrieveVectorStoreFileContent(string vectorStoreId, string fileId, RequestOptions options);
         public virtual Task<ClientResult> RetrieveVectorStoreFileContentAsync(string vectorStoreId, string fileId, RequestOptions options);
         public virtual ClientResult SearchVectorStore(string vectorStoreId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult> SearchVectorStoreAsync(string vectorStoreId, BinaryContent content, RequestOptions options = null);
         public virtual ClientResult UpdateVectorStoreFileAttributes(string vectorStoreId, string fileId, BinaryContent content, RequestOptions options = null);
-        public virtual ClientResult<VectorStoreFileAssociation> UpdateVectorStoreFileAttributes(string vectorStoreId, string fileId, IDictionary<string, BinaryData> attributes, CancellationToken cancellationToken = default);
+        public virtual ClientResult<VectorStoreFile> UpdateVectorStoreFileAttributes(string vectorStoreId, string fileId, IDictionary<string, BinaryData> attributes, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> UpdateVectorStoreFileAttributesAsync(string vectorStoreId, string fileId, BinaryContent content, RequestOptions options = null);
-        public virtual Task<ClientResult<VectorStoreFileAssociation>> UpdateVectorStoreFileAttributesAsync(string vectorStoreId, string fileId, IDictionary<string, BinaryData> attributes, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult<VectorStoreFile>> UpdateVectorStoreFileAttributesAsync(string vectorStoreId, string fileId, IDictionary<string, BinaryData> attributes, CancellationToken cancellationToken = default);
     }
     [Experimental("OPENAI001")]
     public class VectorStoreCollectionOptions : IJsonModel<VectorStoreCollectionOptions>, IPersistableModel<VectorStoreCollectionOptions> {
@@ -6112,82 +6085,79 @@ namespace OpenAI.VectorStores {
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
-    public class VectorStoreFileAssociation : IJsonModel<VectorStoreFileAssociation>, IPersistableModel<VectorStoreFileAssociation> {
+    public class VectorStoreFile : IJsonModel<VectorStoreFile>, IPersistableModel<VectorStoreFile> {
         public IDictionary<string, BinaryData> Attributes { get; }
         public FileChunkingStrategy ChunkingStrategy { get; }
         public DateTimeOffset CreatedAt { get; }
         public string FileId { get; }
-        public VectorStoreFileAssociationError LastError { get; }
+        public VectorStoreFileError LastError { get; }
         public int Size { get; }
-        public VectorStoreFileAssociationStatus Status { get; }
+        public VectorStoreFileStatus Status { get; }
         public string VectorStoreId { get; }
-        protected virtual VectorStoreFileAssociation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual VectorStoreFile JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        public static explicit operator VectorStoreFileAssociation(ClientResult result);
-        protected virtual VectorStoreFileAssociation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        public static explicit operator VectorStoreFile(ClientResult result);
+        protected virtual VectorStoreFile PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
-    public class VectorStoreFileAssociationCollectionOptions : IJsonModel<VectorStoreFileAssociationCollectionOptions>, IPersistableModel<VectorStoreFileAssociationCollectionOptions> {
+    public class VectorStoreFileBatch : IJsonModel<VectorStoreFileBatch>, IPersistableModel<VectorStoreFileBatch> {
+        public string BatchId { get; }
+        public DateTimeOffset CreatedAt { get; }
+        public VectorStoreFileCounts FileCounts { get; }
+        public VectorStoreFileBatchStatus Status { get; }
+        public string VectorStoreId { get; }
+        protected virtual VectorStoreFileBatch JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public static explicit operator VectorStoreFileBatch(ClientResult result);
+        protected virtual VectorStoreFileBatch PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct VectorStoreFileBatchStatus : IEquatable<VectorStoreFileBatchStatus> {
+        public VectorStoreFileBatchStatus(string value);
+        public static VectorStoreFileBatchStatus Cancelled { get; }
+        public static VectorStoreFileBatchStatus Completed { get; }
+        public static VectorStoreFileBatchStatus Failed { get; }
+        public static VectorStoreFileBatchStatus InProgress { get; }
+        public readonly bool Equals(VectorStoreFileBatchStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(VectorStoreFileBatchStatus left, VectorStoreFileBatchStatus right);
+        public static implicit operator VectorStoreFileBatchStatus(string value);
+        public static implicit operator VectorStoreFileBatchStatus?(string value);
+        public static bool operator !=(VectorStoreFileBatchStatus left, VectorStoreFileBatchStatus right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class VectorStoreFileCollectionOptions : IJsonModel<VectorStoreFileCollectionOptions>, IPersistableModel<VectorStoreFileCollectionOptions> {
         public string AfterId { get; set; }
         public string BeforeId { get; set; }
         public VectorStoreFileStatusFilter? Filter { get; set; }
-        public VectorStoreFileAssociationCollectionOrder? Order { get; set; }
+        public VectorStoreFileCollectionOrder? Order { get; set; }
         public int? PageSizeLimit { get; set; }
-        protected virtual VectorStoreFileAssociationCollectionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual VectorStoreFileCollectionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual VectorStoreFileAssociationCollectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual VectorStoreFileCollectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
-    public readonly partial struct VectorStoreFileAssociationCollectionOrder : IEquatable<VectorStoreFileAssociationCollectionOrder> {
-        public VectorStoreFileAssociationCollectionOrder(string value);
-        public static VectorStoreFileAssociationCollectionOrder Ascending { get; }
-        public static VectorStoreFileAssociationCollectionOrder Descending { get; }
-        public readonly bool Equals(VectorStoreFileAssociationCollectionOrder other);
+    public readonly partial struct VectorStoreFileCollectionOrder : IEquatable<VectorStoreFileCollectionOrder> {
+        public VectorStoreFileCollectionOrder(string value);
+        public static VectorStoreFileCollectionOrder Ascending { get; }
+        public static VectorStoreFileCollectionOrder Descending { get; }
+        public readonly bool Equals(VectorStoreFileCollectionOrder other);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly bool Equals(object obj);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly int GetHashCode();
-        public static bool operator ==(VectorStoreFileAssociationCollectionOrder left, VectorStoreFileAssociationCollectionOrder right);
-        public static implicit operator VectorStoreFileAssociationCollectionOrder(string value);
-        public static implicit operator VectorStoreFileAssociationCollectionOrder?(string value);
-        public static bool operator !=(VectorStoreFileAssociationCollectionOrder left, VectorStoreFileAssociationCollectionOrder right);
+        public static bool operator ==(VectorStoreFileCollectionOrder left, VectorStoreFileCollectionOrder right);
+        public static implicit operator VectorStoreFileCollectionOrder(string value);
+        public static implicit operator VectorStoreFileCollectionOrder?(string value);
+        public static bool operator !=(VectorStoreFileCollectionOrder left, VectorStoreFileCollectionOrder right);
         public override readonly string ToString();
-    }
-    [Experimental("OPENAI001")]
-    public class VectorStoreFileAssociationError : IJsonModel<VectorStoreFileAssociationError>, IPersistableModel<VectorStoreFileAssociationError> {
-        public VectorStoreFileAssociationErrorCode Code { get; }
-        public string Message { get; }
-        protected virtual VectorStoreFileAssociationError JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual VectorStoreFileAssociationError PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    [Experimental("OPENAI001")]
-    public readonly partial struct VectorStoreFileAssociationErrorCode : IEquatable<VectorStoreFileAssociationErrorCode> {
-        public VectorStoreFileAssociationErrorCode(string value);
-        public static VectorStoreFileAssociationErrorCode InvalidFile { get; }
-        public static VectorStoreFileAssociationErrorCode ServerError { get; }
-        public static VectorStoreFileAssociationErrorCode UnsupportedFile { get; }
-        public readonly bool Equals(VectorStoreFileAssociationErrorCode other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(VectorStoreFileAssociationErrorCode left, VectorStoreFileAssociationErrorCode right);
-        public static implicit operator VectorStoreFileAssociationErrorCode(string value);
-        public static implicit operator VectorStoreFileAssociationErrorCode?(string value);
-        public static bool operator !=(VectorStoreFileAssociationErrorCode left, VectorStoreFileAssociationErrorCode right);
-        public override readonly string ToString();
-    }
-    [Experimental("OPENAI001")]
-    public enum VectorStoreFileAssociationStatus {
-        Unknown = 0,
-        InProgress = 1,
-        Completed = 2,
-        Cancelled = 3,
-        Failed = 4
     }
     [Experimental("OPENAI001")]
     public class VectorStoreFileCounts : IJsonModel<VectorStoreFileCounts>, IPersistableModel<VectorStoreFileCounts> {
@@ -6200,6 +6170,40 @@ namespace OpenAI.VectorStores {
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual VectorStoreFileCounts PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class VectorStoreFileError : IJsonModel<VectorStoreFileError>, IPersistableModel<VectorStoreFileError> {
+        public VectorStoreFileErrorCode Code { get; }
+        public string Message { get; }
+        protected virtual VectorStoreFileError JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual VectorStoreFileError PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct VectorStoreFileErrorCode : IEquatable<VectorStoreFileErrorCode> {
+        public VectorStoreFileErrorCode(string value);
+        public static VectorStoreFileErrorCode InvalidFile { get; }
+        public static VectorStoreFileErrorCode ServerError { get; }
+        public static VectorStoreFileErrorCode UnsupportedFile { get; }
+        public readonly bool Equals(VectorStoreFileErrorCode other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(VectorStoreFileErrorCode left, VectorStoreFileErrorCode right);
+        public static implicit operator VectorStoreFileErrorCode(string value);
+        public static implicit operator VectorStoreFileErrorCode?(string value);
+        public static bool operator !=(VectorStoreFileErrorCode left, VectorStoreFileErrorCode right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public enum VectorStoreFileStatus {
+        Unknown = 0,
+        InProgress = 1,
+        Completed = 2,
+        Cancelled = 3,
+        Failed = 4
     }
     [Experimental("OPENAI001")]
     public readonly partial struct VectorStoreFileStatusFilter : IEquatable<VectorStoreFileStatusFilter> {

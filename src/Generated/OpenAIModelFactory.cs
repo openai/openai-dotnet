@@ -1033,9 +1033,9 @@ namespace OpenAI
             return new VectorStoreDeletionResult(vectorStoreId, deleted, @object, additionalBinaryDataProperties: null);
         }
 
-        public static VectorStoreBatchFileJob VectorStoreBatchFileJob(string batchId = default, DateTimeOffset createdAt = default, string vectorStoreId = default, VectorStoreBatchFileJobStatus status = default, VectorStoreFileCounts fileCounts = default, object @object = default)
+        public static VectorStoreFileBatch VectorStoreFileBatch(string batchId = default, DateTimeOffset createdAt = default, string vectorStoreId = default, VectorStoreFileBatchStatus status = default, VectorStoreFileCounts fileCounts = default, object @object = default)
         {
-            return new VectorStoreBatchFileJob(
+            return new VectorStoreFileBatch(
                 batchId,
                 createdAt,
                 vectorStoreId,
@@ -1045,11 +1045,11 @@ namespace OpenAI
                 additionalBinaryDataProperties: null);
         }
 
-        public static VectorStoreFileAssociation VectorStoreFileAssociation(string fileId = default, string @object = default, int size = default, DateTimeOffset createdAt = default, string vectorStoreId = default, VectorStoreFileAssociationStatus status = default, VectorStoreFileAssociationError lastError = default, FileChunkingStrategy chunkingStrategy = default, IDictionary<string, BinaryData> attributes = default)
+        public static VectorStoreFile VectorStoreFile(string fileId = default, string @object = default, int size = default, DateTimeOffset createdAt = default, string vectorStoreId = default, VectorStoreFileStatus status = default, VectorStoreFileError lastError = default, FileChunkingStrategy chunkingStrategy = default, IDictionary<string, BinaryData> attributes = default)
         {
             attributes ??= new ChangeTrackingDictionary<string, BinaryData>();
 
-            return new VectorStoreFileAssociation(
+            return new VectorStoreFile(
                 fileId,
                 @object,
                 size,
@@ -1062,9 +1062,9 @@ namespace OpenAI
                 additionalBinaryDataProperties: null);
         }
 
-        public static VectorStoreFileAssociationError VectorStoreFileAssociationError(VectorStoreFileAssociationErrorCode code = default, string message = default)
+        public static VectorStoreFileError VectorStoreFileError(VectorStoreFileErrorCode code = default, string message = default)
         {
-            return new VectorStoreFileAssociationError(code, message, additionalBinaryDataProperties: null);
+            return new VectorStoreFileError(code, message, additionalBinaryDataProperties: null);
         }
 
         public static FileFromStoreRemovalResult FileFromStoreRemovalResult(string fileId = default, bool removed = default, string @object = default)
@@ -1316,9 +1316,9 @@ namespace OpenAI
             return new VectorStoreCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
         }
 
-        public static VectorStoreFileAssociationCollectionOptions VectorStoreFileAssociationCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, VectorStoreFileAssociationCollectionOrder? order = default, VectorStoreFileStatusFilter? filter = default)
+        public static VectorStoreFileCollectionOptions VectorStoreFileCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, VectorStoreFileCollectionOrder? order = default, VectorStoreFileStatusFilter? filter = default)
         {
-            return new VectorStoreFileAssociationCollectionOptions(
+            return new VectorStoreFileCollectionOptions(
                 afterId,
                 beforeId,
                 pageSizeLimit,

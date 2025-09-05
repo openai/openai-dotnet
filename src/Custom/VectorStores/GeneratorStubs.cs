@@ -2,5 +2,5 @@ namespace OpenAI.VectorStores;
 
 /// <summary> The options to configure how <see cref="VectorStore"/> objects are retrieved and paginated. </summary>
 // Customization: fix namespace
-[CodeGenType("VectorStoreFileAssociationCollectionOptions")] public partial class VectorStoreFileAssociationCollectionOptions{ }
-[CodeGenType("VectorStoreFileAssociationCollectionOrder")] public partial struct VectorStoreFileAssociationCollectionOrder{ }
+[CodeGenType("VectorStoreFileCollectionOptions")] public partial class VectorStoreFileCollectionOptions{ }
+[CodeGenType("VectorStoreFileCollectionOrder")] public partial struct VectorStoreFileCollectionOrder{ }
