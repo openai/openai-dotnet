@@ -21,7 +21,7 @@ namespace OpenAI.Tests.VectorStores;
 [Category("Assistants")]
 public class VectorStoresTests : SyncAsyncTestBase
 {
-    private readonly List<VectorStoreBatchFileJob> _jobsToCancel = [];
+    private readonly List<VectorStoreFileBatch> _fileBatchToCancel = [];
     private readonly List<VectorStoreFile> _vectorStoreFilesToRemove = [];
     private readonly List<OpenAIFile> _filesToDelete = [];
     private readonly List<VectorStore> _vectorStoresToDelete = [];
@@ -423,12 +423,12 @@ public class VectorStoresTests : SyncAsyncTestBase
         // Create enough files to ensure we get multiple pages
         IReadOnlyList<OpenAIFile> testFiles = GetNewTestFiles(10);
 
-        VectorStoreBatchFileJob batchFileJob = client.AddFileBatchToVectorStore(vectorStore.Id, testFiles?.Select(file => file.Id));
+        VectorStoreFileBatch fileBatch = client.AddFileBatchToVectorStore(vectorStore.Id, testFiles?.Select(file => file.Id));
 
         Assert.Multiple(() =>
         {
-            Assert.That(batchFileJob.BatchId, Is.Not.Null);
-            Assert.That(batchFileJob.VectorStoreId, Is.EqualTo(vectorStore.Id));
+            Assert.That(fileBatch.BatchId, Is.Not.Null);
+            Assert.That(fileBatch.VectorStoreId, Is.EqualTo(vectorStore.Id));
         });
 
         await Task.Delay(TimeSpan.FromSeconds(1));
@@ -436,7 +436,7 @@ public class VectorStoresTests : SyncAsyncTestBase
         // Test basic pagination with PageSizeLimit
         var options = new VectorStoreFileCollectionOptions { PageSizeLimit = 3 };
         AsyncCollectionResult<VectorStoreFile> vectorStoreFiles = client.GetVectorStoreFilesInBatchAsync(
-            vectorStore.Id, batchFileJob.BatchId, options);
+            vectorStore.Id, fileBatch.BatchId, options);
 
         int totalItemsCount = 0;
         int pageCount = 0;
@@ -460,7 +460,7 @@ public class VectorStoresTests : SyncAsyncTestBase
 
         // Now test pagination by examining raw pages
         AsyncCollectionResult<VectorStoreFile> pagedVectorStoreFiles = client.GetVectorStoreFilesInBatchAsync(
-            vectorStore.Id, batchFileJob.BatchId, new VectorStoreFileCollectionOptions { PageSizeLimit = 3 });
+            vectorStore.Id, fileBatch.BatchId, new VectorStoreFileCollectionOptions { PageSizeLimit = 3 });
 
         IAsyncEnumerable<ClientResult> pages = pagedVectorStoreFiles.GetRawPagesAsync();
         IAsyncEnumerator<ClientResult> pageEnumerator = pages.GetAsyncEnumerator();
@@ -499,8 +499,8 @@ public class VectorStoresTests : SyncAsyncTestBase
         // Create files for testing
         IReadOnlyList<OpenAIFile> testFiles = GetNewTestFiles(8);
 
-        VectorStoreBatchFileJob batchFileJob = client.AddFileBatchToVectorStore(vectorStore.Id, testFiles?.Select(file => file.Id));
-        Validate(batchFileJob);
+        VectorStoreFileBatch fileBatch = client.AddFileBatchToVectorStore(vectorStore.Id, testFiles?.Select(file => file.Id));
+        Validate(fileBatch);
         await Task.Delay(TimeSpan.FromSeconds(1));
 
         // Test Order property - Ascending vs Descending
@@ -518,12 +518,12 @@ public class VectorStoresTests : SyncAsyncTestBase
         List<string> ascendingIds = new List<string>();
         List<string> descendingIds = new List<string>();
 
-        await foreach (VectorStoreFile vectorStoreFile in client.GetVectorStoreFilesInBatchAsync(vectorStore.Id, batchFileJob.BatchId, ascendingOptions))
+        await foreach (VectorStoreFile vectorStoreFile in client.GetVectorStoreFilesInBatchAsync(vectorStore.Id, fileBatch.BatchId, ascendingOptions))
         {
             ascendingIds.Add(vectorStoreFile.FileId);
         }
 
-        await foreach (VectorStoreFile vectorStoreFile in client.GetVectorStoreFilesInBatchAsync(vectorStore.Id, batchFileJob.BatchId, descendingOptions))
+        await foreach (VectorStoreFile vectorStoreFile in client.GetVectorStoreFilesInBatchAsync(vectorStore.Id, fileBatch.BatchId, descendingOptions))
         {
             descendingIds.Add(vectorStoreFile.FileId);
         }
@@ -539,7 +539,7 @@ public class VectorStoresTests : SyncAsyncTestBase
         };
 
         int completedCount = 0;
-        await foreach (VectorStoreFile vectorStoreFile in client.GetVectorStoreFilesInBatchAsync(vectorStore.Id, batchFileJob.BatchId, filterOptions))
+        await foreach (VectorStoreFile vectorStoreFile in client.GetVectorStoreFilesInBatchAsync(vectorStore.Id, fileBatch.BatchId, filterOptions))
         {
             completedCount++;
             Assert.That(vectorStoreFile.Status, Is.EqualTo(VectorStoreFileStatus.Completed));
@@ -558,7 +558,7 @@ public class VectorStoresTests : SyncAsyncTestBase
             };
 
             List<string> afterIds = new List<string>();
-            await foreach (VectorStoreFile vectorStoreFile in client.GetVectorStoreFilesInBatchAsync(vectorStore.Id, batchFileJob.BatchId, afterOptions))
+            await foreach (VectorStoreFile vectorStoreFile in client.GetVectorStoreFilesInBatchAsync(vectorStore.Id, fileBatch.BatchId, afterOptions))
             {
                 afterIds.Add(vectorStoreFile.FileId);
             }
@@ -580,7 +580,7 @@ public class VectorStoresTests : SyncAsyncTestBase
             };
 
             List<string> beforeIds = new List<string>();
-            await foreach (VectorStoreFile vectorStoreFile in client.GetVectorStoreFilesInBatchAsync(vectorStore.Id, batchFileJob.BatchId, beforeOptions))
+            await foreach (VectorStoreFile vectorStoreFile in client.GetVectorStoreFilesInBatchAsync(vectorStore.Id, fileBatch.BatchId, beforeOptions))
             {
                 beforeIds.Add(vectorStoreFile.FileId);
             }
@@ -603,13 +603,13 @@ public class VectorStoresTests : SyncAsyncTestBase
         
         IReadOnlyList<OpenAIFile> testFiles = GetNewTestFiles(6);
 
-        VectorStoreBatchFileJob batchFileJob = client.AddFileBatchToVectorStore(vectorStore.Id, testFiles?.Select(file => file.Id));
-        Validate(batchFileJob);
+        VectorStoreFileBatch fileBatch = client.AddFileBatchToVectorStore(vectorStore.Id, testFiles?.Select(file => file.Id));
+        Validate(fileBatch);
         await Task.Delay(TimeSpan.FromSeconds(1));
 
         // We added 6 files and will get pages with 2 items, so expect three pages in the collection.
         AsyncCollectionResult<VectorStoreFile> vectorStoreFiles = client.GetVectorStoreFilesInBatchAsync(
-            vectorStore.Id, batchFileJob.BatchId, new VectorStoreFileCollectionOptions { PageSizeLimit = 2 });
+            vectorStore.Id, fileBatch.BatchId, new VectorStoreFileCollectionOptions { PageSizeLimit = 2 });
 
         IAsyncEnumerable<ClientResult> pages = vectorStoreFiles.GetRawPagesAsync();
         IAsyncEnumerator<ClientResult> pageEnumerator = pages.GetAsyncEnumerator();
@@ -622,7 +622,7 @@ public class VectorStoresTests : SyncAsyncTestBase
         ContinuationToken rehydrationToken = ContinuationToken.FromBytes(rehydrationBytes);
 
         AsyncCollectionResult<VectorStoreFile> rehydratedFiles = client.GetVectorStoreFilesInBatchAsync(
-            vectorStore.Id, batchFileJob.BatchId, new VectorStoreFileCollectionOptions { AfterId = rehydrationToken.ToBytes().ToString(), PageSizeLimit = 2 });
+            vectorStore.Id, fileBatch.BatchId, new VectorStoreFileCollectionOptions { AfterId = rehydrationToken.ToBytes().ToString(), PageSizeLimit = 2 });
 
         IAsyncEnumerable<ClientResult> rehydratedPages = rehydratedFiles.GetRawPagesAsync();
         IAsyncEnumerator<ClientResult> rehydratedPageEnumerator = rehydratedPages.GetAsyncEnumerator();
@@ -674,21 +674,21 @@ public class VectorStoresTests : SyncAsyncTestBase
 
         IReadOnlyList<OpenAIFile> testFiles = GetNewTestFiles(5);
 
-        VectorStoreBatchFileJob batchFileJob = client.AddFileBatchToVectorStore(vectorStore.Id, testFiles?.Select(file => file.Id));
-        Validate(batchFileJob);
+        VectorStoreFileBatch fileBatch = client.AddFileBatchToVectorStore(vectorStore.Id, testFiles?.Select(file => file.Id));
+        Validate(fileBatch);
 
         Assert.Multiple(() =>
         {
-            Assert.That(batchFileJob.BatchId, Is.Not.Null);
-            Assert.That(batchFileJob.VectorStoreId, Is.EqualTo(vectorStore.Id));
-            Assert.That(batchFileJob.Status, Is.EqualTo(VectorStoreBatchFileJobStatus.InProgress));
+            Assert.That(fileBatch.BatchId, Is.Not.Null);
+            Assert.That(fileBatch.VectorStoreId, Is.EqualTo(vectorStore.Id));
+            Assert.That(fileBatch.Status, Is.EqualTo(VectorStoreFileBatchStatus.InProgress));
         });
 
         await Task.Delay(TimeSpan.FromSeconds(1));
 
         if (IsAsync)
         {
-            await foreach (VectorStoreFile vectorStoreFile in client.GetVectorStoreFilesAsync(batchFileJob.VectorStoreId))
+            await foreach (VectorStoreFile vectorStoreFile in client.GetVectorStoreFilesAsync(fileBatch.VectorStoreId))
             {
                 Assert.Multiple(() =>
                 {
@@ -703,7 +703,7 @@ public class VectorStoresTests : SyncAsyncTestBase
         }
         else
         {
-            foreach (VectorStoreFile vectorStoreFile in client.GetVectorStoreFiles(batchFileJob.VectorStoreId))
+            foreach (VectorStoreFile vectorStoreFile in client.GetVectorStoreFiles(fileBatch.VectorStoreId))
             {
                 Assert.Multiple(() =>
                 {
@@ -890,9 +890,9 @@ public class VectorStoresTests : SyncAsyncTestBase
             ErrorOptions = ClientErrorBehaviors.NoThrow,
         };
 
-        foreach (VectorStoreBatchFileJob job in _jobsToCancel)
+        foreach (VectorStoreFileBatch fileBatch in _fileBatchToCancel)
         {
-            Console.WriteLine($"Cleanup: {job.BatchId} => {vectorStoreClient.CancelBatchFileJob(job.VectorStoreId, job.BatchId, requestOptions)?.GetRawResponse()?.Status}");
+            Console.WriteLine($"Cleanup: {fileBatch.BatchId} => {vectorStoreClient.CancelVectorStoreFileBatch(fileBatch.VectorStoreId, fileBatch.BatchId, requestOptions)?.GetRawResponse()?.Status}");
         }
         foreach (VectorStoreFile vectorStoreFile in _vectorStoreFilesToRemove)
         {
@@ -920,10 +920,10 @@ public class VectorStoresTests : SyncAsyncTestBase
     /// <exception cref="NotImplementedException"> The provided instance type isn't supported. </exception>
     private void Validate<T>(T target)
     {
-        if (target is VectorStoreBatchFileJob job)
+        if (target is VectorStoreFileBatch job)
         {
             Assert.That(job.BatchId, Is.Not.Null);
-            _jobsToCancel.Add(job);
+            _fileBatchToCancel.Add(job);
         }
         else if (target is VectorStoreFile vectorStoreFile)
         {

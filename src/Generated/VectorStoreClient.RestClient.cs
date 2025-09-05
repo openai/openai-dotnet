@@ -128,7 +128,7 @@ namespace OpenAI.VectorStores
             return message;
         }
 
-        internal virtual PipelineMessage CreateCancelBatchFileJobRequest(string vectorStoreId, string batchId, RequestOptions options)
+        internal virtual PipelineMessage CreateCancelVectorStoreFileBatchRequest(string vectorStoreId, string batchId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);

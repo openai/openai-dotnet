@@ -1005,9 +1005,9 @@ namespace OpenAI
             return new VectorStoreDeletionResult(vectorStoreId, deleted, @object, additionalBinaryDataProperties: null);
         }
 
-        public static VectorStoreBatchFileJob VectorStoreBatchFileJob(string batchId = default, DateTimeOffset createdAt = default, string vectorStoreId = default, VectorStoreBatchFileJobStatus status = default, VectorStoreFileCounts fileCounts = default, object @object = default)
+        public static VectorStoreFileBatch VectorStoreFileBatch(string batchId = default, DateTimeOffset createdAt = default, string vectorStoreId = default, VectorStoreFileBatchStatus status = default, VectorStoreFileCounts fileCounts = default, object @object = default)
         {
-            return new VectorStoreBatchFileJob(
+            return new VectorStoreFileBatch(
                 batchId,
                 createdAt,
                 vectorStoreId,
