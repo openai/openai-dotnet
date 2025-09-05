@@ -18,7 +18,7 @@ namespace OpenAI.VectorStores;
 [CodeGenType("CreateVectorStoreFileRequest")] internal partial class InternalCreateVectorStoreFileRequest { }
 [CodeGenType("DeleteVectorStoreFileResponseObject")] internal readonly partial struct InternalDeleteVectorStoreFileResponseObject { }
 [CodeGenType("DeleteVectorStoreResponseObject")] internal readonly partial struct InternalDeleteVectorStoreResponseObject { }
-[CodeGenType("ListVectorStoreFilesResponse")] internal partial class InternalListVectorStoreFilesResponse : IInternalListResponse<VectorStoreFileAssociation> { }
+[CodeGenType("ListVectorStoreFilesResponse")] internal partial class InternalListVectorStoreFilesResponse : IInternalListResponse<VectorStoreFile> { }
 [CodeGenType("ListVectorStoreFilesResponseObject")] internal readonly partial struct InternalListVectorStoreFilesResponseObject { }
 [CodeGenType("ListVectorStoresResponse")] internal partial class InternalListVectorStoresResponse : IInternalListResponse<VectorStore> { }
 [CodeGenType("ListVectorStoresResponseObject")] internal readonly partial struct InternalListVectorStoresResponseObject { }

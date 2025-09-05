@@ -11,9 +11,7 @@ using Azure.ClientGenerator.Core;
 
 @@clientName(VectorStores.deleteVectorStoreFile, "RemoveFileFromStore");
 @@clientName(VectorStores.cancelVectorStoreFileBatch, "CancelBatchFileJob");
-@@clientName(VectorStores.getVectorStoreFile, "GetFileAssociation");
 @@clientName(VectorStores.listVectorStores, "GetVectorStores");
-@@clientName(VectorStores.listVectorStoreFiles, "GetFileAssociations");
-@@clientName(VectorStores.listFilesInVectorStoreBatch, "GetFileAssociationsInBatch");
+@@clientName(VectorStores.listFilesInVectorStoreBatch, "GetVectorStoreFilesInBatch");
 @@clientName(VectorStores.createVectorStoreFile, "AddFileToVectorStore");
 @@clientName(VectorStores.createVectorStoreFileBatch, "AddFileBatchToVectorStore");

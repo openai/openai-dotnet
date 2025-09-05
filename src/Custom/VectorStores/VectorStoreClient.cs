@@ -21,8 +21,8 @@ namespace OpenAI.VectorStores;
 [CodeGenSuppress("AddFileBatchToVectorStoreAsync", typeof(string), typeof(InternalCreateVectorStoreFileBatchRequest), typeof(CancellationToken))]
 [CodeGenSuppress("RemoveFileFromStore", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("RemoveFileFromStoreAsync", typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("GetFileAssociation", typeof(string), typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("GetFileAssociationAsync", typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("GetVectorStoreFile", typeof(string), typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("GetVectorStoreFileAsync", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("GetVectorStoreFileBatch", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("GetVectorStoreFileBatchAsync", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("RetrieveVectorStoreFileContent", typeof(string), typeof(string), typeof(CancellationToken))]
@@ -234,16 +234,16 @@ public partial class VectorStoreClient
     /// <param name="vectorStoreId"> The ID of the vector store to associate the file with. </param>
     /// <param name="fileId"> The ID of the file to associate with the vector store. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A <see cref="VectorStoreFileAssociation"/> instance. </returns>
+    /// <returns> A <see cref="VectorStoreFile"/> instance. </returns>
     /// <exception cref="ArgumentNullException"> <paramref name="vectorStoreId"/> or <paramref name="fileId"/> is null. </exception>
-    public virtual async Task<ClientResult<VectorStoreFileAssociation>> AddFileToVectorStoreAsync(string vectorStoreId, string fileId, CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<VectorStoreFile>> AddFileToVectorStoreAsync(string vectorStoreId, string fileId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
         InternalCreateVectorStoreFileRequest internalRequest = new(fileId);
         ClientResult result = await AddFileToVectorStoreAsync(vectorStoreId, internalRequest.ToBinaryContent(), cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
-        return ClientResult.FromValue((VectorStoreFileAssociation)result, result.GetRawResponse());
+        return ClientResult.FromValue((VectorStoreFile)result, result.GetRawResponse());
     }
 
     /// <summary>
@@ -252,47 +252,47 @@ public partial class VectorStoreClient
     /// <param name="vectorStoreId"> The ID of the vector store to associate the file with. </param>
     /// <param name="fileId"> The ID of the file to associate with the vector store. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A <see cref="VectorStoreFileAssociation"/> instance. </returns>
+    /// <returns> A <see cref="VectorStoreFile"/> instance. </returns>
     /// <exception cref="ArgumentNullException"> <paramref name="vectorStoreId"/> or <paramref name="fileId"/> is null. </exception>
-    public virtual ClientResult<VectorStoreFileAssociation> AddFileToVectorStore(string vectorStoreId, string fileId, CancellationToken cancellationToken = default)
+    public virtual ClientResult<VectorStoreFile> AddFileToVectorStore(string vectorStoreId, string fileId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
         InternalCreateVectorStoreFileRequest internalRequest = new(fileId);
         ClientResult result = AddFileToVectorStore(vectorStoreId, internalRequest.ToBinaryContent(), cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
-        return ClientResult.FromValue((VectorStoreFileAssociation)result, result.GetRawResponse());
+        return ClientResult.FromValue((VectorStoreFile)result, result.GetRawResponse());
     }
 
-    public virtual ClientResult<VectorStoreFileAssociation> UpdateVectorStoreFileAttributes(string vectorStoreId, string fileId, IDictionary<string, BinaryData> attributes, CancellationToken cancellationToken = default)
+    public virtual ClientResult<VectorStoreFile> UpdateVectorStoreFileAttributes(string vectorStoreId, string fileId, IDictionary<string, BinaryData> attributes, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
         InternalUpdateVectorStoreFileAttributesRequest spreadModel = new InternalUpdateVectorStoreFileAttributesRequest(attributes, null);
         ClientResult result = UpdateVectorStoreFileAttributes(vectorStoreId, fileId, spreadModel, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
-        return ClientResult.FromValue((VectorStoreFileAssociation)result, result.GetRawResponse());
+        return ClientResult.FromValue((VectorStoreFile)result, result.GetRawResponse());
     }
 
-    public virtual async Task<ClientResult<VectorStoreFileAssociation>> UpdateVectorStoreFileAttributesAsync(string vectorStoreId, string fileId, IDictionary<string, BinaryData> attributes, CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<VectorStoreFile>> UpdateVectorStoreFileAttributesAsync(string vectorStoreId, string fileId, IDictionary<string, BinaryData> attributes, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
         InternalUpdateVectorStoreFileAttributesRequest spreadModel = new InternalUpdateVectorStoreFileAttributesRequest(attributes, null);
         ClientResult result = await UpdateVectorStoreFileAttributesAsync(vectorStoreId, fileId, spreadModel, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
-        return ClientResult.FromValue((VectorStoreFileAssociation)result, result.GetRawResponse());
+        return ClientResult.FromValue((VectorStoreFile)result, result.GetRawResponse());
     }
 
     /// <summary>
-    /// Gets a <see cref="VectorStoreFileAssociation"/> instance representing an existing association between a known
+    /// Gets a <see cref="VectorStoreFile"/> instance representing an existing association between a known
     /// vector store ID and file ID.
     /// </summary>
     /// <param name="vectorStoreId"> The ID of the vector store associated with the file. </param>
     /// <param name="fileId"> The ID of the file associated with the vector store. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A <see cref="VectorStoreFileAssociation"/> instance. </returns>
-    public virtual async Task<ClientResult<VectorStoreFileAssociation>> GetFileAssociationAsync(
+    /// <returns> A <see cref="VectorStoreFile"/> instance. </returns>
+    public virtual async Task<ClientResult<VectorStoreFile>> GetVectorStoreFileAsync(
         string vectorStoreId,
         string fileId,
         CancellationToken cancellationToken = default)
@@ -300,21 +300,21 @@ public partial class VectorStoreClient
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
-        ClientResult result = await GetFileAssociationAsync(vectorStoreId, fileId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        ClientResult result = await GetVectorStoreFileAsync(vectorStoreId, fileId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         PipelineResponse response = result?.GetRawResponse();
-        VectorStoreFileAssociation value = (VectorStoreFileAssociation)result;
+        VectorStoreFile value = (VectorStoreFile)result;
         return ClientResult.FromValue(value, response);
     }
 
     /// <summary>
-    /// Gets a <see cref="VectorStoreFileAssociation"/> instance representing an existing association between a known
+    /// Gets a <see cref="VectorStoreFile"/> instance representing an existing association between a known
     /// vector store ID and file ID.
     /// </summary>
     /// <param name="vectorStoreId"> The ID of the vector store associated with the file. </param>
     /// <param name="fileId"> The ID of the file associated with the vector store. </param>
     /// <param name="cancellationToken">A token that can be used to cancel this method call.</param>
-    /// <returns> A <see cref="VectorStoreFileAssociation"/> instance. </returns>
-    public virtual ClientResult<VectorStoreFileAssociation> GetFileAssociation(
+    /// <returns> A <see cref="VectorStoreFile"/> instance. </returns>
+    public virtual ClientResult<VectorStoreFile> GetVectorStoreFile(
         string vectorStoreId,
         string fileId,
         CancellationToken cancellationToken = default)
@@ -322,9 +322,9 @@ public partial class VectorStoreClient
         Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
         Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
-        ClientResult result = GetFileAssociation(vectorStoreId, fileId, cancellationToken.ToRequestOptions());
+        ClientResult result = GetVectorStoreFile(vectorStoreId, fileId, cancellationToken.ToRequestOptions());
         PipelineResponse response = result?.GetRawResponse();
-        VectorStoreFileAssociation value = (VectorStoreFileAssociation)result;
+        VectorStoreFile value = (VectorStoreFile)result;
         return ClientResult.FromValue(value, response);
     }
 

@@ -22,7 +22,7 @@ namespace OpenAI.Tests.VectorStores;
 public class VectorStoresTests : SyncAsyncTestBase
 {
     private readonly List<VectorStoreBatchFileJob> _jobsToCancel = [];
-    private readonly List<VectorStoreFileAssociation> _associationsToRemove = [];
+    private readonly List<VectorStoreFile> _vectorStoreFilesToRemove = [];
     private readonly List<OpenAIFile> _filesToDelete = [];
     private readonly List<VectorStore> _vectorStoresToDelete = [];
 
@@ -210,17 +210,17 @@ public class VectorStoresTests : SyncAsyncTestBase
 
         foreach (OpenAIFile file in files)
         {
-            VectorStoreFileAssociation association = IsAsync
+            VectorStoreFile vectorStoreFile = IsAsync
                 ? await client.AddFileToVectorStoreAsync(vectorStore.Id, file.Id)
                 : client.AddFileToVectorStore(vectorStore.Id, file.Id);
-            Validate(association);
+            Validate(vectorStoreFile);
             Assert.Multiple(() =>
             {
-                Assert.That(association.FileId, Is.EqualTo(file.Id));
-                Assert.That(association.VectorStoreId, Is.EqualTo(vectorStore.Id));
-                Assert.That(association.LastError, Is.Null);
-                Assert.That(association.CreatedAt, Is.GreaterThan(s_2024));
-                Assert.That(association.Status, Is.EqualTo(VectorStoreFileAssociationStatus.InProgress));
+                Assert.That(vectorStoreFile.FileId, Is.EqualTo(file.Id));
+                Assert.That(vectorStoreFile.VectorStoreId, Is.EqualTo(vectorStore.Id));
+                Assert.That(vectorStoreFile.LastError, Is.Null);
+                Assert.That(vectorStoreFile.CreatedAt, Is.GreaterThan(s_2024));
+                Assert.That(vectorStoreFile.Status, Is.EqualTo(VectorStoreFileStatus.InProgress));
             });
         }
 
@@ -229,7 +229,7 @@ public class VectorStoresTests : SyncAsyncTestBase
             : client.RemoveFileFromStore(vectorStore.Id, files[0].Id);
         Assert.That(removalResult.FileId, Is.EqualTo(files[0].Id));
         Assert.True(removalResult.Removed);
-        _associationsToRemove.RemoveAt(0);
+        _vectorStoreFilesToRemove.RemoveAt(0);
 
         // Errata: removals aren't immediately reflected when requesting the list
         Thread.Sleep(2000);
@@ -238,27 +238,27 @@ public class VectorStoresTests : SyncAsyncTestBase
 
         if (IsAsync)
         {
-            await foreach (VectorStoreFileAssociation association in client.GetFileAssociationsAsync(vectorStore.Id))
+            await foreach (VectorStoreFile vectorStoreFile in client.GetVectorStoreFilesAsync(vectorStore.Id))
             {
                 count++;
-                Assert.That(association.FileId, Is.Not.EqualTo(files[0].Id));
-                Assert.That(association.VectorStoreId, Is.EqualTo(vectorStore.Id));
+                Assert.That(vectorStoreFile.FileId, Is.Not.EqualTo(files[0].Id));
+                Assert.That(vectorStoreFile.VectorStoreId, Is.EqualTo(vectorStore.Id));
             }
         }
         else
         {
-            foreach (VectorStoreFileAssociation association in client.GetFileAssociations(vectorStore.Id))
+            foreach (VectorStoreFile vectorStoreFile in client.GetVectorStoreFiles(vectorStore.Id))
             {
                 count++;
-                Assert.That(association.FileId, Is.Not.EqualTo(files[0].Id));
-                Assert.That(association.VectorStoreId, Is.EqualTo(vectorStore.Id));
+                Assert.That(vectorStoreFile.FileId, Is.Not.EqualTo(files[0].Id));
+                Assert.That(vectorStoreFile.VectorStoreId, Is.EqualTo(vectorStore.Id));
             }
         }
         Assert.That(count, Is.EqualTo(2));
     }
 
     [Test]
-    public async Task Pagination_CanRehydrateFileAssociationCollectionAsync()
+    public async Task Pagination_CanRehydrateVectorStoreFileCollectionAsync()
     {
         AssertAsyncOnly();
 
@@ -270,22 +270,22 @@ public class VectorStoresTests : SyncAsyncTestBase
 
         foreach (OpenAIFile file in files)
         {
-            VectorStoreFileAssociation association = await client.AddFileToVectorStoreAsync(vectorStore.Id, file.Id);
-            Validate(association);
+            VectorStoreFile vectorStoreFile = await client.AddFileToVectorStoreAsync(vectorStore.Id, file.Id);
+            Validate(vectorStoreFile);
             Assert.Multiple(() =>
             {
-                Assert.That(association.FileId, Is.EqualTo(file.Id));
-                Assert.That(association.VectorStoreId, Is.EqualTo(vectorStore.Id));
-                Assert.That(association.LastError, Is.Null);
-                Assert.That(association.CreatedAt, Is.GreaterThan(s_2024));
-                Assert.That(association.Status, Is.EqualTo(VectorStoreFileAssociationStatus.InProgress));
+                Assert.That(vectorStoreFile.FileId, Is.EqualTo(file.Id));
+                Assert.That(vectorStoreFile.VectorStoreId, Is.EqualTo(vectorStore.Id));
+                Assert.That(vectorStoreFile.LastError, Is.Null);
+                Assert.That(vectorStoreFile.CreatedAt, Is.GreaterThan(s_2024));
+                Assert.That(vectorStoreFile.Status, Is.EqualTo(VectorStoreFileStatus.InProgress));
             });
         }
 
         FileFromStoreRemovalResult removalResult = await client.RemoveFileFromStoreAsync(vectorStore.Id, files[0].Id);
         Assert.That(removalResult.FileId, Is.EqualTo(files[0].Id));
         Assert.True(removalResult.Removed);
-        _associationsToRemove.RemoveAt(0);
+        _vectorStoreFilesToRemove.RemoveAt(0);
 
         // Errata: removals aren't immediately reflected when requesting the list
         Thread.Sleep(2000);
@@ -294,19 +294,19 @@ public class VectorStoresTests : SyncAsyncTestBase
 
         // Use enumerators instead of enumerables to faciliate advancing the collections
         // at the same time.
-        AsyncCollectionResult<VectorStoreFileAssociation> fileAssociations = client.GetFileAssociationsAsync(vectorStore.Id, new VectorStoreFileAssociationCollectionOptions() { PageSizeLimit = 2 });
-        IAsyncEnumerable<ClientResult> pages = fileAssociations.GetRawPagesAsync();
+        AsyncCollectionResult<VectorStoreFile> vectorStoreFiles = client.GetVectorStoreFilesAsync(vectorStore.Id, new VectorStoreFileCollectionOptions() { PageSizeLimit = 2 });
+        IAsyncEnumerable<ClientResult> pages = vectorStoreFiles.GetRawPagesAsync();
         IAsyncEnumerator<ClientResult> pageEnumerator = pages.GetAsyncEnumerator();
         await pageEnumerator.MoveNextAsync();
         ClientResult firstPage = pageEnumerator.Current;
-        ContinuationToken nextPageToken = fileAssociations.GetContinuationToken(firstPage);
+        ContinuationToken nextPageToken = vectorStoreFiles.GetContinuationToken(firstPage);
 
         // Simulate rehydration of the collection
         BinaryData rehydrationBytes = nextPageToken.ToBytes();
         ContinuationToken rehydrationToken = ContinuationToken.FromBytes(rehydrationBytes);
 
-        AsyncCollectionResult<VectorStoreFileAssociation> rehydratedFileAssociations = client.GetFileAssociationsAsync(vectorStore.Id, new VectorStoreFileAssociationCollectionOptions { AfterId = rehydrationToken.ToBytes().ToString(), PageSizeLimit = 2 });
-        IAsyncEnumerable<ClientResult> rehydratedPages = rehydratedFileAssociations.GetRawPagesAsync();
+        AsyncCollectionResult<VectorStoreFile> rehydratedFile = client.GetVectorStoreFilesAsync(vectorStore.Id, new VectorStoreFileCollectionOptions { AfterId = rehydrationToken.ToBytes().ToString(), PageSizeLimit = 2 });
+        IAsyncEnumerable<ClientResult> rehydratedPages = rehydratedFile.GetRawPagesAsync();
         IAsyncEnumerator<ClientResult> rehydratedPageEnumerator = rehydratedPages.GetAsyncEnumerator();
 
         int pageCount = 0;
@@ -316,8 +316,8 @@ public class VectorStoresTests : SyncAsyncTestBase
             ClientResult page = pageEnumerator.Current;
             ClientResult rehydratedPage = rehydratedPageEnumerator.Current;
 
-            List<VectorStoreFileAssociation> itemsInPage = GetFileAssociationsFromPage(page).ToList();
-            List<VectorStoreFileAssociation> itemsInRehydratedPage = GetFileAssociationsFromPage(rehydratedPage).ToList();
+            List<VectorStoreFile> itemsInPage = GetVectorStoreFilesFromPage(page).ToList();
+            List<VectorStoreFile> itemsInRehydratedPage = GetVectorStoreFilesFromPage(rehydratedPage).ToList();
 
             Assert.AreEqual(itemsInPage.Count, itemsInRehydratedPage.Count);
 
@@ -338,7 +338,7 @@ public class VectorStoresTests : SyncAsyncTestBase
     }
 
     [Test]
-    public void Pagination_CanRehydrateFileAssociationCollection()
+    public void Pagination_CanRehydrateVectorStoreFileCollection()
     {
         AssertSyncOnly();
 
@@ -350,39 +350,39 @@ public class VectorStoresTests : SyncAsyncTestBase
 
         foreach (OpenAIFile file in files)
         {
-            VectorStoreFileAssociation association = client.AddFileToVectorStore(vectorStore.Id, file.Id);
-            Validate(association);
+            VectorStoreFile vectorStoreFile = client.AddFileToVectorStore(vectorStore.Id, file.Id);
+            Validate(vectorStoreFile);
             Assert.Multiple(() =>
             {
-                Assert.That(association.FileId, Is.EqualTo(file.Id));
-                Assert.That(association.VectorStoreId, Is.EqualTo(vectorStore.Id));
-                Assert.That(association.LastError, Is.Null);
-                Assert.That(association.CreatedAt, Is.GreaterThan(s_2024));
-                Assert.That(association.Status, Is.EqualTo(VectorStoreFileAssociationStatus.InProgress));
+                Assert.That(vectorStoreFile.FileId, Is.EqualTo(file.Id));
+                Assert.That(vectorStoreFile.VectorStoreId, Is.EqualTo(vectorStore.Id));
+                Assert.That(vectorStoreFile.LastError, Is.Null);
+                Assert.That(vectorStoreFile.CreatedAt, Is.GreaterThan(s_2024));
+                Assert.That(vectorStoreFile.Status, Is.EqualTo(VectorStoreFileStatus.InProgress));
             });
         }
 
         FileFromStoreRemovalResult removalResult = client.RemoveFileFromStore(vectorStore.Id, files[0].Id);
         Assert.That(removalResult.FileId, Is.EqualTo(files[0].Id));
         Assert.True(removalResult.Removed);
-        _associationsToRemove.RemoveAt(0);
+        _vectorStoreFilesToRemove.RemoveAt(0);
 
         // Errata: removals aren't immediately reflected when requesting the list
         Thread.Sleep(2000);
 
-        CollectionResult<VectorStoreFileAssociation> fileAssociations = client.GetFileAssociations(vectorStore.Id, new VectorStoreFileAssociationCollectionOptions() { PageSizeLimit = 2 });
-        IEnumerable<ClientResult> pages = fileAssociations.GetRawPages();
+        CollectionResult<VectorStoreFile> vectorStoreFiles = client.GetVectorStoreFiles(vectorStore.Id, new VectorStoreFileCollectionOptions() { PageSizeLimit = 2 });
+        IEnumerable<ClientResult> pages = vectorStoreFiles.GetRawPages();
         IEnumerator<ClientResult> pageEnumerator = pages.GetEnumerator();
         pageEnumerator.MoveNext();
         ClientResult firstPage = pageEnumerator.Current;
-        ContinuationToken nextPageToken = fileAssociations.GetContinuationToken(firstPage);
+        ContinuationToken nextPageToken = vectorStoreFiles.GetContinuationToken(firstPage);
 
         // Simulate rehydration of the collection
         BinaryData rehydrationBytes = nextPageToken.ToBytes();
         ContinuationToken rehydrationToken = ContinuationToken.FromBytes(rehydrationBytes);
 
-        CollectionResult<VectorStoreFileAssociation> rehydratedFileAssociations = client.GetFileAssociations(vectorStore.Id, new VectorStoreFileAssociationCollectionOptions { AfterId = rehydrationToken.ToBytes().ToString(), PageSizeLimit = 2 });
-        IEnumerable<ClientResult> rehydratedPages = rehydratedFileAssociations.GetRawPages();
+        CollectionResult<VectorStoreFile> rehydratedVectorStoreFiles = client.GetVectorStoreFiles(vectorStore.Id, new VectorStoreFileCollectionOptions { AfterId = rehydrationToken.ToBytes().ToString(), PageSizeLimit = 2 });
+        IEnumerable<ClientResult> rehydratedPages = rehydratedVectorStoreFiles.GetRawPages();
         IEnumerator<ClientResult> rehydratedPageEnumerator = rehydratedPages.GetEnumerator();
 
         int pageCount = 0;
@@ -392,8 +392,8 @@ public class VectorStoresTests : SyncAsyncTestBase
             ClientResult page = pageEnumerator.Current;
             ClientResult rehydratedPage = rehydratedPageEnumerator.Current;
 
-            List<VectorStoreFileAssociation> itemsInPage = GetFileAssociationsFromPage(page).ToList();
-            List<VectorStoreFileAssociation> itemsInRehydratedPage = GetFileAssociationsFromPage(rehydratedPage).ToList();
+            List<VectorStoreFile> itemsInPage = GetVectorStoreFilesFromPage(page).ToList();
+            List<VectorStoreFile> itemsInRehydratedPage = GetVectorStoreFilesFromPage(rehydratedPage).ToList();
 
             Assert.AreEqual(itemsInPage.Count, itemsInRehydratedPage.Count);
 
@@ -412,7 +412,7 @@ public class VectorStoresTests : SyncAsyncTestBase
     }
 
     [Test]
-    public async Task CanPaginateGetFileAssociationsInBatchAsync()
+    public async Task CanPaginateGetVectorStoreFilesInBatchAsync()
     {
         AssertAsyncOnly();
 
@@ -434,23 +434,23 @@ public class VectorStoresTests : SyncAsyncTestBase
         await Task.Delay(TimeSpan.FromSeconds(1));
 
         // Test basic pagination with PageSizeLimit
-        var options = new VectorStoreFileAssociationCollectionOptions { PageSizeLimit = 3 };
-        AsyncCollectionResult<VectorStoreFileAssociation> associations = client.GetFileAssociationsInBatchAsync(
+        var options = new VectorStoreFileCollectionOptions { PageSizeLimit = 3 };
+        AsyncCollectionResult<VectorStoreFile> vectorStoreFiles = client.GetVectorStoreFilesInBatchAsync(
             vectorStore.Id, batchFileJob.BatchId, options);
 
         int totalItemsCount = 0;
         int pageCount = 0;
         List<string> seenFileIds = new List<string>();
 
-        await foreach (VectorStoreFileAssociation association in associations)
+        await foreach (VectorStoreFile vectorStoreFile in vectorStoreFiles)
         {
             totalItemsCount++;
-            seenFileIds.Add(association.FileId);
+            seenFileIds.Add(vectorStoreFile.FileId);
 
             Assert.Multiple(() =>
             {
-                Assert.That(association.FileId, Is.Not.Null);
-                Assert.That(association.VectorStoreId, Is.EqualTo(vectorStore.Id));
+                Assert.That(vectorStoreFile.FileId, Is.Not.Null);
+                Assert.That(vectorStoreFile.VectorStoreId, Is.EqualTo(vectorStore.Id));
             });
         }
 
@@ -459,10 +459,10 @@ public class VectorStoresTests : SyncAsyncTestBase
         Assert.That(seenFileIds.Distinct().Count(), Is.EqualTo(10));
 
         // Now test pagination by examining raw pages
-        AsyncCollectionResult<VectorStoreFileAssociation> pagedAssociations = client.GetFileAssociationsInBatchAsync(
-            vectorStore.Id, batchFileJob.BatchId, new VectorStoreFileAssociationCollectionOptions { PageSizeLimit = 3 });
+        AsyncCollectionResult<VectorStoreFile> pagedVectorStoreFiles = client.GetVectorStoreFilesInBatchAsync(
+            vectorStore.Id, batchFileJob.BatchId, new VectorStoreFileCollectionOptions { PageSizeLimit = 3 });
 
-        IAsyncEnumerable<ClientResult> pages = pagedAssociations.GetRawPagesAsync();
+        IAsyncEnumerable<ClientResult> pages = pagedVectorStoreFiles.GetRawPagesAsync();
         IAsyncEnumerator<ClientResult> pageEnumerator = pages.GetAsyncEnumerator();
 
         pageCount = 0;
@@ -473,7 +473,7 @@ public class VectorStoresTests : SyncAsyncTestBase
             ClientResult page = pageEnumerator.Current;
             pageCount++;
 
-            IEnumerable<VectorStoreFileAssociation> itemsInPage = GetFileAssociationsFromPage(page);
+            IEnumerable<VectorStoreFile> itemsInPage = GetVectorStoreFilesFromPage(page);
             int pageItemCount = itemsInPage.Count();
             itemsInPages += pageItemCount;
 
@@ -488,7 +488,7 @@ public class VectorStoresTests : SyncAsyncTestBase
     }
 
     [Test]
-    public async Task CanTestGetFileAssociationsInBatchAsyncCollectionOptions()
+    public async Task CanTestGetVectorStoreFilesInBatchAsyncCollectionOptions()
     {
         AssertAsyncOnly();
 
@@ -504,28 +504,28 @@ public class VectorStoresTests : SyncAsyncTestBase
         await Task.Delay(TimeSpan.FromSeconds(1));
 
         // Test Order property - Ascending vs Descending
-        var ascendingOptions = new VectorStoreFileAssociationCollectionOptions 
+        var ascendingOptions = new VectorStoreFileCollectionOptions 
         { 
-            Order = VectorStoreFileAssociationCollectionOrder.Ascending,
+            Order = VectorStoreFileCollectionOrder.Ascending,
             PageSizeLimit = 5 
         };
-        var descendingOptions = new VectorStoreFileAssociationCollectionOptions 
+        var descendingOptions = new VectorStoreFileCollectionOptions 
         { 
-            Order = VectorStoreFileAssociationCollectionOrder.Descending,
+            Order = VectorStoreFileCollectionOrder.Descending,
             PageSizeLimit = 5 
         };
 
         List<string> ascendingIds = new List<string>();
         List<string> descendingIds = new List<string>();
 
-        await foreach (VectorStoreFileAssociation association in client.GetFileAssociationsInBatchAsync(vectorStore.Id, batchFileJob.BatchId, ascendingOptions))
+        await foreach (VectorStoreFile vectorStoreFile in client.GetVectorStoreFilesInBatchAsync(vectorStore.Id, batchFileJob.BatchId, ascendingOptions))
         {
-            ascendingIds.Add(association.FileId);
+            ascendingIds.Add(vectorStoreFile.FileId);
         }
 
-        await foreach (VectorStoreFileAssociation association in client.GetFileAssociationsInBatchAsync(vectorStore.Id, batchFileJob.BatchId, descendingOptions))
+        await foreach (VectorStoreFile vectorStoreFile in client.GetVectorStoreFilesInBatchAsync(vectorStore.Id, batchFileJob.BatchId, descendingOptions))
         {
-            descendingIds.Add(association.FileId);
+            descendingIds.Add(vectorStoreFile.FileId);
         }
 
         // The lists should be reverse of each other
@@ -533,67 +533,67 @@ public class VectorStoresTests : SyncAsyncTestBase
         Assert.That(ascendingIds.SequenceEqual(descendingIds.AsEnumerable().Reverse()), Is.True);
 
         // Test Filter property - only get completed files (which should be all of them after batch completion)
-        var filterOptions = new VectorStoreFileAssociationCollectionOptions 
+        var filterOptions = new VectorStoreFileCollectionOptions 
         { 
             Filter = VectorStoreFileStatusFilter.Completed 
         };
 
         int completedCount = 0;
-        await foreach (VectorStoreFileAssociation association in client.GetFileAssociationsInBatchAsync(vectorStore.Id, batchFileJob.BatchId, filterOptions))
+        await foreach (VectorStoreFile vectorStoreFile in client.GetVectorStoreFilesInBatchAsync(vectorStore.Id, batchFileJob.BatchId, filterOptions))
         {
             completedCount++;
-            Assert.That(association.Status, Is.EqualTo(VectorStoreFileAssociationStatus.Completed));
+            Assert.That(vectorStoreFile.Status, Is.EqualTo(VectorStoreFileStatus.Completed));
         }
 
         Assert.That(completedCount, Is.EqualTo(8)); // Should match the number of files we uploaded
 
-        // Test AfterId property - get associations after a specific ID
-        var firstAssociation = ascendingIds.FirstOrDefault();
-        if (!string.IsNullOrEmpty(firstAssociation))
+        // Test AfterId property - get vector store files after a specific ID
+        var firstVectorStoreFile = ascendingIds.FirstOrDefault();
+        if (!string.IsNullOrEmpty(firstVectorStoreFile))
         {
-            var afterOptions = new VectorStoreFileAssociationCollectionOptions 
+            var afterOptions = new VectorStoreFileCollectionOptions 
             { 
-                AfterId = firstAssociation,
-                Order = VectorStoreFileAssociationCollectionOrder.Ascending 
+                AfterId = firstVectorStoreFile,
+                Order = VectorStoreFileCollectionOrder.Ascending 
             };
 
             List<string> afterIds = new List<string>();
-            await foreach (VectorStoreFileAssociation association in client.GetFileAssociationsInBatchAsync(vectorStore.Id, batchFileJob.BatchId, afterOptions))
+            await foreach (VectorStoreFile vectorStoreFile in client.GetVectorStoreFilesInBatchAsync(vectorStore.Id, batchFileJob.BatchId, afterOptions))
             {
-                afterIds.Add(association.FileId);
+                afterIds.Add(vectorStoreFile.FileId);
             }
 
             // Should have one less item (excluding the first one)
             Assert.That(afterIds.Count, Is.EqualTo(ascendingIds.Count - 1));
             // Should not contain the first ID
-            Assert.That(afterIds.Contains(firstAssociation), Is.False);
+            Assert.That(afterIds.Contains(firstVectorStoreFile), Is.False);
         }
 
-        // Test BeforeId property - get associations before a specific ID
-        var lastAssociation = ascendingIds.LastOrDefault();
-        if (!string.IsNullOrEmpty(lastAssociation))
+        // Test BeforeId property - get vector store files before a specific ID
+        var lastVectorStoreFile = ascendingIds.LastOrDefault();
+        if (!string.IsNullOrEmpty(lastVectorStoreFile))
         {
-            var beforeOptions = new VectorStoreFileAssociationCollectionOptions 
+            var beforeOptions = new VectorStoreFileCollectionOptions 
             { 
-                BeforeId = lastAssociation,
-                Order = VectorStoreFileAssociationCollectionOrder.Ascending 
+                BeforeId = lastVectorStoreFile,
+                Order = VectorStoreFileCollectionOrder.Ascending 
             };
 
             List<string> beforeIds = new List<string>();
-            await foreach (VectorStoreFileAssociation association in client.GetFileAssociationsInBatchAsync(vectorStore.Id, batchFileJob.BatchId, beforeOptions))
+            await foreach (VectorStoreFile vectorStoreFile in client.GetVectorStoreFilesInBatchAsync(vectorStore.Id, batchFileJob.BatchId, beforeOptions))
             {
-                beforeIds.Add(association.FileId);
+                beforeIds.Add(vectorStoreFile.FileId);
             }
 
             // Should have one less item (excluding the last one)
             Assert.That(beforeIds.Count, Is.EqualTo(ascendingIds.Count - 1));
             // Should not contain the last ID
-            Assert.That(beforeIds.Contains(lastAssociation), Is.False);
+            Assert.That(beforeIds.Contains(lastVectorStoreFile), Is.False);
         }
     }
 
     [Test]
-    public async Task CanRehydrateGetFileAssociationsInBatchAsyncPagination()
+    public async Task CanRehydrateGetVectorStoreFilesInBatchAsyncPagination()
     {
         AssertAsyncOnly();
 
@@ -608,23 +608,23 @@ public class VectorStoresTests : SyncAsyncTestBase
         await Task.Delay(TimeSpan.FromSeconds(1));
 
         // We added 6 files and will get pages with 2 items, so expect three pages in the collection.
-        AsyncCollectionResult<VectorStoreFileAssociation> fileAssociations = client.GetFileAssociationsInBatchAsync(
-            vectorStore.Id, batchFileJob.BatchId, new VectorStoreFileAssociationCollectionOptions { PageSizeLimit = 2 });
+        AsyncCollectionResult<VectorStoreFile> vectorStoreFiles = client.GetVectorStoreFilesInBatchAsync(
+            vectorStore.Id, batchFileJob.BatchId, new VectorStoreFileCollectionOptions { PageSizeLimit = 2 });
 
-        IAsyncEnumerable<ClientResult> pages = fileAssociations.GetRawPagesAsync();
+        IAsyncEnumerable<ClientResult> pages = vectorStoreFiles.GetRawPagesAsync();
         IAsyncEnumerator<ClientResult> pageEnumerator = pages.GetAsyncEnumerator();
         await pageEnumerator.MoveNextAsync();
         ClientResult firstPage = pageEnumerator.Current;
-        ContinuationToken nextPageToken = fileAssociations.GetContinuationToken(firstPage);
+        ContinuationToken nextPageToken = vectorStoreFiles.GetContinuationToken(firstPage);
 
         // Simulate rehydration of the collection
         BinaryData rehydrationBytes = nextPageToken.ToBytes();
         ContinuationToken rehydrationToken = ContinuationToken.FromBytes(rehydrationBytes);
 
-        AsyncCollectionResult<VectorStoreFileAssociation> rehydratedFileAssociations = client.GetFileAssociationsInBatchAsync(
-            vectorStore.Id, batchFileJob.BatchId, new VectorStoreFileAssociationCollectionOptions { AfterId = rehydrationToken.ToBytes().ToString(), PageSizeLimit = 2 });
+        AsyncCollectionResult<VectorStoreFile> rehydratedFiles = client.GetVectorStoreFilesInBatchAsync(
+            vectorStore.Id, batchFileJob.BatchId, new VectorStoreFileCollectionOptions { AfterId = rehydrationToken.ToBytes().ToString(), PageSizeLimit = 2 });
 
-        IAsyncEnumerable<ClientResult> rehydratedPages = rehydratedFileAssociations.GetRawPagesAsync();
+        IAsyncEnumerable<ClientResult> rehydratedPages = rehydratedFiles.GetRawPagesAsync();
         IAsyncEnumerator<ClientResult> rehydratedPageEnumerator = rehydratedPages.GetAsyncEnumerator();
 
         int pageCount = 0;
@@ -634,8 +634,8 @@ public class VectorStoresTests : SyncAsyncTestBase
             ClientResult page = pageEnumerator.Current;
             ClientResult rehydratedPage = rehydratedPageEnumerator.Current;
 
-            List<VectorStoreFileAssociation> itemsInPage = GetFileAssociationsFromPage(page).ToList();
-            List<VectorStoreFileAssociation> itemsInRehydratedPage = GetFileAssociationsFromPage(rehydratedPage).ToList();
+            List<VectorStoreFile> itemsInPage = GetVectorStoreFilesFromPage(page).ToList();
+            List<VectorStoreFile> itemsInRehydratedPage = GetVectorStoreFilesFromPage(rehydratedPage).ToList();
 
             Assert.AreEqual(itemsInPage.Count, itemsInRehydratedPage.Count);
 
@@ -655,14 +655,14 @@ public class VectorStoresTests : SyncAsyncTestBase
         Assert.That(pageCount, Is.EqualTo(2));
     }
 
-    private static IEnumerable<VectorStoreFileAssociation> GetFileAssociationsFromPage(ClientResult page)
+    private static IEnumerable<VectorStoreFile> GetVectorStoreFilesFromPage(ClientResult page)
     {
         PipelineResponse response = page.GetRawResponse();
         JsonDocument doc = JsonDocument.Parse(response.Content);
         IEnumerable<JsonElement> els = doc.RootElement.GetProperty("data").EnumerateArray();
 
         // TODO: improve perf
-        return els.Select(el => ModelReaderWriter.Read<VectorStoreFileAssociation>(BinaryData.FromString(el.GetRawText())));
+        return els.Select(el => ModelReaderWriter.Read<VectorStoreFile>(BinaryData.FromString(el.GetRawText())));
     }
 
     [Test]
@@ -688,31 +688,31 @@ public class VectorStoresTests : SyncAsyncTestBase
 
         if (IsAsync)
         {
-            await foreach (VectorStoreFileAssociation association in client.GetFileAssociationsAsync(batchFileJob.VectorStoreId))
+            await foreach (VectorStoreFile vectorStoreFile in client.GetVectorStoreFilesAsync(batchFileJob.VectorStoreId))
             {
                 Assert.Multiple(() =>
                 {
-                    Assert.That(association.FileId, Is.Not.Null);
-                    Assert.That(association.VectorStoreId, Is.EqualTo(vectorStore.Id));
-                    Assert.That(association.Status, Is.EqualTo(VectorStoreFileAssociationStatus.Completed));
-                    // Assert.That(association.Size, Is.GreaterThan(0));
-                    Assert.That(association.CreatedAt, Is.GreaterThan(s_2024));
-                    Assert.That(association.LastError, Is.Null);
+                    Assert.That(vectorStoreFile.FileId, Is.Not.Null);
+                    Assert.That(vectorStoreFile.VectorStoreId, Is.EqualTo(vectorStore.Id));
+                    Assert.That(vectorStoreFile.Status, Is.EqualTo(VectorStoreFileStatus.Completed));
+                    // Assert.That(vectorStoreFile.Size, Is.GreaterThan(0));
+                    Assert.That(vectorStoreFile.CreatedAt, Is.GreaterThan(s_2024));
+                    Assert.That(vectorStoreFile.LastError, Is.Null);
                 });
             }
         }
         else
         {
-            foreach (VectorStoreFileAssociation association in client.GetFileAssociations(batchFileJob.VectorStoreId))
+            foreach (VectorStoreFile vectorStoreFile in client.GetVectorStoreFiles(batchFileJob.VectorStoreId))
             {
                 Assert.Multiple(() =>
                 {
-                    Assert.That(association.FileId, Is.Not.Null);
-                    Assert.That(association.VectorStoreId, Is.EqualTo(vectorStore.Id));
-                    Assert.That(association.Status, Is.EqualTo(VectorStoreFileAssociationStatus.Completed));
-                    // Assert.That(association.Size, Is.GreaterThan(0));
-                    Assert.That(association.CreatedAt, Is.GreaterThan(s_2024));
-                    Assert.That(association.LastError, Is.Null);
+                    Assert.That(vectorStoreFile.FileId, Is.Not.Null);
+                    Assert.That(vectorStoreFile.VectorStoreId, Is.EqualTo(vectorStore.Id));
+                    Assert.That(vectorStoreFile.Status, Is.EqualTo(VectorStoreFileStatus.Completed));
+                    // Assert.That(vectorStoreFile.Size, Is.GreaterThan(0));
+                    Assert.That(vectorStoreFile.CreatedAt, Is.GreaterThan(s_2024));
+                    Assert.That(vectorStoreFile.LastError, Is.Null);
                 });
             }
         }
@@ -758,13 +758,13 @@ public class VectorStoresTests : SyncAsyncTestBase
 
         if (IsAsync)
         {
-            AsyncCollectionResult<VectorStoreFileAssociation> associations = client.GetFileAssociationsAsync(vectorStore.Id);
+            AsyncCollectionResult<VectorStoreFile> vectorStoreFiles = client.GetVectorStoreFilesAsync(vectorStore.Id);
 
-            await foreach (VectorStoreFileAssociation association in associations)
+            await foreach (VectorStoreFile vectorStoreFile in vectorStoreFiles)
             {
-                Assert.That(testFiles.Any(file => file.Id == association.FileId), Is.True);
-                Assert.That(association.ChunkingStrategy, Is.InstanceOf<StaticFileChunkingStrategy>());
-                StaticFileChunkingStrategy staticStrategy = association.ChunkingStrategy as StaticFileChunkingStrategy;
+                Assert.That(testFiles.Any(file => file.Id == vectorStoreFile.FileId), Is.True);
+                Assert.That(vectorStoreFile.ChunkingStrategy, Is.InstanceOf<StaticFileChunkingStrategy>());
+                StaticFileChunkingStrategy staticStrategy = vectorStoreFile.ChunkingStrategy as StaticFileChunkingStrategy;
 
                 Assert.That(staticStrategy.MaxTokensPerChunk, Is.EqualTo(strategyKind switch
                 {
@@ -782,13 +782,13 @@ public class VectorStoresTests : SyncAsyncTestBase
         }
         else
         {
-            CollectionResult<VectorStoreFileAssociation> associations = client.GetFileAssociations(vectorStore.Id);
+            CollectionResult<VectorStoreFile> vectorStoreFiles = client.GetVectorStoreFiles(vectorStore.Id);
 
-            foreach (VectorStoreFileAssociation association in associations)
+            foreach (VectorStoreFile vectorStoreFile in vectorStoreFiles)
             {
-                Assert.That(testFiles.Any(file => file.Id == association.FileId), Is.True);
-                Assert.That(association.ChunkingStrategy, Is.InstanceOf<StaticFileChunkingStrategy>());
-                StaticFileChunkingStrategy staticStrategy = association.ChunkingStrategy as StaticFileChunkingStrategy;
+                Assert.That(testFiles.Any(file => file.Id == vectorStoreFile.FileId), Is.True);
+                Assert.That(vectorStoreFile.ChunkingStrategy, Is.InstanceOf<StaticFileChunkingStrategy>());
+                StaticFileChunkingStrategy staticStrategy = vectorStoreFile.ChunkingStrategy as StaticFileChunkingStrategy;
 
                 Assert.That(staticStrategy.MaxTokensPerChunk, Is.EqualTo(strategyKind switch
                 {
@@ -807,7 +807,7 @@ public class VectorStoresTests : SyncAsyncTestBase
     }
 
     [Test]
-    public async Task CanGetFileAssociations()
+    public async Task CanGetVectorStores()
     {
         VectorStoreClient client = GetTestClient();
 
@@ -834,15 +834,15 @@ public class VectorStoresTests : SyncAsyncTestBase
 
         if (IsAsync)
         {
-            await foreach (VectorStoreFileAssociation association in client.GetFileAssociationsAsync(vectorStore.Id))
+            await foreach (VectorStoreFile vectorStoreFile in client.GetVectorStoreFilesAsync(vectorStore.Id))
             {
                 Assert.Multiple(() =>
                 {
-                    Assert.That(association.FileId, Is.Not.Null);
-                    Assert.That(association.VectorStoreId, Is.EqualTo(vectorStore.Id));
-                    Assert.That(association.LastError, Is.Null);
-                    Assert.That(association.CreatedAt, Is.GreaterThan(s_2024));
-                    Assert.That(association.Status, Is.EqualTo(VectorStoreFileAssociationStatus.InProgress));
+                    Assert.That(vectorStoreFile.FileId, Is.Not.Null);
+                    Assert.That(vectorStoreFile.VectorStoreId, Is.EqualTo(vectorStore.Id));
+                    Assert.That(vectorStoreFile.LastError, Is.Null);
+                    Assert.That(vectorStoreFile.CreatedAt, Is.GreaterThan(s_2024));
+                    Assert.That(vectorStoreFile.Status, Is.EqualTo(VectorStoreFileStatus.InProgress));
                 });
             }
         }
@@ -894,10 +894,10 @@ public class VectorStoresTests : SyncAsyncTestBase
         {
             Console.WriteLine($"Cleanup: {job.BatchId} => {vectorStoreClient.CancelBatchFileJob(job.VectorStoreId, job.BatchId, requestOptions)?.GetRawResponse()?.Status}");
         }
-        foreach (VectorStoreFileAssociation association in _associationsToRemove)
+        foreach (VectorStoreFile vectorStoreFile in _vectorStoreFilesToRemove)
         {
-            ClientResult protocolResult = vectorStoreClient.RemoveFileFromStore(association.VectorStoreId, association.FileId, requestOptions);
-            Console.WriteLine($"Cleanup: {association.FileId}<->{association.VectorStoreId} => {protocolResult?.GetRawResponse()?.Status}");
+            ClientResult protocolResult = vectorStoreClient.RemoveFileFromStore(vectorStoreFile.VectorStoreId, vectorStoreFile.FileId, requestOptions);
+            Console.WriteLine($"Cleanup: {vectorStoreFile.FileId}<->{vectorStoreFile.VectorStoreId} => {protocolResult?.GetRawResponse()?.Status}");
         }
         foreach (OpenAIFile file in _filesToDelete)
         {
@@ -925,11 +925,11 @@ public class VectorStoresTests : SyncAsyncTestBase
             Assert.That(job.BatchId, Is.Not.Null);
             _jobsToCancel.Add(job);
         }
-        else if (target is VectorStoreFileAssociation association)
+        else if (target is VectorStoreFile vectorStoreFile)
         {
-            Assert.That(association?.FileId, Is.Not.Null);
-            Assert.That(association?.VectorStoreId, Is.Not.Null);
-            _associationsToRemove.Add(association);
+            Assert.That(vectorStoreFile?.FileId, Is.Not.Null);
+            Assert.That(vectorStoreFile?.VectorStoreId, Is.Not.Null);
+            _vectorStoreFilesToRemove.Add(vectorStoreFile);
         }
         else if (target is OpenAIFile file)
         {

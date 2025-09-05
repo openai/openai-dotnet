@@ -44,15 +44,15 @@ model VectorStoreCollectionOptions {
 }
 
 
-alias VectorStoreFileAssociationCollectionOrderQueryParameter = {
+alias VectorStoreFileCollectionOrderQueryParameter = {
   /**
    * Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
    * for descending order.
    */
-  @query order?: VectorStoreFileAssociationCollectionOrder;
+  @query order?: VectorStoreFileCollectionOrder;
 };
 
-union VectorStoreFileAssociationCollectionOrder {
+union VectorStoreFileCollectionOrder {
   string,
   Ascending: "asc",
   Descending: "desc",
@@ -60,11 +60,11 @@ union VectorStoreFileAssociationCollectionOrder {
 
 @access(Access.public)
 @usage(Usage.input)
-model VectorStoreFileAssociationCollectionOptions {
+model VectorStoreFileCollectionOptions {
   ...CollectionAfterQueryParameter,
   ...CollectionBeforeQueryParameter,
   ...CollectionLimitQueryParameter,
-  ...VectorStoreFileAssociationCollectionOrderQueryParameter,
+  ...VectorStoreFileCollectionOrderQueryParameter,
 
   @query filter?: ListVectorStoreFilesFilter;
 }
