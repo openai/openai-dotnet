@@ -3849,8 +3849,8 @@ namespace OpenAI.Realtime {
         public virtual void ConfigureSession(ConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default);
         public virtual void ConfigureTranscriptionSession(TranscriptionSessionOptions sessionOptions, CancellationToken cancellationToken = default);
         public virtual Task ConfigureTranscriptionSessionAsync(TranscriptionSessionOptions sessionOptions, CancellationToken cancellationToken = default);
-        protected internal virtual void Connect(IDictionary<string, string> headers = null, CancellationToken cancellationToken = default);
-        protected internal virtual Task ConnectAsync(IDictionary<string, string> headers = null, CancellationToken cancellationToken = default);
+        protected internal virtual void Connect(string queryString = null, IDictionary<string, string> headers = null, CancellationToken cancellationToken = default);
+        protected internal virtual Task ConnectAsync(string queryString = null, IDictionary<string, string> headers = null, CancellationToken cancellationToken = default);
         public virtual void DeleteItem(string itemId, CancellationToken cancellationToken = default);
         public virtual Task DeleteItemAsync(string itemId, CancellationToken cancellationToken = default);
         public void Dispose();
@@ -3876,8 +3876,8 @@ namespace OpenAI.Realtime {
         public virtual Task TruncateItemAsync(string itemId, int contentPartIndex, TimeSpan audioDuration, CancellationToken cancellationToken = default);
     }
     public class RealtimeSessionOptions {
-        public Uri Endpoint { get; set; }
         public IDictionary<string, string> Headers { get; }
+        public string QueryString { get; set; }
     }
     public class RealtimeUpdate : IJsonModel<RealtimeUpdate>, IPersistableModel<RealtimeUpdate> {
         public string EventId { get; }

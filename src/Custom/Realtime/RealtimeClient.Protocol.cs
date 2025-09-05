@@ -80,11 +80,11 @@ public partial class RealtimeClient
     {
         options ??= new();
 
-        RealtimeSession provisionalSession = new(_keyCredential, this, options.Endpoint ?? _webSocketEndpoint, model, intent);
+        RealtimeSession provisionalSession = new(_keyCredential, this, _webSocketEndpoint, model, intent);
 
         try
         {
-            await provisionalSession.ConnectAsync(options.Headers, cancellationToken).ConfigureAwait(false);
+            await provisionalSession.ConnectAsync(options.QueryString, options.Headers, cancellationToken).ConfigureAwait(false);
             RealtimeSession result = provisionalSession;
             provisionalSession = null;
             return result;

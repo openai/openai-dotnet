@@ -12,7 +12,7 @@ public class RealtimeSessionOptions
         Headers = new ChangeTrackingDictionary<string, string>();
     }
 
-    public Uri Endpoint { get; set; }
+    public string QueryString { get; set; }
 
     public IDictionary<string, string> Headers { get; }
 }
