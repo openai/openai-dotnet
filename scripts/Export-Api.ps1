@@ -107,7 +107,7 @@ function Invoke-GenAPI {
     Write-Output ""
 
     # System.ClientModel
-    $systemClientModelPath = Join-Path $nugetPackagesPath "system.clientmodel\1.4.2"
+    $systemClientModelPath = Join-Path $nugetPackagesPath "system.clientmodel\1.6.1"
     $systemClientModelRef = $null
     if (Test-Path $systemClientModelPath) {
         $systemClientModelRef = Get-ChildItem `
@@ -152,7 +152,7 @@ function Invoke-GenAPI {
     Write-Output ""
 
     # System.Memory.Data
-    $systemMemoryDataPath = Join-Path $nugetPackagesPath "system.memory.data\6.0.1"
+    $systemMemoryDataPath = Join-Path $nugetPackagesPath "system.memory.data\8.0.1"
     $systemMemoryDataRef = $null
     if (Test-Path $systemMemoryDataPath) {
         $systemMemoryDataRef = Get-ChildItem `
@@ -168,7 +168,7 @@ function Invoke-GenAPI {
 
     if ($TargetFramework -eq "netstandard2.0") {
         # System.Diagnostics.DiagnosticSource
-        $systemDiagnosticsDiagnosticSourcePath = Join-Path $nugetPackagesPath "system.diagnostics.diagnosticsource\6.0.1"
+        $systemDiagnosticsDiagnosticSourcePath = Join-Path $nugetPackagesPath "system.diagnostics.diagnosticsource\8.0.1"
         $systemDiagnosticsDiagnosticSourceRef = $null
         if (Test-Path $systemDiagnosticsDiagnosticSourcePath) {
             $systemDiagnosticsDiagnosticSourceRef = Get-ChildItem `
@@ -183,7 +183,7 @@ function Invoke-GenAPI {
         Write-Output ""
 
         # Microsoft.Bcl.AsyncInterfaces
-        $microsoftBclAsyncInterfacesPath = Join-Path $nugetPackagesPath "microsoft.bcl.asyncinterfaces\1.1.0"
+        $microsoftBclAsyncInterfacesPath = Join-Path $nugetPackagesPath "microsoft.bcl.asyncinterfaces\8.0.0"
         $microsoftBclAsyncInterfacesRef = $null
         if (Test-Path $microsoftBclAsyncInterfacesPath) {
             $microsoftBclAsyncInterfacesRef = Get-ChildItem `
