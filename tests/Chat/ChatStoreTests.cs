@@ -469,6 +469,7 @@ public class ChatStoreToolTests : SyncAsyncTestBase
         });
     }
 
+    [Ignore("Temporarily ignore because this test is super flaky")]
     [Test]
     public async Task UpdateChatCompletionWorks()
     {

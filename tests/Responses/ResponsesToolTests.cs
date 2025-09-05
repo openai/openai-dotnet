@@ -73,6 +73,7 @@ public partial class ResponsesToolTests : SyncAsyncTestBase
         Assert.That(assistantMessageItem, Is.Not.Null);
     }
 
+    [Ignore("Cannot be tested reliably - Your organization must be verified to stream this model.")]
     [Test]
     public async Task MCPToolStreamingWorks()
     {

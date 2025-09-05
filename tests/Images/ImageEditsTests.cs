@@ -58,6 +58,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
         ValidateGeneratedImage(image.ImageUri, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
     }
 
+    [Ignore("Test org cannot use this model")]
     [Test]
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GptImage1Works(ImageSourceKind imageSourceKind)

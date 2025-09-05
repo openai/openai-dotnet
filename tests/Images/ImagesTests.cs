@@ -123,6 +123,7 @@ public partial class ImagesTests : ImageTestFixtureBase
         }
     }
 
+    [Ignore("Test org cannot use this model")]
     [Test]
     public async Task GenerationOfMultipleImagesWithBytesResponseWorks()
     {
@@ -166,6 +167,7 @@ public partial class ImagesTests : ImageTestFixtureBase
         Assert.That(ex.Status, Is.EqualTo(401));
     }
 
+    [Ignore("Test org cannot use this model")]
     [Test]
     public async Task GptImage1Works()
     {
