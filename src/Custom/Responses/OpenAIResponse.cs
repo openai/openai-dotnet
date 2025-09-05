@@ -15,6 +15,10 @@ namespace OpenAI.Responses;
 public partial class OpenAIResponse
 {
     // CUSTOM: Renamed.
+    [CodeGenMember("Background")]
+    public bool? BackgroundModeEnabled { get; }
+
+    // CUSTOM: Renamed.
     [CodeGenMember("User")]
     public string EndUserId { get; }
 
