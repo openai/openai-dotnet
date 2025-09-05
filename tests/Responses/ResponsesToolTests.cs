@@ -2,8 +2,10 @@
 using OpenAI.Responses;
 using OpenAI.Tests.Utility;
 using System;
+using System.ClientModel;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using static OpenAI.Tests.TestHelpers;
 
@@ -69,6 +71,108 @@ public partial class ResponsesToolTests : SyncAsyncTestBase
         // Check assistant message.
         MessageResponseItem assistantMessageItem = response.OutputItems.Last() as MessageResponseItem;
         Assert.That(assistantMessageItem, Is.Not.Null);
+    }
+
+    [Test]
+    public async Task MCPToolStreamingWorks()
+    {
+        string serverLabel = "dmcp";
+        Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
+
+        McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
+
+        ResponseCreationOptions options = new()
+        {
+            Tools = {
+                new McpTool(serverLabel, serverUri)
+                {
+                    ToolCallApprovalPolicy = approvalPolicy
+                }
+            }
+        };
+
+        OpenAIResponseClient client = GetTestClient(overrideModel: "gpt-5");
+
+        AsyncCollectionResult<StreamingResponseUpdate> responseUpdates = client.CreateResponseStreamingAsync("Roll 2d4+1", options);
+
+        int mcpCallArgumentsDeltaUpdateCount = 0;
+        int mcpCallArgumentsDoneUpdateCount = 0;
+        int mcpCallCompletedUpdateCount = 0;
+        int mcpCallFailedUpdateCount = 0;
+        int mcpCallInProgressUpdateCount = 0;
+        int mcpListToolsCompletedUpdateCount = 0;
+        int mcpListToolsFailedUpdateCount = 0;
+        int mcpListToolsInProgressUpdateCount = 0;
+
+        StringBuilder argumentsBuilder = new StringBuilder();
+
+        await foreach (StreamingResponseUpdate update in responseUpdates)
+        {
+            if (update is StreamingResponseMcpCallArgumentsDeltaUpdate mcpCallArgumentsDeltaUpdate)
+            {
+                mcpCallArgumentsDeltaUpdateCount++;
+
+                BinaryData delta = mcpCallArgumentsDeltaUpdate.Delta;
+                Assert.That(delta, Is.Not.Null);
+
+                if (!delta.ToMemory().IsEmpty)
+                {
+                    argumentsBuilder.AppendLine(mcpCallArgumentsDeltaUpdate.Delta.ToString());
+                }
+            }
+
+            if (update is StreamingResponseMcpCallArgumentsDoneUpdate mcpCallArgumentsDoneUpdate)
+            {
+                mcpCallArgumentsDoneUpdateCount++;
+
+                BinaryData toolArguments = mcpCallArgumentsDoneUpdate.ToolArguments;
+                Assert.That(toolArguments, Is.Not.Null);
+                Assert.That(toolArguments.ToString(), Is.EqualTo(argumentsBuilder.ToString().ReplaceLineEndings(string.Empty)));
+
+                argumentsBuilder.Clear();
+            }
+
+            if (update is StreamingResponseMcpCallCompletedUpdate mcpCallCompletedUpdate)
+            {
+                mcpCallCompletedUpdateCount++;
+            }
+
+            if (update is StreamingResponseMcpCallFailedUpdate mcpCallFailedUpdate)
+            {
+                mcpCallFailedUpdateCount++;
+            }
+
+            if (update is StreamingResponseMcpCallInProgressUpdate mcpCallInProgressUpdate)
+            {
+                mcpCallInProgressUpdateCount++;
+            }
+
+            if (update is StreamingResponseMcpListToolsCompletedUpdate mcpListToolsCompletedUpdate)
+            {
+                mcpListToolsCompletedUpdateCount++;
+            }
+
+            if (update is StreamingResponseMcpListToolsFailedUpdate mcpListToolsFailedUpdate)
+            {
+                mcpListToolsFailedUpdateCount++;
+            }
+
+            if (update is StreamingResponseMcpListToolsInProgressUpdate mcpListToolsInProgressUpdate)
+            {
+                mcpListToolsInProgressUpdateCount++;
+            }
+        }
+
+        Assert.That(mcpListToolsFailedUpdateCount, Is.GreaterThanOrEqualTo(0));
+        Assert.That(mcpListToolsInProgressUpdateCount, Is.GreaterThan(0));
+        Assert.That(mcpListToolsCompletedUpdateCount, Is.EqualTo(mcpListToolsInProgressUpdateCount - mcpListToolsFailedUpdateCount));
+
+        Assert.That(mcpCallFailedUpdateCount, Is.GreaterThanOrEqualTo(0));
+        Assert.That(mcpCallInProgressUpdateCount, Is.GreaterThan(0));
+        Assert.That(mcpCallCompletedUpdateCount, Is.EqualTo(mcpListToolsInProgressUpdateCount - mcpListToolsFailedUpdateCount));
+
+        Assert.That(mcpCallArgumentsDoneUpdateCount, Is.GreaterThan(0));
+        Assert.That(mcpCallArgumentsDeltaUpdateCount, Is.GreaterThanOrEqualTo(mcpCallArgumentsDoneUpdateCount));
     }
 
     [Test]

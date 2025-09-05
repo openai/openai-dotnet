@@ -51,8 +51,8 @@ namespace OpenAI.Responses
         private const string ResponseImageGenerationCallGeneratingValue = "response.image_generation_call.generating";
         private const string ResponseImageGenerationCallInProgressValue = "response.image_generation_call.in_progress";
         private const string ResponseImageGenerationCallPartialImageValue = "response.image_generation_call.partial_image";
-        private const string ResponseMcpCallArgumentsDeltaValue = "response.mcp_call.arguments_delta";
-        private const string ResponseMcpCallArgumentsDoneValue = "response.mcp_call.arguments_done";
+        private const string ResponseMcpCallArgumentsDeltaValue = "response.mcp_call_arguments.delta";
+        private const string ResponseMcpCallArgumentsDoneValue = "response.mcp_call_arguments.done";
         private const string ResponseMcpCallCompletedValue = "response.mcp_call.completed";
         private const string ResponseMcpCallFailedValue = "response.mcp_call.failed";
         private const string ResponseMcpCallInProgressValue = "response.mcp_call.in_progress";

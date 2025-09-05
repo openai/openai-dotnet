@@ -5602,7 +5602,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class StreamingResponseFunctionCallArgumentsDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseFunctionCallArgumentsDeltaUpdate>, IPersistableModel<StreamingResponseFunctionCallArgumentsDeltaUpdate> {
-        public string Delta { get; }
+        public BinaryData Delta { get; }
         public string ItemId { get; }
         public int OutputIndex { get; }
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -5612,7 +5612,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class StreamingResponseFunctionCallArgumentsDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseFunctionCallArgumentsDoneUpdate>, IPersistableModel<StreamingResponseFunctionCallArgumentsDoneUpdate> {
-        public string Arguments { get; }
+        public BinaryData FunctionArguments { get; }
         public string ItemId { get; }
         public int OutputIndex { get; }
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -5631,6 +5631,70 @@ namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class StreamingResponseInProgressUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseInProgressUpdate>, IPersistableModel<StreamingResponseInProgressUpdate> {
         public OpenAIResponse Response { get; }
+        protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class StreamingResponseMcpCallArgumentsDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpCallArgumentsDeltaUpdate>, IPersistableModel<StreamingResponseMcpCallArgumentsDeltaUpdate> {
+        public BinaryData Delta { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class StreamingResponseMcpCallArgumentsDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpCallArgumentsDoneUpdate>, IPersistableModel<StreamingResponseMcpCallArgumentsDoneUpdate> {
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public BinaryData ToolArguments { get; }
+        protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class StreamingResponseMcpCallCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpCallCompletedUpdate>, IPersistableModel<StreamingResponseMcpCallCompletedUpdate> {
+        protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class StreamingResponseMcpCallFailedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpCallFailedUpdate>, IPersistableModel<StreamingResponseMcpCallFailedUpdate> {
+        protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class StreamingResponseMcpCallInProgressUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpCallInProgressUpdate>, IPersistableModel<StreamingResponseMcpCallInProgressUpdate> {
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class StreamingResponseMcpListToolsCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpListToolsCompletedUpdate>, IPersistableModel<StreamingResponseMcpListToolsCompletedUpdate> {
+        protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class StreamingResponseMcpListToolsFailedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpListToolsFailedUpdate>, IPersistableModel<StreamingResponseMcpListToolsFailedUpdate> {
+        protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class StreamingResponseMcpListToolsInProgressUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpListToolsInProgressUpdate>, IPersistableModel<StreamingResponseMcpListToolsInProgressUpdate> {
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);

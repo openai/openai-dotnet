@@ -56,3 +56,12 @@ using Azure.ClientGenerator.Core;
 @@alternateType(MCPTool.server_url, url);
 @@clientName(MCPTool.server_url, "ServerUri");
 
+@@alternateType(ResponseFunctionCallArgumentsDoneEvent.arguments, unknown);
+// @@clientName(ResponseFunctionCallArgumentsDoneEvent.arguments, "FunctionArguments");
+
+@@alternateType(ResponseFunctionCallArgumentsDeltaEvent.delta, unknown);
+
+@@alternateType(ResponseMCPCallArgumentsDoneEvent.arguments, unknown);
+// @@clientName(ResponseMCPCallArgumentsDoneEvent.arguments, "ToolArguments");
+
+@@alternateType(ResponseMCPCallArgumentsDeltaEvent.delta, unknown);
