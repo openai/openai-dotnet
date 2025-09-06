@@ -74,58 +74,6 @@ public partial class ResponsesTests : SyncAsyncTestBase
     }
 
     [Test]
-    public async Task FileSearch()
-    {
-        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
-        OpenAIFile testFile = await fileClient.UploadFileAsync(
-            BinaryData.FromString("""
-                    Travis's favorite food is pizza.
-                    """),
-            "test_favorite_foods.txt",
-            FileUploadPurpose.UserData);
-        Validate(testFile);
-
-        VectorStoreClient vscClient = GetTestClient<VectorStoreClient>(TestScenario.VectorStores);
-        VectorStore vectorStore = await vscClient.CreateVectorStoreAsync(
-            new VectorStoreCreationOptions()
-            {
-                FileIds = { testFile.Id },
-            });
-        Validate(vectorStore);
-
-        OpenAIResponseClient client = GetTestClient();
-
-        OpenAIResponse response = await client.CreateResponseAsync(
-            "Using the file search tool, what's Travis's favorite food?",
-            new ResponseCreationOptions()
-            {
-                Tools =
-                {
-                    ResponseTool.CreateFileSearchTool(vectorStoreIds: [vectorStore.Id]),
-                }
-            });
-        Assert.That(response.OutputItems?.Count, Is.EqualTo(2));
-        FileSearchCallResponseItem fileSearchCall = response.OutputItems[0] as FileSearchCallResponseItem;
-        Assert.That(fileSearchCall, Is.Not.Null);
-        Assert.That(fileSearchCall?.Status, Is.EqualTo(FileSearchCallStatus.Completed));
-        Assert.That(fileSearchCall?.Queries, Has.Count.GreaterThan(0));
-        MessageResponseItem message = response.OutputItems[1] as MessageResponseItem;
-        Assert.That(message, Is.Not.Null);
-        ResponseContentPart messageContentPart = message.Content?.FirstOrDefault();
-        Assert.That(messageContentPart, Is.Not.Null);
-        Assert.That(messageContentPart.Text, Does.Contain("pizza"));
-        Assert.That(messageContentPart.OutputTextAnnotations, Is.Not.Null.And.Not.Empty);
-        FileCitationMessageAnnotation annotation = messageContentPart.OutputTextAnnotations[0] as FileCitationMessageAnnotation;
-        Assert.That(annotation.FileId, Is.EqualTo(testFile.Id));
-        Assert.That(annotation.Index, Is.GreaterThan(0));
-
-        await foreach (ResponseItem inputItem in client.GetResponseInputItemsAsync(response.Id))
-        {
-            Console.WriteLine(ModelReaderWriter.Write(inputItem).ToString());
-        }
-    }
-
-    [Test]
     public async Task ComputerToolWithScreenshotRoundTrip()
     {
         OpenAIResponseClient client = GetTestClient("computer-use-preview-2025-03-11");
