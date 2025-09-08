@@ -1,5 +1,130 @@
 # Release History
 
+## 2.4.0 (2025-09-05)
+
+### Features Added
+
+- OpenAI.Audio:
+  - Added the `Endpoint` property to `AudioClient`.
+- OpenAI.Batch:
+  - Added the `Endpoint` property to `BatchClient`.
+- OpenAI.Chat:
+  - Added the `Endpoint` property to `ChatClient`.
+  - Added the `ServiceTier` property to `ChatCompletionOptions`, `ChatCompletion`, and `StreamingChatCompletionUpdate` to configure the policy that the server will use to process the request in terms of pricing, performance, etc.
+  - Added an explicit conversion operator to `ChatCompletion` and `ChatCompletionDeletionResult` to convert from `ClientResult`.
+- OpenAI.Containers:
+  - Added the `Endpoint` property to `ContainerClient`.
+  - Added convenience counterparts to the protocol methods of `ContainerClient` that use the strongly-typed model classes.
+  - Added automatic pagination support to the following methods of `ContainerClient`:
+    - `GetContainers` and `GetContainersAsync`
+    - `GetContainerFiles` and `GetContainerFilesAsync`
+  - Added an explicit conversion operator to `ContainerResource`, `ContainerFileResource`, `DeleteContainerResponse`, and `DeleteContainerFileResponse` to convert from `ClientResult`.
+- OpenAI.Embeddings:
+  - Added the `Endpoint` property to `EmbeddingsClient`.
+  - Added an explicit conversion operator to `OpenAIEmbeddingCollection` to convert from `ClientResult`.
+- OpenAI.Evals:
+  - Added the `Endpoint` property to `EvaluationClient`.
+- OpenAI.Files:
+  - Added the `Endpoint` property to `OpenAIFileClient`.
+  - Added an explicit conversion operator to `OpenAIFile`, `OpenAIFileCollection`, and `FileDeletionResult` to convert from `ClientResult`.
+- OpenAI.FineTuning:
+  - Added the `Endpoint` property to `FineTuningClient`.
+- OpenAI.Graders:
+  - Added the `Endpoint` property to `GraderClient`.
+  - Added an explicit conversion operator to `RunGraderResponse` and `ValidateGraderResponse` to convert from `ClientResult`.
+- OpenAI.Images:
+  - Added the `Endpoint` property to `ImageClient`.
+  - Added an explicit conversion operator to `GeneratedImageCollection` to convert from `ClientResult`.
+  - Added the `Background` property to `ImageEditOptions` to set transparency for the background of the generated image(s).
+  - Added the `Quality` property to `ImageEditOptions` to set the quality of the generated image(s).
+- OpenAI.Images:
+  - Added the `Endpoint` property to `ImageClient`.
+  - Added an explicit conversion operator to `GeneratedImageCollection` to convert from `ClientResult`.
+  - Added the `Background` property to `ImageEditOptions` to set transparency for the background of the generated image(s).
+  - Added the `Quality` property to `ImageEditOptions` to set the quality of the generated image(s).
+- OpenAI.Models:
+  - Added the `Endpoint` property to `OpenAIModelClient`.
+  - Added an explicit conversion operator to `OpenAIModel`, `OpenAIModelCollection`, and `ModelDeletionResult` to convert from `ClientResult`.
+- OpenAI.Moderations:
+  - Added the `Endpoint` property to `ModerationClient`.
+  - Added an explicit conversion operator to `ModerationResultCollection` to convert from `ClientResult`.
+- OpenAI.Realtime:
+  - Added a constructor that can take a string API key to `RealtimeClient`.
+  - Added constructors that can take a custom `AuthenticationPolicy` to `RealtimeClient`.
+  - Added the `Endpoint` property to `RealtimeClient`.
+  - Replaced the `RequestOptions` parameter of the following methods of `RealtimeClient` for a new `RealtimeSessionOptions` parameter and a `CancellationToken` parameter:
+    - `StartConversationSession` and `StartConversationSessionAsync`
+    - `StartTranscriptionSession` and `StartTranscriptionSessionAsync`
+    - `StartSession` and `StartSessionAsync`
+- OpenAI.Responses:
+  - Added the `Endpoint` property to `OpenAIResponseClient`.
+  - Added an explicit conversion operator to `OpenAIResponse` to convert from `ClientResult`.
+  - Added new classes derived from `ResponseTool` to facilitate certain scenarios:
+    - `FunctionTool`
+    - `FileSearchTool`
+    - `WebSearchTool`
+    - `ComputerTool`
+  - Added initial support for integrating with remote MCP servers via the Responses API in streaming and non-streaming scenarios.
+    - Users can add the new `McpTool` to the `Tools` property of their `ResponseCreationOptions` and configure it.
+      - Use the `AllowedTools` property to limit which of the server tools can be called by the model.
+      - Use the `ToolCallApprovalPolicy` property to specify which tools require an explicit approval before being called by the model.
+    - Support for selecting the `McpTool` via the `ToolChoice` property is coming soon.
+    - Support for configuring the `McpTool` with an access token that can be used to authenticate with the remote MCP server is coming soon.
+    - Support for connectors is coming soon.
+  - Added new classes derived from `ResponseMessageAnnotation` to facilitate certain scenarios:
+    - `FileCitationMessageAnnotation`
+    - `FilePathMessageAnnotation`
+    - `UriCitationMessageAnnotation`
+  - Added the `ServiceTier` property to `ResponseCreationOptions`, `OpenAIResponse`, and `StreamingChatCompletionUpdate` to configure the policy that the server will use to process the request in terms of pricing, performance, etc.
+- OpenAI.VectorStores:
+  - Added the `Endpoint` property to `OpenAIResponseClient`.
+  - Added an explicit conversion operator to `VectorStore`, `VectorStoreFile`, `VectorStoreFileBatch`, `VectorStoreDeletionResult`, and `FileFromStoreRemovalResult` to convert from `ClientResult`.
+
+### Bug Fixed
+
+- OpenAI.Realtime:
+  - Fixed an issue with the classes derived from `ResponseItem` (such as `ReasoningResponseItem`) missing some constructors or property setters, which made it difficult to use them as inputs.
+  - Fixed an issue with the HTTP pipeline of the `RealtimeClient` that was preventing the following methods from working correctly:
+    - `CreateEphemeralToken` and `CreateEphemeralTokenAsync`
+    - `CreateEphemeralTranscriptionToken` and `CreateEphemeralTranscriptionTokenAsync`
+
+### Breaking Changes in Preview APIs
+
+- OpenAI.Chat:
+  - Changed the type of the `options` parameter of the `GetChatCompletionMessages` method of the `ChatClient` from `ChatCompletionCollectionOptions` to `ChatCompletionMessageCollectionOptions`.
+- OpenAI.Realtime:
+  - Replaced the `RequestOptions` parameter for a new `RealtimeSessionOptions` parameter and a `CancellationToken` parameter.
+- OpenAI.Responses:
+  - Renamed the `Background` property to `BackgroundModeEnabled` for clarity.
+  - Renamed the `ComputerOutput` class to `ComputerCallOutput`.
+  - Changed the type of the `Delta` property of `StreamingResponseFunctionCallArgumentsDeltaUpdate` from `string` to `BinaryData`.
+  - Changed the type of the `Arguments` property of `StreamingResponseFunctionCallArgumentsDoneUpdate` from `string` to `BinaryData` and renamed it to `FunctionArguments`.
+  - Renamed the `WebSearchContextSize` class to `WebSearchToolContextSize`.
+  - Renamed the `WebSearchUserLocation` class to `WebSearchToolLocation`.
+  - Refactored the factory methods of `ResponseItem`.
+  - Refactored the factory methods of `ResponseTool`.
+  - Removed the properties of `ResponseMessageAnnotation` except for the `Kind` property and moved them to the new derived types.
+- OpenAI.VectorStores:
+  - Removed the `OperationResult` pattern along with the `CreateVectorStoreOperation` `AddFileToVectorStoreOperation`, and `CreateBatchFileJobOperation` classes.
+  - Renamed the `VectorStoreBatchFileJob` class to `VectorStoreFileBatch`
+  - Renamed the `VectorStoreFileAssociation` class to `VectorStoreFile`
+  - Renamed the `VectorStoreFileAssociationError` class to `VectorStoreFileError`
+  - Renamed the `VectorStoreFileAssociationStatus` class to `VectorStoreFileStatus`
+  - Renamed the `VectorStoreFileAssociationErrorCode` class to `VectorStoreFileErrorCode`
+  - Renamed the `VectorStoreFileAssociationCollectionOptions` class to `VectorStoreFileCollectionOptions`
+  - Renamed the `VectorStoreFileAssociationCollectionOrder` class to `VectorStoreFileCollectionOrder`
+  - Renamed the `CancelBatchFileJob` and `CancelBatchFileJobAsync` methods of `VectorStoreClient` to `CancelVectorStoreFileBatch` and `CancelVectorStoreFileBatchAsync`
+  - Renamed the `CreateBatchFileJob` and `CreateBatchFileJobAsync` methods of `VectorStoreClient` to `AddFileBatchToVectorStore` and `AddFileBatchToVectorStoreAsync`
+  - Renamed the `GetBatchFileJob` and `GetBatchFileJobAsync` methods of `VectorStoreClient` to `GetVectorStoreFileBatch` and `GetVectorStoreFileBatchAsync`
+  - Renamed the `GetFileAssociation` and `GetFileAssociationAsync` methods of `VectorStoreClient` to `GetVectorStoreFile` and `GetVectorStoreFileAsync`
+  - Renamed the `GetFileAssociations` and `GetFileAssociationsAsync` methods of `VectorStoreClient` to `GetVectorStoreFiles` and `GetVectorStoreFilesAsync`
+  - Renamed the `GetFileAssociationsInBatch` and `GetFileAssociationsInBatchAsync` methods of `VectorStoreClient` to `GetVectorStoreFilesInBatch` and `GetVectorStoreFilesInBatchAsync`
+  - Renamed the `RemoveFileFromStore` and `RemoveFileFromStoreAsync` methods of `VectorStoreClient` to `RemoveFileFromVectorStore` and `RemoveFileFromVectorStoreAsync`
+
+### Other Changes
+
+- Updated the `System.ClientModel` dependency to version 1.6.1.
+
 ## 2.3.0 (2025-08-01)
 
 ### Features Added

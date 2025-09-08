@@ -34,7 +34,9 @@ public class RealtimeProtocolTests : RealtimeTestFixtureBase
     public async Task ProtocolCanConfigureSession()
     {
         RealtimeClient client = GetTestClient();
-        using RealtimeSession session = await client.StartConversationSessionAsync(GetTestModel(), CancellationToken);
+        using RealtimeSession session = await client.StartConversationSessionAsync(
+            model: GetTestModel(),
+            cancellationToken: CancellationToken);
 
         BinaryData configureSessionCommand = BinaryData.FromString("""
             {

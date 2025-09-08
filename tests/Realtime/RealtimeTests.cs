@@ -24,8 +24,8 @@ public class RealtimeTests : RealtimeTestFixtureBase
     {
         RealtimeClient client = GetTestClient();
         using RealtimeSession session = await client.StartConversationSessionAsync(
-            GetTestModel(),
-            CancellationToken);
+            model: GetTestModel(),
+            cancellationToken: CancellationToken);
 
         ConversationSessionOptions sessionOptions = new()
         {
@@ -94,7 +94,10 @@ public class RealtimeTests : RealtimeTestFixtureBase
     public async Task TextOnlyWorks()
     {
         RealtimeClient client = GetTestClient();
-        using RealtimeSession session = await client.StartConversationSessionAsync(GetTestModel(), CancellationToken);
+        using RealtimeSession session = await client.StartConversationSessionAsync(
+            model: GetTestModel(),
+            cancellationToken: CancellationToken);
+
         await session.AddItemAsync(
             RealtimeItem.CreateUserMessage(["Hello, world!"]),
             cancellationToken: CancellationToken);
@@ -182,7 +185,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
                 Model = "gpt-4o-mini-transcribe",
             },
         };
-        RealtimeSession session = await client.StartTranscriptionSessionAsync(CancellationToken);
+        RealtimeSession session = await client.StartTranscriptionSessionAsync(cancellationToken: CancellationToken);
         await session.ConfigureTranscriptionSessionAsync(options, CancellationToken);
 
         // Sending the audio in a delayed stream allows us to validate bidirectional behavior, i.e.
@@ -239,8 +242,8 @@ public class RealtimeTests : RealtimeTestFixtureBase
     {
         RealtimeClient client = GetTestClient();
         using RealtimeSession session = await client.StartConversationSessionAsync(
-            GetTestModel(),
-            CancellationToken);
+            model: GetTestModel(),
+            cancellationToken: CancellationToken);
 
         await session.ConfigureConversationSessionAsync(
             new ConversationSessionOptions()
@@ -315,7 +318,9 @@ public class RealtimeTests : RealtimeTestFixtureBase
     public async Task AudioStreamConvenienceBlocksCorrectly()
     {
         RealtimeClient client = GetTestClient();
-        using RealtimeSession session = await client.StartConversationSessionAsync(GetTestModel(), CancellationToken);
+        using RealtimeSession session = await client.StartConversationSessionAsync(
+            model: GetTestModel(),
+            cancellationToken: CancellationToken);
 
         string inputAudioFilePath = Path.Join("Assets", "realtime_whats_the_weather_pcm16_24khz_mono.wav");
         using TestDelayedFileReadStream delayedStream = new(inputAudioFilePath, TimeSpan.FromMilliseconds(200), readsBeforeDelay: 2);
@@ -355,7 +360,9 @@ public class RealtimeTests : RealtimeTestFixtureBase
     public async Task AudioWithToolsWorks(TestAudioSendType audioSendType)
     {
         RealtimeClient client = GetTestClient();
-        using RealtimeSession session = await client.StartConversationSessionAsync(GetTestModel(), CancellationToken);
+        using RealtimeSession session = await client.StartConversationSessionAsync(
+            model: GetTestModel(),
+            cancellationToken: CancellationToken);
 
         ConversationFunctionTool getWeatherTool = new("get_weather_for_location")
         {
@@ -480,7 +487,9 @@ public class RealtimeTests : RealtimeTestFixtureBase
     public async Task CanDisableVoiceActivityDetection()
     {
         RealtimeClient client = GetTestClient();
-        using RealtimeSession session = await client.StartConversationSessionAsync(GetTestModel(), CancellationToken);
+        using RealtimeSession session = await client.StartConversationSessionAsync(
+            model: GetTestModel(),
+            cancellationToken: CancellationToken);
 
         await session.ConfigureConversationSessionAsync(
             new()
@@ -529,7 +538,9 @@ public class RealtimeTests : RealtimeTestFixtureBase
     public async Task BadCommandProvidesError()
     {
         RealtimeClient client = GetTestClient();
-        using RealtimeSession session = await client.StartConversationSessionAsync(GetTestModel(), CancellationToken);
+        using RealtimeSession session = await client.StartConversationSessionAsync(
+            model: GetTestModel(),
+            cancellationToken: CancellationToken);
 
         await session.SendCommandAsync(
             BinaryData.FromString("""
@@ -564,7 +575,11 @@ public class RealtimeTests : RealtimeTestFixtureBase
         {
             ContentModalities = RealtimeContentModalities.Text,
         };
-        using RealtimeSession session = await client.StartConversationSessionAsync(GetTestModel(), CancellationToken);
+
+        using RealtimeSession session = await client.StartConversationSessionAsync(
+            model: GetTestModel(),
+            cancellationToken: CancellationToken);
+
         await session.ConfigureConversationSessionAsync(sessionOptions, CancellationToken);
 
         List<RealtimeItem> items =
@@ -612,10 +627,15 @@ public class RealtimeTests : RealtimeTestFixtureBase
     public async Task CanUseOutOfBandResponses()
     {
         RealtimeClient client = GetTestClient();
-        using RealtimeSession session = await client.StartConversationSessionAsync(GetTestModel(), CancellationToken);
+
+        using RealtimeSession session = await client.StartConversationSessionAsync(
+            model: GetTestModel(),
+            cancellationToken: CancellationToken);
+
         await session.AddItemAsync(
             RealtimeItem.CreateUserMessage(["Hello! My name is Bob."]),
             cancellationToken: CancellationToken);
+
         await session.StartResponseAsync(
             new ConversationResponseOptions()
             {

@@ -1,9 +1,12 @@
-﻿using Microsoft.ClientModel.TestFramework;
+using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
+using OpenAI.Files;
 using OpenAI.Responses;
 using OpenAI.Tests.Utility;
+using OpenAI.VectorStores;
 using System;
 using System.ClientModel;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -334,6 +337,73 @@ public partial class ResponsesToolTests : ClientTestBase
         Assert.That(response.OutputItems.OfType<McpToolDefinitionListItem>().ToList(), Has.Count.EqualTo(1));
         Assert.That(response.OutputItems.OfType<McpToolCallApprovalRequestItem>().ToList(), Has.Count.EqualTo(0));
         Assert.That(response.OutputItems.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(0));
+    }
+
+    [Test]
+    public async Task FileSearch()
+    {
+        OpenAIFileClient fileClient = CreateProxyFromClient(GetTestClient<OpenAIFileClient>(TestScenario.Files));
+        OpenAIFile testFile = await fileClient.UploadFileAsync(
+            BinaryData.FromString("""
+                    Travis's favorite food is pizza.
+                    """),
+            "test_favorite_foods.txt",
+            FileUploadPurpose.UserData);
+        Validate(testFile);
+
+        VectorStoreClient vscClient = GetTestClient<VectorStoreClient>(TestScenario.VectorStores);
+        VectorStore vectorStore = await vscClient.CreateVectorStoreAsync(
+            new VectorStoreCreationOptions()
+            {
+                FileIds = { testFile.Id },
+            });
+        Validate(vectorStore);
+
+        OpenAIResponseClient client = GetTestClient();
+
+        OpenAIResponse response = await client.CreateResponseAsync(
+            "Using the file search tool, what's Travis's favorite food?",
+            new ResponseCreationOptions()
+            {
+                Tools =
+                {
+                    ResponseTool.CreateFileSearchTool(vectorStoreIds: [vectorStore.Id]),
+                }
+            });
+        Assert.That(response.OutputItems?.Count, Is.EqualTo(2));
+        FileSearchCallResponseItem fileSearchCall = response.OutputItems[0] as FileSearchCallResponseItem;
+        Assert.That(fileSearchCall, Is.Not.Null);
+        Assert.That(fileSearchCall?.Status, Is.EqualTo(FileSearchCallStatus.Completed));
+        Assert.That(fileSearchCall?.Queries, Has.Count.GreaterThan(0));
+        MessageResponseItem message = response.OutputItems[1] as MessageResponseItem;
+        Assert.That(message, Is.Not.Null);
+        ResponseContentPart messageContentPart = message.Content?.FirstOrDefault();
+        Assert.That(messageContentPart, Is.Not.Null);
+        Assert.That(messageContentPart.Text, Does.Contain("pizza"));
+        Assert.That(messageContentPart.OutputTextAnnotations, Is.Not.Null.And.Not.Empty);
+        FileCitationMessageAnnotation annotation = messageContentPart.OutputTextAnnotations[0] as FileCitationMessageAnnotation;
+        Assert.That(annotation.FileId, Is.EqualTo(testFile.Id));
+        Assert.That(annotation.Index, Is.GreaterThan(0));
+
+        await foreach (ResponseItem inputItem in client.GetResponseInputItemsAsync(response.Id))
+        {
+            Console.WriteLine(ModelReaderWriter.Write(inputItem).ToString());
+        }
+    }
+
+    private List<string> FileIdsToDelete = [];
+    private List<string> VectorStoreIdsToDelete = [];
+
+    private void Validate<T>(T input) where T : class
+    {
+        if (input is OpenAIFile file)
+        {
+            FileIdsToDelete.Add(file.Id);
+        }
+        if (input is VectorStore vectorStore)
+        {
+            VectorStoreIdsToDelete.Add(vectorStore.Id);
+        }
     }
 
     private OpenAIResponseClient GetTestClient(string overrideModel = null) => CreateProxyFromClient(GetTestClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel));
