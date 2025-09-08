@@ -10,13 +10,11 @@ using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Files;
 
-[TestFixture(true)]
-[TestFixture(false)]
 [Parallelizable(ParallelScope.Fixtures)]
 [Category("Uploads")]
-public class UploadsTests : SyncAsyncTestBase
+public class UploadsTests : ClientTestBase
 {
-    private static OpenAIFileClient GetTestClient() => GetTestClient<OpenAIFileClient>(TestScenario.Files);
+    private OpenAIFileClient GetTestClient() => CreateProxyFromClient(GetTestClient<OpenAIFileClient>(TestScenario.Files));
 
     public UploadsTests(bool isAsync) : base(isAsync)
     {
@@ -31,7 +29,7 @@ public class UploadsTests : SyncAsyncTestBase
         // are setting the internal Uploads client correctly.
 
         OpenAIFileClient fileClient = useTopLevelClient
-            ? TestHelpers.GetTestTopLevelClient().GetOpenAIFileClient()
+            ? CreateProxyFromClient(TestHelpers.GetTestTopLevelClient().GetOpenAIFileClient())
             : GetTestClient();
         BinaryContent content = BinaryContent.Create(BinaryData.FromObjectAsJson(new
         {
@@ -41,9 +39,7 @@ public class UploadsTests : SyncAsyncTestBase
             mime_type = "text/jsonl"
         }));
 
-        ClientResult result = IsAsync
-            ? await fileClient.CreateUploadAsync(content)
-            : fileClient.CreateUpload(content);
+        ClientResult result = await fileClient.CreateUploadAsync(content);
 
         BinaryData response = result.GetRawResponse().Content;
         using JsonDocument jsonDocument = JsonDocument.Parse(response);
@@ -70,10 +66,7 @@ public class UploadsTests : SyncAsyncTestBase
 
         content.Add([1, 2, 3, 4], "data", "data", "application/octet-stream");
 
-        ClientResult result = IsAsync
-            ? await fileClient.AddUploadPartAsync(uploadDetails.Id, content, content.ContentType)
-            : fileClient.AddUploadPart(uploadDetails.Id, content, content.ContentType);
-
+        ClientResult result = await fileClient.AddUploadPartAsync(uploadDetails.Id, content, content.ContentType);
         BinaryData response = result.GetRawResponse().Content;
         using JsonDocument jsonDocument = JsonDocument.Parse(response);
         UploadPartDetails uploadPartDetails = GetUploadPartDetails(jsonDocument);
@@ -106,9 +99,7 @@ public class UploadsTests : SyncAsyncTestBase
             }
         }));
 
-        ClientResult result = IsAsync
-            ? await fileClient.CompleteUploadAsync(createdUploadDetails.Id, content)
-            : fileClient.CompleteUpload(createdUploadDetails.Id, content);
+        ClientResult result = await fileClient.CompleteUploadAsync(createdUploadDetails.Id, content);
 
         BinaryData response = result.GetRawResponse().Content;
         using JsonDocument jsonDocument = JsonDocument.Parse(response);
@@ -148,9 +139,7 @@ public class UploadsTests : SyncAsyncTestBase
         OpenAIFileClient fileClient = GetTestClient();
         UploadDetails createdUploadDetails = await CreateTestUploadAsync(fileClient);
 
-        ClientResult result = IsAsync
-            ? await fileClient.CancelUploadAsync(createdUploadDetails.Id)
-            : fileClient.CancelUpload(createdUploadDetails.Id);
+        ClientResult result = await fileClient.CancelUploadAsync(createdUploadDetails.Id);
 
         BinaryData response = result.GetRawResponse().Content;
         using JsonDocument jsonDocument = JsonDocument.Parse(response);

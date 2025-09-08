@@ -13,13 +13,11 @@ using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Files;
 
-[TestFixture(true)]
-[TestFixture(false)]
 [Parallelizable(ParallelScope.Fixtures)]
 [Category("Files")]
-public class FilesTests : SyncAsyncTestBase
+public class FilesTests : ClientTestBase
 {
-    private static OpenAIFileClient GetTestClient() => GetTestClient<OpenAIFileClient>(TestScenario.Files);
+    private OpenAIFileClient GetTestClient() => CreateProxyFromClient(GetTestClient<OpenAIFileClient>(TestScenario.Files));
 
     public FilesTests(bool isAsync) : base(isAsync)
     {
@@ -61,9 +59,7 @@ public class FilesTests : SyncAsyncTestBase
             uploadedVisionFile = await client.UploadFileAsync(visionFilePath, FileUploadPurpose.Vision);
             Validate(uploadedVisionFile);
 
-            fileInfoCollection = IsAsync
-                ? await client.GetFilesAsync(FilePurpose.Assistants)
-                : client.GetFiles(FilePurpose.Assistants);
+            fileInfoCollection = await client.GetFilesAsync(FilePurpose.Assistants);
         }
         finally
         {
@@ -150,16 +146,12 @@ public class FilesTests : SyncAsyncTestBase
             {
                 using Stream file = File.OpenRead(path);
 
-                fileInfo = IsAsync
-                    ? await client.UploadFileAsync(file, filename, FileUploadPurpose.Vision)
-                    : client.UploadFile(file, filename, FileUploadPurpose.Vision);
+                fileInfo = await client.UploadFileAsync(file, filename, FileUploadPurpose.Vision);
                 Validate(fileInfo);
             }
             else if (fileSourceKind == FileSourceKind.UsingFilePath)
             {
-                fileInfo = IsAsync
-                    ? await client.UploadFileAsync(path, FileUploadPurpose.Vision)
-                    : client.UploadFile(path, FileUploadPurpose.Vision);
+                fileInfo = await client.UploadFileAsync(path, FileUploadPurpose.Vision);
                 Validate(fileInfo);
             }
             else if (fileSourceKind == FileSourceKind.UsingBinaryData)
@@ -167,9 +159,7 @@ public class FilesTests : SyncAsyncTestBase
                 using Stream file = File.OpenRead(path);
                 BinaryData content = BinaryData.FromStream(file);
 
-                fileInfo = IsAsync
-                    ? await client.UploadFileAsync(content, filename, FileUploadPurpose.Vision)
-                    : client.UploadFile(content, filename, FileUploadPurpose.Vision);
+                fileInfo = await client.UploadFileAsync(content, filename, FileUploadPurpose.Vision);
                 Validate(fileInfo);
             }
             else
@@ -207,16 +197,7 @@ public class FilesTests : SyncAsyncTestBase
         string filename = "images_dog_and_cat.png";
         string path = Path.Combine("Assets", filename);
         FileUploadPurpose fakePurpose = new FileUploadPurpose("world_domination");
-        ClientResultException ex = null;
-
-        if (IsAsync)
-        {
-            ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.UploadFileAsync(path, fakePurpose));
-        }
-        else
-        {
-            ex = Assert.Throws<ClientResultException>(() => client.UploadFile(path, fakePurpose));
-        }
+        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.UploadFileAsync(path, fakePurpose));
 
         Assert.That(ex.Status, Is.EqualTo(400));
     }
@@ -237,15 +218,11 @@ public class FilesTests : SyncAsyncTestBase
 
         if (useFileInfoOverload)
         {
-            result = IsAsync
-                ? await client.DeleteFileAsync(uploadedFile.Id)
-                : client.DeleteFile(uploadedFile.Id);
+            result = await client.DeleteFileAsync(uploadedFile.Id);
         }
         else
         {
-            result = IsAsync
-                ? await client.DeleteFileAsync(uploadedFile.Id)
-                : client.DeleteFile(uploadedFile.Id);
+            result = await client.DeleteFileAsync(uploadedFile.Id);
         }
 
         Assert.That(result.FileId, Is.EqualTo(uploadedFile.Id));
@@ -256,16 +233,7 @@ public class FilesTests : SyncAsyncTestBase
     public void DeleteFileCanParseServiceError()
     {
         OpenAIFileClient client = GetTestClient();
-        ClientResultException ex = null;
-
-        if (IsAsync)
-        {
-            ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.DeleteFileAsync("fake_id"));
-        }
-        else
-        {
-            ex = Assert.Throws<ClientResultException>(() => client.DeleteFile("fake_id"));
-        }
+        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.DeleteFileAsync("fake_id"));
 
         Assert.That(ex.Status, Is.EqualTo(404));
     }
@@ -284,9 +252,7 @@ public class FilesTests : SyncAsyncTestBase
             uploadedFile = await client.UploadFileAsync(file, filename, FileUploadPurpose.Assistants);
             Validate(uploadedFile);
 
-            fileInfo = IsAsync
-                ? await client.GetFileAsync(uploadedFile.Id)
-                : client.GetFile(uploadedFile.Id);
+            fileInfo = await client.GetFileAsync(uploadedFile.Id);
         }
         finally
         {
@@ -312,16 +278,7 @@ public class FilesTests : SyncAsyncTestBase
     public void GetFileCanParseServiceError()
     {
         OpenAIFileClient client = GetTestClient();
-        ClientResultException ex = null;
-
-        if (IsAsync)
-        {
-            ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GetFileAsync("fake_id"));
-        }
-        else
-        {
-            ex = Assert.Throws<ClientResultException>(() => client.GetFile("fake_id"));
-        }
+        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GetFileAsync("fake_id"));
 
         Assert.That(ex.Status, Is.EqualTo(404));
     }
@@ -341,9 +298,7 @@ public class FilesTests : SyncAsyncTestBase
             uploadedFile = await client.UploadFileAsync(file, filename, FileUploadPurpose.Vision);
             Validate(uploadedFile);
 
-            downloadedContent = IsAsync
-                ? await client.DownloadFileAsync(uploadedFile.Id)
-                : client.DownloadFile(uploadedFile.Id);
+            downloadedContent = await client.DownloadFileAsync(uploadedFile.Id);
         }
         finally
         {
@@ -363,16 +318,7 @@ public class FilesTests : SyncAsyncTestBase
     public void DownloadFileCanParseServiceError()
     {
         OpenAIFileClient client = GetTestClient();
-        ClientResultException ex = null;
-
-        if (IsAsync)
-        {
-            ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.DownloadFileAsync("fake_id"));
-        }
-        else
-        {
-            ex = Assert.Throws<ClientResultException>(() => client.DownloadFile("fake_id"));
-        }
+        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.DownloadFileAsync("fake_id"));
 
         Assert.That(ex.Status, Is.EqualTo(404));
     }
@@ -389,9 +335,7 @@ public class FilesTests : SyncAsyncTestBase
         OpenAIFileClient client = GetTestClient();
         string filename = "你好.txt";
         BinaryData fileContent = BinaryData.FromString("世界您好！这是个测试。");
-        OpenAIFile uploadedFile = IsAsync
-            ? await client.UploadFileAsync(fileContent, filename, FileUploadPurpose.Assistants)
-            : client.UploadFile(fileContent, filename, FileUploadPurpose.Assistants);
+        OpenAIFile uploadedFile = await client.UploadFileAsync(fileContent, filename, FileUploadPurpose.Assistants);
         Validate(uploadedFile);
         Assert.That(uploadedFile?.Filename, Is.EqualTo(filename));
     }
@@ -402,9 +346,7 @@ public class FilesTests : SyncAsyncTestBase
         OpenAIFileClient client = GetTestClient();
 
         BinaryData fileContent = BinaryData.FromString("Hello, world!");
-        OpenAIFile uploadedFile = IsAsync
-            ? await client.UploadFileAsync(fileContent, "test_hello_world.txt", FileUploadPurpose.UserData)
-            : client.UploadFile(fileContent, "test_hello_world.txt", FileUploadPurpose.UserData);
+        OpenAIFile uploadedFile = await client.UploadFileAsync(fileContent, "test_hello_world.txt", FileUploadPurpose.UserData);
         Validate(uploadedFile);
         Assert.That(uploadedFile.Purpose, Is.EqualTo(FilePurpose.UserData));
     }

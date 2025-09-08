@@ -9,12 +9,10 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Tests.Models;
 
-[TestFixture(true)]
-[TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("Models")]
 [Category("Smoke")]
-public class ModelsMockTests : SyncAsyncTestBase
+public class ModelsMockTests : ClientTestBase
 {
     private static readonly ApiKeyCredential s_fakeCredential = new ApiKeyCredential("key");
 
@@ -31,11 +29,9 @@ public class ModelsMockTests : SyncAsyncTestBase
             "created": 1704096000
         }
         """);
-        OpenAIModelClient client = new OpenAIModelClient(s_fakeCredential, clientOptions);
+        OpenAIModelClient client = CreateProxyFromClient(new OpenAIModelClient(s_fakeCredential, clientOptions));
 
-        OpenAIModel modelInfo = IsAsync
-            ? await client.GetModelAsync("model_name")
-            : client.GetModel("model_name");
+        OpenAIModel modelInfo = await client.GetModelAsync("model_name");
 
         Assert.That(modelInfo.CreatedAt.ToUnixTimeSeconds(), Is.EqualTo(1704096000));
     }
@@ -52,11 +48,9 @@ public class ModelsMockTests : SyncAsyncTestBase
             ]
         }
         """);
-        OpenAIModelClient client = new OpenAIModelClient(s_fakeCredential, clientOptions);
+        OpenAIModelClient client = CreateProxyFromClient(new OpenAIModelClient(s_fakeCredential, clientOptions));
 
-        OpenAIModelCollection modelInfoCollection = IsAsync
-            ? await client.GetModelsAsync()
-            : client.GetModels();
+        OpenAIModelCollection modelInfoCollection = await client.GetModelsAsync();
         OpenAIModel modelInfo = modelInfoCollection.Single();
 
         Assert.That(modelInfo.CreatedAt.ToUnixTimeSeconds(), Is.EqualTo(1704096000));
@@ -69,6 +63,9 @@ public class ModelsMockTests : SyncAsyncTestBase
         return new OpenAIClientOptions()
         {
             Transport = new MockPipelineTransport(_ => response)
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
         };
     }
 }

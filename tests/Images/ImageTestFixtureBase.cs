@@ -6,15 +6,14 @@ using System;
 using System.ClientModel;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Images;
 
-[TestFixture(true)]
-[TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("Images")]
-public class ImageTestFixtureBase : SyncAsyncTestBase
+public class ImageTestFixtureBase : ClientTestBase
 {
     public ImageTestFixtureBase(bool isAsync) : base(isAsync)
     {
@@ -30,16 +29,16 @@ public class ImageTestFixtureBase : SyncAsyncTestBase
 
     internal static Array s_imageSourceKindSource = Enum.GetValues(typeof(ImageSourceKind));
 
-    public void ValidateGeneratedImage(Uri imageUri, IEnumerable<string> possibleExpectedSubstrings, string descriptionHint = null)
+    public async Task ValidateGeneratedImage(Uri imageUri, IEnumerable<string> possibleExpectedSubstrings, string descriptionHint = null)
     {
-        ChatClient chatClient = GetTestClient<ChatClient>(TestScenario.Chat);
+        ChatClient chatClient = CreateProxyFromClient(GetTestClient<ChatClient>(TestScenario.Chat));
         IEnumerable<ChatMessage> messages = [
             new UserChatMessage(
                 ChatMessageContentPart.CreateTextPart($"Describe this image for me. {descriptionHint}"),
                 ChatMessageContentPart.CreateImagePart(imageUri)),
         ];
         ChatCompletionOptions chatOptions = new() { MaxOutputTokenCount = 2048 };
-        ClientResult<ChatCompletion> result = chatClient.CompleteChat(messages, chatOptions);
+        ClientResult<ChatCompletion> result = await chatClient.CompleteChatAsync(messages, chatOptions);
 
         Assert.That(result.Value?.Content, Has.Count.EqualTo(1));
         string contentText = result.Value.Content[0].Text.ToLowerInvariant();
@@ -47,16 +46,16 @@ public class ImageTestFixtureBase : SyncAsyncTestBase
         Assert.That(possibleExpectedSubstrings.Any(possibleExpectedSubstring => contentText.Contains(possibleExpectedSubstring)));
     }
 
-    public void ValidateGeneratedImage(BinaryData imageBytes, IEnumerable<string> possibleExpectedSubstrings, string descriptionHint = null)
+    public async Task ValidateGeneratedImage(BinaryData imageBytes, IEnumerable<string> possibleExpectedSubstrings, string descriptionHint = null)
     {
-        ChatClient chatClient = GetTestClient<ChatClient>(TestScenario.Chat);
+        ChatClient chatClient = CreateProxyFromClient(GetTestClient<ChatClient>(TestScenario.Chat));
         IEnumerable<ChatMessage> messages = [
             new UserChatMessage(
                 ChatMessageContentPart.CreateTextPart($"Describe this image for me. {descriptionHint}"),
                 ChatMessageContentPart.CreateImagePart(imageBytes, "image/png")),
         ];
         ChatCompletionOptions chatOptions = new() { MaxOutputTokenCount = 2048 };
-        ClientResult<ChatCompletion> result = chatClient.CompleteChat(messages, chatOptions);
+        ClientResult<ChatCompletion> result = await chatClient.CompleteChatAsync(messages, chatOptions);
 
         Assert.That(result.Value?.Content, Has.Count.EqualTo(1));
         string contentText = result.Value.Content[0].Text.ToLowerInvariant();
