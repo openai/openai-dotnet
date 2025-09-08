@@ -252,7 +252,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
         }
         Assert.That(deltaTextSegments, Has.Count.GreaterThan(0));
         Assert.That(finalResponseText, Is.Not.Null.And.Not.Empty);
-        Assert.That(string.Join(string.Empty, deltaTextSegments), Is.EqualTo(finalResponseText));
+        Assert.That(string.Concat(deltaTextSegments), Is.EqualTo(finalResponseText));
     }
 
     [Test]

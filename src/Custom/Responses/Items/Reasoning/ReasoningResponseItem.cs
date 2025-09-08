@@ -19,8 +19,7 @@ public partial class ReasoningResponseItem
     // CUSTOM: Added for convenience.
     public string GetSummaryText()
     {
-        return string.Join(
-            separator: string.Empty,
+        return string.Concat(
             values: SummaryParts.Select(part => (part as ReasoningSummaryTextPart)?.Text ?? string.Empty));
     }
 }
