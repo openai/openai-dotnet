@@ -21,6 +21,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 [assembly: LevelOfParallelism(8)]
 
@@ -124,6 +125,32 @@ internal static class TestHelpers
             _ => throw new NotImplementedException(),
         };
         return (T)clientObject;
+    }
+
+    public static async Task RetryWithExponentialBackoffAsync(Func<Task> action, int maxRetries = 5, int initialWaitMs = 750)
+    {
+        int waitDuration = initialWaitMs;
+        int retryCount = 0;
+        bool successful = false;
+
+        while (retryCount < maxRetries && !successful)
+        {
+            try
+            {
+                await action();
+                successful = true;
+            }
+            catch (ClientResultException ex) when (ex.Status == 404)
+            {
+                await Task.Delay(waitDuration);
+                waitDuration *= 2;
+                retryCount++;
+                if (retryCount >= maxRetries)
+                {
+                    throw;
+                }
+            }
+        }
     }
 
     private static PipelinePolicy GetDumpPolicy()

@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+﻿using Microsoft.ClientModel.TestFramework;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
 using OpenAI.Files;
 using OpenAI.Responses;
@@ -19,14 +20,13 @@ namespace OpenAI.Tests.Responses;
 
 #pragma warning disable OPENAICUA001
 
-[TestFixture(true)]
-[TestFixture(false)]
 [Parallelizable(ParallelScope.Fixtures)]
 [Category("Responses")]
-public partial class ResponsesTests : SyncAsyncTestBase
+public partial class ResponsesTests : ClientTestBase
 {
     public ResponsesTests(bool isAsync) : base(isAsync)
     {
+        TestTimeoutInSeconds = 30;
     }
 
     [OneTimeTearDown]
@@ -468,9 +468,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
         {
             ServiceTier = ResponseServiceTier.Default,
         };
-        OpenAIResponse response = IsAsync
-            ? await client.CreateResponseAsync([message], options)
-            : client.CreateResponse([message], options);
+        OpenAIResponse response = await client.CreateResponseAsync([message], options);
 
         Assert.That(response, Is.Not.Null);
         Assert.That(response.ServiceTier, Is.EqualTo(ResponseServiceTier.Default));
@@ -979,5 +977,5 @@ public partial class ResponsesTests : SyncAsyncTestBase
             """),
         strictModeEnabled: false);
 
-    private static OpenAIResponseClient GetTestClient(string overrideModel = null) => GetTestClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel);
+    private OpenAIResponseClient GetTestClient(string overrideModel = null) => CreateProxyFromClient(GetTestClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel));
 }

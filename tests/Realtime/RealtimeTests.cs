@@ -15,8 +15,6 @@ namespace OpenAI.Tests.Realtime;
 
 #pragma warning disable OPENAI002
 
-[TestFixture(true)]
-[TestFixture(false)]
 public class RealtimeTests : RealtimeTestFixtureBase
 {
     public RealtimeTests(bool isAsync) : base(isAsync) { }

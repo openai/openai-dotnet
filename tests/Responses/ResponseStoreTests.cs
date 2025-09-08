@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using OpenAI.Chat;
 using OpenAI.Responses;
 using OpenAI.Tests.Utility;
@@ -12,17 +13,15 @@ namespace OpenAI.Tests.Responses;
 
 #pragma warning disable OPENAICUA001
 
-[TestFixture(true)]
-[TestFixture(false)]
 [Parallelizable(ParallelScope.Fixtures)]
 [Category("Responses")]
-public partial class ResponseStoreTests : SyncAsyncTestBase
+public partial class ResponseStoreTests : ClientTestBase
 {
     public ResponseStoreTests(bool isAsync) : base(isAsync)
     {
     }
 
-    private static OpenAIResponseClient GetTestClient(string overrideModel = null) => GetTestClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel);
+    private OpenAIResponseClient GetTestClient(string overrideModel = null) => CreateProxyFromClient(GetTestClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel));
 
     [Test]
     public async Task GetInputItemsWithPagination()
@@ -110,7 +109,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
 
         Assert.That(totalCount, Is.GreaterThanOrEqualTo(2));
         Assert.That(lastId, Is.Not.Null);
-        Assert.IsTrue(hasMultipleContentParts, "Expected at least one message with multiple content parts.");
+        Assert.That(hasMultipleContentParts, "Expected at least one message with multiple content parts.");
     }
 
     [Test]
@@ -200,7 +199,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         Assert.That(desc, Has.Count.GreaterThan(0));
         Assert.That(asc[0].Id, Is.Not.Null.And.Not.Empty);
         Assert.That(desc[0].Id, Is.Not.Null.And.Not.Empty);
-        Assert.AreNotEqual(asc[0].Id, desc[0].Id);
+        Assert.That(asc[0].Id, Is.Not.EqualTo(desc[0].Id));
     }
 
     [Test]

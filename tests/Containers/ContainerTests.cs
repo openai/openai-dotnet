@@ -1,3 +1,4 @@
+using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Containers;
 using OpenAI.Tests.Utility;

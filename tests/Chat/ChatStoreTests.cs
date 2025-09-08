@@ -449,7 +449,7 @@ public class ChatStoreToolTests : SyncAsyncTestBase
             [new UserChatMessage("Say `this is a test`.")],
             options);
 
-        await RetryWithExponentialBackoffAsync(async () =>
+        await TestHelpers.RetryWithExponentialBackoffAsync(async () =>
         {
 
             ChatCompletion storedCompletion = await client.GetChatCompletionAsync(completion.Id);
@@ -470,7 +470,6 @@ public class ChatStoreToolTests : SyncAsyncTestBase
         });
     }
 
-    [Ignore("Temporarily ignore because this test is super flaky")]
     [Test]
     public async Task UpdateChatCompletionWorks()
     {

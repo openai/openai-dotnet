@@ -1,3 +1,5 @@
+using Microsoft.ClientModel.TestFramework;
+using Microsoft.ClientModel.TestFramework.Mocks;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
 using OpenAI.Chat;
@@ -35,14 +37,18 @@ public class ChatSmokeTests : SyncAsyncTestBase
         string mockResponseId = Guid.NewGuid().ToString();
         long mockCreated = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
-        BinaryData mockRequest = BinaryData.FromString($$"""
-        {
-            "model": "gpt-4o-mini",
-            "messages": [
-            { "role": "user", "content": "Hello, assistant!" }
-            ]
-        }
-        """);
+        // TODO - I don't really understand why this test is injecting content through create message in the mock transport instead
+        // of just calling the client method with the data, I don't really see value in adding that to the unbranded test framework
+        // so come back to this and determine the alternative way to do this
+
+        //BinaryData mockRequest = BinaryData.FromString($$"""
+        //{
+        //    "model": "gpt-4o-mini",
+        //    "messages": [
+        //    { "role": "user", "content": "Hello, assistant!" }
+        //    ]
+        //}
+        //""");
         BinaryData mockResponse = BinaryData.FromString($$"""
         {
             "id": "{{mockResponseId}}",
@@ -56,7 +62,7 @@ public class ChatSmokeTests : SyncAsyncTestBase
             "additional_property": "hello, additional world!"
         }
         """);
-        MockPipelineTransport mockTransport = new(mockRequest, mockResponse);
+        MockPipelineTransport mockTransport = new(_ => new MockPipelineResponse(200).WithContent(BinaryContent.Create(mockResponse)));
 
         OpenAIClientOptions options = new()
         {
@@ -903,7 +909,10 @@ public class ChatSmokeTests : SyncAsyncTestBase
     [Test]
     public void TopLevelClientOptionsPersistence()
     {
-        MockPipelineTransport mockTransport = new(BinaryData.FromString("{}"), BinaryData.FromString("{}"));
+        // TODO - same thing as above, why inject content through the transport instead of passing it to the client method
+        // MockPipelineTransport mockTransport = new(BinaryData.FromString("{}"), BinaryData.FromString("{}"));
+
+        MockPipelineTransport mockTransport = new(_ => new MockPipelineResponse(200).WithContent(BinaryContent.Create(BinaryData.FromString("{}"))));
         OpenAIClientOptions options = new()
         {
             Transport = mockTransport,

@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using OpenAI.Responses;
 using OpenAI.Tests.Utility;
 using System;
@@ -11,15 +12,14 @@ using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Responses;
 
-[TestFixture(true)]
-[TestFixture(false)]
 [Parallelizable(ParallelScope.Fixtures)]
 [Category("Responses")]
 [Category("MCP")]
-public partial class ResponsesToolTests : SyncAsyncTestBase
+public partial class ResponsesToolTests : ClientTestBase
 {
     public ResponsesToolTests(bool isAsync) : base(isAsync)
     {
+        TestTimeoutInSeconds = 30;
     }
 
     [Test]
@@ -336,5 +336,5 @@ public partial class ResponsesToolTests : SyncAsyncTestBase
         Assert.That(response.OutputItems.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(0));
     }
 
-    private static OpenAIResponseClient GetTestClient(string overrideModel = null) => GetTestClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel);
+    private OpenAIResponseClient GetTestClient(string overrideModel = null) => CreateProxyFromClient(GetTestClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel));
 }

@@ -1,4 +1,6 @@
-﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+﻿using Microsoft.ClientModel.TestFramework;
+using Microsoft.ClientModel.TestFramework.Mocks;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
 using OpenAI.Chat;
 using OpenAI.Files;
@@ -70,11 +72,10 @@ public class ChatTests : SyncAsyncTestBase
         Assert.That(new string[] { "aye", "arr", "hearty" }.Any(pirateWord => result.Value.Content[0].Text.ToLowerInvariant().Contains(pirateWord)));
     }
 
+    [SyncOnly]
     [Test]
     public void StreamingChat()
     {
-        AssertSyncOnly();
-
         ChatClient client = GetTestClient();
         IEnumerable<ChatMessage> messages = [new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")];
 
@@ -105,11 +106,10 @@ public class ChatTests : SyncAsyncTestBase
         Assert.That(usage?.OutputTokenDetails?.ReasoningTokenCount, Is.Null.Or.EqualTo(0));
     }
 
+    [AsyncOnly]
     [Test]
     public async Task StreamingChatAsync()
     {
-        AssertAsyncOnly();
-
         ChatClient client = GetTestClient();
         IEnumerable<ChatMessage> messages = [new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")];
 
@@ -140,13 +140,11 @@ public class ChatTests : SyncAsyncTestBase
         Assert.That(usage?.OutputTokenDetails?.ReasoningTokenCount, Is.Null.Or.EqualTo(0));
     }
 
+    [SyncOnly]
     [Test]
     public void StreamingChatCanBeCancelled()
     {
-        AssertSyncOnly();
-
-        MockPipelineResponse response = new(200);
-        response.SetContent("""
+        MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""
             data: {"id":"chatcmpl-A7mKGugwaczn3YyrJLlZY6CM0Wlkr","object":"chat.completion.chunk","created":1726417424,"model":"gpt-4o-mini-2024-07-18","system_fingerprint":"fp_483d39d857","choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"logprobs":null,"finish_reason":null}],"usage":null}
 
             data: {"id":"chatcmpl-A7mKGugwaczn3YyrJLlZY6CM0Wlkr","object":"chat.completion.chunk","created":1726417424,"model":"gpt-4o-mini-2024-07-18","system_fingerprint":"fp_483d39d857","choices":[{"index":0,"delta":{"content":"The"},"logprobs":null,"finish_reason":null}],"usage":null}
@@ -156,7 +154,7 @@ public class ChatTests : SyncAsyncTestBase
 
         OpenAIClientOptions options = new OpenAIClientOptions()
         {
-            Transport = new MockPipelineTransport(response)
+            Transport = new MockPipelineTransport(_ => response)
         };
 
         CancellationTokenSource cancellationTokenSource = new();
@@ -186,13 +184,11 @@ public class ChatTests : SyncAsyncTestBase
         });
     }
 
+    [AsyncOnly]
     [Test]
     public async Task StreamingChatCanBeCancelledAsync()
     {
-        AssertAsyncOnly();
-
-        MockPipelineResponse response = new(200);
-        response.SetContent("""
+        MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""
             data: {"id":"chatcmpl-A7mKGugwaczn3YyrJLlZY6CM0Wlkr","object":"chat.completion.chunk","created":1726417424,"model":"gpt-4o-mini-2024-07-18","system_fingerprint":"fp_483d39d857","choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"logprobs":null,"finish_reason":null}],"usage":null}
 
             data: {"id":"chatcmpl-A7mKGugwaczn3YyrJLlZY6CM0Wlkr","object":"chat.completion.chunk","created":1726417424,"model":"gpt-4o-mini-2024-07-18","system_fingerprint":"fp_483d39d857","choices":[{"index":0,"delta":{"content":"The"},"logprobs":null,"finish_reason":null}],"usage":null}
@@ -202,7 +198,7 @@ public class ChatTests : SyncAsyncTestBase
 
         OpenAIClientOptions options = new OpenAIClientOptions()
         {
-            Transport = new MockPipelineTransport(response)
+            Transport = new MockPipelineTransport(_ => response)
         };
 
         CancellationTokenSource cancellationTokenSource = new();
@@ -232,13 +228,11 @@ public class ChatTests : SyncAsyncTestBase
         });
     }
 
+    [SyncOnly]
     [Test]
     public void CompleteChatStreamingClosesNetworkStream()
     {
-        AssertSyncOnly();
-
-        MockPipelineResponse response = new(200);
-        response.SetContent("""
+        MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""
             data: {"id":"chatcmpl-A7mKGugwaczn3YyrJLlZY6CM0Wlkr","object":"chat.completion.chunk","created":1726417424,"model":"gpt-4o-mini-2024-07-18","system_fingerprint":"fp_483d39d857","choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"logprobs":null,"finish_reason":null}],"usage":null}
 
             data: {"id":"chatcmpl-A7mKGugwaczn3YyrJLlZY6CM0Wlkr","object":"chat.completion.chunk","created":1726417424,"model":"gpt-4o-mini-2024-07-18","system_fingerprint":"fp_483d39d857","choices":[{"index":0,"delta":{"content":"The"},"logprobs":null,"finish_reason":null}],"usage":null}
@@ -248,7 +242,7 @@ public class ChatTests : SyncAsyncTestBase
 
         OpenAIClientOptions options = new OpenAIClientOptions()
         {
-            Transport = new MockPipelineTransport(response)
+            Transport = new MockPipelineTransport(_ => response)
         };
 
         ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, options: options);
@@ -277,13 +271,11 @@ public class ChatTests : SyncAsyncTestBase
         Assert.That(response.IsDisposed);
     }
 
+    [AsyncOnly]
     [Test]
     public async Task CompleteChatStreamingClosesNetworkStreamAsync()
     {
-        AssertAsyncOnly();
-
-        MockPipelineResponse response = new(200);
-        response.SetContent("""
+        MockPipelineResponse response = new MockPipelineResponse(200).WithContent("""
             data: {"id":"chatcmpl-A7mKGugwaczn3YyrJLlZY6CM0Wlkr","object":"chat.completion.chunk","created":1726417424,"model":"gpt-4o-mini-2024-07-18","system_fingerprint":"fp_483d39d857","choices":[{"index":0,"delta":{"role":"assistant","content":"","refusal":null},"logprobs":null,"finish_reason":null}],"usage":null}
 
             data: {"id":"chatcmpl-A7mKGugwaczn3YyrJLlZY6CM0Wlkr","object":"chat.completion.chunk","created":1726417424,"model":"gpt-4o-mini-2024-07-18","system_fingerprint":"fp_483d39d857","choices":[{"index":0,"delta":{"content":"The"},"logprobs":null,"finish_reason":null}],"usage":null}
@@ -293,7 +285,7 @@ public class ChatTests : SyncAsyncTestBase
 
         OpenAIClientOptions options = new OpenAIClientOptions()
         {
-            Transport = new MockPipelineTransport(response)
+            Transport = new MockPipelineTransport(_ => response)
         };
 
         ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, options: options);
