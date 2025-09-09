@@ -4,16 +4,13 @@ using System.Threading;
 using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Audio;
-using OpenAI.Tests.Utility;
 
 namespace OpenAI.Tests.Audio;
 
-[TestFixture(true)]
-[TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("Audio")]
 [Category("Smoke")]
-internal class GenerateSpeechMockTests : SyncAsyncTestBase
+internal class GenerateSpeechMockTests : ClientTestBase
 {
     private static readonly ApiKeyCredential s_fakeCredential = new ApiKeyCredential("key");
 
@@ -25,19 +22,11 @@ internal class GenerateSpeechMockTests : SyncAsyncTestBase
     [Test]
     public void GenerateSpeechRespectsTheCancellationToken()
     {
-        AudioClient client = new AudioClient("model", s_fakeCredential);
+        AudioClient client = CreateProxyFromClient(new AudioClient("model", s_fakeCredential));
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
 
-        if (IsAsync)
-        {
-            Assert.That(async () => await client.GenerateSpeechAsync("text", GeneratedSpeechVoice.Echo, cancellationToken: cancellationSource.Token),
+        Assert.That(async () => await client.GenerateSpeechAsync("text", GeneratedSpeechVoice.Echo, cancellationToken: cancellationSource.Token),
                 Throws.InstanceOf<OperationCanceledException>());
-        }
-        else
-        {
-            Assert.That(() => client.GenerateSpeech("text", GeneratedSpeechVoice.Echo, cancellationToken: cancellationSource.Token),
-                Throws.InstanceOf<OperationCanceledException>());
-        }
     }
 }

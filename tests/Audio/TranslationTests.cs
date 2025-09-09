@@ -1,21 +1,16 @@
 ﻿using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Audio;
-using OpenAI.Tests.Utility;
 using System;
-using System.ClientModel;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Audio;
 
-[TestFixture(true)]
-[TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("Audio")]
-public partial class TranslationTests : SyncAsyncTestBase
+public partial class TranslationTests : ClientTestBase
 {
     public TranslationTests(bool isAsync) : base(isAsync)
     {
@@ -32,7 +27,7 @@ public partial class TranslationTests : SyncAsyncTestBase
     [TestCase(AudioSourceKind.UsingFilePath)]
     public async Task TranslationWorks(AudioSourceKind audioSourceKind)
     {
-        AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_Whisper);
+        AudioClient client = CreateProxyFromClient(GetTestClient<AudioClient>(TestScenario.Audio_Whisper));
 
         string filename = "audio_french.wav";
         string path = Path.Combine("Assets", filename);
@@ -42,15 +37,11 @@ public partial class TranslationTests : SyncAsyncTestBase
         {
             using FileStream audio = File.OpenRead(path);
 
-            translation = IsAsync
-                ? await client.TranslateAudioAsync(audio, filename)
-                : client.TranslateAudio(audio, filename);
+            translation = await client.TranslateAudioAsync(audio, filename);
         }
         else if (audioSourceKind == AudioSourceKind.UsingFilePath)
         {
-            translation = IsAsync
-                ? await client.TranslateAudioAsync(path)
-                : client.TranslateAudio(path);
+            translation = await client.TranslateAudioAsync(path);
         }
         Assert.That(translation?.Text, Is.Not.Null);
         Assert.That(translation.Text.ToLowerInvariant(), Contains.Substring("whisper"));
@@ -81,9 +72,7 @@ public partial class TranslationTests : SyncAsyncTestBase
             }
         };
 
-        AudioTranslation translation = IsAsync
-            ? await client.TranslateAudioAsync(path, options)
-            : client.TranslateAudio(path, options);
+        AudioTranslation translation = await client.TranslateAudioAsync(path, options);
 
         Assert.That(translation?.Text?.ToLowerInvariant(), Does.Contain("recognition"));
 

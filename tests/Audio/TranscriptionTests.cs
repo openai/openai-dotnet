@@ -1,7 +1,6 @@
 ﻿using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Audio;
-using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
@@ -9,16 +8,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using System.Transactions;
 using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Audio;
 
-[TestFixture(true)]
-[TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("Audio")]
-public partial class TranscriptionTests : SyncAsyncTestBase
+public partial class TranscriptionTests : ClientTestBase
 {
     public TranscriptionTests(bool isAsync) : base(isAsync)
     {
@@ -35,7 +31,7 @@ public partial class TranscriptionTests : SyncAsyncTestBase
     [TestCase(AudioSourceKind.UsingFilePath)]
     public async Task TranscriptionWorks(AudioSourceKind audioSourceKind)
     {
-        AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_Whisper);
+        AudioClient client = CreateProxyFromClient(GetTestClient<AudioClient>(TestScenario.Audio_Whisper));
         string filename = "audio_hello_world.mp3";
         string path = Path.Combine("Assets", filename);
         AudioTranscription transcription = null;
@@ -44,15 +40,11 @@ public partial class TranscriptionTests : SyncAsyncTestBase
         {
             using FileStream inputStream = File.OpenRead(path);
 
-            transcription = IsAsync
-                ? await client.TranscribeAudioAsync(inputStream, filename)
-                : client.TranscribeAudio(inputStream, filename);
+            transcription = await client.TranscribeAudioAsync(inputStream, filename);
         }
         else if (audioSourceKind == AudioSourceKind.UsingFilePath)
         {
-            transcription = IsAsync
-                ? await client.TranscribeAudioAsync(path)
-                : client.TranscribeAudio(path);
+            transcription = await client.TranscribeAudioAsync(path);
         }
 
         Assert.That(transcription, Is.Not.Null);
@@ -66,7 +58,7 @@ public partial class TranscriptionTests : SyncAsyncTestBase
     [TestCase(AudioTimestampGranularities.Word | AudioTimestampGranularities.Segment)]
     public async Task TimestampsWork(AudioTimestampGranularities granularityFlags)
     {
-        AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_Whisper);
+        AudioClient client = CreateProxyFromClient(GetTestClient<AudioClient>(TestScenario.Audio_Whisper));
 
         using FileStream inputStream = File.OpenRead(Path.Combine("Assets", "audio_hello_world.mp3"));
 
@@ -77,9 +69,7 @@ public partial class TranscriptionTests : SyncAsyncTestBase
             TimestampGranularities = granularityFlags,
         };
 
-        ClientResult<AudioTranscription> transcriptionResult = IsAsync
-            ? await client.TranscribeAudioAsync(inputStream, "audio_hello_world.mp3", options)
-            : client.TranscribeAudio(inputStream, "audio_hello_world.mp3", options);
+        ClientResult<AudioTranscription> transcriptionResult = await client.TranscribeAudioAsync(inputStream, "audio_hello_world.mp3", options);
 
         PipelineResponse rawResponse = transcriptionResult.GetRawResponse();
         Assert.That(rawResponse.Content.ToString(), Is.Not.Null.And.Not.Empty);
@@ -141,7 +131,7 @@ public partial class TranscriptionTests : SyncAsyncTestBase
     [TestCase(null)]
     public async Task TranscriptionFormatsWork(string responseFormat)
     {
-        AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_Whisper);
+        AudioClient client = CreateProxyFromClient(GetTestClient<AudioClient>(TestScenario.Audio_Whisper));
         string path = Path.Combine("Assets", "audio_hello_world.mp3");
 
         AudioTranscriptionOptions options = new()
@@ -157,9 +147,7 @@ public partial class TranscriptionTests : SyncAsyncTestBase
             }
         };
 
-        AudioTranscription transcription = IsAsync
-            ? await client.TranscribeAudioAsync(path, options)
-            : client.TranscribeAudio(path, options);
+        AudioTranscription transcription = await client.TranscribeAudioAsync(path, options);
 
         Assert.That(transcription?.Text?.ToLowerInvariant(), Does.Contain("hello"));
 
@@ -200,7 +188,7 @@ public partial class TranscriptionTests : SyncAsyncTestBase
     [Test]
     public async Task IncludesWork()
     {
-        AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe);
+        AudioClient client = CreateProxyFromClient(GetTestClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe));
         string filename = "audio_hello_world.mp3";
         string path = Path.Combine("Assets", filename);
 
@@ -218,7 +206,7 @@ public partial class TranscriptionTests : SyncAsyncTestBase
     [Test]
     public async Task StreamingIncludesWork()
     {
-        AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe);
+        AudioClient client = CreateProxyFromClient(GetTestClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe));
         string filename = "audio_hello_world.mp3";
         string path = Path.Combine("Assets", filename);
 
@@ -252,7 +240,7 @@ public partial class TranscriptionTests : SyncAsyncTestBase
     [Test]
     public async Task BadTranscriptionRequest()
     {
-        AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_Whisper);
+        AudioClient client = CreateProxyFromClient(GetTestClient<AudioClient>(TestScenario.Audio_Whisper));
 
         string path = Path.Combine("Assets", "audio_hello_world.mp3");
 
@@ -265,9 +253,7 @@ public partial class TranscriptionTests : SyncAsyncTestBase
 
         try
         {
-            _ = IsAsync
-                ? await client.TranscribeAudioAsync(path, options)
-                : client.TranscribeAudio(path, options);
+            await client.TranscribeAudioAsync(path, options);
         }
         catch (Exception ex)
         {
@@ -283,7 +269,7 @@ public partial class TranscriptionTests : SyncAsyncTestBase
     [TestCase(AudioSourceKind.UsingFilePath)]
     public async Task StreamingTranscriptionWorks(AudioSourceKind audioSourceKind)
     {
-        AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe);
+        AudioClient client = CreateProxyFromClient(GetTestClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe));
         string filename = "audio_hello_world.mp3";
         string path = Path.Combine("Assets", filename);
 
@@ -328,7 +314,7 @@ public partial class TranscriptionTests : SyncAsyncTestBase
     [TestCase(AudioSourceKind.UsingFilePath)]
     public void StreamingTranscriptionThrowsForWhisperModel(AudioSourceKind audioSourceKind)
     {
-        AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_Whisper);
+        AudioClient client = CreateProxyFromClient(GetTestClient<AudioClient>(TestScenario.Audio_Whisper));
         string filename = "audio_hello_world.mp3";
         string path = Path.Combine("Assets", filename);
 

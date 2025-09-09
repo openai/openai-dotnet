@@ -1,7 +1,6 @@
 ﻿using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Chat;
-using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.Collections.Generic;
@@ -11,16 +10,15 @@ using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Chat;
 
-[TestFixture(true)]
-[TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("StoredChat")]
-public class ChatStoreToolTests : SyncAsyncTestBase
+public class ChatStoreToolTests : ClientTestBase
 {
     private const int s_delayInMilliseconds = 5000;
 
     public ChatStoreToolTests(bool isAsync) : base(isAsync)
     {
+        TestTimeoutInSeconds = 30;
     }
 
     [Test]
@@ -982,8 +980,8 @@ public class ChatStoreToolTests : SyncAsyncTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    private static ChatClient GetTestClient(string overrideModel = null)
-        => GetTestClient<ChatClient>(
+    private ChatClient GetTestClient(string overrideModel = null)
+        => CreateProxyFromClient(GetTestClient<ChatClient>(
             scenario: TestScenario.Chat,
-            overrideModel: overrideModel);
+            overrideModel: overrideModel));
 }

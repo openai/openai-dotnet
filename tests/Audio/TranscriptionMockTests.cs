@@ -8,16 +8,13 @@ using Microsoft.ClientModel.TestFramework;
 using Microsoft.ClientModel.TestFramework.Mocks;
 using NUnit.Framework;
 using OpenAI.Audio;
-using OpenAI.Tests.Utility;
 
 namespace OpenAI.Tests.Audio;
 
-[TestFixture(true)]
-[TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("Audio")]
 [Category("Smoke")]
-public partial class TranscriptionMockTests : SyncAsyncTestBase
+public partial class TranscriptionMockTests : ClientTestBase
 {
     private static readonly ApiKeyCredential s_fakeCredential = new ApiKeyCredential("key");
 
@@ -143,21 +140,13 @@ public partial class TranscriptionMockTests : SyncAsyncTestBase
     [Test]
     public void TranscribeAudioFromStreamRespectsTheCancellationToken()
     {
-        AudioClient client = new AudioClient("model", s_fakeCredential);
+        AudioClient client = CreateProxyFromClient(new AudioClient("model", s_fakeCredential));
         using Stream stream = new MemoryStream();
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
 
-        if (IsAsync)
-        {
-            Assert.That(async () => await client.TranscribeAudioAsync(stream, "filename", cancellationToken: cancellationSource.Token),
+        Assert.That(async () => await client.TranscribeAudioAsync(stream, "filename", cancellationToken: cancellationSource.Token),
                 Throws.InstanceOf<OperationCanceledException>());
-        }
-        else
-        {
-            Assert.That(() => client.TranscribeAudio(stream, "filename", cancellationToken: cancellationSource.Token),
-                Throws.InstanceOf<OperationCanceledException>());
-        }
     }
 
     private OpenAIClientOptions GetClientOptionsWithMockResponse(int status, string content)
@@ -167,12 +156,15 @@ public partial class TranscriptionMockTests : SyncAsyncTestBase
         return new OpenAIClientOptions()
         {
             Transport = new MockPipelineTransport(_ => response)
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
         };
     }
 
     private async ValueTask<AudioTranscription> InvokeTranscribeAudioSyncOrAsync(OpenAIClientOptions clientOptions, AudioSourceKind audioSourceKind)
     {
-        AudioClient client = new AudioClient("model", s_fakeCredential, clientOptions);
+        AudioClient client = CreateProxyFromClient(new AudioClient("model", s_fakeCredential, clientOptions));
         string filename = "audio_french.wav";
         string path = Path.Combine("Assets", filename);
 
@@ -180,15 +172,11 @@ public partial class TranscriptionMockTests : SyncAsyncTestBase
         {
             using FileStream audio = File.OpenRead(path);
 
-            return IsAsync
-                ? await client.TranscribeAudioAsync(audio, filename)
-                : client.TranscribeAudio(audio, filename);
+            return await client.TranscribeAudioAsync(audio, filename);
         }
         else if (audioSourceKind == AudioSourceKind.UsingFilePath)
         {
-            return IsAsync
-                ? await client.TranscribeAudioAsync(path)
-                : client.TranscribeAudio(path);
+            return await client.TranscribeAudioAsync(path);
         }
 
         Assert.Fail("Invalid source kind.");
