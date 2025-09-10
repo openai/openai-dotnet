@@ -4,11 +4,21 @@ using System.ClientModel;
 namespace OpenAI.VectorStores;
 
 // CUSTOM: Made internal.
-[CodeGenType("CreateVectorStoreFileBatchRequest")] internal partial class InternalCreateVectorStoreFileBatchRequest { }
+[CodeGenType("CreateVectorStoreFileBatchRequest")] internal partial class InternalCreateVectorStoreFileBatchRequest
+{
+    public static implicit operator BinaryContent(InternalCreateVectorStoreFileBatchRequest internalCreateVectorStoreFileBatchRequest)
+    {
+        if (internalCreateVectorStoreFileBatchRequest == null)
+        {
+            return null;
+        }
+        return BinaryContent.Create(internalCreateVectorStoreFileBatchRequest, ModelSerializationExtensions.WireOptions);
+    }
+}
 [CodeGenType("CreateVectorStoreFileRequest")] internal partial class InternalCreateVectorStoreFileRequest { }
 [CodeGenType("DeleteVectorStoreFileResponseObject")] internal readonly partial struct InternalDeleteVectorStoreFileResponseObject { }
 [CodeGenType("DeleteVectorStoreResponseObject")] internal readonly partial struct InternalDeleteVectorStoreResponseObject { }
-[CodeGenType("ListVectorStoreFilesResponse")] internal partial class InternalListVectorStoreFilesResponse : IInternalListResponse<VectorStoreFileAssociation> { }
+[CodeGenType("ListVectorStoreFilesResponse")] internal partial class InternalListVectorStoreFilesResponse : IInternalListResponse<VectorStoreFile> { }
 [CodeGenType("ListVectorStoreFilesResponseObject")] internal readonly partial struct InternalListVectorStoreFilesResponseObject { }
 [CodeGenType("ListVectorStoresResponse")] internal partial class InternalListVectorStoresResponse : IInternalListResponse<VectorStore> { }
 [CodeGenType("ListVectorStoresResponseObject")] internal readonly partial struct InternalListVectorStoresResponseObject { }

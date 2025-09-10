@@ -21,7 +21,7 @@ public partial class GraderClient
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
     /// <summary> Initializes a new instance of <see cref="GraderClient"/>. </summary>
-    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
     public GraderClient(ApiKeyCredential credential) : this(credential, new OpenAIClientOptions())
     {
@@ -31,7 +31,7 @@ public partial class GraderClient
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
     /// <summary> Initializes a new instance of <see cref="GraderClient"/>. </summary>
-    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
     public GraderClient(ApiKeyCredential credential, OpenAIClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
@@ -76,4 +76,10 @@ public partial class GraderClient
         Pipeline = pipeline;
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
+
+    /// <summary>
+    /// Gets the endpoint URI for the service.
+    /// </summary>
+    [Experimental("OPENAI001")]
+    public Uri Endpoint => _endpoint;
 }

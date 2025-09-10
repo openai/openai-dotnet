@@ -30,8 +30,9 @@ public static partial class OpenAIResponsesModelFactory
         IDictionary<string, string> metadata = null,
         float? temperature = null,
         float? topP = null,
+        ResponseServiceTier? serviceTier = null,
         string previousResponseId = null,
-        bool? background = null,
+        bool? backgroundModeEnabled = null,
         string instructions = null,
         IEnumerable<ResponseTool> tools = null)
     {
@@ -40,31 +41,31 @@ public static partial class OpenAIResponsesModelFactory
         metadata ??= new Dictionary<string, string>();
 
         return new OpenAIResponse(
-            metadata: metadata,
-            temperature: temperature,
-            topP: topP,
-            serviceTier: null,
-            previousResponseId: previousResponseId,
-            background: background,
-            instructions: instructions,
-            tools: tools.ToList(),
-            id: id,
-            status: status,
-            createdAt: createdAt,
-            error: error,
-            usage: usage,
-            endUserId: endUserId,
-            reasoningOptions: reasoningOptions,
-            maxOutputTokenCount: maxOutputTokenCount,
-            textOptions: textOptions,
-            truncationMode: truncationMode,
-            incompleteStatusDetails: incompleteStatusDetails,
-            outputItems: outputItems.ToList(),
-            parallelToolCallsEnabled: parallelToolCallsEnabled,
-            toolChoice: toolChoice,
-            model: model,
-            @object: "response",
-            additionalBinaryDataProperties: null);
+           metadata: metadata,
+           temperature: temperature,
+           topP: topP,
+           serviceTier: serviceTier,
+           previousResponseId: previousResponseId,
+           backgroundModeEnabled: backgroundModeEnabled,
+           instructions: instructions,
+           tools: tools.ToList(),
+           id: id,
+           status: status,
+           createdAt: createdAt,
+           error: error,
+           usage: usage,
+           endUserId: endUserId,
+           reasoningOptions: reasoningOptions,
+           maxOutputTokenCount: maxOutputTokenCount,
+           textOptions: textOptions,
+           truncationMode: truncationMode,
+           incompleteStatusDetails: incompleteStatusDetails,
+           outputItems: outputItems.ToList(),
+           parallelToolCallsEnabled: parallelToolCallsEnabled,
+           toolChoice: toolChoice,
+           model: model,
+           @object: "response",
+           additionalBinaryDataProperties: null);
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Responses.MessageResponseItem"/>. </summary>
@@ -74,13 +75,14 @@ public static partial class OpenAIResponsesModelFactory
         MessageRole role = MessageRole.Assistant,
         MessageStatus? status = null)
     {
-        // Convert the public MessageRole to the internal role type
-        InternalResponsesMessageRole internalRole = role.ToSerialString();
-        
-        return new MessageResponseItem(
+        MessageResponseItem item = new(
+            kind: InternalItemType.Message,
             id: id,
-            internalRole: internalRole,
-            status: status);
+            additionalBinaryDataProperties: null,
+            status: status,
+            internalRole: role.ToString());
+
+        return item;
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Responses.ReasoningResponseItem"/>. </summary>

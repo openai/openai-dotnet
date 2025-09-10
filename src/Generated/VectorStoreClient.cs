@@ -6,6 +6,7 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
 using OpenAI;
 
@@ -22,6 +23,50 @@ namespace OpenAI.VectorStores
 
         public ClientPipeline Pipeline { get; }
 
+        public virtual CollectionResult GetVectorStores(int? limit, string order, string after, string before, RequestOptions options)
+        {
+            return new VectorStoreClientGetVectorStoresCollectionResult(
+                this,
+                limit,
+                order,
+                after,
+                before,
+                options);
+        }
+
+        public virtual AsyncCollectionResult GetVectorStoresAsync(int? limit, string order, string after, string before, RequestOptions options)
+        {
+            return new VectorStoreClientGetVectorStoresAsyncCollectionResult(
+                this,
+                limit,
+                order,
+                after,
+                before,
+                options);
+        }
+
+        public virtual CollectionResult<VectorStore> GetVectorStores(VectorStoreCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            return new VectorStoreClientGetVectorStoresCollectionResultOfT(
+                this,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.AfterId,
+                options?.BeforeId,
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
+
+        public virtual AsyncCollectionResult<VectorStore> GetVectorStoresAsync(VectorStoreCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            return new VectorStoreClientGetVectorStoresAsyncCollectionResultOfT(
+                this,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.AfterId,
+                options?.BeforeId,
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
+
         public virtual ClientResult CreateVectorStore(BinaryContent content, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
@@ -35,6 +80,22 @@ namespace OpenAI.VectorStores
             Argument.AssertNotNull(content, nameof(content));
 
             using PipelineMessage message = CreateCreateVectorStoreRequest(content, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult GetVectorStore(string vectorStoreId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+
+            using PipelineMessage message = CreateGetVectorStoreRequest(vectorStoreId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> GetVectorStoreAsync(string vectorStoreId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+
+            using PipelineMessage message = CreateGetVectorStoreRequest(vectorStoreId, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
@@ -72,57 +133,239 @@ namespace OpenAI.VectorStores
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult CancelBatchFileJob(string vectorStoreId, string batchId, RequestOptions options)
+        public virtual ClientResult AddFileBatchToVectorStore(string vectorStoreId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateAddFileBatchToVectorStoreRequest(vectorStoreId, content, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> AddFileBatchToVectorStoreAsync(string vectorStoreId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateAddFileBatchToVectorStoreRequest(vectorStoreId, content, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult GetVectorStoreFileBatch(string vectorStoreId, string batchId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
             Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
 
-            using PipelineMessage message = CreateCancelBatchFileJobRequest(vectorStoreId, batchId, options);
+            using PipelineMessage message = CreateGetVectorStoreFileBatchRequest(vectorStoreId, batchId, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> CancelBatchFileJobAsync(string vectorStoreId, string batchId, RequestOptions options)
+        public virtual async Task<ClientResult> GetVectorStoreFileBatchAsync(string vectorStoreId, string batchId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
             Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
 
-            using PipelineMessage message = CreateCancelBatchFileJobRequest(vectorStoreId, batchId, options);
+            using PipelineMessage message = CreateGetVectorStoreFileBatchRequest(vectorStoreId, batchId, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult GetFileAssociation(string vectorStoreId, string fileId, RequestOptions options)
+        public virtual ClientResult CancelVectorStoreFileBatch(string vectorStoreId, string batchId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-            Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
+            Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
 
-            using PipelineMessage message = CreateGetFileAssociationRequest(vectorStoreId, fileId, options);
+            using PipelineMessage message = CreateCancelVectorStoreFileBatchRequest(vectorStoreId, batchId, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> GetFileAssociationAsync(string vectorStoreId, string fileId, RequestOptions options)
+        public virtual async Task<ClientResult> CancelVectorStoreFileBatchAsync(string vectorStoreId, string batchId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-            Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
+            Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
 
-            using PipelineMessage message = CreateGetFileAssociationRequest(vectorStoreId, fileId, options);
+            using PipelineMessage message = CreateCancelVectorStoreFileBatchRequest(vectorStoreId, batchId, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult RemoveFileFromStore(string vectorStoreId, string fileId, RequestOptions options)
+        public virtual CollectionResult GetVectorStoreFilesInBatch(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-            Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
+            Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
 
-            using PipelineMessage message = CreateRemoveFileFromStoreRequest(vectorStoreId, fileId, options);
+            return new VectorStoreClientGetVectorStoreFilesInBatchCollectionResult(
+                this,
+                vectorStoreId,
+                batchId,
+                limit,
+                order,
+                after,
+                before,
+                filter,
+                options);
+        }
+
+        public virtual AsyncCollectionResult GetVectorStoreFilesInBatchAsync(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+            Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
+
+            return new VectorStoreClientGetVectorStoreFilesInBatchAsyncCollectionResult(
+                this,
+                vectorStoreId,
+                batchId,
+                limit,
+                order,
+                after,
+                before,
+                filter,
+                options);
+        }
+
+        public virtual CollectionResult<VectorStoreFile> GetVectorStoreFilesInBatch(string vectorStoreId, string batchId, VectorStoreFileCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+            Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
+
+            return new VectorStoreClientGetVectorStoreFilesInBatchCollectionResultOfT(
+                this,
+                vectorStoreId,
+                batchId,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.AfterId,
+                options?.BeforeId,
+                options?.Filter?.ToString(),
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
+
+        public virtual AsyncCollectionResult<VectorStoreFile> GetVectorStoreFilesInBatchAsync(string vectorStoreId, string batchId, VectorStoreFileCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+            Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
+
+            return new VectorStoreClientGetVectorStoreFilesInBatchAsyncCollectionResultOfT(
+                this,
+                vectorStoreId,
+                batchId,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.AfterId,
+                options?.BeforeId,
+                options?.Filter?.ToString(),
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
+
+        public virtual CollectionResult GetVectorStoreFiles(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+
+            return new VectorStoreClientGetVectorStoreFilesCollectionResult(
+                this,
+                vectorStoreId,
+                limit,
+                order,
+                after,
+                before,
+                filter,
+                options);
+        }
+
+        public virtual AsyncCollectionResult GetVectorStoreFilesAsync(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+
+            return new VectorStoreClientGetVectorStoreFilesAsyncCollectionResult(
+                this,
+                vectorStoreId,
+                limit,
+                order,
+                after,
+                before,
+                filter,
+                options);
+        }
+
+        public virtual CollectionResult<VectorStoreFile> GetVectorStoreFiles(string vectorStoreId, VectorStoreFileCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+
+            return new VectorStoreClientGetVectorStoreFilesCollectionResultOfT(
+                this,
+                vectorStoreId,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.AfterId,
+                options?.BeforeId,
+                options?.Filter?.ToString(),
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
+
+        public virtual AsyncCollectionResult<VectorStoreFile> GetVectorStoreFilesAsync(string vectorStoreId, VectorStoreFileCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+
+            return new VectorStoreClientGetVectorStoreFilesAsyncCollectionResultOfT(
+                this,
+                vectorStoreId,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.AfterId,
+                options?.BeforeId,
+                options?.Filter?.ToString(),
+                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        }
+
+        public virtual ClientResult AddFileToVectorStore(string vectorStoreId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateAddFileToVectorStoreRequest(vectorStoreId, content, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> RemoveFileFromStoreAsync(string vectorStoreId, string fileId, RequestOptions options)
+        public virtual async Task<ClientResult> AddFileToVectorStoreAsync(string vectorStoreId, BinaryContent content, RequestOptions options = null)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using PipelineMessage message = CreateAddFileToVectorStoreRequest(vectorStoreId, content, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult GetVectorStoreFile(string vectorStoreId, string fileId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
             Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
-            using PipelineMessage message = CreateRemoveFileFromStoreRequest(vectorStoreId, fileId, options);
+            using PipelineMessage message = CreateGetVectorStoreFileRequest(vectorStoreId, fileId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> GetVectorStoreFileAsync(string vectorStoreId, string fileId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+            Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
+
+            using PipelineMessage message = CreateGetVectorStoreFileRequest(vectorStoreId, fileId, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult RemoveFileFromVectorStore(string vectorStoreId, string fileId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+            Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
+
+            using PipelineMessage message = CreateRemoveFileFromVectorStoreRequest(vectorStoreId, fileId, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> RemoveFileFromVectorStoreAsync(string vectorStoreId, string fileId, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
+            Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
+
+            using PipelineMessage message = CreateRemoveFileFromVectorStoreRequest(vectorStoreId, fileId, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 

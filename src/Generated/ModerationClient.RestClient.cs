@@ -16,14 +16,11 @@ namespace OpenAI.Moderations
 
         internal virtual PipelineMessage CreateClassifyTextRequest(BinaryContent content, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "POST";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/moderations", false);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             request.Headers.Set("Content-Type", "application/json");
             request.Content = content;

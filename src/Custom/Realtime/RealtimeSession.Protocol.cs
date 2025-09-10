@@ -2,7 +2,6 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Net.WebSockets;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,26 +18,46 @@ public partial class RealtimeSession
     /// Initializes an underlying <see cref="WebSocket"/> instance for communication with the /realtime endpoint and
     /// then connects to the service using this socket.
     /// </summary>
-    /// <param name="options"></param>
-    /// <returns></returns>
-    protected internal virtual async Task ConnectAsync(RequestOptions options)
+    protected internal virtual async Task ConnectAsync(string queryString = null, IDictionary<string, string> headers = null, CancellationToken cancellationToken = default)
     {
         WebSocket?.Dispose();
+
         _credential.Deconstruct(out string dangerousCredential);
+
         ClientWebSocket clientWebSocket = new();
         clientWebSocket.Options.AddSubProtocol("realtime");
         clientWebSocket.Options.SetRequestHeader("openai-beta", $"realtime=v1");
         clientWebSocket.Options.SetRequestHeader("Authorization", $"Bearer {dangerousCredential}");
 
-        await clientWebSocket.ConnectAsync(_endpoint, options?.CancellationToken ?? default)
-            .ConfigureAwait(false);
+        if (headers is not null)
+        {
+            foreach (KeyValuePair<string, string> header in headers)
+            {
+                clientWebSocket.Options.SetRequestHeader(header.Key, header.Value);
+            }
+        }
+
+        Uri webSocketUri;
+
+        if (string.IsNullOrEmpty(queryString))
+        {
+            webSocketUri = BuildSessionUri(_endpoint, _model, _intent);
+        }
+        else
+        {
+            UriBuilder uriBuilder = new(_endpoint);
+            uriBuilder.Query = queryString;
+            webSocketUri = uriBuilder.Uri;
+        }
+
+        await clientWebSocket.ConnectAsync(webSocketUri, cancellationToken).ConfigureAwait(false);
 
         WebSocket = clientWebSocket;
     }
 
-    protected internal virtual void Connect(RequestOptions options)
+    protected internal virtual void Connect(string queryString = null, IDictionary<string, string> headers = null, CancellationToken cancellationToken = default)
     {
-        ConnectAsync(options).Wait();
+        ConnectAsync(queryString, headers, cancellationToken).Wait();
     }
 
     public virtual async Task SendCommandAsync(BinaryData data, RequestOptions options)
@@ -93,5 +112,22 @@ public partial class RealtimeSession
     public virtual IEnumerable<ClientResult> ReceiveUpdates(RequestOptions options)
     {
         throw new NotImplementedException();
+    }
+
+    private static Uri BuildSessionUri(Uri endpoint, string model, string intent)
+    {
+        ClientUriBuilder builder = new();
+        builder.Reset(endpoint);
+
+        if (!string.IsNullOrEmpty(model))
+        {
+            builder.AppendQuery("model", model, escape: true);
+        }
+        if (!string.IsNullOrEmpty(intent))
+        {
+            builder.AppendQuery("intent", intent, escape: true);
+        }
+
+        return builder.ToUri();
     }
 }

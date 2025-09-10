@@ -32,21 +32,6 @@ namespace OpenAI.Images
             {
                 throw new FormatException($"The model {nameof(ImageEditOptions)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Background) && _additionalBinaryDataProperties?.ContainsKey("background") != true)
-            {
-                writer.WritePropertyName("background"u8);
-                writer.WriteStringValue(Background.Value.ToString());
-            }
-            if (Optional.IsDefined(Quality) && _additionalBinaryDataProperties?.ContainsKey("quality") != true)
-            {
-                writer.WritePropertyName("quality"u8);
-                writer.WriteStringValue(Quality.Value.ToString());
-            }
-            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
-            {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model.Value.ToString());
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("image") != true)
             {
                 writer.WritePropertyName("image"u8);
@@ -69,6 +54,16 @@ namespace OpenAI.Images
                 writer.WritePropertyName("mask"u8);
                 writer.WriteBase64StringValue(Mask.ToArray(), "D");
             }
+            if (Optional.IsDefined(Background) && _additionalBinaryDataProperties?.ContainsKey("background") != true)
+            {
+                writer.WritePropertyName("background"u8);
+                writer.WriteStringValue(Background.Value.ToString());
+            }
+            if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
+            {
+                writer.WritePropertyName("model"u8);
+                writer.WriteStringValue(Model.Value.ToString());
+            }
             if (Optional.IsDefined(N) && _additionalBinaryDataProperties?.ContainsKey("n") != true)
             {
                 writer.WritePropertyName("n"u8);
@@ -88,6 +83,11 @@ namespace OpenAI.Images
             {
                 writer.WritePropertyName("user"u8);
                 writer.WriteStringValue(EndUserId);
+            }
+            if (Optional.IsDefined(Quality) && _additionalBinaryDataProperties?.ContainsKey("quality") != true)
+            {
+                writer.WritePropertyName("quality"u8);
+                writer.WriteStringValue(Quality.Value.ToString());
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -131,49 +131,19 @@ namespace OpenAI.Images
             {
                 return null;
             }
-            InternalCreateImageEditRequestBackground? background = default;
-            InternalCreateImageEditRequestQuality? quality = default;
-            InternalCreateImageEditRequestModel? model = default;
             BinaryData image = default;
             string prompt = default;
             BinaryData mask = default;
+            GeneratedImageBackground? background = default;
+            InternalCreateImageEditRequestModel? model = default;
             long? n = default;
             GeneratedImageSize? size = default;
             GeneratedImageFormat? responseFormat = default;
             string endUserId = default;
+            GeneratedImageQuality? quality = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("background"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        background = null;
-                        continue;
-                    }
-                    background = new InternalCreateImageEditRequestBackground(prop.Value.GetString());
-                    continue;
-                }
-                if (prop.NameEquals("quality"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        quality = null;
-                        continue;
-                    }
-                    quality = new InternalCreateImageEditRequestQuality(prop.Value.GetString());
-                    continue;
-                }
-                if (prop.NameEquals("model"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        model = null;
-                        continue;
-                    }
-                    model = new InternalCreateImageEditRequestModel(prop.Value.GetString());
-                    continue;
-                }
                 if (prop.NameEquals("image"u8))
                 {
                     image = BinaryData.FromString(prop.Value.GetRawText());
@@ -191,6 +161,26 @@ namespace OpenAI.Images
                         continue;
                     }
                     mask = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
+                    continue;
+                }
+                if (prop.NameEquals("background"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        background = null;
+                        continue;
+                    }
+                    background = new GeneratedImageBackground(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("model"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        model = null;
+                        continue;
+                    }
+                    model = new InternalCreateImageEditRequestModel(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("n"u8))
@@ -228,20 +218,30 @@ namespace OpenAI.Images
                     endUserId = prop.Value.GetString();
                     continue;
                 }
+                if (prop.NameEquals("quality"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        quality = null;
+                        continue;
+                    }
+                    quality = new GeneratedImageQuality(prop.Value.GetString());
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ImageEditOptions(
-                background,
-                quality,
-                model,
                 image,
                 prompt,
                 mask,
+                background,
+                model,
                 n,
                 size,
                 responseFormat,
                 endUserId,
+                quality,
                 additionalBinaryDataProperties);
         }
 

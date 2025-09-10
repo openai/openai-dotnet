@@ -1,9 +1,5 @@
 namespace OpenAI.Responses;
 
-[CodeGenType("AnnotationFileCitation")] internal partial class InternalAnnotationFileCitation {}
-[CodeGenType("AnnotationFilePath")] internal partial class InternalAnnotationFilePath {}
-[CodeGenType("AnnotationUrlCitation")] internal partial class InternalAnnotationUrlCitation {}
-[CodeGenType("ApproximateLocation")] internal partial class InternalApproximateLocation {}
 [CodeGenType("ComparisonFilter")] internal partial class InternalComparisonFilter {}
 [CodeGenType("ComparisonFilterEquals")] internal partial class InternalComparisonFilterEquals {}
 [CodeGenType("ComparisonFilterGreaterThan")] internal partial class InternalComparisonFilterGreaterThan {}
@@ -29,12 +25,9 @@ namespace OpenAI.Responses;
 [CodeGenType("ComputerToolCallOutputItemOutputComputerScreenshot")] internal partial class InternalComputerToolCallOutputItemOutputComputerScreenshot {}
 [CodeGenType("ComputerToolCallOutputItemOutputType")] internal readonly partial struct InternalComputerUsePreviewToolCallOutputOutputType {}
 [CodeGenType("ComputerToolCallOutputItemParam")] internal partial class InternalComputerUsePreviewToolCallOutputItemParam {}
-[CodeGenType("ComputerUsePreviewTool")] internal partial class InternalComputerUsePreviewTool {}
 [CodeGenType("Coordinate")] internal partial class InternalCoordinate {}
 [CodeGenType("DeleteResponseResponseObject")] internal readonly partial struct InternalDeleteResponseResponseObject {}
 [CodeGenType("DotNetCombinedChunkingStrategyParamType2")] internal readonly partial struct InternalDotNetCombinedChunkingStrategyParamType2 {}
-[CodeGenType("DotnetResponseWebSearchApproximateLocation")] internal partial class InternalDotnetResponseWebSearchApproximateLocation {}
-[CodeGenType("FileSearchTool")] internal partial class InternalFileSearchTool {}
 [CodeGenType("FileSearchToolCallItemParam")] internal partial class InternalFileSearchToolCallItemParam {}
 [CodeGenType("FunctionToolCallItemParam")] internal partial class InternalFunctionToolCallItemParam {}
 [CodeGenType("FunctionToolCallOutputItemParam")] internal partial class InternalFunctionToolCallOutputItemParam {}
@@ -47,7 +40,6 @@ namespace OpenAI.Responses;
 [CodeGenType("ItemParam")] internal partial class InternalItemParam {}
 [CodeGenType("ItemReferenceItemParam")] internal partial class InternalItemReferenceItemParam {}
 [CodeGenType("ItemType")] internal readonly partial struct InternalItemType {}
-[CodeGenType("Location")] internal partial class InternalLocation {}
 [CodeGenType("LocationType")] internal readonly partial struct InternalWebSearchUserLocationKind {}
 [CodeGenType("ModelIdsResponses")] internal readonly partial struct InternalModelIdsResponses {}
 [CodeGenType("RankingOptionsRanker1")] internal readonly partial struct InternalRankingOptionsRanker1 {}
@@ -86,7 +78,6 @@ namespace OpenAI.Responses;
 [CodeGenType("UnknownCompoundFilter")] internal partial class  InternalUnknownCompoundFilter {}
 [CodeGenType("UnknownComputerAction")] internal partial class InternalUnknownComputerAction {}
 [CodeGenType("UnknownComputerToolCallOutputItemOutput")] internal partial class InternalUnknownComputerToolCallOutputItemOutput {}
-[CodeGenType("UnknownDotnetResponseWebSearchLocation")] internal partial class InternalUnknownDotnetResponseWebSearchLocation {}
 [CodeGenType("UnknownItemContent")] internal partial class InternalUnknownItemContent {}
 [CodeGenType("UnknownItemParam")] internal partial class InternalUnknownItemParam {}
 [CodeGenType("UnknownItemResource")] internal partial class InternalUnknownItemResource {}
@@ -98,7 +89,6 @@ namespace OpenAI.Responses;
 [CodeGenType("UnknownResponseTextFormatConfiguration")] internal partial class InternalUnknownResponseTextFormatConfiguration {}
 [CodeGenType("UnknownTool")] internal partial class InternalUnknownTool {}
 [CodeGenType("UnknownToolChoiceObject")] internal partial class InternalUnknownToolChoiceObject {}
-[CodeGenType("WebSearchPreviewToolSearchContextSize")] internal readonly partial struct InternalWebSearchPreviewToolSearchContextSize {}
 [CodeGenType("WebSearchToolCallItemParam")] internal partial class InternalWebSearchToolCallItemParam {}
 [CodeGenType("CodeInterpreterToolAutoType")] internal readonly partial struct InternalCodeInterpreterToolAutoType {}
 [CodeGenType("ImageGenToolModel")] internal readonly partial struct InternalImageGenToolModel {}
@@ -119,8 +109,6 @@ namespace OpenAI.Responses;
 [CodeGenType("ImageGenTool")] internal partial class InternalImageGenTool {}
 [CodeGenType("ImageGenToolInputImageMask")] internal partial class InternalImageGenToolInputImageMask {}
 [CodeGenType("LocalShellTool")] internal partial class InternalLocalShellTool {}
-[CodeGenType("MCPTool")] internal partial class InternalMCPTool {}
-[CodeGenType("MCPToolAllowedTools1")] internal partial class InternalMCPToolAllowedTools1 {}
 [CodeGenType("MCPToolRequireApproval1")] internal partial class InternalMCPToolRequireApproval1 {}
 [CodeGenType("MCPToolRequireApprovalAlways")] internal partial class InternalMCPToolRequireApprovalAlways {}
 [CodeGenType("MCPToolRequireApprovalNever")] internal partial class InternalMCPToolRequireApprovalNever {}
@@ -138,7 +126,6 @@ namespace OpenAI.Responses;
 [CodeGenType("LocalShellExecAction")] internal partial class InternalLocalShellExecAction {}
 [CodeGenType("LocalShellToolCallOutputItemParam")] internal partial class InternalLocalShellToolCallOutputItemParam {}
 [CodeGenType("MCPListToolsItemParam")] internal partial class InternalMCPListToolsItemParam {}
-[CodeGenType("MCPListToolsTool")] internal partial class InternalMCPListToolsTool {}
 [CodeGenType("MCPApprovalRequestItemParam")] internal partial class InternalMCPApprovalRequestItemParam {}
 [CodeGenType("MCPApprovalResponseItemParam")] internal partial class InternalMCPApprovalResponseItemParam {}
 [CodeGenType("MCPCallItemParam")] internal partial class InternalMCPCallItemParam {}
@@ -146,22 +133,10 @@ namespace OpenAI.Responses;
 [CodeGenType("CodeInterpreterToolCallItemResource")] internal partial class InternalCodeInterpreterToolCallItemResource {}
 [CodeGenType("LocalShellToolCallItemResource")] internal partial class InternalLocalShellToolCallItemResource {}
 [CodeGenType("LocalShellToolCallOutputItemResource")] internal partial class InternalLocalShellToolCallOutputItemResource {}
-[CodeGenType("MCPListToolsItemResource")] internal partial class InternalMCPListToolsItemResource {}
-[CodeGenType("MCPApprovalRequestItemResource")] internal partial class InternalMCPApprovalRequestItemResource {}
-[CodeGenType("MCPApprovalResponseItemResource")] internal partial class InternalMCPApprovalResponseItemResource {}
-[CodeGenType("MCPCallItemResource")] internal partial class InternalMCPCallItemResource {}
 [CodeGenType("ResponseImageGenCallCompletedEvent")] internal partial class InternalResponseImageGenCallCompletedEvent {}
 [CodeGenType("ResponseImageGenCallGeneratingEvent")] internal partial class InternalResponseImageGenCallGeneratingEvent {}
 [CodeGenType("ResponseImageGenCallInProgressEvent")] internal partial class InternalResponseImageGenCallInProgressEvent {}
 [CodeGenType("ResponseImageGenCallPartialImageEvent")] internal partial class InternalResponseImageGenCallPartialImageEvent {}
-[CodeGenType("ResponseMCPCallArgumentsDeltaEvent")] internal partial class InternalResponseMCPCallArgumentsDeltaEvent {}
-[CodeGenType("ResponseMCPCallArgumentsDoneEvent")] internal partial class InternalResponseMCPCallArgumentsDoneEvent {}
-[CodeGenType("ResponseMCPCallCompletedEvent")] internal partial class InternalResponseMCPCallCompletedEvent {}
-[CodeGenType("ResponseMCPCallFailedEvent")] internal partial class InternalResponseMCPCallFailedEvent {}
-[CodeGenType("ResponseMCPCallInProgressEvent")] internal partial class InternalResponseMCPCallInProgressEvent {}
-[CodeGenType("ResponseMCPListToolsCompletedEvent")] internal partial class InternalResponseMCPListToolsCompletedEvent {}
-[CodeGenType("ResponseMCPListToolsFailedEvent")] internal partial class InternalResponseMCPListToolsFailedEvent {}
-[CodeGenType("ResponseMCPListToolsInProgressEvent")] internal partial class InternalResponseMCPListToolsInProgressEvent {}
 [CodeGenType("ResponseReasoningDeltaEvent")] internal partial class InternalResponseReasoningDeltaEvent {}
 [CodeGenType("ResponseReasoningDoneEvent")] internal partial class InternalResponseReasoningDoneEvent {}
 [CodeGenType("ResponseReasoningSummaryDeltaEvent")] internal partial class InternalResponseReasoningSummaryDeltaEvent {}
@@ -171,3 +146,5 @@ namespace OpenAI.Responses;
 [CodeGenType("ResponseCodeInterpreterCallCompletedEvent")] internal partial class InternalResponseCodeInterpreterCallCompletedEvent {}
 [CodeGenType("ResponseCodeInterpreterCallInProgressEvent")] internal partial class InternalResponseCodeInterpreterCallInProgressEvent {}
 [CodeGenType("ResponseCodeInterpreterCallInterpretingEvent")] internal partial class InternalResponseCodeInterpreterCallInterpretingEvent {}
+[CodeGenType("DotNetCustomToolCallApprovalPolicyAlways")] internal partial class InternalDotNetCustomToolCallApprovalPolicyAlways { }
+[CodeGenType("DotNetCustomToolCallApprovalPolicyNever")] internal partial class InternalDotNetCustomToolCallApprovalPolicyNever { }

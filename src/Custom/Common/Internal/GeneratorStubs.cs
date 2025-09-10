@@ -12,4 +12,3 @@ namespace OpenAI.Internal;
 [CodeGenType("LogProbProperties")] internal partial class InternalLogProbProperties { }
 [CodeGenType("ModelIdsShared")] internal readonly partial struct InternalModelIdsShared { }
 [CodeGenType("VoiceIdsShared")] internal readonly partial struct InternalVoiceIdsShared { }
-[CodeGenType("ServiceTier")] internal readonly partial struct InternalServiceTier { }

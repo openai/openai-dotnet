@@ -15,24 +15,24 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public AssistantModificationOptions() : this(null, null, null, null, default, null, null, null, null, default, default, null)
+        public AssistantModificationOptions() : this(null, default, null, null, null, null, null, null, default, default, null, null)
         {
         }
 
-        internal AssistantModificationOptions(string name, string description, string instructions, IDictionary<string, string> metadata, float? temperature, string model, IList<ToolDefinition> defaultTools, ToolResources toolResources, AssistantResponseFormat responseFormat, float? nucleusSamplingFactor, ChatReasoningEffortLevel? reasoningEffortLevel, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal AssistantModificationOptions(string model, ChatReasoningEffortLevel? reasoningEffortLevel, string name, string description, string instructions, IList<ToolDefinition> defaultTools, ToolResources toolResources, IDictionary<string, string> metadata, float? temperature, float? nucleusSamplingFactor, AssistantResponseFormat responseFormat, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
+            Model = model;
+            ReasoningEffortLevel = reasoningEffortLevel;
             Name = name;
             Description = description;
             Instructions = instructions;
-            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
-            Temperature = temperature;
-            Model = model;
             DefaultTools = defaultTools ?? new ChangeTrackingList<ToolDefinition>();
             ToolResources = toolResources;
-            ResponseFormat = responseFormat;
+            Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
+            Temperature = temperature;
             NucleusSamplingFactor = nucleusSamplingFactor;
-            ReasoningEffortLevel = reasoningEffortLevel;
+            ResponseFormat = responseFormat;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

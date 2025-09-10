@@ -31,15 +31,15 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("filename"u8);
                 writer.WriteStringValue(Filename);
             }
-            if (Optional.IsDefined(FileId) && _additionalBinaryDataProperties?.ContainsKey("file_id") != true)
-            {
-                writer.WritePropertyName("file_id"u8);
-                writer.WriteStringValue(FileId);
-            }
             if (Optional.IsDefined(InternalFileData) && _additionalBinaryDataProperties?.ContainsKey("file_data") != true)
             {
                 writer.WritePropertyName("file_data"u8);
                 writer.WriteStringValue(InternalFileData);
+            }
+            if (Optional.IsDefined(FileId) && _additionalBinaryDataProperties?.ContainsKey("file_id") != true)
+            {
+                writer.WritePropertyName("file_id"u8);
+                writer.WriteStringValue(FileId);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -83,8 +83,8 @@ namespace OpenAI.Chat
                 return null;
             }
             string filename = default;
-            string fileId = default;
             string internalFileData = default;
+            string fileId = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -93,20 +93,20 @@ namespace OpenAI.Chat
                     filename = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("file_id"u8))
-                {
-                    fileId = prop.Value.GetString();
-                    continue;
-                }
                 if (prop.NameEquals("file_data"u8))
                 {
                     internalFileData = prop.Value.GetString();
                     continue;
                 }
+                if (prop.NameEquals("file_id"u8))
+                {
+                    fileId = prop.Value.GetString();
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalChatCompletionRequestMessageContentPartFileFile(filename, fileId, internalFileData, additionalBinaryDataProperties);
+            return new InternalChatCompletionRequestMessageContentPartFileFile(filename, internalFileData, fileId, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalChatCompletionRequestMessageContentPartFileFile>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

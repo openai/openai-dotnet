@@ -32,15 +32,15 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(ChatTool)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("function") != true)
-            {
-                writer.WritePropertyName("function"u8);
-                writer.WriteObjectValue(Function, options);
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToSerialString());
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("function") != true)
+            {
+                writer.WritePropertyName("function"u8);
+                writer.WriteObjectValue(Function, options);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -84,25 +84,25 @@ namespace OpenAI.Chat
             {
                 return null;
             }
-            InternalFunctionDefinition function = default;
             ChatToolKind kind = default;
+            InternalFunctionDefinition function = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("function"u8))
-                {
-                    function = InternalFunctionDefinition.DeserializeInternalFunctionDefinition(prop.Value, options);
-                    continue;
-                }
                 if (prop.NameEquals("type"u8))
                 {
                     kind = prop.Value.GetString().ToChatToolKind();
                     continue;
                 }
+                if (prop.NameEquals("function"u8))
+                {
+                    function = InternalFunctionDefinition.DeserializeInternalFunctionDefinition(prop.Value, options);
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ChatTool(function, kind, additionalBinaryDataProperties);
+            return new ChatTool(kind, function, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<ChatTool>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

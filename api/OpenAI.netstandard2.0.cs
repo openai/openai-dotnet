@@ -7,6 +7,7 @@ namespace OpenAI {
         public OpenAIClient(AuthenticationPolicy authenticationPolicy);
         protected internal OpenAIClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public OpenAIClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual AssistantClient GetAssistantClient();
         public virtual AudioClient GetAudioClient(string model);
@@ -64,6 +65,7 @@ namespace OpenAI.Assistants {
         public AssistantClient(AuthenticationPolicy authenticationPolicy);
         protected internal AssistantClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public AssistantClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult CancelRun(string threadId, string runId, RequestOptions options);
         public virtual ClientResult<ThreadRun> CancelRun(string threadId, string runId, CancellationToken cancellationToken = default);
@@ -989,6 +991,7 @@ namespace OpenAI.Audio {
         public AudioClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public AudioClient(string model, AuthenticationPolicy authenticationPolicy);
         public AudioClient(string model, string apiKey);
+        public Uri Endpoint { get; }
         public string Model { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult GenerateSpeech(BinaryContent content, RequestOptions options = null);
@@ -1237,6 +1240,7 @@ namespace OpenAI.Batch {
         public BatchClient(AuthenticationPolicy authenticationPolicy);
         protected internal BatchClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public BatchClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual CreateBatchOperation CreateBatch(BinaryContent content, bool waitUntilCompleted, RequestOptions options = null);
         public virtual Task<CreateBatchOperation> CreateBatchAsync(BinaryContent content, bool waitUntilCompleted, RequestOptions options = null);
@@ -1298,6 +1302,7 @@ namespace OpenAI.Chat {
         public ChatClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public ChatClient(string model, AuthenticationPolicy authenticationPolicy);
         public ChatClient(string model, string apiKey);
+        public Uri Endpoint { get; }
         public string Model { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult<ChatCompletion> CompleteChat(params ChatMessage[] messages);
@@ -1345,6 +1350,7 @@ namespace OpenAI.Chat {
         public string Refusal { get; }
         public IReadOnlyList<ChatTokenLogProbabilityDetails> RefusalTokenLogProbabilities { get; }
         public ChatMessageRole Role { get; }
+        public ChatServiceTier? ServiceTier { get; }
         public string SystemFingerprint { get; }
         public IReadOnlyList<ChatToolCall> ToolCalls { get; }
         public ChatTokenUsage Usage { get; }
@@ -1444,6 +1450,7 @@ namespace OpenAI.Chat {
         public ChatResponseFormat ResponseFormat { get; set; }
         public ChatResponseModalities ResponseModalities { get; set; }
         public long? Seed { get; set; }
+        public ChatServiceTier? ServiceTier { get; set; }
         public IList<string> StopSequences { get; }
         public bool? StoredOutputEnabled { get; set; }
         public float? Temperature { get; set; }
@@ -1731,6 +1738,23 @@ namespace OpenAI.Chat {
         Text = 1,
         Audio = 2
     }
+    public readonly partial struct ChatServiceTier : IEquatable<ChatServiceTier> {
+        public ChatServiceTier(string value);
+        public static ChatServiceTier Auto { get; }
+        public static ChatServiceTier Default { get; }
+        public static ChatServiceTier Flex { get; }
+        public static ChatServiceTier Scale { get; }
+        public readonly bool Equals(ChatServiceTier other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ChatServiceTier left, ChatServiceTier right);
+        public static implicit operator ChatServiceTier(string value);
+        public static implicit operator ChatServiceTier?(string value);
+        public static bool operator !=(ChatServiceTier left, ChatServiceTier right);
+        public override readonly string ToString();
+    }
     public class ChatTokenLogProbabilityDetails : IJsonModel<ChatTokenLogProbabilityDetails>, IPersistableModel<ChatTokenLogProbabilityDetails> {
         public float LogProbability { get; }
         public string Token { get; }
@@ -1826,7 +1850,7 @@ namespace OpenAI.Chat {
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public static class OpenAIChatModelFactory {
-        public static ChatCompletion ChatCompletion(string id = null, ChatFinishReason finishReason = ChatFinishReason.Stop, ChatMessageContent content = null, string refusal = null, IEnumerable<ChatToolCall> toolCalls = null, ChatMessageRole role = ChatMessageRole.System, ChatFunctionCall functionCall = null, IEnumerable<ChatTokenLogProbabilityDetails> contentTokenLogProbabilities = null, IEnumerable<ChatTokenLogProbabilityDetails> refusalTokenLogProbabilities = null, DateTimeOffset createdAt = default, string model = null, string systemFingerprint = null, ChatTokenUsage usage = null, ChatOutputAudio outputAudio = null, IEnumerable<ChatMessageAnnotation> messageAnnotations = null);
+        public static ChatCompletion ChatCompletion(string id = null, ChatFinishReason finishReason = ChatFinishReason.Stop, ChatMessageContent content = null, string refusal = null, IEnumerable<ChatToolCall> toolCalls = null, ChatMessageRole role = ChatMessageRole.System, ChatFunctionCall functionCall = null, IEnumerable<ChatTokenLogProbabilityDetails> contentTokenLogProbabilities = null, IEnumerable<ChatTokenLogProbabilityDetails> refusalTokenLogProbabilities = null, DateTimeOffset createdAt = default, string model = null, ChatServiceTier? serviceTier = null, string systemFingerprint = null, ChatTokenUsage usage = null, ChatOutputAudio outputAudio = null, IEnumerable<ChatMessageAnnotation> messageAnnotations = null);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static ChatCompletion ChatCompletion(string id, ChatFinishReason finishReason, ChatMessageContent content, string refusal, IEnumerable<ChatToolCall> toolCalls, ChatMessageRole role, ChatFunctionCall functionCall, IEnumerable<ChatTokenLogProbabilityDetails> contentTokenLogProbabilities, IEnumerable<ChatTokenLogProbabilityDetails> refusalTokenLogProbabilities, DateTimeOffset createdAt, string model, string systemFingerprint, ChatTokenUsage usage);
         public static ChatInputTokenUsageDetails ChatInputTokenUsageDetails(int audioTokenCount = 0, int cachedTokenCount = 0);
@@ -1842,7 +1866,7 @@ namespace OpenAI.Chat {
         public static ChatTokenUsage ChatTokenUsage(int outputTokenCount = 0, int inputTokenCount = 0, int totalTokenCount = 0, ChatOutputTokenUsageDetails outputTokenDetails = null, ChatInputTokenUsageDetails inputTokenDetails = null);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static ChatTokenUsage ChatTokenUsage(int outputTokenCount, int inputTokenCount, int totalTokenCount, ChatOutputTokenUsageDetails outputTokenDetails);
-        public static StreamingChatCompletionUpdate StreamingChatCompletionUpdate(string completionId = null, ChatMessageContent contentUpdate = null, StreamingChatFunctionCallUpdate functionCallUpdate = null, IEnumerable<StreamingChatToolCallUpdate> toolCallUpdates = null, ChatMessageRole? role = null, string refusalUpdate = null, IEnumerable<ChatTokenLogProbabilityDetails> contentTokenLogProbabilities = null, IEnumerable<ChatTokenLogProbabilityDetails> refusalTokenLogProbabilities = null, ChatFinishReason? finishReason = null, DateTimeOffset createdAt = default, string model = null, string systemFingerprint = null, ChatTokenUsage usage = null, StreamingChatOutputAudioUpdate outputAudioUpdate = null);
+        public static StreamingChatCompletionUpdate StreamingChatCompletionUpdate(string completionId = null, ChatMessageContent contentUpdate = null, StreamingChatFunctionCallUpdate functionCallUpdate = null, IEnumerable<StreamingChatToolCallUpdate> toolCallUpdates = null, ChatMessageRole? role = null, string refusalUpdate = null, IEnumerable<ChatTokenLogProbabilityDetails> contentTokenLogProbabilities = null, IEnumerable<ChatTokenLogProbabilityDetails> refusalTokenLogProbabilities = null, ChatFinishReason? finishReason = null, DateTimeOffset createdAt = default, string model = null, ChatServiceTier? serviceTier = null, string systemFingerprint = null, ChatTokenUsage usage = null, StreamingChatOutputAudioUpdate outputAudioUpdate = null);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static StreamingChatCompletionUpdate StreamingChatCompletionUpdate(string completionId, ChatMessageContent contentUpdate, StreamingChatFunctionCallUpdate functionCallUpdate, IEnumerable<StreamingChatToolCallUpdate> toolCallUpdates, ChatMessageRole? role, string refusalUpdate, IEnumerable<ChatTokenLogProbabilityDetails> contentTokenLogProbabilities, IEnumerable<ChatTokenLogProbabilityDetails> refusalTokenLogProbabilities, ChatFinishReason? finishReason, DateTimeOffset createdAt, string model, string systemFingerprint, ChatTokenUsage usage);
         [Obsolete("This class is obsolete. Please use StreamingChatToolCallUpdate instead.")]
@@ -1863,6 +1887,7 @@ namespace OpenAI.Chat {
         public IReadOnlyList<ChatTokenLogProbabilityDetails> RefusalTokenLogProbabilities { get; }
         public string RefusalUpdate { get; }
         public ChatMessageRole? Role { get; }
+        public ChatServiceTier? ServiceTier { get; }
         public string SystemFingerprint { get; }
         public IReadOnlyList<StreamingChatToolCallUpdate> ToolCallUpdates { get; }
         public ChatTokenUsage Usage { get; }
@@ -1941,6 +1966,7 @@ namespace OpenAI.Containers {
         public ContainerClient(AuthenticationPolicy authenticationPolicy);
         protected internal ContainerClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public ContainerClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult<ContainerResource> CreateContainer(CreateContainerBody body, CancellationToken cancellationToken = default);
         public virtual ClientResult CreateContainer(BinaryContent content, RequestOptions options = null);
@@ -2103,6 +2129,7 @@ namespace OpenAI.Embeddings {
         public EmbeddingClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public EmbeddingClient(string model, AuthenticationPolicy authenticationPolicy);
         public EmbeddingClient(string model, string apiKey);
+        public Uri Endpoint { get; }
         public string Model { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult<OpenAIEmbedding> GenerateEmbedding(string input, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default);
@@ -2162,6 +2189,7 @@ namespace OpenAI.Evals {
         public EvaluationClient(AuthenticationPolicy authenticationPolicy);
         protected internal EvaluationClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public EvaluationClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult CancelEvaluationRun(string evaluationId, string evaluationRunId, RequestOptions options);
         public virtual Task<ClientResult> CancelEvaluationRunAsync(string evaluationId, string evaluationRunId, RequestOptions options);
@@ -2262,6 +2290,7 @@ namespace OpenAI.Files {
         public OpenAIFileClient(AuthenticationPolicy authenticationPolicy);
         protected internal OpenAIFileClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public OpenAIFileClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult AddUploadPart(string uploadId, BinaryContent content, string contentType, RequestOptions options = null);
         public virtual Task<ClientResult> AddUploadPartAsync(string uploadId, BinaryContent content, string contentType, RequestOptions options = null);
@@ -2349,6 +2378,7 @@ namespace OpenAI.FineTuning {
         protected internal FineTuningClient(ClientPipeline pipeline, OpenAIClientOptions options);
         protected internal FineTuningClient(ClientPipeline pipeline, Uri endpoint);
         public FineTuningClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult CreateFineTuningCheckpointPermission(string fineTunedModelCheckpoint, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult> CreateFineTuningCheckpointPermissionAsync(string fineTunedModelCheckpoint, BinaryContent content, RequestOptions options = null);
@@ -2650,6 +2680,7 @@ namespace OpenAI.Graders {
         public GraderClient(AuthenticationPolicy authenticationPolicy);
         protected internal GraderClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public GraderClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult RunGrader(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult> RunGraderAsync(BinaryContent content, RequestOptions options = null);
@@ -2993,6 +3024,7 @@ namespace OpenAI.Images {
         public ImageClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public ImageClient(string model, AuthenticationPolicy authenticationPolicy);
         public ImageClient(string model, string apiKey);
+        public Uri Endpoint { get; }
         public string Model { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult<GeneratedImage> GenerateImage(string prompt, ImageGenerationOptions options = null, CancellationToken cancellationToken = default);
@@ -3031,7 +3063,9 @@ namespace OpenAI.Images {
         public virtual Task<ClientResult<GeneratedImageCollection>> GenerateImageVariationsAsync(string imageFilePath, int imageCount, ImageVariationOptions options = null);
     }
     public class ImageEditOptions : IJsonModel<ImageEditOptions>, IPersistableModel<ImageEditOptions> {
+        public GeneratedImageBackground? Background { get; set; }
         public string EndUserId { get; set; }
+        public GeneratedImageQuality? Quality { get; set; }
         public GeneratedImageFormat? ResponseFormat { get; set; }
         public GeneratedImageSize? Size { get; set; }
         protected virtual ImageEditOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -3116,6 +3150,7 @@ namespace OpenAI.Models {
         public OpenAIModelClient(AuthenticationPolicy authenticationPolicy);
         protected internal OpenAIModelClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public OpenAIModelClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult DeleteModel(string model, RequestOptions options);
         public virtual ClientResult<ModelDeletionResult> DeleteModel(string model, CancellationToken cancellationToken = default);
@@ -3156,6 +3191,7 @@ namespace OpenAI.Moderations {
         public ModerationClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public ModerationClient(string model, AuthenticationPolicy authenticationPolicy);
         public ModerationClient(string model, string apiKey);
+        public Uri Endpoint { get; }
         public string Model { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult ClassifyText(BinaryContent content, RequestOptions options = null);
@@ -3746,7 +3782,11 @@ namespace OpenAI.Realtime {
         protected RealtimeClient();
         public RealtimeClient(ApiKeyCredential credential, OpenAIClientOptions options);
         public RealtimeClient(ApiKeyCredential credential);
+        public RealtimeClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public RealtimeClient(AuthenticationPolicy authenticationPolicy);
         protected internal RealtimeClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        public RealtimeClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public event EventHandler<BinaryData> OnReceivingCommand { add; remove; }
         public event EventHandler<BinaryData> OnSendingCommand { add; remove; }
@@ -3754,13 +3794,12 @@ namespace OpenAI.Realtime {
         public virtual Task<ClientResult> CreateEphemeralTokenAsync(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult CreateEphemeralTranscriptionToken(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult> CreateEphemeralTranscriptionTokenAsync(BinaryContent content, RequestOptions options = null);
-        public RealtimeSession StartConversationSession(string model, CancellationToken cancellationToken = default);
-        public virtual Task<RealtimeSession> StartConversationSessionAsync(string model, RequestOptions options);
-        public virtual Task<RealtimeSession> StartConversationSessionAsync(string model, CancellationToken cancellationToken = default);
-        public virtual Task<RealtimeSession> StartSessionAsync(string model, string intent, RequestOptions options);
-        public RealtimeSession StartTranscriptionSession(CancellationToken cancellationToken = default);
-        public virtual Task<RealtimeSession> StartTranscriptionSessionAsync(RequestOptions options);
-        public virtual Task<RealtimeSession> StartTranscriptionSessionAsync(CancellationToken cancellationToken = default);
+        public RealtimeSession StartConversationSession(string model, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual Task<RealtimeSession> StartConversationSessionAsync(string model, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
+        public RealtimeSession StartSession(string model, string intent, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual Task<RealtimeSession> StartSessionAsync(string model, string intent, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
+        public RealtimeSession StartTranscriptionSession(RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual Task<RealtimeSession> StartTranscriptionSessionAsync(RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
     }
     [Flags]
     public enum RealtimeContentModalities {
@@ -3796,7 +3835,7 @@ namespace OpenAI.Realtime {
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class RealtimeSession : IDisposable {
-        protected internal RealtimeSession(RealtimeClient parentClient, Uri endpoint, ApiKeyCredential credential);
+        protected internal RealtimeSession(ApiKeyCredential credential, RealtimeClient parentClient, Uri endpoint, string model, string intent);
         public Net.WebSockets.WebSocket WebSocket { get; protected set; }
         public virtual void AddItem(RealtimeItem item, string previousItemId, CancellationToken cancellationToken = default);
         public virtual void AddItem(RealtimeItem item, CancellationToken cancellationToken = default);
@@ -3812,8 +3851,8 @@ namespace OpenAI.Realtime {
         public virtual void ConfigureSession(ConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default);
         public virtual void ConfigureTranscriptionSession(TranscriptionSessionOptions sessionOptions, CancellationToken cancellationToken = default);
         public virtual Task ConfigureTranscriptionSessionAsync(TranscriptionSessionOptions sessionOptions, CancellationToken cancellationToken = default);
-        protected internal virtual void Connect(RequestOptions options);
-        protected internal virtual Task ConnectAsync(RequestOptions options);
+        protected internal virtual void Connect(string queryString = null, IDictionary<string, string> headers = null, CancellationToken cancellationToken = default);
+        protected internal virtual Task ConnectAsync(string queryString = null, IDictionary<string, string> headers = null, CancellationToken cancellationToken = default);
         public virtual void DeleteItem(string itemId, CancellationToken cancellationToken = default);
         public virtual Task DeleteItemAsync(string itemId, CancellationToken cancellationToken = default);
         public void Dispose();
@@ -3837,6 +3876,10 @@ namespace OpenAI.Realtime {
         public virtual Task StartResponseAsync(CancellationToken cancellationToken = default);
         public virtual void TruncateItem(string itemId, int contentPartIndex, TimeSpan audioDuration, CancellationToken cancellationToken = default);
         public virtual Task TruncateItemAsync(string itemId, int contentPartIndex, TimeSpan audioDuration, CancellationToken cancellationToken = default);
+    }
+    public class RealtimeSessionOptions {
+        public IDictionary<string, string> Headers { get; }
+        public string QueryString { get; set; }
     }
     public class RealtimeUpdate : IJsonModel<RealtimeUpdate>, IPersistableModel<RealtimeUpdate> {
         public string EventId { get; }
@@ -4024,10 +4067,20 @@ namespace OpenAI.Responses {
         Back = 3,
         Forward = 4
     }
+    public class ComputerCallOutput : IJsonModel<ComputerCallOutput>, IPersistableModel<ComputerCallOutput> {
+        public static ComputerCallOutput CreateScreenshotOutput(BinaryData screenshotImageBytes, string screenshotImageBytesMediaType);
+        public static ComputerCallOutput CreateScreenshotOutput(string screenshotImageFileId);
+        public static ComputerCallOutput CreateScreenshotOutput(Uri screenshotImageUri);
+        protected virtual ComputerCallOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual ComputerCallOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
     public class ComputerCallOutputResponseItem : ResponseItem, IJsonModel<ComputerCallOutputResponseItem>, IPersistableModel<ComputerCallOutputResponseItem> {
+        public ComputerCallOutputResponseItem(string callId, ComputerCallOutput output);
         public IList<ComputerCallSafetyCheck> AcknowledgedSafetyChecks { get; }
-        public string CallId { get; }
-        public ComputerOutput Output { get; }
+        public string CallId { get; set; }
+        public ComputerCallOutput Output { get; set; }
         public ComputerCallOutputStatus? Status { get; }
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -4041,8 +4094,8 @@ namespace OpenAI.Responses {
     }
     public class ComputerCallResponseItem : ResponseItem, IJsonModel<ComputerCallResponseItem>, IPersistableModel<ComputerCallResponseItem> {
         public ComputerCallResponseItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks);
-        public ComputerCallAction Action { get; }
-        public string CallId { get; }
+        public ComputerCallAction Action { get; set; }
+        public string CallId { get; set; }
         public IList<ComputerCallSafetyCheck> PendingSafetyChecks { get; }
         public ComputerCallStatus? Status { get; }
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -4065,14 +4118,15 @@ namespace OpenAI.Responses {
         Completed = 1,
         Incomplete = 2
     }
-    public class ComputerOutput : IJsonModel<ComputerOutput>, IPersistableModel<ComputerOutput> {
-        public static ComputerOutput CreateScreenshotOutput(BinaryData screenshotImageBytes, string screenshotImageBytesMediaType);
-        public static ComputerOutput CreateScreenshotOutput(string screenshotImageFileId);
-        public static ComputerOutput CreateScreenshotOutput(Uri screenshotImageUri);
-        protected virtual ComputerOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual ComputerOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    public class ComputerTool : ResponseTool, IJsonModel<ComputerTool>, IPersistableModel<ComputerTool> {
+        public ComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight);
+        public int DisplayHeight { get; set; }
+        public int DisplayWidth { get; set; }
+        public ComputerToolEnvironment Environment { get; set; }
+        protected override ResponseTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public readonly partial struct ComputerToolEnvironment : IEquatable<ComputerToolEnvironment> {
         public ComputerToolEnvironment(string value);
@@ -4092,9 +4146,36 @@ namespace OpenAI.Responses {
         public static bool operator !=(ComputerToolEnvironment left, ComputerToolEnvironment right);
         public override readonly string ToString();
     }
+    public class CustomMcpToolCallApprovalPolicy : IJsonModel<CustomMcpToolCallApprovalPolicy>, IPersistableModel<CustomMcpToolCallApprovalPolicy> {
+        public McpToolFilter ToolsAlwaysRequiringApproval { get; set; }
+        public McpToolFilter ToolsNeverRequiringApproval { get; set; }
+        protected virtual CustomMcpToolCallApprovalPolicy JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual CustomMcpToolCallApprovalPolicy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class FileCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<FileCitationMessageAnnotation>, IPersistableModel<FileCitationMessageAnnotation> {
+        public FileCitationMessageAnnotation(string fileId, int index);
+        public string FileId { get; set; }
+        public int Index { get; set; }
+        protected override ResponseMessageAnnotation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class FilePathMessageAnnotation : ResponseMessageAnnotation, IJsonModel<FilePathMessageAnnotation>, IPersistableModel<FilePathMessageAnnotation> {
+        public FilePathMessageAnnotation(string fileId, int index);
+        public string FileId { get; set; }
+        public int Index { get; set; }
+        protected override ResponseMessageAnnotation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
     public class FileSearchCallResponseItem : ResponseItem, IJsonModel<FileSearchCallResponseItem>, IPersistableModel<FileSearchCallResponseItem> {
+        public FileSearchCallResponseItem(IEnumerable<string> queries);
         public IList<string> Queries { get; }
-        public IList<FileSearchCallResult> Results { get; }
+        public IList<FileSearchCallResult> Results { get; set; }
         public FileSearchCallStatus? Status { get; }
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -4102,7 +4183,7 @@ namespace OpenAI.Responses {
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class FileSearchCallResult : IJsonModel<FileSearchCallResult>, IPersistableModel<FileSearchCallResult> {
-        public IReadOnlyDictionary<string, BinaryData> Attributes { get; }
+        public IDictionary<string, BinaryData> Attributes { get; }
         public string FileId { get; set; }
         public string Filename { get; set; }
         public float? Score { get; set; }
@@ -4118,6 +4199,17 @@ namespace OpenAI.Responses {
         Completed = 2,
         Incomplete = 3,
         Failed = 4
+    }
+    public class FileSearchTool : ResponseTool, IJsonModel<FileSearchTool>, IPersistableModel<FileSearchTool> {
+        public FileSearchTool(IEnumerable<string> vectorStoreIds);
+        public BinaryData Filters { get; set; }
+        public int? MaxResultCount { get; set; }
+        public FileSearchToolRankingOptions RankingOptions { get; set; }
+        public IList<string> VectorStoreIds { get; }
+        protected override ResponseTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public readonly partial struct FileSearchToolRanker : IEquatable<FileSearchToolRanker> {
         public FileSearchToolRanker(string value);
@@ -4143,7 +4235,8 @@ namespace OpenAI.Responses {
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class FunctionCallOutputResponseItem : ResponseItem, IJsonModel<FunctionCallOutputResponseItem>, IPersistableModel<FunctionCallOutputResponseItem> {
-        public string CallId { get; }
+        public FunctionCallOutputResponseItem(string callId, string functionOutput);
+        public string CallId { get; set; }
         public string FunctionOutput { get; set; }
         public FunctionCallOutputStatus? Status { get; }
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -4157,7 +4250,8 @@ namespace OpenAI.Responses {
         Incomplete = 2
     }
     public class FunctionCallResponseItem : ResponseItem, IJsonModel<FunctionCallResponseItem>, IPersistableModel<FunctionCallResponseItem> {
-        public string CallId { get; }
+        public FunctionCallResponseItem(string callId, string functionName, BinaryData functionArguments);
+        public string CallId { get; set; }
         public BinaryData FunctionArguments { get; set; }
         public string FunctionName { get; set; }
         public FunctionCallStatus? Status { get; }
@@ -4170,6 +4264,114 @@ namespace OpenAI.Responses {
         InProgress = 0,
         Completed = 1,
         Incomplete = 2
+    }
+    public class FunctionTool : ResponseTool, IJsonModel<FunctionTool>, IPersistableModel<FunctionTool> {
+        public FunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled);
+        public string FunctionDescription { get; set; }
+        public string FunctionName { get; set; }
+        public BinaryData FunctionParameters { get; set; }
+        public bool? StrictModeEnabled { get; set; }
+        protected override ResponseTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct GlobalMcpToolCallApprovalPolicy : IEquatable<GlobalMcpToolCallApprovalPolicy> {
+        public GlobalMcpToolCallApprovalPolicy(string value);
+        public static GlobalMcpToolCallApprovalPolicy AlwaysRequireApproval { get; }
+        public static GlobalMcpToolCallApprovalPolicy NeverRequireApproval { get; }
+        public readonly bool Equals(GlobalMcpToolCallApprovalPolicy other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(GlobalMcpToolCallApprovalPolicy left, GlobalMcpToolCallApprovalPolicy right);
+        public static implicit operator GlobalMcpToolCallApprovalPolicy(string value);
+        public static implicit operator GlobalMcpToolCallApprovalPolicy?(string value);
+        public static bool operator !=(GlobalMcpToolCallApprovalPolicy left, GlobalMcpToolCallApprovalPolicy right);
+        public override readonly string ToString();
+    }
+    public class McpTool : ResponseTool, IJsonModel<McpTool>, IPersistableModel<McpTool> {
+        public McpTool(string serverLabel, Uri serverUri);
+        public McpToolFilter AllowedTools { get; set; }
+        public IDictionary<string, string> Headers { get; set; }
+        public string ServerLabel { get; set; }
+        public Uri ServerUri { get; set; }
+        public McpToolCallApprovalPolicy ToolCallApprovalPolicy { get; set; }
+        protected override ResponseTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class McpToolCallApprovalPolicy : IJsonModel<McpToolCallApprovalPolicy>, IPersistableModel<McpToolCallApprovalPolicy> {
+        public McpToolCallApprovalPolicy(CustomMcpToolCallApprovalPolicy customPolicy);
+        public McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy globalPolicy);
+        public CustomMcpToolCallApprovalPolicy CustomPolicy { get; }
+        public GlobalMcpToolCallApprovalPolicy? GlobalPolicy { get; }
+        protected virtual McpToolCallApprovalPolicy JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual McpToolCallApprovalPolicy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class McpToolCallApprovalRequestItem : ResponseItem, IJsonModel<McpToolCallApprovalRequestItem>, IPersistableModel<McpToolCallApprovalRequestItem> {
+        public McpToolCallApprovalRequestItem(string serverLabel, string toolName, BinaryData toolArguments);
+        public string ServerLabel { get; set; }
+        public BinaryData ToolArguments { get; set; }
+        public string ToolName { get; set; }
+        protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class McpToolCallApprovalResponseItem : ResponseItem, IJsonModel<McpToolCallApprovalResponseItem>, IPersistableModel<McpToolCallApprovalResponseItem> {
+        public McpToolCallApprovalResponseItem(string approvalRequestId, bool approved);
+        public string ApprovalRequestId { get; set; }
+        public bool Approved { get; set; }
+        public string Reason { get; set; }
+        protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class McpToolCallItem : ResponseItem, IJsonModel<McpToolCallItem>, IPersistableModel<McpToolCallItem> {
+        public McpToolCallItem(string serverLabel, string toolName, BinaryData toolArguments);
+        public BinaryData Error { get; set; }
+        public string ServerLabel { get; set; }
+        public BinaryData ToolArguments { get; set; }
+        public string ToolName { get; set; }
+        public string ToolOutput { get; set; }
+        protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class McpToolDefinition : IJsonModel<McpToolDefinition>, IPersistableModel<McpToolDefinition> {
+        public McpToolDefinition(string name, BinaryData inputSchema);
+        public BinaryData Annotations { get; set; }
+        public string Description { get; set; }
+        public BinaryData InputSchema { get; set; }
+        public string Name { get; set; }
+        protected virtual McpToolDefinition JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual McpToolDefinition PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class McpToolDefinitionListItem : ResponseItem, IJsonModel<McpToolDefinitionListItem>, IPersistableModel<McpToolDefinitionListItem> {
+        public McpToolDefinitionListItem(string serverLabel, IEnumerable<McpToolDefinition> toolDefinitions);
+        public BinaryData Error { get; set; }
+        public string ServerLabel { get; set; }
+        public IList<McpToolDefinition> ToolDefinitions { get; }
+        protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class McpToolFilter : IJsonModel<McpToolFilter>, IPersistableModel<McpToolFilter> {
+        public IList<string> ToolNames { get; }
+        protected virtual McpToolFilter JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual McpToolFilter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class MessageResponseItem : ResponseItem, IJsonModel<MessageResponseItem>, IPersistableModel<MessageResponseItem> {
         public IList<ResponseContentPart> Content { get; }
@@ -4193,7 +4395,7 @@ namespace OpenAI.Responses {
         Incomplete = 2
     }
     public class OpenAIResponse : IJsonModel<OpenAIResponse>, IPersistableModel<OpenAIResponse> {
-        public bool? Background { get; }
+        public bool? BackgroundModeEnabled { get; }
         public DateTimeOffset CreatedAt { get; }
         public string EndUserId { get; }
         public ResponseError Error { get; }
@@ -4207,6 +4409,7 @@ namespace OpenAI.Responses {
         public bool ParallelToolCallsEnabled { get; }
         public string PreviousResponseId { get; }
         public ResponseReasoningOptions ReasoningOptions { get; }
+        public ResponseServiceTier? ServiceTier { get; }
         public ResponseStatus? Status { get; }
         public float? Temperature { get; }
         public ResponseTextOptions TextOptions { get; }
@@ -4230,6 +4433,7 @@ namespace OpenAI.Responses {
         public OpenAIResponseClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
         public OpenAIResponseClient(string model, AuthenticationPolicy authenticationPolicy);
         public OpenAIResponseClient(string model, string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult CancelResponse(string responseId, RequestOptions options);
         public virtual ClientResult<OpenAIResponse> CancelResponse(string responseId, CancellationToken cancellationToken = default);
@@ -4266,7 +4470,7 @@ namespace OpenAI.Responses {
     }
     public static class OpenAIResponsesModelFactory {
         public static MessageResponseItem MessageResponseItem(string id = null, MessageRole role = MessageRole.Assistant, MessageStatus? status = null);
-        public static OpenAIResponse OpenAIResponse(string id = null, DateTimeOffset createdAt = default, ResponseStatus? status = null, ResponseError error = null, ResponseTokenUsage usage = null, string endUserId = null, ResponseReasoningOptions reasoningOptions = null, int? maxOutputTokenCount = null, ResponseTextOptions textOptions = null, ResponseTruncationMode? truncationMode = null, ResponseIncompleteStatusDetails incompleteStatusDetails = null, IEnumerable<ResponseItem> outputItems = null, bool parallelToolCallsEnabled = false, ResponseToolChoice toolChoice = null, string model = null, IDictionary<string, string> metadata = null, float? temperature = null, float? topP = null, string previousResponseId = null, bool? background = null, string instructions = null, IEnumerable<ResponseTool> tools = null);
+        public static OpenAIResponse OpenAIResponse(string id = null, DateTimeOffset createdAt = default, ResponseStatus? status = null, ResponseError error = null, ResponseTokenUsage usage = null, string endUserId = null, ResponseReasoningOptions reasoningOptions = null, int? maxOutputTokenCount = null, ResponseTextOptions textOptions = null, ResponseTruncationMode? truncationMode = null, ResponseIncompleteStatusDetails incompleteStatusDetails = null, IEnumerable<ResponseItem> outputItems = null, bool parallelToolCallsEnabled = false, ResponseToolChoice toolChoice = null, string model = null, IDictionary<string, string> metadata = null, float? temperature = null, float? topP = null, ResponseServiceTier? serviceTier = null, string previousResponseId = null, bool? backgroundModeEnabled = null, string instructions = null, IEnumerable<ResponseTool> tools = null);
         public static ReasoningResponseItem ReasoningResponseItem(string id = null, string encryptedContent = null, ReasoningStatus? status = null, IEnumerable<ReasoningSummaryPart> summaryParts = null);
         public static ReasoningResponseItem ReasoningResponseItem(string id = null, string encryptedContent = null, ReasoningStatus? status = null, string summaryText = null);
         public static ReferenceResponseItem ReferenceResponseItem(string id = null);
@@ -4274,9 +4478,9 @@ namespace OpenAI.Responses {
     public class ReasoningResponseItem : ResponseItem, IJsonModel<ReasoningResponseItem>, IPersistableModel<ReasoningResponseItem> {
         public ReasoningResponseItem(IEnumerable<ReasoningSummaryPart> summaryParts);
         public ReasoningResponseItem(string summaryText);
-        public string EncryptedContent { get; }
+        public string EncryptedContent { get; set; }
         public ReasoningStatus? Status { get; }
-        public IReadOnlyList<ReasoningSummaryPart> SummaryParts { get; }
+        public IList<ReasoningSummaryPart> SummaryParts { get; }
         public string GetSummaryText();
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -4289,7 +4493,7 @@ namespace OpenAI.Responses {
         Incomplete = 2
     }
     public class ReasoningSummaryPart : IJsonModel<ReasoningSummaryPart>, IPersistableModel<ReasoningSummaryPart> {
-        public static ReasoningSummaryPart CreateTextPart(string text);
+        public static ReasoningSummaryTextPart CreateTextPart(string text);
         protected virtual ReasoningSummaryPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ReasoningSummaryPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -4343,7 +4547,7 @@ namespace OpenAI.Responses {
         Refusal = 5
     }
     public class ResponseCreationOptions : IJsonModel<ResponseCreationOptions>, IPersistableModel<ResponseCreationOptions> {
-        public bool? Background { get; set; }
+        public bool? BackgroundModeEnabled { get; set; }
         public string EndUserId { get; set; }
         public string Instructions { get; set; }
         public int? MaxOutputTokenCount { get; set; }
@@ -4351,6 +4555,7 @@ namespace OpenAI.Responses {
         public bool? ParallelToolCallsEnabled { get; set; }
         public string PreviousResponseId { get; set; }
         public ResponseReasoningOptions ReasoningOptions { get; set; }
+        public ResponseServiceTier? ServiceTier { get; set; }
         public bool? StoredOutputEnabled { get; set; }
         public float? Temperature { get; set; }
         public ResponseTextOptions TextOptions { get; set; }
@@ -4461,14 +4666,16 @@ namespace OpenAI.Responses {
         public static MessageResponseItem CreateAssistantMessageItem(IEnumerable<ResponseContentPart> contentParts);
         public static MessageResponseItem CreateAssistantMessageItem(string outputTextContent, IEnumerable<ResponseMessageAnnotation> annotations = null);
         public static ComputerCallResponseItem CreateComputerCallItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks);
-        public static ComputerCallOutputResponseItem CreateComputerCallOutputItem(string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, BinaryData screenshotImageBytes, string screenshotImageBytesMediaType);
-        public static ComputerCallOutputResponseItem CreateComputerCallOutputItem(string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, string screenshotImageFileId);
-        public static ComputerCallOutputResponseItem CreateComputerCallOutputItem(string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, Uri screenshotImageUri);
+        public static ComputerCallOutputResponseItem CreateComputerCallOutputItem(string callId, ComputerCallOutput output);
         public static MessageResponseItem CreateDeveloperMessageItem(IEnumerable<ResponseContentPart> contentParts);
         public static MessageResponseItem CreateDeveloperMessageItem(string inputTextContent);
-        public static FileSearchCallResponseItem CreateFileSearchCallItem(IEnumerable<string> queries, IEnumerable<FileSearchCallResult> results);
+        public static FileSearchCallResponseItem CreateFileSearchCallItem(IEnumerable<string> queries);
         public static FunctionCallResponseItem CreateFunctionCallItem(string callId, string functionName, BinaryData functionArguments);
         public static FunctionCallOutputResponseItem CreateFunctionCallOutputItem(string callId, string functionOutput);
+        public static McpToolCallApprovalRequestItem CreateMcpApprovalRequestItem(string serverLabel, string name, BinaryData arguments);
+        public static McpToolCallApprovalResponseItem CreateMcpApprovalResponseItem(string approvalRequestId, bool approved);
+        public static McpToolCallItem CreateMcpToolCallItem(string serverLabel, string name, BinaryData arguments);
+        public static McpToolDefinitionListItem CreateMcpToolDefinitionListItem(string serverLabel, IEnumerable<McpToolDefinition> toolDefinitions);
         public static ReasoningResponseItem CreateReasoningItem(IEnumerable<ReasoningSummaryPart> summaryParts);
         public static ReasoningResponseItem CreateReasoningItem(string summaryText);
         public static ReferenceResponseItem CreateReferenceItem(string id);
@@ -4508,15 +4715,7 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class ResponseMessageAnnotation : IJsonModel<ResponseMessageAnnotation>, IPersistableModel<ResponseMessageAnnotation> {
-        public string FileCitationFileId { get; }
-        public int? FileCitationIndex { get; }
-        public string FilePathFileId { get; }
-        public int? FilePathIndex { get; }
         public ResponseMessageAnnotationKind Kind { get; }
-        public int? UriCitationEndIndex { get; }
-        public int? UriCitationStartIndex { get; }
-        public string UriCitationTitle { get; }
-        public Uri UriCitationUri { get; }
         protected virtual ResponseMessageAnnotation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ResponseMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -4575,6 +4774,23 @@ namespace OpenAI.Responses {
         public static bool operator !=(ResponseReasoningSummaryVerbosity left, ResponseReasoningSummaryVerbosity right);
         public override readonly string ToString();
     }
+    public readonly partial struct ResponseServiceTier : IEquatable<ResponseServiceTier> {
+        public ResponseServiceTier(string value);
+        public static ResponseServiceTier Auto { get; }
+        public static ResponseServiceTier Default { get; }
+        public static ResponseServiceTier Flex { get; }
+        public static ResponseServiceTier Scale { get; }
+        public readonly bool Equals(ResponseServiceTier other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ResponseServiceTier left, ResponseServiceTier right);
+        public static implicit operator ResponseServiceTier(string value);
+        public static implicit operator ResponseServiceTier?(string value);
+        public static bool operator !=(ResponseServiceTier left, ResponseServiceTier right);
+        public override readonly string ToString();
+    }
     public enum ResponseStatus {
         InProgress = 0,
         Completed = 1,
@@ -4618,10 +4834,11 @@ namespace OpenAI.Responses {
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ResponseTool : IJsonModel<ResponseTool>, IPersistableModel<ResponseTool> {
-        public static ResponseTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight);
-        public static ResponseTool CreateFileSearchTool(IEnumerable<string> vectorStoreIds, int? maxResultCount = null, FileSearchToolRankingOptions rankingOptions = null, BinaryData filters = null);
-        public static ResponseTool CreateFunctionTool(string functionName, string functionDescription, BinaryData functionParameters, bool functionSchemaIsStrict = false);
-        public static ResponseTool CreateWebSearchTool(WebSearchUserLocation userLocation = null, WebSearchContextSize? searchContextSize = null);
+        public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight);
+        public static FileSearchTool CreateFileSearchTool(IEnumerable<string> vectorStoreIds, int? maxResultCount = null, FileSearchToolRankingOptions rankingOptions = null, BinaryData filters = null);
+        public static FunctionTool CreateFunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled, string functionDescription = null);
+        public static McpTool CreateMcpTool(string serverLabel, Uri serverUri, IDictionary<string, string> headers = null, McpToolFilter allowedTools = null, McpToolCallApprovalPolicy toolCallApprovalPolicy = null);
+        public static WebSearchTool CreateWebSearchTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null);
         protected virtual ResponseTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -4738,7 +4955,7 @@ namespace OpenAI.Responses {
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class StreamingResponseFunctionCallArgumentsDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseFunctionCallArgumentsDeltaUpdate>, IPersistableModel<StreamingResponseFunctionCallArgumentsDeltaUpdate> {
-        public string Delta { get; }
+        public BinaryData Delta { get; }
         public string ItemId { get; }
         public int OutputIndex { get; }
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -4747,7 +4964,7 @@ namespace OpenAI.Responses {
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class StreamingResponseFunctionCallArgumentsDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseFunctionCallArgumentsDoneUpdate>, IPersistableModel<StreamingResponseFunctionCallArgumentsDoneUpdate> {
-        public string Arguments { get; }
+        public BinaryData FunctionArguments { get; }
         public string ItemId { get; }
         public int OutputIndex { get; }
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -4764,6 +4981,62 @@ namespace OpenAI.Responses {
     }
     public class StreamingResponseInProgressUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseInProgressUpdate>, IPersistableModel<StreamingResponseInProgressUpdate> {
         public OpenAIResponse Response { get; }
+        protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class StreamingResponseMcpCallArgumentsDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpCallArgumentsDeltaUpdate>, IPersistableModel<StreamingResponseMcpCallArgumentsDeltaUpdate> {
+        public BinaryData Delta { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class StreamingResponseMcpCallArgumentsDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpCallArgumentsDoneUpdate>, IPersistableModel<StreamingResponseMcpCallArgumentsDoneUpdate> {
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public BinaryData ToolArguments { get; }
+        protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class StreamingResponseMcpCallCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpCallCompletedUpdate>, IPersistableModel<StreamingResponseMcpCallCompletedUpdate> {
+        protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class StreamingResponseMcpCallFailedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpCallFailedUpdate>, IPersistableModel<StreamingResponseMcpCallFailedUpdate> {
+        protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class StreamingResponseMcpCallInProgressUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpCallInProgressUpdate>, IPersistableModel<StreamingResponseMcpCallInProgressUpdate> {
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class StreamingResponseMcpListToolsCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpListToolsCompletedUpdate>, IPersistableModel<StreamingResponseMcpListToolsCompletedUpdate> {
+        protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class StreamingResponseMcpListToolsFailedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpListToolsFailedUpdate>, IPersistableModel<StreamingResponseMcpListToolsFailedUpdate> {
+        protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class StreamingResponseMcpListToolsInProgressUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpListToolsInProgressUpdate>, IPersistableModel<StreamingResponseMcpListToolsInProgressUpdate> {
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -4874,7 +5147,19 @@ namespace OpenAI.Responses {
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
+    public class UriCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<UriCitationMessageAnnotation>, IPersistableModel<UriCitationMessageAnnotation> {
+        public UriCitationMessageAnnotation(Uri uri, int startIndex, int endIndex, string title);
+        public int EndIndex { get; set; }
+        public int StartIndex { get; set; }
+        public string Title { get; set; }
+        public Uri Uri { get; set; }
+        protected override ResponseMessageAnnotation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
     public class WebSearchCallResponseItem : ResponseItem, IJsonModel<WebSearchCallResponseItem>, IPersistableModel<WebSearchCallResponseItem> {
+        public WebSearchCallResponseItem();
         public WebSearchCallStatus? Status { get; }
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -4887,79 +5172,51 @@ namespace OpenAI.Responses {
         Completed = 2,
         Failed = 3
     }
-    public readonly partial struct WebSearchContextSize : IEquatable<WebSearchContextSize> {
-        public WebSearchContextSize(string value);
-        public static WebSearchContextSize High { get; }
-        public static WebSearchContextSize Low { get; }
-        public static WebSearchContextSize Medium { get; }
-        public readonly bool Equals(WebSearchContextSize other);
+    public class WebSearchTool : ResponseTool, IJsonModel<WebSearchTool>, IPersistableModel<WebSearchTool> {
+        public WebSearchTool();
+        public WebSearchToolContextSize? SearchContextSize { get; set; }
+        public WebSearchToolLocation UserLocation { get; set; }
+        protected override ResponseTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class WebSearchToolApproximateLocation : WebSearchToolLocation, IJsonModel<WebSearchToolApproximateLocation>, IPersistableModel<WebSearchToolApproximateLocation> {
+        public WebSearchToolApproximateLocation();
+        public string City { get; set; }
+        public string Country { get; set; }
+        public string Region { get; set; }
+        public string Timezone { get; set; }
+        protected override WebSearchToolLocation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override WebSearchToolLocation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct WebSearchToolContextSize : IEquatable<WebSearchToolContextSize> {
+        public WebSearchToolContextSize(string value);
+        public static WebSearchToolContextSize High { get; }
+        public static WebSearchToolContextSize Low { get; }
+        public static WebSearchToolContextSize Medium { get; }
+        public readonly bool Equals(WebSearchToolContextSize other);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly bool Equals(object obj);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly int GetHashCode();
-        public static bool operator ==(WebSearchContextSize left, WebSearchContextSize right);
-        public static implicit operator WebSearchContextSize(string value);
-        public static implicit operator WebSearchContextSize?(string value);
-        public static bool operator !=(WebSearchContextSize left, WebSearchContextSize right);
+        public static bool operator ==(WebSearchToolContextSize left, WebSearchToolContextSize right);
+        public static implicit operator WebSearchToolContextSize(string value);
+        public static implicit operator WebSearchToolContextSize?(string value);
+        public static bool operator !=(WebSearchToolContextSize left, WebSearchToolContextSize right);
         public override readonly string ToString();
     }
-    public class WebSearchUserLocation : IJsonModel<WebSearchUserLocation>, IPersistableModel<WebSearchUserLocation> {
-        public static WebSearchUserLocation CreateApproximateLocation(string country = null, string region = null, string city = null, string timezone = null);
-        protected virtual WebSearchUserLocation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+    public class WebSearchToolLocation : IJsonModel<WebSearchToolLocation>, IPersistableModel<WebSearchToolLocation> {
+        public static WebSearchToolApproximateLocation CreateApproximateLocation(string country = null, string region = null, string city = null, string timezone = null);
+        protected virtual WebSearchToolLocation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual WebSearchUserLocation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual WebSearchToolLocation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
 }
 namespace OpenAI.VectorStores {
-    public class AddFileToVectorStoreOperation : OperationResult {
-        public string FileId { get; }
-        public override ContinuationToken? RehydrationToken { get; protected set; }
-        public VectorStoreFileAssociationStatus? Status { get; }
-        public VectorStoreFileAssociation? Value { get; }
-        public string VectorStoreId { get; }
-        public virtual ClientResult GetFileAssociation(RequestOptions? options);
-        public virtual ClientResult<VectorStoreFileAssociation> GetFileAssociation(CancellationToken cancellationToken = default);
-        public virtual Task<ClientResult> GetFileAssociationAsync(RequestOptions? options);
-        public virtual Task<ClientResult<VectorStoreFileAssociation>> GetFileAssociationAsync(CancellationToken cancellationToken = default);
-        public static AddFileToVectorStoreOperation Rehydrate(VectorStoreClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken = default);
-        public static Task<AddFileToVectorStoreOperation> RehydrateAsync(VectorStoreClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken = default);
-        public override ClientResult UpdateStatus(RequestOptions? options = null);
-        public override ValueTask<ClientResult> UpdateStatusAsync(RequestOptions? options = null);
-    }
-    public class CreateBatchFileJobOperation : OperationResult {
-        public string BatchId { get; }
-        public override ContinuationToken? RehydrationToken { get; protected set; }
-        public VectorStoreBatchFileJobStatus? Status { get; }
-        public VectorStoreBatchFileJob? Value { get; }
-        public string VectorStoreId { get; }
-        public virtual ClientResult Cancel(RequestOptions? options);
-        public virtual ClientResult<VectorStoreBatchFileJob> Cancel(CancellationToken cancellationToken = default);
-        public virtual Task<ClientResult> CancelAsync(RequestOptions? options);
-        public virtual Task<ClientResult<VectorStoreBatchFileJob>> CancelAsync(CancellationToken cancellationToken = default);
-        public virtual ClientResult GetFileBatch(RequestOptions? options);
-        public virtual ClientResult<VectorStoreBatchFileJob> GetFileBatch(CancellationToken cancellationToken = default);
-        public virtual Task<ClientResult> GetFileBatchAsync(RequestOptions? options);
-        public virtual Task<ClientResult<VectorStoreBatchFileJob>> GetFileBatchAsync(CancellationToken cancellationToken = default);
-        public static CreateBatchFileJobOperation Rehydrate(VectorStoreClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken = default);
-        public static Task<CreateBatchFileJobOperation> RehydrateAsync(VectorStoreClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken = default);
-        public override ClientResult UpdateStatus(RequestOptions? options = null);
-        public override ValueTask<ClientResult> UpdateStatusAsync(RequestOptions? options = null);
-    }
-    public class CreateVectorStoreOperation : OperationResult {
-        public override ContinuationToken? RehydrationToken { get; protected set; }
-        public VectorStoreStatus? Status { get; }
-        public VectorStore? Value { get; }
-        public string VectorStoreId { get; }
-        public virtual ClientResult GetVectorStore(RequestOptions? options);
-        public virtual ClientResult<VectorStore> GetVectorStore(CancellationToken cancellationToken = default);
-        public virtual Task<ClientResult> GetVectorStoreAsync(RequestOptions? options);
-        public virtual Task<ClientResult<VectorStore>> GetVectorStoreAsync(CancellationToken cancellationToken = default);
-        public static CreateVectorStoreOperation Rehydrate(VectorStoreClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken = default);
-        public static Task<CreateVectorStoreOperation> RehydrateAsync(VectorStoreClient client, ContinuationToken rehydrationToken, CancellationToken cancellationToken = default);
-        public override ClientResult UpdateStatus(RequestOptions? options = null);
-        public override ValueTask<ClientResult> UpdateStatusAsync(RequestOptions? options = null);
-    }
     public abstract class FileChunkingStrategy : IJsonModel<FileChunkingStrategy>, IPersistableModel<FileChunkingStrategy> {
         public static FileChunkingStrategy Auto { get; }
         public static FileChunkingStrategy Unknown { get; }
@@ -5004,35 +5261,6 @@ namespace OpenAI.VectorStores {
         protected virtual VectorStore PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
-    public class VectorStoreBatchFileJob : IJsonModel<VectorStoreBatchFileJob>, IPersistableModel<VectorStoreBatchFileJob> {
-        public string BatchId { get; }
-        public DateTimeOffset CreatedAt { get; }
-        public VectorStoreFileCounts FileCounts { get; }
-        public VectorStoreBatchFileJobStatus Status { get; }
-        public string VectorStoreId { get; }
-        protected virtual VectorStoreBatchFileJob JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        public static explicit operator VectorStoreBatchFileJob(ClientResult result);
-        protected virtual VectorStoreBatchFileJob PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public readonly partial struct VectorStoreBatchFileJobStatus : IEquatable<VectorStoreBatchFileJobStatus> {
-        public VectorStoreBatchFileJobStatus(string value);
-        public static VectorStoreBatchFileJobStatus Cancelled { get; }
-        public static VectorStoreBatchFileJobStatus Completed { get; }
-        public static VectorStoreBatchFileJobStatus Failed { get; }
-        public static VectorStoreBatchFileJobStatus InProgress { get; }
-        public readonly bool Equals(VectorStoreBatchFileJobStatus other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(VectorStoreBatchFileJobStatus left, VectorStoreBatchFileJobStatus right);
-        public static implicit operator VectorStoreBatchFileJobStatus(string value);
-        public static implicit operator VectorStoreBatchFileJobStatus?(string value);
-        public static bool operator !=(VectorStoreBatchFileJobStatus left, VectorStoreBatchFileJobStatus right);
-        public override readonly string ToString();
-    }
     public class VectorStoreClient {
         protected VectorStoreClient();
         public VectorStoreClient(ApiKeyCredential credential, OpenAIClientOptions options);
@@ -5041,76 +5269,78 @@ namespace OpenAI.VectorStores {
         public VectorStoreClient(AuthenticationPolicy authenticationPolicy);
         protected internal VectorStoreClient(ClientPipeline pipeline, OpenAIClientOptions options);
         public VectorStoreClient(string apiKey);
+        public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
-        public virtual AddFileToVectorStoreOperation AddFileToVectorStore(string vectorStoreId, BinaryContent content, bool waitUntilCompleted, RequestOptions options = null);
-        public virtual AddFileToVectorStoreOperation AddFileToVectorStore(string vectorStoreId, string fileId, bool waitUntilCompleted, CancellationToken cancellationToken = default);
-        public virtual Task<AddFileToVectorStoreOperation> AddFileToVectorStoreAsync(string vectorStoreId, BinaryContent content, bool waitUntilCompleted, RequestOptions options = null);
-        public virtual Task<AddFileToVectorStoreOperation> AddFileToVectorStoreAsync(string vectorStoreId, string fileId, bool waitUntilCompleted, CancellationToken cancellationToken = default);
-        public virtual ClientResult CancelBatchFileJob(string vectorStoreId, string batchId, RequestOptions options);
-        public virtual ClientResult<VectorStoreBatchFileJob> CancelBatchFileJob(string vectorStoreId, string batchJobId, CancellationToken cancellationToken = default);
-        public virtual Task<ClientResult> CancelBatchFileJobAsync(string vectorStoreId, string batchId, RequestOptions options);
-        public virtual Task<ClientResult<VectorStoreBatchFileJob>> CancelBatchFileJobAsync(string vectorStoreId, string batchJobId, CancellationToken cancellationToken = default);
-        public virtual CreateBatchFileJobOperation CreateBatchFileJob(string vectorStoreId, BinaryContent content, bool waitUntilCompleted, RequestOptions options = null);
-        public virtual CreateBatchFileJobOperation CreateBatchFileJob(string vectorStoreId, IEnumerable<string> fileIds, bool waitUntilCompleted, CancellationToken cancellationToken = default);
-        public virtual Task<CreateBatchFileJobOperation> CreateBatchFileJobAsync(string vectorStoreId, BinaryContent content, bool waitUntilCompleted, RequestOptions options = null);
-        public virtual Task<CreateBatchFileJobOperation> CreateBatchFileJobAsync(string vectorStoreId, IEnumerable<string> fileIds, bool waitUntilCompleted, CancellationToken cancellationToken = default);
-        public virtual CreateVectorStoreOperation CreateVectorStore(bool waitUntilCompleted, VectorStoreCreationOptions options = null, CancellationToken cancellationToken = default);
-        public virtual CreateVectorStoreOperation CreateVectorStore(BinaryContent content, bool waitUntilCompleted, RequestOptions options = null);
+        public virtual ClientResult AddFileBatchToVectorStore(string vectorStoreId, BinaryContent content, RequestOptions options = null);
+        public virtual ClientResult<VectorStoreFileBatch> AddFileBatchToVectorStore(string vectorStoreId, IEnumerable<string> fileIds, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> AddFileBatchToVectorStoreAsync(string vectorStoreId, BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult<VectorStoreFileBatch>> AddFileBatchToVectorStoreAsync(string vectorStoreId, IEnumerable<string> fileIds, CancellationToken cancellationToken = default);
+        public virtual ClientResult AddFileToVectorStore(string vectorStoreId, BinaryContent content, RequestOptions options = null);
+        public virtual ClientResult<VectorStoreFile> AddFileToVectorStore(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> AddFileToVectorStoreAsync(string vectorStoreId, BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult<VectorStoreFile>> AddFileToVectorStoreAsync(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
+        public virtual ClientResult CancelVectorStoreFileBatch(string vectorStoreId, string batchId, RequestOptions options);
+        public virtual ClientResult<VectorStoreFileBatch> CancelVectorStoreFileBatch(string vectorStoreId, string batchId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> CancelVectorStoreFileBatchAsync(string vectorStoreId, string batchId, RequestOptions options);
+        public virtual Task<ClientResult<VectorStoreFileBatch>> CancelVectorStoreFileBatchAsync(string vectorStoreId, string batchId, CancellationToken cancellationToken = default);
+        public virtual ClientResult<VectorStore> CreateVectorStore(VectorStoreCreationOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult CreateVectorStore(BinaryContent content, RequestOptions options = null);
-        public virtual Task<CreateVectorStoreOperation> CreateVectorStoreAsync(bool waitUntilCompleted, VectorStoreCreationOptions options = null, CancellationToken cancellationToken = default);
-        public virtual Task<CreateVectorStoreOperation> CreateVectorStoreAsync(BinaryContent content, bool waitUntilCompleted, RequestOptions options = null);
+        public virtual Task<ClientResult<VectorStore>> CreateVectorStoreAsync(VectorStoreCreationOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> CreateVectorStoreAsync(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult DeleteVectorStore(string vectorStoreId, RequestOptions options);
         public virtual ClientResult<VectorStoreDeletionResult> DeleteVectorStore(string vectorStoreId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> DeleteVectorStoreAsync(string vectorStoreId, RequestOptions options);
         public virtual Task<ClientResult<VectorStoreDeletionResult>> DeleteVectorStoreAsync(string vectorStoreId, CancellationToken cancellationToken = default);
-        public virtual ClientResult<VectorStoreBatchFileJob> GetBatchFileJob(string vectorStoreId, string batchJobId, CancellationToken cancellationToken = default);
-        public virtual Task<ClientResult<VectorStoreBatchFileJob>> GetBatchFileJobAsync(string vectorStoreId, string batchJobId, CancellationToken cancellationToken = default);
-        public virtual ClientResult GetFileAssociation(string vectorStoreId, string fileId, RequestOptions options);
-        public virtual ClientResult<VectorStoreFileAssociation> GetFileAssociation(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
-        public virtual Task<ClientResult> GetFileAssociationAsync(string vectorStoreId, string fileId, RequestOptions options);
-        public virtual Task<ClientResult<VectorStoreFileAssociation>> GetFileAssociationAsync(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<VectorStoreFileAssociation> GetFileAssociations(ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<VectorStoreFileAssociation> GetFileAssociations(string vectorStoreId, VectorStoreFileAssociationCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult GetFileAssociations(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options);
-        public virtual CollectionResult<VectorStoreFileAssociation> GetFileAssociations(string vectorStoreId, string batchJobId, VectorStoreFileAssociationCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<VectorStoreFileAssociation> GetFileAssociations(string vectorStoreId, string batchJobId, ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
-        public virtual CollectionResult GetFileAssociations(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options);
-        public virtual AsyncCollectionResult<VectorStoreFileAssociation> GetFileAssociationsAsync(ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult<VectorStoreFileAssociation> GetFileAssociationsAsync(string vectorStoreId, VectorStoreFileAssociationCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult GetFileAssociationsAsync(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options);
-        public virtual AsyncCollectionResult<VectorStoreFileAssociation> GetFileAssociationsAsync(string vectorStoreId, string batchJobId, VectorStoreFileAssociationCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult<VectorStoreFileAssociation> GetFileAssociationsAsync(string vectorStoreId, string batchJobId, ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult GetFileAssociationsAsync(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options);
+        public virtual ClientResult GetVectorStore(string vectorStoreId, RequestOptions options);
         public virtual ClientResult<VectorStore> GetVectorStore(string vectorStoreId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> GetVectorStoreAsync(string vectorStoreId, RequestOptions options);
+        public virtual Task<ClientResult<VectorStore>> GetVectorStoreAsync(string vectorStoreId, CancellationToken cancellationToken = default);
+        public virtual ClientResult GetVectorStoreFile(string vectorStoreId, string fileId, RequestOptions options);
+        public virtual ClientResult<VectorStoreFile> GetVectorStoreFile(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> GetVectorStoreFileAsync(string vectorStoreId, string fileId, RequestOptions options);
+        public virtual Task<ClientResult<VectorStoreFile>> GetVectorStoreFileAsync(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
+        public virtual ClientResult GetVectorStoreFileBatch(string vectorStoreId, string batchId, RequestOptions options);
+        public virtual ClientResult<VectorStoreFileBatch> GetVectorStoreFileBatch(string vectorStoreId, string batchId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> GetVectorStoreFileBatchAsync(string vectorStoreId, string batchId, RequestOptions options);
+        public virtual Task<ClientResult<VectorStoreFileBatch>> GetVectorStoreFileBatchAsync(string vectorStoreId, string batchId, CancellationToken cancellationToken = default);
+        public virtual CollectionResult<VectorStoreFile> GetVectorStoreFiles(string vectorStoreId, VectorStoreFileCollectionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult GetVectorStoreFiles(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options);
+        public virtual AsyncCollectionResult<VectorStoreFile> GetVectorStoreFilesAsync(string vectorStoreId, VectorStoreFileCollectionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult GetVectorStoreFilesAsync(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options);
+        public virtual CollectionResult<VectorStoreFile> GetVectorStoreFilesInBatch(string vectorStoreId, string batchId, VectorStoreFileCollectionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult GetVectorStoreFilesInBatch(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options);
+        public virtual AsyncCollectionResult<VectorStoreFile> GetVectorStoreFilesInBatchAsync(string vectorStoreId, string batchId, VectorStoreFileCollectionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult GetVectorStoreFilesInBatchAsync(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options);
         public virtual CollectionResult<VectorStore> GetVectorStores(VectorStoreCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<VectorStore> GetVectorStores(ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
         public virtual CollectionResult GetVectorStores(int? limit, string order, string after, string before, RequestOptions options);
         public virtual AsyncCollectionResult<VectorStore> GetVectorStoresAsync(VectorStoreCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult<VectorStore> GetVectorStoresAsync(ContinuationToken firstPageToken, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult GetVectorStoresAsync(int? limit, string order, string after, string before, RequestOptions options);
         public virtual ClientResult<VectorStore> ModifyVectorStore(string vectorStoreId, VectorStoreModificationOptions options, CancellationToken cancellationToken = default);
         public virtual ClientResult ModifyVectorStore(string vectorStoreId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<VectorStore>> ModifyVectorStoreAsync(string vectorStoreId, VectorStoreModificationOptions options, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> ModifyVectorStoreAsync(string vectorStoreId, BinaryContent content, RequestOptions options = null);
-        public virtual ClientResult RemoveFileFromStore(string vectorStoreId, string fileId, RequestOptions options);
-        public virtual ClientResult<FileFromStoreRemovalResult> RemoveFileFromStore(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
-        public virtual Task<ClientResult> RemoveFileFromStoreAsync(string vectorStoreId, string fileId, RequestOptions options);
-        public virtual Task<ClientResult<FileFromStoreRemovalResult>> RemoveFileFromStoreAsync(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
+        public virtual ClientResult RemoveFileFromVectorStore(string vectorStoreId, string fileId, RequestOptions options);
+        public virtual ClientResult<FileFromStoreRemovalResult> RemoveFileFromVectorStore(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> RemoveFileFromVectorStoreAsync(string vectorStoreId, string fileId, RequestOptions options);
+        public virtual Task<ClientResult<FileFromStoreRemovalResult>> RemoveFileFromVectorStoreAsync(string vectorStoreId, string fileId, CancellationToken cancellationToken = default);
         public virtual ClientResult RetrieveVectorStoreFileContent(string vectorStoreId, string fileId, RequestOptions options);
         public virtual Task<ClientResult> RetrieveVectorStoreFileContentAsync(string vectorStoreId, string fileId, RequestOptions options);
         public virtual ClientResult SearchVectorStore(string vectorStoreId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult> SearchVectorStoreAsync(string vectorStoreId, BinaryContent content, RequestOptions options = null);
         public virtual ClientResult UpdateVectorStoreFileAttributes(string vectorStoreId, string fileId, BinaryContent content, RequestOptions options = null);
-        public virtual ClientResult<VectorStoreFileAssociation> UpdateVectorStoreFileAttributes(string vectorStoreId, string fileId, IDictionary<string, BinaryData> attributes, CancellationToken cancellationToken = default);
+        public virtual ClientResult<VectorStoreFile> UpdateVectorStoreFileAttributes(string vectorStoreId, string fileId, IDictionary<string, BinaryData> attributes, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> UpdateVectorStoreFileAttributesAsync(string vectorStoreId, string fileId, BinaryContent content, RequestOptions options = null);
-        public virtual Task<ClientResult<VectorStoreFileAssociation>> UpdateVectorStoreFileAttributesAsync(string vectorStoreId, string fileId, IDictionary<string, BinaryData> attributes, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult<VectorStoreFile>> UpdateVectorStoreFileAttributesAsync(string vectorStoreId, string fileId, IDictionary<string, BinaryData> attributes, CancellationToken cancellationToken = default);
     }
-    public class VectorStoreCollectionOptions {
+    public class VectorStoreCollectionOptions : IJsonModel<VectorStoreCollectionOptions>, IPersistableModel<VectorStoreCollectionOptions> {
         public string AfterId { get; set; }
         public string BeforeId { get; set; }
         public VectorStoreCollectionOrder? Order { get; set; }
         public int? PageSizeLimit { get; set; }
+        protected virtual VectorStoreCollectionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual VectorStoreCollectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public readonly partial struct VectorStoreCollectionOrder : IEquatable<VectorStoreCollectionOrder> {
         public VectorStoreCollectionOrder(string value);
@@ -5160,72 +5390,75 @@ namespace OpenAI.VectorStores {
         protected virtual VectorStoreExpirationPolicy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
-    public class VectorStoreFileAssociation : IJsonModel<VectorStoreFileAssociation>, IPersistableModel<VectorStoreFileAssociation> {
+    public class VectorStoreFile : IJsonModel<VectorStoreFile>, IPersistableModel<VectorStoreFile> {
         public IDictionary<string, BinaryData> Attributes { get; }
         public FileChunkingStrategy ChunkingStrategy { get; }
         public DateTimeOffset CreatedAt { get; }
         public string FileId { get; }
-        public VectorStoreFileAssociationError LastError { get; }
+        public VectorStoreFileError LastError { get; }
         public int Size { get; }
-        public VectorStoreFileAssociationStatus Status { get; }
+        public VectorStoreFileStatus Status { get; }
         public string VectorStoreId { get; }
-        protected virtual VectorStoreFileAssociation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual VectorStoreFile JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        public static explicit operator VectorStoreFileAssociation(ClientResult result);
-        protected virtual VectorStoreFileAssociation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        public static explicit operator VectorStoreFile(ClientResult result);
+        protected virtual VectorStoreFile PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
-    public class VectorStoreFileAssociationCollectionOptions {
+    public class VectorStoreFileBatch : IJsonModel<VectorStoreFileBatch>, IPersistableModel<VectorStoreFileBatch> {
+        public string BatchId { get; }
+        public DateTimeOffset CreatedAt { get; }
+        public VectorStoreFileCounts FileCounts { get; }
+        public VectorStoreFileBatchStatus Status { get; }
+        public string VectorStoreId { get; }
+        protected virtual VectorStoreFileBatch JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public static explicit operator VectorStoreFileBatch(ClientResult result);
+        protected virtual VectorStoreFileBatch PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct VectorStoreFileBatchStatus : IEquatable<VectorStoreFileBatchStatus> {
+        public VectorStoreFileBatchStatus(string value);
+        public static VectorStoreFileBatchStatus Cancelled { get; }
+        public static VectorStoreFileBatchStatus Completed { get; }
+        public static VectorStoreFileBatchStatus Failed { get; }
+        public static VectorStoreFileBatchStatus InProgress { get; }
+        public readonly bool Equals(VectorStoreFileBatchStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(VectorStoreFileBatchStatus left, VectorStoreFileBatchStatus right);
+        public static implicit operator VectorStoreFileBatchStatus(string value);
+        public static implicit operator VectorStoreFileBatchStatus?(string value);
+        public static bool operator !=(VectorStoreFileBatchStatus left, VectorStoreFileBatchStatus right);
+        public override readonly string ToString();
+    }
+    public class VectorStoreFileCollectionOptions : IJsonModel<VectorStoreFileCollectionOptions>, IPersistableModel<VectorStoreFileCollectionOptions> {
         public string AfterId { get; set; }
         public string BeforeId { get; set; }
         public VectorStoreFileStatusFilter? Filter { get; set; }
-        public VectorStoreFileAssociationCollectionOrder? Order { get; set; }
+        public VectorStoreFileCollectionOrder? Order { get; set; }
         public int? PageSizeLimit { get; set; }
-    }
-    public readonly partial struct VectorStoreFileAssociationCollectionOrder : IEquatable<VectorStoreFileAssociationCollectionOrder> {
-        public VectorStoreFileAssociationCollectionOrder(string value);
-        public static VectorStoreFileAssociationCollectionOrder Ascending { get; }
-        public static VectorStoreFileAssociationCollectionOrder Descending { get; }
-        public readonly bool Equals(VectorStoreFileAssociationCollectionOrder other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(VectorStoreFileAssociationCollectionOrder left, VectorStoreFileAssociationCollectionOrder right);
-        public static implicit operator VectorStoreFileAssociationCollectionOrder(string value);
-        public static bool operator !=(VectorStoreFileAssociationCollectionOrder left, VectorStoreFileAssociationCollectionOrder right);
-        public override readonly string ToString();
-    }
-    public class VectorStoreFileAssociationError : IJsonModel<VectorStoreFileAssociationError>, IPersistableModel<VectorStoreFileAssociationError> {
-        public VectorStoreFileAssociationErrorCode Code { get; }
-        public string Message { get; }
-        protected virtual VectorStoreFileAssociationError JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual VectorStoreFileCollectionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual VectorStoreFileAssociationError PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual VectorStoreFileCollectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
-    public readonly partial struct VectorStoreFileAssociationErrorCode : IEquatable<VectorStoreFileAssociationErrorCode> {
-        public VectorStoreFileAssociationErrorCode(string value);
-        public static VectorStoreFileAssociationErrorCode InvalidFile { get; }
-        public static VectorStoreFileAssociationErrorCode ServerError { get; }
-        public static VectorStoreFileAssociationErrorCode UnsupportedFile { get; }
-        public readonly bool Equals(VectorStoreFileAssociationErrorCode other);
+    public readonly partial struct VectorStoreFileCollectionOrder : IEquatable<VectorStoreFileCollectionOrder> {
+        public VectorStoreFileCollectionOrder(string value);
+        public static VectorStoreFileCollectionOrder Ascending { get; }
+        public static VectorStoreFileCollectionOrder Descending { get; }
+        public readonly bool Equals(VectorStoreFileCollectionOrder other);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly bool Equals(object obj);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly int GetHashCode();
-        public static bool operator ==(VectorStoreFileAssociationErrorCode left, VectorStoreFileAssociationErrorCode right);
-        public static implicit operator VectorStoreFileAssociationErrorCode(string value);
-        public static implicit operator VectorStoreFileAssociationErrorCode?(string value);
-        public static bool operator !=(VectorStoreFileAssociationErrorCode left, VectorStoreFileAssociationErrorCode right);
+        public static bool operator ==(VectorStoreFileCollectionOrder left, VectorStoreFileCollectionOrder right);
+        public static implicit operator VectorStoreFileCollectionOrder(string value);
+        public static implicit operator VectorStoreFileCollectionOrder?(string value);
+        public static bool operator !=(VectorStoreFileCollectionOrder left, VectorStoreFileCollectionOrder right);
         public override readonly string ToString();
-    }
-    public enum VectorStoreFileAssociationStatus {
-        Unknown = 0,
-        InProgress = 1,
-        Completed = 2,
-        Cancelled = 3,
-        Failed = 4
     }
     public class VectorStoreFileCounts : IJsonModel<VectorStoreFileCounts>, IPersistableModel<VectorStoreFileCounts> {
         public int Cancelled { get; }
@@ -5237,6 +5470,37 @@ namespace OpenAI.VectorStores {
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual VectorStoreFileCounts PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class VectorStoreFileError : IJsonModel<VectorStoreFileError>, IPersistableModel<VectorStoreFileError> {
+        public VectorStoreFileErrorCode Code { get; }
+        public string Message { get; }
+        protected virtual VectorStoreFileError JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual VectorStoreFileError PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct VectorStoreFileErrorCode : IEquatable<VectorStoreFileErrorCode> {
+        public VectorStoreFileErrorCode(string value);
+        public static VectorStoreFileErrorCode InvalidFile { get; }
+        public static VectorStoreFileErrorCode ServerError { get; }
+        public static VectorStoreFileErrorCode UnsupportedFile { get; }
+        public readonly bool Equals(VectorStoreFileErrorCode other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(VectorStoreFileErrorCode left, VectorStoreFileErrorCode right);
+        public static implicit operator VectorStoreFileErrorCode(string value);
+        public static implicit operator VectorStoreFileErrorCode?(string value);
+        public static bool operator !=(VectorStoreFileErrorCode left, VectorStoreFileErrorCode right);
+        public override readonly string ToString();
+    }
+    public enum VectorStoreFileStatus {
+        Unknown = 0,
+        InProgress = 1,
+        Completed = 2,
+        Cancelled = 3,
+        Failed = 4
     }
     public readonly partial struct VectorStoreFileStatusFilter : IEquatable<VectorStoreFileStatusFilter> {
         public VectorStoreFileStatusFilter(string value);

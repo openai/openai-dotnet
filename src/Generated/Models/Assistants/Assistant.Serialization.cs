@@ -13,7 +13,7 @@ namespace OpenAI.Assistants
 {
     public partial class Assistant : IJsonModel<Assistant>
     {
-        internal Assistant() : this(null, default, null, null, null, null, null, null, null, default, null, null, default, null)
+        internal Assistant() : this(null, null, default, null, null, null, null, null, null, null, default, default, null, null)
         {
         }
 
@@ -35,6 +35,11 @@ namespace OpenAI.Assistants
             {
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            {
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
@@ -120,20 +125,15 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("temperature"u8);
                 writer.WriteNumberValue(Temperature.Value);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            if (Optional.IsDefined(NucleusSamplingFactor) && _additionalBinaryDataProperties?.ContainsKey("top_p") != true)
             {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object);
+                writer.WritePropertyName("top_p"u8);
+                writer.WriteNumberValue(NucleusSamplingFactor.Value);
             }
             if (Optional.IsDefined(ResponseFormat) && _additionalBinaryDataProperties?.ContainsKey("response_format") != true)
             {
                 writer.WritePropertyName("response_format"u8);
                 writer.WriteObjectValue(ResponseFormat, options);
-            }
-            if (Optional.IsDefined(NucleusSamplingFactor) && _additionalBinaryDataProperties?.ContainsKey("top_p") != true)
-            {
-                writer.WritePropertyName("top_p"u8);
-                writer.WriteNumberValue(NucleusSamplingFactor.Value);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -177,6 +177,7 @@ namespace OpenAI.Assistants
                 return null;
             }
             string id = default;
+            string @object = default;
             DateTimeOffset createdAt = default;
             string name = default;
             string description = default;
@@ -186,15 +187,19 @@ namespace OpenAI.Assistants
             ToolResources toolResources = default;
             IReadOnlyDictionary<string, string> metadata = default;
             float? temperature = default;
-            string @object = default;
-            AssistantResponseFormat responseFormat = default;
             float? nucleusSamplingFactor = default;
+            AssistantResponseFormat responseFormat = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("id"u8))
                 {
                     id = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("object"u8))
+                {
+                    @object = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("created_at"u8))
@@ -289,9 +294,14 @@ namespace OpenAI.Assistants
                     temperature = prop.Value.GetSingle();
                     continue;
                 }
-                if (prop.NameEquals("object"u8))
+                if (prop.NameEquals("top_p"u8))
                 {
-                    @object = prop.Value.GetString();
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        nucleusSamplingFactor = null;
+                        continue;
+                    }
+                    nucleusSamplingFactor = prop.Value.GetSingle();
                     continue;
                 }
                 if (prop.NameEquals("response_format"u8))
@@ -304,21 +314,12 @@ namespace OpenAI.Assistants
                     responseFormat = AssistantResponseFormat.DeserializeAssistantResponseFormat(prop.Value, options);
                     continue;
                 }
-                if (prop.NameEquals("top_p"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        nucleusSamplingFactor = null;
-                        continue;
-                    }
-                    nucleusSamplingFactor = prop.Value.GetSingle();
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new Assistant(
                 id,
+                @object,
                 createdAt,
                 name,
                 description,
@@ -328,9 +329,8 @@ namespace OpenAI.Assistants
                 toolResources,
                 metadata,
                 temperature,
-                @object,
-                responseFormat,
                 nucleusSamplingFactor,
+                responseFormat,
                 additionalBinaryDataProperties);
         }
 

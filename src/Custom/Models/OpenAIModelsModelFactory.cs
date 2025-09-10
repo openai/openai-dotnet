@@ -12,9 +12,9 @@ public static partial class OpenAIModelsModelFactory
     public static ModelDeletionResult ModelDeletionResult(string modelId = null, bool deleted = default)
     {
         return new ModelDeletionResult(
-            deleted,
-            modelId,
-            "model",
+            deleted: deleted,
+            modelId: modelId,
+            @object: "model",
             additionalBinaryDataProperties: null);
     }
 
@@ -23,10 +23,10 @@ public static partial class OpenAIModelsModelFactory
     public static OpenAIModel OpenAIModel(string id = null, DateTimeOffset createdAt = default, string ownedBy = null)
     {
         return new OpenAIModel(
-            id,
-            ownedBy,
-            "model",
-            createdAt,
+            id: id,
+            ownedBy: ownedBy,
+            @object: "model",
+            createdAt: createdAt,
             additionalBinaryDataProperties: null);
     }
 

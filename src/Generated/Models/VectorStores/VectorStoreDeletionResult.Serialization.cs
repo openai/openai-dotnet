@@ -31,15 +31,15 @@ namespace OpenAI.VectorStores
             {
                 throw new FormatException($"The model {nameof(VectorStoreDeletionResult)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("deleted") != true)
-            {
-                writer.WritePropertyName("deleted"u8);
-                writer.WriteBooleanValue(Deleted);
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(VectorStoreId);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("deleted") != true)
+            {
+                writer.WritePropertyName("deleted"u8);
+                writer.WriteBooleanValue(Deleted);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
@@ -87,20 +87,20 @@ namespace OpenAI.VectorStores
             {
                 return null;
             }
-            bool deleted = default;
             string vectorStoreId = default;
+            bool deleted = default;
             string @object = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("deleted"u8))
-                {
-                    deleted = prop.Value.GetBoolean();
-                    continue;
-                }
                 if (prop.NameEquals("id"u8))
                 {
                     vectorStoreId = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("deleted"u8))
+                {
+                    deleted = prop.Value.GetBoolean();
                     continue;
                 }
                 if (prop.NameEquals("object"u8))
@@ -111,7 +111,7 @@ namespace OpenAI.VectorStores
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new VectorStoreDeletionResult(deleted, vectorStoreId, @object, additionalBinaryDataProperties);
+            return new VectorStoreDeletionResult(vectorStoreId, deleted, @object, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<VectorStoreDeletionResult>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

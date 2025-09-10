@@ -37,7 +37,7 @@ public partial class AudioClient
     // - Demoted the endpoint parameter to be a property in the options class.
     /// <summary> Initializes a new instance of <see cref="AudioClient"/>. </summary>
     /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
-    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="credential"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
     public AudioClient(string model, ApiKeyCredential credential) : this(model, credential, new OpenAIClientOptions())
@@ -50,7 +50,7 @@ public partial class AudioClient
     // - Demoted the endpoint parameter to be a property in the options class.
     /// <summary> Initializes a new instance of <see cref="AudioClient"/>. </summary>
     /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
-    /// <param name="credential"> The API key to authenticate with the service. </param>
+    /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="credential"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
@@ -115,6 +115,12 @@ public partial class AudioClient
     /// </summary>
     [Experimental("OPENAI001")]
     public string Model => _model;
+
+    /// <summary>
+    /// Gets the endpoint URI for the service.
+    /// </summary>
+    [Experimental("OPENAI001")]
+    public Uri Endpoint => _endpoint;
 
     #region GenerateSpeech
 

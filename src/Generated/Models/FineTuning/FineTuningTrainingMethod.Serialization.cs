@@ -35,11 +35,6 @@ namespace OpenAI.FineTuning
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToString());
             }
-            if (Optional.IsDefined(Reinforcement) && _additionalBinaryDataProperties?.ContainsKey("reinforcement") != true)
-            {
-                writer.WritePropertyName("reinforcement"u8);
-                writer.WriteObjectValue(Reinforcement, options);
-            }
             if (Optional.IsDefined(Supervised) && _additionalBinaryDataProperties?.ContainsKey("supervised") != true)
             {
                 writer.WritePropertyName("supervised"u8);
@@ -49,6 +44,11 @@ namespace OpenAI.FineTuning
             {
                 writer.WritePropertyName("dpo"u8);
                 writer.WriteObjectValue(Dpo, options);
+            }
+            if (Optional.IsDefined(Reinforcement) && _additionalBinaryDataProperties?.ContainsKey("reinforcement") != true)
+            {
+                writer.WritePropertyName("reinforcement"u8);
+                writer.WriteObjectValue(Reinforcement, options);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -92,24 +92,15 @@ namespace OpenAI.FineTuning
                 return null;
             }
             InternalFineTuneMethodType kind = default;
-            InternalFineTuneReinforcementMethod reinforcement = default;
             InternalFineTuningJobRequestMethodSupervised supervised = default;
             InternalFineTuningJobRequestMethodDpo dpo = default;
+            InternalFineTuneReinforcementMethod reinforcement = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
                     kind = new InternalFineTuneMethodType(prop.Value.GetString());
-                    continue;
-                }
-                if (prop.NameEquals("reinforcement"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    reinforcement = InternalFineTuneReinforcementMethod.DeserializeInternalFineTuneReinforcementMethod(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("supervised"u8))
@@ -130,10 +121,19 @@ namespace OpenAI.FineTuning
                     dpo = InternalFineTuningJobRequestMethodDpo.DeserializeInternalFineTuningJobRequestMethodDpo(prop.Value, options);
                     continue;
                 }
+                if (prop.NameEquals("reinforcement"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    reinforcement = InternalFineTuneReinforcementMethod.DeserializeInternalFineTuneReinforcementMethod(prop.Value, options);
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new FineTuningTrainingMethod(kind, reinforcement, supervised, dpo, additionalBinaryDataProperties);
+            return new FineTuningTrainingMethod(kind, supervised, dpo, reinforcement, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<FineTuningTrainingMethod>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

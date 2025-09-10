@@ -16,10 +16,6 @@ namespace OpenAI.VectorStores
 
         internal virtual PipelineMessage CreateGetVectorStoresRequest(int? limit, string order, string after, string before, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "GET";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/vector_stores", false);
@@ -39,7 +35,8 @@ namespace OpenAI.VectorStores
             {
                 uri.AppendQuery("before", before, true);
             }
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;
@@ -47,14 +44,11 @@ namespace OpenAI.VectorStores
 
         internal virtual PipelineMessage CreateCreateVectorStoreRequest(BinaryContent content, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "POST";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/vector_stores", false);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             request.Headers.Set("Content-Type", "application/json");
             request.Content = content;
@@ -64,15 +58,12 @@ namespace OpenAI.VectorStores
 
         internal virtual PipelineMessage CreateGetVectorStoreRequest(string vectorStoreId, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "GET";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/vector_stores/", false);
             uri.AppendPath(vectorStoreId, true);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;
@@ -80,15 +71,12 @@ namespace OpenAI.VectorStores
 
         internal virtual PipelineMessage CreateModifyVectorStoreRequest(string vectorStoreId, BinaryContent content, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "POST";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/vector_stores/", false);
             uri.AppendPath(vectorStoreId, true);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             request.Headers.Set("Content-Type", "application/json");
             request.Content = content;
@@ -98,32 +86,26 @@ namespace OpenAI.VectorStores
 
         internal virtual PipelineMessage CreateDeleteVectorStoreRequest(string vectorStoreId, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "DELETE";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/vector_stores/", false);
             uri.AppendPath(vectorStoreId, true);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "DELETE", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;
         }
 
-        internal virtual PipelineMessage CreateCreateVectorStoreFileBatchRequest(string vectorStoreId, BinaryContent content, RequestOptions options)
+        internal virtual PipelineMessage CreateAddFileBatchToVectorStoreRequest(string vectorStoreId, BinaryContent content, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "POST";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/vector_stores/", false);
             uri.AppendPath(vectorStoreId, true);
             uri.AppendPath("/file_batches", false);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             request.Headers.Set("Content-Type", "application/json");
             request.Content = content;
@@ -133,28 +115,21 @@ namespace OpenAI.VectorStores
 
         internal virtual PipelineMessage CreateGetVectorStoreFileBatchRequest(string vectorStoreId, string batchId, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "GET";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/vector_stores/", false);
             uri.AppendPath(vectorStoreId, true);
             uri.AppendPath("/file_batches/", false);
             uri.AppendPath(batchId, true);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;
         }
 
-        internal virtual PipelineMessage CreateCancelBatchFileJobRequest(string vectorStoreId, string batchId, RequestOptions options)
+        internal virtual PipelineMessage CreateCancelVectorStoreFileBatchRequest(string vectorStoreId, string batchId, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "POST";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/vector_stores/", false);
@@ -162,18 +137,15 @@ namespace OpenAI.VectorStores
             uri.AppendPath("/file_batches/", false);
             uri.AppendPath(batchId, true);
             uri.AppendPath("/cancel", false);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;
         }
 
-        internal virtual PipelineMessage CreateGetFilesInVectorStoreBatchRequest(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options)
+        internal virtual PipelineMessage CreateGetVectorStoreFilesInBatchRequest(string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "GET";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/vector_stores/", false);
@@ -201,7 +173,8 @@ namespace OpenAI.VectorStores
             {
                 uri.AppendQuery("filter", filter, true);
             }
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;
@@ -209,10 +182,6 @@ namespace OpenAI.VectorStores
 
         internal virtual PipelineMessage CreateGetVectorStoreFilesRequest(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "GET";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/vector_stores/", false);
@@ -238,24 +207,22 @@ namespace OpenAI.VectorStores
             {
                 uri.AppendQuery("filter", filter, true);
             }
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;
         }
 
-        internal virtual PipelineMessage CreateCreateVectorStoreFileRequest(string vectorStoreId, BinaryContent content, RequestOptions options)
+        internal virtual PipelineMessage CreateAddFileToVectorStoreRequest(string vectorStoreId, BinaryContent content, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "POST";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/vector_stores/", false);
             uri.AppendPath(vectorStoreId, true);
             uri.AppendPath("/files", false);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             request.Headers.Set("Content-Type", "application/json");
             request.Content = content;
@@ -263,37 +230,31 @@ namespace OpenAI.VectorStores
             return message;
         }
 
-        internal virtual PipelineMessage CreateGetFileAssociationRequest(string vectorStoreId, string fileId, RequestOptions options)
+        internal virtual PipelineMessage CreateGetVectorStoreFileRequest(string vectorStoreId, string fileId, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "GET";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/vector_stores/", false);
             uri.AppendPath(vectorStoreId, true);
             uri.AppendPath("/files/", false);
             uri.AppendPath(fileId, true);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;
         }
 
-        internal virtual PipelineMessage CreateRemoveFileFromStoreRequest(string vectorStoreId, string fileId, RequestOptions options)
+        internal virtual PipelineMessage CreateRemoveFileFromVectorStoreRequest(string vectorStoreId, string fileId, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "DELETE";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/vector_stores/", false);
             uri.AppendPath(vectorStoreId, true);
             uri.AppendPath("/files/", false);
             uri.AppendPath(fileId, true);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "DELETE", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;
@@ -301,17 +262,14 @@ namespace OpenAI.VectorStores
 
         internal virtual PipelineMessage CreateUpdateVectorStoreFileAttributesRequest(string vectorStoreId, string fileId, BinaryContent content, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "POST";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/vector_stores/", false);
             uri.AppendPath(vectorStoreId, true);
             uri.AppendPath("/files/", false);
             uri.AppendPath(fileId, true);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Content-Type", "application/json");
             request.Headers.Set("Accept", "application/json");
             request.Content = content;
@@ -321,10 +279,6 @@ namespace OpenAI.VectorStores
 
         internal virtual PipelineMessage CreateRetrieveVectorStoreFileContentRequest(string vectorStoreId, string fileId, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "GET";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/vector_stores/", false);
@@ -332,7 +286,8 @@ namespace OpenAI.VectorStores
             uri.AppendPath("/files/", false);
             uri.AppendPath(fileId, true);
             uri.AppendPath("/content", false);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;
@@ -340,16 +295,13 @@ namespace OpenAI.VectorStores
 
         internal virtual PipelineMessage CreateSearchVectorStoreRequest(string vectorStoreId, BinaryContent content, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "POST";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/vector_stores/", false);
             uri.AppendPath(vectorStoreId, true);
             uri.AppendPath("/search", false);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Content-Type", "application/json");
             request.Headers.Set("Accept", "application/json");
             request.Content = content;

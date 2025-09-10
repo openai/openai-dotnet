@@ -35,6 +35,7 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToString());
             }
+            // Plugin customization: remove options.Format != "W" check
             // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
             if (Optional.IsDefined(Id) && _additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
@@ -109,13 +110,13 @@ namespace OpenAI.Responses
                     case "local_shell_call_output":
                         return InternalLocalShellToolCallOutputItemResource.DeserializeInternalLocalShellToolCallOutputItemResource(element, options);
                     case "mcp_list_tools":
-                        return InternalMCPListToolsItemResource.DeserializeInternalMCPListToolsItemResource(element, options);
+                        return McpToolDefinitionListItem.DeserializeMcpToolDefinitionListItem(element, options);
                     case "mcp_approval_request":
-                        return InternalMCPApprovalRequestItemResource.DeserializeInternalMCPApprovalRequestItemResource(element, options);
+                        return McpToolCallApprovalRequestItem.DeserializeMcpToolCallApprovalRequestItem(element, options);
                     case "mcp_approval_response":
-                        return InternalMCPApprovalResponseItemResource.DeserializeInternalMCPApprovalResponseItemResource(element, options);
+                        return McpToolCallApprovalResponseItem.DeserializeMcpToolCallApprovalResponseItem(element, options);
                     case "mcp_call":
-                        return InternalMCPCallItemResource.DeserializeInternalMCPCallItemResource(element, options);
+                        return McpToolCallItem.DeserializeMcpToolCallItem(element, options);
                     case "message":
                         return MessageResponseItem.DeserializeMessageResponseItem(element, options);
                     case "item_reference":

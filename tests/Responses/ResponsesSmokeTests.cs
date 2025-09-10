@@ -36,8 +36,8 @@ public partial class ResponsesSmokeTests
         foreach (ResponseItem item in new ResponseItem[]
         {
             ResponseItem.CreateComputerCallItem("call_abcd", ComputerCallAction.CreateScreenshotAction(), []),
-            ResponseItem.CreateComputerCallOutputItem("call_abcd", [], "file_abcd"),
-            ResponseItem.CreateFileSearchCallItem(["query1"], []),
+            ResponseItem.CreateComputerCallOutputItem("call_abcd", ComputerCallOutput.CreateScreenshotOutput("file_abcd")),
+            ResponseItem.CreateFileSearchCallItem(["query1"]),
             ResponseItem.CreateFunctionCallItem("call_abcd", "function_name", BinaryData.Empty),
             ResponseItem.CreateFunctionCallOutputItem("call_abcd", "functionOutput"),
             ResponseItem.CreateReasoningItem("summary goes here"),

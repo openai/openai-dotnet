@@ -100,6 +100,6 @@ internal partial class InternalCreateChatCompletionStreamResponseChoice : IJsonM
             }
         }
         serializedAdditionalRawData = rawDataDictionary;
-        return new InternalCreateChatCompletionStreamResponseChoice(delta, logprobs, index, finishReason, serializedAdditionalRawData);
+        return new InternalCreateChatCompletionStreamResponseChoice(delta: delta, logprobs: logprobs, index: index, finishReason: finishReason, additionalBinaryDataProperties: serializedAdditionalRawData);
     }
 }

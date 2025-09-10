@@ -26,11 +26,6 @@ namespace OpenAI.Realtime
             {
                 throw new FormatException($"The model {nameof(TranscriptionSessionOptions)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(ClientSecret) && _additionalBinaryDataProperties?.ContainsKey("client_secret") != true)
-            {
-                writer.WritePropertyName("client_secret"u8);
-                writer.WriteObjectValue(ClientSecret, options);
-            }
             if (Optional.IsDefined(InputAudioFormat) && _additionalBinaryDataProperties?.ContainsKey("input_audio_format") != true)
             {
                 writer.WritePropertyName("input_audio_format"u8);
@@ -65,6 +60,11 @@ namespace OpenAI.Realtime
                     writer.WriteStringValue(item);
                 }
                 writer.WriteEndArray();
+            }
+            if (Optional.IsDefined(ClientSecret) && _additionalBinaryDataProperties?.ContainsKey("client_secret") != true)
+            {
+                writer.WritePropertyName("client_secret"u8);
+                writer.WriteObjectValue(ClientSecret, options);
             }
             if (Optional.IsCollectionDefined(_internalModalities) && _additionalBinaryDataProperties?.ContainsKey("modalities") != true)
             {
@@ -117,25 +117,16 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            InternalRealtimeTranscriptionSessionCreateRequestClientSecret clientSecret = default;
             RealtimeAudioFormat? inputAudioFormat = default;
             InputTranscriptionOptions inputTranscriptionOptions = default;
             TurnDetectionOptions turnDetectionOptions = default;
             InputNoiseReductionOptions inputNoiseReductionOptions = default;
             IList<string> include = default;
+            InternalRealtimeTranscriptionSessionCreateRequestClientSecret clientSecret = default;
             IList<InternalRealtimeRequestSessionModality> internalModalities = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("client_secret"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    clientSecret = InternalRealtimeTranscriptionSessionCreateRequestClientSecret.DeserializeInternalRealtimeTranscriptionSessionCreateRequestClientSecret(prop.Value, options);
-                    continue;
-                }
                 if (prop.NameEquals("input_audio_format"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -194,6 +185,15 @@ namespace OpenAI.Realtime
                     include = array;
                     continue;
                 }
+                if (prop.NameEquals("client_secret"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    clientSecret = InternalRealtimeTranscriptionSessionCreateRequestClientSecret.DeserializeInternalRealtimeTranscriptionSessionCreateRequestClientSecret(prop.Value, options);
+                    continue;
+                }
                 if (prop.NameEquals("modalities"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -212,12 +212,12 @@ namespace OpenAI.Realtime
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new TranscriptionSessionOptions(
-                clientSecret,
                 inputAudioFormat,
                 inputTranscriptionOptions,
                 turnDetectionOptions,
                 inputNoiseReductionOptions,
                 include ?? new ChangeTrackingList<string>(),
+                clientSecret,
                 internalModalities,
                 additionalBinaryDataProperties);
         }

@@ -14,19 +14,19 @@ namespace OpenAI.Realtime
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public TranscriptionSessionOptions() : this(null, default, null, null, null, null, null, null)
+        public TranscriptionSessionOptions() : this(default, null, null, null, null, null, null, null)
         {
         }
 
-        internal TranscriptionSessionOptions(InternalRealtimeTranscriptionSessionCreateRequestClientSecret clientSecret, RealtimeAudioFormat? inputAudioFormat, InputTranscriptionOptions inputTranscriptionOptions, TurnDetectionOptions turnDetectionOptions, InputNoiseReductionOptions inputNoiseReductionOptions, IList<string> include, IList<InternalRealtimeRequestSessionModality> internalModalities, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal TranscriptionSessionOptions(RealtimeAudioFormat? inputAudioFormat, InputTranscriptionOptions inputTranscriptionOptions, TurnDetectionOptions turnDetectionOptions, InputNoiseReductionOptions inputNoiseReductionOptions, IList<string> include, InternalRealtimeTranscriptionSessionCreateRequestClientSecret clientSecret, IList<InternalRealtimeRequestSessionModality> internalModalities, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
-            ClientSecret = clientSecret;
             InputAudioFormat = inputAudioFormat;
             InputTranscriptionOptions = inputTranscriptionOptions;
             TurnDetectionOptions = turnDetectionOptions;
             InputNoiseReductionOptions = inputNoiseReductionOptions;
             Include = include ?? new ChangeTrackingList<string>();
+            ClientSecret = clientSecret;
             _internalModalities = internalModalities ?? new ChangeTrackingList<InternalRealtimeRequestSessionModality>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }

@@ -77,11 +77,20 @@ internal static class TestHelpers
     public static ApiKeyCredential GetTestApiKeyCredential()
         => new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-    public static T GetTestClient<T>(TestScenario scenario, string overrideModel = null, OpenAIClientOptions options = default)
+    public static T GetTestClient<T>(
+        TestScenario scenario,
+        string overrideModel = null,
+        bool excludeDumpPolicy = false,
+        OpenAIClientOptions options = default)
     {
         options ??= new();
         ApiKeyCredential credential = GetTestApiKeyCredential();
-        options.AddPolicy(GetDumpPolicy(), PipelinePosition.BeforeTransport);
+
+        if (!excludeDumpPolicy)
+        {
+            options.AddPolicy(GetDumpPolicy(), PipelinePosition.BeforeTransport);
+        }
+
         string model = overrideModel ?? GetModelForScenario(scenario);
         object clientObject = scenario switch
         {

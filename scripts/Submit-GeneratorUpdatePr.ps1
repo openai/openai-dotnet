@@ -92,7 +92,10 @@ function Get-PackageDependencies {
 }
 
 $InjectedDependencies = @(
-    '@azure-tools/typespec-client-generator-core'
+    '@azure-tools/typespec-client-generator-core',
+    '@azure-tools/typespec-azure-core',
+    '@typespec/http',
+    '@typespec/openapi'
 )
 
 Write-Log "Starting TypeSpec generator update process"
@@ -211,6 +214,19 @@ try {
         Write-Warning-Log "OpenAI code generation failed: $_"
     }
     Pop-Location
+
+    # Build the updated library
+    Write-Log "Building the library"
+    Push-Location "."
+    try {
+        & dotnet build src/OpenAI.csproj
+        if ($LASTEXITCODE -ne 0) {
+            throw "Build failed with exit code $LASTEXITCODE"
+        }
+    } catch {
+        Write-Warning-Log "Building the library failed: $_"
+    }
+    Pop-Location
     
     # Check if there are changes to commit
     $gitStatus = git status --porcelain
@@ -227,6 +243,7 @@ try {
     Write-Log "Adding and committing changes"
     git add codegen/package.json
     git add codegen/generator/src/OpenAI.Library.Plugin.csproj
+    git add api
     git add package-lock.json
     git add ./ # Add any generated code changes
     

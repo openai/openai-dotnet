@@ -269,10 +269,17 @@ Push-Location $repoRootPath
 
 try {
     Invoke-ScriptWithLogging { npm ci }
+    if ($LASTEXITCODE -ne 0) {
+        exit $LASTEXITCODE
+    }
+
     Invoke-ScriptWithLogging { npm run build -w $codegenFolderPath }
+    if ($LASTEXITCODE -ne 0) {
+        exit $LASTEXITCODE
+    }
 
     Set-Location $specificationFolderPath
-    Invoke-ScriptWithLogging { npm exec --no -- tsp compile . }
+    Invoke-ScriptWithLogging { npx tsp compile . --stats --trace @typespec/http-client-csharp }
 }
 finally {
     Pop-Location

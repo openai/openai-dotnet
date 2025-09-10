@@ -8,20 +8,6 @@ namespace OpenAI;
 
 @access(Access.public)
 @usage(Usage.input | Usage.output)
-@discriminator("type")
-model DotnetResponseWebSearchLocation {
-  ...Location;
-}
-
-@access(Access.public)
-@usage(Usage.input | Usage.output)
-model DotnetResponseWebSearchApproximateLocation
-  extends DotnetResponseWebSearchLocation {
-  ...ApproximateLocation;
-}
-
-@access(Access.public)
-@usage(Usage.input | Usage.output)
 model DotNetItemReferenceItemResource extends ItemResource {
   type: ItemType.item_reference;
   ...ItemReferenceItemBase;
@@ -48,4 +34,34 @@ model ResponseItemCollectionOptions {
   ...CollectionBeforeQueryParameter,
   ...CollectionLimitQueryParameter,
   ...ResponseItemCollectionOrderQueryParameter,
+}
+
+@access(Access.public)
+@usage(Usage.input | Usage.output)
+union DotNetGlobalToolCallApprovalPolicy {
+  string,
+  AlwaysRequireApproval: "always",
+  NeverRequireApproval: "never",
+}
+
+@access(Access.public)
+@usage(Usage.input | Usage.output)
+model DotNetCustomToolCallApprovalPolicy {
+  /** A list of tools that always require approval. */
+  always?: {
+    /** List of tools that require approval. */
+    tool_names?: string[];
+  };
+  /** A list of tools that never require approval. */
+  `never`?: {
+    /** List of tools that do not require approval. */
+    tool_names?: string[];
+  };
+}
+
+@access(Access.public)
+@usage(Usage.input | Usage.output)
+model DotNetToolCallApprovalPolicy{
+  global_policy?: DotNetGlobalToolCallApprovalPolicy;
+  custom_policy?: DotNetCustomToolCallApprovalPolicy;
 }

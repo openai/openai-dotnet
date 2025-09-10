@@ -13,7 +13,7 @@ namespace OpenAI.Assistants
 {
     public partial class RunCreationOptions : IJsonModel<RunCreationOptions>
     {
-        public RunCreationOptions() : this(null, default, null, null, null, null, null, default, null, null, default, default, default, default, null, null, default, null)
+        public RunCreationOptions() : this(null, null, default, null, null, null, null, null, default, default, default, default, default, null, null, default, null, null)
         {
         }
 
@@ -36,20 +36,15 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("assistant_id"u8);
                 writer.WriteStringValue(AssistantId);
             }
-            if (Optional.IsDefined(Stream) && _additionalBinaryDataProperties?.ContainsKey("stream") != true)
-            {
-                writer.WritePropertyName("stream"u8);
-                writer.WriteBooleanValue(Stream.Value);
-            }
-            if (Optional.IsDefined(ResponseFormat) && _additionalBinaryDataProperties?.ContainsKey("response_format") != true)
-            {
-                writer.WritePropertyName("response_format"u8);
-                writer.WriteObjectValue(ResponseFormat, options);
-            }
             if (Optional.IsDefined(ModelOverride) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
             {
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(ModelOverride);
+            }
+            if (Optional.IsDefined(ReasoningEffortLevel) && _additionalBinaryDataProperties?.ContainsKey("reasoning_effort") != true)
+            {
+                writer.WritePropertyName("reasoning_effort"u8);
+                writer.WriteStringValue(ReasoningEffortLevel.Value.ToString());
             }
             if (Optional.IsDefined(InstructionsOverride) && _additionalBinaryDataProperties?.ContainsKey("instructions") != true)
             {
@@ -70,11 +65,6 @@ namespace OpenAI.Assistants
                     writer.WriteObjectValue(item, options);
                 }
                 writer.WriteEndArray();
-            }
-            if (Optional.IsDefined(AllowParallelToolCalls) && _additionalBinaryDataProperties?.ContainsKey("parallel_tool_calls") != true)
-            {
-                writer.WritePropertyName("parallel_tool_calls"u8);
-                writer.WriteBooleanValue(AllowParallelToolCalls.Value);
             }
             if (Optional.IsCollectionDefined(ToolsOverride) && _additionalBinaryDataProperties?.ContainsKey("tools") != true)
             {
@@ -112,6 +102,11 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("top_p"u8);
                 writer.WriteNumberValue(NucleusSamplingFactor.Value);
             }
+            if (Optional.IsDefined(Stream) && _additionalBinaryDataProperties?.ContainsKey("stream") != true)
+            {
+                writer.WritePropertyName("stream"u8);
+                writer.WriteBooleanValue(Stream.Value);
+            }
             if (Optional.IsDefined(MaxInputTokenCount) && _additionalBinaryDataProperties?.ContainsKey("max_prompt_tokens") != true)
             {
                 writer.WritePropertyName("max_prompt_tokens"u8);
@@ -132,10 +127,15 @@ namespace OpenAI.Assistants
                 writer.WritePropertyName("tool_choice"u8);
                 SerializeToolConstraint(writer, options);
             }
-            if (Optional.IsDefined(ReasoningEffortLevel) && _additionalBinaryDataProperties?.ContainsKey("reasoning_effort") != true)
+            if (Optional.IsDefined(AllowParallelToolCalls) && _additionalBinaryDataProperties?.ContainsKey("parallel_tool_calls") != true)
             {
-                writer.WritePropertyName("reasoning_effort"u8);
-                writer.WriteStringValue(ReasoningEffortLevel.Value.ToString());
+                writer.WritePropertyName("parallel_tool_calls"u8);
+                writer.WriteBooleanValue(AllowParallelToolCalls.Value);
+            }
+            if (Optional.IsDefined(ResponseFormat) && _additionalBinaryDataProperties?.ContainsKey("response_format") != true)
+            {
+                writer.WritePropertyName("response_format"u8);
+                writer.WriteObjectValue(ResponseFormat, options);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -179,48 +179,28 @@ namespace OpenAI.Assistants
                 return null;
             }
             string assistantId = default;
-            bool? stream = default;
-            AssistantResponseFormat responseFormat = default;
             string modelOverride = default;
+            ChatReasoningEffortLevel? reasoningEffortLevel = default;
             string instructionsOverride = default;
             string additionalInstructions = default;
             IList<MessageCreationOptions> internalMessages = default;
-            bool? allowParallelToolCalls = default;
             IList<ToolDefinition> toolsOverride = default;
             IDictionary<string, string> metadata = default;
             float? temperature = default;
             float? nucleusSamplingFactor = default;
+            bool? stream = default;
             int? maxInputTokenCount = default;
             int? maxOutputTokenCount = default;
             RunTruncationStrategy truncationStrategy = default;
             ToolConstraint toolConstraint = default;
-            ChatReasoningEffortLevel? reasoningEffortLevel = default;
+            bool? allowParallelToolCalls = default;
+            AssistantResponseFormat responseFormat = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("assistant_id"u8))
                 {
                     assistantId = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("stream"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        stream = null;
-                        continue;
-                    }
-                    stream = prop.Value.GetBoolean();
-                    continue;
-                }
-                if (prop.NameEquals("response_format"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        responseFormat = null;
-                        continue;
-                    }
-                    responseFormat = AssistantResponseFormat.DeserializeAssistantResponseFormat(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("model"u8))
@@ -231,6 +211,16 @@ namespace OpenAI.Assistants
                         continue;
                     }
                     modelOverride = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("reasoning_effort"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        reasoningEffortLevel = null;
+                        continue;
+                    }
+                    reasoningEffortLevel = new ChatReasoningEffortLevel(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("instructions"u8))
@@ -265,15 +255,6 @@ namespace OpenAI.Assistants
                         array.Add(MessageCreationOptions.DeserializeMessageCreationOptions(item, options));
                     }
                     internalMessages = array;
-                    continue;
-                }
-                if (prop.NameEquals("parallel_tool_calls"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    allowParallelToolCalls = prop.Value.GetBoolean();
                     continue;
                 }
                 if (prop.NameEquals("tools"u8))
@@ -331,6 +312,16 @@ namespace OpenAI.Assistants
                     nucleusSamplingFactor = prop.Value.GetSingle();
                     continue;
                 }
+                if (prop.NameEquals("stream"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        stream = null;
+                        continue;
+                    }
+                    stream = prop.Value.GetBoolean();
+                    continue;
+                }
                 if (prop.NameEquals("max_prompt_tokens"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -371,14 +362,23 @@ namespace OpenAI.Assistants
                     toolConstraint = ToolConstraint.DeserializeToolConstraint(prop.Value, options);
                     continue;
                 }
-                if (prop.NameEquals("reasoning_effort"u8))
+                if (prop.NameEquals("parallel_tool_calls"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        reasoningEffortLevel = null;
                         continue;
                     }
-                    reasoningEffortLevel = new ChatReasoningEffortLevel(prop.Value.GetString());
+                    allowParallelToolCalls = prop.Value.GetBoolean();
+                    continue;
+                }
+                if (prop.NameEquals("response_format"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        responseFormat = null;
+                        continue;
+                    }
+                    responseFormat = AssistantResponseFormat.DeserializeAssistantResponseFormat(prop.Value, options);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
@@ -386,22 +386,22 @@ namespace OpenAI.Assistants
             }
             return new RunCreationOptions(
                 assistantId,
-                stream,
-                responseFormat,
                 modelOverride,
+                reasoningEffortLevel,
                 instructionsOverride,
                 additionalInstructions,
                 internalMessages ?? new ChangeTrackingList<MessageCreationOptions>(),
-                allowParallelToolCalls,
                 toolsOverride ?? new ChangeTrackingList<ToolDefinition>(),
                 metadata ?? new ChangeTrackingDictionary<string, string>(),
                 temperature,
                 nucleusSamplingFactor,
+                stream,
                 maxInputTokenCount,
                 maxOutputTokenCount,
                 truncationStrategy,
                 toolConstraint,
-                reasoningEffortLevel,
+                allowParallelToolCalls,
+                responseFormat,
                 additionalBinaryDataProperties);
         }
 

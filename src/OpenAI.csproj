@@ -8,7 +8,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>Copyright (c) 2024 OpenAI (https://openai.com)</Copyright>
 
-    <VersionPrefix>2.3.0</VersionPrefix>
+    <VersionPrefix>2.4.0</VersionPrefix>
     <VersionSuffix></VersionSuffix>
 
     <TargetFrameworks>net8.0;netstandard2.0</TargetFrameworks>
@@ -81,7 +81,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-    <PackageReference Include="System.ClientModel" Version="1.5.1" />
+    <PackageReference Include="System.ClientModel" Version="1.6.1" />
   </ItemGroup>
 
   <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">

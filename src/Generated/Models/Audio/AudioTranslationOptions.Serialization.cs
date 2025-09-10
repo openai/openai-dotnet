@@ -32,6 +32,16 @@ namespace OpenAI.Audio
             {
                 throw new FormatException($"The model {nameof(AudioTranslationOptions)} does not support writing '{format}' format.");
             }
+            if (_additionalBinaryDataProperties?.ContainsKey("file") != true)
+            {
+                writer.WritePropertyName("file"u8);
+                writer.WriteBase64StringValue(File.ToArray(), "D");
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
+            {
+                writer.WritePropertyName("model"u8);
+                writer.WriteStringValue(Model.ToString());
+            }
             if (Optional.IsDefined(Prompt) && _additionalBinaryDataProperties?.ContainsKey("prompt") != true)
             {
                 writer.WritePropertyName("prompt"u8);
@@ -46,16 +56,6 @@ namespace OpenAI.Audio
             {
                 writer.WritePropertyName("temperature"u8);
                 writer.WriteNumberValue(Temperature.Value);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("file") != true)
-            {
-                writer.WritePropertyName("file"u8);
-                writer.WriteBase64StringValue(File.ToArray(), "D");
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
-            {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model.ToString());
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -99,14 +99,24 @@ namespace OpenAI.Audio
             {
                 return null;
             }
+            BinaryData @file = default;
+            InternalCreateTranslationRequestModel model = default;
             string prompt = default;
             AudioTranslationFormat? responseFormat = default;
             float? temperature = default;
-            BinaryData @file = default;
-            InternalCreateTranslationRequestModel model = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("file"u8))
+                {
+                    @file = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
+                    continue;
+                }
+                if (prop.NameEquals("model"u8))
+                {
+                    model = new InternalCreateTranslationRequestModel(prop.Value.GetString());
+                    continue;
+                }
                 if (prop.NameEquals("prompt"u8))
                 {
                     prompt = prop.Value.GetString();
@@ -130,25 +140,15 @@ namespace OpenAI.Audio
                     temperature = prop.Value.GetSingle();
                     continue;
                 }
-                if (prop.NameEquals("file"u8))
-                {
-                    @file = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
-                    continue;
-                }
-                if (prop.NameEquals("model"u8))
-                {
-                    model = new InternalCreateTranslationRequestModel(prop.Value.GetString());
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new AudioTranslationOptions(
+                @file,
+                model,
                 prompt,
                 responseFormat,
                 temperature,
-                @file,
-                model,
                 additionalBinaryDataProperties);
         }
 

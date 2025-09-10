@@ -2,6 +2,7 @@ import "../../base/typespec/vector-stores/main.tsp";
 import "@azure-tools/typespec-client-generator-core";
 
 using Azure.ClientGenerator.Core;
+using TypeSpec.Http;
 
 namespace OpenAI;
 
@@ -31,4 +32,39 @@ model DotNetCombinedStaticChunkingStrategyParam
 model DotNetCombinedOtherChunkingStrategyParam
   extends DotNetCombinedChunkingStrategyParam {
   ...OtherChunkingStrategyResponseParam;
+}
+
+@access(Access.public)
+@usage(Usage.input)
+model VectorStoreCollectionOptions {
+  ...CollectionAfterQueryParameter,
+  ...CollectionBeforeQueryParameter,
+  ...CollectionLimitQueryParameter,
+  ...PageOrderQueryParameter,
+}
+
+
+alias VectorStoreFileCollectionOrderQueryParameter = {
+  /**
+   * Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
+   * for descending order.
+   */
+  @query order?: VectorStoreFileCollectionOrder;
+};
+
+union VectorStoreFileCollectionOrder {
+  string,
+  Ascending: "asc",
+  Descending: "desc",
+}
+
+@access(Access.public)
+@usage(Usage.input)
+model VectorStoreFileCollectionOptions {
+  ...CollectionAfterQueryParameter,
+  ...CollectionBeforeQueryParameter,
+  ...CollectionLimitQueryParameter,
+  ...VectorStoreFileCollectionOrderQueryParameter,
+
+  @query filter?: ListVectorStoreFilesFilter;
 }

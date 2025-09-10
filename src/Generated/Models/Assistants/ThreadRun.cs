@@ -14,7 +14,7 @@ namespace OpenAI.Assistants
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ThreadRun(string id, DateTimeOffset createdAt, string threadId, string assistantId, RunStatus status, RunError lastError, DateTimeOffset? expiresAt, DateTimeOffset? startedAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, RunIncompleteDetails incompleteDetails, string model, string instructions, RunTokenUsage usage, RunTruncationStrategy truncationStrategy, AssistantResponseFormat responseFormat, ToolConstraint toolConstraint, bool? allowParallelToolCalls, int? maxInputTokenCount, int? maxOutputTokenCount, InternalRunRequiredAction internalRequiredAction)
+        internal ThreadRun(string id, DateTimeOffset createdAt, string threadId, string assistantId, RunStatus status, RunError lastError, DateTimeOffset? expiresAt, DateTimeOffset? startedAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, RunIncompleteDetails incompleteDetails, string model, string instructions, RunTokenUsage usage, int? maxInputTokenCount, int? maxOutputTokenCount, RunTruncationStrategy truncationStrategy, ToolConstraint toolConstraint, bool? allowParallelToolCalls, AssistantResponseFormat responseFormat, InternalRunRequiredAction internalRequiredAction)
         {
             Id = id;
             CreatedAt = createdAt;
@@ -33,19 +33,20 @@ namespace OpenAI.Assistants
             Tools = new ChangeTrackingList<ToolDefinition>();
             Metadata = new ChangeTrackingDictionary<string, string>();
             Usage = usage;
-            TruncationStrategy = truncationStrategy;
-            ResponseFormat = responseFormat;
-            ToolConstraint = toolConstraint;
-            AllowParallelToolCalls = allowParallelToolCalls;
             MaxInputTokenCount = maxInputTokenCount;
             MaxOutputTokenCount = maxOutputTokenCount;
+            TruncationStrategy = truncationStrategy;
+            ToolConstraint = toolConstraint;
+            AllowParallelToolCalls = allowParallelToolCalls;
+            ResponseFormat = responseFormat;
             _internalRequiredAction = internalRequiredAction;
         }
 
-        internal ThreadRun(string id, DateTimeOffset createdAt, string threadId, string assistantId, RunStatus status, RunError lastError, DateTimeOffset? expiresAt, DateTimeOffset? startedAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, RunIncompleteDetails incompleteDetails, string model, string instructions, IReadOnlyList<ToolDefinition> tools, IReadOnlyDictionary<string, string> metadata, RunTokenUsage usage, float? temperature, RunTruncationStrategy truncationStrategy, string @object, AssistantResponseFormat responseFormat, ToolConstraint toolConstraint, float? nucleusSamplingFactor, bool? allowParallelToolCalls, int? maxInputTokenCount, int? maxOutputTokenCount, InternalRunRequiredAction internalRequiredAction, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ThreadRun(string id, string @object, DateTimeOffset createdAt, string threadId, string assistantId, RunStatus status, RunError lastError, DateTimeOffset? expiresAt, DateTimeOffset? startedAt, DateTimeOffset? cancelledAt, DateTimeOffset? failedAt, DateTimeOffset? completedAt, RunIncompleteDetails incompleteDetails, string model, string instructions, IReadOnlyList<ToolDefinition> tools, IReadOnlyDictionary<string, string> metadata, RunTokenUsage usage, float? temperature, float? nucleusSamplingFactor, int? maxInputTokenCount, int? maxOutputTokenCount, RunTruncationStrategy truncationStrategy, ToolConstraint toolConstraint, bool? allowParallelToolCalls, AssistantResponseFormat responseFormat, InternalRunRequiredAction internalRequiredAction, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
+            Object = @object;
             CreatedAt = createdAt;
             ThreadId = threadId;
             AssistantId = assistantId;
@@ -63,14 +64,13 @@ namespace OpenAI.Assistants
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Usage = usage;
             Temperature = temperature;
-            TruncationStrategy = truncationStrategy;
-            Object = @object;
-            ResponseFormat = responseFormat;
-            ToolConstraint = toolConstraint;
             NucleusSamplingFactor = nucleusSamplingFactor;
-            AllowParallelToolCalls = allowParallelToolCalls;
             MaxInputTokenCount = maxInputTokenCount;
             MaxOutputTokenCount = maxOutputTokenCount;
+            TruncationStrategy = truncationStrategy;
+            ToolConstraint = toolConstraint;
+            AllowParallelToolCalls = allowParallelToolCalls;
+            ResponseFormat = responseFormat;
             _internalRequiredAction = internalRequiredAction;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }

@@ -612,7 +612,7 @@ namespace OpenAILibraryPlugin.Visitors
             "ComputerCallResponseItem",
             "ComputerCallSafetyCheck",
             "ComputerCallStatus",
-            "ComputerOutput",
+            "ComputerCallOutput",
             "ComputerToolEnvironment",
         };
 
@@ -664,8 +664,8 @@ namespace OpenAILibraryPlugin.Visitors
 
             if (!_stableMethods.Contains(lookupName))
             {
-                methodProvider.Update(
-                    attributes: [.. methodProvider.Attributes,
+                methodProvider.Signature.Update(
+                    attributes: [.. methodProvider.Signature.Attributes,
                         methodProvider.EnclosingType.Type.Namespace.StartsWith(_realtimeNamespace) || (methodProvider.Signature.ReturnType?.Namespace.StartsWith(_realtimeNamespace) ?? false) ?
                             _experimental002Attribute :
                             _experimental001Attribute]);

@@ -4,9 +4,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using OpenAI;
-using OpenAI.Internal;
 
 namespace OpenAI.Chat
 {
@@ -14,29 +14,32 @@ namespace OpenAI.Chat
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal StreamingChatCompletionUpdate(string model, string completionId, IEnumerable<InternalCreateChatCompletionStreamResponseChoice> choices, DateTimeOffset createdAt)
+        internal StreamingChatCompletionUpdate(string completionId, IEnumerable<InternalCreateChatCompletionStreamResponseChoice> choices, DateTimeOffset createdAt, string model)
         {
-            Model = model;
             CompletionId = completionId;
             Choices = choices.ToList();
             CreatedAt = createdAt;
+            Model = model;
         }
 
-        internal StreamingChatCompletionUpdate(string model, string systemFingerprint, string @object, string completionId, InternalServiceTier? serviceTier, IReadOnlyList<InternalCreateChatCompletionStreamResponseChoice> choices, DateTimeOffset createdAt, ChatTokenUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal StreamingChatCompletionUpdate(string completionId, IReadOnlyList<InternalCreateChatCompletionStreamResponseChoice> choices, DateTimeOffset createdAt, string model, ChatServiceTier? serviceTier, string systemFingerprint, string @object, ChatTokenUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
-            Model = model;
-            SystemFingerprint = systemFingerprint;
-            Object = @object;
             CompletionId = completionId;
-            ServiceTier = serviceTier;
             Choices = choices ?? new ChangeTrackingList<InternalCreateChatCompletionStreamResponseChoice>();
             CreatedAt = createdAt;
+            Model = model;
+            ServiceTier = serviceTier;
+            SystemFingerprint = systemFingerprint;
+            Object = @object;
             Usage = usage;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Model { get; }
+
+        [Experimental("OPENAI001")]
+        public ChatServiceTier? ServiceTier { get; }
 
         public string SystemFingerprint { get; }
 

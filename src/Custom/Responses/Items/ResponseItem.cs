@@ -12,7 +12,7 @@ public partial class ResponseItem
 {
     // CUSTOM: Specify read-only semantics for ID
     [CodeGenMember("Id")]
-    public string Id { get; }
+    public string Id { get; internal set; }
 
     public static MessageResponseItem CreateUserMessageItem(IEnumerable<ResponseContentPart> contentParts)
     {
@@ -43,7 +43,7 @@ public partial class ResponseItem
     public static MessageResponseItem CreateSystemMessageItem(IEnumerable<ResponseContentPart> contentParts)
     {
         Argument.AssertNotNull(contentParts, nameof(contentParts));
-        return new InternalResponsesSystemMessage(id: null, status: null, contentParts);
+        return new InternalResponsesSystemMessage(contentParts);
     }
 
     public static MessageResponseItem CreateSystemMessageItem(string inputTextContent)
@@ -53,72 +53,32 @@ public partial class ResponseItem
             internalContent: [ResponseContentPart.CreateInputTextPart(inputTextContent)]);
     }
 
-    public static MessageResponseItem CreateAssistantMessageItem(
-        IEnumerable<ResponseContentPart> contentParts)
+    public static MessageResponseItem CreateAssistantMessageItem(IEnumerable<ResponseContentPart> contentParts)
     {
         Argument.AssertNotNull(contentParts, nameof(contentParts));
         return new InternalResponsesAssistantMessage(contentParts);
     }
 
-    public static MessageResponseItem CreateAssistantMessageItem(
-        string outputTextContent,
-        IEnumerable<ResponseMessageAnnotation> annotations = null)
+    public static MessageResponseItem CreateAssistantMessageItem(string outputTextContent, IEnumerable<ResponseMessageAnnotation> annotations = null)
     {
         Argument.AssertNotNull(outputTextContent, nameof(outputTextContent));
         return new InternalResponsesAssistantMessage(
             internalContent:
             [
-                new InternalItemContentOutputText(annotations ?? [], outputTextContent),
+                new InternalItemContentOutputText(outputTextContent, annotations ?? []),
             ]);
     }
 
     [Experimental("OPENAICUA001")]
     public static ComputerCallResponseItem CreateComputerCallItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks)
     {
-        Argument.AssertNotNull(callId, nameof(callId));
         return new ComputerCallResponseItem(callId, action, pendingSafetyChecks);
     }
 
     [Experimental("OPENAICUA001")]
-    public static ComputerCallOutputResponseItem CreateComputerCallOutputItem(string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, Uri screenshotImageUri)
+    public static ComputerCallOutputResponseItem CreateComputerCallOutputItem(string callId, ComputerCallOutput output)
     {
-        Argument.AssertNotNull(callId, nameof(callId));
-        ComputerCallOutputResponseItem item = new(
-            callId,
-            ComputerOutput.CreateScreenshotOutput(screenshotImageUri));
-        foreach (ComputerCallSafetyCheck safetyCheck in acknowledgedSafetyChecks ?? [])
-        {
-            item.AcknowledgedSafetyChecks.Add(safetyCheck);
-        }
-        return item;
-    }
-
-    [Experimental("OPENAICUA001")]
-    public static ComputerCallOutputResponseItem CreateComputerCallOutputItem(string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, string screenshotImageFileId)
-    {
-        Argument.AssertNotNull(callId, nameof(callId));
-        ComputerCallOutputResponseItem item = new(
-            callId,
-            ComputerOutput.CreateScreenshotOutput(screenshotImageFileId));
-        foreach (ComputerCallSafetyCheck safetyCheck in acknowledgedSafetyChecks ?? [])
-        {
-            item.AcknowledgedSafetyChecks.Add(safetyCheck);
-        }
-        return item;
-    }
-
-    [Experimental("OPENAICUA001")]
-    public static ComputerCallOutputResponseItem CreateComputerCallOutputItem(string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, BinaryData screenshotImageBytes, string screenshotImageBytesMediaType)
-    {
-        Argument.AssertNotNull(callId, nameof(callId));
-        ComputerCallOutputResponseItem item = new(
-            callId,
-            ComputerOutput.CreateScreenshotOutput(screenshotImageBytes, screenshotImageBytesMediaType));
-        foreach (ComputerCallSafetyCheck safetyCheck in acknowledgedSafetyChecks ?? [])
-        {
-            item.AcknowledgedSafetyChecks.Add(safetyCheck);
-        }
-        return item;
+        return new ComputerCallOutputResponseItem(callId, output);
     }
 
     public static WebSearchCallResponseItem CreateWebSearchCallItem()
@@ -126,39 +86,28 @@ public partial class ResponseItem
         return new WebSearchCallResponseItem();
     }
 
-    public static FileSearchCallResponseItem CreateFileSearchCallItem(
-        IEnumerable<string> queries,
-        IEnumerable<FileSearchCallResult> results)
+    public static FileSearchCallResponseItem CreateFileSearchCallItem(IEnumerable<string> queries)
     {
-        Argument.AssertNotNullOrEmpty(queries, nameof(queries));
-        return new FileSearchCallResponseItem(queries, results);
+        return new FileSearchCallResponseItem(queries);
     }
 
     public static FunctionCallResponseItem CreateFunctionCallItem(string callId, string functionName, BinaryData functionArguments)
     {
-        Argument.AssertNotNull(callId, nameof(callId));
-        Argument.AssertNotNull(functionName, nameof(functionName));
-        Argument.AssertNotNull(functionArguments, nameof(functionArguments));
-
         return new FunctionCallResponseItem(callId, functionName, functionArguments);
     }
 
     public static FunctionCallOutputResponseItem CreateFunctionCallOutputItem(string callId, string functionOutput)
     {
-        Argument.AssertNotNull(callId, nameof(callId));
-        Argument.AssertNotNull(functionOutput, nameof(functionOutput));
         return new FunctionCallOutputResponseItem(callId, functionOutput);
     }
 
     public static ReasoningResponseItem CreateReasoningItem(IEnumerable<ReasoningSummaryPart> summaryParts)
     {
-        Argument.AssertNotNullOrEmpty(summaryParts, nameof(summaryParts));
         return new ReasoningResponseItem(summaryParts);
     }
 
     public static ReasoningResponseItem CreateReasoningItem(string summaryText)
     {
-        Argument.AssertNotNull(summaryText, nameof(summaryText));
         return new ReasoningResponseItem(summaryText);
     }
 
@@ -166,4 +115,25 @@ public partial class ResponseItem
     {
         return new ReferenceResponseItem(id);
     }
+
+    public static McpToolCallApprovalRequestItem CreateMcpApprovalRequestItem(string serverLabel, string name, BinaryData arguments)
+    {
+        return new McpToolCallApprovalRequestItem(serverLabel, name, arguments);
+    }
+
+    public static McpToolCallApprovalResponseItem CreateMcpApprovalResponseItem(string approvalRequestId, bool approved)
+    {
+        return new McpToolCallApprovalResponseItem(approvalRequestId, approved);
+    }
+
+    public static McpToolCallItem CreateMcpToolCallItem(string serverLabel, string name, BinaryData arguments)
+    {
+        return new McpToolCallItem(serverLabel, name, arguments);
+    }
+
+    public static McpToolDefinitionListItem CreateMcpToolDefinitionListItem(string serverLabel, IEnumerable<McpToolDefinition> toolDefinitions)
+    {
+        return new McpToolDefinitionListItem(serverLabel, toolDefinitions);
+    }
+
 }

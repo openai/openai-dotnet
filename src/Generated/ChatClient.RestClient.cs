@@ -17,10 +17,6 @@ namespace OpenAI.Chat
 
         internal virtual PipelineMessage CreateGetChatCompletionsRequest(string after, int? limit, string order, IDictionary<string, string> metadata, string model, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "GET";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/chat/completions", false);
@@ -50,7 +46,8 @@ namespace OpenAI.Chat
             {
                 uri.AppendQuery("model", model, true);
             }
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;
@@ -58,14 +55,11 @@ namespace OpenAI.Chat
 
         internal virtual PipelineMessage CreateCompleteChatRequest(BinaryContent content, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "POST";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/chat/completions", false);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             request.Headers.Set("Content-Type", "application/json");
             request.Content = content;
@@ -75,15 +69,12 @@ namespace OpenAI.Chat
 
         internal virtual PipelineMessage CreateGetChatCompletionRequest(string completionId, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "GET";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/chat/completions/", false);
             uri.AppendPath(completionId, true);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;
@@ -91,15 +82,12 @@ namespace OpenAI.Chat
 
         internal virtual PipelineMessage CreateUpdateChatCompletionRequest(string completionId, BinaryContent content, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "POST";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/chat/completions/", false);
             uri.AppendPath(completionId, true);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Content-Type", "application/json");
             request.Headers.Set("Accept", "application/json");
             request.Content = content;
@@ -109,15 +97,12 @@ namespace OpenAI.Chat
 
         internal virtual PipelineMessage CreateDeleteChatCompletionRequest(string completionId, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "DELETE";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/chat/completions/", false);
             uri.AppendPath(completionId, true);
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "DELETE", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;
@@ -125,10 +110,6 @@ namespace OpenAI.Chat
 
         internal virtual PipelineMessage CreateGetChatCompletionMessagesRequest(string completionId, string after, int? limit, string order, RequestOptions options)
         {
-            PipelineMessage message = Pipeline.CreateMessage();
-            message.ResponseClassifier = PipelineMessageClassifier200;
-            PipelineRequest request = message.Request;
-            request.Method = "GET";
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/chat/completions/", false);
@@ -146,7 +127,8 @@ namespace OpenAI.Chat
             {
                 uri.AppendQuery("order", order, true);
             }
-            request.Uri = uri.ToUri();
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);
             return message;

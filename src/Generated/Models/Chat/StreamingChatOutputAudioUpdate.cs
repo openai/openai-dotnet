@@ -17,12 +17,12 @@ namespace OpenAI.Chat
         {
         }
 
-        internal StreamingChatOutputAudioUpdate(string id, DateTimeOffset? expiresAt, string transcriptUpdate, BinaryData audioBytesUpdate, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal StreamingChatOutputAudioUpdate(string id, string transcriptUpdate, BinaryData audioBytesUpdate, DateTimeOffset? expiresAt, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
-            ExpiresAt = expiresAt;
             TranscriptUpdate = transcriptUpdate;
             AudioBytesUpdate = audioBytesUpdate;
+            ExpiresAt = expiresAt;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

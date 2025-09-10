@@ -26,6 +26,11 @@ namespace OpenAI.Assistants
             {
                 throw new FormatException($"The model {nameof(ThreadModificationOptions)} does not support writing '{format}' format.");
             }
+            if (Optional.IsDefined(ToolResources) && _additionalBinaryDataProperties?.ContainsKey("tool_resources") != true)
+            {
+                writer.WritePropertyName("tool_resources"u8);
+                writer.WriteObjectValue(ToolResources, options);
+            }
             if (Optional.IsCollectionDefined(Metadata) && _additionalBinaryDataProperties?.ContainsKey("metadata") != true)
             {
                 writer.WritePropertyName("metadata"u8);
@@ -41,11 +46,6 @@ namespace OpenAI.Assistants
                     writer.WriteStringValue(item.Value);
                 }
                 writer.WriteEndObject();
-            }
-            if (Optional.IsDefined(ToolResources) && _additionalBinaryDataProperties?.ContainsKey("tool_resources") != true)
-            {
-                writer.WritePropertyName("tool_resources"u8);
-                writer.WriteObjectValue(ToolResources, options);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -88,11 +88,21 @@ namespace OpenAI.Assistants
             {
                 return null;
             }
-            IDictionary<string, string> metadata = default;
             ToolResources toolResources = default;
+            IDictionary<string, string> metadata = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("tool_resources"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        toolResources = null;
+                        continue;
+                    }
+                    toolResources = ToolResources.DeserializeToolResources(prop.Value, options);
+                    continue;
+                }
                 if (prop.NameEquals("metadata"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -114,20 +124,10 @@ namespace OpenAI.Assistants
                     metadata = dictionary;
                     continue;
                 }
-                if (prop.NameEquals("tool_resources"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        toolResources = null;
-                        continue;
-                    }
-                    toolResources = ToolResources.DeserializeToolResources(prop.Value, options);
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ThreadModificationOptions(metadata ?? new ChangeTrackingDictionary<string, string>(), toolResources, additionalBinaryDataProperties);
+            return new ThreadModificationOptions(toolResources, metadata ?? new ChangeTrackingDictionary<string, string>(), additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<ThreadModificationOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

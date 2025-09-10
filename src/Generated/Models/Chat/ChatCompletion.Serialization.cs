@@ -9,13 +9,12 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
-using OpenAI.Internal;
 
 namespace OpenAI.Chat
 {
     public partial class ChatCompletion : IJsonModel<ChatCompletion>
     {
-        internal ChatCompletion() : this(null, null, null, null, null, default, null, default, null)
+        internal ChatCompletion() : this(null, null, default, null, default, null, null, null, null)
         {
         }
 
@@ -39,31 +38,6 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
-            {
-                writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model);
-            }
-            if (Optional.IsDefined(SystemFingerprint) && _additionalBinaryDataProperties?.ContainsKey("system_fingerprint") != true)
-            {
-                writer.WritePropertyName("system_fingerprint"u8);
-                writer.WriteStringValue(SystemFingerprint);
-            }
-            if (Optional.IsDefined(Usage) && _additionalBinaryDataProperties?.ContainsKey("usage") != true)
-            {
-                writer.WritePropertyName("usage"u8);
-                writer.WriteObjectValue(Usage, options);
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
-            {
-                writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object);
-            }
-            if (Optional.IsDefined(ServiceTier) && _additionalBinaryDataProperties?.ContainsKey("service_tier") != true)
-            {
-                writer.WritePropertyName("service_tier"u8);
-                writer.WriteStringValue(ServiceTier.Value.ToString());
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("choices") != true)
             {
                 writer.WritePropertyName("choices"u8);
@@ -78,6 +52,31 @@ namespace OpenAI.Chat
             {
                 writer.WritePropertyName("created"u8);
                 writer.WriteNumberValue(CreatedAt, "U");
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
+            {
+                writer.WritePropertyName("model"u8);
+                writer.WriteStringValue(Model);
+            }
+            if (Optional.IsDefined(ServiceTier) && _additionalBinaryDataProperties?.ContainsKey("service_tier") != true)
+            {
+                writer.WritePropertyName("service_tier"u8);
+                writer.WriteStringValue(ServiceTier.Value.ToString());
+            }
+            if (Optional.IsDefined(SystemFingerprint) && _additionalBinaryDataProperties?.ContainsKey("system_fingerprint") != true)
+            {
+                writer.WritePropertyName("system_fingerprint"u8);
+                writer.WriteStringValue(SystemFingerprint);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            {
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object);
+            }
+            if (Optional.IsDefined(Usage) && _additionalBinaryDataProperties?.ContainsKey("usage") != true)
+            {
+                writer.WritePropertyName("usage"u8);
+                writer.WriteObjectValue(Usage, options);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -122,53 +121,19 @@ namespace OpenAI.Chat
                 return null;
             }
             string id = default;
-            string model = default;
-            string systemFingerprint = default;
-            ChatTokenUsage usage = default;
-            string @object = default;
-            InternalServiceTier? serviceTier = default;
             IReadOnlyList<InternalCreateChatCompletionResponseChoice> choices = default;
             DateTimeOffset createdAt = default;
+            string model = default;
+            ChatServiceTier? serviceTier = default;
+            string systemFingerprint = default;
+            string @object = default;
+            ChatTokenUsage usage = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("id"u8))
                 {
                     id = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("model"u8))
-                {
-                    model = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("system_fingerprint"u8))
-                {
-                    systemFingerprint = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("usage"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    usage = ChatTokenUsage.DeserializeChatTokenUsage(prop.Value, options);
-                    continue;
-                }
-                if (prop.NameEquals("object"u8))
-                {
-                    @object = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("service_tier"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        serviceTier = null;
-                        continue;
-                    }
-                    serviceTier = new InternalServiceTier(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("choices"u8))
@@ -186,18 +151,51 @@ namespace OpenAI.Chat
                     createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
+                if (prop.NameEquals("model"u8))
+                {
+                    model = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("service_tier"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    serviceTier = new ChatServiceTier(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("system_fingerprint"u8))
+                {
+                    systemFingerprint = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("object"u8))
+                {
+                    @object = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("usage"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    usage = ChatTokenUsage.DeserializeChatTokenUsage(prop.Value, options);
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ChatCompletion(
                 id,
-                model,
-                systemFingerprint,
-                usage,
-                @object,
-                serviceTier,
                 choices,
                 createdAt,
+                model,
+                serviceTier,
+                systemFingerprint,
+                @object,
+                usage,
                 additionalBinaryDataProperties);
         }
 

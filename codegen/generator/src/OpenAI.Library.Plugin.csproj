@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.TypeSpec.Generator.ClientModel" Version="1.0.0-alpha.20250722.1" />
+      <PackageReference Include="Microsoft.TypeSpec.Generator.ClientModel" Version="1.0.0-alpha.20250905.1" />
     </ItemGroup>
 
   <!-- Copy output to package dist path for local execution and  -->
@@ -22,3 +22,5 @@
   </Target>
 
 </Project>
+
+
