@@ -32,6 +32,22 @@ function Invoke-ScriptWithLogging {
     Write-Host ""
 }
 
+
+$script:startTime = Get-Date
+$scriptName = $MyInvocation.MyCommand.Name
+
+function Write-ElapsedTime {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$Message
+    )
+
+    $elapsedTime = [math]::Round(((Get-Date) - $script:startTime).TotalSeconds, 1)
+    Write-Host "[${scriptName}] ${Message}. Total elapsed time: $elapsedTime seconds."
+    Write-Host ""
+}
+
 function Get-GitHubApiHeaders {
     param(
         [Parameter(Mandatory = $false)]
@@ -265,6 +281,8 @@ else {
     }
 }
 
+Write-ElapsedTime "Spec retrieved"
+
 Push-Location $repoRootPath
 
 try {
@@ -273,10 +291,13 @@ try {
         exit $LASTEXITCODE
     }
 
+    Write-ElapsedTime "npm ci complete"
+
     Invoke-ScriptWithLogging { npm run build -w $codegenFolderPath }
     if ($LASTEXITCODE -ne 0) {
         exit $LASTEXITCODE
     }
+    Write-ElapsedTime "npm run build complete"
 
     Set-Location $specificationFolderPath
     Invoke-ScriptWithLogging { npx tsp compile . --stats --trace @typespec/http-client-csharp }
@@ -285,9 +306,4 @@ finally {
     Pop-Location
 }
 
-$scriptElapsed = $(Get-Date) - $scriptStartTime
-$scriptElapsedSeconds = [math]::Round($scriptElapsed.TotalSeconds, 1)
-$scriptName = $MyInvocation.MyCommand.Name
-
-Write-Host "${scriptName} completed. Time: ${scriptElapsedSeconds}s"
-Write-Host ""
+Write-ElapsedTime "Script completed"
