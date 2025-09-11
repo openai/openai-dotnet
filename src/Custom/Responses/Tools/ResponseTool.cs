@@ -1,3 +1,4 @@
+using OpenAI.Assistants;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -74,4 +75,17 @@ public partial class ResponseTool
             allowedTools: allowedTools,
             toolCallApprovalPolicy: toolCallApprovalPolicy);
     }
+
+	// <GP>
+	public static ResponseTool CreateCodeInterpreterTool(string type = "auto", IDictionary<string, BinaryData> additionalBinaryDataProperties = null)
+
+	{
+		return new InternalCodeInterpreterTool(
+			kind: InternalToolType.CodeInterpreter,
+			additionalBinaryDataProperties: additionalBinaryDataProperties,
+			container: new CodeInterpreterToolDefinition(kind: type, additionalBinaryDataProperties: null)
+			);
+	}
+	// </GP>
 }
+
