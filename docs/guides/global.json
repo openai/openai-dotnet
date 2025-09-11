@@ -1,5 +1,5 @@
 {
   "sdk": {
-    "allowPrerelease": true
+    "version": "10.*-rc*"
   }
 }
