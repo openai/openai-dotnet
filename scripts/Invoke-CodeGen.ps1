@@ -34,6 +34,7 @@ function Invoke-ScriptWithLogging {
 
 
 $script:startTime = Get-Date
+$scriptName = $MyInvocation.MyCommand.Name
 
 function Write-ElapsedTime {
     [CmdletBinding()]
@@ -43,7 +44,7 @@ function Write-ElapsedTime {
     )
 
     $elapsedTime = [math]::Round(((Get-Date) - $script:startTime).TotalSeconds, 1)
-    Write-Host "${Message}. Total elapsed time: $elapsedTime seconds"
+    Write-Host "[${scriptName}] ${Message}. Total elapsed time: $elapsedTime seconds."
     Write-Host ""
 }
 
@@ -305,6 +306,4 @@ finally {
     Pop-Location
 }
 
-$scriptName = $MyInvocation.MyCommand.Name
-
-Write-ElapsedTime "${scriptName} completed"
+Write-ElapsedTime "Script completed"
