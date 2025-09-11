@@ -44,7 +44,7 @@ namespace OpenAI.Responses
             if (_additionalBinaryDataProperties?.ContainsKey("delta") != true)
             {
                 writer.WritePropertyName("delta"u8);
-                writer.WriteStringValue(Delta);
+                SerializeDeltaValue(writer, options);
             }
         }
 
@@ -72,7 +72,7 @@ namespace OpenAI.Responses
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string itemId = default;
             int outputIndex = default;
-            string delta = default;
+            BinaryData delta = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -97,7 +97,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("delta"u8))
                 {
-                    delta = prop.Value.GetString();
+                    DeserializeDeltaValue(prop, ref delta);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

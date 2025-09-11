@@ -561,6 +561,13 @@ namespace OpenAI
             return new FileSearchToolRankingOptions(ranker, scoreThreshold, additionalBinaryDataProperties: null);
         }
 
+        public static McpToolFilter McpToolFilter(IEnumerable<string> toolNames = default)
+        {
+            toolNames ??= new ChangeTrackingList<string>();
+
+            return new McpToolFilter(toolNames.ToList(), additionalBinaryDataProperties: null);
+        }
+
         public static ResponseTextOptions ResponseTextOptions(ResponseTextFormat textFormat = default)
         {
             return new ResponseTextOptions(textFormat, additionalBinaryDataProperties: null);
@@ -617,7 +624,12 @@ namespace OpenAI
             return new ComputerCallSafetyCheck(id, code, message, additionalBinaryDataProperties: null);
         }
 
-        public static OpenAIResponse OpenAIResponse(IDictionary<string, string> metadata = default, float? temperature = default, float? topP = default, string endUserId = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? background = default, int? maxOutputTokenCount = default, string instructions = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, string id = default, string @object = default, ResponseStatus? status = default, DateTimeOffset createdAt = default, ResponseError error = default, ResponseIncompleteStatusDetails incompleteStatusDetails = default, IEnumerable<ResponseItem> outputItems = default, ResponseTokenUsage usage = default, bool parallelToolCallsEnabled = default)
+        public static McpToolDefinition McpToolDefinition(string name = default, string description = default, BinaryData inputSchema = default, BinaryData annotations = default)
+        {
+            return new McpToolDefinition(name, description, inputSchema, annotations, additionalBinaryDataProperties: null);
+        }
+
+        public static OpenAIResponse OpenAIResponse(IDictionary<string, string> metadata = default, float? temperature = default, float? topP = default, string endUserId = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? backgroundModeEnabled = default, int? maxOutputTokenCount = default, string instructions = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, string id = default, string @object = default, ResponseStatus? status = default, DateTimeOffset createdAt = default, ResponseError error = default, ResponseIncompleteStatusDetails incompleteStatusDetails = default, IEnumerable<ResponseItem> outputItems = default, ResponseTokenUsage usage = default, bool parallelToolCallsEnabled = default)
         {
             metadata ??= new ChangeTrackingDictionary<string, string>();
             tools ??= new ChangeTrackingList<ResponseTool>();
@@ -632,7 +644,7 @@ namespace OpenAI
                 previousResponseId,
                 model,
                 reasoningOptions,
-                background,
+                backgroundModeEnabled,
                 maxOutputTokenCount,
                 instructions,
                 textOptions,
@@ -725,6 +737,22 @@ namespace OpenAI
         public static ImageInputTokenUsageDetails ImageInputTokenUsageDetails(int textTokenCount = default, int imageTokenCount = default)
         {
             return new ImageInputTokenUsageDetails(textTokenCount, imageTokenCount, additionalBinaryDataProperties: null);
+        }
+
+        public static ImageEditOptions ImageEditOptions(BinaryData image = default, string prompt = default, BinaryData mask = default, GeneratedImageBackground? background = default, InternalCreateImageEditRequestModel? model = default, long? n = default, GeneratedImageSize? size = default, GeneratedImageFormat? responseFormat = default, string endUserId = default, GeneratedImageQuality? quality = default)
+        {
+            return new ImageEditOptions(
+                image,
+                prompt,
+                mask,
+                background,
+                model,
+                n,
+                size,
+                responseFormat,
+                endUserId,
+                quality,
+                additionalBinaryDataProperties: null);
         }
 
         public static ImageVariationOptions ImageVariationOptions(BinaryData image = default, InternalCreateImageVariationRequestModel? model = default, long? n = default, GeneratedImageFormat? responseFormat = default, GeneratedImageSize? size = default, string endUserId = default)
@@ -1007,9 +1035,9 @@ namespace OpenAI
             return new VectorStoreDeletionResult(vectorStoreId, deleted, @object, additionalBinaryDataProperties: null);
         }
 
-        public static VectorStoreBatchFileJob VectorStoreBatchFileJob(string batchId = default, DateTimeOffset createdAt = default, string vectorStoreId = default, VectorStoreBatchFileJobStatus status = default, VectorStoreFileCounts fileCounts = default, object @object = default)
+        public static VectorStoreFileBatch VectorStoreFileBatch(string batchId = default, DateTimeOffset createdAt = default, string vectorStoreId = default, VectorStoreFileBatchStatus status = default, VectorStoreFileCounts fileCounts = default, object @object = default)
         {
-            return new VectorStoreBatchFileJob(
+            return new VectorStoreFileBatch(
                 batchId,
                 createdAt,
                 vectorStoreId,
@@ -1019,11 +1047,11 @@ namespace OpenAI
                 additionalBinaryDataProperties: null);
         }
 
-        public static VectorStoreFileAssociation VectorStoreFileAssociation(string fileId = default, string @object = default, int size = default, DateTimeOffset createdAt = default, string vectorStoreId = default, VectorStoreFileAssociationStatus status = default, VectorStoreFileAssociationError lastError = default, FileChunkingStrategy chunkingStrategy = default, IDictionary<string, BinaryData> attributes = default)
+        public static VectorStoreFile VectorStoreFile(string fileId = default, string @object = default, int size = default, DateTimeOffset createdAt = default, string vectorStoreId = default, VectorStoreFileStatus status = default, VectorStoreFileError lastError = default, FileChunkingStrategy chunkingStrategy = default, IDictionary<string, BinaryData> attributes = default)
         {
             attributes ??= new ChangeTrackingDictionary<string, BinaryData>();
 
-            return new VectorStoreFileAssociation(
+            return new VectorStoreFile(
                 fileId,
                 @object,
                 size,
@@ -1036,9 +1064,9 @@ namespace OpenAI
                 additionalBinaryDataProperties: null);
         }
 
-        public static VectorStoreFileAssociationError VectorStoreFileAssociationError(VectorStoreFileAssociationErrorCode code = default, string message = default)
+        public static VectorStoreFileError VectorStoreFileError(VectorStoreFileErrorCode code = default, string message = default)
         {
-            return new VectorStoreFileAssociationError(code, message, additionalBinaryDataProperties: null);
+            return new VectorStoreFileError(code, message, additionalBinaryDataProperties: null);
         }
 
         public static FileFromStoreRemovalResult FileFromStoreRemovalResult(string fileId = default, bool removed = default, string @object = default)
@@ -1275,14 +1303,24 @@ namespace OpenAI
             return new ResponseItemCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
         }
 
+        public static CustomMcpToolCallApprovalPolicy CustomMcpToolCallApprovalPolicy(McpToolFilter toolsAlwaysRequiringApproval = default, McpToolFilter toolsNeverRequiringApproval = default)
+        {
+            return new CustomMcpToolCallApprovalPolicy(toolsAlwaysRequiringApproval, toolsNeverRequiringApproval, additionalBinaryDataProperties: null);
+        }
+
+        public static McpToolCallApprovalPolicy McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy? globalPolicy = default, CustomMcpToolCallApprovalPolicy customPolicy = default)
+        {
+            return new McpToolCallApprovalPolicy(globalPolicy, customPolicy, additionalBinaryDataProperties: null);
+        }
+
         public static VectorStoreCollectionOptions VectorStoreCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, VectorStoreCollectionOrder? order = default)
         {
             return new VectorStoreCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
         }
 
-        public static VectorStoreFileAssociationCollectionOptions VectorStoreFileAssociationCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, VectorStoreFileAssociationCollectionOrder? order = default, VectorStoreFileStatusFilter? filter = default)
+        public static VectorStoreFileCollectionOptions VectorStoreFileCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, VectorStoreFileCollectionOrder? order = default, VectorStoreFileStatusFilter? filter = default)
         {
-            return new VectorStoreFileAssociationCollectionOptions(
+            return new VectorStoreFileCollectionOptions(
                 afterId,
                 beforeId,
                 pageSizeLimit,

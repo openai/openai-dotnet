@@ -44,7 +44,7 @@ namespace OpenAI.Responses
             if (_additionalBinaryDataProperties?.ContainsKey("arguments") != true)
             {
                 writer.WritePropertyName("arguments"u8);
-                writer.WriteStringValue(Arguments);
+                SerializeFunctionArgumentsValue(writer, options);
             }
         }
 
@@ -72,7 +72,7 @@ namespace OpenAI.Responses
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string itemId = default;
             int outputIndex = default;
-            string arguments = default;
+            BinaryData functionArguments = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -97,7 +97,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("arguments"u8))
                 {
-                    arguments = prop.Value.GetString();
+                    DeserializeFunctionArgumentsValue(prop, ref functionArguments);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
@@ -109,7 +109,7 @@ namespace OpenAI.Responses
                 additionalBinaryDataProperties,
                 itemId,
                 outputIndex,
-                arguments);
+                functionArguments);
         }
 
         BinaryData IPersistableModel<StreamingResponseFunctionCallArgumentsDoneUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

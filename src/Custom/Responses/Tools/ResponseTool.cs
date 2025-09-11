@@ -1,4 +1,3 @@
-using OpenAI.Assistants;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -60,28 +59,19 @@ public partial class ResponseTool
             searchContextSize: searchContextSize);
     }
 
-    public static ResponseTool CreateCodeInterpreterTool(string type = "auto", IDictionary<string, BinaryData> additionalBinaryDataProperties = null)
+    // CUSTOM: Added factory method a a convenience.
+    public static McpTool CreateMcpTool(string serverLabel, Uri serverUri, IDictionary<string, string> headers = null, McpToolFilter allowedTools = null, McpToolCallApprovalPolicy toolCallApprovalPolicy = null)
     {
-        return new InternalCodeInterpreterTool(
-            kind: InternalToolType.CodeInterpreter,
-            additionalBinaryDataProperties: additionalBinaryDataProperties,
-            container: new CodeInterpreterToolDefinition(kind: type, additionalBinaryDataProperties:null)
-            );
-    }
+        Argument.AssertNotNull(serverLabel, nameof(serverLabel));
+        Argument.AssertNotNull(serverUri, nameof(serverUri));
 
-	public static ResponseTool CreateMCPServerTool(string serverLabel, string serverUrl, Dictionary<string, string> headers, List<string> allowedTools, string requireApproval, IDictionary<string, BinaryData> additionalBinaryDataProperties = null)
-	{
-        return new InternalMCPTool(
+        return new McpTool(
             kind: InternalToolType.Mcp,
-            additionalBinaryDataProperties: additionalBinaryDataProperties,
+            additionalBinaryDataProperties: null,
             serverLabel: serverLabel,
-            serverUrl: serverUrl,
+            serverUri: serverUri,
             headers: headers,
-            allowedTools: BinaryData.FromString("[" + string.Join(",", allowedTools.Select(t => "\"" + t + "\"").ToList()) + "]"),
-            requireApproval: BinaryData.FromString("\"" + requireApproval + "\"")
-        );
-	}
-
-	/* </GP> CUSTOM: Added code interpreter tool.                               *
-     ****************************************************************************/
+            allowedTools: allowedTools,
+            toolCallApprovalPolicy: toolCallApprovalPolicy);
+    }
 }
