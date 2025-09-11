@@ -1,7 +1,9 @@
 // SAMPLE: Generate text with a prompt template
-// GUIDANCE: Instructions to run this code: https://aka.ms/oai/net/start 
+// GUIDANCE: Instructions to run this code: https://aka.ms/oai/net/start
+#pragma warning disable OPENAI001
+
 #:package OpenAI@2.2.*-*
-#:property PublishAot false
+#:property PublishAot=false
 
 using OpenAI.Responses;
 using System.ClientModel;
