@@ -32,7 +32,7 @@ public partial class ResponseExamples
 
         OpenAIResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        OpenAIResponse response = await client.CreateResponseAsync("Roll 2d4+1");
+        OpenAIResponse response = await client.CreateResponseAsync("Roll 2d4+1", options);
 
         Console.WriteLine($"[ASSISTANT]: {response.GetOutputText()}");
     }
