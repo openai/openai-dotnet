@@ -1,5 +1,5 @@
 {
   "sdk": {
-    "version": "10.*-preview"
+    "version": "10.*-rc*"
   }
 }
