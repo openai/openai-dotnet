@@ -1,7 +1,9 @@
 // SAMPLE: Prompt template with file input variable
-// GUIDANCE: Instructions to run this code: https://aka.ms/oai/net/start 
-#:package OpenAI@2.2.*-*
-#:property PublishAot false
+// GUIDANCE: Instructions to run this code: https://aka.ms/oai/net/start
+#pragma warning disable OPENAI001
+
+#:package OpenAI@2.*
+#:property PublishAot=false
 
 using OpenAI.Responses;
 using OpenAI.Files;
