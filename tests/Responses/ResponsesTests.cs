@@ -104,7 +104,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
                     BinaryData screenshotBytes = BinaryData.FromBytes(File.ReadAllBytes(screenshotPath));
                     ResponseItem screenshotReply = ResponseItem.CreateComputerCallOutputItem(
                         computerCall.CallId,
-                        ComputerCallOutput.CreateScreenshotOutput(screenshotBytes,"image/png"));
+                        ComputerCallOutput.CreateScreenshotOutput(screenshotBytes, "image/png"));
 
                     responseOptions.PreviousResponseId = response.Id;
                     response = await client.CreateResponseAsync([screenshotReply], responseOptions);
@@ -234,7 +234,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
     public async Task CodeInterpreterToolWithoutFileIds()
     {
         OpenAIResponseClient client = GetTestClient();
-        
+
         ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool();
         ResponseCreationOptions responseOptions = new()
         {
@@ -247,16 +247,18 @@ public partial class ResponsesTests : SyncAsyncTestBase
 
         Assert.That(response, Is.Not.Null);
         Assert.That(response.OutputItems, Is.Not.Null.And.Not.Empty);
-        
+
         // Basic validation that the response was created successfully
         Assert.That(response.Id, Is.Not.Null.And.Not.Empty);
+
+        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<CodeInterpreterTool>());
     }
 
     [Test]
     public async Task CodeInterpreterToolWithEmptyFileIds()
     {
         OpenAIResponseClient client = GetTestClient();
-        
+
         ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new List<string>());
         ResponseCreationOptions responseOptions = new()
         {
@@ -269,9 +271,11 @@ public partial class ResponsesTests : SyncAsyncTestBase
 
         Assert.That(response, Is.Not.Null);
         Assert.That(response.OutputItems, Is.Not.Null.And.Not.Empty);
-        
+
         // Basic validation that the response was created successfully
         Assert.That(response.Id, Is.Not.Null.And.Not.Empty);
+
+        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<CodeInterpreterTool>());
     }
 
     [Test]
@@ -303,9 +307,11 @@ public partial class ResponsesTests : SyncAsyncTestBase
 
             Assert.That(response, Is.Not.Null);
             Assert.That(response.OutputItems, Is.Not.Null.And.Not.Empty);
-            
+
             // Basic validation that the response was created successfully
             Assert.That(response.Id, Is.Not.Null.And.Not.Empty);
+
+            Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<CodeInterpreterTool>());
         }
         finally
         {
@@ -318,6 +324,69 @@ public partial class ResponsesTests : SyncAsyncTestBase
             {
                 // Best effort cleanup - don't fail test if cleanup fails
             }
+        }
+    }
+
+    [Test]
+    public async Task CodeInterpreterToolWithUploadedFileIds()
+    {
+        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
+        OpenAIResponseClient client = GetTestClient();
+
+        // Create some test files to upload
+        string csvContent = "name,age,city\nAlice,30,New York\nBob,25,Los Angeles\nCharlie,35,Chicago";
+        string pythonContent = "# This is a simple Python file\ndef hello():\n    print('Hello from uploaded file!')\n\nif __name__ == '__main__':\n    hello()";
+        
+        List<string> fileIds = new();
+        
+        try
+        {
+            // Upload CSV file
+            using Stream csvStream = BinaryData.FromString(csvContent).ToStream();
+            OpenAIFile csvFile = await fileClient.UploadFileAsync(csvStream, "test_data.csv", FileUploadPurpose.Assistants);
+            Validate(csvFile);
+            fileIds.Add(csvFile.Id);
+            
+            // Upload Python file  
+            using Stream pythonStream = BinaryData.FromString(pythonContent).ToStream();
+            OpenAIFile pythonFile = await fileClient.UploadFileAsync(pythonStream, "test_script.py", FileUploadPurpose.Assistants);
+            Validate(pythonFile);
+            fileIds.Add(pythonFile.Id);
+
+            // Create CodeInterpreter tool with uploaded file IDs
+            ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(fileIds);
+            ResponseCreationOptions responseOptions = new()
+            {
+                Tools = { codeInterpreterTool },
+            };
+
+            OpenAIResponse response = await client.CreateResponseAsync(
+                "Analyze the CSV data in the uploaded file and create a simple visualization. Also run the Python script that was uploaded.",
+                responseOptions);
+
+            Assert.That(response, Is.Not.Null);
+            Assert.That(response.OutputItems, Is.Not.Null.And.Not.Empty);
+            
+            // Basic validation that the response was created successfully
+            Assert.That(response.Id, Is.Not.Null.And.Not.Empty);
+            Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<CodeInterpreterTool>());
+        }
+        catch
+        {
+            // If the test fails, still try to clean up the files immediately
+            // (They'll also be cleaned up in OneTimeTearDown, but this is more immediate)
+            foreach (string fileId in fileIds)
+            {
+                try
+                {
+                    await fileClient.DeleteFileAsync(fileId);
+                }
+                catch
+                {
+                    // Best effort cleanup
+                }
+            }
+            throw;
         }
     }
 
@@ -593,7 +662,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
             BinaryData.FromBytes(File.ReadAllBytes(filePath)),
             "test_favorite_foods.pdf",
             FileUploadPurpose.UserData);
-                Validate(newFileToUse);
+        Validate(newFileToUse);
 
         ResponseItem messageItem = ResponseItem.CreateUserMessageItem(
             [
