@@ -10,7 +10,7 @@
 using OpenAI.Responses;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-OpenAIResponseClient client = new(model: "gpt-4.1", apiKey: key);
+OpenAIResponseClient client = new(model: "gpt-5", apiKey: key);
 
 var responses = client.CreateResponseStreamingAsync([
     ResponseItem.CreateUserMessageItem([
