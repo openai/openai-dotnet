@@ -4590,6 +4590,15 @@ namespace OpenAI.Realtime {
     }
 }
 namespace OpenAI.Responses {
+    [Experimental("OPENAI001")]
+    public class CodeInterpreterTool : ResponseTool, IJsonModel<CodeInterpreterTool>, IPersistableModel<CodeInterpreterTool> {
+        public CodeInterpreterTool(BinaryData container);
+        public BinaryData Container { get; set; }
+        protected override ResponseTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
     [Experimental("OPENAICUA001")]
     public class ComputerCallAction : IJsonModel<ComputerCallAction>, IPersistableModel<ComputerCallAction> {
         public Drawing.Point? ClickCoordinates { get; }
@@ -5475,6 +5484,8 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ResponseTool : IJsonModel<ResponseTool>, IPersistableModel<ResponseTool> {
+        public static CodeInterpreterTool CreateCodeInterpreterTool(IEnumerable<string> fileIds = null);
+        public static CodeInterpreterTool CreateCodeInterpreterTool(string containerId);
         [Experimental("OPENAICUA001")]
         public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight);
         public static FileSearchTool CreateFileSearchTool(IEnumerable<string> vectorStoreIds, int? maxResultCount = null, FileSearchToolRankingOptions rankingOptions = null, BinaryData filters = null);

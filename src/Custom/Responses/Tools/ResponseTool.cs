@@ -25,14 +25,14 @@ public partial class ResponseTool
 
     // CUSTOM: Added factory method a a convenience.
     [Experimental("OPENAICUA001")]
-    public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth,int displayHeight)
+    public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight)
     {
         return new ComputerTool(
             kind: InternalToolType.ComputerUsePreview,
             additionalBinaryDataProperties: null,
             environment: environment,
             displayWidth: displayWidth,
-            displayHeight:displayHeight);
+            displayHeight: displayHeight);
     }
 
     // CUSTOM: Added factory method a a convenience.
@@ -73,5 +73,43 @@ public partial class ResponseTool
             headers: headers,
             allowedTools: allowedTools,
             toolCallApprovalPolicy: toolCallApprovalPolicy);
+    }
+
+    // CUSTOM: Added factory method a a convenience.
+    /// <summary>
+    /// Creates a new instance of the <see cref="CodeInterpreterTool"/> class with an auto-generated container.
+    /// </summary>
+    /// <param name="fileIds">The file IDs to include in the container.</param>
+    /// <returns></returns>
+    public static CodeInterpreterTool CreateCodeInterpreterTool(IEnumerable<string> fileIds = null)
+    {
+        string containerJson = fileIds?.Any() == true ?
+            $"{{\"type\": \"auto\", \"file_ids\": [{string.Join(", ", fileIds.Select(id => $"\"{id}\""))}]}}" :
+            "{\"type\": \"auto\"}";
+
+        return new CodeInterpreterTool(
+            kind: InternalToolType.CodeInterpreter,
+            additionalBinaryDataProperties: null,
+            container: new BinaryData(containerJson));
+    }
+
+    // CUSTOM: Added factory method a a convenience.
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="containerId">The Id of a previously created container</param>
+    /// <returns></returns>
+    public static CodeInterpreterTool CreateCodeInterpreterTool(string containerId)
+    {
+        Argument.AssertNotNull(containerId, nameof(containerId));
+
+        // Since the container field can be a string or an object, when it's a string (container ID),
+        // we need to serialize it as a JSON string value
+        string containerJson = $"\"{containerId}\"";
+        
+        return new CodeInterpreterTool(
+            kind: InternalToolType.CodeInterpreter,
+            additionalBinaryDataProperties: null,
+            container: new BinaryData(containerJson));
     }
 }

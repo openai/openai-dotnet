@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
+using OpenAI.Containers;
 using OpenAI.Files;
 using OpenAI.Responses;
 using OpenAI.Tests.Utility;
@@ -227,6 +228,97 @@ public partial class ResponsesTests : SyncAsyncTestBase
         Assert.That(inProgressCount, Is.EqualTo(1));
         Assert.That(completedCount, Is.EqualTo(1));
         Assert.That(searchItemId, Is.Not.Null.And.Not.Empty);
+    }
+
+    [Test]
+    public async Task CodeInterpreterToolWithoutFileIds()
+    {
+        OpenAIResponseClient client = GetTestClient();
+        
+        ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool();
+        ResponseCreationOptions responseOptions = new()
+        {
+            Tools = { codeInterpreterTool },
+        };
+
+        OpenAIResponse response = await client.CreateResponseAsync(
+            "Calculate the factorial of 5 using Python code.",
+            responseOptions);
+
+        Assert.That(response, Is.Not.Null);
+        Assert.That(response.OutputItems, Is.Not.Null.And.Not.Empty);
+        
+        // Basic validation that the response was created successfully
+        Assert.That(response.Id, Is.Not.Null.And.Not.Empty);
+    }
+
+    [Test]
+    public async Task CodeInterpreterToolWithEmptyFileIds()
+    {
+        OpenAIResponseClient client = GetTestClient();
+        
+        ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new List<string>());
+        ResponseCreationOptions responseOptions = new()
+        {
+            Tools = { codeInterpreterTool },
+        };
+
+        OpenAIResponse response = await client.CreateResponseAsync(
+            "Generate a simple chart using matplotlib.",
+            responseOptions);
+
+        Assert.That(response, Is.Not.Null);
+        Assert.That(response.OutputItems, Is.Not.Null.And.Not.Empty);
+        
+        // Basic validation that the response was created successfully
+        Assert.That(response.Id, Is.Not.Null.And.Not.Empty);
+    }
+
+    [Test]
+    public async Task CodeInterpreterToolWithContainerIdFromContainerApi()
+    {
+        ContainerClient containerClient = GetTestClient<ContainerClient>(TestScenario.Containers);
+        OpenAIResponseClient client = GetTestClient();
+
+        // Create a container first using the Containers API
+        CreateContainerBody containerBody = new("test-container-for-code-interpreter");
+        var containerResult = await containerClient.CreateContainerAsync(containerBody);
+        Assert.That(containerResult.Value, Is.Not.Null);
+        Assert.That(containerResult.Value.Id, Is.Not.Null.And.Not.Empty);
+
+        string containerId = containerResult.Value.Id;
+
+        try
+        {
+            // Create CodeInterpreter tool with the container ID
+            ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(containerId);
+            ResponseCreationOptions responseOptions = new()
+            {
+                Tools = { codeInterpreterTool },
+            };
+
+            OpenAIResponse response = await client.CreateResponseAsync(
+                "Create a simple Python script that prints 'Hello from container!'",
+                responseOptions);
+
+            Assert.That(response, Is.Not.Null);
+            Assert.That(response.OutputItems, Is.Not.Null.And.Not.Empty);
+            
+            // Basic validation that the response was created successfully
+            Assert.That(response.Id, Is.Not.Null.And.Not.Empty);
+        }
+        finally
+        {
+            // Clean up the container
+            try
+            {
+                await containerClient.DeleteContainerAsync(containerId);
+            }
+            catch
+            {
+                // Best effort cleanup - don't fail test if cleanup fails
+            }
+        }
     }
 
     [Test]
