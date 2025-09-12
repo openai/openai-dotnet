@@ -95,7 +95,7 @@ public partial class ResponseTool
 
     // CUSTOM: Added factory method a a convenience.
     /// <summary>
-    /// 
+    /// Creates a new instance of the <see cref="CodeInterpreterTool"/> class with a specified container ID.
     /// </summary>
     /// <param name="containerId">The Id of a previously created container</param>
     /// <returns></returns>
