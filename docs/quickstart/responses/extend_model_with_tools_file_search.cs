@@ -1,4 +1,4 @@
-// SAMPLE: Generate response from file search through Responses API
+// SAMPLE: Get information from file search through Responses API
 // PAGE: https://platform.openai.com/docs/quickstart?tool-type=file-search#extend-the-model-with-tools
 // GUIDANCE: Instructions to run this code: https://aka.ms/oai/net/start
 #pragma warning disable OPENAI001

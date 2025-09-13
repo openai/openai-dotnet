@@ -1,4 +1,4 @@
-// SAMPLE: Generate response from a file URL through Responses API
+// SAMPLE: Analyzes file from a file URL through Responses API
 // PAGE: https://platform.openai.com/docs/quickstart?input-type=file-url#analyze-images-and-files
 // GUIDANCE: Instructions to run this code: https://aka.ms/oai/net/start
 #pragma warning disable OPENAI001
