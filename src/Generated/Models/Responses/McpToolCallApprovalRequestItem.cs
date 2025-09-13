@@ -12,7 +12,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class McpToolCallApprovalRequestItem : ResponseItem
     {
-        public McpToolCallApprovalRequestItem(string serverLabel, string toolName, BinaryData toolArguments) : base(InternalItemType.McpApprovalRequest)
+        internal McpToolCallApprovalRequestItem(string serverLabel, string toolName, BinaryData toolArguments) : base(InternalItemType.McpApprovalRequest)
         {
             Argument.AssertNotNull(serverLabel, nameof(serverLabel));
             Argument.AssertNotNull(toolName, nameof(toolName));
