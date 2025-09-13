@@ -1,4 +1,4 @@
-// SAMPLE: Generate response from remote MCP
+// SAMPLE: Generate response from remote MCP through Responses API
 // PAGE: https://platform.openai.com/docs/quickstart?tool-type=remote-mcp#extend-the-model-with-tools
 // GUIDANCE: Instructions to run this code: https://aka.ms/oai/net/start
 #pragma warning disable OPENAI001

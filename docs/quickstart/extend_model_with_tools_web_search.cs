@@ -1,4 +1,4 @@
-// SAMPLE: Generate response from web search
+// SAMPLE: Generate response from web search through Responses API
 // PAGE: https://platform.openai.com/docs/quickstart?tool-type=web-search#extend-the-model-with-tools
 // GUIDANCE: Instructions to run this code: https://aka.ms/oai/net/start
 #pragma warning disable OPENAI001

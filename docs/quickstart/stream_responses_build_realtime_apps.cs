@@ -1,4 +1,4 @@
-// SAMPLE: Generate streaming response for realtime apps
+// SAMPLE: Generate streaming response for realtime apps through Responses API
 // PAGE: https://platform.openai.com/docs/quickstart#stream-responses-and-build-realtime-apps
 // GUIDANCE: Instructions to run this code: https://aka.ms/oai/net/start
 #pragma warning disable OPENAI001

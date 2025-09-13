@@ -1,4 +1,4 @@
-// SAMPLE: Generate text from a simple prompt
+// SAMPLE: Generate text from a simple prompt through Responses API
 // PAGE: https://platform.openai.com/docs/quickstart
 // GUIDANCE: Instructions to run this code: https://aka.ms/oai/net/start
 #pragma warning disable OPENAI001
