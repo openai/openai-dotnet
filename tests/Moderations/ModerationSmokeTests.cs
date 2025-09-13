@@ -7,15 +7,15 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.ClientModel.Primitives;
 using System.Text.Json;
+using Microsoft.ClientModel.TestFramework;
+using Microsoft.ClientModel.TestFramework.Mocks;
 
 namespace OpenAI.Tests.Moderations;
 
-[TestFixture(true)]
-[TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("Moderations")]
 [Category("Smoke")]
-public partial class ModerationSmokeTests : SyncAsyncTestBase
+public partial class ModerationSmokeTests : ClientTestBase
 {
     public ModerationSmokeTests(bool isAsync) : base(isAsync)
     {
@@ -24,11 +24,13 @@ public partial class ModerationSmokeTests : SyncAsyncTestBase
     [Test]
     public async Task ClassifySingleInputSmokeTest()
     {
-        BinaryData mockRequest = BinaryData.FromString($$"""
-        {
-            "input": "I am killing all my houseplants!"
-        }
-        """);
+        // TODO - not sure why tests are injecting data via transport instead
+        // of in the client method
+        //BinaryData mockRequest = BinaryData.FromString($$"""
+        //{
+        //    "input": "I am killing all my houseplants!"
+        //}
+        //""");
         BinaryData mockResponse = BinaryData.FromString($$"""
         {
             "results": [
@@ -44,17 +46,18 @@ public partial class ModerationSmokeTests : SyncAsyncTestBase
             ]
         }
         """);
-        MockPipelineTransport mockTransport = new(mockRequest, mockResponse);
+        MockPipelineTransport mockTransport = new(_ => new MockPipelineResponse(200).WithContent(BinaryContent.Create(mockResponse)))
+        {
+            ExpectSyncPipeline = !IsAsync
+        };
 
         OpenAIClientOptions options = new()
         {
             Transport = mockTransport
         };
 
-        ModerationClient client = new ModerationClient("model", new ApiKeyCredential("sk-not-a-real-key"), options);
-        ModerationResult moderation = IsAsync
-            ? await client.ClassifyTextAsync("Mock me!")
-            : client.ClassifyText("Mock me!");
+        ModerationClient client = CreateProxyFromClient(new ModerationClient("model", new ApiKeyCredential("sk-not-a-real-key"), options));
+        ModerationResult moderation = await client.ClassifyTextAsync("Mock me!");
 
         Assert.That(moderation, Is.Not.Null);
         Assert.That(moderation.Flagged, Is.True);
@@ -65,14 +68,15 @@ public partial class ModerationSmokeTests : SyncAsyncTestBase
     [Test]
     public async Task ClassifyMultipleInputsSmokeTest()
     {
-        BinaryData mockRequest = BinaryData.FromString($$"""
-        {
-            "input": [
-                "I forgot to water my houseplants!",
-                "I am killing all my houseplants!"
-            ]
-        }
-        """);
+        // TODO - same as above
+        //BinaryData mockRequest = BinaryData.FromString($$"""
+        //{
+        //    "input": [
+        //        "I forgot to water my houseplants!",
+        //        "I am killing all my houseplants!"
+        //    ]
+        //}
+        //""");
         BinaryData mockResponse = BinaryData.FromString("""
         {
             "results": [
@@ -113,17 +117,18 @@ public partial class ModerationSmokeTests : SyncAsyncTestBase
         }
         """);
 
-        MockPipelineTransport mockTransport = new(mockRequest, mockResponse);
+        MockPipelineTransport mockTransport = new(_ => new MockPipelineResponse(200).WithContent(BinaryContent.Create(mockResponse)))
+        {
+            ExpectSyncPipeline = !IsAsync
+        };
 
         OpenAIClientOptions options = new()
         {
             Transport = mockTransport
         };
 
-        ModerationClient client = new ModerationClient("model", new ApiKeyCredential("sk-not-a-real-key"), options);
-        ModerationResultCollection moderations = IsAsync
-            ? await client.ClassifyTextAsync(new List<string> { "Mock me 1!", "Mock me 2!" })
-            : client.ClassifyText(new List<string> { "Mock me 1!", "Mock me 2!" });
+        ModerationClient client = CreateProxyFromClient(new ModerationClient("model", new ApiKeyCredential("sk-not-a-real-key"), options));
+        ModerationResultCollection moderations = await client.ClassifyTextAsync(new List<string> { "Mock me 1!", "Mock me 2!" });
 
         Assert.That(moderations, Is.Not.Null);
         Assert.That(moderations.Count, Is.EqualTo(3));
@@ -152,6 +157,7 @@ public partial class ModerationSmokeTests : SyncAsyncTestBase
         //Assert.That(moderations[2].Illicit.ApplicableInputKinds.HasFlag(ModerationApplicableInputKinds.Other), Is.True);
     }
 
+    [SyncOnly]
     [Test]
     public void SerializeModerationResult()
     {
@@ -202,6 +208,7 @@ public partial class ModerationSmokeTests : SyncAsyncTestBase
         Assert.That(violenceScore.GetSingle(), Is.EqualTo(0.5f));
     }
 
+    [SyncOnly]
     [Test]
     public void SerializeModerationResultCollection()
     {

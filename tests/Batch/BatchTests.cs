@@ -1,7 +1,7 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using OpenAI.Batch;
 using OpenAI.Files;
-using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
@@ -12,23 +12,21 @@ using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Batch;
 
-[TestFixture(true)]
-[TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("Batch")]
-public class BatchTests : SyncAsyncTestBase
+public class BatchTests : ClientTestBase
 {
-    private static BatchClient GetTestClient() => GetTestClient<BatchClient>(TestScenario.Batch);
+    private BatchClient GetTestClient() => CreateProxyFromClient(GetTestClient<BatchClient>(TestScenario.Batch));
 
     public BatchTests(bool isAsync) : base(isAsync)
     {
+        TestTimeoutInSeconds = 65;
     }
 
+    [SyncOnly]
     [Test]
     public void ListBatchesProtocol()
     {
-        AssertSyncOnly();
-
         BatchClient client = GetTestClient();
         CollectionResult batches = client.GetBatches(after: null, limit: null, options: null);
 
@@ -53,14 +51,13 @@ public class BatchTests : SyncAsyncTestBase
             pageCount++;
         }
 
-        Assert.GreaterOrEqual(pageCount, 1);
+        Assert.That(pageCount, Is.GreaterThanOrEqualTo(1));
     }
 
+    [AsyncOnly]
     [Test]
     public async Task ListBatchesProtocolAsync()
     {
-        AssertAsyncOnly();
-
         BatchClient client = GetTestClient();
         AsyncCollectionResult batches = client.GetBatchesAsync(after: null, limit: null, options: null);
 
@@ -85,7 +82,7 @@ public class BatchTests : SyncAsyncTestBase
             pageCount++;
         }
 
-        Assert.GreaterOrEqual(pageCount, 1);
+        Assert.That(pageCount, Is.GreaterThanOrEqualTo(1));
     }
 
     [Test]
@@ -98,7 +95,7 @@ public class BatchTests : SyncAsyncTestBase
         streamWriter.Flush();
         testFileStream.Position = 0;
 
-        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = CreateProxyFromClient(GetTestClient<OpenAIFileClient>(TestScenario.Files));
         OpenAIFile inputFile = await fileClient.UploadFileAsync(testFileStream, "test-batch-file", FileUploadPurpose.Batch);
         Assert.That(inputFile.Id, Is.Not.Null.And.Not.Empty);
 
@@ -113,9 +110,7 @@ public class BatchTests : SyncAsyncTestBase
                 testMetadataKey = "test metadata value",
             },
         }));
-        CreateBatchOperation batchOperation = IsAsync
-            ? await client.CreateBatchAsync(content, waitUntilCompleted: false)
-            : client.CreateBatch(content, waitUntilCompleted: false);
+        CreateBatchOperation batchOperation = await client.CreateBatchAsync(content, waitUntilCompleted: false);
 
         BinaryData response = batchOperation.GetRawResponse().Content;
         JsonDocument jsonDocument = JsonDocument.Parse(response);
@@ -143,9 +138,7 @@ public class BatchTests : SyncAsyncTestBase
 
         Assert.That(endpoint, Is.EqualTo("/v1/chat/completions"));
 
-        ClientResult clientResult = IsAsync
-            ? await batchOperation.CancelAsync(options: null)
-            : batchOperation.Cancel(options: null);
+        ClientResult clientResult = await batchOperation.CancelAsync(options: null);
 
         statusElement = jsonDocument.RootElement.GetProperty("status");
         status = statusElement.GetString();
@@ -164,7 +157,7 @@ public class BatchTests : SyncAsyncTestBase
         streamWriter.Flush();
         testFileStream.Position = 0;
 
-        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = CreateProxyFromClient(GetTestClient<OpenAIFileClient>(TestScenario.Files));
         OpenAIFile inputFile = await fileClient.UploadFileAsync(testFileStream, "test-batch-file", FileUploadPurpose.Batch);
         Assert.That(inputFile.Id, Is.Not.Null.And.Not.Empty);
 
@@ -180,25 +173,18 @@ public class BatchTests : SyncAsyncTestBase
             },
         }));
 
-        CreateBatchOperation batchOperation = IsAsync
-            ? await client.CreateBatchAsync(content, waitUntilCompleted: false)
-            : client.CreateBatch(content, waitUntilCompleted: false);
+        CreateBatchOperation batchOperation = await client.CreateBatchAsync(content, waitUntilCompleted: false);
 
         CreateBatchOperation rehydratedOperation;
         if (useBatchId)
         {
-            rehydratedOperation = IsAsync ?
-                await CreateBatchOperation.RehydrateAsync(client, batchOperation.BatchId) :
-                CreateBatchOperation.Rehydrate(client, batchOperation.BatchId);
+            rehydratedOperation = await CreateBatchOperation.RehydrateAsync(client, batchOperation.BatchId);
         }
         else {
             // Simulate rehydration of the operation
             BinaryData rehydrationBytes = batchOperation.RehydrationToken.ToBytes();
             ContinuationToken rehydrationToken = ContinuationToken.FromBytes(rehydrationBytes);
-
-            rehydratedOperation = IsAsync ?
-                await CreateBatchOperation.RehydrateAsync(client, rehydrationToken) :
-                CreateBatchOperation.Rehydrate(client, rehydrationToken);
+            rehydratedOperation = await CreateBatchOperation.RehydrateAsync(client, rehydrationToken);
         }
 
         static bool Validate(CreateBatchOperation operation)
@@ -227,19 +213,19 @@ public class BatchTests : SyncAsyncTestBase
             return true;
         }
 
-        Assert.IsTrue(Validate(batchOperation));
-        Assert.IsTrue(Validate(rehydratedOperation));
+        Assert.That(Validate(batchOperation));
+        Assert.That(Validate(rehydratedOperation));
 
         // We don't test wait for completion live because this is documented to
         // sometimes take 24 hours.
 
-        Assert.AreEqual(batchOperation.HasCompleted, rehydratedOperation.HasCompleted);
+        Assert.That(rehydratedOperation.HasCompleted, Is.EqualTo(batchOperation.HasCompleted));
 
         using JsonDocument originalOperationJson = JsonDocument.Parse(batchOperation.GetRawResponse().Content);
         using JsonDocument rehydratedOperationJson = JsonDocument.Parse(rehydratedOperation.GetRawResponse().Content);
 
-        Assert.AreEqual(originalOperationJson.RootElement.GetProperty("id").GetString(), rehydratedOperationJson.RootElement.GetProperty("id").GetString());
-        Assert.AreEqual(originalOperationJson.RootElement.GetProperty("created_at").GetInt64(), rehydratedOperationJson.RootElement.GetProperty("created_at").GetInt64());
-        Assert.AreEqual(originalOperationJson.RootElement.GetProperty("status").GetString(), rehydratedOperationJson.RootElement.GetProperty("status").GetString());
+        Assert.That(rehydratedOperationJson.RootElement.GetProperty("id").GetString(), Is.EqualTo(originalOperationJson.RootElement.GetProperty("id").GetString()));
+        Assert.That(rehydratedOperationJson.RootElement.GetProperty("created_at").GetInt64(), Is.EqualTo(originalOperationJson.RootElement.GetProperty("created_at").GetInt64()));
+        Assert.That(rehydratedOperationJson.RootElement.GetProperty("status").GetString(), Is.EqualTo(originalOperationJson.RootElement.GetProperty("status").GetString()));
     }
 }

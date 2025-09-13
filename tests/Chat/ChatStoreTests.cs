@@ -1,6 +1,6 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using OpenAI.Chat;
-using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.Collections.Generic;
@@ -10,16 +10,15 @@ using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Chat;
 
-[TestFixture(true)]
-[TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("StoredChat")]
-public class ChatStoreToolTests : SyncAsyncTestBase
+public class ChatStoreToolTests : ClientTestBase
 {
     private const int s_delayInMilliseconds = 5000;
 
     public ChatStoreToolTests(bool isAsync) : base(isAsync)
     {
+        TestTimeoutInSeconds = 30;
     }
 
     [Test]
@@ -448,7 +447,7 @@ public class ChatStoreToolTests : SyncAsyncTestBase
             [new UserChatMessage("Say `this is a test`.")],
             options);
 
-        await RetryWithExponentialBackoffAsync(async () =>
+        await TestHelpers.RetryWithExponentialBackoffAsync(async () =>
         {
 
             ChatCompletion storedCompletion = await client.GetChatCompletionAsync(completion.Id);
@@ -672,7 +671,7 @@ public class ChatStoreToolTests : SyncAsyncTestBase
             {
                 messageCount++;
                 Assert.That(message.Id, Is.Not.Null.And.Not.Empty);
-                Assert.AreEqual("Basic messages test: Say 'Hello, this is a test message.'", message.Content);
+                Assert.That(message.Content, Is.EqualTo("Basic messages test: Say 'Hello, this is a test message.'"));
 
                 if (messageCount >= 5) break; // Prevent infinite loop
             }
@@ -981,8 +980,8 @@ public class ChatStoreToolTests : SyncAsyncTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    private static ChatClient GetTestClient(string overrideModel = null)
-        => GetTestClient<ChatClient>(
+    private ChatClient GetTestClient(string overrideModel = null)
+        => CreateProxyFromClient(GetTestClient<ChatClient>(
             scenario: TestScenario.Chat,
-            overrideModel: overrideModel);
+            overrideModel: overrideModel));
 }

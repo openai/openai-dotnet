@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using OpenAI.Files;
 using OpenAI.Responses;
 using OpenAI.Tests.Utility;
@@ -14,15 +15,14 @@ using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Responses;
 
-[TestFixture(true)]
-[TestFixture(false)]
 [Parallelizable(ParallelScope.Fixtures)]
 [Category("Responses")]
 [Category("MCP")]
-public partial class ResponsesToolTests : SyncAsyncTestBase
+public partial class ResponsesToolTests : ClientTestBase
 {
     public ResponsesToolTests(bool isAsync) : base(isAsync)
     {
+        TestTimeoutInSeconds = 30;
     }
 
     [Test]
@@ -76,6 +76,7 @@ public partial class ResponsesToolTests : SyncAsyncTestBase
         Assert.That(assistantMessageItem, Is.Not.Null);
     }
 
+    [Ignore("Cannot be tested reliably - Your organization must be verified to stream this model.")]
     [Test]
     public async Task MCPToolStreamingWorks()
     {
@@ -341,7 +342,7 @@ public partial class ResponsesToolTests : SyncAsyncTestBase
     [Test]
     public async Task FileSearch()
     {
-        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = CreateProxyFromClient(GetTestClient<OpenAIFileClient>(TestScenario.Files));
         OpenAIFile testFile = await fileClient.UploadFileAsync(
             BinaryData.FromString("""
                     Travis's favorite food is pizza.
@@ -405,5 +406,5 @@ public partial class ResponsesToolTests : SyncAsyncTestBase
         }
     }
 
-    private static OpenAIResponseClient GetTestClient(string overrideModel = null) => GetTestClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel);
+    private OpenAIResponseClient GetTestClient(string overrideModel = null) => CreateProxyFromClient(GetTestClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel));
 }

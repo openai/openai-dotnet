@@ -13,6 +13,7 @@ namespace OpenAI.Examples;
 
 public partial class ResponseExamples
 {
+    [Ignore("Test org cannot use streaming")]
     [Test]
     public async Task Example02_SimpleResponseStreamingAsync()
     {
