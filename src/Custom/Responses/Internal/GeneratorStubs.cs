@@ -104,7 +104,6 @@ namespace OpenAI.Responses;
 [CodeGenType("CodeInterpreterToolCallItemResourceStatus")] internal readonly partial struct InternalCodeInterpreterToolCallItemResourceStatus {}
 [CodeGenType("LocalShellToolCallItemResourceStatus")] internal readonly partial struct InternalLocalShellToolCallItemResourceStatus {}
 [CodeGenType("LocalShellToolCallOutputItemResourceStatus")] internal readonly partial struct InternalLocalShellToolCallOutputItemResourceStatus {}
-[CodeGenType("CodeInterpreterTool")] internal partial class InternalCodeInterpreterTool {}
 [CodeGenType("CodeInterpreterToolAuto")] internal partial class InternalCodeInterpreterToolAuto {}
 [CodeGenType("ImageGenTool")] internal partial class InternalImageGenTool {}
 [CodeGenType("ImageGenToolInputImageMask")] internal partial class InternalImageGenToolInputImageMask {}
