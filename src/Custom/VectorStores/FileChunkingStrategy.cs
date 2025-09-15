@@ -9,7 +9,7 @@ public abstract partial class FileChunkingStrategy
     /// Gets a value representing the default, automatic selection for a file chunking strategy.
     /// </summary>
     /// <remarks>
-    /// This value is only valid on vector store requests. <see cref="VectorStoreFileAssociation"/> response instances
+    /// This value is only valid on vector store requests. <see cref="VectorStoreFile"/> response instances
     /// will report the concrete chunking strategy applied after automatic selection.
     /// </remarks>
     public static FileChunkingStrategy Auto => _autoValue ??= new();

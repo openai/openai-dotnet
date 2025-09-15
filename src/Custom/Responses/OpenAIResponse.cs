@@ -15,6 +15,10 @@ namespace OpenAI.Responses;
 public partial class OpenAIResponse
 {
     // CUSTOM: Renamed.
+    [CodeGenMember("Background")]
+    public bool? BackgroundModeEnabled { get; }
+
+    // CUSTOM: Renamed.
     [CodeGenMember("User")]
     public string EndUserId { get; }
 
@@ -63,6 +67,6 @@ public partial class OpenAIResponse
             .Select(item => item as MessageResponseItem)
             .SelectMany(message => message.Content.Where(contentPart => contentPart.Kind == ResponseContentPartKind.OutputText)
                 .Select(outputTextPart => outputTextPart.Text));
-        return outputTextSegments.Any() ? string.Join(string.Empty, outputTextSegments) : null;
+        return outputTextSegments.Any() ? string.Concat(outputTextSegments) : null;
     }
 }

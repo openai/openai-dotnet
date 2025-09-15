@@ -81,10 +81,10 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("reasoning"u8);
                 writer.WriteObjectValue(ReasoningOptions, options);
             }
-            if (Optional.IsDefined(Background) && _additionalBinaryDataProperties?.ContainsKey("background") != true)
+            if (Optional.IsDefined(BackgroundModeEnabled) && _additionalBinaryDataProperties?.ContainsKey("background") != true)
             {
                 writer.WritePropertyName("background"u8);
-                writer.WriteBooleanValue(Background.Value);
+                writer.WriteBooleanValue(BackgroundModeEnabled.Value);
             }
             if (Optional.IsDefined(MaxOutputTokenCount) && _additionalBinaryDataProperties?.ContainsKey("max_output_tokens") != true)
             {
@@ -205,7 +205,7 @@ namespace OpenAI.Responses
             string previousResponseId = default;
             string model = default;
             ResponseReasoningOptions reasoningOptions = default;
-            bool? background = default;
+            bool? backgroundModeEnabled = default;
             int? maxOutputTokenCount = default;
             string instructions = default;
             ResponseTextOptions textOptions = default;
@@ -304,10 +304,10 @@ namespace OpenAI.Responses
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        background = null;
+                        backgroundModeEnabled = null;
                         continue;
                     }
-                    background = prop.Value.GetBoolean();
+                    backgroundModeEnabled = prop.Value.GetBoolean();
                     continue;
                 }
                 if (prop.NameEquals("max_output_tokens"u8))
@@ -438,7 +438,7 @@ namespace OpenAI.Responses
                 previousResponseId,
                 model,
                 reasoningOptions,
-                background,
+                backgroundModeEnabled,
                 maxOutputTokenCount,
                 instructions,
                 textOptions,

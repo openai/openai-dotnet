@@ -9,9 +9,8 @@ using Azure.ClientGenerator.Core;
 
 @@visibility(VectorStoreObject.metadata, Lifecycle.Read);
 
-@@clientName(VectorStores.deleteVectorStoreFile, "RemoveFileFromStore");
-@@clientName(VectorStores.cancelVectorStoreFileBatch, "CancelBatchFileJob");
-@@clientName(VectorStores.getVectorStoreFile, "GetFileAssociation");
+@@clientName(VectorStores.deleteVectorStoreFile, "RemoveFileFromVectorStore");
 @@clientName(VectorStores.listVectorStores, "GetVectorStores");
-@@clientName(VectorStores.listVectorStoreFiles, "GetFileAssociations");
-@@clientName(VectorStores.listFilesInVectorStoreBatch, "GetFileAssociationsInBatch");
+@@clientName(VectorStores.listFilesInVectorStoreBatch, "GetVectorStoreFilesInBatch");
+@@clientName(VectorStores.createVectorStoreFile, "AddFileToVectorStore");
+@@clientName(VectorStores.createVectorStoreFileBatch, "AddFileBatchToVectorStore");

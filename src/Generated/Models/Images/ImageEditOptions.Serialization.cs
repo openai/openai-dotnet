@@ -134,13 +134,13 @@ namespace OpenAI.Images
             BinaryData image = default;
             string prompt = default;
             BinaryData mask = default;
-            InternalCreateImageEditRequestBackground? background = default;
+            GeneratedImageBackground? background = default;
             InternalCreateImageEditRequestModel? model = default;
             long? n = default;
             GeneratedImageSize? size = default;
             GeneratedImageFormat? responseFormat = default;
             string endUserId = default;
-            InternalCreateImageEditRequestQuality? quality = default;
+            GeneratedImageQuality? quality = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -170,7 +170,7 @@ namespace OpenAI.Images
                         background = null;
                         continue;
                     }
-                    background = new InternalCreateImageEditRequestBackground(prop.Value.GetString());
+                    background = new GeneratedImageBackground(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("model"u8))
@@ -225,7 +225,7 @@ namespace OpenAI.Images
                         quality = null;
                         continue;
                     }
-                    quality = new InternalCreateImageEditRequestQuality(prop.Value.GetString());
+                    quality = new GeneratedImageQuality(prop.Value.GetString());
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
