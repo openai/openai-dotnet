@@ -10,13 +10,13 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalResponseCodeInterpreterCallCodeDoneEvent : IJsonModel<InternalResponseCodeInterpreterCallCodeDoneEvent>
+    public partial class StreamingResponseCodeInterpreterCallCodeDoneUpdate : IJsonModel<StreamingResponseCodeInterpreterCallCodeDoneUpdate>
     {
-        internal InternalResponseCodeInterpreterCallCodeDoneEvent() : this(InternalResponseStreamEventType.ResponseCodeInterpreterCallCodeDone, default, null, default, null)
+        internal StreamingResponseCodeInterpreterCallCodeDoneUpdate() : this(InternalResponseStreamEventType.ResponseCodeInterpreterCallCodeDone, default, null, default, null)
         {
         }
 
-        void IJsonModel<InternalResponseCodeInterpreterCallCodeDoneEvent>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<StreamingResponseCodeInterpreterCallCodeDoneUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
@@ -25,10 +25,10 @@ namespace OpenAI.Responses
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseCodeInterpreterCallCodeDoneEvent>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseCodeInterpreterCallCodeDoneUpdate>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalResponseCodeInterpreterCallCodeDoneEvent)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(StreamingResponseCodeInterpreterCallCodeDoneUpdate)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
             if (_additionalBinaryDataProperties?.ContainsKey("output_index") != true)
@@ -43,20 +43,20 @@ namespace OpenAI.Responses
             }
         }
 
-        InternalResponseCodeInterpreterCallCodeDoneEvent IJsonModel<InternalResponseCodeInterpreterCallCodeDoneEvent>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalResponseCodeInterpreterCallCodeDoneEvent)JsonModelCreateCore(ref reader, options);
+        StreamingResponseCodeInterpreterCallCodeDoneUpdate IJsonModel<StreamingResponseCodeInterpreterCallCodeDoneUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StreamingResponseCodeInterpreterCallCodeDoneUpdate)JsonModelCreateCore(ref reader, options);
 
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseCodeInterpreterCallCodeDoneEvent>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseCodeInterpreterCallCodeDoneUpdate>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalResponseCodeInterpreterCallCodeDoneEvent)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(StreamingResponseCodeInterpreterCallCodeDoneUpdate)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalResponseCodeInterpreterCallCodeDoneEvent(document.RootElement, options);
+            return DeserializeStreamingResponseCodeInterpreterCallCodeDoneUpdate(document.RootElement, options);
         }
 
-        internal static InternalResponseCodeInterpreterCallCodeDoneEvent DeserializeInternalResponseCodeInterpreterCallCodeDoneEvent(JsonElement element, ModelReaderWriterOptions options)
+        internal static StreamingResponseCodeInterpreterCallCodeDoneUpdate DeserializeStreamingResponseCodeInterpreterCallCodeDoneUpdate(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -92,40 +92,40 @@ namespace OpenAI.Responses
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalResponseCodeInterpreterCallCodeDoneEvent(kind, sequenceNumber, additionalBinaryDataProperties, outputIndex, code);
+            return new StreamingResponseCodeInterpreterCallCodeDoneUpdate(kind, sequenceNumber, additionalBinaryDataProperties, outputIndex, code);
         }
 
-        BinaryData IPersistableModel<InternalResponseCodeInterpreterCallCodeDoneEvent>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<StreamingResponseCodeInterpreterCallCodeDoneUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseCodeInterpreterCallCodeDoneEvent>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseCodeInterpreterCallCodeDoneUpdate>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(InternalResponseCodeInterpreterCallCodeDoneEvent)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(StreamingResponseCodeInterpreterCallCodeDoneUpdate)} does not support writing '{options.Format}' format.");
             }
         }
 
-        InternalResponseCodeInterpreterCallCodeDoneEvent IPersistableModel<InternalResponseCodeInterpreterCallCodeDoneEvent>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalResponseCodeInterpreterCallCodeDoneEvent)PersistableModelCreateCore(data, options);
+        StreamingResponseCodeInterpreterCallCodeDoneUpdate IPersistableModel<StreamingResponseCodeInterpreterCallCodeDoneUpdate>.Create(BinaryData data, ModelReaderWriterOptions options) => (StreamingResponseCodeInterpreterCallCodeDoneUpdate)PersistableModelCreateCore(data, options);
 
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseCodeInterpreterCallCodeDoneEvent>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseCodeInterpreterCallCodeDoneUpdate>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalResponseCodeInterpreterCallCodeDoneEvent(document.RootElement, options);
+                        return DeserializeStreamingResponseCodeInterpreterCallCodeDoneUpdate(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalResponseCodeInterpreterCallCodeDoneEvent)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(StreamingResponseCodeInterpreterCallCodeDoneUpdate)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<InternalResponseCodeInterpreterCallCodeDoneEvent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<StreamingResponseCodeInterpreterCallCodeDoneUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

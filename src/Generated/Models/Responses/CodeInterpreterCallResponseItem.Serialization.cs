@@ -10,13 +10,13 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalCodeInterpreterToolCallItemResource : IJsonModel<InternalCodeInterpreterToolCallItemResource>
+    public partial class CodeInterpreterCallResponseItem : IJsonModel<CodeInterpreterCallResponseItem>
     {
-        internal InternalCodeInterpreterToolCallItemResource() : this(InternalItemType.CodeInterpreterCall, null, null, default, null, null, null)
+        internal CodeInterpreterCallResponseItem() : this(InternalItemType.CodeInterpreterCall, null, null, default, null, null, null)
         {
         }
 
-        void IJsonModel<InternalCodeInterpreterToolCallItemResource>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<CodeInterpreterCallResponseItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
@@ -25,10 +25,10 @@ namespace OpenAI.Responses
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalCodeInterpreterToolCallItemResource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalCodeInterpreterToolCallItemResource)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(CodeInterpreterCallResponseItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
             if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
@@ -70,20 +70,20 @@ namespace OpenAI.Responses
             }
         }
 
-        InternalCodeInterpreterToolCallItemResource IJsonModel<InternalCodeInterpreterToolCallItemResource>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalCodeInterpreterToolCallItemResource)JsonModelCreateCore(ref reader, options);
+        CodeInterpreterCallResponseItem IJsonModel<CodeInterpreterCallResponseItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (CodeInterpreterCallResponseItem)JsonModelCreateCore(ref reader, options);
 
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalCodeInterpreterToolCallItemResource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalCodeInterpreterToolCallItemResource)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(CodeInterpreterCallResponseItem)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalCodeInterpreterToolCallItemResource(document.RootElement, options);
+            return DeserializeCodeInterpreterCallResponseItem(document.RootElement, options);
         }
 
-        internal static InternalCodeInterpreterToolCallItemResource DeserializeInternalCodeInterpreterToolCallItemResource(JsonElement element, ModelReaderWriterOptions options)
+        internal static CodeInterpreterCallResponseItem DeserializeCodeInterpreterCallResponseItem(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -92,7 +92,7 @@ namespace OpenAI.Responses
             InternalItemType kind = default;
             string id = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            InternalCodeInterpreterToolCallItemResourceStatus status = default;
+            CodeInterpreterCallStatus status = default;
             string containerId = default;
             string code = default;
             IList<BinaryData> results = default;
@@ -110,7 +110,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("status"u8))
                 {
-                    status = new InternalCodeInterpreterToolCallItemResourceStatus(prop.Value.GetString());
+                    status = new CodeInterpreterCallStatus(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("container_id"u8))
@@ -143,7 +143,7 @@ namespace OpenAI.Responses
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalCodeInterpreterToolCallItemResource(
+            return new CodeInterpreterCallResponseItem(
                 kind,
                 id,
                 additionalBinaryDataProperties,
@@ -153,37 +153,37 @@ namespace OpenAI.Responses
                 results);
         }
 
-        BinaryData IPersistableModel<InternalCodeInterpreterToolCallItemResource>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<CodeInterpreterCallResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalCodeInterpreterToolCallItemResource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(InternalCodeInterpreterToolCallItemResource)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(CodeInterpreterCallResponseItem)} does not support writing '{options.Format}' format.");
             }
         }
 
-        InternalCodeInterpreterToolCallItemResource IPersistableModel<InternalCodeInterpreterToolCallItemResource>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalCodeInterpreterToolCallItemResource)PersistableModelCreateCore(data, options);
+        CodeInterpreterCallResponseItem IPersistableModel<CodeInterpreterCallResponseItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (CodeInterpreterCallResponseItem)PersistableModelCreateCore(data, options);
 
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalCodeInterpreterToolCallItemResource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalCodeInterpreterToolCallItemResource(document.RootElement, options);
+                        return DeserializeCodeInterpreterCallResponseItem(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalCodeInterpreterToolCallItemResource)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(CodeInterpreterCallResponseItem)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<InternalCodeInterpreterToolCallItemResource>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<CodeInterpreterCallResponseItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

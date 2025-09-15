@@ -4,14 +4,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalCodeInterpreterToolCallItemResource : ResponseItem
+    [Experimental("OPENAI001")]
+    public partial class CodeInterpreterCallResponseItem : ResponseItem
     {
-        internal InternalCodeInterpreterToolCallItemResource(InternalCodeInterpreterToolCallItemResourceStatus status, string code, IEnumerable<BinaryData> results) : base(InternalItemType.CodeInterpreterCall)
+        public CodeInterpreterCallResponseItem(CodeInterpreterCallStatus status, string code, IEnumerable<BinaryData> results) : base(InternalItemType.CodeInterpreterCall)
         {
             Argument.AssertNotNull(code, nameof(code));
             Argument.AssertNotNull(results, nameof(results));
@@ -21,7 +23,7 @@ namespace OpenAI.Responses
             Results = results.ToList();
         }
 
-        internal InternalCodeInterpreterToolCallItemResource(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalCodeInterpreterToolCallItemResourceStatus status, string containerId, string code, IList<BinaryData> results) : base(kind, id, additionalBinaryDataProperties)
+        internal CodeInterpreterCallResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, CodeInterpreterCallStatus status, string containerId, string code, IList<BinaryData> results) : base(kind, id, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Status = status;
@@ -30,7 +32,7 @@ namespace OpenAI.Responses
             Results = results ?? new ChangeTrackingList<BinaryData>();
         }
 
-        internal InternalCodeInterpreterToolCallItemResourceStatus Status { get; set; }
+        public CodeInterpreterCallStatus Status { get; set; }
 
         public string ContainerId { get; set; }
 

@@ -246,7 +246,14 @@ public partial class ResponsesTests : SyncAsyncTestBase
             responseOptions);
 
         Assert.That(response, Is.Not.Null);
-        Assert.That(response.OutputItems, Is.Not.Null.And.Not.Empty);
+        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+        Assert.That(response.OutputItems[0], Is.InstanceOf<CodeInterpreterCallResponseItem>());
+        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
+
+        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
+        Assert.That(message.Content, Has.Count.GreaterThan(0));
+        Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
+        Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
 
         // Basic validation that the response was created successfully
         Assert.That(response.Id, Is.Not.Null.And.Not.Empty);
@@ -270,7 +277,15 @@ public partial class ResponsesTests : SyncAsyncTestBase
             responseOptions);
 
         Assert.That(response, Is.Not.Null);
-        Assert.That(response.OutputItems, Is.Not.Null.And.Not.Empty);
+        Assert.That(response, Is.Not.Null);
+        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+        Assert.That(response.OutputItems[0], Is.InstanceOf<CodeInterpreterCallResponseItem>());
+        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
+
+        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
+        Assert.That(message.Content, Has.Count.GreaterThan(0));
+        Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
+        Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
 
         // Basic validation that the response was created successfully
         Assert.That(response.Id, Is.Not.Null.And.Not.Empty);
@@ -306,7 +321,14 @@ public partial class ResponsesTests : SyncAsyncTestBase
                 responseOptions);
 
             Assert.That(response, Is.Not.Null);
-            Assert.That(response.OutputItems, Is.Not.Null.And.Not.Empty);
+            Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+            Assert.That(response.OutputItems[0], Is.InstanceOf<CodeInterpreterCallResponseItem>());
+            Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
+
+            MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
+            Assert.That(message.Content, Has.Count.GreaterThan(0));
+            Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
+            Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
 
             // Basic validation that the response was created successfully
             Assert.That(response.Id, Is.Not.Null.And.Not.Empty);
@@ -336,9 +358,9 @@ public partial class ResponsesTests : SyncAsyncTestBase
         // Create some test files to upload
         string csvContent = "name,age,city\nAlice,30,New York\nBob,25,Los Angeles\nCharlie,35,Chicago";
         string pythonContent = "# This is a simple Python file\ndef hello():\n    print('Hello from uploaded file!')\n\nif __name__ == '__main__':\n    hello()";
-        
+
         List<string> fileIds = new();
-        
+
         try
         {
             // Upload CSV file
@@ -346,7 +368,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
             OpenAIFile csvFile = await fileClient.UploadFileAsync(csvStream, "test_data.csv", FileUploadPurpose.Assistants);
             Validate(csvFile);
             fileIds.Add(csvFile.Id);
-            
+
             // Upload Python file  
             using Stream pythonStream = BinaryData.FromString(pythonContent).ToStream();
             OpenAIFile pythonFile = await fileClient.UploadFileAsync(pythonStream, "test_script.py", FileUploadPurpose.Assistants);
@@ -366,7 +388,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
 
             Assert.That(response, Is.Not.Null);
             Assert.That(response.OutputItems, Is.Not.Null.And.Not.Empty);
-            
+
             // Basic validation that the response was created successfully
             Assert.That(response.Id, Is.Not.Null.And.Not.Empty);
             Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<CodeInterpreterTool>());
