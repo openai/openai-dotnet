@@ -1,0 +1,60 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/audio/translations",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "4039359",
+        "Content-Type": "multipart/form-data; boundary=\"qZFmyepDVKUx5TO_GzKEI4KGLBJok1dSL4myo5kKY93Ez3ZHjYDcjWY7KTT32MGdn5e0a=\"",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801f0f60884759a-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "787",
+        "Content-Type": "text/plain; charset=utf-8",
+        "Date": "Tue, 16 Sep 2025 17:04:11 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "1882",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Via": "envoy-router-6c8fbc655d-5wxlw",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "1949",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "10000",
+        "x-ratelimit-remaining-requests": "9999",
+        "x-ratelimit-reset-requests": "6ms",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": [
+        "1\n",
+        "00:00:00,000 --> 00:00:11,000\n",
+        "Whisper is an automatic recognition system of speech trained on 680,000 hours of multilingual and multitasking data collected on the Internet.\n\n",
+        "2\n",
+        "00:00:11,000 --> 00:00:20,000\n",
+        "We establish that the use of data of such a number and such a diversity is the reason why the system is able to understand many accents,\n\n",
+        "3\n",
+        "00:00:20,000 --> 00:00:27,000\n",
+        "despite background noise, to understand technical vocabulary, and to succeed in translation from various languages into English.\n\n",
+        "4\n",
+        "00:00:28,000 --> 00:00:33,000\n",
+        "As a free software, we distribute the source code for our models and for the inference,\n\n",
+        "5\n",
+        "00:00:33,000 --> 00:00:41,000\n",
+        "so that it can be used as a starting point to build useful applications and to help progress research in speech processing.\n\n",
+        "\n"
+      ]
+    }
+  ],
+  "Variables": {}
+}

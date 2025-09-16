@@ -1,0 +1,64 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/audio/transcriptions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "34897",
+        "Content-Type": "multipart/form-data; boundary=\"e=6fz1IuYPHpbI_KgBlJOzt0iTJxsQpNFwYtBFa=RiHHfbWsJzR0viOdQGBLrHJAhmGFmI\"",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "Cache-Control": "no-store",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801e8788852ded0-SEA",
+        "Connection": "keep-alive",
+        "Content-Type": "text/event-stream; charset=utf-8",
+        "Date": "Tue, 16 Sep 2025 16:58:21 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "601",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "667",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-reset-requests": "2ms",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": [
+        "data: {\"type\":\"transcript.text.delta\",\"delta\":\"Hello\",\"logprobs\":[{\"token\":\"Hello\",\"logprob\":-0.00003106736039626412,\"bytes\":[72,101,108,108,111]}]}\r\n",
+        "\r\n",
+        "data: {\"type\":\"transcript.text.delta\",\"delta\":\" World\",\"logprobs\":[{\"token\":\" World\",\"logprob\":-1.7076447010040283,\"bytes\":[32,87,111,114,108,100]}]}\r\n",
+        "\r\n",
+        "data: {\"type\":\"transcript.text.delta\",\"delta\":\",\",\"logprobs\":[{\"token\":\",\",\"logprob\":-0.005406761541962624,\"bytes\":[44]}]}\r\n",
+        "\r\n",
+        "data: {\"type\":\"transcript.text.delta\",\"delta\":\" this\",\"logprobs\":[{\"token\":\" this\",\"logprob\":-0.002498490735888481,\"bytes\":[32,116,104,105,115]}]}\r\n",
+        "\r\n",
+        "data: {\"type\":\"transcript.text.delta\",\"delta\":\" is\",\"logprobs\":[{\"token\":\" is\",\"logprob\":-1.7432603272027336e-6,\"bytes\":[32,105,115]}]}\r\n",
+        "\r\n",
+        "data: {\"type\":\"transcript.text.delta\",\"delta\":\" a\",\"logprobs\":[{\"token\":\" a\",\"logprob\":0.0,\"bytes\":[32,97]}]}\r\n",
+        "\r\n",
+        "data: {\"type\":\"transcript.text.delta\",\"delta\":\" test\",\"logprobs\":[{\"token\":\" test\",\"logprob\":-0.000010325924449716695,\"bytes\":[32,116,101,115,116]}]}\r\n",
+        "\r\n",
+        "data: {\"type\":\"transcript.text.delta\",\"delta\":\".\",\"logprobs\":[{\"token\":\".\",\"logprob\":-0.04923725873231888,\"bytes\":[46]}]}\r\n",
+        "\r\n",
+        "data: {\"type\":\"transcript.text.done\",\"text\":\"Hello World, this is a test.\",\"logprobs\":[{\"token\":\"Hello\",\"logprob\":-0.00003106736039626412,\"bytes\":[72,101,108,108,111]},{\"token\":\" World\",\"logprob\":-1.7076447010040283,\"bytes\":[32,87,111,114,108,100]},{\"token\":\",\",\"logprob\":-0.005406761541962624,\"bytes\":[44]},{\"token\":\" this\",\"logprob\":-0.002498490735888481,\"bytes\":[32,116,104,105,115]},{\"token\":\" is\",\"logprob\":-1.7432603272027336e-6,\"bytes\":[32,105,115]},{\"token\":\" a\",\"logprob\":0.0,\"bytes\":[32,97]},{\"token\":\" test\",\"logprob\":-0.000010325924449716695,\"bytes\":[32,116,101,115,116]},{\"token\":\".\",\"logprob\":-0.04923725873231888,\"bytes\":[46]}],\"usage\":{\"type\":\"tokens\",\"total_tokens\":27,\"input_tokens\":17,\"input_token_details\":{\"text_tokens\":0,\"audio_tokens\":17},\"output_tokens\":10}}\r\n",
+        "\r\n",
+        "data: [DONE]\r\n",
+        "\r\n"
+      ]
+    }
+  ],
+  "Variables": {}
+}

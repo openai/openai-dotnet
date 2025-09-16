@@ -1,0 +1,132 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/audio/transcriptions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "34729",
+        "Content-Type": "multipart/form-data; boundary=\"O_4AEKg8d1Oop0BF_l9pfq8ICdSBHclm8tjd3uUjZaAw3j=GkNuZbdRywMGd7XumlFEcyK\"",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801e8720999ded0-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "791",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 16:58:20 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "723",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "835",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-reset-requests": "2ms",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "text": "Hello world, this is a test.",
+        "logprobs": [
+          {
+            "token": "Sanitized",
+            "logprob": -3.106736039626412E-05,
+            "bytes": [
+              72,
+              101,
+              108,
+              108,
+              111
+            ]
+          },
+          {
+            "token": "Sanitized",
+            "logprob": -0.2076447755098343,
+            "bytes": [
+              32,
+              119,
+              111,
+              114,
+              108,
+              100
+            ]
+          },
+          {
+            "token": "Sanitized",
+            "logprob": -0.0009706564014777541,
+            "bytes": [
+              44
+            ]
+          },
+          {
+            "token": "Sanitized",
+            "logprob": -8.685467764735222E-05,
+            "bytes": [
+              32,
+              116,
+              104,
+              105,
+              115
+            ]
+          },
+          {
+            "token": "Sanitized",
+            "logprob": -7.896309739408025E-07,
+            "bytes": [
+              32,
+              105,
+              115
+            ]
+          },
+          {
+            "token": "Sanitized",
+            "logprob": 0.0,
+            "bytes": [
+              32,
+              97
+            ]
+          },
+          {
+            "token": "Sanitized",
+            "logprob": -4.320199877838604E-07,
+            "bytes": [
+              32,
+              116,
+              101,
+              115,
+              116
+            ]
+          },
+          {
+            "token": "Sanitized",
+            "logprob": -0.016254538670182228,
+            "bytes": [
+              46
+            ]
+          }
+        ],
+        "usage": {
+          "type": "tokens",
+          "total_tokens": 27,
+          "input_tokens": 17,
+          "input_token_details": {
+            "text_tokens": 0,
+            "audio_tokens": 17
+          },
+          "output_tokens": 10
+        }
+      }
+    }
+  ],
+  "Variables": {}
+}

@@ -1,0 +1,77 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/audio/transcriptions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "35070",
+        "Content-Type": "multipart/form-data; boundary=\"xAJHcJ=EAMY6fqSlYBSF3vMoAZXx343nZ4rJCvBoWw5rxvIUlNVSzuYL3C6OINpz0881RD\"",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801eab0984d756b-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "442",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 16:59:52 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "530",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Via": "envoy-router-5cc8bd48fd-qtwzm",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "551",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "10000",
+        "x-ratelimit-remaining-requests": "9999",
+        "x-ratelimit-reset-requests": "6ms",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "task": "transcribe",
+        "language": "english",
+        "duration": 1.7000000476837158,
+        "text": "Hello world, this is a test.",
+        "segments": [
+          {
+            "id": 0,
+            "seek": 0,
+            "start": 0.0,
+            "end": 2.0,
+            "text": " Hello world, this is a test.",
+            "tokens": [
+              50364,
+              2425,
+              1002,
+              11,
+              341,
+              307,
+              257,
+              1500,
+              13,
+              50464
+            ],
+            "temperature": 0.4000000059604645,
+            "avg_logprob": -0.5043297410011292,
+            "compression_ratio": 0.8235294222831726,
+            "no_speech_prob": 0.002052504802122712
+          }
+        ],
+        "usage": {
+          "type": "duration",
+          "seconds": 2
+        }
+      }
+    }
+  ],
+  "Variables": {}
+}

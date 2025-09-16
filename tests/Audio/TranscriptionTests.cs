@@ -13,7 +13,6 @@ using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Audio;
 
-[Parallelizable(ParallelScope.All)]
 [Category("Audio")]
 public partial class TranscriptionTests : OpenAIRecordedTestBase
 {
@@ -32,24 +31,27 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     [TestCase(AudioSourceKind.UsingFilePath)]
     public async Task TranscriptionWorks(AudioSourceKind audioSourceKind)
     {
-        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
-        string filename = "audio_hello_world.mp3";
-        string path = Path.Combine("Assets", filename);
-        AudioTranscription transcription = null;
-
-        if (audioSourceKind == AudioSourceKind.UsingStream)
+        using (Recording.DisableRequestBodyRecording()) // Temp while multipart support in the test proxy is being implemented
         {
-            using FileStream inputStream = File.OpenRead(path);
+            AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
+            string filename = "audio_hello_world.mp3";
+            string path = Path.Combine("Assets", filename);
+            AudioTranscription transcription = null;
 
-            transcription = await client.TranscribeAudioAsync(inputStream, filename);
-        }
-        else if (audioSourceKind == AudioSourceKind.UsingFilePath)
-        {
-            transcription = await client.TranscribeAudioAsync(path);
-        }
+            if (audioSourceKind == AudioSourceKind.UsingStream)
+            {
+                using FileStream inputStream = File.OpenRead(path);
 
-        Assert.That(transcription, Is.Not.Null);
-        Assert.That(transcription.Text.ToLowerInvariant(), Contains.Substring("hello"));
+                transcription = await client.TranscribeAudioAsync(inputStream, filename);
+            }
+            else if (audioSourceKind == AudioSourceKind.UsingFilePath)
+            {
+                transcription = await client.TranscribeAudioAsync(path);
+            }
+
+            Assert.That(transcription, Is.Not.Null);
+            Assert.That(transcription.Text.ToLowerInvariant(), Contains.Substring("hello"));
+        }
     }
 
     [Test]
@@ -59,67 +61,70 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     [TestCase(AudioTimestampGranularities.Word | AudioTimestampGranularities.Segment)]
     public async Task TimestampsWork(AudioTimestampGranularities granularityFlags)
     {
-        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
-
-        using FileStream inputStream = File.OpenRead(Path.Combine("Assets", "audio_hello_world.mp3"));
-
-        AudioTranscriptionOptions options = new()
+        using (Recording.DisableRequestBodyRecording()) // Temp while multipart support in the test proxy is being implemented
         {
-            ResponseFormat = AudioTranscriptionFormat.Verbose,
-            Temperature = 0.4f,
-            TimestampGranularities = granularityFlags,
-        };
+            AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
 
-        ClientResult<AudioTranscription> transcriptionResult = await client.TranscribeAudioAsync(inputStream, "audio_hello_world.mp3", options);
+            using FileStream inputStream = File.OpenRead(Path.Combine("Assets", "audio_hello_world.mp3"));
 
-        PipelineResponse rawResponse = transcriptionResult.GetRawResponse();
-        Assert.That(rawResponse.Content.ToString(), Is.Not.Null.And.Not.Empty);
-
-        AudioTranscription transcription = transcriptionResult;
-        Assert.That(transcription, Is.Not.Null);
-
-        IReadOnlyList<TranscribedWord> words = transcription.Words;
-        IReadOnlyList<TranscribedSegment> segments = transcription.Segments;
-
-        bool wordTimestampsPresent = words?.Count > 0;
-        bool segmentTimestampsPresent = segments?.Count > 0;
-
-        bool wordTimestampsExpected = granularityFlags.HasFlag(AudioTimestampGranularities.Word);
-        bool segmentTimestampsExpected = granularityFlags.HasFlag(AudioTimestampGranularities.Segment)
-            || granularityFlags == AudioTimestampGranularities.Default;
-
-        Assert.That(wordTimestampsPresent, Is.EqualTo(wordTimestampsExpected));
-        Assert.That(segmentTimestampsPresent, Is.EqualTo(segmentTimestampsExpected));
-
-        for (int i = 0; i < (words?.Count ?? 0); i++)
-        {
-            if (i > 0)
+            AudioTranscriptionOptions options = new()
             {
-                Assert.That(words[i].StartTime, Is.GreaterThanOrEqualTo(words[i - 1].EndTime));
-            }
-            Assert.That(words[i].EndTime, Is.GreaterThan(words[i].StartTime));
-            Assert.That(string.IsNullOrEmpty(words[i].Word), Is.False);
-        }
+                ResponseFormat = AudioTranscriptionFormat.Verbose,
+                Temperature = 0.4f,
+                TimestampGranularities = granularityFlags,
+            };
 
-        for (int i = 0; i < (segments?.Count ?? 0); i++)
-        {
-            if (i > 0)
+            ClientResult<AudioTranscription> transcriptionResult = await client.TranscribeAudioAsync(inputStream, "audio_hello_world.mp3", options);
+
+            PipelineResponse rawResponse = transcriptionResult.GetRawResponse();
+            Assert.That(rawResponse.Content.ToString(), Is.Not.Null.And.Not.Empty);
+
+            AudioTranscription transcription = transcriptionResult;
+            Assert.That(transcription, Is.Not.Null);
+
+            IReadOnlyList<TranscribedWord> words = transcription.Words;
+            IReadOnlyList<TranscribedSegment> segments = transcription.Segments;
+
+            bool wordTimestampsPresent = words?.Count > 0;
+            bool segmentTimestampsPresent = segments?.Count > 0;
+
+            bool wordTimestampsExpected = granularityFlags.HasFlag(AudioTimestampGranularities.Word);
+            bool segmentTimestampsExpected = granularityFlags.HasFlag(AudioTimestampGranularities.Segment)
+                || granularityFlags == AudioTimestampGranularities.Default;
+
+            Assert.That(wordTimestampsPresent, Is.EqualTo(wordTimestampsExpected));
+            Assert.That(segmentTimestampsPresent, Is.EqualTo(segmentTimestampsExpected));
+
+            for (int i = 0; i < (words?.Count ?? 0); i++)
             {
-                Assert.That(segments[i].Id, Is.GreaterThan(segments[i - 1].Id));
-                Assert.That(segments[i].SeekOffset, Is.GreaterThan(0));
-                Assert.That(segments[i].StartTime, Is.GreaterThanOrEqualTo(segments[i - 1].EndTime));
+                if (i > 0)
+                {
+                    Assert.That(words[i].StartTime, Is.GreaterThanOrEqualTo(words[i - 1].EndTime));
+                }
+                Assert.That(words[i].EndTime, Is.GreaterThan(words[i].StartTime));
+                Assert.That(string.IsNullOrEmpty(words[i].Word), Is.False);
             }
-            Assert.That(segments[i].EndTime, Is.GreaterThan(segments[i].StartTime));
-            Assert.That(string.IsNullOrEmpty(segments[i].Text), Is.False);
-            Assert.That(segments[i].TokenIds.Span.Length, Is.GreaterThan(0));
-            foreach (int tokenId in segments[i].TokenIds.ToArray())
+
+            for (int i = 0; i < (segments?.Count ?? 0); i++)
             {
-                Assert.That(tokenId, Is.GreaterThanOrEqualTo(0));
+                if (i > 0)
+                {
+                    Assert.That(segments[i].Id, Is.GreaterThan(segments[i - 1].Id));
+                    Assert.That(segments[i].SeekOffset, Is.GreaterThan(0));
+                    Assert.That(segments[i].StartTime, Is.GreaterThanOrEqualTo(segments[i - 1].EndTime));
+                }
+                Assert.That(segments[i].EndTime, Is.GreaterThan(segments[i].StartTime));
+                Assert.That(string.IsNullOrEmpty(segments[i].Text), Is.False);
+                Assert.That(segments[i].TokenIds.Span.Length, Is.GreaterThan(0));
+                foreach (int tokenId in segments[i].TokenIds.ToArray())
+                {
+                    Assert.That(tokenId, Is.GreaterThanOrEqualTo(0));
+                }
+                Assert.That(segments[i].Temperature, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
+                Assert.That(segments[i].AverageLogProbability, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
+                Assert.That(segments[i].CompressionRatio, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
+                Assert.That(segments[i].NoSpeechProbability, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
             }
-            Assert.That(segments[i].Temperature, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
-            Assert.That(segments[i].AverageLogProbability, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
-            Assert.That(segments[i].CompressionRatio, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
-            Assert.That(segments[i].NoSpeechProbability, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
         }
     }
 
@@ -132,137 +137,149 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     [TestCase(null)]
     public async Task TranscriptionFormatsWork(string responseFormat)
     {
-        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
-        string path = Path.Combine("Assets", "audio_hello_world.mp3");
-
-        AudioTranscriptionOptions options = new()
+        using (Recording.DisableRequestBodyRecording()) // Temp while multipart support in the test proxy is being implemented
         {
-            ResponseFormat = responseFormat switch
+            AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
+            string path = Path.Combine("Assets", "audio_hello_world.mp3");
+
+            AudioTranscriptionOptions options = new()
             {
-                "text" => AudioTranscriptionFormat.Text,
-                "json" => AudioTranscriptionFormat.Simple,
-                "verbose_json" => AudioTranscriptionFormat.Verbose,
-                "srt" => AudioTranscriptionFormat.Srt,
-                "vtt" => AudioTranscriptionFormat.Vtt,
-                _ => (AudioTranscriptionFormat?)null
-            }
-        };
-
-        AudioTranscription transcription = await client.TranscribeAudioAsync(path, options);
-
-        Assert.That(transcription?.Text?.ToLowerInvariant(), Does.Contain("hello"));
-
-
-        if (options.ResponseFormat == AudioTranscriptionFormat.Verbose)
-        {
-            Assert.That(transcription.Language, Is.EqualTo("english"));
-            Assert.That(transcription.Duration, Is.GreaterThan(TimeSpan.Zero));
-            Assert.That(transcription.Segments, Is.Not.Empty);
-
-            for (int i = 0; i < transcription.Segments.Count; i++)
-            {
-                TranscribedSegment segment = transcription.Segments[i];
-
-                if (i > 0)
+                ResponseFormat = responseFormat switch
                 {
-                    Assert.That(segment.StartTime, Is.GreaterThanOrEqualTo(transcription.Segments[i - 1].EndTime));
+                    "text" => AudioTranscriptionFormat.Text,
+                    "json" => AudioTranscriptionFormat.Simple,
+                    "verbose_json" => AudioTranscriptionFormat.Verbose,
+                    "srt" => AudioTranscriptionFormat.Srt,
+                    "vtt" => AudioTranscriptionFormat.Vtt,
+                    _ => (AudioTranscriptionFormat?)null
                 }
+            };
 
-                Assert.That(segment.Id, Is.EqualTo(i));
-                Assert.That(segment.EndTime, Is.GreaterThanOrEqualTo(segment.StartTime));
-                Assert.That(segment.TokenIds.Length, Is.GreaterThan(0));
+            AudioTranscription transcription = await client.TranscribeAudioAsync(path, options);
 
-                Assert.That(segment.AverageLogProbability, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
-                Assert.That(segment.CompressionRatio, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
-                Assert.That(segment.NoSpeechProbability, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
+            Assert.That(transcription?.Text?.ToLowerInvariant(), Does.Contain("hello"));
+
+
+            if (options.ResponseFormat == AudioTranscriptionFormat.Verbose)
+            {
+                Assert.That(transcription.Language, Is.EqualTo("english"));
+                Assert.That(transcription.Duration, Is.GreaterThan(TimeSpan.Zero));
+                Assert.That(transcription.Segments, Is.Not.Empty);
+
+                for (int i = 0; i < transcription.Segments.Count; i++)
+                {
+                    TranscribedSegment segment = transcription.Segments[i];
+
+                    if (i > 0)
+                    {
+                        Assert.That(segment.StartTime, Is.GreaterThanOrEqualTo(transcription.Segments[i - 1].EndTime));
+                    }
+
+                    Assert.That(segment.Id, Is.EqualTo(i));
+                    Assert.That(segment.EndTime, Is.GreaterThanOrEqualTo(segment.StartTime));
+                    Assert.That(segment.TokenIds.Length, Is.GreaterThan(0));
+
+                    Assert.That(segment.AverageLogProbability, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
+                    Assert.That(segment.CompressionRatio, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
+                    Assert.That(segment.NoSpeechProbability, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
+                }
             }
-        }
-        else
-        {
-            Assert.That(transcription.Duration, Is.Null);
-            Assert.That(transcription.Language, Is.Null);
-            Assert.That(transcription.Segments, Is.Not.Null.And.Empty);
-            Assert.That(transcription.Words, Is.Not.Null.And.Empty);
+            else
+            {
+                Assert.That(transcription.Duration, Is.Null);
+                Assert.That(transcription.Language, Is.Null);
+                Assert.That(transcription.Segments, Is.Not.Null.And.Empty);
+                Assert.That(transcription.Words, Is.Not.Null.And.Empty);
+            }
         }
     }
 
     [Test]
     public async Task IncludesWork()
     {
-        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe);
-        string filename = "audio_hello_world.mp3";
-        string path = Path.Combine("Assets", filename);
-
-        AudioTranscription transcription = await client.TranscribeAudioAsync(path, new AudioTranscriptionOptions()
+        using (Recording.DisableRequestBodyRecording()) // Temp while multipart support in the test proxy is being implemented
         {
-            Includes = AudioTranscriptionIncludes.Logprobs,
-        });
+            AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe);
+            string filename = "audio_hello_world.mp3";
+            string path = Path.Combine("Assets", filename);
 
-        Assert.That(transcription.TranscriptionTokenLogProbabilities, Has.Count.GreaterThan(0));
-        Assert.That(transcription.TranscriptionTokenLogProbabilities[0].Token, Is.Not.Null.And.Not.Empty);
-        Assert.That(transcription.TranscriptionTokenLogProbabilities[0].LogProbability, Is.Not.EqualTo(0));
-        Assert.That(transcription.TranscriptionTokenLogProbabilities[0].Utf8Bytes.ToArray(), Is.Not.Null.And.Not.Empty);
+            AudioTranscription transcription = await client.TranscribeAudioAsync(path, new AudioTranscriptionOptions()
+            {
+                Includes = AudioTranscriptionIncludes.Logprobs,
+            });
+
+            Assert.That(transcription.TranscriptionTokenLogProbabilities, Has.Count.GreaterThan(0));
+            Assert.That(transcription.TranscriptionTokenLogProbabilities[0].Token, Is.Not.Null.And.Not.Empty);
+            Assert.That(transcription.TranscriptionTokenLogProbabilities[0].LogProbability, Is.Not.EqualTo(0));
+            Assert.That(transcription.TranscriptionTokenLogProbabilities[0].Utf8Bytes.ToArray(), Is.Not.Null.And.Not.Empty);
+        }
     }
 
     [Test]
     public async Task StreamingIncludesWork()
     {
-        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe);
-        string filename = "audio_hello_world.mp3";
-        string path = Path.Combine("Assets", filename);
-
-        List<AudioTokenLogProbabilityDetails> streamedDeltaLogProbs = [];
-
-        await foreach (StreamingAudioTranscriptionUpdate update
-            in client.TranscribeAudioStreamingAsync(
-                path,
-                new AudioTranscriptionOptions()
-                {
-                    Includes = AudioTranscriptionIncludes.Logprobs,
-                }))
+        using (Recording.DisableRequestBodyRecording()) // Temp while multipart support in the test proxy is being implemented
         {
-            if (update is StreamingAudioTranscriptionTextDeltaUpdate deltaUpdate)
-            {
-                Assert.That(deltaUpdate.TranscriptionTokenLogProbabilities, Is.Not.Null);
-                streamedDeltaLogProbs.AddRange(deltaUpdate.TranscriptionTokenLogProbabilities);
-            }
-            else if (update is StreamingAudioTranscriptionTextDoneUpdate doneUpdate)
-            {
-                Assert.That(doneUpdate.TranscriptionTokenLogProbabilities, Has.Count.GreaterThan(0));
-                Assert.That(doneUpdate.TranscriptionTokenLogProbabilities.Count, Is.EqualTo(streamedDeltaLogProbs.Count));
-                Assert.That(doneUpdate.TranscriptionTokenLogProbabilities[0].Token, Is.Not.Null.And.Not.Empty);
-                Assert.That(doneUpdate.TranscriptionTokenLogProbabilities[0].Token, Is.EqualTo(streamedDeltaLogProbs[0].Token));
-            }
-        }
+            AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe);
+            string filename = "audio_hello_world.mp3";
+            string path = Path.Combine("Assets", filename);
 
-        Assert.That(streamedDeltaLogProbs, Has.Count.GreaterThan(0));
+            List<AudioTokenLogProbabilityDetails> streamedDeltaLogProbs = [];
+
+            await foreach (StreamingAudioTranscriptionUpdate update
+                in client.TranscribeAudioStreamingAsync(
+                    path,
+                    new AudioTranscriptionOptions()
+                    {
+                        Includes = AudioTranscriptionIncludes.Logprobs,
+                    }))
+            {
+                if (update is StreamingAudioTranscriptionTextDeltaUpdate deltaUpdate)
+                {
+                    Assert.That(deltaUpdate.TranscriptionTokenLogProbabilities, Is.Not.Null);
+                    streamedDeltaLogProbs.AddRange(deltaUpdate.TranscriptionTokenLogProbabilities);
+                }
+                else if (update is StreamingAudioTranscriptionTextDoneUpdate doneUpdate)
+                {
+                    Assert.That(doneUpdate.TranscriptionTokenLogProbabilities, Has.Count.GreaterThan(0));
+                    Assert.That(doneUpdate.TranscriptionTokenLogProbabilities.Count, Is.EqualTo(streamedDeltaLogProbs.Count));
+                    Assert.That(doneUpdate.TranscriptionTokenLogProbabilities[0].Token, Is.Not.Null.And.Not.Empty);
+                    Assert.That(doneUpdate.TranscriptionTokenLogProbabilities[0].Token, Is.EqualTo(streamedDeltaLogProbs[0].Token));
+                }
+            }
+
+            Assert.That(streamedDeltaLogProbs, Has.Count.GreaterThan(0));
+        }
     }
 
     [Test]
     public async Task BadTranscriptionRequest()
     {
-        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
-
-        string path = Path.Combine("Assets", "audio_hello_world.mp3");
-
-        AudioTranscriptionOptions options = new AudioTranscriptionOptions()
+        using (Recording.DisableRequestBodyRecording()) // Temp while multipart support in the test proxy is being implemented
         {
-            Language = "this should cause an error"
-        };
+            AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
 
-        Exception caughtException = null;
+            string path = Path.Combine("Assets", "audio_hello_world.mp3");
 
-        try
-        {
-            await client.TranscribeAudioAsync(path, options);
+            AudioTranscriptionOptions options = new AudioTranscriptionOptions()
+            {
+                Language = "this should cause an error"
+            };
+
+            Exception caughtException = null;
+
+            try
+            {
+                await client.TranscribeAudioAsync(path, options);
+            }
+            catch (Exception ex)
+            {
+                caughtException = ex;
+            }
+
+            Assert.That(caughtException, Is.InstanceOf<ClientResultException>());
+            Assert.That(caughtException.Message?.ToLower(), Contains.Substring("invalid language"));
         }
-        catch (Exception ex)
-        {
-            caughtException = ex;
-        }
-
-        Assert.That(caughtException, Is.InstanceOf<ClientResultException>());
-        Assert.That(caughtException.Message?.ToLower(), Contains.Substring("invalid language"));
     }
 
     [Test]
@@ -270,44 +287,47 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     [TestCase(AudioSourceKind.UsingFilePath)]
     public async Task StreamingTranscriptionWorks(AudioSourceKind audioSourceKind)
     {
-        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe);
-        string filename = "audio_hello_world.mp3";
-        string path = Path.Combine("Assets", filename);
-
-        FileStream inputStream = null;
-
-        AsyncCollectionResult<StreamingAudioTranscriptionUpdate> streamingUpdates = null;
-
-        if (audioSourceKind == AudioSourceKind.UsingStream)
+        using (Recording.DisableRequestBodyRecording()) // Temp while multipart support in the test proxy is being implemented
         {
-            inputStream = File.OpenRead(path);
-            streamingUpdates = client.TranscribeAudioStreamingAsync(inputStream, filename);
-        }
-        else if (audioSourceKind == AudioSourceKind.UsingFilePath)
-        {
-            streamingUpdates = client.TranscribeAudioStreamingAsync(path);
-        }
+            AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe);
+            string filename = "audio_hello_world.mp3";
+            string path = Path.Combine("Assets", filename);
 
-        StringBuilder deltaBuilder = new();
+            FileStream inputStream = null;
 
-        await foreach (StreamingAudioTranscriptionUpdate update in streamingUpdates)
-        {
-            if (update is StreamingAudioTranscriptionTextDeltaUpdate deltaUpdate)
+            AsyncCollectionResult<StreamingAudioTranscriptionUpdate> streamingUpdates = null;
+
+            if (audioSourceKind == AudioSourceKind.UsingStream)
             {
-                deltaBuilder.Append(deltaUpdate.Delta);
-                Assert.That(deltaUpdate.TranscriptionTokenLogProbabilities, Has.Count.EqualTo(0));
+                inputStream = File.OpenRead(path);
+                streamingUpdates = client.TranscribeAudioStreamingAsync(inputStream, filename);
             }
-            else if (update is StreamingAudioTranscriptionTextDoneUpdate doneUpdate)
+            else if (audioSourceKind == AudioSourceKind.UsingFilePath)
             {
-                Assert.That(doneUpdate.Text, Is.Not.Null.And.Not.Empty);
-                Assert.That(doneUpdate.Text, Is.EqualTo(deltaBuilder.ToString()));
-                Assert.That(doneUpdate.TranscriptionTokenLogProbabilities, Has.Count.EqualTo(0));
+                streamingUpdates = client.TranscribeAudioStreamingAsync(path);
             }
+
+            StringBuilder deltaBuilder = new();
+
+            await foreach (StreamingAudioTranscriptionUpdate update in streamingUpdates)
+            {
+                if (update is StreamingAudioTranscriptionTextDeltaUpdate deltaUpdate)
+                {
+                    deltaBuilder.Append(deltaUpdate.Delta);
+                    Assert.That(deltaUpdate.TranscriptionTokenLogProbabilities, Has.Count.EqualTo(0));
+                }
+                else if (update is StreamingAudioTranscriptionTextDoneUpdate doneUpdate)
+                {
+                    Assert.That(doneUpdate.Text, Is.Not.Null.And.Not.Empty);
+                    Assert.That(doneUpdate.Text, Is.EqualTo(deltaBuilder.ToString()));
+                    Assert.That(doneUpdate.TranscriptionTokenLogProbabilities, Has.Count.EqualTo(0));
+                }
+            }
+
+            Assert.That(deltaBuilder.ToString().ToLower(), Does.Contain("hello world"));
+
+            inputStream?.Dispose();
         }
-
-        Assert.That(deltaBuilder.ToString().ToLower(), Does.Contain("hello world"));
-
-        inputStream?.Dispose();
     }
 
     [Test]

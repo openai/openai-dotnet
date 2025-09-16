@@ -1,0 +1,110 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/audio/transcriptions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "35259",
+        "Content-Type": "multipart/form-data; boundary=\"QjOa0Ga8XAmMXhz3NbYLoghNqMACjws4Sr8FepFcC93OG9IpZJzSEkd3Y97k_rGT9KOwKH\"",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801ea934ece756b-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "831",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 16:59:48 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "1612",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Via": "envoy-router-canary-5679d76d5c-rp7bm",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "1687",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "10000",
+        "x-ratelimit-remaining-requests": "9999",
+        "x-ratelimit-reset-requests": "6ms",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "task": "transcribe",
+        "language": "english",
+        "duration": 1.7000000476837158,
+        "text": "Hello, world! This is a test.",
+        "segments": [
+          {
+            "id": 0,
+            "seek": 0,
+            "start": 0.0,
+            "end": 1.440000057220459,
+            "text": " Hello, world! This is a test.",
+            "tokens": [
+              50364,
+              2425,
+              11,
+              1002,
+              0,
+              639,
+              307,
+              257,
+              1500,
+              13,
+              50464
+            ],
+            "temperature": 0.4000000059604645,
+            "avg_logprob": -0.5015556812286377,
+            "compression_ratio": 0.8285714387893677,
+            "no_speech_prob": 0.0020366047974675894
+          }
+        ],
+        "words": [
+          {
+            "word": "Hello",
+            "start": 0.0,
+            "end": 0.3199999928474426
+          },
+          {
+            "word": "world",
+            "start": 0.47999998927116394,
+            "end": 0.6000000238418579
+          },
+          {
+            "word": "This",
+            "start": 0.8399999737739563,
+            "end": 0.8799999952316284
+          },
+          {
+            "word": "is",
+            "start": 0.8799999952316284,
+            "end": 1.0
+          },
+          {
+            "word": "a",
+            "start": 1.0,
+            "end": 1.1399999856948853
+          },
+          {
+            "word": "test",
+            "start": 1.1399999856948853,
+            "end": 1.440000057220459
+          }
+        ],
+        "usage": {
+          "type": "duration",
+          "seconds": 2
+        }
+      }
+    }
+  ],
+  "Variables": {}
+}

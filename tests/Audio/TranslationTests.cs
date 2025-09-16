@@ -9,11 +9,10 @@ using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Audio;
 
-[Parallelizable(ParallelScope.All)]
 [Category("Audio")]
 public partial class TranslationTests : OpenAIRecordedTestBase
 {
-    public TranslationTests(bool isAsync) : base(isAsync)
+    public TranslationTests(bool isAsync) : base(isAsync, RecordedTestMode.Record)
     {
     }
 
@@ -28,24 +27,27 @@ public partial class TranslationTests : OpenAIRecordedTestBase
     [TestCase(AudioSourceKind.UsingFilePath)]
     public async Task TranslationWorks(AudioSourceKind audioSourceKind)
     {
-        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
-
-        string filename = "audio_french.wav";
-        string path = Path.Combine("Assets", filename);
-        AudioTranslation translation = null;
-
-        if (audioSourceKind == AudioSourceKind.UsingStream)
+        using (Recording.DisableRequestBodyRecording()) // Temp while multipart support in the test proxy is being implemented
         {
-            using FileStream audio = File.OpenRead(path);
+            AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
 
-            translation = await client.TranslateAudioAsync(audio, filename);
+            string filename = "audio_french.wav";
+            string path = Path.Combine("Assets", filename);
+            AudioTranslation translation = null;
+
+            if (audioSourceKind == AudioSourceKind.UsingStream)
+            {
+                using FileStream audio = File.OpenRead(path);
+
+                translation = await client.TranslateAudioAsync(audio, filename);
+            }
+            else if (audioSourceKind == AudioSourceKind.UsingFilePath)
+            {
+                translation = await client.TranslateAudioAsync(path);
+            }
+            Assert.That(translation?.Text, Is.Not.Null);
+            Assert.That(translation.Text.ToLowerInvariant(), Contains.Substring("whisper"));
         }
-        else if (audioSourceKind == AudioSourceKind.UsingFilePath)
-        {
-            translation = await client.TranslateAudioAsync(path);
-        }
-        Assert.That(translation?.Text, Is.Not.Null);
-        Assert.That(translation.Text.ToLowerInvariant(), Contains.Substring("whisper"));
     }
 
     [Test]
@@ -57,55 +59,58 @@ public partial class TranslationTests : OpenAIRecordedTestBase
     [TestCase(null)]
     public async Task TranslationFormatsWork(string responseFormat)
     {
-        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
-        string path = Path.Combine("Assets", "audio_french.wav");
-
-        AudioTranslationOptions options = new()
+        using (Recording.DisableRequestBodyRecording()) // Temp while multipart support in the test proxy is being implemented
         {
-            ResponseFormat = responseFormat switch
+            AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
+            string path = Path.Combine("Assets", "audio_french.wav");
+
+            AudioTranslationOptions options = new()
             {
-                "text" => AudioTranslationFormat.Text,
-                "json" => AudioTranslationFormat.Simple,
-                "verbose_json" => AudioTranslationFormat.Verbose,
-                "srt" => AudioTranslationFormat.Srt,
-                "vtt" => AudioTranslationFormat.Vtt,
-                _ => (AudioTranslationFormat?)null
-            }
-        };
-
-        AudioTranslation translation = await client.TranslateAudioAsync(path, options);
-
-        Assert.That(translation?.Text?.ToLowerInvariant(), Does.Contain("recognition"));
-
-        if (options.ResponseFormat == AudioTranslationFormat.Verbose)
-        {
-            Assert.That(translation.Language, Is.EqualTo("english"));
-            Assert.That(translation.Duration, Is.GreaterThan(TimeSpan.Zero));
-            Assert.That(translation.Segments, Is.Not.Empty);
-
-            for (int i = 0; i < translation.Segments.Count; i++)
-            {
-                TranscribedSegment segment = translation.Segments[i];
-
-                if (i > 0)
+                ResponseFormat = responseFormat switch
                 {
-                    Assert.That(segment.StartTime, Is.GreaterThanOrEqualTo(translation.Segments[i - 1].EndTime));
+                    "text" => AudioTranslationFormat.Text,
+                    "json" => AudioTranslationFormat.Simple,
+                    "verbose_json" => AudioTranslationFormat.Verbose,
+                    "srt" => AudioTranslationFormat.Srt,
+                    "vtt" => AudioTranslationFormat.Vtt,
+                    _ => (AudioTranslationFormat?)null
                 }
+            };
 
-                Assert.That(segment.Id, Is.EqualTo(i));
-                Assert.That(segment.EndTime, Is.GreaterThanOrEqualTo(segment.StartTime));
-                Assert.That(segment.TokenIds.Span.Length, Is.GreaterThan(0));
+            AudioTranslation translation = await client.TranslateAudioAsync(path, options);
 
-                Assert.That(segment.AverageLogProbability, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
-                Assert.That(segment.CompressionRatio, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
-                Assert.That(segment.NoSpeechProbability, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
+            Assert.That(translation?.Text?.ToLowerInvariant(), Does.Contain("recognition"));
+
+            if (options.ResponseFormat == AudioTranslationFormat.Verbose)
+            {
+                Assert.That(translation.Language, Is.EqualTo("english"));
+                Assert.That(translation.Duration, Is.GreaterThan(TimeSpan.Zero));
+                Assert.That(translation.Segments, Is.Not.Empty);
+
+                for (int i = 0; i < translation.Segments.Count; i++)
+                {
+                    TranscribedSegment segment = translation.Segments[i];
+
+                    if (i > 0)
+                    {
+                        Assert.That(segment.StartTime, Is.GreaterThanOrEqualTo(translation.Segments[i - 1].EndTime));
+                    }
+
+                    Assert.That(segment.Id, Is.EqualTo(i));
+                    Assert.That(segment.EndTime, Is.GreaterThanOrEqualTo(segment.StartTime));
+                    Assert.That(segment.TokenIds.Span.Length, Is.GreaterThan(0));
+
+                    Assert.That(segment.AverageLogProbability, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
+                    Assert.That(segment.CompressionRatio, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
+                    Assert.That(segment.NoSpeechProbability, Is.LessThan(-0.001f).Or.GreaterThan(0.001f));
+                }
             }
-        }
-        else
-        {
-            Assert.That(translation.Duration, Is.Null);
-            Assert.That(translation.Language, Is.Null);
-            Assert.That(translation.Segments, Is.Not.Null.And.Empty);
+            else
+            {
+                Assert.That(translation.Duration, Is.Null);
+                Assert.That(translation.Language, Is.Null);
+                Assert.That(translation.Segments, Is.Not.Null.And.Empty);
+            }
         }
     }
 }
