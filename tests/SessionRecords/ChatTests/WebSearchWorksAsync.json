@@ -1,0 +1,106 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "141",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "What was a positive news story from today?"
+          }
+        ],
+        "model": "gpt-4o-search-preview",
+        "web_search_options": {}
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801d333781698e5-SEA",
+        "Connection": "keep-alive",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 16:43:55 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "5530",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "5567",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-limit-tokens": "3000000",
+        "x-ratelimit-remaining-requests": "999",
+        "x-ratelimit-remaining-tokens": "2999987",
+        "x-ratelimit-reset-requests": "60ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "chatcmpl-2a74459e-f3e5-4cfa-a30b-1d6bb2b80dcc",
+        "object": "chat.completion",
+        "created": 1758041029,
+        "model": "gpt-4o-search-preview-2025-03-11",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "As of September 16, 2025, one notable positive news story is the significant progress in the development of clean fusion energy. In August 2025, the experimental SPARC fusion reactor in the U.S. achieved a \"Q\" value of over 10, meaning it produced ten times more energy than was required to start and sustain the fusion reaction. This milestone brings us closer to realizing fusion as a viable source of clean, limitless energy. ([flavor365.com](https://flavor365.com/2025-s-most-inspiring-news-the-top-10-breakthroughs/?utm_source=openai))\n\nAdditionally, the European Union's Nature Restoration Law, which aims to restore 20% of the EU's land and sea areas by 2030, represents a significant commitment to environmental conservation. This law responds to the alarming decline of Europe's habitats, with more than 80% reportedly in poor condition. ([homeplanet.grove.co](https://homeplanet.grove.co/blog-posts/positive-environmental-news-stories-that-give-us-hope-in-2025?utm_source=openai))\n\nThese developments highlight ongoing efforts to address environmental challenges and promote sustainable solutions. ",
+              "refusal": null,
+              "annotations": [
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "end_index": 540,
+                    "start_index": 429,
+                    "title": "Top 10 Good News Stories of 2025: A Deep Dive",
+                    "url": "https://flavor365.com/2025-s-most-inspiring-news-the-top-10-breakthroughs/?utm_source=openai"
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "end_index": 990,
+                    "start_index": 847,
+                    "title": "7 Positive Environmental News Stories That Give Us Hope In 2025 — Home Planet By Grove",
+                    "url": "https://homeplanet.grove.co/blog-posts/positive-environmental-news-stories-that-give-us-hope-in-2025?utm_source=openai"
+                  }
+                }
+              ]
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 9,
+          "completion_tokens": 240,
+          "total_tokens": 249,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "system_fingerprint": ""
+      }
+    }
+  ],
+  "Variables": {}
+}

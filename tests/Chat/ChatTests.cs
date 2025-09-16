@@ -24,7 +24,7 @@ namespace OpenAI.Tests.Chat;
 [Category("Chat")]
 public class ChatTests : OpenAIRecordedTestBase
 {
-    public ChatTests(bool isAsync) : base(isAsync, RecordedTestMode.Record)
+    public ChatTests(bool isAsync) : base(isAsync)
     {
         TestTimeoutInSeconds = 30;
     }
@@ -786,28 +786,31 @@ public class ChatTests : OpenAIRecordedTestBase
     [Test]
     public async Task FileIdContentWorks()
     {
-        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
-        OpenAIFile testInputFile = await fileClient.UploadFileAsync(
-            Path.Combine("Assets", "files_travis_favorite_food.pdf"),
-            FileUploadPurpose.UserData);
-        Validate(testInputFile);
+        using (Recording.DisableRequestBodyRecording()) // Temp while multipart support in the test proxy is in progress
+        {
+            OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
+            OpenAIFile testInputFile = await fileClient.UploadFileAsync(
+                Path.Combine("Assets", "files_travis_favorite_food.pdf"),
+                FileUploadPurpose.UserData);
+            Validate(testInputFile);
 
-        ChatMessageContentPart fileIdContentPart
-            = ChatMessageContentPart.CreateFilePart(testInputFile.Id);
-        Assert.That(fileIdContentPart.FileId, Is.EqualTo(testInputFile.Id));
-        Assert.That(fileIdContentPart.FileBytes, Is.Null);
-        Assert.That(fileIdContentPart.FileBytesMediaType, Is.Null);
-        Assert.That(fileIdContentPart.Filename, Is.Null);
+            ChatMessageContentPart fileIdContentPart
+                = ChatMessageContentPart.CreateFilePart(testInputFile.Id);
+            Assert.That(fileIdContentPart.FileId, Is.EqualTo(testInputFile.Id));
+            Assert.That(fileIdContentPart.FileBytes, Is.Null);
+            Assert.That(fileIdContentPart.FileBytesMediaType, Is.Null);
+            Assert.That(fileIdContentPart.Filename, Is.Null);
 
-        ChatClient client = GetTestClient();
-        ChatCompletion completion = await client.CompleteChatAsync(
-            [
-                ChatMessage.CreateUserMessage(
+            ChatClient client = GetTestClient();
+            ChatCompletion completion = await client.CompleteChatAsync(
+                [
+                    ChatMessage.CreateUserMessage(
                     "Based on the following, what food should I order for whom?",
                     fileIdContentPart)
-            ]);
-        Assert.That(completion?.Content, Is.Not.Null.And.Not.Empty);
-        Assert.That(completion.Content[0].Text?.ToLower(), Does.Contain("pizza"));
+                ]);
+            Assert.That(completion?.Content, Is.Not.Null.And.Not.Empty);
+            Assert.That(completion.Content[0].Text?.ToLower(), Does.Contain("pizza"));
+        }
     }
 
     [Test]

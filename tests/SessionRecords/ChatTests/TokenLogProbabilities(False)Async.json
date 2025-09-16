@@ -1,0 +1,88 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "134",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "What are the best pizza toppings? Give me a breakdown on the reasons."
+          }
+        ],
+        "model": "gpt-4o-mini"
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801cfe4fa9098e5-SEA",
+        "Connection": "keep-alive",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 16:41:56 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "21655",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "21701",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999980",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "chatcmpl-CGT2EYTe4R8L09Ha8vy8lmpiPbJf0",
+        "object": "chat.completion",
+        "created": 1758040894,
+        "model": "gpt-4o-mini-2024-07-18",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "Pizza toppings can vary widely based on personal preference, regional traditions, and culinary creativity. However, some toppings have consistently ranked among the best due to their flavors, compatibility, and versatility. Here’s a breakdown of some popular pizza toppings, along with reasons why they are often considered the best:\n\n### 1. **Pepperoni**\n   - **Flavor:** Pepperoni has a spicy, savory flavor that complements the richness of cheese and the acidity of tomato sauce.\n   - **Texture:** Its crispy edges when cooked add a pleasing texture contrast to the soft pizza base.\n   - **Popularity:** A classic choice in the United States, making it a staple for many pizza lovers.\n\n### 2. **Mushrooms**\n   - **Umami:** Mushrooms provide a deep, earthy flavor that enhances the overall taste profile of the pizza.\n   - **Versatility:** They pair well with various cheeses and meats, making them a versatile topping.\n   - **Health Benefits:** Low in calories and a good source of vitamins and minerals.\n\n### 3. **Onions**\n   - **Sweetness:** When cooked, onions can caramelize, adding a sweet and savory component to the pizza.\n   - **Versatile:** They can be used raw for a sharper taste or cooked for a milder flavor, fitting into many types of pizzas.\n   - **Textural Contrast:** They add crunch when raw or softness when cooked.\n\n### 4. **Sausage**\n   - **Flavor Depth:** Sausage varieties, like Italian sausage, offer robust flavors that enhance the pizza’s overall taste.\n   - **Richness:** The fat content provides a rich mouthfeel, making each bite satisfying.\n   - **Variety:** Different types (e.g., spicy, sweet) allow for customized flavor profiles.\n\n### 5. **Olives**\n   - **Briny Flavor:** Both black and green olives add a salty, briny taste that can elevate the overall flavor of the pizza.\n   - **Texture:** They provide a chewy texture that complements the other toppings.\n   - **Mediterranean Influence:** Common in Mediterranean-style pizzas, adding an exciting twist.\n\n### 6. **Bell Peppers**\n   - **Sweetness & Crunch:** Various colors (green, red, yellow, orange) contribute sweetness, crunch, and vibrant colors.\n   - **Nutrition:** They are high in vitamins A and C, adding a healthy element to your pizza.\n   - **Versatility:** They pair well with virtually any topping.\n\n### 7. **Basil**\n   - **Freshness:** Fresh basil offers a burst of herbal flavor that brightens the pizza.\n   - **Aesthetic Appeal:** The vibrant green color adds an attractive visual element.\n   - **Cultural Tradition:** A key ingredient in classic Italian pizzas, enhancing authenticity.\n\n### 8. **Cheese**\n   - **Variety:** While mozzarella is the classic choice, options like provolone, gouda, parmesan, and goat cheese offer different flavors and textures.\n   - **Creaminess:** Cheese adds richness, creaminess, and umami, making it a foundational topping in any pizza.\n   - **Meltability:** A good cheese will melt beautifully, creating that desirable gooey effect.\n\n### 9. **Pineapple**\n   - **Sweet and Savory Contrast:** The sweet, juicy nature of pineapple contrasts interestingly with savory toppings.\n   - **Cultural Variety:** Its use in Hawaiian pizza reflects the blend of cultures and flavors, making it a unique choice.\n   - **Texture:** Adds a succulent, juicy texture that some find refreshing.\n\n### 10. **Anchovies**\n   - **Umami Kick:** Rich in umami flavor, anchovies can enhance the overall savoriness of the pizza.\n   - **Tradition:** Often associated with classic Italian pizzas, they reflect traditional culinary practices.\n   - **Protein-Rich:** They are a good source of protein and healthy fats.\n\n### Conclusion\nThe \"best\" pizza toppings ultimately depend on individual taste preferences. A great pizza often includes a balanced combination of flavors, textures, and colors. While classic combinations remain popular, experimenting with different toppings and ingredient pairings can lead to delicious and unique creations.",
+              "refusal": null,
+              "annotations": []
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 22,
+          "completion_tokens": 856,
+          "total_tokens": 878,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "service_tier": "default",
+        "system_fingerprint": "fp_560af6e559"
+      }
+    }
+  ],
+  "Variables": {}
+}

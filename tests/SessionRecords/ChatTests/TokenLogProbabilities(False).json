@@ -1,0 +1,88 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "134",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "What are the best pizza toppings? Give me a breakdown on the reasons."
+          }
+        ],
+        "model": "gpt-4o-mini"
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801cc272af298e5-SEA",
+        "Connection": "keep-alive",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 16:39:15 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "13963",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "14021",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999980",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "chatcmpl-CGSzlAETypEzfASqvyR41xjL4Wiqo",
+        "object": "chat.completion",
+        "created": 1758040741,
+        "model": "gpt-4o-mini-2024-07-18",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "The best pizza toppings can vary based on personal preferences, regional styles, and culinary traditions. However, certain toppings tend to be universally popular for specific reasons. Here’s a breakdown of some widely acclaimed pizza toppings and the reasons for their popularity:\n\n### Classic Toppings\n\n1. **Pepperoni**\n   - **Flavor:** Spicy and savory; it adds a robust flavor that contrasts well with the cheese and sauce.\n   - **Texture:** Crispy edges when baked, providing a delightful crunch.\n   - **Popularity:** One of the most popular pizza toppings in the U.S. due to its classic status.\n\n2. **Mushrooms**\n   - **Flavor:** Earthy and umami-rich, mushrooms deepen the overall flavor profile of the pizza.\n   - **Versatility:** They pair well with both meat and vegetarian options, enhancing other toppings.\n   - **Nutritional Value:** Low in calories but high in nutrients like Vitamin D, making them a healthy choice.\n\n3. **Onions**\n   - **Flavor:** Sweet when caramelized, with a bit of sharpness when raw; adds complexity.\n   - **Variety:** Can be used in different forms (sautéed, raw, caramelized), offering versatility.\n   - **Color:** Adds visual appeal with its vibrant hue.\n\n4. **Sausage**\n   - **Flavor:** Generally seasoned, providing a hearty, savory kick that complements tomato sauce.\n   - **Texture:** Crumbles nicely and can provide both soft and crispy bites depending on cooking.\n\n5. **Olives**\n   - **Flavor:** Salty and tangy; adds a briny kick that contrasts well with cheese and sauce.\n   - **Variety:** Both green and black olives offer different flavor profiles and textures.\n\n### Gourmet Toppings\n\n6. **Fresh Basil**\n   - **Flavor:** Sweet and aromatic; enhances the overall freshness of the pizza.\n   - **Aesthetics:** Adds a visual appeal with its vibrant green color, particularly on Margherita pizzas.\n\n7. **Artichokes**\n   - **Flavor:** Unique with a slightly nutty taste; contributes a gourmet touch.\n   - **Texture:** Provides a tender yet slightly firm bite with a pleasing mouthfeel.\n\n8. **Ricotta**\n   - **Flavor:** Creamy and rich; offers a soft texture that balances more robust toppings.\n   - **Versatility:** Can be dolloped on top or mixed in with other ingredients.\n\n### Unique/Regional Favorites\n\n9. **Pineapple**\n   - **Flavor:** Sweet and juicy, providing a contrast to the savory elements of the pizza.\n   - **Texture:** Adds moisture and a soft bite; can create a fun balance with salty meats like ham.\n   - **Debate:** While controversial, it has a strong fan base (Hawaiian pizza).\n\n10. **Gorgonzola/Blue Cheese**\n    - **Flavor:** Strong, pungent flavor that some find irresistible; pairs well with sweet toppings like pears or figs.\n    - **Character:** Adds a gourmet touch and is often featured in specialty pizzas.\n\n### Health-Conscious Toppings\n\n11. **Spinach**\n    - **Flavor:** Mild and slightly earthy, adding a fresh touch especially when cooked.\n    - **Nutritional Value:** High in iron and vitamins, making it a healthy addition.\n\n12. **Bell Peppers**\n    - **Flavor:** Sweet and crunchy, especially when roasted; adds color and freshness.\n    - **Versatility:** Works well with almost any topping, enhancing both flavor and nutrition.\n\n### Conclusion\n\nThe best pizza toppings are often those that balance flavor, texture, color, and nutritional value. A successful pizza topping combination should enhance the overall experience, complementing the sauce and cheese while offering a variety of textures and tastes. Personal preference plays a significant role, so the \"best\" toppings can differ widely among individuals. Ultimately, experimenting with different combinations is part of the fun of enjoying pizza!",
+              "refusal": null,
+              "annotations": []
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 22,
+          "completion_tokens": 804,
+          "total_tokens": 826,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "service_tier": "default",
+        "system_fingerprint": "fp_51db84afab"
+      }
+    }
+  ],
+  "Variables": {}
+}

@@ -1,0 +1,92 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "279",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "messages": [
+          {
+            "role": "developer",
+            "content": "End every response to the user with the exact phrase: 'Hope this helps!'"
+          },
+          {
+            "role": "user",
+            "content": "How long will it take to make a cheesecake from scratch? Including getting ingredients."
+          }
+        ],
+        "model": "o3-mini",
+        "reasoning_effort": "low"
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801ce6b8c0398e5-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1838",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 16:40:38 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "4956",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "4999",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999957",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "chatcmpl-CGT1GTcbIMhlvniL6m4aMoLurqiUL",
+        "object": "chat.completion",
+        "created": 1758040834,
+        "model": "o3-mini-2025-01-31",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "Making a cheesecake from scratch—and including the process of gathering ingredients—can generally take anywhere from about 4 to 6 hours in total. Here's a rough breakdown:\n\n• Ingredient gathering: Depending on how many items you need or whether you already have some on hand, shopping might take from 30 minutes up to 1.5 hours.\n\n• Preparation: Mixing ingredients, making the crust, and assembling the cheesecake might take about 30–45 minutes.\n\n• Baking: Most cheesecake recipes require a baking time of around 45 minutes to an hour.\n\n• Cooling and chilling: Once baked, the cheesecake needs to cool and then chill in the refrigerator for at least 2–3 hours (some recipes even recommend overnight chilling to develop the best texture and flavor).\n\nSo, if you add up the times, you’re looking at roughly 4 to 6 hours from start to finish. Of course, this is a general guideline—the total time can vary depending on your recipe, how long you usually spend gathering ingredients, and personal kitchen speed.\n\nHope this helps!",
+              "refusal": null,
+              "annotations": []
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 42,
+          "completion_tokens": 353,
+          "total_tokens": 395,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 128,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "service_tier": "default",
+        "system_fingerprint": "fp_6c43dcef8c"
+      }
+    }
+  ],
+  "Variables": {}
+}

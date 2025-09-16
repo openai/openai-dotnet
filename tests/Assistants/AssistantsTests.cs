@@ -1,8 +1,8 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using NUnit.Framework.Internal;
 using OpenAI.Assistants;
 using OpenAI.Files;
-using OpenAI.Tests.Utility;
 using OpenAI.VectorStores;
 using System;
 using System.ClientModel;
@@ -19,10 +19,8 @@ namespace OpenAI.Tests.Assistants;
 
 #pragma warning disable OPENAI001
 
-[TestFixture(true)]
-[TestFixture(false)]
 [Category("Assistants")]
-public class AssistantsTests : SyncAsyncTestBase
+public class AssistantsTests : ClientTestBase
 {
     private readonly List<Assistant> _assistantsToDelete = [];
     private readonly List<AssistantThread> _threadsToDelete = [];
@@ -599,11 +597,10 @@ public class AssistantsTests : SyncAsyncTestBase
         Assert.That(messages[0].Content[0].Text.ToLowerInvariant(), Does.Contain("tacos"));
     }
 
+    [AsyncOnly]
     [Test]
     public async Task StreamingRunWorksAsync()
     {
-        AssertAsyncOnly();
-
         AssistantClient client = GetTestClient();
         Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini");
         Validate(assistant);
@@ -649,11 +646,10 @@ public class AssistantsTests : SyncAsyncTestBase
         Print(">>> Done <<<");
     }
 
+    [SyncOnly]
     [Test]
     public void StreamingRunWorks()
     {
-        AssertSyncOnly();
-
         AssistantClient client = GetTestClient();
         Assistant assistant = client.CreateAssistant("gpt-4o-mini");
         Validate(assistant);
@@ -699,11 +695,10 @@ public class AssistantsTests : SyncAsyncTestBase
         Print(">>> Done <<<");
     }
 
+    [AsyncOnly]
     [TestCase]
     public async Task StreamingToolCallAsync()
     {
-        AssertAsyncOnly();
-
         AssistantClient client = GetTestClient();
         FunctionToolDefinition getWeatherTool = new("get_current_weather")
         {
@@ -762,11 +757,10 @@ public class AssistantsTests : SyncAsyncTestBase
         } while (run?.Status.IsTerminal == false);
     }
 
+    [SyncOnly]
     [TestCase]
     public void StreamingToolCall()
     {
-        AssertSyncOnly();
-
         AssistantClient client = GetTestClient();
         FunctionToolDefinition getWeatherTool = new("get_current_weather")
         {
@@ -1028,11 +1022,10 @@ public class AssistantsTests : SyncAsyncTestBase
         });
     }
 
+    [SyncOnly]
     [Test]
     public void FileSearchStreamingWorksSync()
     {
-        AssertSyncOnly();
-
         const string fileContent = """
                 The favorite food of several people:
                 - Summanus Ferdinand: tacos
@@ -1119,11 +1112,10 @@ public class AssistantsTests : SyncAsyncTestBase
         Assert.That(message, Does.Contain("cake"));
     }
 
+    [AsyncOnly]
     [Test]
     public async Task FileSearchStreamingWorksAsync()
     {
-        AssertAsyncOnly();
-
         const string fileContent = """
                 The favorite food of several people:
                 - Summanus Ferdinand: tacos
@@ -1212,11 +1204,10 @@ public class AssistantsTests : SyncAsyncTestBase
         Assert.That(message, Does.Contain("cake"));
     }
 
+    [AsyncOnly]
     [Test]
     public async Task Pagination_CanEnumerateAssistantsAsync()
     {
-        AssertAsyncOnly();
-
         const int TestAssistantCount = 10;
 
         AssistantClient client = GetTestClient();
@@ -1257,11 +1248,10 @@ public class AssistantsTests : SyncAsyncTestBase
         Assert.That(count, Is.GreaterThanOrEqualTo(TestAssistantCount));
     }
 
+    [SyncOnly]
     [Test]
     public void Pagination_CanEnumerateAssistants()
     {
-        AssertSyncOnly();
-
         const int TestAssistantCount = 10;
 
         AssistantClient client = GetTestClient();
@@ -1302,11 +1292,10 @@ public class AssistantsTests : SyncAsyncTestBase
         Assert.That(count, Is.GreaterThanOrEqualTo(TestAssistantCount));
     }
 
+    [AsyncOnly]
     [Test]
     public async Task Pagination_CanPageThroughAssistantCollectionAsync()
     {
-        AssertAsyncOnly();
-
         const int TestAssistantCount = 10;
         const int TestPageSizeLimit = 2;
 
@@ -1360,11 +1349,10 @@ public class AssistantsTests : SyncAsyncTestBase
         Assert.That(pageCount, Is.GreaterThanOrEqualTo(TestAssistantCount / TestPageSizeLimit));
     }
 
+    [SyncOnly]
     [Test]
     public void Pagination_CanPageThroughAssistantCollection()
     {
-        AssertSyncOnly();
-
         const int TestAssistantCount = 10;
         const int TestPageSizeLimit = 2;
 
@@ -1428,11 +1416,10 @@ public class AssistantsTests : SyncAsyncTestBase
         return els.Select(el => ModelReaderWriter.Read<Assistant>(BinaryData.FromString(el.GetRawText())));
     }
 
+    [AsyncOnly]
     [Test]
     public async Task Pagination_CanRehydrateAssistantPageCollectionFromBytesAsync()
     {
-        AssertAsyncOnly();
-
         const int TestAssistantCount = 10;
         const int TestPageSizeLimit = 2;
 
@@ -1502,11 +1489,10 @@ public class AssistantsTests : SyncAsyncTestBase
         Assert.That(pageCount, Is.GreaterThanOrEqualTo(TestAssistantCount / TestPageSizeLimit));
     }
 
+    [SyncOnly]
     [Test]
     public void Pagination_CanRehydrateAssistantPageCollectionFromBytes()
     {
-        AssertSyncOnly();
-
         const int TestAssistantCount = 10;
         const int TestPageSizeLimit = 2;
 
@@ -1577,11 +1563,10 @@ public class AssistantsTests : SyncAsyncTestBase
         Assert.That(pageCount, Is.GreaterThanOrEqualTo(TestAssistantCount / TestPageSizeLimit));
     }
 
+    [AsyncOnly]
     [Test]
     public async Task Pagination_CanRehydrateAssistantPageCollectionFromPageTokenAsync()
     {
-        AssertAsyncOnly();
-
         const int TestAssistantCount = 10;
         const int TestPageSizeLimit = 2;
 
@@ -1661,11 +1646,10 @@ public class AssistantsTests : SyncAsyncTestBase
         Assert.That(pageCount, Is.GreaterThanOrEqualTo(TestAssistantCount / TestPageSizeLimit));
     }
 
+    [SyncOnly]
     [Test]
     public void Pagination_CanRehydrateAssistantPageCollectionFromPageToken()
     {
-        AssertSyncOnly();
-
         const int TestAssistantCount = 10;
         const int TestPageSizeLimit = 2;
 
@@ -1744,11 +1728,10 @@ public class AssistantsTests : SyncAsyncTestBase
         Assert.That(pageCount, Is.GreaterThanOrEqualTo(TestAssistantCount / TestPageSizeLimit));
     }
 
+    [AsyncOnly]
     [Test]
     public async Task Pagination_CanRehydrateRunStepPageCollectionFromBytesAsync()
     {
-        AssertAsyncOnly();
-
         AssistantClient client = GetTestClient();
         Assistant assistant = client.CreateAssistant("gpt-4o", new AssistantCreationOptions()
         {
@@ -1824,14 +1807,13 @@ public class AssistantsTests : SyncAsyncTestBase
                 .ToListAsync();
         }
 
-        CollectionAssert.AreEqual(runSteps, rehydratedRunSteps);
+        Assert.That(rehydratedRunSteps, Is.EqualTo(runSteps).AsCollection);
     }
 
+    [SyncOnly]
     [Test]
     public async Task Pagination_CanRehydrateRunStepPageCollectionFromBytes()
     {
-        AssertSyncOnly();
-
         AssistantClient client = GetTestClient();
         Assistant assistant = client.CreateAssistant("gpt-4o", new AssistantCreationOptions()
         {
@@ -1907,7 +1889,7 @@ public class AssistantsTests : SyncAsyncTestBase
                 .ToList();
         }
 
-        CollectionAssert.AreEqual(runSteps, rehydratedRunSteps);
+        Assert.That(rehydratedRunSteps, Is.EqualTo(runSteps).AsCollection);
     }
 
     [Test]
