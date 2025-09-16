@@ -19,7 +19,7 @@ public partial class ImageVariationsTests : ImageTestFixtureBase
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateImageVariationWorks(ImageSourceKind imageSourceKind)
     {
-        ImageClient client = CreateProxyFromClient(GetTestClient<ImageClient>(TestScenario.Images, "dall-e-2"));
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
         string imageFilename = "images_dog_and_cat.png";
         string imagePath = Path.Combine("Assets", imageFilename);
         GeneratedImage image = null;
@@ -57,7 +57,7 @@ public partial class ImageVariationsTests : ImageTestFixtureBase
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateImageVariationWithBytesResponseWorks(ImageSourceKind imageSourceKind)
     {
-        ImageClient client = CreateProxyFromClient(GetTestClient<ImageClient>(TestScenario.Images, "dall-e-2"));
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
         string imageFilename = "images_dog_and_cat.png";
         string imagePath = Path.Combine("Assets", imageFilename);
         GeneratedImage image = null;
@@ -92,7 +92,7 @@ public partial class ImageVariationsTests : ImageTestFixtureBase
     [Test]
     public void GenerateImageVariationFromStreamCanParseServiceError()
     {
-        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key")));
+        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions ())));
         string imageFilename = "images_dog_and_cat.png";
         string imagePath = Path.Combine("Assets", imageFilename);
         using FileStream imageFile = File.OpenRead(imagePath);
@@ -106,7 +106,7 @@ public partial class ImageVariationsTests : ImageTestFixtureBase
     [Test]
     public void GenerateImageVariationFromPathCanParseServiceError()
     {
-        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key")));
+        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
         string imageFilename = "images_dog_and_cat.png";
         string imagePath = Path.Combine("Assets", imageFilename);
 
@@ -120,7 +120,7 @@ public partial class ImageVariationsTests : ImageTestFixtureBase
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateMultipleImageVariationsWorks(ImageSourceKind imageSourceKind)
     {
-        ImageClient client = CreateProxyFromClient(GetTestClient<ImageClient>(TestScenario.Images, "dall-e-2"));
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
         string imageFilename = "images_dog_and_cat.png";
         string imagePath = Path.Combine("Assets", imageFilename);
         GeneratedImageCollection images = null;
@@ -164,7 +164,7 @@ public partial class ImageVariationsTests : ImageTestFixtureBase
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateMultipleImageVariationsWithBytesResponseWorks(ImageSourceKind imageSourceKind)
     {
-        ImageClient client = CreateProxyFromClient(GetTestClient<ImageClient>(TestScenario.Images, "dall-e-2"));
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
         string imageFilename = "images_dog_and_cat.png";
         string imagePath = Path.Combine("Assets", imageFilename);
         GeneratedImageCollection images = null;
@@ -206,7 +206,7 @@ public partial class ImageVariationsTests : ImageTestFixtureBase
     [Test]
     public void GenerateMultipleImageVariationsFromStreamCanParseServiceError()
     {
-        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key")));
+        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
         string imageFilename = "images_dog_and_cat.png";
         string imagePath = Path.Combine("Assets", imageFilename);
         using FileStream imageFile = File.OpenRead(imagePath);
@@ -220,7 +220,7 @@ public partial class ImageVariationsTests : ImageTestFixtureBase
     [Test]
     public void GenerateMultipleImageVariationsFromPathCanParseServiceError()
     {
-        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key")));
+        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
         string imageFilename = "images_dog_and_cat.png";
         string imagePath = Path.Combine("Assets", imageFilename);
 

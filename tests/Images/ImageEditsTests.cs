@@ -20,7 +20,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateImageEditWorks(ImageSourceKind imageSourceKind)
     {
-        ImageClient client = CreateProxyFromClient(GetTestClient<ImageClient>(TestScenario.Images, "dall-e-2"));
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
 
         string maskFilename = "images_empty_room_with_mask.png";
         string maskImagePath = Path.Combine("Assets", maskFilename);
@@ -60,7 +60,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GptImage1Works(ImageSourceKind imageSourceKind)
     {
-        ImageClient client = CreateProxyFromClient(GetTestClient<ImageClient>(TestScenario.Images, "gpt-image-1"));
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "gpt-image-1");
 
         string maskFilename = "images_empty_room_with_mask.png";
         string maskImagePath = Path.Combine("Assets", maskFilename);
@@ -98,7 +98,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateImageEditWithBytesResponseWorks(ImageSourceKind imageSourceKind)
     {
-        ImageClient client = CreateProxyFromClient(GetTestClient<ImageClient>(TestScenario.Images, "dall-e-2"));
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
 
         string maskFilename = "images_empty_room_with_mask.png";
         string maskImagePath = Path.Combine("Assets", maskFilename);
@@ -159,7 +159,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateImageEditWithMaskFileWorks(ImageSourceKind imageSourceKind)
     {
-        ImageClient client = CreateProxyFromClient(GetTestClient<ImageClient>(TestScenario.Images, "dall-e-2"));
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
 
         string originalImageFilename = "images_empty_room.png";
         string maskFilename = "images_empty_room_with_mask.png";
@@ -200,7 +200,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateImageEditWithMaskFileWithBytesResponseWorks(ImageSourceKind imageSourceKind)
     {
-        ImageClient client = CreateProxyFromClient(GetTestClient<ImageClient>(TestScenario.Images, "dall-e-2"));
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
 
         string originalImageFilename = "images_empty_room.png";
         string maskFilename = "images_empty_room_with_mask.png";
@@ -239,7 +239,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
     [Test]
     public void GenerateImageEditWithMaskFileFromStreamCanParseServiceError()
     {
-        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key")));
+        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
         string originalImageFilename = "images_empty_room.png";
         string maskFilename = "images_empty_room_with_mask.png";
         string originalImagePath = Path.Combine("Assets", originalImageFilename);
@@ -254,7 +254,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
     [Test]
     public void GenerateImageEditWithMaskFileFromPathCanParseServiceError()
     {
-        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key")));
+        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
         string originalImageFilename = "images_empty_room.png";
         string maskFilename = "images_empty_room_with_mask.png";
         string originalImagePath = Path.Combine("Assets", originalImageFilename);
@@ -268,7 +268,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateMultipleImageEditsWorks(ImageSourceKind imageSourceKind)
     {
-        ImageClient client = CreateProxyFromClient(GetTestClient<ImageClient>(TestScenario.Images, "dall-e-2"));
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
 
         string maskFilename = "images_empty_room_with_mask.png";
         string maskImagePath = Path.Combine("Assets", maskFilename);
@@ -313,7 +313,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateMultipleImageEditsWithBytesResponseWorks(ImageSourceKind imageSourceKind)
     {
-        ImageClient client = CreateProxyFromClient(GetTestClient<ImageClient>(TestScenario.Images, "dall-e-2"));
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
 
         string maskFilename = "images_empty_room_with_mask.png";
         string maskImagePath = Path.Combine("Assets", maskFilename);
@@ -356,7 +356,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
     [Test]
     public void GenerateMultipleImageEditsFromStreamCanParseServiceError()
     {
-        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key")));
+        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
         string maskFilename = "images_empty_room_with_mask.png";
         string maskImagePath = Path.Combine("Assets", maskFilename);
         using FileStream mask = File.OpenRead(maskImagePath);
@@ -368,7 +368,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
     [Test]
     public void GenerateMultipleImageEditsFromPathCanParseServiceError()
     {
-        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key")));
+        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
         string maskFilename = "images_empty_room_with_mask.png";
         string maskImagePath = Path.Combine("Assets", maskFilename);
 
@@ -380,7 +380,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateMultipleImageEditsWithMaskFileWorks(ImageSourceKind imageSourceKind)
     {
-        ImageClient client = CreateProxyFromClient(GetTestClient<ImageClient>(TestScenario.Images, "dall-e-2"));
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
 
         string originalImageFilename = "images_empty_room.png";
         string maskFilename = "images_empty_room_with_mask.png";
@@ -428,7 +428,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateMultipleImageEditsWithMaskFileWithBytesResponseWorks(ImageSourceKind imageSourceKind)
     {
-        ImageClient client = CreateProxyFromClient(GetTestClient<ImageClient>(TestScenario.Images, "dall-e-2"));
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
 
         string originalImageFilename = "images_empty_room.png";
         string maskFilename = "images_empty_room_with_mask.png";
@@ -474,7 +474,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
     [Test]
     public void GenerateMultipleImageEditsWithMaskFileFromStreamCanParseServiceError()
     {
-        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key")));
+        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
         string originalImageFilename = "images_empty_room.png";
         string maskFilename = "images_empty_room_with_mask.png";
         string originalImagePath = Path.Combine("Assets", originalImageFilename);
@@ -489,7 +489,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
     [Test]
     public void GenerateMultipleImageEditsWithMaskFileFromPathCanParseServiceError()
     {
-        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key")));
+        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
         string originalImageFilename = "images_empty_room.png";
         string maskFilename = "images_empty_room_with_mask.png";
         string originalImagePath = Path.Combine("Assets", originalImageFilename);

@@ -1,6 +1,7 @@
 ﻿using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Audio;
+using OpenAI.Tests.Utility;
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace OpenAI.Tests.Audio;
 
 [Parallelizable(ParallelScope.All)]
 [Category("Audio")]
-public partial class TranslationTests : ClientTestBase
+public partial class TranslationTests : OpenAIRecordedTestBase
 {
     public TranslationTests(bool isAsync) : base(isAsync)
     {
@@ -27,7 +28,7 @@ public partial class TranslationTests : ClientTestBase
     [TestCase(AudioSourceKind.UsingFilePath)]
     public async Task TranslationWorks(AudioSourceKind audioSourceKind)
     {
-        AudioClient client = CreateProxyFromClient(GetTestClient<AudioClient>(TestScenario.Audio_Whisper));
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
 
         string filename = "audio_french.wav";
         string path = Path.Combine("Assets", filename);
@@ -56,7 +57,7 @@ public partial class TranslationTests : ClientTestBase
     [TestCase(null)]
     public async Task TranslationFormatsWork(string responseFormat)
     {
-        AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_Whisper);
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
         string path = Path.Combine("Assets", "audio_french.wav");
 
         AudioTranslationOptions options = new()

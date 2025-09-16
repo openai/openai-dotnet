@@ -1,5 +1,4 @@
-﻿using Microsoft.ClientModel.TestFramework;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using OpenAI.Realtime;
 using OpenAI.Tests.Utility;
 using System;
@@ -16,7 +15,7 @@ namespace OpenAI.Tests.Realtime;
 
 [Parallelizable(ParallelScope.All)]
 [Category("Conversation")]
-public class RealtimeTestFixtureBase : ClientTestBase
+public class RealtimeTestFixtureBase : OpenAIRecordedTestBase
 {
     public CancellationTokenSource CancellationTokenSource { get; }
     public CancellationToken CancellationToken => CancellationTokenSource?.Token ?? default;
@@ -35,14 +34,14 @@ public class RealtimeTestFixtureBase : ClientTestBase
 
     public RealtimeClient GetTestClient(bool excludeDumpPolicy = false)
     {
-        RealtimeClient client = GetTestClient<RealtimeClient>(
+        RealtimeClient client = GetProxiedOpenAIClient<RealtimeClient>(
             scenario: TestScenario.Realtime,
             excludeDumpPolicy: excludeDumpPolicy);
 
         client.OnSendingCommand += (_, data) => PrintMessageData(data, "> ");
         client.OnReceivingCommand += (_, data) => PrintMessageData(data, "  < ");
 
-        return CreateProxyFromClient(client);
+        return client;
     }
 
     public static void PrintMessageData(BinaryData data, string prefix = "")

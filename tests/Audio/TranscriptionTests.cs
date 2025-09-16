@@ -1,6 +1,7 @@
 ﻿using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Audio;
+using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
@@ -14,7 +15,7 @@ namespace OpenAI.Tests.Audio;
 
 [Parallelizable(ParallelScope.All)]
 [Category("Audio")]
-public partial class TranscriptionTests : ClientTestBase
+public partial class TranscriptionTests : OpenAIRecordedTestBase
 {
     public TranscriptionTests(bool isAsync) : base(isAsync)
     {
@@ -31,7 +32,7 @@ public partial class TranscriptionTests : ClientTestBase
     [TestCase(AudioSourceKind.UsingFilePath)]
     public async Task TranscriptionWorks(AudioSourceKind audioSourceKind)
     {
-        AudioClient client = CreateProxyFromClient(GetTestClient<AudioClient>(TestScenario.Audio_Whisper));
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
         string filename = "audio_hello_world.mp3";
         string path = Path.Combine("Assets", filename);
         AudioTranscription transcription = null;
@@ -58,7 +59,7 @@ public partial class TranscriptionTests : ClientTestBase
     [TestCase(AudioTimestampGranularities.Word | AudioTimestampGranularities.Segment)]
     public async Task TimestampsWork(AudioTimestampGranularities granularityFlags)
     {
-        AudioClient client = CreateProxyFromClient(GetTestClient<AudioClient>(TestScenario.Audio_Whisper));
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
 
         using FileStream inputStream = File.OpenRead(Path.Combine("Assets", "audio_hello_world.mp3"));
 
@@ -131,7 +132,7 @@ public partial class TranscriptionTests : ClientTestBase
     [TestCase(null)]
     public async Task TranscriptionFormatsWork(string responseFormat)
     {
-        AudioClient client = CreateProxyFromClient(GetTestClient<AudioClient>(TestScenario.Audio_Whisper));
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
         string path = Path.Combine("Assets", "audio_hello_world.mp3");
 
         AudioTranscriptionOptions options = new()
@@ -188,7 +189,7 @@ public partial class TranscriptionTests : ClientTestBase
     [Test]
     public async Task IncludesWork()
     {
-        AudioClient client = CreateProxyFromClient(GetTestClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe));
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe);
         string filename = "audio_hello_world.mp3";
         string path = Path.Combine("Assets", filename);
 
@@ -206,7 +207,7 @@ public partial class TranscriptionTests : ClientTestBase
     [Test]
     public async Task StreamingIncludesWork()
     {
-        AudioClient client = CreateProxyFromClient(GetTestClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe));
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe);
         string filename = "audio_hello_world.mp3";
         string path = Path.Combine("Assets", filename);
 
@@ -240,7 +241,7 @@ public partial class TranscriptionTests : ClientTestBase
     [Test]
     public async Task BadTranscriptionRequest()
     {
-        AudioClient client = CreateProxyFromClient(GetTestClient<AudioClient>(TestScenario.Audio_Whisper));
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
 
         string path = Path.Combine("Assets", "audio_hello_world.mp3");
 
@@ -269,7 +270,7 @@ public partial class TranscriptionTests : ClientTestBase
     [TestCase(AudioSourceKind.UsingFilePath)]
     public async Task StreamingTranscriptionWorks(AudioSourceKind audioSourceKind)
     {
-        AudioClient client = CreateProxyFromClient(GetTestClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe));
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe);
         string filename = "audio_hello_world.mp3";
         string path = Path.Combine("Assets", filename);
 
@@ -314,7 +315,7 @@ public partial class TranscriptionTests : ClientTestBase
     [TestCase(AudioSourceKind.UsingFilePath)]
     public void StreamingTranscriptionThrowsForWhisperModel(AudioSourceKind audioSourceKind)
     {
-        AudioClient client = CreateProxyFromClient(GetTestClient<AudioClient>(TestScenario.Audio_Whisper));
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
         string filename = "audio_hello_world.mp3";
         string path = Path.Combine("Assets", filename);
 

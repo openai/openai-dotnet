@@ -10,7 +10,7 @@ namespace OpenAI.Tests.Moderations;
 
 [Parallelizable(ParallelScope.All)]
 [Category("Moderations")]
-public class ModerationsTests : ClientTestBase
+public class ModerationsTests : OpenAIRecordedTestBase
 {
     public ModerationsTests(bool isAsync) : base(isAsync)
     {
@@ -19,7 +19,7 @@ public class ModerationsTests : ClientTestBase
     [Test]
     public async Task ClassifySingleInput()
     {
-        ModerationClient client = CreateProxyFromClient(GetTestClient<ModerationClient>(TestScenario.Moderations));
+        ModerationClient client = GetProxiedOpenAIClient<ModerationClient>(TestScenario.Moderations);
 
         const string input = "I am killing all my houseplants!";
 
@@ -33,7 +33,7 @@ public class ModerationsTests : ClientTestBase
     [Test]
     public async Task ClassifyMultipleInputs()
     {
-        ModerationClient client = CreateProxyFromClient(GetTestClient<ModerationClient>(TestScenario.Moderations));
+        ModerationClient client = GetProxiedOpenAIClient<ModerationClient>(TestScenario.Moderations);
 
         List<string> inputs =
             [

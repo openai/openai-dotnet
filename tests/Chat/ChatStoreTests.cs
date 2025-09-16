@@ -1,6 +1,7 @@
 ﻿using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Chat;
+using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.Collections.Generic;
@@ -10,9 +11,8 @@ using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Chat;
 
-[Parallelizable(ParallelScope.All)]
 [Category("StoredChat")]
-public class ChatStoreToolTests : ClientTestBase
+public class ChatStoreToolTests : OpenAIRecordedTestBase
 {
     private const int s_delayInMilliseconds = 5000;
 
@@ -236,6 +236,7 @@ public class ChatStoreToolTests : ClientTestBase
         }
     }
 
+    [LiveOnly(Reason = "Temp while sorting out flakiness in playback")]
     [Test]
     public async Task GetChatCompletionsWithMetadataFiltering()
     {
@@ -382,6 +383,7 @@ public class ChatStoreToolTests : ClientTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
+    [LiveOnly(Reason ="Temp while sorting out flakiness in playback")]
     [Test]
     public async Task GetChatCompletionsWithCombinedFilters()
     {
@@ -468,6 +470,7 @@ public class ChatStoreToolTests : ClientTestBase
         });
     }
 
+    [LiveOnly(Reason = "Temp while sorting out flakiness in playback")]
     [Test]
     public async Task UpdateChatCompletionWorks()
     {
@@ -981,7 +984,7 @@ public class ChatStoreToolTests : ClientTestBase
     }
 
     private ChatClient GetTestClient(string overrideModel = null)
-        => CreateProxyFromClient(GetTestClient<ChatClient>(
+        => GetProxiedOpenAIClient<ChatClient>(
             scenario: TestScenario.Chat,
-            overrideModel: overrideModel));
+            overrideModel: overrideModel);
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Audio;
+using OpenAI.Tests.Utility;
 using System;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace OpenAI.Tests.Audio;
 
 [Parallelizable(ParallelScope.All)]
 [Category("Audio")]
-public partial class GenerateSpeechTests : ClientTestBase
+public partial class GenerateSpeechTests : OpenAIRecordedTestBase
 {
     public GenerateSpeechTests(bool isAsync) : base(isAsync)
     {
@@ -19,7 +20,7 @@ public partial class GenerateSpeechTests : ClientTestBase
     [Test]
     public async Task BasicTextToSpeechWorks()
     {
-        AudioClient client = CreateProxyFromClient(GetTestClient<AudioClient>(TestScenario.Audio_TTS));
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_TTS);
 
         BinaryData audio = await client.GenerateSpeechAsync("Hello, world! This is a test.", GeneratedSpeechVoice.Shimmer);
 
@@ -37,7 +38,7 @@ public partial class GenerateSpeechTests : ClientTestBase
     [TestCase("pcm")]
     public async Task OutputFormatWorks(string responseFormat)
     {
-        AudioClient client = CreateProxyFromClient(GetTestClient<AudioClient>(TestScenario.Audio_TTS));
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_TTS);
 
         SpeechGenerationOptions options = new();
 
@@ -78,7 +79,7 @@ public partial class GenerateSpeechTests : ClientTestBase
 
     private async Task ValidateGeneratedAudio(BinaryData audio, string expectedSubstring)
     {
-        AudioClient client = CreateProxyFromClient(GetTestClient<AudioClient>(TestScenario.Audio_Whisper));
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
         AudioTranscription transcription = await client.TranscribeAudioAsync(audio.ToStream(), "hello_world.wav");
 
         Assert.That(transcription.Text.ToLowerInvariant(), Contains.Substring(expectedSubstring));

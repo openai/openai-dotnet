@@ -13,7 +13,7 @@ namespace OpenAI.Tests.Images;
 
 [Parallelizable(ParallelScope.All)]
 [Category("Images")]
-public class ImageTestFixtureBase : ClientTestBase
+public class ImageTestFixtureBase : OpenAIRecordedTestBase
 {
     public ImageTestFixtureBase(bool isAsync) : base(isAsync)
     {
@@ -31,7 +31,7 @@ public class ImageTestFixtureBase : ClientTestBase
 
     public async Task ValidateGeneratedImage(Uri imageUri, IEnumerable<string> possibleExpectedSubstrings, string descriptionHint = null)
     {
-        ChatClient chatClient = CreateProxyFromClient(GetTestClient<ChatClient>(TestScenario.Chat));
+        ChatClient chatClient = GetProxiedOpenAIClient<ChatClient>(TestScenario.Chat);
         IEnumerable<ChatMessage> messages = [
             new UserChatMessage(
                 ChatMessageContentPart.CreateTextPart($"Describe this image for me. {descriptionHint}"),
@@ -48,7 +48,7 @@ public class ImageTestFixtureBase : ClientTestBase
 
     public async Task ValidateGeneratedImage(BinaryData imageBytes, IEnumerable<string> possibleExpectedSubstrings, string descriptionHint = null)
     {
-        ChatClient chatClient = CreateProxyFromClient(GetTestClient<ChatClient>(TestScenario.Chat));
+        ChatClient chatClient = GetProxiedOpenAIClient<ChatClient>(TestScenario.Chat);
         IEnumerable<ChatMessage> messages = [
             new UserChatMessage(
                 ChatMessageContentPart.CreateTextPart($"Describe this image for me. {descriptionHint}"),

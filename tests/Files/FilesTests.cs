@@ -15,9 +15,9 @@ namespace OpenAI.Tests.Files;
 
 [Parallelizable(ParallelScope.Fixtures)]
 [Category("Files")]
-public class FilesTests : ClientTestBase
+public class FilesTests : OpenAIRecordedTestBase
 {
-    private OpenAIFileClient GetTestClient() => CreateProxyFromClient(GetTestClient<OpenAIFileClient>(TestScenario.Files));
+    private OpenAIFileClient GetTestClient() => GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
 
     public FilesTests(bool isAsync) : base(isAsync)
     {

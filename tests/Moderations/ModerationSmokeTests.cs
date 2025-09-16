@@ -24,13 +24,6 @@ public partial class ModerationSmokeTests : ClientTestBase
     [Test]
     public async Task ClassifySingleInputSmokeTest()
     {
-        // TODO - not sure why tests are injecting data via transport instead
-        // of in the client method
-        //BinaryData mockRequest = BinaryData.FromString($$"""
-        //{
-        //    "input": "I am killing all my houseplants!"
-        //}
-        //""");
         BinaryData mockResponse = BinaryData.FromString($$"""
         {
             "results": [
@@ -68,15 +61,6 @@ public partial class ModerationSmokeTests : ClientTestBase
     [Test]
     public async Task ClassifyMultipleInputsSmokeTest()
     {
-        // TODO - same as above
-        //BinaryData mockRequest = BinaryData.FromString($$"""
-        //{
-        //    "input": [
-        //        "I forgot to water my houseplants!",
-        //        "I am killing all my houseplants!"
-        //    ]
-        //}
-        //""");
         BinaryData mockResponse = BinaryData.FromString("""
         {
             "results": [

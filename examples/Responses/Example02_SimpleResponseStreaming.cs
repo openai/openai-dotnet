@@ -11,7 +11,7 @@ namespace OpenAI.Examples;
 
 public partial class ResponseExamples
 {
-    [Ignore("Test org cannot use streaming")]
+    [Ignore("Awaiting org verification.")]
     [Test]
     public void Example02_SimpleResponseStreaming()
     {

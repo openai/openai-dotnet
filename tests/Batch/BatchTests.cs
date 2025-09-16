@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using OpenAI.Batch;
 using OpenAI.Files;
+using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
@@ -12,51 +13,19 @@ using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Batch;
 
-[Parallelizable(ParallelScope.All)]
 [Category("Batch")]
-public class BatchTests : ClientTestBase
+public class BatchTests : OpenAIRecordedTestBase
 {
-    private BatchClient GetTestClient() => CreateProxyFromClient(GetTestClient<BatchClient>(TestScenario.Batch));
+    private BatchClient GetTestClient() => GetProxiedOpenAIClient<BatchClient>(TestScenario.Batch);
 
     public BatchTests(bool isAsync) : base(isAsync)
     {
         TestTimeoutInSeconds = 65;
+        CompareBodies = false; // Temp pending multipart compare support
     }
 
-    [SyncOnly]
     [Test]
-    public void ListBatchesProtocol()
-    {
-        BatchClient client = GetTestClient();
-        CollectionResult batches = client.GetBatches(after: null, limit: null, options: null);
-
-        int pageCount = 0;
-        foreach (ClientResult pageResult in batches.GetRawPages())
-        {
-            BinaryData response = pageResult.GetRawResponse().Content;
-            using JsonDocument jsonDocument = JsonDocument.Parse(response);
-            JsonElement dataElement = jsonDocument.RootElement.GetProperty("data");
-
-            Assert.That(dataElement.GetArrayLength(), Is.GreaterThan(0));
-
-            long unixTime2024 = (new DateTimeOffset(2024, 01, 01, 0, 0, 0, TimeSpan.Zero)).ToUnixTimeSeconds();
-
-            foreach (JsonElement batchElement in dataElement.EnumerateArray())
-            {
-                JsonElement createdAtElement = batchElement.GetProperty("created_at");
-                long createdAt = createdAtElement.GetInt64();
-
-                Assert.That(createdAt, Is.GreaterThan(unixTime2024));
-            }
-            pageCount++;
-        }
-
-        Assert.That(pageCount, Is.GreaterThanOrEqualTo(1));
-    }
-
-    [AsyncOnly]
-    [Test]
-    public async Task ListBatchesProtocolAsync()
+    public async Task ListBatchesProtocol()
     {
         BatchClient client = GetTestClient();
         AsyncCollectionResult batches = client.GetBatchesAsync(after: null, limit: null, options: null);
@@ -95,7 +64,7 @@ public class BatchTests : ClientTestBase
         streamWriter.Flush();
         testFileStream.Position = 0;
 
-        OpenAIFileClient fileClient = CreateProxyFromClient(GetTestClient<OpenAIFileClient>(TestScenario.Files));
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
         OpenAIFile inputFile = await fileClient.UploadFileAsync(testFileStream, "test-batch-file", FileUploadPurpose.Batch);
         Assert.That(inputFile.Id, Is.Not.Null.And.Not.Empty);
 
@@ -157,7 +126,7 @@ public class BatchTests : ClientTestBase
         streamWriter.Flush();
         testFileStream.Position = 0;
 
-        OpenAIFileClient fileClient = CreateProxyFromClient(GetTestClient<OpenAIFileClient>(TestScenario.Files));
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
         OpenAIFile inputFile = await fileClient.UploadFileAsync(testFileStream, "test-batch-file", FileUploadPurpose.Batch);
         Assert.That(inputFile.Id, Is.Not.Null.And.Not.Empty);
 

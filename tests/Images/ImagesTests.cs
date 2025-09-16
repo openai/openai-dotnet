@@ -18,7 +18,7 @@ public partial class ImagesTests : ImageTestFixtureBase
     [Test]
     public async Task BasicGenerationWorks()
     {
-        ImageClient client = CreateProxyFromClient(GetTestClient<ImageClient>(TestScenario.Images, "dall-e-3"));
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-3");
 
         string prompt = "An isolated stop sign.";
 
@@ -33,7 +33,7 @@ public partial class ImagesTests : ImageTestFixtureBase
     [Test]
     public async Task GenerationWithOptionsWorks()
     {
-        ImageClient client = CreateProxyFromClient(GetTestClient<ImageClient>(TestScenario.Images, "dall-e-3"));
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-3");
 
         string prompt = "An isolated stop sign.";
 
@@ -53,7 +53,7 @@ public partial class ImagesTests : ImageTestFixtureBase
     [Test]
     public async Task GenerationWithBytesResponseWorks()
     {
-        ImageClient client = CreateProxyFromClient(GetTestClient<ImageClient>(TestScenario.Images, "dall-e-3"));
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-3");
 
         string prompt = "An isolated stop sign.";
 
@@ -72,7 +72,7 @@ public partial class ImagesTests : ImageTestFixtureBase
     [Test]
     public void GenerateImageCanParseServiceError()
     {
-        ImageClient client = CreateProxyFromClient(new ImageClient("gpt-image-1", new ApiKeyCredential("fake_key")));
+        ImageClient client = CreateProxyFromClient(new ImageClient("gpt-image-1", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
         string prompt = "An isolated stop sign.";
         ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageAsync(prompt));
         Assert.That(ex.Status, Is.EqualTo(401));
@@ -81,7 +81,7 @@ public partial class ImagesTests : ImageTestFixtureBase
     [Test]
     public async Task GenerationOfMultipleImagesWorks()
     {
-        ImageClient client = CreateProxyFromClient(GetTestClient<ImageClient>(TestScenario.Images, "dall-e-2"));
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
 
         string prompt = "An isolated stop sign.";
 
@@ -110,7 +110,7 @@ public partial class ImagesTests : ImageTestFixtureBase
     [Test]
     public async Task GenerationOfMultipleImagesWithBytesResponseWorks()
     {
-        ImageClient client = CreateProxyFromClient(GetTestClient<ImageClient>(TestScenario.Images));
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images);
 
         string prompt = "An isolated stop sign.";
 
@@ -132,7 +132,7 @@ public partial class ImagesTests : ImageTestFixtureBase
     [Test]
     public void GenerateImagesCanParseServiceError()
     {
-        ImageClient client = CreateProxyFromClient(new ImageClient("gpt-image-1", new ApiKeyCredential("fake_key")));
+        ImageClient client = CreateProxyFromClient(new ImageClient("gpt-image-1", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
         string prompt = "An isolated stop sign.";
         ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImagesAsync(prompt, 2));
 
@@ -143,7 +143,7 @@ public partial class ImagesTests : ImageTestFixtureBase
     [Test]
     public async Task GptImage1Works()
     {
-        ImageClient client = CreateProxyFromClient(GetTestClient<ImageClient>(TestScenario.Images, "gpt-image-1"));
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "gpt-image-1");
 
         string prompt = "An isolated stop sign.";
 

@@ -13,9 +13,9 @@ namespace OpenAI.Tests.Embeddings;
 
 [Parallelizable(ParallelScope.All)]
 [Category("Embeddings")]
-public class EmbeddingsTests : ClientTestBase
+public class EmbeddingsTests : OpenAIRecordedTestBase
 {
-    private EmbeddingClient GetTestClient() => CreateProxyFromClient(GetTestClient<EmbeddingClient>(TestScenario.Embeddings));
+    private EmbeddingClient GetTestClient() => GetProxiedOpenAIClient<EmbeddingClient>(TestScenario.Embeddings);
 
     public EmbeddingsTests(bool isAsync) : base(isAsync)
     {
@@ -30,7 +30,7 @@ public class EmbeddingsTests : ClientTestBase
     [Test]
     public async Task GenerateSingleEmbedding()
     {
-        EmbeddingClient client = CreateProxyFromClient(new EmbeddingClient("text-embedding-3-small", Environment.GetEnvironmentVariable("OPENAI_API_KEY")));
+        EmbeddingClient client = CreateProxyFromClient(new EmbeddingClient("text-embedding-3-small", new ApiKeyCredential(Environment.GetEnvironmentVariable("OPENAI_API_KEY")), InstrumentClientOptions(new OpenAIClientOptions())));
 
         string input = "Hello, world!";
 
@@ -51,7 +51,7 @@ public class EmbeddingsTests : ClientTestBase
     [TestCase(EmbeddingsInputKind.UsingIntegers)]
     public async Task GenerateMultipleEmbeddings(EmbeddingsInputKind embeddingsInputKind)
     {
-        EmbeddingClient client = CreateProxyFromClient(new EmbeddingClient("text-embedding-3-small", Environment.GetEnvironmentVariable("OPENAI_API_KEY")));
+        EmbeddingClient client = CreateProxyFromClient(new EmbeddingClient("text-embedding-3-small", new ApiKeyCredential(Environment.GetEnvironmentVariable("OPENAI_API_KEY")), InstrumentClientOptions(new OpenAIClientOptions())));
 
         const int Dimensions = 456;
 
@@ -105,6 +105,7 @@ public class EmbeddingsTests : ClientTestBase
     }
 
     [Test]
+    [LiveOnly]
     public async Task BadOptions()
     {
         EmbeddingClient client = GetTestClient();

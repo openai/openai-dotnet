@@ -1,6 +1,7 @@
 using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Containers;
+using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.Text.Json;
@@ -12,10 +13,10 @@ namespace OpenAI.Tests.Containers;
 
 [Parallelizable(ParallelScope.Fixtures)]
 [Category("Containers")]
-public class ContainerTests : ClientTestBase
+public class ContainerTests : OpenAIRecordedTestBase
 {
     private static string _testContainerId;
-    private ContainerClient GetTestClient() => CreateProxyFromClient(GetTestClient<ContainerClient>(TestScenario.Containers));
+    private ContainerClient GetTestClient() => GetProxiedOpenAIClient<ContainerClient>(TestScenario.Containers);
 
     public ContainerTests(bool isAsync) : base(isAsync)
     {

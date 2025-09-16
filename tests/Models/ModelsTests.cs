@@ -10,9 +10,9 @@ using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Models;
 
-[Parallelizable(ParallelScope.All)]
+//[Parallelizable(ParallelScope.All)]
 [Category("Models")]
-public class ModelsTests : ClientTestBase
+public class ModelsTests : OpenAIRecordedTestBase
 {
     public ModelsTests(bool isAsync) : base(isAsync)
     {
@@ -21,7 +21,7 @@ public class ModelsTests : ClientTestBase
     [Test]
     public async Task ListModels()
     {
-        OpenAIModelClient client = CreateProxyFromClient(GetTestClient<OpenAIModelClient>(TestScenario.Models));
+        OpenAIModelClient client = GetProxiedOpenAIClient<OpenAIModelClient>(TestScenario.Models);
 
         OpenAIModelCollection allModels = await client.GetModelsAsync();
 
@@ -41,7 +41,7 @@ public class ModelsTests : ClientTestBase
     [Test]
     public async Task GetModelInfo()
     {
-        OpenAIModelClient client = CreateProxyFromClient(GetTestClient<OpenAIModelClient>(TestScenario.Models));
+        OpenAIModelClient client = GetProxiedOpenAIClient<OpenAIModelClient>(TestScenario.Models);
         string modelId = "gpt-4o-mini";
 
         OpenAIModel model = await client.GetModelAsync(modelId);
@@ -57,7 +57,7 @@ public class ModelsTests : ClientTestBase
     [Test]
     public void GetModelCanParseServiceError()
     {
-        OpenAIModelClient client = CreateProxyFromClient(GetTestClient<OpenAIModelClient>(TestScenario.Models));
+        OpenAIModelClient client = GetProxiedOpenAIClient<OpenAIModelClient>(TestScenario.Models);
         ClientResultException ex = null;
 
         ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GetModelAsync("fake_id"));
@@ -68,7 +68,7 @@ public class ModelsTests : ClientTestBase
     [Test]
     public void DeleteModelCanParseServiceError()
     {
-        OpenAIModelClient client = CreateProxyFromClient(GetTestClient<OpenAIModelClient>(TestScenario.Models));
+        OpenAIModelClient client = GetProxiedOpenAIClient<OpenAIModelClient>(TestScenario.Models);
         ClientResultException ex = null;
 
         ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.DeleteModelAsync("fake_id"));

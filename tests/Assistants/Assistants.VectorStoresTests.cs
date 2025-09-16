@@ -18,7 +18,7 @@ namespace OpenAI.Tests.VectorStores;
 #pragma warning disable OPENAI001
 
 [Category("Assistants")]
-public class VectorStoresTests : ClientTestBase
+public class VectorStoresTests : OpenAIRecordedTestBase
 {
     private readonly List<VectorStoreFileBatch> _fileBatchToCancel = [];
     private readonly List<VectorStoreFile> _vectorStoreFilesToRemove = [];
@@ -27,8 +27,7 @@ public class VectorStoresTests : ClientTestBase
 
     private static readonly DateTimeOffset s_2024 = new(2024, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
-    //private static VectorStoreClient GetTestClient() => GetTestClient<VectorStoreClient>(TestScenario.VectorStores);
-    private VectorStoreClient GetTestClient() => CreateProxyFromClient(GetTestClient<VectorStoreClient>(TestScenario.VectorStores));
+    private VectorStoreClient GetTestClient() => GetProxiedOpenAIClient<VectorStoreClient>(TestScenario.VectorStores);
 
     public VectorStoresTests(bool isAsync)
         : base(isAsync)
@@ -144,7 +143,7 @@ public class VectorStoresTests : ClientTestBase
         Assert.That(lastIdSeen, Is.EqualTo(0));
     }
 
-    [SyncOnly]
+    [AsyncOnly]
     [Test]
     public async Task CanEnumerateVectorStoresAsync()
     {
@@ -315,7 +314,7 @@ public class VectorStoresTests : ClientTestBase
 
         List<OpenAIFile> files = [];
 
-        OpenAIFileClient fileClient = CreateProxyFromClient(GetTestClient<OpenAIFileClient>(TestScenario.Files));
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
         for (int i = 0; i < 6; i++)
         {
             OpenAIFile file = fileClient.UploadFile(
@@ -788,7 +787,7 @@ public class VectorStoresTests : ClientTestBase
     {
         List<OpenAIFile> files = [];
 
-        OpenAIFileClient client = CreateProxyFromClient(GetTestClient<OpenAIFileClient>(TestScenario.Files));
+        OpenAIFileClient client = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
         for (int i = 0; i < count; i++)
         {
             OpenAIFile file = await client.UploadFileAsync(
@@ -803,10 +802,10 @@ public class VectorStoresTests : ClientTestBase
     }
 
     [TearDown]
-    protected void Cleanup()
+    protected async Task Cleanup()
     {
-        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
-        VectorStoreClient vectorStoreClient = GetTestClient<VectorStoreClient>(TestScenario.VectorStores);
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
+        VectorStoreClient vectorStoreClient = GetProxiedOpenAIClient<VectorStoreClient>(TestScenario.VectorStores);
         RequestOptions requestOptions = new()
         {
             ErrorOptions = ClientErrorBehaviors.NoThrow,
@@ -814,20 +813,20 @@ public class VectorStoresTests : ClientTestBase
 
         foreach (VectorStoreFileBatch fileBatch in _fileBatchToCancel)
         {
-            Console.WriteLine($"Cleanup: {fileBatch.BatchId} => {vectorStoreClient.CancelVectorStoreFileBatch(fileBatch.VectorStoreId, fileBatch.BatchId, requestOptions)?.GetRawResponse()?.Status}");
+            Console.WriteLine($"Cleanup: {fileBatch.BatchId} => {(await vectorStoreClient.CancelVectorStoreFileBatchAsync(fileBatch.VectorStoreId, fileBatch.BatchId, requestOptions))?.GetRawResponse()?.Status}");
         }
         foreach (VectorStoreFile vectorStoreFile in _vectorStoreFilesToRemove)
         {
-            ClientResult protocolResult = vectorStoreClient.RemoveFileFromVectorStore(vectorStoreFile.VectorStoreId, vectorStoreFile.FileId, requestOptions);
+            ClientResult protocolResult = await vectorStoreClient.RemoveFileFromVectorStoreAsync(vectorStoreFile.VectorStoreId, vectorStoreFile.FileId, requestOptions);
             Console.WriteLine($"Cleanup: {vectorStoreFile.FileId}<->{vectorStoreFile.VectorStoreId} => {protocolResult?.GetRawResponse()?.Status}");
         }
         foreach (OpenAIFile file in _filesToDelete)
         {
-            Console.WriteLine($"Cleanup: {file.Id} -> {fileClient.DeleteFile(file.Id, requestOptions)?.GetRawResponse()?.Status}");
+            Console.WriteLine($"Cleanup: {file.Id} -> {(await fileClient.DeleteFileAsync(file.Id, requestOptions))?.GetRawResponse()?.Status}");
         }
         foreach (VectorStore vectorStore in _vectorStoresToDelete)
         {
-            Console.WriteLine($"Cleanup: {vectorStore.Id} => {vectorStoreClient.DeleteVectorStore(vectorStore.Id, requestOptions)?.GetRawResponse()?.Status}");
+            Console.WriteLine($"Cleanup: {vectorStore.Id} => {(await vectorStoreClient.DeleteVectorStoreAsync(vectorStore.Id, requestOptions))?.GetRawResponse()?.Status}");
         }
         _filesToDelete.Clear();
         _vectorStoresToDelete.Clear();

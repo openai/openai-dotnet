@@ -15,13 +15,13 @@ namespace OpenAI.Tests.Responses;
 
 [Parallelizable(ParallelScope.Fixtures)]
 [Category("Responses")]
-public partial class ResponseStoreTests : ClientTestBase
+public partial class ResponseStoreTests : OpenAIRecordedTestBase
 {
     public ResponseStoreTests(bool isAsync) : base(isAsync)
     {
     }
 
-    private OpenAIResponseClient GetTestClient(string overrideModel = null) => CreateProxyFromClient(GetTestClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel));
+    private OpenAIResponseClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel);
 
     [Test]
     public async Task GetInputItemsWithPagination()

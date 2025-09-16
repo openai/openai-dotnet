@@ -18,7 +18,7 @@ namespace OpenAI.Tests.Responses;
 [Parallelizable(ParallelScope.Fixtures)]
 [Category("Responses")]
 [Category("MCP")]
-public partial class ResponsesToolTests : ClientTestBase
+public partial class ResponsesToolTests : OpenAIRecordedTestBase
 {
     public ResponsesToolTests(bool isAsync) : base(isAsync)
     {
@@ -406,5 +406,5 @@ public partial class ResponsesToolTests : ClientTestBase
         }
     }
 
-    private OpenAIResponseClient GetTestClient(string overrideModel = null) => CreateProxyFromClient(GetTestClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel));
+    private OpenAIResponseClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel);
 }
