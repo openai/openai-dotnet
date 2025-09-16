@@ -1,0 +1,250 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "273",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "co1"
+              }
+            ]
+          },
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "co2"
+              }
+            ]
+          },
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "co3"
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "98041f456d77ba46-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1546",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 23:25:18 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "1204",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "1208",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999960",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_088409f01d6329180068c9f1dd18388193b9da90ad33ed5dfb",
+        "object": "response",
+        "created_at": 1758065117,
+        "status": "completed",
+        "background": false,
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4o-mini-2024-07-18",
+        "output": [
+          {
+            "id": "msg_088409f01d6329180068c9f1dd844c8193a67065afb1d2f08f",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "It seems like you're referencing something specific with \"co1,\" \"co2,\" and \"co3.\" Could you clarify what you mean, or provide more context? This will help me assist you better!"
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "reasoning": {
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 21,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 42,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 63
+        },
+        "user": null,
+        "metadata": {}
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/responses/resp_088409f01d6329180068c9f1dd18388193b9da90ad33ed5dfb/input_items?limit=2&order=desc",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "98041f4d9b2dba46-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "725",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 23:25:18 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "155",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "161",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "msg_088409f01d6329180068c9f1dd23f48193afb43855c87f297f",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "co3"
+              }
+            ],
+            "role": "user"
+          },
+          {
+            "id": "msg_088409f01d6329180068c9f1dd23e88193b051dfe1b0885549",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "co2"
+              }
+            ],
+            "role": "user"
+          }
+        ],
+        "first_id": "msg_088409f01d6329180068c9f1dd23f48193afb43855c87f297f",
+        "has_more": true,
+        "last_id": "msg_088409f01d6329180068c9f1dd23e88193b051dfe1b0885549"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/responses/resp_088409f01d6329180068c9f1dd18388193b9da90ad33ed5dfb/input_items?limit=2&order=desc&after=msg_088409f01d6329180068c9f1dd23e88193b051dfe1b0885549",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "98041f4f3c52ba46-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "464",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 23:25:18 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "168",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "171",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "msg_088409f01d6329180068c9f1dd23d4819399fc4aa08246c1b7",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "co1"
+              }
+            ],
+            "role": "user"
+          }
+        ],
+        "first_id": "msg_088409f01d6329180068c9f1dd23d4819399fc4aa08246c1b7",
+        "has_more": false,
+        "last_id": "msg_088409f01d6329180068c9f1dd23d4819399fc4aa08246c1b7"
+      }
+    }
+  ],
+  "Variables": {}
+}

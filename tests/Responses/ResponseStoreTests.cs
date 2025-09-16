@@ -13,7 +13,6 @@ namespace OpenAI.Tests.Responses;
 
 #pragma warning disable OPENAICUA001
 
-[Parallelizable(ParallelScope.Fixtures)]
 [Category("Responses")]
 public partial class ResponseStoreTests : OpenAIRecordedTestBase
 {

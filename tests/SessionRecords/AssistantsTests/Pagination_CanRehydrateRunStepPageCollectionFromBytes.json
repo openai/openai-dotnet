@@ -1,0 +1,2511 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/assistants",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "142",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o",
+        "instructions": "You help the user with mathematical descriptions and visualizations.",
+        "tools": [
+          {
+            "type": "code_interpreter"
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e3c739ffa354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "502",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:44:40 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "274",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "278",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+        "object": "assistant",
+        "created_at": 1758062680,
+        "name": null,
+        "description": null,
+        "model": "gpt-4o",
+        "instructions": "You help the user with mathematical descriptions and visualizations.",
+        "tools": [
+          {
+            "type": "code_interpreter"
+          }
+        ],
+        "top_p": 1.0,
+        "temperature": 1.0,
+        "reasoning_effort": null,
+        "tool_resources": {
+          "code_interpreter": {
+            "file_ids": []
+          }
+        },
+        "metadata": {},
+        "response_format": "auto"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/files",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "440",
+        "Content-Type": "multipart/form-data; boundary=\"oBaggKM54Gmqy309EMvCOCxJCwEtz=LJ1k4drVERyrS4bjbKGTouF9NO5KxjeYFrnHYeVp\"",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Allow-Origin": "*",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e3c99bdea354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "231",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:44:41 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "1124",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "1134",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "file",
+        "id": "file-GrwsDPTwJSeEmq8P2VRu71",
+        "purpose": "assistants",
+        "filename": "text/csv",
+        "bytes": 18,
+        "created_at": 1758062680,
+        "expires_at": null,
+        "status": "processed",
+        "status_details": null
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "293",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "Describe the contents of any available tool resource file. Graph a linear regression and provide the coefficient of correlation. Explain any code executed to evaluate."
+          }
+        ],
+        "tool_resources": {
+          "code_interpreter": {
+            "file_ids": [
+              "file-GrwsDPTwJSeEmq8P2VRu71"
+            ]
+          }
+        }
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e3d13a76a354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "238",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:44:43 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "1317",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "1320",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+        "object": "thread",
+        "created_at": 1758062681,
+        "metadata": {},
+        "tool_resources": {
+          "code_interpreter": {
+            "file_ids": [
+              "file-GrwsDPTwJSeEmq8P2VRu71"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs?include[]=step_details.tool_calls%5B%2A%5D.file_search.results%5B%2A%5D.content",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "73",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+        "additional_messages": []
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e3da4ad9a354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "941",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:44:45 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "2005",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "2035",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+        "object": "thread.run",
+        "created_at": 1758062683,
+        "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+        "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+        "status": "queued",
+        "started_at": null,
+        "expires_at": 1758063283,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": null,
+        "last_error": null,
+        "model": "gpt-4o",
+        "instructions": "You help the user with mathematical descriptions and visualizations.",
+        "tools": [
+          {
+            "type": "code_interpreter"
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e3edeccda354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "952",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:44:46 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "178",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "185",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+        "object": "thread.run",
+        "created_at": 1758062683,
+        "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+        "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+        "status": "in_progress",
+        "started_at": 1758062685,
+        "expires_at": 1758063283,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": null,
+        "last_error": null,
+        "model": "gpt-4o",
+        "instructions": "You help the user with mathematical descriptions and visualizations.",
+        "tools": [
+          {
+            "type": "code_interpreter"
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e3f68ccfa354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "952",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:44:54 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "5798",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "6346",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+        "object": "thread.run",
+        "created_at": 1758062683,
+        "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+        "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+        "status": "in_progress",
+        "started_at": 1758062685,
+        "expires_at": 1758063283,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": null,
+        "last_error": null,
+        "model": "gpt-4o",
+        "instructions": "You help the user with mathematical descriptions and visualizations.",
+        "tools": [
+          {
+            "type": "code_interpreter"
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e425d889a354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "952",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:44:55 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "168",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "174",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+        "object": "thread.run",
+        "created_at": 1758062683,
+        "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+        "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+        "status": "in_progress",
+        "started_at": 1758062685,
+        "expires_at": 1758063283,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": null,
+        "last_error": null,
+        "model": "gpt-4o",
+        "instructions": "You help the user with mathematical descriptions and visualizations.",
+        "tools": [
+          {
+            "type": "code_interpreter"
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e42dcf14a354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "952",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:44:57 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "397",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "407",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+        "object": "thread.run",
+        "created_at": 1758062683,
+        "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+        "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+        "status": "in_progress",
+        "started_at": 1758062685,
+        "expires_at": 1758063283,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": null,
+        "last_error": null,
+        "model": "gpt-4o",
+        "instructions": "You help the user with mathematical descriptions and visualizations.",
+        "tools": [
+          {
+            "type": "code_interpreter"
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e4373ddca354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "952",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:44:58 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "205",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "217",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+        "object": "thread.run",
+        "created_at": 1758062683,
+        "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+        "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+        "status": "in_progress",
+        "started_at": 1758062685,
+        "expires_at": 1758063283,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": null,
+        "last_error": null,
+        "model": "gpt-4o",
+        "instructions": "You help the user with mathematical descriptions and visualizations.",
+        "tools": [
+          {
+            "type": "code_interpreter"
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e43f6c01a354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "952",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:44:59 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "310",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "316",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+        "object": "thread.run",
+        "created_at": 1758062683,
+        "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+        "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+        "status": "in_progress",
+        "started_at": 1758062685,
+        "expires_at": 1758063283,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": null,
+        "last_error": null,
+        "model": "gpt-4o",
+        "instructions": "You help the user with mathematical descriptions and visualizations.",
+        "tools": [
+          {
+            "type": "code_interpreter"
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e4484a71a354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "952",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:45:01 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "181",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "185",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+        "object": "thread.run",
+        "created_at": 1758062683,
+        "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+        "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+        "status": "in_progress",
+        "started_at": 1758062685,
+        "expires_at": 1758063283,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": null,
+        "last_error": null,
+        "model": "gpt-4o",
+        "instructions": "You help the user with mathematical descriptions and visualizations.",
+        "tools": [
+          {
+            "type": "code_interpreter"
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e450385ba354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "952",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:45:02 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "325",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "345",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+        "object": "thread.run",
+        "created_at": 1758062683,
+        "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+        "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+        "status": "in_progress",
+        "started_at": 1758062685,
+        "expires_at": 1758063283,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": null,
+        "last_error": null,
+        "model": "gpt-4o",
+        "instructions": "You help the user with mathematical descriptions and visualizations.",
+        "tools": [
+          {
+            "type": "code_interpreter"
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e4593f5da354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "952",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:45:03 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "307",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "353",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+        "object": "thread.run",
+        "created_at": 1758062683,
+        "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+        "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+        "status": "in_progress",
+        "started_at": 1758062685,
+        "expires_at": 1758063283,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": null,
+        "last_error": null,
+        "model": "gpt-4o",
+        "instructions": "You help the user with mathematical descriptions and visualizations.",
+        "tools": [
+          {
+            "type": "code_interpreter"
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e4623e48a354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "952",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:45:05 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "446",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "451",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+        "object": "thread.run",
+        "created_at": 1758062683,
+        "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+        "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+        "status": "in_progress",
+        "started_at": 1758062685,
+        "expires_at": 1758063283,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": null,
+        "last_error": null,
+        "model": "gpt-4o",
+        "instructions": "You help the user with mathematical descriptions and visualizations.",
+        "tools": [
+          {
+            "type": "code_interpreter"
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e46bcdaba354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "952",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:45:06 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "232",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "249",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+        "object": "thread.run",
+        "created_at": 1758062683,
+        "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+        "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+        "status": "in_progress",
+        "started_at": 1758062685,
+        "expires_at": 1758063283,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": null,
+        "last_error": null,
+        "model": "gpt-4o",
+        "instructions": "You help the user with mathematical descriptions and visualizations.",
+        "tools": [
+          {
+            "type": "code_interpreter"
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e4743c17a354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "952",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:45:08 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "188",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "191",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+        "object": "thread.run",
+        "created_at": 1758062683,
+        "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+        "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+        "status": "in_progress",
+        "started_at": 1758062685,
+        "expires_at": 1758063283,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": null,
+        "last_error": null,
+        "model": "gpt-4o",
+        "instructions": "You help the user with mathematical descriptions and visualizations.",
+        "tools": [
+          {
+            "type": "code_interpreter"
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e47c2a28a354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "952",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:45:09 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "215",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "238",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+        "object": "thread.run",
+        "created_at": 1758062683,
+        "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+        "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+        "status": "in_progress",
+        "started_at": 1758062685,
+        "expires_at": 1758063283,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": null,
+        "last_error": null,
+        "model": "gpt-4o",
+        "instructions": "You help the user with mathematical descriptions and visualizations.",
+        "tools": [
+          {
+            "type": "code_interpreter"
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e484786ba354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "952",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:45:10 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "159",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "163",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+        "object": "thread.run",
+        "created_at": 1758062683,
+        "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+        "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+        "status": "in_progress",
+        "started_at": 1758062685,
+        "expires_at": 1758063283,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": null,
+        "last_error": null,
+        "model": "gpt-4o",
+        "instructions": "You help the user with mathematical descriptions and visualizations.",
+        "tools": [
+          {
+            "type": "code_interpreter"
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e48c4e72a354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "952",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:45:11 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "129",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "132",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+        "object": "thread.run",
+        "created_at": 1758062683,
+        "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+        "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+        "status": "in_progress",
+        "started_at": 1758062685,
+        "expires_at": 1758063283,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": null,
+        "last_error": null,
+        "model": "gpt-4o",
+        "instructions": "You help the user with mathematical descriptions and visualizations.",
+        "tools": [
+          {
+            "type": "code_interpreter"
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e493ec7ba354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "952",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:45:20 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "6702",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "7082",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+        "object": "thread.run",
+        "created_at": 1758062683,
+        "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+        "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+        "status": "in_progress",
+        "started_at": 1758062685,
+        "expires_at": 1758063283,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": null,
+        "last_error": null,
+        "model": "gpt-4o",
+        "instructions": "You help the user with mathematical descriptions and visualizations.",
+        "tools": [
+          {
+            "type": "code_interpreter"
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e4c78e9ba354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "952",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:45:21 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "171",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "176",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+        "object": "thread.run",
+        "created_at": 1758062683,
+        "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+        "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+        "status": "in_progress",
+        "started_at": 1758062685,
+        "expires_at": 1758063283,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": null,
+        "last_error": null,
+        "model": "gpt-4o",
+        "instructions": "You help the user with mathematical descriptions and visualizations.",
+        "tools": [
+          {
+            "type": "code_interpreter"
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e4cf9c82a354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "952",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:45:22 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "198",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "206",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+        "object": "thread.run",
+        "created_at": 1758062683,
+        "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+        "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+        "status": "in_progress",
+        "started_at": 1758062685,
+        "expires_at": 1758063283,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": null,
+        "last_error": null,
+        "model": "gpt-4o",
+        "instructions": "You help the user with mathematical descriptions and visualizations.",
+        "tools": [
+          {
+            "type": "code_interpreter"
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e4d7aa6da354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "952",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:45:24 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "212",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "226",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+        "object": "thread.run",
+        "created_at": 1758062683,
+        "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+        "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+        "status": "in_progress",
+        "started_at": 1758062685,
+        "expires_at": 1758063283,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": null,
+        "last_error": null,
+        "model": "gpt-4o",
+        "instructions": "You help the user with mathematical descriptions and visualizations.",
+        "tools": [
+          {
+            "type": "code_interpreter"
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e4dfd820a354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1167",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:45:25 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "214",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "223",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+        "object": "thread.run",
+        "created_at": 1758062683,
+        "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+        "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+        "status": "completed",
+        "started_at": 1758062685,
+        "expires_at": null,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": 1758062724,
+        "required_action": null,
+        "last_error": null,
+        "model": "gpt-4o",
+        "instructions": "You help the user with mathematical descriptions and visualizations.",
+        "tools": [
+          {
+            "type": "code_interpreter"
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": {
+          "prompt_tokens": 11937,
+          "completion_tokens": 823,
+          "total_tokens": 12760,
+          "prompt_token_details": {
+            "cached_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        },
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1/steps?limit=2&include[]=step_details.tool_calls%5B%2A%5D.file_search.results%5B%2A%5D.content",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e4e1e9a6a354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "3140",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:45:25 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "96",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "99",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "step_u1lGJWVjq5HMUaQgMKSV9rkT",
+            "object": "thread.run.step",
+            "created_at": 1758062719,
+            "run_id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+            "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+            "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+            "type": "message_creation",
+            "status": "completed",
+            "cancelled_at": null,
+            "completed_at": 1758062724,
+            "expires_at": null,
+            "failed_at": null,
+            "last_error": null,
+            "step_details": {
+              "type": "message_creation",
+              "message_creation": {
+                "message_id": "msg_atlwd4ZNrs94f5Fm750HtSyq"
+              }
+            },
+            "usage": {
+              "prompt_tokens": 2747,
+              "completion_tokens": 191,
+              "total_tokens": 2938,
+              "prompt_token_details": {
+                "cached_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            }
+          },
+          {
+            "id": "step_fBf9vz0wXoEGd0v2yE7cncet",
+            "object": "thread.run.step",
+            "created_at": 1758062708,
+            "run_id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+            "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+            "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+            "type": "tool_calls",
+            "status": "completed",
+            "cancelled_at": null,
+            "completed_at": 1758062719,
+            "expires_at": null,
+            "failed_at": null,
+            "last_error": null,
+            "step_details": {
+              "type": "tool_calls",
+              "tool_calls": [
+                {
+                  "id": "call_B4GsgEHD7iia9o1YdFACel8L",
+                  "type": "code_interpreter",
+                  "code_interpreter": {
+                    "input": "import numpy as np\nimport matplotlib.pyplot as plt\nfrom sklearn.linear_model import LinearRegression\nfrom scipy.stats import pearsonr\n\n# Prepare the data\nx = data['x'].values.reshape(-1, 1)\ny = data['y'].values\n\n# Perform linear regression\nmodel = LinearRegression()\nmodel.fit(x, y)\n\n# Predict y values\ny_pred = model.predict(x)\n\n# Calculate the Pearson correlation coefficient\ncorrelation_coef, _ = pearsonr(data['x'], data['y'])\n\n# Plot the data points and the linear regression line\nplt.figure(figsize=(8, 6))\nplt.scatter(x, y, color='blue', label='Data Points')\nplt.plot(x, y_pred, color='red', label='Regression Line')\nplt.xlabel('x')\nplt.ylabel('y')\nplt.title('Linear Regression with Correlation Coefficient')\nplt.legend()\nplt.grid(True)\nplt.show()\n\ncorrelation_coef",
+                    "outputs": [
+                      {
+                        "type": "image",
+                        "image": {
+                          "file_id": "file-2PtYzqTBMnw6EbCtfwzfSr"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "usage": {
+              "prompt_tokens": 1774,
+              "completion_tokens": 197,
+              "total_tokens": 1971,
+              "prompt_token_details": {
+                "cached_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            }
+          }
+        ],
+        "first_id": "step_u1lGJWVjq5HMUaQgMKSV9rkT",
+        "last_id": "step_fBf9vz0wXoEGd0v2yE7cncet",
+        "has_more": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1/steps?limit=2&after=step_fBf9vz0wXoEGd0v2yE7cncet&include[]=step_details.tool_calls%5B%2A%5D.file_search.results%5B%2A%5D.content",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e4e30a5ea354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "2706",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:45:25 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "119",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "137",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "step_Ae1n6FDXOdIBjbu0UCvBjnIi",
+            "object": "thread.run.step",
+            "created_at": 1758062704,
+            "run_id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+            "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+            "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+            "type": "message_creation",
+            "status": "completed",
+            "cancelled_at": null,
+            "completed_at": 1758062708,
+            "expires_at": null,
+            "failed_at": null,
+            "last_error": null,
+            "step_details": {
+              "type": "message_creation",
+              "message_creation": {
+                "message_id": "msg_vXRp5IIg9uaj3AnvlysHqgFG"
+              }
+            },
+            "usage": {
+              "prompt_tokens": 1647,
+              "completion_tokens": 125,
+              "total_tokens": 1772,
+              "prompt_token_details": {
+                "cached_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            }
+          },
+          {
+            "id": "step_asCUH5v0NA5K2x0ciFhh2BuW",
+            "object": "thread.run.step",
+            "created_at": 1758062701,
+            "run_id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+            "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+            "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+            "type": "tool_calls",
+            "status": "completed",
+            "cancelled_at": null,
+            "completed_at": 1758062704,
+            "expires_at": null,
+            "failed_at": null,
+            "last_error": null,
+            "step_details": {
+              "type": "tool_calls",
+              "tool_calls": [
+                {
+                  "id": "call_vvl4IgQCm6vq9dcaKPiEALNd",
+                  "type": "code_interpreter",
+                  "code_interpreter": {
+                    "input": "# Load the data, skipping lines with too many fields\ndata = pd.read_csv(file_path, error_bad_lines=False)\n\n# Display the data to ensure it has been loaded correctly\ndata",
+                    "outputs": [
+                      {
+                        "type": "logs",
+                        "logs": "/tmp/ipykernel_12/4109144427.py:2: FutureWarning: The error_bad_lines argument has been deprecated and will be removed in a future version. Use on_bad_lines in the future.\n\n\n  data = pd.read_csv(file_path, error_bad_lines=False)\nSkipping line 3: expected 2 fields, saw 3\n\n"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "usage": {
+              "prompt_tokens": 1504,
+              "completion_tokens": 44,
+              "total_tokens": 1548,
+              "prompt_token_details": {
+                "cached_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            }
+          }
+        ],
+        "first_id": "step_Ae1n6FDXOdIBjbu0UCvBjnIi",
+        "last_id": "step_asCUH5v0NA5K2x0ciFhh2BuW",
+        "has_more": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1/steps?limit=2&after=step_asCUH5v0NA5K2x0ciFhh2BuW&include[]=step_details.tool_calls%5B%2A%5D.file_search.results%5B%2A%5D.content",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e4e46b63a354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "2402",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:45:26 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "115",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "120",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "step_3xONQ7RVgbGzCVlQYE6M5HxT",
+            "object": "thread.run.step",
+            "created_at": 1758062698,
+            "run_id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+            "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+            "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+            "type": "message_creation",
+            "status": "completed",
+            "cancelled_at": null,
+            "completed_at": 1758062701,
+            "expires_at": null,
+            "failed_at": null,
+            "last_error": null,
+            "step_details": {
+              "type": "message_creation",
+              "message_creation": {
+                "message_id": "msg_FgZd6tFwmnpAiw4qCuJPmpoG"
+              }
+            },
+            "usage": {
+              "prompt_tokens": 1431,
+              "completion_tokens": 71,
+              "total_tokens": 1502,
+              "prompt_token_details": {
+                "cached_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            }
+          },
+          {
+            "id": "step_cGEUOx8IaQXJi7jtB3sjvAa9",
+            "object": "thread.run.step",
+            "created_at": 1758062696,
+            "run_id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+            "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+            "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+            "type": "tool_calls",
+            "status": "completed",
+            "cancelled_at": null,
+            "completed_at": 1758062698,
+            "expires_at": null,
+            "failed_at": null,
+            "last_error": null,
+            "step_details": {
+              "type": "tool_calls",
+              "tool_calls": [
+                {
+                  "id": "call_M9KrFRLRJRav2EiCg3hV7jCh",
+                  "type": "code_interpreter",
+                  "code_interpreter": {
+                    "input": "# Attempt to load the file with flexibility for delimiters\n# Print the first few lines to inspect the format\nwith open(file_path, 'r') as file:\n    lines = file.readlines()\n\n# Display the first few lines to understand its structure and delimiter\nlines[:10]",
+                    "outputs": []
+                  }
+                }
+              ]
+            },
+            "usage": {
+              "prompt_tokens": 1337,
+              "completion_tokens": 63,
+              "total_tokens": 1400,
+              "prompt_token_details": {
+                "cached_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            }
+          }
+        ],
+        "first_id": "step_3xONQ7RVgbGzCVlQYE6M5HxT",
+        "last_id": "step_cGEUOx8IaQXJi7jtB3sjvAa9",
+        "has_more": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1/steps?limit=2&after=step_cGEUOx8IaQXJi7jtB3sjvAa9&include[]=step_details.tool_calls%5B%2A%5D.file_search.results%5B%2A%5D.content",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e4e5ac2ca354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "2384",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:45:26 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "388",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "403",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "step_fFuI3dprk6BUyv2JbSrKhQnd",
+            "object": "thread.run.step",
+            "created_at": 1758062693,
+            "run_id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+            "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+            "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+            "type": "message_creation",
+            "status": "completed",
+            "cancelled_at": null,
+            "completed_at": 1758062696,
+            "expires_at": null,
+            "failed_at": null,
+            "last_error": null,
+            "step_details": {
+              "type": "message_creation",
+              "message_creation": {
+                "message_id": "msg_tLi75FeIEvGLlNcnCsEnyQkb"
+              }
+            },
+            "usage": {
+              "prompt_tokens": 1272,
+              "completion_tokens": 63,
+              "total_tokens": 1335,
+              "prompt_token_details": {
+                "cached_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            }
+          },
+          {
+            "id": "step_ACtnjfUNUsXYiI9uBjkuMoeW",
+            "object": "thread.run.step",
+            "created_at": 1758062687,
+            "run_id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+            "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+            "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+            "type": "tool_calls",
+            "status": "completed",
+            "cancelled_at": null,
+            "completed_at": 1758062693,
+            "expires_at": null,
+            "failed_at": null,
+            "last_error": null,
+            "step_details": {
+              "type": "tool_calls",
+              "tool_calls": [
+                {
+                  "id": "call_6xVF2Wzh9lun3xXyrk8wihgI",
+                  "type": "code_interpreter",
+                  "code_interpreter": {
+                    "input": "import pandas as pd\n\n# Load the uploaded file to examine its contents\nfile_path = '/mnt/data/file-GrwsDPTwJSeEmq8P2VRu71'\ndata = pd.read_csv(file_path)\n\n# Display the first few rows of the dataframe to understand its structure\ndata.head()",
+                    "outputs": []
+                  }
+                }
+              ]
+            },
+            "usage": {
+              "prompt_tokens": 225,
+              "completion_tokens": 69,
+              "total_tokens": 294,
+              "prompt_token_details": {
+                "cached_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            }
+          }
+        ],
+        "first_id": "step_fFuI3dprk6BUyv2JbSrKhQnd",
+        "last_id": "step_ACtnjfUNUsXYiI9uBjkuMoeW",
+        "has_more": false
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1/steps?limit=2&include[]=step_details.tool_calls%5B%2A%5D.file_search.results%5B%2A%5D.content",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e4e8de8ba354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "3140",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:45:26 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "84",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "88",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "step_u1lGJWVjq5HMUaQgMKSV9rkT",
+            "object": "thread.run.step",
+            "created_at": 1758062719,
+            "run_id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+            "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+            "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+            "type": "message_creation",
+            "status": "completed",
+            "cancelled_at": null,
+            "completed_at": 1758062724,
+            "expires_at": null,
+            "failed_at": null,
+            "last_error": null,
+            "step_details": {
+              "type": "message_creation",
+              "message_creation": {
+                "message_id": "msg_atlwd4ZNrs94f5Fm750HtSyq"
+              }
+            },
+            "usage": {
+              "prompt_tokens": 2747,
+              "completion_tokens": 191,
+              "total_tokens": 2938,
+              "prompt_token_details": {
+                "cached_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            }
+          },
+          {
+            "id": "step_fBf9vz0wXoEGd0v2yE7cncet",
+            "object": "thread.run.step",
+            "created_at": 1758062708,
+            "run_id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+            "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+            "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+            "type": "tool_calls",
+            "status": "completed",
+            "cancelled_at": null,
+            "completed_at": 1758062719,
+            "expires_at": null,
+            "failed_at": null,
+            "last_error": null,
+            "step_details": {
+              "type": "tool_calls",
+              "tool_calls": [
+                {
+                  "id": "call_B4GsgEHD7iia9o1YdFACel8L",
+                  "type": "code_interpreter",
+                  "code_interpreter": {
+                    "input": "import numpy as np\nimport matplotlib.pyplot as plt\nfrom sklearn.linear_model import LinearRegression\nfrom scipy.stats import pearsonr\n\n# Prepare the data\nx = data['x'].values.reshape(-1, 1)\ny = data['y'].values\n\n# Perform linear regression\nmodel = LinearRegression()\nmodel.fit(x, y)\n\n# Predict y values\ny_pred = model.predict(x)\n\n# Calculate the Pearson correlation coefficient\ncorrelation_coef, _ = pearsonr(data['x'], data['y'])\n\n# Plot the data points and the linear regression line\nplt.figure(figsize=(8, 6))\nplt.scatter(x, y, color='blue', label='Data Points')\nplt.plot(x, y_pred, color='red', label='Regression Line')\nplt.xlabel('x')\nplt.ylabel('y')\nplt.title('Linear Regression with Correlation Coefficient')\nplt.legend()\nplt.grid(True)\nplt.show()\n\ncorrelation_coef",
+                    "outputs": [
+                      {
+                        "type": "image",
+                        "image": {
+                          "file_id": "file-2PtYzqTBMnw6EbCtfwzfSr"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "usage": {
+              "prompt_tokens": 1774,
+              "completion_tokens": 197,
+              "total_tokens": 1971,
+              "prompt_token_details": {
+                "cached_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            }
+          }
+        ],
+        "first_id": "step_u1lGJWVjq5HMUaQgMKSV9rkT",
+        "last_id": "step_fBf9vz0wXoEGd0v2yE7cncet",
+        "has_more": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1/steps?limit=2&after=step_fBf9vz0wXoEGd0v2yE7cncet&include[]=step_details.tool_calls%5B%2A%5D.file_search.results%5B%2A%5D.content",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e4e9dfa7a354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "2706",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:45:26 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "163",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "176",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "step_Ae1n6FDXOdIBjbu0UCvBjnIi",
+            "object": "thread.run.step",
+            "created_at": 1758062704,
+            "run_id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+            "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+            "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+            "type": "message_creation",
+            "status": "completed",
+            "cancelled_at": null,
+            "completed_at": 1758062708,
+            "expires_at": null,
+            "failed_at": null,
+            "last_error": null,
+            "step_details": {
+              "type": "message_creation",
+              "message_creation": {
+                "message_id": "msg_vXRp5IIg9uaj3AnvlysHqgFG"
+              }
+            },
+            "usage": {
+              "prompt_tokens": 1647,
+              "completion_tokens": 125,
+              "total_tokens": 1772,
+              "prompt_token_details": {
+                "cached_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            }
+          },
+          {
+            "id": "step_asCUH5v0NA5K2x0ciFhh2BuW",
+            "object": "thread.run.step",
+            "created_at": 1758062701,
+            "run_id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+            "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+            "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+            "type": "tool_calls",
+            "status": "completed",
+            "cancelled_at": null,
+            "completed_at": 1758062704,
+            "expires_at": null,
+            "failed_at": null,
+            "last_error": null,
+            "step_details": {
+              "type": "tool_calls",
+              "tool_calls": [
+                {
+                  "id": "call_vvl4IgQCm6vq9dcaKPiEALNd",
+                  "type": "code_interpreter",
+                  "code_interpreter": {
+                    "input": "# Load the data, skipping lines with too many fields\ndata = pd.read_csv(file_path, error_bad_lines=False)\n\n# Display the data to ensure it has been loaded correctly\ndata",
+                    "outputs": [
+                      {
+                        "type": "logs",
+                        "logs": "/tmp/ipykernel_12/4109144427.py:2: FutureWarning: The error_bad_lines argument has been deprecated and will be removed in a future version. Use on_bad_lines in the future.\n\n\n  data = pd.read_csv(file_path, error_bad_lines=False)\nSkipping line 3: expected 2 fields, saw 3\n\n"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "usage": {
+              "prompt_tokens": 1504,
+              "completion_tokens": 44,
+              "total_tokens": 1548,
+              "prompt_token_details": {
+                "cached_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            }
+          }
+        ],
+        "first_id": "step_Ae1n6FDXOdIBjbu0UCvBjnIi",
+        "last_id": "step_asCUH5v0NA5K2x0ciFhh2BuW",
+        "has_more": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1/steps?limit=2&after=step_asCUH5v0NA5K2x0ciFhh2BuW&include[]=step_details.tool_calls%5B%2A%5D.file_search.results%5B%2A%5D.content",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e4eb896aa354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "2402",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:45:27 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "206",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "224",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "step_3xONQ7RVgbGzCVlQYE6M5HxT",
+            "object": "thread.run.step",
+            "created_at": 1758062698,
+            "run_id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+            "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+            "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+            "type": "message_creation",
+            "status": "completed",
+            "cancelled_at": null,
+            "completed_at": 1758062701,
+            "expires_at": null,
+            "failed_at": null,
+            "last_error": null,
+            "step_details": {
+              "type": "message_creation",
+              "message_creation": {
+                "message_id": "msg_FgZd6tFwmnpAiw4qCuJPmpoG"
+              }
+            },
+            "usage": {
+              "prompt_tokens": 1431,
+              "completion_tokens": 71,
+              "total_tokens": 1502,
+              "prompt_token_details": {
+                "cached_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            }
+          },
+          {
+            "id": "step_cGEUOx8IaQXJi7jtB3sjvAa9",
+            "object": "thread.run.step",
+            "created_at": 1758062696,
+            "run_id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+            "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+            "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+            "type": "tool_calls",
+            "status": "completed",
+            "cancelled_at": null,
+            "completed_at": 1758062698,
+            "expires_at": null,
+            "failed_at": null,
+            "last_error": null,
+            "step_details": {
+              "type": "tool_calls",
+              "tool_calls": [
+                {
+                  "id": "call_M9KrFRLRJRav2EiCg3hV7jCh",
+                  "type": "code_interpreter",
+                  "code_interpreter": {
+                    "input": "# Attempt to load the file with flexibility for delimiters\n# Print the first few lines to inspect the format\nwith open(file_path, 'r') as file:\n    lines = file.readlines()\n\n# Display the first few lines to understand its structure and delimiter\nlines[:10]",
+                    "outputs": []
+                  }
+                }
+              ]
+            },
+            "usage": {
+              "prompt_tokens": 1337,
+              "completion_tokens": 63,
+              "total_tokens": 1400,
+              "prompt_token_details": {
+                "cached_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            }
+          }
+        ],
+        "first_id": "step_3xONQ7RVgbGzCVlQYE6M5HxT",
+        "last_id": "step_cGEUOx8IaQXJi7jtB3sjvAa9",
+        "has_more": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_gNa7IIUvHda7kNnsXTtfb11Y/runs/run_duyrfW3GixpuTtWdSzOf3EG1/steps?limit=2&after=step_cGEUOx8IaQXJi7jtB3sjvAa9&include[]=step_details.tool_calls%5B%2A%5D.file_search.results%5B%2A%5D.content",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e4edab7da354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "2384",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:45:27 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "156",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "163",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "step_fFuI3dprk6BUyv2JbSrKhQnd",
+            "object": "thread.run.step",
+            "created_at": 1758062693,
+            "run_id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+            "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+            "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+            "type": "message_creation",
+            "status": "completed",
+            "cancelled_at": null,
+            "completed_at": 1758062696,
+            "expires_at": null,
+            "failed_at": null,
+            "last_error": null,
+            "step_details": {
+              "type": "message_creation",
+              "message_creation": {
+                "message_id": "msg_tLi75FeIEvGLlNcnCsEnyQkb"
+              }
+            },
+            "usage": {
+              "prompt_tokens": 1272,
+              "completion_tokens": 63,
+              "total_tokens": 1335,
+              "prompt_token_details": {
+                "cached_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            }
+          },
+          {
+            "id": "step_ACtnjfUNUsXYiI9uBjkuMoeW",
+            "object": "thread.run.step",
+            "created_at": 1758062687,
+            "run_id": "run_duyrfW3GixpuTtWdSzOf3EG1",
+            "assistant_id": "asst_xSmQ13uOwp2pgfWm7zRZwPgI",
+            "thread_id": "thread_gNa7IIUvHda7kNnsXTtfb11Y",
+            "type": "tool_calls",
+            "status": "completed",
+            "cancelled_at": null,
+            "completed_at": 1758062693,
+            "expires_at": null,
+            "failed_at": null,
+            "last_error": null,
+            "step_details": {
+              "type": "tool_calls",
+              "tool_calls": [
+                {
+                  "id": "call_6xVF2Wzh9lun3xXyrk8wihgI",
+                  "type": "code_interpreter",
+                  "code_interpreter": {
+                    "input": "import pandas as pd\n\n# Load the uploaded file to examine its contents\nfile_path = '/mnt/data/file-GrwsDPTwJSeEmq8P2VRu71'\ndata = pd.read_csv(file_path)\n\n# Display the first few rows of the dataframe to understand its structure\ndata.head()",
+                    "outputs": []
+                  }
+                }
+              ]
+            },
+            "usage": {
+              "prompt_tokens": 225,
+              "completion_tokens": 69,
+              "total_tokens": 294,
+              "prompt_token_details": {
+                "cached_tokens": 0
+              },
+              "completion_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            }
+          }
+        ],
+        "first_id": "step_fFuI3dprk6BUyv2JbSrKhQnd",
+        "last_id": "step_ACtnjfUNUsXYiI9uBjkuMoeW",
+        "has_more": false
+      }
+    }
+  ],
+  "Variables": {}
+}

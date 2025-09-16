@@ -1,0 +1,959 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/assistants",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "49",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "name": "Test Assistant 0"
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803d4604bb8a334-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "351",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:34:09 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "213",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "219",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "asst_3pSbPc6TPK6I7w5P1OA4nTxX",
+        "object": "assistant",
+        "created_at": 1758062049,
+        "name": "Test Assistant 0",
+        "description": null,
+        "model": "gpt-4o-mini",
+        "instructions": null,
+        "tools": [],
+        "top_p": 1.0,
+        "temperature": 1.0,
+        "reasoning_effort": null,
+        "tool_resources": {},
+        "metadata": {},
+        "response_format": "auto"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/assistants",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "49",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "name": "Test Assistant 1"
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803d4622d37a334-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "351",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:34:09 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "194",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "199",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "asst_SqUXMEgfScw5yDo8oZy0XKNG",
+        "object": "assistant",
+        "created_at": 1758062049,
+        "name": "Test Assistant 1",
+        "description": null,
+        "model": "gpt-4o-mini",
+        "instructions": null,
+        "tools": [],
+        "top_p": 1.0,
+        "temperature": 1.0,
+        "reasoning_effort": null,
+        "tool_resources": {},
+        "metadata": {},
+        "response_format": "auto"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/assistants",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "49",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "name": "Test Assistant 2"
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803d463ee9da334-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "351",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:34:10 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "228",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "234",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "asst_wBQOL0mOs7ZabywHfUyWKrxu",
+        "object": "assistant",
+        "created_at": 1758062050,
+        "name": "Test Assistant 2",
+        "description": null,
+        "model": "gpt-4o-mini",
+        "instructions": null,
+        "tools": [],
+        "top_p": 1.0,
+        "temperature": 1.0,
+        "reasoning_effort": null,
+        "tool_resources": {},
+        "metadata": {},
+        "response_format": "auto"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/assistants",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "49",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "name": "Test Assistant 3"
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803d465e896a334-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "351",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:34:10 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "188",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "194",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "asst_EEHh7VEefKS0verzDn69asAk",
+        "object": "assistant",
+        "created_at": 1758062050,
+        "name": "Test Assistant 3",
+        "description": null,
+        "model": "gpt-4o-mini",
+        "instructions": null,
+        "tools": [],
+        "top_p": 1.0,
+        "temperature": 1.0,
+        "reasoning_effort": null,
+        "tool_resources": {},
+        "metadata": {},
+        "response_format": "auto"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/assistants",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "49",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "name": "Test Assistant 4"
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803d467aa37a334-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "351",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:34:10 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "176",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "182",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "asst_jqHxB1iLyogfKLbZa4Ou5juv",
+        "object": "assistant",
+        "created_at": 1758062050,
+        "name": "Test Assistant 4",
+        "description": null,
+        "model": "gpt-4o-mini",
+        "instructions": null,
+        "tools": [],
+        "top_p": 1.0,
+        "temperature": 1.0,
+        "reasoning_effort": null,
+        "tool_resources": {},
+        "metadata": {},
+        "response_format": "auto"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/assistants",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "49",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "name": "Test Assistant 5"
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803d4695bd8a334-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "351",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:34:11 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "183",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "190",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "asst_SHSeMjSgofz8UZc0blIlhgSn",
+        "object": "assistant",
+        "created_at": 1758062050,
+        "name": "Test Assistant 5",
+        "description": null,
+        "model": "gpt-4o-mini",
+        "instructions": null,
+        "tools": [],
+        "top_p": 1.0,
+        "temperature": 1.0,
+        "reasoning_effort": null,
+        "tool_resources": {},
+        "metadata": {},
+        "response_format": "auto"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/assistants",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "49",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "name": "Test Assistant 6"
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803d46b3d78a334-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "351",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:34:11 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "210",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "213",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "asst_tf8p2hP4YjpYDvABFhNN9WFU",
+        "object": "assistant",
+        "created_at": 1758062051,
+        "name": "Test Assistant 6",
+        "description": null,
+        "model": "gpt-4o-mini",
+        "instructions": null,
+        "tools": [],
+        "top_p": 1.0,
+        "temperature": 1.0,
+        "reasoning_effort": null,
+        "tool_resources": {},
+        "metadata": {},
+        "response_format": "auto"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/assistants",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "49",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "name": "Test Assistant 7"
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803d46d0ee1a334-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "351",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:34:11 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "222",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "224",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "asst_1b32hka4imzn0Mx6uhFpBjHf",
+        "object": "assistant",
+        "created_at": 1758062051,
+        "name": "Test Assistant 7",
+        "description": null,
+        "model": "gpt-4o-mini",
+        "instructions": null,
+        "tools": [],
+        "top_p": 1.0,
+        "temperature": 1.0,
+        "reasoning_effort": null,
+        "tool_resources": {},
+        "metadata": {},
+        "response_format": "auto"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/assistants",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "49",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "name": "Test Assistant 8"
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803d46ef86fa334-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "351",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:34:11 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "137",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "140",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "asst_4SpEFdMJT4mOsynsOxZNoUMs",
+        "object": "assistant",
+        "created_at": 1758062051,
+        "name": "Test Assistant 8",
+        "description": null,
+        "model": "gpt-4o-mini",
+        "instructions": null,
+        "tools": [],
+        "top_p": 1.0,
+        "temperature": 1.0,
+        "reasoning_effort": null,
+        "tool_resources": {},
+        "metadata": {},
+        "response_format": "auto"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/assistants",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "49",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "name": "Test Assistant 9"
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803d47059f8a334-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "351",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:34:12 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "245",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "250",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "asst_6009tQ6G4Vx0Lac1kKoCeC9l",
+        "object": "assistant",
+        "created_at": 1758062052,
+        "name": "Test Assistant 9",
+        "description": null,
+        "model": "gpt-4o-mini",
+        "instructions": null,
+        "tools": [],
+        "top_p": 1.0,
+        "temperature": 1.0,
+        "reasoning_effort": null,
+        "tool_resources": {},
+        "metadata": {},
+        "response_format": "auto"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/assistants?order=desc",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803d4726ba6a334-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "10612",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:34:14 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "1901",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "1915",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "asst_6009tQ6G4Vx0Lac1kKoCeC9l",
+            "object": "assistant",
+            "created_at": 1758062052,
+            "name": "Test Assistant 9",
+            "description": null,
+            "model": "gpt-4o-mini",
+            "instructions": null,
+            "tools": [],
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "reasoning_effort": null,
+            "tool_resources": {},
+            "metadata": {},
+            "response_format": "auto"
+          },
+          {
+            "id": "asst_4SpEFdMJT4mOsynsOxZNoUMs",
+            "object": "assistant",
+            "created_at": 1758062051,
+            "name": "Test Assistant 8",
+            "description": null,
+            "model": "gpt-4o-mini",
+            "instructions": null,
+            "tools": [],
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "reasoning_effort": null,
+            "tool_resources": {},
+            "metadata": {},
+            "response_format": "auto"
+          },
+          {
+            "id": "asst_1b32hka4imzn0Mx6uhFpBjHf",
+            "object": "assistant",
+            "created_at": 1758062051,
+            "name": "Test Assistant 7",
+            "description": null,
+            "model": "gpt-4o-mini",
+            "instructions": null,
+            "tools": [],
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "reasoning_effort": null,
+            "tool_resources": {},
+            "metadata": {},
+            "response_format": "auto"
+          },
+          {
+            "id": "asst_tf8p2hP4YjpYDvABFhNN9WFU",
+            "object": "assistant",
+            "created_at": 1758062051,
+            "name": "Test Assistant 6",
+            "description": null,
+            "model": "gpt-4o-mini",
+            "instructions": null,
+            "tools": [],
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "reasoning_effort": null,
+            "tool_resources": {},
+            "metadata": {},
+            "response_format": "auto"
+          },
+          {
+            "id": "asst_SHSeMjSgofz8UZc0blIlhgSn",
+            "object": "assistant",
+            "created_at": 1758062050,
+            "name": "Test Assistant 5",
+            "description": null,
+            "model": "gpt-4o-mini",
+            "instructions": null,
+            "tools": [],
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "reasoning_effort": null,
+            "tool_resources": {},
+            "metadata": {},
+            "response_format": "auto"
+          },
+          {
+            "id": "asst_jqHxB1iLyogfKLbZa4Ou5juv",
+            "object": "assistant",
+            "created_at": 1758062050,
+            "name": "Test Assistant 4",
+            "description": null,
+            "model": "gpt-4o-mini",
+            "instructions": null,
+            "tools": [],
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "reasoning_effort": null,
+            "tool_resources": {},
+            "metadata": {},
+            "response_format": "auto"
+          },
+          {
+            "id": "asst_EEHh7VEefKS0verzDn69asAk",
+            "object": "assistant",
+            "created_at": 1758062050,
+            "name": "Test Assistant 3",
+            "description": null,
+            "model": "gpt-4o-mini",
+            "instructions": null,
+            "tools": [],
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "reasoning_effort": null,
+            "tool_resources": {},
+            "metadata": {},
+            "response_format": "auto"
+          },
+          {
+            "id": "asst_wBQOL0mOs7ZabywHfUyWKrxu",
+            "object": "assistant",
+            "created_at": 1758062050,
+            "name": "Test Assistant 2",
+            "description": null,
+            "model": "gpt-4o-mini",
+            "instructions": null,
+            "tools": [],
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "reasoning_effort": null,
+            "tool_resources": {},
+            "metadata": {},
+            "response_format": "auto"
+          },
+          {
+            "id": "asst_SqUXMEgfScw5yDo8oZy0XKNG",
+            "object": "assistant",
+            "created_at": 1758062049,
+            "name": "Test Assistant 1",
+            "description": null,
+            "model": "gpt-4o-mini",
+            "instructions": null,
+            "tools": [],
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "reasoning_effort": null,
+            "tool_resources": {},
+            "metadata": {},
+            "response_format": "auto"
+          },
+          {
+            "id": "asst_3pSbPc6TPK6I7w5P1OA4nTxX",
+            "object": "assistant",
+            "created_at": 1758062049,
+            "name": "Test Assistant 0",
+            "description": null,
+            "model": "gpt-4o-mini",
+            "instructions": null,
+            "tools": [],
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "reasoning_effort": null,
+            "tool_resources": {},
+            "metadata": {},
+            "response_format": "auto"
+          },
+          {
+            "id": "asst_32DHUtr98HlysiLpvZI0TGK4",
+            "object": "assistant",
+            "created_at": 1758062028,
+            "name": null,
+            "description": null,
+            "model": "gpt-4o-mini",
+            "instructions": null,
+            "tools": [
+              {
+                "type": "function",
+                "function": {
+                  "name": "get_favorite_food_for_day_of_week",
+                  "description": "gets the user's favorite food for a given day of the week, like Tuesday",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {
+                      "day_of_week": {
+                        "type": "string",
+                        "description": "a day of the week, like Tuesday or Saturday"
+                      }
+                    }
+                  },
+                  "strict": false
+                }
+              }
+            ],
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "reasoning_effort": null,
+            "tool_resources": {},
+            "metadata": {},
+            "response_format": "auto"
+          },
+          {
+            "id": "asst_wQp6IOUCGrVG4UXLBWWLCWBe",
+            "object": "assistant",
+            "created_at": 1758062015,
+            "name": null,
+            "description": null,
+            "model": "gpt-4o-mini",
+            "instructions": null,
+            "tools": [
+              {
+                "type": "file_search",
+                "file_search": {
+                  "max_num_results": 2,
+                  "ranking_options": {
+                    "ranker": "default_2024_08_21",
+                    "score_threshold": 0.5,
+                    "hybrid_search": null
+                  }
+                }
+              }
+            ],
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "reasoning_effort": null,
+            "tool_resources": {
+              "file_search": {
+                "vector_store_ids": [
+                  "vs_68c9e5bfe7b0819186d6ffba26943b93"
+                ]
+              }
+            },
+            "metadata": {},
+            "response_format": "auto"
+          },
+          {
+            "id": "asst_SuYtgCAeRWt9aAeCIGZVm5R7",
+            "object": "assistant",
+            "created_at": 1758062005,
+            "name": null,
+            "description": null,
+            "model": "gpt-4o-mini",
+            "instructions": null,
+            "tools": [
+              {
+                "type": "file_search",
+                "file_search": {
+                  "ranking_options": {
+                    "ranker": "default_2024_08_21",
+                    "score_threshold": 0.0,
+                    "hybrid_search": null
+                  }
+                }
+              }
+            ],
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "reasoning_effort": null,
+            "tool_resources": {
+              "file_search": {
+                "vector_store_ids": [
+                  "vs_68c9e5b5f14c8191a0cc3d5b77072816"
+                ]
+              }
+            },
+            "metadata": {},
+            "response_format": "auto"
+          },
+          {
+            "id": "asst_mDLP7ZbkQHTYbnsYhzX0o03I",
+            "object": "assistant",
+            "created_at": 1758061949,
+            "name": null,
+            "description": null,
+            "model": "gpt-4o-mini",
+            "instructions": "You help the user with mathematical descriptions and visualizations.",
+            "tools": [
+              {
+                "type": "code_interpreter"
+              }
+            ],
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "reasoning_effort": null,
+            "tool_resources": {
+              "code_interpreter": {
+                "file_ids": []
+              }
+            },
+            "metadata": {},
+            "response_format": "auto"
+          },
+          {
+            "id": "asst_KpQVl8RV9QIGduGhIcMnOoiq",
+            "object": "assistant",
+            "created_at": 1758061943,
+            "name": null,
+            "description": null,
+            "model": "gpt-4o-mini",
+            "instructions": null,
+            "tools": [],
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "reasoning_effort": null,
+            "tool_resources": {},
+            "metadata": {},
+            "response_format": "auto"
+          },
+          {
+            "id": "asst_HUuidlcdCe8mYc6iTXAqtuVK",
+            "object": "assistant",
+            "created_at": 1758061934,
+            "name": null,
+            "description": null,
+            "model": "gpt-4o-mini",
+            "instructions": null,
+            "tools": [],
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "reasoning_effort": null,
+            "tool_resources": {},
+            "metadata": {
+              "test_metadata_cleanup_eligible": "goodbye!"
+            },
+            "response_format": "auto"
+          },
+          {
+            "id": "asst_oq7Dtuk1vCVMs2I8FWywA53X",
+            "object": "assistant",
+            "created_at": 1758061924,
+            "name": null,
+            "description": null,
+            "model": "gpt-4o-mini",
+            "instructions": null,
+            "tools": [
+              {
+                "type": "function",
+                "function": {
+                  "name": "get_current_weather",
+                  "description": "Gets the user's current weather",
+                  "parameters": {
+                    "type": "object",
+                    "properties": {}
+                  },
+                  "strict": false
+                }
+              }
+            ],
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "reasoning_effort": null,
+            "tool_resources": {},
+            "metadata": {},
+            "response_format": "auto"
+          },
+          {
+            "id": "asst_SfPyHp1sqcjZ6tJ1xDpWYCv8",
+            "object": "assistant",
+            "created_at": 1758061374,
+            "name": null,
+            "description": null,
+            "model": "gpt-4o-mini",
+            "instructions": "You help the user with mathematical descriptions and visualizations.",
+            "tools": [
+              {
+                "type": "code_interpreter"
+              }
+            ],
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "reasoning_effort": null,
+            "tool_resources": {
+              "code_interpreter": {
+                "file_ids": []
+              }
+            },
+            "metadata": {},
+            "response_format": "auto"
+          },
+          {
+            "id": "asst_FyuFvXNt2FDXGQqiJR420WMd",
+            "object": "assistant",
+            "created_at": 1758061370,
+            "name": null,
+            "description": null,
+            "model": "gpt-4o-mini",
+            "instructions": null,
+            "tools": [],
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "reasoning_effort": null,
+            "tool_resources": {},
+            "metadata": {},
+            "response_format": "auto"
+          },
+          {
+            "id": "asst_FuBWsicv2aHJDFvs832IS1qZ",
+            "object": "assistant",
+            "created_at": 1758061364,
+            "name": null,
+            "description": null,
+            "model": "gpt-4o-mini",
+            "instructions": null,
+            "tools": [],
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "reasoning_effort": null,
+            "tool_resources": {},
+            "metadata": {
+              "test_metadata_cleanup_eligible": "goodbye!"
+            },
+            "response_format": "auto"
+          }
+        ],
+        "first_id": "asst_6009tQ6G4Vx0Lac1kKoCeC9l",
+        "last_id": "asst_FuBWsicv2aHJDFvs832IS1qZ",
+        "has_more": true
+      }
+    }
+  ],
+  "Variables": {}
+}

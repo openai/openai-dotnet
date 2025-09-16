@@ -1,0 +1,1474 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/assistants",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "335",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "description": "gets the user's favorite food for a given day of the week, like Tuesday",
+              "name": "get_favorite_food_for_day_of_week",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "day_of_week": {
+                    "type": "string",
+                    "description": "a day of the week, like Tuesday or Saturday"
+                  }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e7204806a354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "832",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:46:57 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "293",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "321",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "asst_nayJJwWQv659dQdMwyB7pQf6",
+        "object": "assistant",
+        "created_at": 1758062817,
+        "name": null,
+        "description": null,
+        "model": "gpt-4o-mini",
+        "instructions": null,
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "get_favorite_food_for_day_of_week",
+              "description": "gets the user's favorite food for a given day of the week, like Tuesday",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "day_of_week": {
+                    "type": "string",
+                    "description": "a day of the week, like Tuesday or Saturday"
+                  }
+                }
+              },
+              "strict": false
+            }
+          }
+        ],
+        "top_p": 1.0,
+        "temperature": 1.0,
+        "reasoning_effort": null,
+        "tool_resources": {},
+        "metadata": {},
+        "response_format": "auto"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/runs",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "131",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "assistant_id": "asst_nayJJwWQv659dQdMwyB7pQf6",
+        "thread": {
+          "messages": [
+            {
+              "role": "user",
+              "content": "What should I eat on Thursday?"
+            }
+          ]
+        }
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e722ea09a354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1327",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:46:58 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "894",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "899",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_hmtJlZgy7nVpLlwSCoCgtvR9",
+        "object": "thread.run",
+        "created_at": 1758062818,
+        "assistant_id": "asst_nayJJwWQv659dQdMwyB7pQf6",
+        "thread_id": "thread_L6SyTm2PQVJLxTrvOjC5h5CS",
+        "status": "queued",
+        "started_at": null,
+        "expires_at": 1758063418,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": null,
+        "last_error": null,
+        "model": "gpt-4o-mini",
+        "instructions": null,
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "get_favorite_food_for_day_of_week",
+              "description": "gets the user's favorite food for a given day of the week, like Tuesday",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "day_of_week": {
+                    "type": "string",
+                    "description": "a day of the week, like Tuesday or Saturday"
+                  }
+                }
+              },
+              "strict": false
+            }
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_L6SyTm2PQVJLxTrvOjC5h5CS/runs/run_hmtJlZgy7nVpLlwSCoCgtvR9",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e72f3c29a354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1338",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:47:00 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "525",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "537",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_hmtJlZgy7nVpLlwSCoCgtvR9",
+        "object": "thread.run",
+        "created_at": 1758062818,
+        "assistant_id": "asst_nayJJwWQv659dQdMwyB7pQf6",
+        "thread_id": "thread_L6SyTm2PQVJLxTrvOjC5h5CS",
+        "status": "in_progress",
+        "started_at": 1758062819,
+        "expires_at": 1758063418,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": null,
+        "last_error": null,
+        "model": "gpt-4o-mini",
+        "instructions": null,
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "get_favorite_food_for_day_of_week",
+              "description": "gets the user's favorite food for a given day of the week, like Tuesday",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "day_of_week": {
+                    "type": "string",
+                    "description": "a day of the week, like Tuesday or Saturday"
+                  }
+                }
+              },
+              "strict": false
+            }
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_L6SyTm2PQVJLxTrvOjC5h5CS/runs/run_hmtJlZgy7nVpLlwSCoCgtvR9",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e7396ce3a354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1693",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:47:01 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "161",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "164",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_hmtJlZgy7nVpLlwSCoCgtvR9",
+        "object": "thread.run",
+        "created_at": 1758062818,
+        "assistant_id": "asst_nayJJwWQv659dQdMwyB7pQf6",
+        "thread_id": "thread_L6SyTm2PQVJLxTrvOjC5h5CS",
+        "status": "requires_action",
+        "started_at": 1758062819,
+        "expires_at": 1758063418,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": {
+          "type": "submit_tool_outputs",
+          "submit_tool_outputs": {
+            "tool_calls": [
+              {
+                "id": "call_M8Catnk0rQwfFXc2yCJERTkY",
+                "type": "function",
+                "function": {
+                  "name": "get_favorite_food_for_day_of_week",
+                  "arguments": "{\"day_of_week\":\"Thursday\"}"
+                }
+              }
+            ]
+          }
+        },
+        "last_error": null,
+        "model": "gpt-4o-mini",
+        "instructions": null,
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "get_favorite_food_for_day_of_week",
+              "description": "gets the user's favorite food for a given day of the week, like Tuesday",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "day_of_week": {
+                    "type": "string",
+                    "description": "a day of the week, like Tuesday or Saturday"
+                  }
+                }
+              },
+              "strict": false
+            }
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_L6SyTm2PQVJLxTrvOjC5h5CS/runs/run_hmtJlZgy7nVpLlwSCoCgtvR9",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e7414a91a354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1693",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:47:02 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "251",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "265",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_hmtJlZgy7nVpLlwSCoCgtvR9",
+        "object": "thread.run",
+        "created_at": 1758062818,
+        "assistant_id": "asst_nayJJwWQv659dQdMwyB7pQf6",
+        "thread_id": "thread_L6SyTm2PQVJLxTrvOjC5h5CS",
+        "status": "requires_action",
+        "started_at": 1758062819,
+        "expires_at": 1758063418,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": {
+          "type": "submit_tool_outputs",
+          "submit_tool_outputs": {
+            "tool_calls": [
+              {
+                "id": "call_M8Catnk0rQwfFXc2yCJERTkY",
+                "type": "function",
+                "function": {
+                  "name": "get_favorite_food_for_day_of_week",
+                  "arguments": "{\"day_of_week\":\"Thursday\"}"
+                }
+              }
+            ]
+          }
+        },
+        "last_error": null,
+        "model": "gpt-4o-mini",
+        "instructions": null,
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "get_favorite_food_for_day_of_week",
+              "description": "gets the user's favorite food for a given day of the week, like Tuesday",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "day_of_week": {
+                    "type": "string",
+                    "description": "a day of the week, like Tuesday or Saturday"
+                  }
+                }
+              },
+              "strict": false
+            }
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_L6SyTm2PQVJLxTrvOjC5h5CS/runs/run_hmtJlZgy7nVpLlwSCoCgtvR9",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e749e89da354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1693",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:47:04 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "181",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "184",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_hmtJlZgy7nVpLlwSCoCgtvR9",
+        "object": "thread.run",
+        "created_at": 1758062818,
+        "assistant_id": "asst_nayJJwWQv659dQdMwyB7pQf6",
+        "thread_id": "thread_L6SyTm2PQVJLxTrvOjC5h5CS",
+        "status": "requires_action",
+        "started_at": 1758062819,
+        "expires_at": 1758063418,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": {
+          "type": "submit_tool_outputs",
+          "submit_tool_outputs": {
+            "tool_calls": [
+              {
+                "id": "call_M8Catnk0rQwfFXc2yCJERTkY",
+                "type": "function",
+                "function": {
+                  "name": "get_favorite_food_for_day_of_week",
+                  "arguments": "{\"day_of_week\":\"Thursday\"}"
+                }
+              }
+            ]
+          }
+        },
+        "last_error": null,
+        "model": "gpt-4o-mini",
+        "instructions": null,
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "get_favorite_food_for_day_of_week",
+              "description": "gets the user's favorite food for a given day of the week, like Tuesday",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "day_of_week": {
+                    "type": "string",
+                    "description": "a day of the week, like Tuesday or Saturday"
+                  }
+                }
+              },
+              "strict": false
+            }
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_L6SyTm2PQVJLxTrvOjC5h5CS/runs/run_hmtJlZgy7nVpLlwSCoCgtvR9",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e7520fbaa354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1693",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:47:05 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "164",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "167",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_hmtJlZgy7nVpLlwSCoCgtvR9",
+        "object": "thread.run",
+        "created_at": 1758062818,
+        "assistant_id": "asst_nayJJwWQv659dQdMwyB7pQf6",
+        "thread_id": "thread_L6SyTm2PQVJLxTrvOjC5h5CS",
+        "status": "requires_action",
+        "started_at": 1758062819,
+        "expires_at": 1758063418,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": {
+          "type": "submit_tool_outputs",
+          "submit_tool_outputs": {
+            "tool_calls": [
+              {
+                "id": "call_M8Catnk0rQwfFXc2yCJERTkY",
+                "type": "function",
+                "function": {
+                  "name": "get_favorite_food_for_day_of_week",
+                  "arguments": "{\"day_of_week\":\"Thursday\"}"
+                }
+              }
+            ]
+          }
+        },
+        "last_error": null,
+        "model": "gpt-4o-mini",
+        "instructions": null,
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "get_favorite_food_for_day_of_week",
+              "description": "gets the user's favorite food for a given day of the week, like Tuesday",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "day_of_week": {
+                    "type": "string",
+                    "description": "a day of the week, like Tuesday or Saturday"
+                  }
+                }
+              },
+              "strict": false
+            }
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_L6SyTm2PQVJLxTrvOjC5h5CS/runs/run_hmtJlZgy7nVpLlwSCoCgtvR9",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e75a0fa4a354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1693",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:47:06 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "288",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "303",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_hmtJlZgy7nVpLlwSCoCgtvR9",
+        "object": "thread.run",
+        "created_at": 1758062818,
+        "assistant_id": "asst_nayJJwWQv659dQdMwyB7pQf6",
+        "thread_id": "thread_L6SyTm2PQVJLxTrvOjC5h5CS",
+        "status": "requires_action",
+        "started_at": 1758062819,
+        "expires_at": 1758063418,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": {
+          "type": "submit_tool_outputs",
+          "submit_tool_outputs": {
+            "tool_calls": [
+              {
+                "id": "call_M8Catnk0rQwfFXc2yCJERTkY",
+                "type": "function",
+                "function": {
+                  "name": "get_favorite_food_for_day_of_week",
+                  "arguments": "{\"day_of_week\":\"Thursday\"}"
+                }
+              }
+            ]
+          }
+        },
+        "last_error": null,
+        "model": "gpt-4o-mini",
+        "instructions": null,
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "get_favorite_food_for_day_of_week",
+              "description": "gets the user's favorite food for a given day of the week, like Tuesday",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "day_of_week": {
+                    "type": "string",
+                    "description": "a day of the week, like Tuesday or Saturday"
+                  }
+                }
+              },
+              "strict": false
+            }
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_L6SyTm2PQVJLxTrvOjC5h5CS/runs/run_hmtJlZgy7nVpLlwSCoCgtvR9",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e762be99a354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1693",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:47:08 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "147",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "150",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_hmtJlZgy7nVpLlwSCoCgtvR9",
+        "object": "thread.run",
+        "created_at": 1758062818,
+        "assistant_id": "asst_nayJJwWQv659dQdMwyB7pQf6",
+        "thread_id": "thread_L6SyTm2PQVJLxTrvOjC5h5CS",
+        "status": "requires_action",
+        "started_at": 1758062819,
+        "expires_at": 1758063418,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": {
+          "type": "submit_tool_outputs",
+          "submit_tool_outputs": {
+            "tool_calls": [
+              {
+                "id": "call_M8Catnk0rQwfFXc2yCJERTkY",
+                "type": "function",
+                "function": {
+                  "name": "get_favorite_food_for_day_of_week",
+                  "arguments": "{\"day_of_week\":\"Thursday\"}"
+                }
+              }
+            ]
+          }
+        },
+        "last_error": null,
+        "model": "gpt-4o-mini",
+        "instructions": null,
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "get_favorite_food_for_day_of_week",
+              "description": "gets the user's favorite food for a given day of the week, like Tuesday",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "day_of_week": {
+                    "type": "string",
+                    "description": "a day of the week, like Tuesday or Saturday"
+                  }
+                }
+              },
+              "strict": false
+            }
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_L6SyTm2PQVJLxTrvOjC5h5CS/runs/run_hmtJlZgy7nVpLlwSCoCgtvR9",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e76a8caaa354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1693",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:47:09 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "237",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "257",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_hmtJlZgy7nVpLlwSCoCgtvR9",
+        "object": "thread.run",
+        "created_at": 1758062818,
+        "assistant_id": "asst_nayJJwWQv659dQdMwyB7pQf6",
+        "thread_id": "thread_L6SyTm2PQVJLxTrvOjC5h5CS",
+        "status": "requires_action",
+        "started_at": 1758062819,
+        "expires_at": 1758063418,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": {
+          "type": "submit_tool_outputs",
+          "submit_tool_outputs": {
+            "tool_calls": [
+              {
+                "id": "call_M8Catnk0rQwfFXc2yCJERTkY",
+                "type": "function",
+                "function": {
+                  "name": "get_favorite_food_for_day_of_week",
+                  "arguments": "{\"day_of_week\":\"Thursday\"}"
+                }
+              }
+            ]
+          }
+        },
+        "last_error": null,
+        "model": "gpt-4o-mini",
+        "instructions": null,
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "get_favorite_food_for_day_of_week",
+              "description": "gets the user's favorite food for a given day of the week, like Tuesday",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "day_of_week": {
+                    "type": "string",
+                    "description": "a day of the week, like Tuesday or Saturday"
+                  }
+                }
+              },
+              "strict": false
+            }
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_L6SyTm2PQVJLxTrvOjC5h5CS/runs/run_hmtJlZgy7nVpLlwSCoCgtvR9",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e772eb4fa354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1693",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:47:10 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "171",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "174",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_hmtJlZgy7nVpLlwSCoCgtvR9",
+        "object": "thread.run",
+        "created_at": 1758062818,
+        "assistant_id": "asst_nayJJwWQv659dQdMwyB7pQf6",
+        "thread_id": "thread_L6SyTm2PQVJLxTrvOjC5h5CS",
+        "status": "requires_action",
+        "started_at": 1758062819,
+        "expires_at": 1758063418,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": {
+          "type": "submit_tool_outputs",
+          "submit_tool_outputs": {
+            "tool_calls": [
+              {
+                "id": "call_M8Catnk0rQwfFXc2yCJERTkY",
+                "type": "function",
+                "function": {
+                  "name": "get_favorite_food_for_day_of_week",
+                  "arguments": "{\"day_of_week\":\"Thursday\"}"
+                }
+              }
+            ]
+          }
+        },
+        "last_error": null,
+        "model": "gpt-4o-mini",
+        "instructions": null,
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "get_favorite_food_for_day_of_week",
+              "description": "gets the user's favorite food for a given day of the week, like Tuesday",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "day_of_week": {
+                    "type": "string",
+                    "description": "a day of the week, like Tuesday or Saturday"
+                  }
+                }
+              },
+              "strict": false
+            }
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_L6SyTm2PQVJLxTrvOjC5h5CS/runs/run_hmtJlZgy7nVpLlwSCoCgtvR9",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e77aeaf1a354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1693",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:47:12 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "824",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "898",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_hmtJlZgy7nVpLlwSCoCgtvR9",
+        "object": "thread.run",
+        "created_at": 1758062818,
+        "assistant_id": "asst_nayJJwWQv659dQdMwyB7pQf6",
+        "thread_id": "thread_L6SyTm2PQVJLxTrvOjC5h5CS",
+        "status": "requires_action",
+        "started_at": 1758062819,
+        "expires_at": 1758063418,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": {
+          "type": "submit_tool_outputs",
+          "submit_tool_outputs": {
+            "tool_calls": [
+              {
+                "id": "call_M8Catnk0rQwfFXc2yCJERTkY",
+                "type": "function",
+                "function": {
+                  "name": "get_favorite_food_for_day_of_week",
+                  "arguments": "{\"day_of_week\":\"Thursday\"}"
+                }
+              }
+            ]
+          }
+        },
+        "last_error": null,
+        "model": "gpt-4o-mini",
+        "instructions": null,
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "get_favorite_food_for_day_of_week",
+              "description": "gets the user's favorite food for a given day of the week, like Tuesday",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "day_of_week": {
+                    "type": "string",
+                    "description": "a day of the week, like Tuesday or Saturday"
+                  }
+                }
+              },
+              "strict": false
+            }
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_L6SyTm2PQVJLxTrvOjC5h5CS/runs/run_hmtJlZgy7nVpLlwSCoCgtvR9/submit_tool_outputs",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "84",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "tool_outputs": [
+          {
+            "tool_call_id": "call_M8Catnk0rQwfFXc2yCJERTkY",
+            "output": "tacos"
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e781381fa354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1333",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:47:13 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "608",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "612",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_hmtJlZgy7nVpLlwSCoCgtvR9",
+        "object": "thread.run",
+        "created_at": 1758062818,
+        "assistant_id": "asst_nayJJwWQv659dQdMwyB7pQf6",
+        "thread_id": "thread_L6SyTm2PQVJLxTrvOjC5h5CS",
+        "status": "queued",
+        "started_at": 1758062819,
+        "expires_at": 1758063418,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": null,
+        "last_error": null,
+        "model": "gpt-4o-mini",
+        "instructions": null,
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "get_favorite_food_for_day_of_week",
+              "description": "gets the user's favorite food for a given day of the week, like Tuesday",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "day_of_week": {
+                    "type": "string",
+                    "description": "a day of the week, like Tuesday or Saturday"
+                  }
+                }
+              },
+              "strict": false
+            }
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_L6SyTm2PQVJLxTrvOjC5h5CS/runs/run_hmtJlZgy7nVpLlwSCoCgtvR9",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e78bd8e3a354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1338",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:47:15 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "449",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "493",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_hmtJlZgy7nVpLlwSCoCgtvR9",
+        "object": "thread.run",
+        "created_at": 1758062818,
+        "assistant_id": "asst_nayJJwWQv659dQdMwyB7pQf6",
+        "thread_id": "thread_L6SyTm2PQVJLxTrvOjC5h5CS",
+        "status": "in_progress",
+        "started_at": 1758062834,
+        "expires_at": 1758063418,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": null,
+        "required_action": null,
+        "last_error": null,
+        "model": "gpt-4o-mini",
+        "instructions": null,
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "get_favorite_food_for_day_of_week",
+              "description": "gets the user's favorite food for a given day of the week, like Tuesday",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "day_of_week": {
+                    "type": "string",
+                    "description": "a day of the week, like Tuesday or Saturday"
+                  }
+                }
+              },
+              "strict": false
+            }
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": null,
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_L6SyTm2PQVJLxTrvOjC5h5CS/runs/run_hmtJlZgy7nVpLlwSCoCgtvR9",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e79609e5a354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1548",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:47:16 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "171",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "174",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "run_hmtJlZgy7nVpLlwSCoCgtvR9",
+        "object": "thread.run",
+        "created_at": 1758062818,
+        "assistant_id": "asst_nayJJwWQv659dQdMwyB7pQf6",
+        "thread_id": "thread_L6SyTm2PQVJLxTrvOjC5h5CS",
+        "status": "completed",
+        "started_at": 1758062834,
+        "expires_at": null,
+        "cancelled_at": null,
+        "failed_at": null,
+        "completed_at": 1758062835,
+        "required_action": null,
+        "last_error": null,
+        "model": "gpt-4o-mini",
+        "instructions": null,
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "get_favorite_food_for_day_of_week",
+              "description": "gets the user's favorite food for a given day of the week, like Tuesday",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "day_of_week": {
+                    "type": "string",
+                    "description": "a day of the week, like Tuesday or Saturday"
+                  }
+                }
+              },
+              "strict": false
+            }
+          }
+        ],
+        "tool_resources": {},
+        "metadata": {},
+        "temperature": 1.0,
+        "top_p": 1.0,
+        "reasoning_effort": null,
+        "max_completion_tokens": null,
+        "max_prompt_tokens": null,
+        "truncation_strategy": {
+          "type": "auto",
+          "last_messages": null
+        },
+        "incomplete_details": null,
+        "usage": {
+          "prompt_tokens": 627,
+          "completion_tokens": 36,
+          "total_tokens": 663,
+          "prompt_token_details": {
+            "cached_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          }
+        },
+        "response_format": "auto",
+        "tool_choice": "auto",
+        "parallel_tool_calls": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_L6SyTm2PQVJLxTrvOjC5h5CS/messages?order=desc",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803e797ab22a354-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1195",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:47:16 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "48",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "52",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "msg_Sni8cRHWIkUSU6ryODN1JJ5R",
+            "object": "thread.message",
+            "created_at": 1758062834,
+            "assistant_id": "asst_nayJJwWQv659dQdMwyB7pQf6",
+            "thread_id": "thread_L6SyTm2PQVJLxTrvOjC5h5CS",
+            "run_id": "run_hmtJlZgy7nVpLlwSCoCgtvR9",
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": {
+                  "value": "You should eat tacos on Thursday! Enjoy! \uD83C\uDF2E",
+                  "annotations": []
+                }
+              }
+            ],
+            "attachments": [],
+            "metadata": {}
+          },
+          {
+            "id": "msg_fqUFl2fvt71cBQ12ANJ6h5Ij",
+            "object": "thread.message",
+            "created_at": 1758062818,
+            "assistant_id": null,
+            "thread_id": "thread_L6SyTm2PQVJLxTrvOjC5h5CS",
+            "run_id": null,
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": {
+                  "value": "What should I eat on Thursday?",
+                  "annotations": []
+                }
+              }
+            ],
+            "attachments": [],
+            "metadata": {}
+          }
+        ],
+        "first_id": "msg_Sni8cRHWIkUSU6ryODN1JJ5R",
+        "last_id": "msg_fqUFl2fvt71cBQ12ANJ6h5Ij",
+        "has_more": false
+      }
+    }
+  ],
+  "Variables": {}
+}

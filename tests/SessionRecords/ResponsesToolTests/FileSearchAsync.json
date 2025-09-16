@@ -1,0 +1,208 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "260",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "tools": [
+          {
+            "type": "file_search",
+            "vector_store_ids": [
+              "vs_68c9f17d7b4881919db1ce0fc38e8868"
+            ]
+          }
+        ],
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Using the file search tool, what's Travis's favorite food?"
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "98041cf2b999ba46-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "2188",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 23:23:44 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "2593",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "2596",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149998812",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_030aba95f466f0530068c9f17e0c848195a3c27d0171abc955",
+        "object": "response",
+        "created_at": 1758065022,
+        "status": "completed",
+        "background": false,
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4o-mini-2024-07-18",
+        "output": [
+          {
+            "id": "fs_030aba95f466f0530068c9f17eb828819582ffdce73bf25e9f",
+            "type": "file_search_call",
+            "status": "completed",
+            "queries": [
+              "What is Travis's favorite food?",
+              "Travis favorite food",
+              "favorite food of Travis"
+            ],
+            "results": null
+          },
+          {
+            "id": "msg_030aba95f466f0530068c9f18035ac819590ccae3b5721dbcf",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [
+                  {
+                    "type": "file_citation",
+                    "file_id": "file-VVAfP4qywF8gCZfmUFWK9E",
+                    "filename": "test_favorite_foods.txt",
+                    "index": 31
+                  }
+                ],
+                "logprobs": [],
+                "text": "Travis's favorite food is pizza."
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "reasoning": {
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [
+          {
+            "type": "file_search",
+            "filters": null,
+            "max_num_results": 20,
+            "ranking_options": {
+              "ranker": "auto",
+              "score_threshold": 0.0
+            },
+            "vector_store_ids": [
+              "vs_68c9f17d7b4881919db1ce0fc38e8868"
+            ]
+          }
+        ],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 1976,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 52,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 2028
+        },
+        "user": null,
+        "metadata": {}
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/responses/resp_030aba95f466f0530068c9f17e0c848195a3c27d0171abc955/input_items",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "98041d044c64ba46-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "519",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 23:23:44 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "124",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "129",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "msg_030aba95f466f0530068c9f17e13ac81958c3a483cd5549039",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Using the file search tool, what's Travis's favorite food?"
+              }
+            ],
+            "role": "user"
+          }
+        ],
+        "first_id": "msg_030aba95f466f0530068c9f17e13ac81958c3a483cd5549039",
+        "has_more": false,
+        "last_id": "msg_030aba95f466f0530068c9f17e13ac81958c3a483cd5549039"
+      }
+    }
+  ],
+  "Variables": {}
+}

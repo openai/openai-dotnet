@@ -11,11 +11,11 @@ using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Containers;
 
-[Parallelizable(ParallelScope.Fixtures)]
 [Category("Containers")]
 public class ContainerTests : OpenAIRecordedTestBase
 {
     private static string _testContainerId;
+
     private ContainerClient GetTestClient() => GetProxiedOpenAIClient<ContainerClient>(TestScenario.Containers);
 
     public ContainerTests(bool isAsync) : base(isAsync)
@@ -26,20 +26,32 @@ public class ContainerTests : OpenAIRecordedTestBase
     public async Task SetUp()
     {
         // Skip setup if there is no API key (e.g., if we are not running live tests).
-        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPENAI_API_KEY")))
+        if (Mode == RecordedTestMode.Playback || string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPENAI_API_KEY")))
         {
             return;
         }
 
-        ContainerClient client = GetTestClient();
+        ContainerClient client = GetTestClient<ContainerClient>(TestScenario.Containers);
 
         // Create a test container that will be used by all tests
-        string containerName = $"test-container-{Guid.NewGuid():N}";
-        ContainerResource result = await client.CreateContainerAsync(new CreateContainerBody(containerName));
+        ContainerResource result = await client.CreateContainerAsync(new CreateContainerBody($"test-container-{Guid.NewGuid():N}"));
         _testContainerId = result.Id;
 
         Console.WriteLine($"Created test container: {_testContainerId}");
         await Task.Delay(10000); // Wait for the containers to be available
+    }
+
+    [SetUp]
+    public void PerTestSetUp()
+    {
+        if (Mode == RecordedTestMode.Record)
+        {
+            Recording.SetVariable("TEST_CONTAINER_ID", _testContainerId);
+        }
+        if (Mode == RecordedTestMode.Playback)
+        {
+            _testContainerId = Recording.GetVariable("TEST_CONTAINER_ID", null);
+        }
     }
 
     [OneTimeTearDown]
@@ -481,115 +493,121 @@ public class ContainerTests : OpenAIRecordedTestBase
     [Test]
     public async Task CanCreateAndDeleteContainerFile()
     {
-        ContainerClient client = GetTestClient();
-
-        if (string.IsNullOrEmpty(_testContainerId))
+        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            Assert.Ignore("No test container available - likely running without API key");
-            return;
-        }
+            ContainerClient client = GetTestClient();
 
-        // Create a test file using multipart form data
-        string testContent = "This is a test file content for container testing.";
-        byte[] contentBytes = System.Text.Encoding.UTF8.GetBytes(testContent);
-        
-        // Create multipart form data using the internal helper
-        var formData = new MultiPartFormDataBinaryContent();
-        formData.Add(contentBytes, "file", "test-file.txt", "text/plain");
+            if (string.IsNullOrEmpty(_testContainerId))
+            {
+                Assert.Ignore("No test container available - likely running without API key");
+                return;
+            }
 
-        ClientResult createResult = await client.CreateContainerFileAsync(_testContainerId, formData, formData.ContentType);
+            // Create a test file using multipart form data
+            string testContent = "This is a test file content for container testing.";
+            byte[] contentBytes = System.Text.Encoding.UTF8.GetBytes(testContent);
 
-        Assert.That(createResult, Is.Not.Null);
-        Assert.That(createResult.GetRawResponse().IsError, Is.False, "File creation should succeed");
+            // Create multipart form data using the internal helper
+            var formData = new MultiPartFormDataBinaryContent();
+            formData.Add(contentBytes, "file", "test-file.txt", "text/plain");
 
-        // Extract the file ID from the response (this might need adjustment based on the actual response format)
-        string responseContent = createResult.GetRawResponse().Content.ToString();
-        Console.WriteLine($"Create file response: {responseContent}");
+            ClientResult createResult = await client.CreateContainerFileAsync(_testContainerId, formData, formData.ContentType);
 
-        // Parse the response to get the file ID
-        var responseJson = JsonDocument.Parse(responseContent);
-        string fileId = responseJson.RootElement.GetProperty("id").GetString();
-        Assert.That(fileId, Is.Not.Null.And.Not.Empty, "File ID should be returned from creation");
+            Assert.That(createResult, Is.Not.Null);
+            Assert.That(createResult.GetRawResponse().IsError, Is.False, "File creation should succeed");
 
-        Console.WriteLine($"Created file with ID: {fileId}");
+            // Extract the file ID from the response (this might need adjustment based on the actual response format)
+            string responseContent = createResult.GetRawResponse().Content.ToString();
+            Console.WriteLine($"Create file response: {responseContent}");
 
-        try
-        {
-            // Now delete the file
-            ClientResult<DeleteContainerFileResponse> deleteResult = await client.DeleteContainerFileAsync(_testContainerId, fileId);
+            // Parse the response to get the file ID
+            var responseJson = JsonDocument.Parse(responseContent);
+            string fileId = responseJson.RootElement.GetProperty("id").GetString();
+            Assert.That(fileId, Is.Not.Null.And.Not.Empty, "File ID should be returned from creation");
 
-            Assert.That(deleteResult, Is.Not.Null);
-            Assert.That(deleteResult.Value, Is.Not.Null);
-            Assert.That(deleteResult.Value.Id, Is.EqualTo(fileId), "Deleted file ID should match");
-            Assert.That(deleteResult.Value.Object, Is.Not.Null.And.Not.Empty);
-            Assert.That(deleteResult.Value.Deleted, Is.True, "File should be marked as deleted");
+            Console.WriteLine($"Created file with ID: {fileId}");
 
-            Console.WriteLine($"Successfully deleted file: {fileId}");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Failed to delete file {fileId}: {ex.Message}");
-            // Don't fail the test if cleanup fails
+            try
+            {
+                // Now delete the file
+                ClientResult<DeleteContainerFileResponse> deleteResult = await client.DeleteContainerFileAsync(_testContainerId, fileId);
+
+                Assert.That(deleteResult, Is.Not.Null);
+                Assert.That(deleteResult.Value, Is.Not.Null);
+                Assert.That(deleteResult.Value.Id, Is.EqualTo(fileId), "Deleted file ID should match");
+                Assert.That(deleteResult.Value.Object, Is.Not.Null.And.Not.Empty);
+                Assert.That(deleteResult.Value.Deleted, Is.True, "File should be marked as deleted");
+
+                Console.WriteLine($"Successfully deleted file: {fileId}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to delete file {fileId}: {ex.Message}");
+                // Don't fail the test if cleanup fails
+            }
         }
     }
 
     [Test]
     public async Task CanCreateGetAndDeleteContainerFile()
     {
-        ContainerClient client = GetTestClient();
-
-        if (string.IsNullOrEmpty(_testContainerId))
+        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            Assert.Ignore("No test container available - likely running without API key");
-            return;
-        }
+            ContainerClient client = GetTestClient();
 
-        // Create a test file using multipart form data
-        string testContent = "Test file content for get/delete operations.";
-        byte[] contentBytes = System.Text.Encoding.UTF8.GetBytes(testContent);
-        
-        var formData = new MultiPartFormDataBinaryContent();
-        formData.Add(contentBytes, "file", "test-get-file.txt", "text/plain");
+            if (string.IsNullOrEmpty(_testContainerId))
+            {
+                Assert.Ignore("No test container available - likely running without API key");
+                return;
+            }
 
-        ClientResult createResult = await client.CreateContainerFileAsync(_testContainerId, formData, formData.ContentType);
+            // Create a test file using multipart form data
+            string testContent = "Test file content for get/delete operations.";
+            byte[] contentBytes = System.Text.Encoding.UTF8.GetBytes(testContent);
 
-        string responseContent = createResult.GetRawResponse().Content.ToString();
-        var responseJson = JsonDocument.Parse(responseContent);
-        string fileId = responseJson.RootElement.GetProperty("id").GetString();
+            var formData = new MultiPartFormDataBinaryContent();
+            formData.Add(contentBytes, "file", "test-get-file.txt", "text/plain");
 
-        try
-        {
-            // Get the file metadata
-            ClientResult<ContainerFileResource> getResult = await client.GetContainerFileAsync(_testContainerId, fileId);
-            ContainerFileResource fileResource = getResult.Value;
+            ClientResult createResult = await client.CreateContainerFileAsync(_testContainerId, formData, formData.ContentType);
 
-            Validate(fileResource);
-            Assert.That(fileResource.Id, Is.EqualTo(fileId));
-            Assert.That(fileResource.ContainerId, Is.EqualTo(_testContainerId));
-            Assert.That(fileResource.Bytes, Is.GreaterThan(0), "File size should be greater than 0");
+            string responseContent = createResult.GetRawResponse().Content.ToString();
+            var responseJson = JsonDocument.Parse(responseContent);
+            string fileId = responseJson.RootElement.GetProperty("id").GetString();
 
-            Console.WriteLine($"Retrieved file metadata: {fileResource.Id}, {fileResource.Bytes} bytes");
-
-            // Get the file content
-            ClientResult<BinaryData> contentResult = await client.GetContainerFileContentAsync(_testContainerId, fileId);
-            BinaryData fileContent = contentResult.Value;
-
-            Assert.That(fileContent, Is.Not.Null);
-            Assert.That(fileContent.ToArray().Length, Is.GreaterThan(0), "File content should not be empty");
-
-            Console.WriteLine($"Retrieved file content with {fileContent.ToArray().Length} bytes");
-        }
-        finally
-        {
-            // Clean up - delete the file
             try
             {
-                await client.DeleteContainerFileAsync(_testContainerId, fileId);
-                Console.WriteLine($"Cleaned up file: {fileId}");
+                // Get the file metadata
+                ClientResult<ContainerFileResource> getResult = await client.GetContainerFileAsync(_testContainerId, fileId);
+                ContainerFileResource fileResource = getResult.Value;
+
+                Validate(fileResource);
+                Assert.That(fileResource.Id, Is.EqualTo(fileId));
+                Assert.That(fileResource.ContainerId, Is.EqualTo(_testContainerId));
+                Assert.That(fileResource.Bytes, Is.GreaterThan(0), "File size should be greater than 0");
+
+                Console.WriteLine($"Retrieved file metadata: {fileResource.Id}, {fileResource.Bytes} bytes");
+
+                // Get the file content
+                ClientResult<BinaryData> contentResult = await client.GetContainerFileContentAsync(_testContainerId, fileId);
+                BinaryData fileContent = contentResult.Value;
+
+                Assert.That(fileContent, Is.Not.Null);
+                Assert.That(fileContent.ToArray().Length, Is.GreaterThan(0), "File content should not be empty");
+
+                Console.WriteLine($"Retrieved file content with {fileContent.ToArray().Length} bytes");
             }
-            catch (Exception ex)
+            finally
             {
-                Console.WriteLine($"Failed to clean up file {fileId}: {ex.Message}");
+                // Clean up - delete the file
+                try
+                {
+                    await client.DeleteContainerFileAsync(_testContainerId, fileId);
+                    Console.WriteLine($"Cleaned up file: {fileId}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to clean up file {fileId}: {ex.Message}");
+                }
             }
         }
     }
@@ -597,56 +615,59 @@ public class ContainerTests : OpenAIRecordedTestBase
     [Test]
     public async Task CanGetContainerFileWithCancellation()
     {
-        ContainerClient client = GetTestClient();
-
-        if (string.IsNullOrEmpty(_testContainerId))
+        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            Assert.Ignore("No test container available - likely running without API key");
-            return;
-        }
+            ContainerClient client = GetTestClient();
 
-        // Create a test file first using multipart form data
-        string testContent = "Test content for cancellation test.";
-        byte[] contentBytes = System.Text.Encoding.UTF8.GetBytes(testContent);
-        
-        var formData = new MultiPartFormDataBinaryContent();
-        formData.Add(contentBytes, "file", "test-cancel-file.txt", "text/plain");
+            if (string.IsNullOrEmpty(_testContainerId))
+            {
+                Assert.Ignore("No test container available - likely running without API key");
+                return;
+            }
 
-        ClientResult createResult = await client.CreateContainerFileAsync(_testContainerId, formData, formData.ContentType);
+            // Create a test file first using multipart form data
+            string testContent = "Test content for cancellation test.";
+            byte[] contentBytes = System.Text.Encoding.UTF8.GetBytes(testContent);
 
-        string responseContent = createResult.GetRawResponse().Content.ToString();
-        var responseJson = JsonDocument.Parse(responseContent);
-        string fileId = responseJson.RootElement.GetProperty("id").GetString();
+            var formData = new MultiPartFormDataBinaryContent();
+            formData.Add(contentBytes, "file", "test-cancel-file.txt", "text/plain");
 
-        try
-        {
-            using var cancellationTokenSource = new CancellationTokenSource();
-            cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(30));
+            ClientResult createResult = await client.CreateContainerFileAsync(_testContainerId, formData, formData.ContentType);
 
-            // Test GetContainerFile with cancellation
-            ClientResult<ContainerFileResource> result = await client.GetContainerFileAsync(_testContainerId, fileId, cancellationTokenSource.Token);
-            ContainerFileResource fileResource = result.Value;
+            string responseContent = createResult.GetRawResponse().Content.ToString();
+            var responseJson = JsonDocument.Parse(responseContent);
+            string fileId = responseJson.RootElement.GetProperty("id").GetString();
 
-            Validate(fileResource);
-            Assert.That(fileResource.Id, Is.EqualTo(fileId));
-
-            // Test GetContainerFileContent with cancellation
-            ClientResult<BinaryData> contentResult = await client.GetContainerFileContentAsync(_testContainerId, fileId, cancellationTokenSource.Token);
-            BinaryData fileContent = contentResult.Value;
-
-            Assert.That(fileContent, Is.Not.Null);
-            Console.WriteLine($"Successfully retrieved file with cancellation token");
-        }
-        finally
-        {
-            // Clean up
             try
             {
-                await client.DeleteContainerFileAsync(_testContainerId, fileId);
+                using var cancellationTokenSource = new CancellationTokenSource();
+                cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(30));
+
+                // Test GetContainerFile with cancellation
+                ClientResult<ContainerFileResource> result = await client.GetContainerFileAsync(_testContainerId, fileId, cancellationTokenSource.Token);
+                ContainerFileResource fileResource = result.Value;
+
+                Validate(fileResource);
+                Assert.That(fileResource.Id, Is.EqualTo(fileId));
+
+                // Test GetContainerFileContent with cancellation
+                ClientResult<BinaryData> contentResult = await client.GetContainerFileContentAsync(_testContainerId, fileId, cancellationTokenSource.Token);
+                BinaryData fileContent = contentResult.Value;
+
+                Assert.That(fileContent, Is.Not.Null);
+                Console.WriteLine($"Successfully retrieved file with cancellation token");
             }
-            catch (Exception ex)
+            finally
             {
-                Console.WriteLine($"Failed to clean up file {fileId}: {ex.Message}");
+                // Clean up
+                try
+                {
+                    await client.DeleteContainerFileAsync(_testContainerId, fileId);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to clean up file {fileId}: {ex.Message}");
+                }
             }
         }
     }
@@ -654,39 +675,42 @@ public class ContainerTests : OpenAIRecordedTestBase
     [Test]
     public async Task CanDeleteContainerFileWithCancellation()
     {
-        ContainerClient client = GetTestClient();
-
-        if (string.IsNullOrEmpty(_testContainerId))
+        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            Assert.Ignore("No test container available - likely running without API key");
-            return;
+            ContainerClient client = GetTestClient();
+
+            if (string.IsNullOrEmpty(_testContainerId))
+            {
+                Assert.Ignore("No test container available - likely running without API key");
+                return;
+            }
+
+            // Create a test file first using multipart form data
+            string testContent = "Test content for deletion with cancellation.";
+            byte[] contentBytes = System.Text.Encoding.UTF8.GetBytes(testContent);
+
+            var formData = new MultiPartFormDataBinaryContent();
+            formData.Add(contentBytes, "file", "test-delete-cancel-file.txt", "text/plain");
+
+            ClientResult createResult = await client.CreateContainerFileAsync(_testContainerId, formData, formData.ContentType);
+
+            string responseContent = createResult.GetRawResponse().Content.ToString();
+            var responseJson = JsonDocument.Parse(responseContent);
+            string fileId = responseJson.RootElement.GetProperty("id").GetString();
+
+            using var cancellationTokenSource = new CancellationTokenSource();
+            cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(30));
+
+            // Delete the file with cancellation token
+            ClientResult<DeleteContainerFileResponse> deleteResult = await client.DeleteContainerFileAsync(_testContainerId, fileId, cancellationTokenSource.Token);
+
+            Assert.That(deleteResult, Is.Not.Null);
+            Assert.That(deleteResult.Value, Is.Not.Null);
+            Assert.That(deleteResult.Value.Id, Is.EqualTo(fileId));
+            Assert.That(deleteResult.Value.Deleted, Is.True);
+
+            Console.WriteLine($"Successfully deleted file with cancellation token: {fileId}");
         }
-
-        // Create a test file first using multipart form data
-        string testContent = "Test content for deletion with cancellation.";
-        byte[] contentBytes = System.Text.Encoding.UTF8.GetBytes(testContent);
-        
-        var formData = new MultiPartFormDataBinaryContent();
-        formData.Add(contentBytes, "file", "test-delete-cancel-file.txt", "text/plain");
-
-        ClientResult createResult = await client.CreateContainerFileAsync(_testContainerId, formData, formData.ContentType);
-
-        string responseContent = createResult.GetRawResponse().Content.ToString();
-        var responseJson = JsonDocument.Parse(responseContent);
-        string fileId = responseJson.RootElement.GetProperty("id").GetString();
-
-        using var cancellationTokenSource = new CancellationTokenSource();
-        cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(30));
-
-        // Delete the file with cancellation token
-        ClientResult<DeleteContainerFileResponse> deleteResult = await client.DeleteContainerFileAsync(_testContainerId, fileId, cancellationTokenSource.Token);
-
-        Assert.That(deleteResult, Is.Not.Null);
-        Assert.That(deleteResult.Value, Is.Not.Null);
-        Assert.That(deleteResult.Value.Id, Is.EqualTo(fileId));
-        Assert.That(deleteResult.Value.Deleted, Is.True);
-
-        Console.WriteLine($"Successfully deleted file with cancellation token: {fileId}");
     }
 
     [Test]

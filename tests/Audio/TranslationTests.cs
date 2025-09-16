@@ -12,7 +12,7 @@ namespace OpenAI.Tests.Audio;
 [Category("Audio")]
 public partial class TranslationTests : OpenAIRecordedTestBase
 {
-    public TranslationTests(bool isAsync) : base(isAsync, RecordedTestMode.Record)
+    public TranslationTests(bool isAsync) : base(isAsync)
     {
     }
 

@@ -1,0 +1,153 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "280",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-5",
+        "tools": [
+          {
+            "type": "mcp",
+            "server_label": "dmcp",
+            "server_url": "https://dmcp-server.deno.dev/sse",
+            "allowed_tools": {
+              "tool_names": [
+                "not_roll"
+              ]
+            },
+            "require_approval": "never"
+          }
+        ],
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Roll 2d4+1"
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "980417a28e44ba46-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "2037",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 23:20:15 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "10806",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "10809",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_0b78dca0a77759890068c9f0a450fc8196a70f39aad6fa1675",
+        "object": "response",
+        "created_at": 1758064804,
+        "status": "completed",
+        "background": false,
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-5-2025-08-07",
+        "output": [
+          {
+            "id": "mcpl_0b78dca0a77759890068c9f0a48ddc81968dc5c0f54d02d0bc",
+            "type": "mcp_list_tools",
+            "server_label": "dmcp",
+            "tools": []
+          },
+          {
+            "id": "rs_0b78dca0a77759890068c9f0a7bdf48196839e3530f9a8e042",
+            "type": "reasoning",
+            "summary": []
+          },
+          {
+            "id": "msg_0b78dca0a77759890068c9f0ae8884819694b83b67b8090a7f",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "You rolled: 2 and 4 → 6, plus 1 = 7."
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "reasoning": {
+          "effort": "medium",
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [
+          {
+            "type": "mcp",
+            "allowed_tools": {
+              "read_only": null,
+              "tool_names": [
+                "not_roll"
+              ]
+            },
+            "headers": null,
+            "require_approval": "never",
+            "server_description": null,
+            "server_label": "dmcp",
+            "server_url": "https://dmcp-server.deno.dev/<redacted>"
+          }
+        ],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 109,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 409,
+          "output_tokens_details": {
+            "reasoning_tokens": 384
+          },
+          "total_tokens": 518
+        },
+        "user": null,
+        "metadata": {}
+      }
+    }
+  ],
+  "Variables": {}
+}

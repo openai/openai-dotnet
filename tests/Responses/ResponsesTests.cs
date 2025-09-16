@@ -20,7 +20,6 @@ namespace OpenAI.Tests.Responses;
 
 #pragma warning disable OPENAICUA001
 
-[Parallelizable(ParallelScope.Fixtures)]
 [Category("Responses")]
 public partial class ResponsesTests : OpenAIRecordedTestBase
 {
@@ -35,15 +34,15 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Console.WriteLine("[Teardown]");
 
         // Skip cleanup if there is no API key (e.g., if we are not running live tests).
-        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPENAI_API_KEY")))
+        if (Mode == RecordedTestMode.Playback || string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPENAI_API_KEY")))
         {
             Console.WriteLine("[WARNING] Can't clean up");
             return;
         }
 
         RequestOptions noThrowOptions = new() { ErrorOptions = ClientErrorBehaviors.NoThrow };
-        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
-        VectorStoreClient vectorStoreClient = GetProxiedOpenAIClient<VectorStoreClient>(TestScenario.VectorStores);
+        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
+        VectorStoreClient vectorStoreClient = GetTestClient<VectorStoreClient>(TestScenario.VectorStores);
 
         foreach (string fileId in FileIdsToDelete)
         {
@@ -493,7 +492,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     public async Task FileInputFromIdWorks()
     {
         OpenAIResponseClient client = GetTestClient();
-        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
         string filePath = Path.Join("Assets", "files_travis_favorite_food.pdf");
 
         OpenAIFile newFileToUse = await fileClient.UploadFileAsync(

@@ -15,12 +15,11 @@ using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Responses;
 
-[Parallelizable(ParallelScope.Fixtures)]
 [Category("Responses")]
 [Category("MCP")]
 public partial class ResponsesToolTests : OpenAIRecordedTestBase
 {
-    public ResponsesToolTests(bool isAsync) : base(isAsync)
+    public ResponsesToolTests(bool isAsync) : base(isAsync, RecordedTestMode.Record)
     {
         TestTimeoutInSeconds = 30;
     }

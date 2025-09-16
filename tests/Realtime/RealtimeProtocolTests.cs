@@ -1,25 +1,13 @@
-﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-using NUnit.Framework;
-using OpenAI.Chat;
+﻿using NUnit.Framework;
 using OpenAI.Realtime;
-using OpenAI.Tests.Telemetry;
-using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
-using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Threading;
 using System.Threading.Tasks;
-using static OpenAI.Tests.Telemetry.TestMeterListener;
-using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Realtime;
 
