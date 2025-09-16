@@ -13,7 +13,6 @@ namespace OpenAI.Tests.Realtime;
 
 #pragma warning disable OPENAI002
 
-[Parallelizable(ParallelScope.All)]
 [Category("Conversation")]
 public class RealtimeTestFixtureBase : OpenAIRecordedTestBase
 {

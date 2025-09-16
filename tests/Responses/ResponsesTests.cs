@@ -495,11 +495,15 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
         string filePath = Path.Join("Assets", "files_travis_favorite_food.pdf");
 
-        OpenAIFile newFileToUse = await fileClient.UploadFileAsync(
+        OpenAIFile newFileToUse;
+        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
+        {
+            newFileToUse = await fileClient.UploadFileAsync(
             BinaryData.FromBytes(File.ReadAllBytes(filePath)),
             "test_favorite_foods.pdf",
             FileUploadPurpose.UserData);
-                Validate(newFileToUse);
+            Validate(newFileToUse);
+        }
 
         ResponseItem messageItem = ResponseItem.CreateUserMessageItem(
             [

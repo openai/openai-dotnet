@@ -8,7 +8,6 @@ using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Moderations;
 
-[Parallelizable(ParallelScope.All)]
 [Category("Moderations")]
 public class ModerationsTests : OpenAIRecordedTestBase
 {

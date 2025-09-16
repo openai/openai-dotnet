@@ -10,7 +10,6 @@ using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Models;
 
-//[Parallelizable(ParallelScope.All)]
 [Category("Models")]
 public class ModelsTests : OpenAIRecordedTestBase
 {
