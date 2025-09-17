@@ -35,9 +35,9 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("container"u8);
 #if NET6_0_OR_GREATER
-                writer.WriteRawValue(Container);
+                writer.WriteRawValue(InternalContainer);
 #else
-                using (JsonDocument document = JsonDocument.Parse(Container))
+                using (JsonDocument document = JsonDocument.Parse(InternalContainer))
                 {
                     JsonSerializer.Serialize(writer, document.RootElement);
                 }
@@ -66,7 +66,7 @@ namespace OpenAI.Responses
             }
             InternalToolType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            BinaryData container = default;
+            BinaryData internalContainer = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -76,13 +76,13 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("container"u8))
                 {
-                    container = BinaryData.FromString(prop.Value.GetRawText());
+                    internalContainer = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new CodeInterpreterTool(kind, additionalBinaryDataProperties, container);
+            return new CodeInterpreterTool(kind, additionalBinaryDataProperties, internalContainer);
         }
 
         BinaryData IPersistableModel<CodeInterpreterTool>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

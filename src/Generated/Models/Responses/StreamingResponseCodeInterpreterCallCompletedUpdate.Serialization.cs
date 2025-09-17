@@ -36,10 +36,10 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("output_index"u8);
                 writer.WriteNumberValue(OutputIndex);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("code_interpreter_call") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("item_id") != true)
             {
-                writer.WritePropertyName("code_interpreter_call"u8);
-                writer.WriteObjectValue(CodeInterpreterCall, options);
+                writer.WritePropertyName("item_id"u8);
+                writer.WriteStringValue(ItemId);
             }
         }
 
@@ -66,7 +66,7 @@ namespace OpenAI.Responses
             int sequenceNumber = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             int outputIndex = default;
-            CodeInterpreterCallResponseItem codeInterpreterCall = default;
+            string itemId = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -84,15 +84,15 @@ namespace OpenAI.Responses
                     outputIndex = prop.Value.GetInt32();
                     continue;
                 }
-                if (prop.NameEquals("code_interpreter_call"u8))
+                if (prop.NameEquals("item_id"u8))
                 {
-                    codeInterpreterCall = CodeInterpreterCallResponseItem.DeserializeCodeInterpreterCallResponseItem(prop.Value, options);
+                    itemId = prop.Value.GetString();
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new StreamingResponseCodeInterpreterCallCompletedUpdate(kind, sequenceNumber, additionalBinaryDataProperties, outputIndex, codeInterpreterCall);
+            return new StreamingResponseCodeInterpreterCallCompletedUpdate(kind, sequenceNumber, additionalBinaryDataProperties, outputIndex, itemId);
         }
 
         BinaryData IPersistableModel<StreamingResponseCodeInterpreterCallCompletedUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

@@ -11,19 +11,23 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseCodeInterpreterCallCodeDeltaUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseCodeInterpreterCallCodeDeltaUpdate(int sequenceNumber, int outputIndex, string delta) : base(InternalResponseStreamEventType.ResponseCodeInterpreterCallCodeDelta, sequenceNumber)
+        internal StreamingResponseCodeInterpreterCallCodeDeltaUpdate(int sequenceNumber, int outputIndex, string itemId, string delta) : base(InternalResponseStreamEventType.ResponseCodeInterpreterCallCodeDelta, sequenceNumber)
         {
             OutputIndex = outputIndex;
+            ItemId = itemId;
             Delta = delta;
         }
 
-        internal StreamingResponseCodeInterpreterCallCodeDeltaUpdate(InternalResponseStreamEventType kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, int outputIndex, string delta) : base(kind, sequenceNumber, additionalBinaryDataProperties)
+        internal StreamingResponseCodeInterpreterCallCodeDeltaUpdate(InternalResponseStreamEventType kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, int outputIndex, string itemId, string delta) : base(kind, sequenceNumber, additionalBinaryDataProperties)
         {
             OutputIndex = outputIndex;
+            ItemId = itemId;
             Delta = delta;
         }
 
         public int OutputIndex { get; }
+
+        public string ItemId { get; }
 
         public string Delta { get; }
     }

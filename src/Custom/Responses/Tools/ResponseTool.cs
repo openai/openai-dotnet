@@ -75,41 +75,18 @@ public partial class ResponseTool
             toolCallApprovalPolicy: toolCallApprovalPolicy);
     }
 
-    // CUSTOM: Added factory method a a convenience.
     /// <summary>
-    /// Creates a new instance of the <see cref="CodeInterpreterTool"/> class with an auto-generated container.
+    /// Creates a new instance of the <see cref="CodeInterpreterTool"/> class.
     /// </summary>
-    /// <param name="fileIds">The file IDs to include in the container.</param>
-    /// <returns></returns>
-    public static CodeInterpreterTool CreateCodeInterpreterTool(IEnumerable<string> fileIds = null)
+    /// <param name="container">The container for the code interpreter.</param>
+    /// <returns>A new instance of the <see cref="CodeInterpreterTool"/> class.</returns>
+    public static CodeInterpreterTool CreateCodeInterpreterTool(CodeInterpreterContainer container)
     {
-        string containerJson = fileIds?.Any() == true ?
-            $"{{\"type\": \"auto\", \"file_ids\": [{string.Join(", ", fileIds.Select(id => $"\"{id}\""))}]}}" :
-            "{\"type\": \"auto\"}";
+        Argument.AssertNotNull(container, nameof(container));
 
         return new CodeInterpreterTool(
             kind: InternalToolType.CodeInterpreter,
             additionalBinaryDataProperties: null,
-            container: new BinaryData(containerJson));
-    }
-
-    // CUSTOM: Added factory method a a convenience.
-    /// <summary>
-    /// Creates a new instance of the <see cref="CodeInterpreterTool"/> class with a specified container ID.
-    /// </summary>
-    /// <param name="containerId">The Id of a previously created container</param>
-    /// <returns></returns>
-    public static CodeInterpreterTool CreateCodeInterpreterTool(string containerId)
-    {
-        Argument.AssertNotNull(containerId, nameof(containerId));
-
-        // Since the container field can be a string or an object, when it's a string (container ID),
-        // we need to serialize it as a JSON string value
-        string containerJson = $"\"{containerId}\"";
-        
-        return new CodeInterpreterTool(
-            kind: InternalToolType.CodeInterpreter,
-            additionalBinaryDataProperties: null,
-            container: new BinaryData(containerJson));
+            internalContainer: container.AsBinaryData());
     }
 }

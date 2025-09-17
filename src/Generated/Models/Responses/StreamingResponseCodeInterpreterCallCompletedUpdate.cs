@@ -11,20 +11,20 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseCodeInterpreterCallCompletedUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseCodeInterpreterCallCompletedUpdate(int sequenceNumber, int outputIndex, CodeInterpreterCallResponseItem codeInterpreterCall) : base(InternalResponseStreamEventType.ResponseCodeInterpreterCallCompleted, sequenceNumber)
+        internal StreamingResponseCodeInterpreterCallCompletedUpdate(int sequenceNumber, int outputIndex, string itemId) : base(InternalResponseStreamEventType.ResponseCodeInterpreterCallCompleted, sequenceNumber)
         {
             OutputIndex = outputIndex;
-            CodeInterpreterCall = codeInterpreterCall;
+            ItemId = itemId;
         }
 
-        internal StreamingResponseCodeInterpreterCallCompletedUpdate(InternalResponseStreamEventType kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, int outputIndex, CodeInterpreterCallResponseItem codeInterpreterCall) : base(kind, sequenceNumber, additionalBinaryDataProperties)
+        internal StreamingResponseCodeInterpreterCallCompletedUpdate(InternalResponseStreamEventType kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, int outputIndex, string itemId) : base(kind, sequenceNumber, additionalBinaryDataProperties)
         {
             OutputIndex = outputIndex;
-            CodeInterpreterCall = codeInterpreterCall;
+            ItemId = itemId;
         }
 
         public int OutputIndex { get; }
 
-        public CodeInterpreterCallResponseItem CodeInterpreterCall { get; }
+        public string ItemId { get; }
     }
 }

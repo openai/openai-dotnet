@@ -2,9 +2,13 @@
 
 namespace OpenAI.Responses;
 
-// CUSTOM: correct namespace.
+// CUSTOM: correct namespace / customize Container property.
 [CodeGenType("CodeInterpreterTool")]
+[CodeGenVisibility(nameof(CodeInterpreterTool), CodeGenVisibility.Internal, typeof(BinaryData))]
 public partial class CodeInterpreterTool
 {
-    internal static BinaryData AutoContainer { get; } = BinaryData.FromString("""{"type": "auto"}""");
+    [CodeGenMember("Container")]
+    internal BinaryData InternalContainer { get; }
+
+    public CodeInterpreterContainer Container { get; }
 }

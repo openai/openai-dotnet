@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseCodeInterpreterCallCodeDeltaUpdate : IJsonModel<StreamingResponseCodeInterpreterCallCodeDeltaUpdate>
     {
-        internal StreamingResponseCodeInterpreterCallCodeDeltaUpdate() : this(InternalResponseStreamEventType.ResponseCodeInterpreterCallCodeDelta, default, null, default, null)
+        internal StreamingResponseCodeInterpreterCallCodeDeltaUpdate() : this(InternalResponseStreamEventType.ResponseCodeInterpreterCallCodeDelta, default, null, default, null, null)
         {
         }
 
@@ -35,6 +35,11 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("output_index"u8);
                 writer.WriteNumberValue(OutputIndex);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("item_id") != true)
+            {
+                writer.WritePropertyName("item_id"u8);
+                writer.WriteStringValue(ItemId);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("delta") != true)
             {
@@ -66,6 +71,7 @@ namespace OpenAI.Responses
             int sequenceNumber = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             int outputIndex = default;
+            string itemId = default;
             string delta = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -84,6 +90,11 @@ namespace OpenAI.Responses
                     outputIndex = prop.Value.GetInt32();
                     continue;
                 }
+                if (prop.NameEquals("item_id"u8))
+                {
+                    itemId = prop.Value.GetString();
+                    continue;
+                }
                 if (prop.NameEquals("delta"u8))
                 {
                     delta = prop.Value.GetString();
@@ -92,7 +103,13 @@ namespace OpenAI.Responses
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new StreamingResponseCodeInterpreterCallCodeDeltaUpdate(kind, sequenceNumber, additionalBinaryDataProperties, outputIndex, delta);
+            return new StreamingResponseCodeInterpreterCallCodeDeltaUpdate(
+                kind,
+                sequenceNumber,
+                additionalBinaryDataProperties,
+                outputIndex,
+                itemId,
+                delta);
         }
 
         BinaryData IPersistableModel<StreamingResponseCodeInterpreterCallCodeDeltaUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

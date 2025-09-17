@@ -235,7 +235,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
     {
         OpenAIResponseClient client = GetTestClient();
 
-        ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool();
+        ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new CodeInterpreterContainer(new AutomaticCodeInterpreterContainerConfiguration()));
         ResponseCreationOptions responseOptions = new()
         {
             Tools = { codeInterpreterTool },
@@ -266,7 +266,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
     {
         OpenAIResponseClient client = GetTestClient();
 
-        ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new List<string>());
+        ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new(new AutomaticCodeInterpreterContainerConfiguration(new List<string>())));
         ResponseCreationOptions responseOptions = new()
         {
             Tools = { codeInterpreterTool },
@@ -310,14 +310,14 @@ public partial class ResponsesTests : SyncAsyncTestBase
         try
         {
             // Create CodeInterpreter tool with the container ID
-            ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(containerId);
+            ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new(containerId));
             ResponseCreationOptions responseOptions = new()
             {
                 Tools = { codeInterpreterTool },
             };
 
             OpenAIResponse response = await client.CreateResponseAsync(
-                "Create a simple Python script that prints 'Hello from container!'",
+                "Calculate the factorial of 5 using Python code.",
                 responseOptions);
 
             Assert.That(response, Is.Not.Null);
@@ -376,7 +376,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
             fileIds.Add(pythonFile.Id);
 
             // Create CodeInterpreter tool with uploaded file IDs
-            ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(fileIds);
+            ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new(new AutomaticCodeInterpreterContainerConfiguration(fileIds)));
             ResponseCreationOptions responseOptions = new()
             {
                 Tools = { codeInterpreterTool },
@@ -397,6 +397,107 @@ public partial class ResponsesTests : SyncAsyncTestBase
         {
             // If the test fails, still try to clean up the files immediately
             // (They'll also be cleaned up in OneTimeTearDown, but this is more immediate)
+            foreach (string fileId in fileIds)
+            {
+                try
+                {
+                    await fileClient.DeleteFileAsync(fileId);
+                }
+                catch
+                {
+                    // Best effort cleanup
+                }
+            }
+            throw;
+        }
+    }
+
+    [Test]
+    public async Task CodeInterpreterToolStreaming()
+    {
+        OpenAIResponseClient client = GetTestClient();
+
+        ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new CodeInterpreterContainer(new AutomaticCodeInterpreterContainerConfiguration()));
+        ResponseCreationOptions responseOptions = new()
+        {
+            Tools = { codeInterpreterTool },
+        };
+
+        const string message = "Calculate the factorial of 5 using Python code and show me the code step by step.";
+
+        int inProgressCount = 0;
+        int interpretingCount = 0;
+        int codeDeltaCount = 0;
+        int codeDoneCount = 0;
+        int completedCount = 0;
+        bool gotFinishedCodeInterpreterItem = false;
+        StringBuilder codeBuilder = new StringBuilder();
+
+        await foreach (StreamingResponseUpdate update
+            in client.CreateResponseStreamingAsync(message, responseOptions))
+        {
+            ValidateCodeInterpreterEvent(ref inProgressCount, ref interpretingCount, ref codeDeltaCount, ref codeDoneCount, ref completedCount, ref gotFinishedCodeInterpreterItem, codeBuilder, update);
+        }
+
+        Assert.That(gotFinishedCodeInterpreterItem, Is.True);
+        Assert.That(inProgressCount, Is.GreaterThan(0));
+        Assert.That(interpretingCount, Is.GreaterThan(0));
+        Assert.That(codeDeltaCount, Is.GreaterThan(0)); // We should get at least some delta events
+        Assert.That(codeDoneCount, Is.EqualTo(1)); // Should be exactly one "done" event
+        Assert.That(completedCount, Is.GreaterThan(0));
+    }
+
+    [Test]
+    public async Task CodeInterpreterToolStreamingWithFiles()
+    {
+        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
+        OpenAIResponseClient client = GetTestClient();
+
+        // Create test CSV data
+        string csvContent = "x,y\n1,2\n2,4\n3,6\n4,8\n5,10";
+        List<string> fileIds = new();
+
+        try
+        {
+            // Upload CSV file
+            using Stream csvStream = BinaryData.FromString(csvContent).ToStream();
+            OpenAIFile csvFile = await fileClient.UploadFileAsync(csvStream, "test_data.csv", FileUploadPurpose.Assistants);
+            Validate(csvFile);
+            fileIds.Add(csvFile.Id);
+
+            // Create CodeInterpreter tool with uploaded file IDs
+            ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new CodeInterpreterContainer(new AutomaticCodeInterpreterContainerConfiguration(fileIds)));
+            ResponseCreationOptions responseOptions = new()
+            {
+                Tools = { codeInterpreterTool },
+            };
+
+            const string message = "Load the CSV file and create a simple plot visualization showing the relationship between x and y values.";
+
+            int inProgressCount = 0;
+            int interpretingCount = 0;
+            int codeDeltaCount = 0;
+            int codeDoneCount = 0;
+            int completedCount = 0;
+            bool gotFinishedCodeInterpreterItem = false;
+            StringBuilder codeBuilder = new StringBuilder();
+
+            await foreach (StreamingResponseUpdate update
+                in client.CreateResponseStreamingAsync(message, responseOptions))
+            {
+                ValidateCodeInterpreterEvent(ref inProgressCount, ref interpretingCount, ref codeDeltaCount, ref codeDoneCount, ref completedCount, ref gotFinishedCodeInterpreterItem, codeBuilder, update);
+            }
+
+            Assert.That(gotFinishedCodeInterpreterItem, Is.True);
+            Assert.That(inProgressCount, Is.GreaterThan(0));
+            Assert.That(interpretingCount, Is.GreaterThan(0));
+            Assert.That(codeDeltaCount, Is.GreaterThan(0));
+            Assert.That(codeDoneCount, Is.GreaterThanOrEqualTo(1)); // Should be at least one "done" event
+            Assert.That(completedCount, Is.GreaterThan(0));
+        }
+        catch
+        {
+            // If the test fails, still try to clean up the files immediately
             foreach (string fileId in fileIds)
             {
                 try
@@ -1110,4 +1211,59 @@ public partial class ResponsesTests : SyncAsyncTestBase
         strictModeEnabled: false);
 
     private static OpenAIResponseClient GetTestClient(string overrideModel = null) => GetTestClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel);
+
+    private static void ValidateCodeInterpreterEvent(ref int inProgressCount, ref int interpretingCount, ref int codeDeltaCount, ref int codeDoneCount, ref int completedCount, ref bool gotFinishedCodeInterpreterItem, StringBuilder codeBuilder, StreamingResponseUpdate update)
+    {
+        if (update is StreamingResponseCodeInterpreterCallInProgressUpdate codeInterpreterInProgressUpdate)
+        {
+            Assert.That(codeInterpreterInProgressUpdate.OutputIndex, Is.GreaterThanOrEqualTo(0));
+            Assert.That(codeInterpreterInProgressUpdate.SequenceNumber, Is.GreaterThan(0));
+            Assert.That(codeInterpreterInProgressUpdate.ItemId, Is.Not.Null.And.Not.Empty);
+            inProgressCount++;
+        }
+        else if (update is StreamingResponseCodeInterpreterCallInterpretingUpdate codeInterpreterInterpretingUpdate)
+        {
+            Assert.That(codeInterpreterInterpretingUpdate.OutputIndex, Is.GreaterThanOrEqualTo(0));
+            Assert.That(codeInterpreterInterpretingUpdate.SequenceNumber, Is.GreaterThan(0));
+            Assert.That(codeInterpreterInterpretingUpdate.ItemId, Is.Not.Null.And.Not.Empty);
+            interpretingCount++;
+        }
+        else if (update is StreamingResponseCodeInterpreterCallCodeDeltaUpdate codeInterpreterCodeDeltaUpdate)
+        {
+            Assert.That(codeInterpreterCodeDeltaUpdate.OutputIndex, Is.GreaterThanOrEqualTo(0));
+            Assert.That(codeInterpreterCodeDeltaUpdate.SequenceNumber, Is.GreaterThan(0));
+            Assert.That(codeInterpreterCodeDeltaUpdate.ItemId, Is.Not.Null.And.Not.Empty);
+            Assert.That(codeInterpreterCodeDeltaUpdate.Delta, Is.Not.Null.And.Not.Empty);
+            codeBuilder.Append(codeInterpreterCodeDeltaUpdate.Delta);
+            codeDeltaCount++;
+        }
+        else if (update is StreamingResponseCodeInterpreterCallCodeDoneUpdate codeInterpreterCodeDoneUpdate)
+        {
+            Assert.That(codeInterpreterCodeDoneUpdate.OutputIndex, Is.GreaterThanOrEqualTo(0));
+            Assert.That(codeInterpreterCodeDoneUpdate.SequenceNumber, Is.GreaterThan(0));
+            Assert.That(codeInterpreterCodeDoneUpdate.ItemId, Is.Not.Null.And.Not.Empty);
+            Assert.That(codeInterpreterCodeDoneUpdate.Code, Is.Not.Null.And.Not.Empty);
+            // Verify that the accumulated deltas match the final code (if we got meaningful deltas)
+            if (codeBuilder.Length > 0)
+            {
+                Assert.That(codeBuilder.ToString(), Does.Contain(codeInterpreterCodeDoneUpdate.Code));
+            }
+            codeDoneCount++;
+        }
+        else if (update is StreamingResponseCodeInterpreterCallCompletedUpdate codeInterpreterCompletedUpdate)
+        {
+            Assert.That(codeInterpreterCompletedUpdate.OutputIndex, Is.GreaterThanOrEqualTo(0));
+            Assert.That(codeInterpreterCompletedUpdate.SequenceNumber, Is.GreaterThan(0));
+            Assert.That(codeInterpreterCompletedUpdate.ItemId, Is.Not.Null.And.Not.Empty);
+            completedCount++;
+        }
+        else if (update is StreamingResponseOutputItemDoneUpdate outputItemDoneUpdate)
+        {
+            if (outputItemDoneUpdate.Item is MessageResponseItem mri)
+            {
+                Assert.That(mri.Status, Is.EqualTo(MessageStatus.Completed));
+                gotFinishedCodeInterpreterItem = true;
+            }
+        }
+    }
 }
