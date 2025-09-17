@@ -121,7 +121,7 @@ public partial class OpenAIResponseClient
 
     public virtual Task<ClientResult<OpenAIResponse>> CreateResponseAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
     {
-        return CreateResponseAsync(inputItems, options, cancellationToken.ToRequestOptions());
+        return CreateResponseAsync(inputItems, options, cancellationToken.ToRequestOptions() ?? new RequestOptions());
     }
 
     internal async Task<ClientResult<OpenAIResponse>> CreateResponseAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options, RequestOptions requestOptions)

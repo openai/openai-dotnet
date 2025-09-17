@@ -138,7 +138,7 @@ public partial class ChatClient
     /// <exception cref="ArgumentException"> <paramref name="messages"/> is an empty collection, and was expected to be non-empty. </exception>
     public virtual Task<ClientResult<ChatCompletion>> CompleteChatAsync(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null, CancellationToken cancellationToken = default)
     {
-        return CompleteChatAsync(messages, options, cancellationToken.ToRequestOptions());
+        return CompleteChatAsync(messages, options, cancellationToken.ToRequestOptions() ?? new RequestOptions());
     }
 
     internal async Task<ClientResult<ChatCompletion>> CompleteChatAsync(IEnumerable<ChatMessage> messages, ChatCompletionOptions options, RequestOptions requestOptions)
