@@ -1,0 +1,43 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/images/variations",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "3163317",
+        "Content-Type": "multipart/form-data; boundary=\"Nl0wQCOkk7XycWWloh5GGzCGkIq1ogKawimbSpW=XQKJ1Wfi5XNK6Co_GMxilOY_b3AOfr\"",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 401,
+      "ResponseHeaders": {
+        "Access-Control-Allow-Origin": "*",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "980b949948e5a37e-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "238",
+        "Content-Type": "application/json",
+        "Date": "Wed, 17 Sep 2025 21:08:43 GMT",
+        "openai-processing-ms": "28",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "33",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "error": {
+          "code": "invalid_api_key",
+          "message": "Incorrect API key provided: fake_key. You can find your API key at https://platform.openai.com/account/api-keys.",
+          "param": null,
+          "type": "invalid_request_error"
+        }
+      }
+    }
+  ],
+  "Variables": {}
+}

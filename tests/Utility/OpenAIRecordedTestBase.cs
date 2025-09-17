@@ -12,6 +12,7 @@ namespace OpenAI.Tests.Utility
             SanitizedHeaders.Add("openai-organization");
             SanitizedHeaders.Add("openai-project");
             SanitizedHeaders.Add("X-Request-ID");
+            JsonPathSanitizers.Add("$.system_fingerprint");
         }
 
         internal T GetProxiedOpenAIClient<T>(TestScenario scenario, string overrideModel = null, bool excludeDumpPolicy = false, OpenAIClientOptions options = default) where T : class
@@ -22,5 +23,7 @@ namespace OpenAI.Tests.Utility
             T proxiedClient = CreateProxyFromClient<T>(client, null);
             return proxiedClient;
         }
+
+        public OpenAIClient GetProxiedTestTopLevelClient() => GetProxiedOpenAIClient<OpenAIClient>(TestScenario.TopLevel);
     }
 }

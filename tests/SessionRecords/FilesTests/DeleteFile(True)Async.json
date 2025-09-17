@@ -1,0 +1,85 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/files",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "498",
+        "Content-Type": "multipart/form-data; boundary=\"m9WB=pVcwI_FXg9Zg_4rc8f2HWxTGfwcJg6VXa_tdcWwCcJWYLDdMPcbJDZvUPs1XEqYyV\"",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Allow-Origin": "*",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "980bbf311b2fa33b-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "246",
+        "Content-Type": "application/json",
+        "Date": "Wed, 17 Sep 2025 21:37:48 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "848",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "857",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "file",
+        "id": "file-A29WFLyMrWM1YqPN6LF2tM",
+        "purpose": "assistants",
+        "filename": "test-file-delete-me.txt",
+        "bytes": 50,
+        "created_at": 1758145067,
+        "expires_at": null,
+        "status": "processed",
+        "status_details": null
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/files/file-A29WFLyMrWM1YqPN6LF2tM",
+      "RequestMethod": "DELETE",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Allow-Origin": "*",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "980bbf373fc8a33b-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "81",
+        "Content-Type": "application/json",
+        "Date": "Wed, 17 Sep 2025 21:37:49 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "429",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "444",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "file",
+        "deleted": true,
+        "id": "file-A29WFLyMrWM1YqPN6LF2tM"
+      }
+    }
+  ],
+  "Variables": {}
+}

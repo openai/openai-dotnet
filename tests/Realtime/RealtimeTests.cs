@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using OpenAI.Realtime;
 using System;
 using System.Buffers;
@@ -15,6 +16,7 @@ namespace OpenAI.Tests.Realtime;
 
 #pragma warning disable OPENAI002
 
+[LiveOnly(Reason = "Test framework doesn't support recording with web sockets yet")]
 public class RealtimeTests : RealtimeTestFixtureBase
 {
     public RealtimeTests(bool isAsync) : base(isAsync) { }

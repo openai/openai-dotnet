@@ -5,6 +5,7 @@ using OpenAI.Embeddings;
 using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
+using System.ClientModel.Primitives;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -198,6 +199,42 @@ public class EmbeddingsMockTests : ClientTestBase
 
         Assert.That(async () => await client.GenerateEmbeddingsAsync([new[] { 1 }], cancellationToken: cancellationSource.Token),
             Throws.InstanceOf<OperationCanceledException>());
+    }
+
+    [Test]
+    public void SerializeEmbeddingCollection()
+    {
+        // TODO: Add this test.
+    }
+
+    [Test]
+    public void JsonArraySupport()
+    {
+        string json = """
+        {
+          "object":"list",
+          "data":[
+            {
+              "object":"embedding",
+              "embedding":[-0.011229509,0.107915245,-0.15163477]
+            }
+          ]
+        }
+        """;
+
+        BinaryData binaryData = BinaryData.FromString(json);
+
+        OpenAIEmbeddingCollection embeddings = ModelReaderWriter.Read<OpenAIEmbeddingCollection>(binaryData);
+
+        Assert.That(embeddings, Is.Not.Null);
+        Assert.That(embeddings.Count, Is.EqualTo(1));
+        var embedding = embeddings[0];
+        Assert.That(embedding, Is.Not.Null);
+        ReadOnlySpan<float> vector = embedding.ToFloats().Span;
+        Assert.That(vector.Length, Is.EqualTo(3));
+        Assert.That(vector[0], Is.EqualTo(-0.011229509f));
+        Assert.That(vector[1], Is.EqualTo(0.107915245f));
+        Assert.That(vector[2], Is.EqualTo(-0.15163477f));
     }
 
     private OpenAIClientOptions GetClientOptionsWithMockResponse(int status, string content)

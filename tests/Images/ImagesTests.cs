@@ -53,20 +53,23 @@ public partial class ImagesTests : ImageTestFixtureBase
     [Test]
     public async Task GenerationWithBytesResponseWorks()
     {
-        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-3");
-
-        string prompt = "An isolated stop sign.";
-
-        ImageGenerationOptions options = new()
+        using (Recording.DisableRequestBodyRecording()) // Do not record large images
         {
-            ResponseFormat = GeneratedImageFormat.Bytes
-        };
+            ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-3");
 
-        GeneratedImage image = await client.GenerateImageAsync(prompt, options);
-        Assert.That(image.ImageUri, Is.Null);
-        Assert.That(image.ImageBytes, Is.Not.Null);
+            string prompt = "An isolated stop sign.";
 
-        await ValidateGeneratedImage(image.ImageBytes, ["stop"]);
+            ImageGenerationOptions options = new()
+            {
+                ResponseFormat = GeneratedImageFormat.Bytes
+            };
+
+            GeneratedImage image = await client.GenerateImageAsync(prompt, options);
+            Assert.That(image.ImageUri, Is.Null);
+            Assert.That(image.ImageBytes, Is.Not.Null);
+
+            await ValidateGeneratedImage(image.ImageBytes, ["stop"]);
+        }
     }
 
     [Test]

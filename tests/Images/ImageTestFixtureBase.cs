@@ -1,4 +1,5 @@
 ﻿using Microsoft.ClientModel.TestFramework;
+using Microsoft.ClientModel.TestFramework.TestProxy.Admin;
 using NUnit.Framework;
 using OpenAI.Chat;
 using OpenAI.Tests.Utility;
@@ -11,12 +12,17 @@ using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Images;
 
-[Parallelizable(ParallelScope.All)]
 [Category("Images")]
 public class ImageTestFixtureBase : OpenAIRecordedTestBase
 {
     public ImageTestFixtureBase(bool isAsync) : base(isAsync)
     {
+        // Replace large images with a small 1x1 PNG in recordings to save space
+        BodyKeySanitizers.Add(new BodyKeySanitizer(
+            new BodyKeySanitizerBody("$..b64_json")
+            {
+                Value = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII="
+            }));
     }
 
     public enum ImageSourceKind
