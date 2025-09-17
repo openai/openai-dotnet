@@ -43,27 +43,30 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "98042029b88ba9ba-SEA",
+        "CF-RAY": "980bd502ba32d44f-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "2662",
+        "Content-Length": "2701",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 23:26:00 GMT",
+        "Date": "Wed, 17 Sep 2025 21:52:45 GMT",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "7011",
+        "openai-processing-ms": "3713",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "7016",
+        "x-envoy-upstream-service-time": "3725",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_0e18d0b60f2484180068c9f2019c4c8196b6ccb28a4586909a",
+        "id": "resp_68cb2da992ac819384a66dca5647572305a13a819dc325b7",
         "object": "response",
-        "created_at": 1758065153,
+        "created_at": 1758145961,
         "status": "completed",
         "background": false,
+        "billing": {
+          "payer": "developer"
+        },
         "error": null,
         "incomplete_details": null,
         "instructions": null,
@@ -72,7 +75,7 @@
         "model": "gpt-5-2025-08-07",
         "output": [
           {
-            "id": "mcpl_0e18d0b60f2484180068c9f201d8e88196b5e417d017e93b78",
+            "id": "mcpl_68cb2da9a7488193a862d494f7abf27405a13a819dc325b7",
             "type": "mcp_list_tools",
             "server_label": "dmcp",
             "tools": [
@@ -99,12 +102,12 @@
             ]
           },
           {
-            "id": "rs_0e18d0b60f2484180068c9f20348188196896308287242814c",
+            "id": "rs_68cb2dab51fc8193a12e751304dbee8d05a13a819dc325b7",
             "type": "reasoning",
             "summary": []
           },
           {
-            "id": "mcpr_0e18d0b60f2484180068c9f2085e848196afdd318476f47f88",
+            "id": "mcpr_68cb2dacf15881939c8b52ed37b35e3505a13a819dc325b7",
             "type": "mcp_approval_request",
             "arguments": "{\"diceRollExpression\":\"2d4+1\"}",
             "name": "roll",
@@ -156,11 +159,11 @@
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 91,
+          "output_tokens": 155,
           "output_tokens_details": {
-            "reasoning_tokens": 64
+            "reasoning_tokens": 128
           },
-          "total_tokens": 260
+          "total_tokens": 324
         },
         "user": null,
         "metadata": {}
@@ -172,12 +175,12 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "385",
+        "Content-Length": "381",
         "Content-Type": "application/json",
         "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
       },
       "RequestBody": {
-        "previous_response_id": "resp_0e18d0b60f2484180068c9f2019c4c8196b6ccb28a4586909a",
+        "previous_response_id": "resp_68cb2da992ac819384a66dca5647572305a13a819dc325b7",
         "model": "gpt-5",
         "tools": [
           {
@@ -196,7 +199,7 @@
         "input": [
           {
             "type": "mcp_approval_response",
-            "approval_request_id": "mcpr_0e18d0b60f2484180068c9f2085e848196afdd318476f47f88",
+            "approval_request_id": "mcpr_68cb2dacf15881939c8b52ed37b35e3505a13a819dc325b7",
             "approve": true
           }
         ]
@@ -205,27 +208,30 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "98042056387ea9ba-SEA",
+        "CF-RAY": "980bd51b5ee0d44f-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "2329",
+        "Content-Length": "2313",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 23:26:05 GMT",
+        "Date": "Wed, 17 Sep 2025 21:53:47 GMT",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "4393",
+        "openai-processing-ms": "62160",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "4403",
+        "x-envoy-upstream-service-time": "62165",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_0e18d0b60f2484180068c9f208bf4c8196b8848f6422ff331b",
+        "id": "resp_68cb2dad66c4819381ccb45b997d984c05a13a819dc325b7",
         "object": "response",
-        "created_at": 1758065160,
+        "created_at": 1758145965,
         "status": "completed",
         "background": false,
+        "billing": {
+          "payer": "developer"
+        },
         "error": null,
         "incomplete_details": null,
         "instructions": null,
@@ -234,26 +240,26 @@
         "model": "gpt-5-2025-08-07",
         "output": [
           {
-            "id": "mcp_0e18d0b60f2484180068c9f20907808196a81e7cbd2119d00e",
+            "id": "mcp_68cb2dad9cb88193a7259e62a51501ad05a13a819dc325b7",
             "type": "mcp_call",
-            "approval_request_id": "mcpr_0e18d0b60f2484180068c9f2085e848196afdd318476f47f88",
+            "approval_request_id": "mcpr_68cb2dacf15881939c8b52ed37b35e3505a13a819dc325b7",
             "arguments": "{\"diceRollExpression\":\"2d4+1\"}",
             "error": {
               "type": "http_error",
               "code": 424,
-              "message": "424: unhandled errors in a TaskGroup (1 sub-exception)"
+              "message": "424: "
             },
             "name": "roll",
             "output": null,
             "server_label": "dmcp"
           },
           {
-            "id": "rs_0e18d0b60f2484180068c9f20a39708196a599cad6ff5feb7b",
+            "id": "rs_68cb2dea05c881938e0287c680c8f78f05a13a819dc325b7",
             "type": "reasoning",
             "summary": []
           },
           {
-            "id": "mcpr_0e18d0b60f2484180068c9f20cbd688196a51f1df28630fdb9",
+            "id": "mcpr_68cb2deb3cb48193b2ca0e598d0e218305a13a819dc325b7",
             "type": "mcp_approval_request",
             "arguments": "{\"diceRollExpression\":\"2d4 + 1\"}",
             "name": "roll",
@@ -261,7 +267,7 @@
           }
         ],
         "parallel_tool_calls": true,
-        "previous_response_id": "resp_0e18d0b60f2484180068c9f2019c4c8196b6ccb28a4586909a",
+        "previous_response_id": "resp_68cb2da992ac819384a66dca5647572305a13a819dc325b7",
         "prompt_cache_key": null,
         "reasoning": {
           "effort": "medium",
@@ -301,7 +307,7 @@
         "top_p": 1.0,
         "truncation": "disabled",
         "usage": {
-          "input_tokens": 355,
+          "input_tokens": 410,
           "input_tokens_details": {
             "cached_tokens": 0
           },
@@ -309,7 +315,7 @@
           "output_tokens_details": {
             "reasoning_tokens": 64
           },
-          "total_tokens": 447
+          "total_tokens": 502
         },
         "user": null,
         "metadata": {}

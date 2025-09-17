@@ -42,27 +42,30 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "98041d201848ba46-SEA",
+        "CF-RAY": "980be18b3ba1a0f3-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "2039",
+        "Content-Length": "2046",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 23:23:56 GMT",
+        "Date": "Wed, 17 Sep 2025 22:01:22 GMT",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "7581",
+        "openai-processing-ms": "7183",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "7586",
+        "x-envoy-upstream-service-time": "7190",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_044a12dafc5b148b0068c9f185505c8190a7b58a86d61abee2",
+        "id": "resp_68cb2faad2608190a91000c7a562675603d0619cda9bdf8d",
         "object": "response",
-        "created_at": 1758065029,
+        "created_at": 1758146474,
         "status": "completed",
         "background": false,
+        "billing": {
+          "payer": "developer"
+        },
         "error": null,
         "incomplete_details": null,
         "instructions": null,
@@ -71,18 +74,18 @@
         "model": "gpt-5-2025-08-07",
         "output": [
           {
-            "id": "mcpl_044a12dafc5b148b0068c9f1856a248190b465103d5f7090ac",
+            "id": "mcpl_68cb2fab02a8819090dc4c39311f01c703d0619cda9bdf8d",
             "type": "mcp_list_tools",
             "server_label": "dmcp",
             "tools": []
           },
           {
-            "id": "rs_044a12dafc5b148b0068c9f186e6748190a73ec32302e52a73",
+            "id": "rs_68cb2fad59b08190941c26f4fea9795303d0619cda9bdf8d",
             "type": "reasoning",
             "summary": []
           },
           {
-            "id": "msg_044a12dafc5b148b0068c9f18c5e048190be869f4f70780a15",
+            "id": "msg_68cb2fb1a26c819095085f3d90c017e803d0619cda9bdf8d",
             "type": "message",
             "status": "completed",
             "content": [
@@ -90,7 +93,7 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "You rolled: 2 and 4, +1 modifier = 7 total."
+                "text": "7 (4 + 2 + 1)"
               }
             ],
             "role": "assistant"
@@ -138,11 +141,11 @@
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 279,
+          "output_tokens": 400,
           "output_tokens_details": {
-            "reasoning_tokens": 256
+            "reasoning_tokens": 384
           },
-          "total_tokens": 388
+          "total_tokens": 509
         },
         "user": null,
         "metadata": {}

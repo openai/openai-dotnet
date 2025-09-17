@@ -19,7 +19,7 @@ namespace OpenAI.Tests.Responses;
 [Category("MCP")]
 public partial class ResponsesToolTests : OpenAIRecordedTestBase
 {
-    public ResponsesToolTests(bool isAsync) : base(isAsync, RecordedTestMode.Record)
+    public ResponsesToolTests(bool isAsync) : base(isAsync)
     {
         TestTimeoutInSeconds = 30;
     }

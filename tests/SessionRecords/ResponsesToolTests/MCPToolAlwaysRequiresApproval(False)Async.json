@@ -43,27 +43,30 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "980419cacbeaba46-SEA",
+        "CF-RAY": "980bdf671cf2a0f3-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "2664",
+        "Content-Length": "2699",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 23:21:36 GMT",
+        "Date": "Wed, 17 Sep 2025 21:59:49 GMT",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "3926",
+        "openai-processing-ms": "2819",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "3930",
+        "x-envoy-upstream-service-time": "2825",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_0b3cb5f5be1ce3db0068c9f0fcad088190843a345eeee2c4a9",
+        "id": "resp_68cb2f531de4819795aa195f5fba10ed0684856841a9fda6",
         "object": "response",
-        "created_at": 1758064893,
+        "created_at": 1758146387,
         "status": "completed",
         "background": false,
+        "billing": {
+          "payer": "developer"
+        },
         "error": null,
         "incomplete_details": null,
         "instructions": null,
@@ -72,7 +75,7 @@
         "model": "gpt-5-2025-08-07",
         "output": [
           {
-            "id": "mcpl_0b3cb5f5be1ce3db0068c9f0fd1fc88190b570c2cec0601b59",
+            "id": "mcpl_68cb2f532f3c8197affcd298e5f285bd0684856841a9fda6",
             "type": "mcp_list_tools",
             "server_label": "dmcp",
             "tools": [
@@ -99,12 +102,12 @@
             ]
           },
           {
-            "id": "rs_0b3cb5f5be1ce3db0068c9f0fe92448190a56956df977af609",
+            "id": "rs_68cb2f54df688197aee941a8db8fdd2a0684856841a9fda6",
             "type": "reasoning",
             "summary": []
           },
           {
-            "id": "mcpr_0b3cb5f5be1ce3db0068c9f10068f88190967bc704228a0d13",
+            "id": "mcpr_68cb2f55a9d081979fce3e1833715a650684856841a9fda6",
             "type": "mcp_approval_request",
             "arguments": "{\"diceRollExpression\":\"2d4+1\"}",
             "name": "roll",
@@ -156,11 +159,11 @@
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 155,
+          "output_tokens": 91,
           "output_tokens_details": {
-            "reasoning_tokens": 128
+            "reasoning_tokens": 64
           },
-          "total_tokens": 324
+          "total_tokens": 260
         },
         "user": null,
         "metadata": {}
@@ -172,12 +175,12 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "385",
+        "Content-Length": "381",
         "Content-Type": "application/json",
         "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
       },
       "RequestBody": {
-        "previous_response_id": "resp_0b3cb5f5be1ce3db0068c9f0fcad088190843a345eeee2c4a9",
+        "previous_response_id": "resp_68cb2f531de4819795aa195f5fba10ed0684856841a9fda6",
         "model": "gpt-5",
         "tools": [
           {
@@ -196,7 +199,7 @@
         "input": [
           {
             "type": "mcp_approval_response",
-            "approval_request_id": "mcpr_0b3cb5f5be1ce3db0068c9f10068f88190967bc704228a0d13",
+            "approval_request_id": "mcpr_68cb2f55a9d081979fce3e1833715a650684856841a9fda6",
             "approve": true
           }
         ]
@@ -205,27 +208,30 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "980419e3e86dba46-SEA",
+        "CF-RAY": "980bdf794b07a0f3-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "2154",
+        "Content-Length": "2364",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 23:21:39 GMT",
+        "Date": "Wed, 17 Sep 2025 21:59:53 GMT",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "2374",
+        "openai-processing-ms": "3619",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "2379",
+        "x-envoy-upstream-service-time": "3624",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_0b3cb5f5be1ce3db0068c9f100b02081909cbaa89f1a1ccd49",
+        "id": "resp_68cb2f56066081978f3ce30a21ceb75c0684856841a9fda6",
         "object": "response",
-        "created_at": 1758064896,
+        "created_at": 1758146390,
         "status": "completed",
         "background": false,
+        "billing": {
+          "payer": "developer"
+        },
         "error": null,
         "incomplete_details": null,
         "instructions": null,
@@ -234,32 +240,34 @@
         "model": "gpt-5-2025-08-07",
         "output": [
           {
-            "id": "mcp_0b3cb5f5be1ce3db0068c9f100fe288190bc2165002f33fb9d",
+            "id": "mcp_68cb2f5637588197ade6f993b995e3350684856841a9fda6",
             "type": "mcp_call",
-            "approval_request_id": "mcpr_0b3cb5f5be1ce3db0068c9f10068f88190967bc704228a0d13",
+            "approval_request_id": "mcpr_68cb2f55a9d081979fce3e1833715a650684856841a9fda6",
             "arguments": "{\"diceRollExpression\":\"2d4+1\"}",
-            "error": null,
+            "error": {
+              "type": "http_error",
+              "code": 424,
+              "message": "424: unhandled errors in a TaskGroup (1 sub-exception)"
+            },
             "name": "roll",
-            "output": "4",
+            "output": null,
             "server_label": "dmcp"
           },
           {
-            "id": "msg_0b3cb5f5be1ce3db0068c9f102bce48190a838846701405f67",
-            "type": "message",
-            "status": "completed",
-            "content": [
-              {
-                "type": "output_text",
-                "annotations": [],
-                "logprobs": [],
-                "text": "4"
-              }
-            ],
-            "role": "assistant"
+            "id": "rs_68cb2f57515c819789a2de65d12e4e5f0684856841a9fda6",
+            "type": "reasoning",
+            "summary": []
+          },
+          {
+            "id": "mcpr_68cb2f595f608197b706032c7d4768860684856841a9fda6",
+            "type": "mcp_approval_request",
+            "arguments": "{\"diceRollExpression\":\"2d4 + 1\"}",
+            "name": "roll",
+            "server_label": "dmcp"
           }
         ],
         "parallel_tool_calls": true,
-        "previous_response_id": "resp_0b3cb5f5be1ce3db0068c9f0fcad088190843a345eeee2c4a9",
+        "previous_response_id": "resp_68cb2f531de4819795aa195f5fba10ed0684856841a9fda6",
         "prompt_cache_key": null,
         "reasoning": {
           "effort": "medium",
@@ -299,15 +307,15 @@
         "top_p": 1.0,
         "truncation": "disabled",
         "usage": {
-          "input_tokens": 361,
+          "input_tokens": 328,
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 5,
+          "output_tokens": 220,
           "output_tokens_details": {
-            "reasoning_tokens": 0
+            "reasoning_tokens": 192
           },
-          "total_tokens": 366
+          "total_tokens": 548
         },
         "user": null,
         "metadata": {}

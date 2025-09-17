@@ -21,7 +21,7 @@ public class OpenAITestEnvironment : TestEnvironment
 
     public override Dictionary<string, string> ParseEnvironmentFile() => new()
         {
-            { "OPEN-API-KEY", Environment.GetEnvironmentVariable("OPENAI_API_KEY") ?? throw new InvalidOperationException("OPEN_API_KEY not found in environment variables") }
+            { "OPEN-API-KEY", Environment.GetEnvironmentVariable("OPENAI_API_KEY") ?? string.Empty }
         };
 
     public override Task WaitForEnvironmentAsync()
