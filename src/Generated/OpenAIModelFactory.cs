@@ -358,23 +358,6 @@ namespace OpenAI
             return new DeleteContainerFileResponse(id, "container.file.deleted", true, additionalBinaryDataProperties: null);
         }
 
-        public static OpenAIEmbeddingCollection OpenAIEmbeddingCollection(IEnumerable<OpenAIEmbedding> data = default, string model = default, string @object = default, EmbeddingTokenUsage usage = default)
-        {
-            data ??= new ChangeTrackingList<OpenAIEmbedding>();
-
-            return new OpenAIEmbeddingCollection(data.ToList(), model, @object, usage, default);
-        }
-
-        public static OpenAIEmbedding OpenAIEmbedding(int index = default, BinaryData embeddingProperty = default, string @object = default)
-        {
-            return new OpenAIEmbedding(index, embeddingProperty, @object, default);
-        }
-
-        public static EmbeddingTokenUsage EmbeddingTokenUsage(int inputTokenCount = default, int totalTokenCount = default)
-        {
-            return new EmbeddingTokenUsage(inputTokenCount, totalTokenCount, default);
-        }
-
         public static OpenAIFileCollection OpenAIFileCollection(IEnumerable<OpenAIFile> data = default, string @object = default, string firstId = default, string lastId = default, bool hasMore = default)
         {
             data ??= new ChangeTrackingList<OpenAIFile>();
@@ -1154,23 +1137,6 @@ namespace OpenAI
             return new FileFromStoreRemovalResult(fileId, removed, "vector_store.file.deleted", additionalBinaryDataProperties: null);
         }
 
-        public static OpenAIModelCollection OpenAIModelCollection(string @object = default, IEnumerable<OpenAIModel> data = default)
-        {
-            data ??= new ChangeTrackingList<OpenAIModel>();
-
-            return new OpenAIModelCollection(@object, data.ToList(), serializedAdditionalRawData: null);
-        }
-
-        public static OpenAIModel OpenAIModel(string id = default, DateTimeOffset createdAt = default, string ownedBy = default)
-        {
-            return new OpenAIModel(id, createdAt, "model", ownedBy, additionalBinaryDataProperties: null);
-        }
-
-        public static ModelDeletionResult ModelDeletionResult(string modelId = default, bool deleted = default)
-        {
-            return new ModelDeletionResult(modelId, deleted, "model", additionalBinaryDataProperties: null);
-        }
-
         public static InputTranscriptionOptions InputTranscriptionOptions(InputTranscriptionModel? model = default, string language = default, string prompt = default)
         {
             return new InputTranscriptionOptions(model, language, prompt, additionalBinaryDataProperties: null);
@@ -1316,6 +1282,40 @@ namespace OpenAI
         public static ItemRetrievedUpdate ItemRetrievedUpdate(string eventId = default, RealtimeItem item = default)
         {
             return new ItemRetrievedUpdate(RealtimeUpdateKind.ItemRetrieved, eventId, additionalBinaryDataProperties: null, item);
+        }
+
+        public static OpenAIEmbeddingCollection OpenAIEmbeddingCollection(IEnumerable<OpenAIEmbedding> data = default, string model = default, string @object = default, EmbeddingTokenUsage usage = default)
+        {
+            data ??= new ChangeTrackingList<OpenAIEmbedding>();
+
+            return new OpenAIEmbeddingCollection(data.ToList(), model, @object, usage, default);
+        }
+
+        public static OpenAIEmbedding OpenAIEmbedding(int index = default, BinaryData embeddingProperty = default, string @object = default)
+        {
+            return new OpenAIEmbedding(index, embeddingProperty, @object, default);
+        }
+
+        public static EmbeddingTokenUsage EmbeddingTokenUsage(int inputTokenCount = default, int totalTokenCount = default)
+        {
+            return new EmbeddingTokenUsage(inputTokenCount, totalTokenCount, default);
+        }
+
+        public static OpenAIModelCollection OpenAIModelCollection(string @object = default, IEnumerable<OpenAIModel> data = default)
+        {
+            data ??= new ChangeTrackingList<OpenAIModel>();
+
+            return new OpenAIModelCollection(@object, data.ToList(), serializedAdditionalRawData: null);
+        }
+
+        public static OpenAIModel OpenAIModel(string id = default, DateTimeOffset createdAt = default, string ownedBy = default)
+        {
+            return new OpenAIModel(id, createdAt, "model", ownedBy, additionalBinaryDataProperties: null);
+        }
+
+        public static ModelDeletionResult ModelDeletionResult(string modelId = default, bool deleted = default, string @object = default)
+        {
+            return new ModelDeletionResult(modelId, deleted, @object, additionalBinaryDataProperties: null);
         }
 
         public static ChatFunctionChoice ChatFunctionChoice()

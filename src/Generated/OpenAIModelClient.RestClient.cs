@@ -25,19 +25,6 @@ namespace OpenAI.Models
             return message;
         }
 
-        internal virtual PipelineMessage CreateRetrieveModelRequest(string model, RequestOptions options)
-        {
-            ClientUriBuilder uri = new ClientUriBuilder();
-            uri.Reset(_endpoint);
-            uri.AppendPath("/models/", false);
-            uri.AppendPath(model, true);
-            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
-            PipelineRequest request = message.Request;
-            request.Headers.Set("Accept", "application/json");
-            message.Apply(options);
-            return message;
-        }
-
         internal virtual PipelineMessage CreateDeleteModelRequest(string model, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -45,6 +32,19 @@ namespace OpenAI.Models
             uri.AppendPath("/models/", false);
             uri.AppendPath(model, true);
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "DELETE", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Accept", "application/json");
+            message.Apply(options);
+            return message;
+        }
+
+        internal virtual PipelineMessage CreateGetModelRequest(string model, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/models/", false);
+            uri.AppendPath(model, true);
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;
             request.Headers.Set("Accept", "application/json");
             message.Apply(options);

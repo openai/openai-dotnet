@@ -6,7 +6,8 @@ using OpenAI;
 using Azure.ClientGenerator.Core;
 using TypeSpec.HttpClient.CSharp;
 
-@@clientName(Embeddings.createEmbedding, "GenerateEmbeddings");
+@@clientName(createEmbedding, "GenerateEmbeddings");
+@@clientLocation(createEmbedding, "Embeddings");
 
 // ------------ JsonPatch ------------
 
