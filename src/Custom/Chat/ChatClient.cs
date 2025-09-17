@@ -136,9 +136,19 @@ public partial class ChatClient
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="messages"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="messages"/> is an empty collection, and was expected to be non-empty. </exception>
-    public virtual async Task<ClientResult<ChatCompletion>> CompleteChatAsync(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null, CancellationToken cancellationToken = default)
+    public virtual Task<ClientResult<ChatCompletion>> CompleteChatAsync(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null, CancellationToken cancellationToken = default)
+    {
+        return CompleteChatAsync(messages, options, cancellationToken.ToRequestOptions());
+    }
+
+    internal async Task<ClientResult<ChatCompletion>> CompleteChatAsync(IEnumerable<ChatMessage> messages, ChatCompletionOptions options, RequestOptions requestOptions)
     {
         Argument.AssertNotNullOrEmpty(messages, nameof(messages));
+        Argument.AssertNotNull(requestOptions, nameof(requestOptions));
+        if (requestOptions.BufferResponse is false)
+        {
+            throw new InvalidOperationException("'requestOptions.BufferResponse' must be 'true' when calling 'CompleteChatAsync'.");
+        }
 
         options ??= new();
         CreateChatCompletionOptions(messages, ref options);
@@ -148,7 +158,7 @@ public partial class ChatClient
         {
             using BinaryContent content = options.ToBinaryContent();
 
-            ClientResult result = await CompleteChatAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            ClientResult result = await CompleteChatAsync(content, requestOptions).ConfigureAwait(false);
             ChatCompletion chatCompletion = (ChatCompletion)result;
             scope?.RecordChatCompletion(chatCompletion);
             return ClientResult.FromValue(chatCompletion, result.GetRawResponse());
@@ -219,16 +229,26 @@ public partial class ChatClient
     /// <exception cref="ArgumentException"> <paramref name="messages"/> is an empty collection, and was expected to be non-empty. </exception>
     public virtual AsyncCollectionResult<StreamingChatCompletionUpdate> CompleteChatStreamingAsync(IEnumerable<ChatMessage> messages, ChatCompletionOptions options = null, CancellationToken cancellationToken = default)
     {
+        return CompleteChatStreamingAsync(messages, options, cancellationToken.ToRequestOptions(streaming: true));
+    }
+
+    internal AsyncCollectionResult<StreamingChatCompletionUpdate> CompleteChatStreamingAsync(IEnumerable<ChatMessage> messages, ChatCompletionOptions options, RequestOptions requestOptions)
+    {
         Argument.AssertNotNull(messages, nameof(messages));
+        Argument.AssertNotNull(requestOptions, nameof(requestOptions));
+        if (requestOptions.BufferResponse is true)
+        {
+            throw new InvalidOperationException("'requestOptions.BufferResponse' must be 'false' when calling 'CompleteChatStreamingAsync'.");
+        }
 
         options ??= new();
         CreateChatCompletionOptions(messages, ref options, stream: true);
 
         using BinaryContent content = options.ToBinaryContent();
         return new AsyncSseUpdateCollection<StreamingChatCompletionUpdate>(
-            async () => await CompleteChatAsync(content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
+            async () => await CompleteChatAsync(content, requestOptions).ConfigureAwait(false),
             StreamingChatCompletionUpdate.DeserializeStreamingChatCompletionUpdate,
-            cancellationToken);
+            requestOptions.CancellationToken);
     }
 
     /// <summary>
