@@ -119,12 +119,22 @@ public partial class OpenAIResponseClient
     [Experimental("OPENAI001")]
     public Uri Endpoint => _endpoint;
 
-    public virtual async Task<ClientResult<OpenAIResponse>> CreateResponseAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
+    public virtual Task<ClientResult<OpenAIResponse>> CreateResponseAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
+    {
+        return CreateResponseAsync(inputItems, options, cancellationToken.ToRequestOptions() ?? new RequestOptions());
+    }
+
+    internal async Task<ClientResult<OpenAIResponse>> CreateResponseAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options, RequestOptions requestOptions)
     {
         Argument.AssertNotNullOrEmpty(inputItems, nameof(inputItems));
+        Argument.AssertNotNull(requestOptions, nameof(requestOptions));
+        if (requestOptions.BufferResponse is false)
+        {
+            throw new InvalidOperationException("'requestOptions.BufferResponse' must be 'true' when calling 'CreateResponseAsync'.");
+        }
 
         using BinaryContent content = CreatePerCallOptions(options, inputItems, stream: false).ToBinaryContent();
-        ClientResult protocolResult = await CreateResponseAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        ClientResult protocolResult = await CreateResponseAsync(content, requestOptions).ConfigureAwait(false);
         OpenAIResponse convenienceValue = (OpenAIResponse)protocolResult;
         return ClientResult.FromValue(convenienceValue, protocolResult.GetRawResponse());
     }
@@ -162,13 +172,23 @@ public partial class OpenAIResponseClient
 
     public virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
     {
+        return CreateResponseStreamingAsync(inputItems, options, cancellationToken.ToRequestOptions(streaming: true));
+    }
+
+    internal AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options, RequestOptions requestOptions)
+    {
         Argument.AssertNotNullOrEmpty(inputItems, nameof(inputItems));
+        Argument.AssertNotNull(requestOptions, nameof(requestOptions));
+        if (requestOptions.BufferResponse is true)
+        {
+            throw new InvalidOperationException("'requestOptions.BufferResponse' must be 'false' when calling 'CreateResponseStreamingAsync'.");
+        }
 
         using BinaryContent content = CreatePerCallOptions(options, inputItems, stream: true).ToBinaryContent();
         return new AsyncSseUpdateCollection<StreamingResponseUpdate>(
-            async () => await CreateResponseAsync(content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
+            async () => await CreateResponseAsync(content, requestOptions).ConfigureAwait(false),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
-            cancellationToken);
+            requestOptions.CancellationToken);
     }
 
     public virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
