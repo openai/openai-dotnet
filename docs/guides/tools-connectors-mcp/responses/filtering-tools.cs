@@ -1,4 +1,4 @@
-// SAMPLE: Generate response from remote MCP through Responses API
+// SAMPLE: Generate response from a specific tool of a remote MCP through Responses API
 // PAGE: https://platform.openai.com/docs/guides/tools-connectors-mcp#filtering-tools
 // GUIDANCE: Instructions to run this code: https://aka.ms/oai/net/start
 #pragma warning disable OPENAI001
