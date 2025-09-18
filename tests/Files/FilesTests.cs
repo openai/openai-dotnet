@@ -18,7 +18,7 @@ public class FilesTests : OpenAIRecordedTestBase
 {
     private OpenAIFileClient GetTestClient() => GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
 
-    public FilesTests(bool isAsync) : base(isAsync, RecordedTestMode.Record)
+    public FilesTests(bool isAsync) : base(isAsync)
     {
     }
 

@@ -13,7 +13,6 @@ namespace OpenAI.Examples;
 
 public partial class ResponseExamples
 {
-    [Ignore("Awaiting org verification.")]
     [Test]
     public async Task Example02_SimpleResponseStreamingAsync()
     {

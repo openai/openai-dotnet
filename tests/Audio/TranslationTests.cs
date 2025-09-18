@@ -1,10 +1,10 @@
-﻿using Microsoft.ClientModel.TestFramework;
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
+using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Audio;
 using OpenAI.Tests.Utility;
-using System;
-using System.IO;
-using System.Threading.Tasks;
 using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Audio;
@@ -12,7 +12,7 @@ namespace OpenAI.Tests.Audio;
 [Category("Audio")]
 public partial class TranslationTests : OpenAIRecordedTestBase
 {
-    public TranslationTests(bool isAsync) : base(isAsync, RecordedTestMode.Record)
+    public TranslationTests(bool isAsync) : base(isAsync)
     {
     }
 
