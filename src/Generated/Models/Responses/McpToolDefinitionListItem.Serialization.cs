@@ -116,6 +116,7 @@ namespace OpenAI.Responses
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        error = null;
                         continue;
                     }
                     error = BinaryData.FromString(prop.Value.GetRawText());
