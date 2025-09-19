@@ -622,6 +622,21 @@ namespace OpenAI
             return new ComputerCallSafetyCheck(id, code, message, additionalBinaryDataProperties: null);
         }
 
+        public static CodeInterpreterToolOutput CodeInterpreterToolOutput(string kind = default)
+        {
+            return new UnknownCodeInterpreterToolOutput(new CodeInterpreterToolOutputType(kind), additionalBinaryDataProperties: null);
+        }
+
+        public static CodeInterpreterToolLogsOutput CodeInterpreterToolLogsOutput(string logs = default)
+        {
+            return new CodeInterpreterToolLogsOutput(CodeInterpreterToolOutputType.Logs, additionalBinaryDataProperties: null, logs);
+        }
+
+        public static CodeInterpreterToolImageOutput CodeInterpreterToolImageOutput(Uri url = default)
+        {
+            return new CodeInterpreterToolImageOutput(CodeInterpreterToolOutputType.Image, additionalBinaryDataProperties: null, url);
+        }
+
         public static McpToolDefinition McpToolDefinition(string name = default, string description = default, BinaryData inputSchema = default, BinaryData annotations = default)
         {
             return new McpToolDefinition(name, description, inputSchema, annotations, additionalBinaryDataProperties: null);

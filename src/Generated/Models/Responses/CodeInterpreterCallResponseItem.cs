@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using OpenAI;
 
 namespace OpenAI.Responses
@@ -13,23 +12,22 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class CodeInterpreterCallResponseItem : ResponseItem
     {
-        public CodeInterpreterCallResponseItem(CodeInterpreterCallStatus status, string code, IEnumerable<BinaryData> results) : base(InternalItemType.CodeInterpreterCall)
+        public CodeInterpreterCallResponseItem(CodeInterpreterCallStatus status, string code) : base(InternalItemType.CodeInterpreterCall)
         {
             Argument.AssertNotNull(code, nameof(code));
-            Argument.AssertNotNull(results, nameof(results));
 
             Status = status;
             Code = code;
-            Results = results.ToList();
+            Outputs = new ChangeTrackingList<CodeInterpreterToolOutput>();
         }
 
-        internal CodeInterpreterCallResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, CodeInterpreterCallStatus status, string containerId, string code, IList<BinaryData> results) : base(kind, id, additionalBinaryDataProperties)
+        internal CodeInterpreterCallResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, CodeInterpreterCallStatus status, string containerId, string code, IList<CodeInterpreterToolOutput> outputs) : base(kind, id, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Status = status;
             ContainerId = containerId;
             Code = code;
-            Results = results ?? new ChangeTrackingList<BinaryData>();
+            Outputs = outputs ?? new ChangeTrackingList<CodeInterpreterToolOutput>();
         }
 
         public CodeInterpreterCallStatus Status { get; set; }
@@ -38,6 +36,6 @@ namespace OpenAI.Responses
 
         public string Code { get; set; }
 
-        public IList<BinaryData> Results { get; }
+        public IList<CodeInterpreterToolOutput> Outputs { get; }
     }
 }

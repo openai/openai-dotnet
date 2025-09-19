@@ -2445,25 +2445,20 @@ model ResponseReasoningSummaryDoneEvent extends ResponseStreamEvent {
   text: string;
 }
 
-/** The output of a code interpreter tool call that is a file. */
-model CodeInterpreterFileOutput {
-  @doc("""
-    The type of the code interpreter file output. Always `files`.
-    """)
-  type: "files";
+model CodeInterpreterToolLogsOutput extends CodeInterpreterToolOutput {
+  @doc("The type of the output. Always 'logs'.")
+  type: CodeInterpreterToolOutputType.logs;
 
-  files: CodeInterpreterFileOutputFile[];
+  @doc("The logs output from the code interpreter.")
+  logs: string;
 }
 
-/** The output of a code interpreter tool call that is text. */
-model CodeInterpreterTextOutput {
-  @doc("""
-    The type of the code interpreter text output. Always `logs`.
-    """)
-  type: "logs";
+model CodeInterpreterToolImageOutput extends CodeInterpreterToolOutput {
+  @doc("The type of the output. Always 'image'.")
+  type: CodeInterpreterToolOutputType.image;
 
-  /** The logs of the code interpreter tool call. */
-  logs: string;
+  @doc("The URL of the image output from the code interpreter.")
+  url: url;
 }
 
 // Tool customization: Rename to supply base for split input/output models
@@ -2475,8 +2470,8 @@ alias CodeInterpreterToolCallItemBase = {
   /** The code to run. */
   code: string;
 
-  /** The results of the code interpreter tool call. */
-  results: CodeInterpreterToolOutput[];
+  /** The outputs of the code interpreter tool call. */
+  outputs?: CodeInterpreterToolOutput[];
 };
 
 @@doc(CodeInterpreterToolCallItemResource,
@@ -2492,10 +2487,7 @@ alias CodeInterpreterToolCallItemBase = {
     """
 );
 /** The output of a code interpreter tool. */
-union CodeInterpreterToolOutput {
-  CodeInterpreterTextOutput,
-  CodeInterpreterFileOutput,
-}
+
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
 /** Emitted when there is a partial audio response. */
