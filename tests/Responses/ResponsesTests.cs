@@ -273,7 +273,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
         };
 
         OpenAIResponse response = await client.CreateResponseAsync(
-            "Generate a simple chart using matplotlib.",
+            "Generate a simple chart using matplotlib. Ensure you emit debug logging and include any resulting log file output.",
             responseOptions);
 
         Assert.That(response, Is.Not.Null);
