@@ -1,5 +1,5 @@
 // SAMPLE: Get information from web search by specifying user location through Responses API
-// PAGE: https://platform.openai.com/docs/guides/tools-web-search?api-mode=responses#sources
+// PAGE: https://platform.openai.com/docs/guides/tools-web-search?api-mode=responses#user-location
 // GUIDANCE: Instructions to run this code: https://aka.ms/oai/net/start
 #pragma warning disable OPENAI001
 
