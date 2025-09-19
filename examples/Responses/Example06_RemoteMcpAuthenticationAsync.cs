@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using OpenAI.Responses;
 using System;
+using System.Threading.Tasks;
 
 namespace OpenAI.Examples;
 
@@ -11,22 +12,21 @@ namespace OpenAI.Examples;
 public partial class ResponseExamples
 {
     [Test]
-    public void Example05_RemoteMcp()
+    public async Task Example06_RemoteMcpAuthenticationAsync()
     {
         ResponseCreationOptions options = new()
         {
             Tools = {
-                new McpTool(serverLabel: "dmcp", serverUri: new Uri("https://dmcp-server.deno.dev/sse"))
+                new McpTool(serverLabel: "stripe", serverUri: new Uri("https://mcp.stripe.com"))
                 {
-                    ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
-                    ToolCallApprovalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
+                    AuthorizationToken = Environment.GetEnvironmentVariable("STRIPE_OAUTH_ACCESS_TOKEN"),
                 }
             }
         };
 
         OpenAIResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        OpenAIResponse response = client.CreateResponse("Roll 2d4+1", options);
+        OpenAIResponse response = await client.CreateResponseAsync("Create a payment link for $20", options);
 
         Console.WriteLine($"[ASSISTANT]: {response.GetOutputText()}");
     }
