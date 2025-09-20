@@ -1,0 +1,283 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "420",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "Modify the following input to enable the feature. Only respond with the JSON and include no other text. Do not enclose in markdown backticks or any other additional annotations.\n\n{\n  \"feature_name\": \"test_feature\",\n  \"enabled\": false\n}"
+          }
+        ],
+        "model": "gpt-4o-mini",
+        "prediction": {
+          "type": "content",
+          "content": "{\n  \"feature_name\": \"test_feature\",\n  \"enabled\": true\n}"
+        }
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801ce8bbc5c98e5-SEA",
+        "Connection": "keep-alive",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 16:40:39 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "608",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "651",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999940",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "chatcmpl-CGT1LkeiZFZczHXJS1RfD5COsIaXW",
+        "object": "chat.completion",
+        "created": 1758040839,
+        "model": "gpt-4o-mini-2024-07-18",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "{\n  \"feature_name\": \"test_feature\",\n  \"enabled\": true\n}",
+              "refusal": null,
+              "annotations": []
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 17,
+          "total_tokens": 75,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 16,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "service_tier": "default",
+        "system_fingerprint": "fp_560af6e559"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "420",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "Modify the following input to enable the feature. Only respond with the JSON and include no other text. Do not enclose in markdown backticks or any other additional annotations.\n\n{\n  \"feature_name\": \"test_feature\",\n  \"enabled\": false\n}"
+          }
+        ],
+        "model": "gpt-4o-mini",
+        "prediction": {
+          "type": "content",
+          "content": "{\n  \"feature_name\": \"test_feature\",\n  \"enabled\": true\n}"
+        }
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801ce9048c598e5-SEA",
+        "Connection": "keep-alive",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 16:40:40 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "284",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "301",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999940",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "chatcmpl-CGT1LStXgkWuzUR4kr85GM272gTPF",
+        "object": "chat.completion",
+        "created": 1758040839,
+        "model": "gpt-4o-mini-2024-07-18",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "{\n  \"feature_name\": \"test_feature\",\n  \"enabled\": true\n}",
+              "refusal": null,
+              "annotations": []
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 17,
+          "total_tokens": 75,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 16,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "service_tier": "default",
+        "system_fingerprint": "fp_560af6e559"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "523",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "Modify the following input to enable the feature. Only respond with the JSON and include no other text. Do not enclose in markdown backticks or any other additional annotations.\n\n{\n  \"feature_name\": \"test_feature\",\n  \"enabled\": false\n}"
+          }
+        ],
+        "model": "gpt-4o-mini",
+        "prediction": {
+          "type": "content",
+          "content": [
+            {
+              "type": "text",
+              "text": "{\n"
+            },
+            {
+              "type": "text",
+              "text": "  \"feature_name\": \"test_feature\",\n"
+            },
+            {
+              "type": "text",
+              "text": "  \"enabled\": true\n"
+            },
+            {
+              "type": "text",
+              "text": "}"
+            }
+          ]
+        }
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801ce92caa098e5-SEA",
+        "Connection": "keep-alive",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 16:40:40 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "371",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "389",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999937",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "chatcmpl-CGT1MuubEdn1rMDUoZNJk9ujQApcG",
+        "object": "chat.completion",
+        "created": 1758040840,
+        "model": "gpt-4o-mini-2024-07-18",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "{\n  \"feature_name\": \"test_feature\",\n  \"enabled\": true\n}",
+              "refusal": null,
+              "annotations": []
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 58,
+          "completion_tokens": 17,
+          "total_tokens": 75,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 16,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "service_tier": "default",
+        "system_fingerprint": "fp_560af6e559"
+      }
+    }
+  ],
+  "Variables": {}
+}

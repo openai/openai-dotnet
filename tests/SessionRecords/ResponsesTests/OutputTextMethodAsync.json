@@ -1,0 +1,250 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "143",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Respond with only the word hello."
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "980410c3be29ba46-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1369",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 23:15:23 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "572",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "575",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999967",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_040e3b9aa2c9c6b20068c9ef8ae604819791d98b91329fcf12",
+        "object": "response",
+        "created_at": 1758064522,
+        "status": "completed",
+        "background": false,
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4o-mini-2024-07-18",
+        "output": [
+          {
+            "id": "msg_040e3b9aa2c9c6b20068c9ef8b4b1c81978d5868926ffce65f",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "Hello."
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "reasoning": {
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 14,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 3,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 17
+        },
+        "user": null,
+        "metadata": {}
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "268",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "tools": [
+          {
+            "type": "function",
+            "name": "get_weather",
+            "description": "gets the weather",
+            "parameters": {},
+            "strict": false
+          }
+        ],
+        "tool_choice": "required",
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "How's the weather?"
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "980410c7d955ba46-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1507",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 23:15:24 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "490",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "493",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999740",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_0820837c434a9d4b0068c9ef8b8ed88193a3aa9ed8a3bb90c3",
+        "object": "response",
+        "created_at": 1758064523,
+        "status": "completed",
+        "background": false,
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4o-mini-2024-07-18",
+        "output": [
+          {
+            "id": "fc_0820837c434a9d4b0068c9ef8be3788193929a96bda8f780e6",
+            "type": "function_call",
+            "status": "completed",
+            "arguments": "{}",
+            "call_id": "call_3r5C7Kwri3EzPDSlVessE0RH",
+            "name": "get_weather"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "reasoning": {
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "required",
+        "tools": [
+          {
+            "type": "function",
+            "description": "gets the weather",
+            "name": "get_weather",
+            "parameters": {
+              "type": "object",
+              "properties": {}
+            },
+            "strict": false
+          }
+        ],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 43,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 2,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 45
+        },
+        "user": null,
+        "metadata": {}
+      }
+    }
+  ],
+  "Variables": {}
+}

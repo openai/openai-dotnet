@@ -1,0 +1,122 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/images/edits",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "4011891",
+        "Content-Type": "multipart/form-data; boundary=\"gQgL=WRRi9Z2BJfgB2eLCNBajhLEk88ij1pwCxkETefdxNAJfsz4cWRfrUGimtKhCbMESI\"",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "980b86e6cc9aa37e-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "506",
+        "Content-Type": "application/json",
+        "Date": "Wed, 17 Sep 2025 20:59:32 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "10354",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "10328",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "created": 1758142772,
+        "data": [
+          {
+            "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-PIXDVx5fCtKDRGzfCtB6cjvP/user-Xm5Rs3WMoRD21YV6ZnFobsZJ/img-GH3xfsZrrbmiOpEiyJpPWRBm.png?st=2025-09-17T19%3A59%3A32Z&se=2025-09-17T21%3A59%3A32Z&sp=r&sv=Sanitized&sr=b&rscd=inline&rsct=image/png&skoid=38e27a3b-6174-4d3e-90ac-d7d9ad49543f&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-09-17T17%3A57%3A11Z&ske=2025-09-18T17%3A57%3A11Z&sks=b&skv=2024-08-04&sig=Sanitized"
+          }
+        ]
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "711",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "980b87295819a37e-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "964",
+        "Content-Type": "application/json",
+        "Date": "Wed, 17 Sep 2025 20:59:35 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "2204",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "2237",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-input-images": "50000",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-input-images": "49999",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999215",
+        "x-ratelimit-reset-input-images": "1ms",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "chatcmpl-CGtXR67bL8OCQvzSwiQRunr6GGW3E",
+        "object": "chat.completion",
+        "created": 1758142773,
+        "model": "gpt-4o-mini-2024-07-18",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "The image appears to depict a stylized cartoon representation of a cat. This cat has a round, plump body and prominent features, including large, expressive eyes and a small nose. Its fur is characterized by alternating stripes, and it has a playful posture as it sits in a corner, surrounded by soft lighting. The background is minimalistic, enhancing the focus on the cat.",
+              "refusal": null,
+              "annotations": []
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 8523,
+          "completion_tokens": 76,
+          "total_tokens": 8599,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "service_tier": "default",
+        "system_fingerprint": "Sanitized"
+      }
+    }
+  ],
+  "Variables": {}
+}

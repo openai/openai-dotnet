@@ -1,0 +1,294 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "237",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-5",
+        "tools": [
+          {
+            "type": "mcp",
+            "server_label": "dmcp",
+            "server_url": "https://dmcp-server.deno.dev/sse",
+            "require_approval": "always"
+          }
+        ],
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Roll 2d4+1"
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9804279e2de0f8e5-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "2524",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 23:31:09 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "10270",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Set-Cookie": [
+          "Sanitized",
+          "Sanitized"
+        ],
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "10276",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_0bc6b18bd94fbc310068c9f332f98c8197ab66917b7024d8a6",
+        "object": "response",
+        "created_at": 1758065460,
+        "status": "completed",
+        "background": false,
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-5-2025-08-07",
+        "output": [
+          {
+            "id": "mcpl_0bc6b18bd94fbc310068c9f33427508197a6a96a173e7223fe",
+            "type": "mcp_list_tools",
+            "server_label": "dmcp",
+            "tools": [
+              {
+                "annotations": {
+                  "read_only": false
+                },
+                "description": "\n  Given a string of text describing a dice roll in \n  Dungeons and Dragons, provide a result of the roll.\n\n  Example input: 2d6 + 1d4\n  Example output: 14\n",
+                "input_schema": {
+                  "$schema": "https://json-schema.org/draft/2020-12/schema",
+                  "type": "object",
+                  "properties": {
+                    "diceRollExpression": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "diceRollExpression"
+                  ],
+                  "additionalProperties": false
+                },
+                "name": "roll"
+              }
+            ]
+          },
+          {
+            "id": "rs_0bc6b18bd94fbc310068c9f335d2108197aa1a642e595c8b05",
+            "type": "reasoning",
+            "summary": []
+          },
+          {
+            "id": "mcpr_0bc6b18bd94fbc310068c9f33cfa108197841df7e5cc44effc",
+            "type": "mcp_approval_request",
+            "arguments": "{\"diceRollExpression\":\"2d4+1\"}",
+            "name": "roll",
+            "server_label": "dmcp"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "reasoning": {
+          "effort": "medium",
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [
+          {
+            "type": "mcp",
+            "allowed_tools": null,
+            "headers": null,
+            "require_approval": "always",
+            "server_description": null,
+            "server_label": "dmcp",
+            "server_url": "https://dmcp-server.deno.dev/<redacted>"
+          }
+        ],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 169,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 155,
+          "output_tokens_details": {
+            "reasoning_tokens": 128
+          },
+          "total_tokens": 324
+        },
+        "user": null,
+        "metadata": {}
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "359",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "previous_response_id": "resp_0bc6b18bd94fbc310068c9f332f98c8197ab66917b7024d8a6",
+        "model": "gpt-5",
+        "tools": [
+          {
+            "type": "mcp",
+            "server_label": "dmcp",
+            "server_url": "https://dmcp-server.deno.dev/sse",
+            "require_approval": "always"
+          }
+        ],
+        "input": [
+          {
+            "type": "mcp_approval_response",
+            "approval_request_id": "mcpr_0bc6b18bd94fbc310068c9f33cfa108197841df7e5cc44effc",
+            "approve": true
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "980427df9eecf8e5-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "2014",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 23:31:11 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "2237",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "2243",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_0bc6b18bd94fbc310068c9f33d74148197b33786b24d0ef5b3",
+        "object": "response",
+        "created_at": 1758065469,
+        "status": "completed",
+        "background": false,
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-5-2025-08-07",
+        "output": [
+          {
+            "id": "mcp_0bc6b18bd94fbc310068c9f33dc41481979078cbe870f4e4b7",
+            "type": "mcp_call",
+            "approval_request_id": "mcpr_0bc6b18bd94fbc310068c9f33cfa108197841df7e5cc44effc",
+            "arguments": "{\"diceRollExpression\":\"2d4+1\"}",
+            "error": null,
+            "name": "roll",
+            "output": "3",
+            "server_label": "dmcp"
+          },
+          {
+            "id": "msg_0bc6b18bd94fbc310068c9f33f4ed0819797589f8401446da8",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "3"
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": "resp_0bc6b18bd94fbc310068c9f332f98c8197ab66917b7024d8a6",
+        "prompt_cache_key": null,
+        "reasoning": {
+          "effort": "medium",
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [
+          {
+            "type": "mcp",
+            "allowed_tools": null,
+            "headers": null,
+            "require_approval": "always",
+            "server_description": null,
+            "server_label": "dmcp",
+            "server_url": "https://dmcp-server.deno.dev/<redacted>"
+          }
+        ],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 359,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 5,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 364
+        },
+        "user": null,
+        "metadata": {}
+      }
+    }
+  ],
+  "Variables": {}
+}

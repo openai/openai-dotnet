@@ -1,0 +1,121 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "249",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "service_tier": "default",
+        "model": "gpt-4o-mini",
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Using a comprehensive evaluation of popular media in the 1970s and 1980s, what were the most common sci-fi themes?"
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "980410cbdd35ba46-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "4502",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 23:15:37 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "13222",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "13225",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999945",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_0dc7eaab311af85f0068c9ef8c32048197a18ae5c9a426071a",
+        "object": "response",
+        "created_at": 1758064524,
+        "status": "completed",
+        "background": false,
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4o-mini-2024-07-18",
+        "output": [
+          {
+            "id": "msg_0dc7eaab311af85f0068c9ef8c9e808197a6449e31c12f82fb",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "The 1970s and 1980s were pivotal decades for science fiction, marked by a range of thematic concerns and innovative storytelling. Here are some of the most common themes from that era:\n\n### 1. **Dystopian Futures**\n   - Many works explored bleak, authoritarian futures where technology controlled society or humanity faced catastrophic consequences of its actions. Examples include *\"A Clockwork Orange\" (1971)* and *\"Blade Runner\" (1982)*.\n\n### 2. **Space Exploration and Alien Encounters**\n   - The fascination with space travel continued, highlighted in films like *\"Star Wars\" (1977)* and *\"Alien\" (1979)*. This theme often examined humanity's place in the universe and the potential for contact with extraterrestrial life.\n\n### 3. **Post-Apocalyptic Landscapes**\n   - Many narratives depicted worlds ravaged by nuclear war or societal collapse, as seen in *\"Mad Max\" (1979)* and *\"The Road Warrior\" (1981)*, exploring survival and the breakdown of civilization.\n\n### 4. **Robots and Artificial Intelligence**\n   - The exploration of AI and robotics emerged as a central theme. Films like *\"The Terminator\" (1984)* and *\"2001: A Space Odyssey\" (1968)* examined the relationships between humans and machines, often raising ethical questions about autonomy and existence.\n\n### 5. **Time Travel**\n   - Time travel became a popular narrative device, with films such as *\"Back to the Future\" (1985)* exploring the complexities and paradoxes associated with altering the past or future.\n\n### 6. **Genetic Engineering and Biotechnology**\n   - The manipulation of genetics and the consequences of \"playing God\" were explored in works like *\"The Fly\" (1986)*, raising questions about identity, morality, and the essence of humanity.\n\n### 7. **Psychological and Philosophical Exploration**\n   - Sci-fi during this period often delved into deep philosophical questions surrounding consciousness, identity, and reality, with standout works like *\"Solaris\" (1972)* presenting complex human emotions and relationships.\n\n### 8. **Environmental Concerns**\n   - As awareness of environmental issues grew, some sci-fi stories began to address ecological disaster and the impact of human activity on the planet. Films like *\"Silent Running\" (1972)* showcased these concerns.\n\n### 9. **Social Commentary**\n   - Many science fiction works served as allegories for contemporary social issues, including race, gender, and class struggles. For instance, *\"Star Trek: The Original Series\"* often tackled subjects such as civil rights and equality.\n\n### 10. **Cyberpunk Influences**\n   - Emerging in the 1980s, cyberpunk depicted high-tech futures intertwined with social decay and corporate control, seen in works like *\"Neuromancer\"* (1984) and the film *\"Blade Runner.\"*\n\n### Conclusion\nThese themes not only reflected the concerns of the times—such as the Cold War, rapid technological advances, and social upheavals—but also shaped the future of the genre. Sci-fi from the 1970s and 1980s continues to influence contemporary media, highlighting its lasting impact and relevance."
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "reasoning": {
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 35,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 669,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 704
+        },
+        "user": null,
+        "metadata": {}
+      }
+    }
+  ],
+  "Variables": {}
+}

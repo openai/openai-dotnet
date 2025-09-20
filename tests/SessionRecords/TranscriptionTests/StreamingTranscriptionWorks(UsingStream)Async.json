@@ -1,0 +1,64 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/audio/transcriptions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "34702",
+        "Content-Type": "multipart/form-data; boundary=\"14eBnss90sE2MCdT0pNykgYLNlqjL0kobRINWlLPJZ9ZnDwJx2kupY_K5lUSm0qjzriDng\"",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "Cache-Control": "no-store",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801e87e5dadded0-SEA",
+        "Connection": "keep-alive",
+        "Content-Type": "text/event-stream; charset=utf-8",
+        "Date": "Tue, 16 Sep 2025 16:58:22 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "546",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "600",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-reset-requests": "2ms",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": [
+        "data: {\"type\":\"transcript.text.delta\",\"delta\":\"Hello\"}\r\n",
+        "\r\n",
+        "data: {\"type\":\"transcript.text.delta\",\"delta\":\" world\"}\r\n",
+        "\r\n",
+        "data: {\"type\":\"transcript.text.delta\",\"delta\":\",\"}\r\n",
+        "\r\n",
+        "data: {\"type\":\"transcript.text.delta\",\"delta\":\" this\"}\r\n",
+        "\r\n",
+        "data: {\"type\":\"transcript.text.delta\",\"delta\":\" is\"}\r\n",
+        "\r\n",
+        "data: {\"type\":\"transcript.text.delta\",\"delta\":\" a\"}\r\n",
+        "\r\n",
+        "data: {\"type\":\"transcript.text.delta\",\"delta\":\" test\"}\r\n",
+        "\r\n",
+        "data: {\"type\":\"transcript.text.delta\",\"delta\":\".\"}\r\n",
+        "\r\n",
+        "data: {\"type\":\"transcript.text.done\",\"text\":\"Hello world, this is a test.\",\"usage\":{\"type\":\"tokens\",\"total_tokens\":27,\"input_tokens\":17,\"input_token_details\":{\"text_tokens\":0,\"audio_tokens\":17},\"output_tokens\":10}}\r\n",
+        "\r\n",
+        "data: [DONE]\r\n",
+        "\r\n"
+      ]
+    }
+  ],
+  "Variables": {}
+}

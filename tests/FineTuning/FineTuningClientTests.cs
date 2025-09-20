@@ -71,16 +71,16 @@ public class FineTuningClientTests
             : client.FineTune("gpt-3.5-turbo", sampleFile.Id, false);
 
         // Assert.AreEqual(0, ft.Hyperparameters.CycleCount);
-        Assert.True(ft.Status.InProgress);
-        Assert.False(ft.HasCompleted);
+        Assert.That(ft.Status.InProgress);
+        Assert.That(ft.HasCompleted, Is.False);
 
         _ = method.IsAsync()
             ? await ft.CancelAndUpdateAsync()
             : ft.CancelAndUpdate();
 
-        Assert.AreEqual(FineTuningStatus.Cancelled, ft.Status);
-        Assert.False(ft.Status.InProgress);
-        Assert.True(ft.HasCompleted);
+        Assert.That(ft.Status, Is.EqualTo(FineTuningStatus.Cancelled));
+        Assert.That(ft.Status.InProgress, Is.False);
+        Assert.That(ft.HasCompleted);
     }
 
 
@@ -110,25 +110,25 @@ public class FineTuningClientTests
         ft.CancelAndUpdate();
 
 #pragma warning disable CS0618
-        Assert.AreEqual(1, ft.Hyperparameters.EpochCount);
-        Assert.AreEqual(2, ft.Hyperparameters.BatchSize);
-        Assert.AreEqual(3, ft.Hyperparameters.LearningRateMultiplier);
+        Assert.That(ft.Hyperparameters.EpochCount, Is.EqualTo(1));
+        Assert.That(ft.Hyperparameters.BatchSize, Is.EqualTo(2));
+        Assert.That(ft.Hyperparameters.LearningRateMultiplier, Is.EqualTo(3));
 #pragma warning restore
 
         if (ft.MethodHyperparameters is HyperparametersForSupervised hp)
         {
-            Assert.AreEqual(1, hp.EpochCount);
-            Assert.AreEqual(2, hp.BatchSize);
-            Assert.AreEqual(3, hp.LearningRateMultiplier);
+            Assert.That(hp.EpochCount, Is.EqualTo(1));
+            Assert.That(hp.BatchSize, Is.EqualTo(2));
+            Assert.That(hp.LearningRateMultiplier, Is.EqualTo(3));
         }
         else
         {
             Assert.Fail($"Expected HyperparametersForSupervised, got {ft.MethodHyperparameters?.GetType().ToString() ?? "null"}");
         }
 
-        Assert.AreEqual(ft.UserProvidedSuffix, "TestFTJob");
-        Assert.AreEqual(1234567, ft.Seed);
-        Assert.AreEqual(validationFile.Id, ft.ValidationFileId);
+        Assert.That(ft.UserProvidedSuffix, Is.EqualTo("TestFTJob"));
+        Assert.That(ft.Seed, Is.EqualTo(1234567));
+        Assert.That(ft.ValidationFileId, Is.EqualTo(validationFile.Id));
     }
 
     [Test]
@@ -211,14 +211,14 @@ public class FineTuningClientTests
         {
             Console.WriteLine($"{counter} jobs");
             Console.WriteLine($"Job: {job.JobId}");
-            Assert.IsTrue(job.JobId.StartsWith("ftjob"));
+            Assert.That(job.JobId.StartsWith("ftjob"));
             counter++;
         }
         Console.WriteLine($"Got {counter} jobs");
 
         // Assert
-        Assert.Greater(counter, 0);
-        Assert.LessOrEqual(counter, 10);
+        Assert.That(counter, Is.GreaterThan(0));
+        Assert.That(counter, Is.LessThanOrEqualTo(10));
     }
 
     [Test]
@@ -233,7 +233,7 @@ public class FineTuningClientTests
         }
         var secondJob = client.GetJobs(new() { AfterJobId = firstJob.JobId }).First();
 
-        Assert.AreNotEqual(firstJob.JobId, secondJob.JobId);
+        Assert.That(secondJob.JobId, Is.Not.EqualTo(firstJob.JobId));
         // Can't assert that one was created after the next because they might be created at the same second.
         // Assert.Greater(secondJob.CreatedAt, firstJob.CreatedAt, $"{firstJob}, {secondJob}");
     }
@@ -293,8 +293,8 @@ public class FineTuningClientTests
         }
 
         FineTuningCheckpointMetrics metrics = first.Metrics;
-        Assert.NotNull(metrics);
-        Assert.Greater(metrics.StepNumber, 0);
+        Assert.That(metrics, Is.Not.Null);
+        Assert.That(metrics.StepNumber, Is.GreaterThan(0));
     }
 
     private static FineTuningClient GetTestClient() => GetTestClient<FineTuningClient>(TestScenario.FineTuning);

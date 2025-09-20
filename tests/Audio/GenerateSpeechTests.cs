@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using OpenAI.Audio;
 using OpenAI.Tests.Utility;
 using System;
@@ -8,11 +9,8 @@ using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Audio;
 
-[TestFixture(true)]
-[TestFixture(false)]
-[Parallelizable(ParallelScope.All)]
 [Category("Audio")]
-public partial class GenerateSpeechTests : SyncAsyncTestBase
+public partial class GenerateSpeechTests : OpenAIRecordedTestBase
 {
     public GenerateSpeechTests(bool isAsync) : base(isAsync)
     {
@@ -21,14 +19,15 @@ public partial class GenerateSpeechTests : SyncAsyncTestBase
     [Test]
     public async Task BasicTextToSpeechWorks()
     {
-        AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_TTS);
+        using (Recording.DisableRequestBodyRecording()) // Temp while multipart support in the test proxy is being implemented
+        {
+            AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_TTS);
 
-        BinaryData audio = IsAsync
-            ? await client.GenerateSpeechAsync("Hello, world! This is a test.", GeneratedSpeechVoice.Shimmer)
-            : client.GenerateSpeech("Hello, world! This is a test.", GeneratedSpeechVoice.Shimmer);
+            BinaryData audio = await client.GenerateSpeechAsync("Hello, world! This is a test.", GeneratedSpeechVoice.Shimmer);
 
-        Assert.That(audio, Is.Not.Null);
-        ValidateGeneratedAudio(audio, "hello");
+            Assert.That(audio, Is.Not.Null);
+            await ValidateGeneratedAudio(audio, "hello");
+        }
     }
 
     [Test]
@@ -41,7 +40,7 @@ public partial class GenerateSpeechTests : SyncAsyncTestBase
     [TestCase("pcm")]
     public async Task OutputFormatWorks(string responseFormat)
     {
-        AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_TTS);
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_TTS);
 
         SpeechGenerationOptions options = new();
 
@@ -59,9 +58,7 @@ public partial class GenerateSpeechTests : SyncAsyncTestBase
             };
         }
 
-        BinaryData audio = IsAsync
-            ? await client.GenerateSpeechAsync("Hello, world!", GeneratedSpeechVoice.Alloy, options)
-            : client.GenerateSpeech("Hello, world!", GeneratedSpeechVoice.Alloy, options);
+        BinaryData audio = await client.GenerateSpeechAsync("Hello, world!", GeneratedSpeechVoice.Alloy, options);
 
         Assert.That(audio, Is.Not.Null);
 
@@ -82,10 +79,10 @@ public partial class GenerateSpeechTests : SyncAsyncTestBase
         }
     }
 
-    private void ValidateGeneratedAudio(BinaryData audio, string expectedSubstring)
+    private async Task ValidateGeneratedAudio(BinaryData audio, string expectedSubstring)
     {
-        AudioClient client = GetTestClient<AudioClient>(TestScenario.Audio_Whisper);
-        AudioTranscription transcription = client.TranscribeAudio(audio.ToStream(), "hello_world.wav");
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
+        AudioTranscription transcription = await client.TranscribeAudioAsync(audio.ToStream(), "hello_world.wav");
 
         Assert.That(transcription.Text.ToLowerInvariant(), Contains.Substring(expectedSubstring));
     }

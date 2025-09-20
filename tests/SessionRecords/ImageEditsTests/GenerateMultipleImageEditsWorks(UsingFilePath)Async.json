@@ -1,0 +1,203 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/images/edits",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "849180",
+        "Content-Type": "multipart/form-data; boundary=\"lbXW3pC_HkqKYigcTIosHoQK=AjkZ5jGkSw_HqmUbtU0C3WGE9O=SksBvmmKsrq3JFLlHq\"",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "980b8b13df69a37e-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "969",
+        "Content-Type": "application/json",
+        "Date": "Wed, 17 Sep 2025 21:02:23 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "10494",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "10491",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "created": 1758142943,
+        "data": [
+          {
+            "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-PIXDVx5fCtKDRGzfCtB6cjvP/user-Xm5Rs3WMoRD21YV6ZnFobsZJ/img-wcnXCyUxRNVbpMUnzaie9W0P.png?st=2025-09-17T20%3A02%3A23Z&se=2025-09-17T22%3A02%3A23Z&sp=r&sv=Sanitized&sr=b&rscd=inline&rsct=image/png&skoid=8eb2c87c-0531-4dab-acb3-b5e2adddce6c&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-09-17T19%3A01%3A53Z&ske=2025-09-18T19%3A01%3A53Z&sks=b&skv=2024-08-04&sig=Sanitized"
+          },
+          {
+            "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-PIXDVx5fCtKDRGzfCtB6cjvP/user-Xm5Rs3WMoRD21YV6ZnFobsZJ/img-uHMayi1WEd2NxUVonhEg4QQK.png?st=2025-09-17T20%3A02%3A23Z&se=2025-09-17T22%3A02%3A23Z&sp=r&sv=Sanitized&sr=b&rscd=inline&rsct=image/png&skoid=8eb2c87c-0531-4dab-acb3-b5e2adddce6c&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-09-17T19%3A01%3A53Z&ske=2025-09-18T19%3A01%3A53Z&sks=b&skv=2024-08-04&sig=Sanitized"
+          }
+        ]
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "711",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "980b8b565fb1a37e-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1007",
+        "Content-Type": "application/json",
+        "Date": "Wed, 17 Sep 2025 21:02:26 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "2881",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "2925",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-input-images": "50000",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-input-images": "49999",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999212",
+        "x-ratelimit-reset-input-images": "1ms",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "chatcmpl-CGtaC8afEgzCratmzbGp8j4JUSa0B",
+        "object": "chat.completion",
+        "created": 1758142944,
+        "model": "gpt-4o-mini-2024-07-18",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "The image shows a cartoon-like, anthropomorphic cat sitting in a corner of a light-colored room. The cat has an expressive face, with wide eyes and a slightly surprised or curious expression. Its fur is a darker shade, contrasting with the pale background. The lighting in the room creates a soft atmosphere, illuminating the cat and emphasizing its features while the corner adds a sense of confinement to the scene.",
+              "refusal": null,
+              "annotations": []
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 8523,
+          "completion_tokens": 80,
+          "total_tokens": 8603,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "service_tier": "default",
+        "system_fingerprint": "Sanitized"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "713",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "980b8b69bf8da37e-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "930",
+        "Content-Type": "application/json",
+        "Date": "Wed, 17 Sep 2025 21:02:29 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "2102",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "2125",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-input-images": "50000",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-input-images": "49999",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999215",
+        "x-ratelimit-reset-input-images": "1ms",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "chatcmpl-CGtaFHZ3JZ5sCobb9ow5zHVZTPIUW",
+        "object": "chat.completion",
+        "created": 1758142947,
+        "model": "gpt-4o-mini-2024-07-18",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "The image likely depicts a stylized animal, resembling a cat, sitting in a corner of a room. The cat has distinctive features, including yellow eyes and a well-groomed coat patterned with stripes. The background is minimalistic, with clean lines and soft lighting that highlights the cat's details and makes it the focal point of the image.",
+              "refusal": null,
+              "annotations": []
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 8523,
+          "completion_tokens": 69,
+          "total_tokens": 8592,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "service_tier": "default",
+        "system_fingerprint": "Sanitized"
+      }
+    }
+  ],
+  "Variables": {}
+}

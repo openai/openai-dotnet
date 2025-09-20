@@ -1,0 +1,203 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/images/edits",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "4012056",
+        "Content-Type": "multipart/form-data; boundary=\"INORFLREnlxybssI4Wb31CEwd631XfYBLT0iuqGg95ItKxz377LP6cGHoplTUym8GFDm6n\"",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "980b88eeef09a37e-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "247",
+        "Content-Type": "application/json",
+        "Date": "Wed, 17 Sep 2025 21:00:55 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "10288",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "10271",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "created": 1758142855,
+        "data": [
+          {
+            "b64_json": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII="
+          },
+          {
+            "b64_json": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII="
+          }
+        ]
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "263121",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "980b89322f44a37e-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "967",
+        "Content-Type": "application/json",
+        "Date": "Wed, 17 Sep 2025 21:00:58 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "2226",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "2315",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-input-images": "50000",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-input-images": "49999",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999212",
+        "x-ratelimit-reset-input-images": "1ms",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "chatcmpl-CGtYmVQftEX9lNdSBUQMWCVpvvoRQ",
+        "object": "chat.completion",
+        "created": 1758142856,
+        "model": "gpt-4o-mini-2024-07-18",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "The image likely depicts a cat sitting in a corner of a room. The setting appears to be minimalistic, with light-colored walls and a simple, clean background. The cat has a distinct posture and features, possibly wearing some sort of accessory or mechanical element, which suggests a unique or playful design. The overall composition emphasizes the cat's presence in the space.",
+              "refusal": null,
+              "annotations": []
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 8523,
+          "completion_tokens": 72,
+          "total_tokens": 8595,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "service_tier": "default",
+        "system_fingerprint": "Sanitized"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "263121",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "980b89428f20a37e-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1072",
+        "Content-Type": "application/json",
+        "Date": "Wed, 17 Sep 2025 21:01:01 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "2630",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "2670",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-input-images": "50000",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-input-images": "49999",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999215",
+        "x-ratelimit-reset-input-images": "1ms",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "chatcmpl-CGtYp1pXk9wNLakmscD329SI3Dp0A",
+        "object": "chat.completion",
+        "created": 1758142859,
+        "model": "gpt-4o-mini-2024-07-18",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "The image features a stylized cat sitting in a corner of a room. The walls and floor have a smooth, reflective surface, creating a neat and minimalist environment. The cat appears to have a sleek and polished design, with prominent features that give it an artistic or digital quality. Its posture and expression suggest a calm demeanor, and it is positioned with its body slightly turned, facing the viewer. The lighting adds a soft glow, making the scene feel serene and balanced.",
+              "refusal": null,
+              "annotations": []
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 8523,
+          "completion_tokens": 94,
+          "total_tokens": 8617,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "service_tier": "default",
+        "system_fingerprint": "Sanitized"
+      }
+    }
+  ],
+  "Variables": {}
+}

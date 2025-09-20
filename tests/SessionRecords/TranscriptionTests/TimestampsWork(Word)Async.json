@@ -1,0 +1,84 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/audio/transcriptions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "35067",
+        "Content-Type": "multipart/form-data; boundary=\"RAzd3Zlh4BhVqro2jd008mV8PjwwPHoO8Et4R=rgHUK7BpTEiuFs3b6IlmTkP1kBSG5nFy\"",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801eaa4fe62756b-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "521",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 16:59:51 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "1677",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Via": "envoy-router-85f46f6f85-hwspb",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "1721",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "10000",
+        "x-ratelimit-remaining-requests": "9999",
+        "x-ratelimit-reset-requests": "6ms",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "task": "transcribe",
+        "language": "english",
+        "duration": 1.7000000476837158,
+        "text": "Hello, world! This is a test.",
+        "words": [
+          {
+            "word": "Hello",
+            "start": 0.0,
+            "end": 0.3199999928474426
+          },
+          {
+            "word": "world",
+            "start": 0.47999998927116394,
+            "end": 0.6000000238418579
+          },
+          {
+            "word": "This",
+            "start": 0.8399999737739563,
+            "end": 0.8799999952316284
+          },
+          {
+            "word": "is",
+            "start": 0.8799999952316284,
+            "end": 1.0
+          },
+          {
+            "word": "a",
+            "start": 1.0,
+            "end": 1.1399999856948853
+          },
+          {
+            "word": "test",
+            "start": 1.1399999856948853,
+            "end": 1.440000057220459
+          }
+        ],
+        "usage": {
+          "type": "duration",
+          "seconds": 2
+        }
+      }
+    }
+  ],
+  "Variables": {}
+}

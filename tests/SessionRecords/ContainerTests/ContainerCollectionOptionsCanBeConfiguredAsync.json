@@ -1,0 +1,201 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/containers?limit=5&order=asc",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "98039e5a4c1a08ad-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1794",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 21:57:17 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "1171",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "1175",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "cntr_685ef4c845448198944b39e29ac07bef027f00f17d80b375",
+            "object": "container",
+            "created_at": 1751053512,
+            "status": "expired",
+            "expires_after": {
+              "anchor": "last_active_at",
+              "minutes": 20
+            },
+            "last_active_at": 1758059837,
+            "name": "auto"
+          },
+          {
+            "id": "cntr_685ef5072e7081988a34114524d12ba1020308cfb49d0318",
+            "object": "container",
+            "created_at": 1751053575,
+            "status": "expired",
+            "expires_after": {
+              "anchor": "last_active_at",
+              "minutes": 20
+            },
+            "last_active_at": 1758059837,
+            "name": "auto"
+          },
+          {
+            "id": "cntr_685ef5c103c081989e98e1ed2bf6dc31005b89a7a09b96d7",
+            "object": "container",
+            "created_at": 1751053761,
+            "status": "expired",
+            "expires_after": {
+              "anchor": "last_active_at",
+              "minutes": 20
+            },
+            "last_active_at": 1758059837,
+            "name": "auto"
+          },
+          {
+            "id": "cntr_685ef69c527481988c029aa7fe6ca8da0aeb4a636f144df2",
+            "object": "container",
+            "created_at": 1751053980,
+            "status": "expired",
+            "expires_after": {
+              "anchor": "last_active_at",
+              "minutes": 20
+            },
+            "last_active_at": 1758059837,
+            "name": "auto"
+          },
+          {
+            "id": "cntr_6871be51809481989d568ec819059e3100fad726d4fa0bf8",
+            "object": "container",
+            "created_at": 1752284753,
+            "status": "expired",
+            "expires_after": {
+              "anchor": "last_active_at",
+              "minutes": 20
+            },
+            "last_active_at": 1758059837,
+            "name": "auto"
+          }
+        ],
+        "first_id": "cntr_685ef4c845448198944b39e29ac07bef027f00f17d80b375",
+        "has_more": true,
+        "last_id": "cntr_6871be51809481989d568ec819059e3100fad726d4fa0bf8"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/containers?limit=5&order=desc",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "98039e622a8808ad-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "2009",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 21:57:19 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "1195",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "1198",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "cntr_68c9dd1927e48190bac560069f75c45d098a95148b8a74a8",
+            "object": "container",
+            "created_at": 1758059801,
+            "status": "running",
+            "expires_after": {
+              "anchor": "last_active_at",
+              "minutes": 20
+            },
+            "last_active_at": 1758059838,
+            "name": "test-container-afa555eba65348a3952ec606988714f3"
+          },
+          {
+            "id": "cntr_68c9dceb9f8081908a49ffc9f5e59cc1043975e132963996",
+            "object": "container",
+            "created_at": 1758059755,
+            "status": "running",
+            "expires_after": {
+              "anchor": "last_active_at",
+              "minutes": 20
+            },
+            "last_active_at": 1758059838,
+            "name": "test-container-3de6022508074c2798f2d8975109cdfa"
+          },
+          {
+            "id": "cntr_68c9dc8bf6b08190a781637c68b7507500af2fb63ac384dd",
+            "object": "container",
+            "created_at": 1758059659,
+            "status": "running",
+            "expires_after": {
+              "anchor": "last_active_at",
+              "minutes": 20
+            },
+            "last_active_at": 1758059838,
+            "name": "test-container-9cf38930509b471fbb7ffe3d99353ed3"
+          },
+          {
+            "id": "cntr_68c9d960b640819087ed1ade9514ed850495cbde5efe1b76",
+            "object": "container",
+            "created_at": 1758058848,
+            "status": "running",
+            "expires_after": {
+              "anchor": "last_active_at",
+              "minutes": 20
+            },
+            "last_active_at": 1758059838,
+            "name": "test-container-96ba173e04ae3bcd99869e56f0adbf3a"
+          },
+          {
+            "id": "cntr_68c9d9074c588190a2a2df23928516750c4ecaf999be4573",
+            "object": "container",
+            "created_at": 1758058759,
+            "status": "running",
+            "expires_after": {
+              "anchor": "last_active_at",
+              "minutes": 20
+            },
+            "last_active_at": 1758059838,
+            "name": "test-container-96ba173e04ae3bcd99869e56f0adbf3a"
+          }
+        ],
+        "first_id": "cntr_68c9dd1927e48190bac560069f75c45d098a95148b8a74a8",
+        "has_more": true,
+        "last_id": "cntr_68c9d9074c588190a2a2df23928516750c4ecaf999be4573"
+      }
+    }
+  ],
+  "Variables": {
+    "TEST_CONTAINER_ID": "cntr_68c9dd1927e48190bac560069f75c45d098a95148b8a74a8"
+  }
+}
