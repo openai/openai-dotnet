@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class McpTool : IJsonModel<McpTool>
     {
-        internal McpTool() : this(InternalToolType.Mcp, null, null, null, null, null, null)
+        internal McpTool() : this(InternalToolType.Mcp, null, null, null, default, null, null, null, null, null)
         {
         }
 
@@ -36,10 +36,25 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("server_label"u8);
                 writer.WriteStringValue(ServerLabel);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("server_url") != true)
+            if (Optional.IsDefined(ServerUri) && _additionalBinaryDataProperties?.ContainsKey("server_url") != true)
             {
                 writer.WritePropertyName("server_url"u8);
                 writer.WriteStringValue(ServerUri.AbsoluteUri);
+            }
+            if (Optional.IsDefined(ConnectorId) && _additionalBinaryDataProperties?.ContainsKey("connector_id") != true)
+            {
+                writer.WritePropertyName("connector_id"u8);
+                writer.WriteStringValue(ConnectorId.Value.ToString());
+            }
+            if (Optional.IsDefined(AuthorizationToken) && _additionalBinaryDataProperties?.ContainsKey("authorization") != true)
+            {
+                writer.WritePropertyName("authorization"u8);
+                writer.WriteStringValue(AuthorizationToken);
+            }
+            if (Optional.IsDefined(ServerDescription) && _additionalBinaryDataProperties?.ContainsKey("server_description") != true)
+            {
+                writer.WritePropertyName("server_description"u8);
+                writer.WriteStringValue(ServerDescription);
             }
             if (Optional.IsCollectionDefined(Headers) && _additionalBinaryDataProperties?.ContainsKey("headers") != true)
             {
@@ -92,6 +107,9 @@ namespace OpenAI.Responses
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string serverLabel = default;
             Uri serverUri = default;
+            McpToolConnectorId? connectorId = default;
+            string authorizationToken = default;
+            string serverDescription = default;
             IDictionary<string, string> headers = default;
             McpToolFilter allowedTools = default;
             McpToolCallApprovalPolicy toolCallApprovalPolicy = default;
@@ -109,7 +127,30 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("server_url"u8))
                 {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
                     serverUri = new Uri(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("connector_id"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    connectorId = new McpToolConnectorId(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("authorization"u8))
+                {
+                    authorizationToken = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("server_description"u8))
+                {
+                    serverDescription = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("headers"u8))
@@ -161,6 +202,9 @@ namespace OpenAI.Responses
                 additionalBinaryDataProperties,
                 serverLabel,
                 serverUri,
+                connectorId,
+                authorizationToken,
+                serverDescription,
                 headers ?? new ChangeTrackingDictionary<string, string>(),
                 allowedTools,
                 toolCallApprovalPolicy);

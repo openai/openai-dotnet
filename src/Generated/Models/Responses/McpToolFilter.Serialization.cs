@@ -41,6 +41,11 @@ namespace OpenAI.Responses
                 }
                 writer.WriteEndArray();
             }
+            if (Optional.IsDefined(IsReadOnly) && _additionalBinaryDataProperties?.ContainsKey("read_only") != true)
+            {
+                writer.WritePropertyName("read_only"u8);
+                writer.WriteBooleanValue(IsReadOnly.Value);
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
@@ -83,6 +88,7 @@ namespace OpenAI.Responses
                 return null;
             }
             IList<string> toolNames = default;
+            bool? isReadOnly = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -107,10 +113,19 @@ namespace OpenAI.Responses
                     toolNames = array;
                     continue;
                 }
+                if (prop.NameEquals("read_only"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    isReadOnly = prop.Value.GetBoolean();
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new McpToolFilter(toolNames ?? new ChangeTrackingList<string>(), additionalBinaryDataProperties);
+            return new McpToolFilter(toolNames ?? new ChangeTrackingList<string>(), isReadOnly, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<McpToolFilter>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

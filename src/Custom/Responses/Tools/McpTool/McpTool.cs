@@ -1,12 +1,36 @@
-﻿namespace OpenAI.Responses;
+﻿using System;
 
-// CUSTOM: Renamed.
+namespace OpenAI.Responses;
+
+// CUSTOM:
+// - Renamed.
+// - Suppressed the constructor that only takes the server label as a parameter. This is because,
+//   even though the server URI and the connector ID are specified as optional, in practice, one of
+//   the two must be provided.
 [CodeGenType("MCPTool")]
+[CodeGenSuppress("McpTool", typeof(string))]
 public partial class McpTool
 {
-    // CUSTOM: Re-used MCPToolFilter as the type.
-    [CodeGenMember("AllowedTools")]
-    public McpToolFilter AllowedTools { get; set; }
+    // CUSTOM: Added a constructor that takes the server URI in addition to the server label.
+    public McpTool(string serverLabel, Uri serverUri) : base(InternalToolType.Mcp)
+    {
+        Argument.AssertNotNull(serverLabel, nameof(serverLabel));
+        Argument.AssertNotNull(serverUri, nameof(serverUri));
+
+        ServerLabel = serverLabel;
+        ServerUri = serverUri;
+        Headers = new ChangeTrackingDictionary<string, string>();
+    }
+
+    // CUSTOM: Added a constructor that takes the connector ID in addition to the server label.
+    public McpTool(string serverLabel, McpToolConnectorId connectorId) : base(InternalToolType.Mcp)
+    {
+        Argument.AssertNotNull(serverLabel, nameof(serverLabel));
+
+        ServerLabel = serverLabel;
+        ConnectorId = connectorId;
+        Headers = new ChangeTrackingDictionary<string, string>();
+    }
 
     // CUSTOM:
     // - Renamed.

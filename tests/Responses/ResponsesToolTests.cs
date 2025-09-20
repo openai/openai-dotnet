@@ -38,6 +38,7 @@ public partial class ResponsesToolTests : SyncAsyncTestBase
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
+                    ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
                     ToolCallApprovalPolicy = approvalPolicy
                 }
             }
@@ -89,6 +90,7 @@ public partial class ResponsesToolTests : SyncAsyncTestBase
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
+                    ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
                     ToolCallApprovalPolicy = approvalPolicy
                 }
             }
@@ -202,6 +204,7 @@ public partial class ResponsesToolTests : SyncAsyncTestBase
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
+                    ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
                     ToolCallApprovalPolicy = approvalPolicy
                 }
             }
@@ -242,6 +245,7 @@ public partial class ResponsesToolTests : SyncAsyncTestBase
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
+                    ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
                     ToolCallApprovalPolicy = approvalPolicy
                 }
             }
@@ -280,6 +284,7 @@ public partial class ResponsesToolTests : SyncAsyncTestBase
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
+                    ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
                     ToolCallApprovalPolicy = approvalPolicy,
                     AllowedTools = new McpToolFilter()
                     {
@@ -320,10 +325,11 @@ public partial class ResponsesToolTests : SyncAsyncTestBase
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
+                    ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
                     ToolCallApprovalPolicy = approvalPolicy,
                     AllowedTools = new McpToolFilter()
                     {
-                        ToolNames = { "not_roll" } // This is not a real tool.
+                        ToolNames = { "not_roll" } // This is not a real tool. We use this to implicitly disallow everything else.
                     }
                 }
             }

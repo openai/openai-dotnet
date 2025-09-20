@@ -14,18 +14,13 @@ public partial class ResponseExamples
     [Test]
     public async Task Example05_RemoteMcpAsync()
     {
-        // This is a dice rolling MCP server.
-        string serverLabel = "dmcp";
-        Uri serverUri = new Uri("https://dmcp-server.deno.dev/sse");
-
-        McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
-
         ResponseCreationOptions options = new()
         {
             Tools = {
-                new McpTool(serverLabel, serverUri)
+                new McpTool(serverLabel: "dmcp", serverUri: new Uri("https://dmcp-server.deno.dev/sse"))
                 {
-                    ToolCallApprovalPolicy = approvalPolicy
+                    ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
+                    ToolCallApprovalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
                 }
             }
         };

@@ -9,7 +9,7 @@ namespace OpenAI.Responses;
 [CodeGenType("Tool")]
 public partial class ResponseTool
 {
-    // CUSTOM: Added factory method a a convenience.
+    // CUSTOM: Added factory method as a convenience.
     public static FunctionTool CreateFunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled, string functionDescription = null)
     {
         Argument.AssertNotNull(functionName, nameof(functionName));
@@ -23,7 +23,7 @@ public partial class ResponseTool
             strictModeEnabled: strictModeEnabled);
     }
 
-    // CUSTOM: Added factory method a a convenience.
+    // CUSTOM: Added factory method as a convenience.
     [Experimental("OPENAICUA001")]
     public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth,int displayHeight)
     {
@@ -35,7 +35,7 @@ public partial class ResponseTool
             displayHeight:displayHeight);
     }
 
-    // CUSTOM: Added factory method a a convenience.
+    // CUSTOM: Added factory method as a convenience.
     public static FileSearchTool CreateFileSearchTool(IEnumerable<string> vectorStoreIds, int? maxResultCount = null, FileSearchToolRankingOptions rankingOptions = null, BinaryData filters = null)
     {
         Argument.AssertNotNull(vectorStoreIds, nameof(vectorStoreIds));
@@ -49,7 +49,7 @@ public partial class ResponseTool
             filters: filters);
     }
 
-    // CUSTOM: Added factory method a a convenience.
+    // CUSTOM: Added factory method as a convenience.
     public static WebSearchTool CreateWebSearchTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null)
     {
         return new WebSearchTool(
@@ -59,8 +59,8 @@ public partial class ResponseTool
             searchContextSize: searchContextSize);
     }
 
-    // CUSTOM: Added factory method a a convenience.
-    public static McpTool CreateMcpTool(string serverLabel, Uri serverUri, IDictionary<string, string> headers = null, McpToolFilter allowedTools = null, McpToolCallApprovalPolicy toolCallApprovalPolicy = null)
+    // CUSTOM: Added factory method as a convenience.
+    public static McpTool CreateMcpTool(string serverLabel, Uri serverUri, string authorizationToken = null, string serverDescription = null, IDictionary<string, string> headers = null, McpToolFilter allowedTools = null, McpToolCallApprovalPolicy toolCallApprovalPolicy = null)
     {
         Argument.AssertNotNull(serverLabel, nameof(serverLabel));
         Argument.AssertNotNull(serverUri, nameof(serverUri));
@@ -70,6 +70,27 @@ public partial class ResponseTool
             additionalBinaryDataProperties: null,
             serverLabel: serverLabel,
             serverUri: serverUri,
+            connectorId: null,
+            authorizationToken: authorizationToken,
+            serverDescription: serverDescription,
+            headers: headers,
+            allowedTools: allowedTools,
+            toolCallApprovalPolicy: toolCallApprovalPolicy);
+    }
+
+    // CUSTOM: Added factory method as a convenience.
+    public static McpTool CreateMcpTool(string serverLabel, McpToolConnectorId connectorId, string authorizationToken = null, string serverDescription = null, IDictionary<string, string> headers = null, McpToolFilter allowedTools = null, McpToolCallApprovalPolicy toolCallApprovalPolicy = null)
+    {
+        Argument.AssertNotNull(serverLabel, nameof(serverLabel));
+
+        return new McpTool(
+            kind: InternalToolType.Mcp,
+            additionalBinaryDataProperties: null,
+            serverLabel: serverLabel,
+            serverUri: null,
+            connectorId: connectorId,
+            authorizationToken: authorizationToken,
+            serverDescription: serverDescription,
             headers: headers,
             allowedTools: allowedTools,
             toolCallApprovalPolicy: toolCallApprovalPolicy);

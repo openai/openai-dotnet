@@ -39,12 +39,12 @@ using Azure.ClientGenerator.Core;
 @@clientName(MCPApprovalResponseItemResource.approve, "Approved");
 
 @@alternateType(MCPCallItemResource.arguments, unknown);
-@@alternateType(MCPCallItemResource.error, unknown);
+@@alternateType(MCPCallItemResource.error, unknown | null);
 @@clientName(MCPCallItemResource.name, "ToolName");
 @@clientName(MCPCallItemResource.arguments, "ToolArguments");
 @@clientName(MCPCallItemResource.output, "ToolOutput");
 
-@@alternateType(MCPListToolsItemResource.error, unknown);
+@@alternateType(MCPListToolsItemResource.error, unknown | null);
 @@clientName(MCPListToolsItemResource.tools, "ToolDefinitions");
 
 // ------------ Tools ------------
@@ -57,7 +57,11 @@ using Azure.ClientGenerator.Core;
 @@clientName(FunctionTool.strict, "StrictModeEnabled");
 
 @@alternateType(MCPTool.server_url, url);
+@@alternateType(MCPTool.allowed_tools, MCPToolFilter | null);
 @@clientName(MCPTool.server_url, "ServerUri");
+@@clientName(MCPTool.authorization, "AuthorizationToken");
+
+@@clientName(MCPToolFilter.read_only, "IsReadOnly");
 
 // ------------ Streaming ------------
 
