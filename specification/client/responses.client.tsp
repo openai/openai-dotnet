@@ -7,8 +7,9 @@ using Azure.ClientGenerator.Core;
 @@alternateType(CreateResponse.service_tier, DotNetResponseServiceTier);
 @@alternateType(Response.service_tier, DotNetResponseServiceTier);
 
-@@visibility(ItemResource.id, Lifecycle.Read);
+// ------------ ItemResources ------------
 @@usage(ItemResource, Usage.input | Usage.output);
+@@visibility(ItemResource.id, Lifecycle.Read);
 
 @@visibility(ComputerToolCallItemResource.status, Lifecycle.Read);
 
@@ -31,13 +32,6 @@ using Azure.ClientGenerator.Core;
 
 @@visibility(ResponsesMessageItemResource.status, Lifecycle.Read);
 
-@@clientName(FileSearchTool.max_num_results, "MaxResultCount");
-
-@@clientName(FunctionTool.name, "FunctionName");
-@@clientName(FunctionTool.description, "FunctionDescription");
-@@clientName(FunctionTool.parameters, "FunctionParameters");
-@@clientName(FunctionTool.strict, "StrictModeEnabled");
-
 @@alternateType(MCPApprovalRequestItemResource.arguments, unknown);
 @@clientName(MCPApprovalRequestItemResource.name, "ToolName");
 @@clientName(MCPApprovalRequestItemResource.arguments, "ToolArguments");
@@ -53,8 +47,19 @@ using Azure.ClientGenerator.Core;
 @@alternateType(MCPListToolsItemResource.error, unknown);
 @@clientName(MCPListToolsItemResource.tools, "ToolDefinitions");
 
+// ------------ Tools ------------
+
+@@clientName(FileSearchTool.max_num_results, "MaxResultCount");
+
+@@clientName(FunctionTool.name, "FunctionName");
+@@clientName(FunctionTool.description, "FunctionDescription");
+@@clientName(FunctionTool.parameters, "FunctionParameters");
+@@clientName(FunctionTool.strict, "StrictModeEnabled");
+
 @@alternateType(MCPTool.server_url, url);
 @@clientName(MCPTool.server_url, "ServerUri");
+
+// ------------ Streaming ------------
 
 @@alternateType(ResponseFunctionCallArgumentsDoneEvent.arguments, unknown);
 // @@clientName(ResponseFunctionCallArgumentsDoneEvent.arguments, "FunctionArguments");
