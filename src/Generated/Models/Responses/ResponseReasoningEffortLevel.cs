@@ -13,6 +13,7 @@ namespace OpenAI.Responses
     public readonly partial struct ResponseReasoningEffortLevel : IEquatable<ResponseReasoningEffortLevel>
     {
         private readonly string _value;
+        private const string MinimalValue = "minimal";
         private const string LowValue = "low";
         private const string MediumValue = "medium";
         private const string HighValue = "high";
@@ -23,6 +24,8 @@ namespace OpenAI.Responses
 
             _value = value;
         }
+
+        public static ResponseReasoningEffortLevel Minimal { get; } = new ResponseReasoningEffortLevel(MinimalValue);
 
         public static ResponseReasoningEffortLevel Low { get; } = new ResponseReasoningEffortLevel(LowValue);
 
