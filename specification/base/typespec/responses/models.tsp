@@ -2445,25 +2445,20 @@ model ResponseReasoningSummaryDoneEvent extends ResponseStreamEvent {
   text: string;
 }
 
-/** The output of a code interpreter tool call that is a file. */
-model CodeInterpreterFileOutput {
-  @doc("""
-    The type of the code interpreter file output. Always `files`.
-    """)
-  type: "files";
+model CodeInterpreterToolLogsOutput extends CodeInterpreterToolOutput {
+  @doc("The type of the output. Always 'logs'.")
+  type: CodeInterpreterToolOutputType.logs;
 
-  files: CodeInterpreterFileOutputFile[];
+  @doc("The logs output from the code interpreter.")
+  logs: string;
 }
 
-/** The output of a code interpreter tool call that is text. */
-model CodeInterpreterTextOutput {
-  @doc("""
-    The type of the code interpreter text output. Always `logs`.
-    """)
-  type: "logs";
+model CodeInterpreterToolImageOutput extends CodeInterpreterToolOutput {
+  @doc("The type of the output. Always 'image'.")
+  type: CodeInterpreterToolOutputType.image;
 
-  /** The logs of the code interpreter tool call. */
-  logs: string;
+  @doc("The URL of the image output from the code interpreter.")
+  url: url;
 }
 
 // Tool customization: Rename to supply base for split input/output models
@@ -2475,8 +2470,8 @@ alias CodeInterpreterToolCallItemBase = {
   /** The code to run. */
   code: string;
 
-  /** The results of the code interpreter tool call. */
-  results: CodeInterpreterToolOutput[];
+  /** The outputs of the code interpreter tool call. */
+  outputs?: CodeInterpreterToolOutput[];
 };
 
 @@doc(CodeInterpreterToolCallItemResource,
@@ -2492,10 +2487,7 @@ alias CodeInterpreterToolCallItemBase = {
     """
 );
 /** The output of a code interpreter tool. */
-union CodeInterpreterToolOutput {
-  CodeInterpreterTextOutput,
-  CodeInterpreterFileOutput,
-}
+
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
 /** Emitted when there is a partial audio response. */
@@ -2550,6 +2542,9 @@ model ResponseCodeInterpreterCallCodeDeltaEvent extends ResponseStreamEvent {
   /** The index of the output item that the code interpreter call is in progress. */
   output_index: int32;
 
+  /** The unique identifier of the code interpreter tool call item. */
+  item_id: string;
+
   /** The partial code snippet added by the code interpreter. */
   delta: string;
 }
@@ -2564,6 +2559,9 @@ model ResponseCodeInterpreterCallCodeDoneEvent extends ResponseStreamEvent {
 
   /** The index of the output item that the code interpreter call is in progress. */
   output_index: int32;
+
+  /** The unique identifier of the code interpreter tool call item. */
+  item_id: string;
 
   /** The final code snippet output by the code interpreter. */
   code: string;
@@ -2580,8 +2578,8 @@ model ResponseCodeInterpreterCallCompletedEvent extends ResponseStreamEvent {
   /** The index of the output item that the code interpreter call is in progress. */
   output_index: int32;
 
-  // Tool customization: Use split resource type
-  code_interpreter_call: CodeInterpreterToolCallItemResource;
+  /** The unique identifier of the code interpreter tool call item. */
+  item_id: string;
 }
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
@@ -2593,10 +2591,10 @@ model ResponseCodeInterpreterCallInProgressEvent extends ResponseStreamEvent {
   type: ResponseStreamEventType.response_code_interpreter_call_in_progress;
 
   /** The index of the output item that the code interpreter call is in progress. */
-  output_index: int32;
+  output_index: integer;
 
-  // Tool customization: Use split resource type
-  code_interpreter_call: CodeInterpreterToolCallItemResource;
+  /** The unique identifier of the code interpreter tool call item. */
+  item_id: string,
 }
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
@@ -2610,8 +2608,8 @@ model ResponseCodeInterpreterCallInterpretingEvent extends ResponseStreamEvent {
   /** The index of the output item that the code interpreter call is in progress. */
   output_index: int32;
 
-  // Tool customization: Use split resource type
-  code_interpreter_call: CodeInterpreterToolCallItemResource;
+  /** The unique identifier of the code interpreter tool call item. */
+  item_id: string,
 }
 
 /** The top log probability of a token. */

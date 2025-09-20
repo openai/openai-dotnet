@@ -101,10 +101,8 @@ namespace OpenAI.Responses;
 [CodeGenType("CodeInterpreterFileOutputType")] internal readonly partial struct InternalCodeInterpreterFileOutputType {}
 [CodeGenType("LocalShellExecActionType")] internal readonly partial struct InternalLocalShellExecActionType {}
 [CodeGenType("ImageGenToolCallItemResourceStatus")] internal readonly partial struct InternalImageGenToolCallItemResourceStatus {}
-[CodeGenType("CodeInterpreterToolCallItemResourceStatus")] internal readonly partial struct InternalCodeInterpreterToolCallItemResourceStatus {}
 [CodeGenType("LocalShellToolCallItemResourceStatus")] internal readonly partial struct InternalLocalShellToolCallItemResourceStatus {}
 [CodeGenType("LocalShellToolCallOutputItemResourceStatus")] internal readonly partial struct InternalLocalShellToolCallOutputItemResourceStatus {}
-[CodeGenType("CodeInterpreterTool")] internal partial class InternalCodeInterpreterTool {}
 [CodeGenType("CodeInterpreterToolAuto")] internal partial class InternalCodeInterpreterToolAuto {}
 [CodeGenType("ImageGenTool")] internal partial class InternalImageGenTool {}
 [CodeGenType("ImageGenToolInputImageMask")] internal partial class InternalImageGenToolInputImageMask {}
@@ -119,9 +117,6 @@ namespace OpenAI.Responses;
 [CodeGenType("TopLogProb")] internal partial class InternalTopLogProb {}
 [CodeGenType("ImageGenToolCallItemParam")] internal partial class InternalImageGenToolCallItemParam {}
 [CodeGenType("CodeInterpreterToolCallItemParam")] internal partial class InternalCodeInterpreterToolCallItemParam {}
-[CodeGenType("CodeInterpreterTextOutput")] internal partial class InternalCodeInterpreterTextOutput {}
-[CodeGenType("CodeInterpreterFileOutput")] internal partial class InternalCodeInterpreterFileOutput {}
-[CodeGenType("CodeInterpreterFileOutputFile")] internal partial class InternalCodeInterpreterFileOutputFile {}
 [CodeGenType("LocalShellToolCallItemParam")] internal partial class InternalLocalShellToolCallItemParam {}
 [CodeGenType("LocalShellExecAction")] internal partial class InternalLocalShellExecAction {}
 [CodeGenType("LocalShellToolCallOutputItemParam")] internal partial class InternalLocalShellToolCallOutputItemParam {}
@@ -130,7 +125,6 @@ namespace OpenAI.Responses;
 [CodeGenType("MCPApprovalResponseItemParam")] internal partial class InternalMCPApprovalResponseItemParam {}
 [CodeGenType("MCPCallItemParam")] internal partial class InternalMCPCallItemParam {}
 [CodeGenType("ImageGenToolCallItemResource")] internal partial class InternalImageGenToolCallItemResource {}
-[CodeGenType("CodeInterpreterToolCallItemResource")] internal partial class InternalCodeInterpreterToolCallItemResource {}
 [CodeGenType("LocalShellToolCallItemResource")] internal partial class InternalLocalShellToolCallItemResource {}
 [CodeGenType("LocalShellToolCallOutputItemResource")] internal partial class InternalLocalShellToolCallOutputItemResource {}
 [CodeGenType("ResponseImageGenCallCompletedEvent")] internal partial class InternalResponseImageGenCallCompletedEvent {}
@@ -141,10 +135,5 @@ namespace OpenAI.Responses;
 [CodeGenType("ResponseReasoningDoneEvent")] internal partial class InternalResponseReasoningDoneEvent {}
 [CodeGenType("ResponseReasoningSummaryDeltaEvent")] internal partial class InternalResponseReasoningSummaryDeltaEvent {}
 [CodeGenType("ResponseReasoningSummaryDoneEvent")] internal partial class InternalResponseReasoningSummaryDoneEvent {}
-[CodeGenType("ResponseCodeInterpreterCallCodeDeltaEvent")] internal partial class InternalResponseCodeInterpreterCallCodeDeltaEvent {}
-[CodeGenType("ResponseCodeInterpreterCallCodeDoneEvent")] internal partial class InternalResponseCodeInterpreterCallCodeDoneEvent {}
-[CodeGenType("ResponseCodeInterpreterCallCompletedEvent")] internal partial class InternalResponseCodeInterpreterCallCompletedEvent {}
-[CodeGenType("ResponseCodeInterpreterCallInProgressEvent")] internal partial class InternalResponseCodeInterpreterCallInProgressEvent {}
-[CodeGenType("ResponseCodeInterpreterCallInterpretingEvent")] internal partial class InternalResponseCodeInterpreterCallInterpretingEvent {}
 [CodeGenType("DotNetCustomToolCallApprovalPolicyAlways")] internal partial class InternalDotNetCustomToolCallApprovalPolicyAlways { }
 [CodeGenType("DotNetCustomToolCallApprovalPolicyNever")] internal partial class InternalDotNetCustomToolCallApprovalPolicyNever { }

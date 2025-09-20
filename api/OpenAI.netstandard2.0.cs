@@ -4035,6 +4035,91 @@ namespace OpenAI.Realtime {
     }
 }
 namespace OpenAI.Responses {
+    public class AutomaticCodeInterpreterContainerConfiguration : CodeInterpreterContainerConfiguration {
+        public AutomaticCodeInterpreterContainerConfiguration(IEnumerable<string> fileIds = null);
+        public IList<string> FileIds { get; }
+    }
+    public class CodeInterpreterCallResponseItem : ResponseItem, IJsonModel<CodeInterpreterCallResponseItem>, IPersistableModel<CodeInterpreterCallResponseItem> {
+        public CodeInterpreterCallResponseItem(CodeInterpreterCallStatus status, string code);
+        public string Code { get; set; }
+        public string ContainerId { get; set; }
+        public IList<CodeInterpreterToolOutput> Outputs { get; }
+        public CodeInterpreterCallStatus Status { get; set; }
+        protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct CodeInterpreterCallStatus : IEquatable<CodeInterpreterCallStatus> {
+        public CodeInterpreterCallStatus(string value);
+        public static CodeInterpreterCallStatus Completed { get; }
+        public static CodeInterpreterCallStatus InProgress { get; }
+        public static CodeInterpreterCallStatus Interpreting { get; }
+        public readonly bool Equals(CodeInterpreterCallStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(CodeInterpreterCallStatus left, CodeInterpreterCallStatus right);
+        public static implicit operator CodeInterpreterCallStatus(string value);
+        public static implicit operator CodeInterpreterCallStatus?(string value);
+        public static bool operator !=(CodeInterpreterCallStatus left, CodeInterpreterCallStatus right);
+        public override readonly string ToString();
+    }
+    public class CodeInterpreterContainer {
+        public CodeInterpreterContainer(CodeInterpreterContainerConfiguration containerConfiguration);
+        public CodeInterpreterContainer(string containerId);
+        public CodeInterpreterContainerConfiguration ContainerConfiguration { get; }
+        public string ContainerId { get; }
+    }
+    public class CodeInterpreterContainerConfiguration {
+        public static AutomaticCodeInterpreterContainerConfiguration CreateAutomaticConfiguration(IEnumerable<string> fileIds = null);
+    }
+    public class CodeInterpreterTool : ResponseTool, IJsonModel<CodeInterpreterTool>, IPersistableModel<CodeInterpreterTool> {
+        public CodeInterpreterContainer Container { get; }
+        protected override ResponseTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class CodeInterpreterToolImageOutput : CodeInterpreterToolOutput, IJsonModel<CodeInterpreterToolImageOutput>, IPersistableModel<CodeInterpreterToolImageOutput> {
+        public CodeInterpreterToolImageOutput(Uri url);
+        public Uri Url { get; set; }
+        protected override CodeInterpreterToolOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override CodeInterpreterToolOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class CodeInterpreterToolLogsOutput : CodeInterpreterToolOutput, IJsonModel<CodeInterpreterToolLogsOutput>, IPersistableModel<CodeInterpreterToolLogsOutput> {
+        public CodeInterpreterToolLogsOutput(string logs);
+        public string Logs { get; set; }
+        protected override CodeInterpreterToolOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override CodeInterpreterToolOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [PersistableModelProxy(typeof(UnknownCodeInterpreterToolOutput))]
+    public class CodeInterpreterToolOutput : IJsonModel<CodeInterpreterToolOutput>, IPersistableModel<CodeInterpreterToolOutput> {
+        protected virtual CodeInterpreterToolOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual CodeInterpreterToolOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct CodeInterpreterToolOutputType : IEquatable<CodeInterpreterToolOutputType> {
+        public CodeInterpreterToolOutputType(string value);
+        public static CodeInterpreterToolOutputType Image { get; }
+        public static CodeInterpreterToolOutputType Logs { get; }
+        public readonly bool Equals(CodeInterpreterToolOutputType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(CodeInterpreterToolOutputType left, CodeInterpreterToolOutputType right);
+        public static implicit operator CodeInterpreterToolOutputType(string value);
+        public static implicit operator CodeInterpreterToolOutputType?(string value);
+        public static bool operator !=(CodeInterpreterToolOutputType left, CodeInterpreterToolOutputType right);
+        public override readonly string ToString();
+    }
     public class ComputerCallAction : IJsonModel<ComputerCallAction>, IPersistableModel<ComputerCallAction> {
         public Drawing.Point? ClickCoordinates { get; }
         public ComputerCallActionMouseButton? ClickMouseButton { get; }
@@ -4846,6 +4931,7 @@ namespace OpenAI.Responses {
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ResponseTool : IJsonModel<ResponseTool>, IPersistableModel<ResponseTool> {
+        public static CodeInterpreterTool CreateCodeInterpreterTool(CodeInterpreterContainer container);
         public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight);
         public static FileSearchTool CreateFileSearchTool(IEnumerable<string> vectorStoreIds, int? maxResultCount = null, FileSearchToolRankingOptions rankingOptions = null, BinaryData filters = null);
         public static FunctionTool CreateFunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled, string functionDescription = null);
@@ -4891,6 +4977,48 @@ namespace OpenAI.Responses {
         public static implicit operator ResponseTruncationMode?(string value);
         public static bool operator !=(ResponseTruncationMode left, ResponseTruncationMode right);
         public override readonly string ToString();
+    }
+    public class StreamingResponseCodeInterpreterCallCodeDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCodeInterpreterCallCodeDeltaUpdate>, IPersistableModel<StreamingResponseCodeInterpreterCallCodeDeltaUpdate> {
+        public string Delta { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class StreamingResponseCodeInterpreterCallCodeDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCodeInterpreterCallCodeDoneUpdate>, IPersistableModel<StreamingResponseCodeInterpreterCallCodeDoneUpdate> {
+        public string Code { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class StreamingResponseCodeInterpreterCallCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCodeInterpreterCallCompletedUpdate>, IPersistableModel<StreamingResponseCodeInterpreterCallCompletedUpdate> {
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class StreamingResponseCodeInterpreterCallInProgressUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCodeInterpreterCallInProgressUpdate>, IPersistableModel<StreamingResponseCodeInterpreterCallInProgressUpdate> {
+        public string ItemId { get; }
+        public long OutputIndex { get; }
+        protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class StreamingResponseCodeInterpreterCallInterpretingUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCodeInterpreterCallInterpretingUpdate>, IPersistableModel<StreamingResponseCodeInterpreterCallInterpretingUpdate> {
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class StreamingResponseCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCompletedUpdate>, IPersistableModel<StreamingResponseCompletedUpdate> {
         public OpenAIResponse Response { get; }
@@ -5157,6 +5285,12 @@ namespace OpenAI.Responses {
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class UnknownCodeInterpreterToolOutput : CodeInterpreterToolOutput, IJsonModel<CodeInterpreterToolOutput>, IPersistableModel<CodeInterpreterToolOutput> {
+        protected override CodeInterpreterToolOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override CodeInterpreterToolOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class UriCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<UriCitationMessageAnnotation>, IPersistableModel<UriCitationMessageAnnotation> {

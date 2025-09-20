@@ -104,7 +104,7 @@ namespace OpenAI.Responses
                     case "image_generation_call":
                         return InternalImageGenToolCallItemResource.DeserializeInternalImageGenToolCallItemResource(element, options);
                     case "code_interpreter_call":
-                        return InternalCodeInterpreterToolCallItemResource.DeserializeInternalCodeInterpreterToolCallItemResource(element, options);
+                        return CodeInterpreterCallResponseItem.DeserializeCodeInterpreterCallResponseItem(element, options);
                     case "local_shell_call":
                         return InternalLocalShellToolCallItemResource.DeserializeInternalLocalShellToolCallItemResource(element, options);
                     case "local_shell_call_output":
