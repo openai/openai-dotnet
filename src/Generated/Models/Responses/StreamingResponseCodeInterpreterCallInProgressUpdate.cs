@@ -11,19 +11,19 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseCodeInterpreterCallInProgressUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseCodeInterpreterCallInProgressUpdate(int sequenceNumber, long outputIndex, string itemId) : base(InternalResponseStreamEventType.ResponseCodeInterpreterCallInProgress, sequenceNumber)
+        internal StreamingResponseCodeInterpreterCallInProgressUpdate(int sequenceNumber, int outputIndex, string itemId) : base(InternalResponseStreamEventType.ResponseCodeInterpreterCallInProgress, sequenceNumber)
         {
             OutputIndex = outputIndex;
             ItemId = itemId;
         }
 
-        internal StreamingResponseCodeInterpreterCallInProgressUpdate(InternalResponseStreamEventType kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, long outputIndex, string itemId) : base(kind, sequenceNumber, additionalBinaryDataProperties)
+        internal StreamingResponseCodeInterpreterCallInProgressUpdate(InternalResponseStreamEventType kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, int outputIndex, string itemId) : base(kind, sequenceNumber, additionalBinaryDataProperties)
         {
             OutputIndex = outputIndex;
             ItemId = itemId;
         }
 
-        public long OutputIndex { get; }
+        public int OutputIndex { get; }
 
         public string ItemId { get; }
     }

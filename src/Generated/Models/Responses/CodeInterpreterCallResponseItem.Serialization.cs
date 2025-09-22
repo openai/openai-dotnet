@@ -31,10 +31,11 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(CodeInterpreterCallResponseItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.ToString());
+                writer.WriteStringValue(Status.Value.ToSerialString());
             }
             if (Optional.IsDefined(ContainerId) && _additionalBinaryDataProperties?.ContainsKey("container_id") != true)
             {
@@ -80,7 +81,7 @@ namespace OpenAI.Responses
             InternalItemType kind = default;
             string id = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            CodeInterpreterCallStatus status = default;
+            CodeInterpreterCallStatus? status = default;
             string containerId = default;
             string code = default;
             IList<CodeInterpreterToolOutput> outputs = default;
@@ -98,7 +99,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("status"u8))
                 {
-                    status = new CodeInterpreterCallStatus(prop.Value.GetString());
+                    status = prop.Value.GetString().ToCodeInterpreterCallStatus();
                     continue;
                 }
                 if (prop.NameEquals("container_id"u8))

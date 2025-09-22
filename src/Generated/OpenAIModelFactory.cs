@@ -561,6 +561,13 @@ namespace OpenAI
             return new FileSearchToolRankingOptions(ranker, scoreThreshold, additionalBinaryDataProperties: null);
         }
 
+        public static CodeInterpreterToolAuto CodeInterpreterToolAuto(IEnumerable<string> fileIds = default)
+        {
+            fileIds ??= new ChangeTrackingList<string>();
+
+            return new CodeInterpreterToolAuto(fileIds.ToList(), additionalBinaryDataProperties: null);
+        }
+
         public static McpToolFilter McpToolFilter(IEnumerable<string> toolNames = default)
         {
             toolNames ??= new ChangeTrackingList<string>();
@@ -620,21 +627,6 @@ namespace OpenAI
         public static ComputerCallSafetyCheck ComputerCallSafetyCheck(string id = default, string code = default, string message = default)
         {
             return new ComputerCallSafetyCheck(id, code, message, additionalBinaryDataProperties: null);
-        }
-
-        public static CodeInterpreterToolOutput CodeInterpreterToolOutput(string kind = default)
-        {
-            return new UnknownCodeInterpreterToolOutput(new CodeInterpreterToolOutputType(kind), additionalBinaryDataProperties: null);
-        }
-
-        public static CodeInterpreterToolLogsOutput CodeInterpreterToolLogsOutput(string logs = default)
-        {
-            return new CodeInterpreterToolLogsOutput(CodeInterpreterToolOutputType.Logs, additionalBinaryDataProperties: null, logs);
-        }
-
-        public static CodeInterpreterToolImageOutput CodeInterpreterToolImageOutput(Uri url = default)
-        {
-            return new CodeInterpreterToolImageOutput(CodeInterpreterToolOutputType.Image, additionalBinaryDataProperties: null, url);
         }
 
         public static McpToolDefinition McpToolDefinition(string name = default, string description = default, BinaryData inputSchema = default, BinaryData annotations = default)

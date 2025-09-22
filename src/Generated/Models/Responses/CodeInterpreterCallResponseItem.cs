@@ -12,16 +12,15 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class CodeInterpreterCallResponseItem : ResponseItem
     {
-        public CodeInterpreterCallResponseItem(CodeInterpreterCallStatus status, string code) : base(InternalItemType.CodeInterpreterCall)
+        public CodeInterpreterCallResponseItem(string code) : base(InternalItemType.CodeInterpreterCall)
         {
             Argument.AssertNotNull(code, nameof(code));
 
-            Status = status;
             Code = code;
             Outputs = new ChangeTrackingList<CodeInterpreterToolOutput>();
         }
 
-        internal CodeInterpreterCallResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, CodeInterpreterCallStatus status, string containerId, string code, IList<CodeInterpreterToolOutput> outputs) : base(kind, id, additionalBinaryDataProperties)
+        internal CodeInterpreterCallResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, CodeInterpreterCallStatus? status, string containerId, string code, IList<CodeInterpreterToolOutput> outputs) : base(kind, id, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Status = status;
@@ -29,8 +28,6 @@ namespace OpenAI.Responses
             Code = code;
             Outputs = outputs ?? new ChangeTrackingList<CodeInterpreterToolOutput>();
         }
-
-        public CodeInterpreterCallStatus Status { get; set; }
 
         public string ContainerId { get; set; }
 

@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class CodeInterpreterToolLogsOutput : IJsonModel<CodeInterpreterToolLogsOutput>
     {
-        internal CodeInterpreterToolLogsOutput() : this(CodeInterpreterToolOutputType.Logs, null, null)
+        internal CodeInterpreterToolLogsOutput() : this(InternalCodeInterpreterToolOutputType.Logs, null, null)
         {
         }
 
@@ -57,14 +57,14 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            CodeInterpreterToolOutputType kind = default;
+            InternalCodeInterpreterToolOutputType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string logs = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new CodeInterpreterToolOutputType(prop.Value.GetString());
+                    kind = new InternalCodeInterpreterToolOutputType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("logs"u8))

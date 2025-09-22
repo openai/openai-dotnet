@@ -1858,11 +1858,9 @@ model CodeInterpreterTool extends Tool {
  * Configuration for a code interpreter container. Optionally specify the IDs
  * of the files to run the code on.
  */
-model CodeInterpreterToolAuto {
-  @doc("""
-    Always `auto`.
-    """)
-  type: "auto";
+model CodeInterpreterToolAuto /* extends CodeInterpreterContainerConfiguration */ {
+  @doc("Always `auto`.")
+  //type: CodeInterpreterContainerConfigurationType.auto;
 
   /** An optional list of uploaded files to make available to your code. */
   file_ids?: string[];
@@ -2488,7 +2486,6 @@ alias CodeInterpreterToolCallItemBase = {
 );
 /** The output of a code interpreter tool. */
 
-
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
 /** Emitted when there is a partial audio response. */
 model ResponseAudioDeltaEvent {
@@ -2591,10 +2588,10 @@ model ResponseCodeInterpreterCallInProgressEvent extends ResponseStreamEvent {
   type: ResponseStreamEventType.response_code_interpreter_call_in_progress;
 
   /** The index of the output item that the code interpreter call is in progress. */
-  output_index: integer;
+  output_index: int32;
 
   /** The unique identifier of the code interpreter tool call item. */
-  item_id: string,
+  item_id: string;
 }
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
@@ -2609,7 +2606,7 @@ model ResponseCodeInterpreterCallInterpretingEvent extends ResponseStreamEvent {
   output_index: int32;
 
   /** The unique identifier of the code interpreter tool call item. */
-  item_id: string,
+  item_id: string;
 }
 
 /** The top log probability of a token. */

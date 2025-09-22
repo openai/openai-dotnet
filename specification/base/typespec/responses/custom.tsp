@@ -26,13 +26,24 @@ model ReasoningItemSummaryTextPart extends ReasoningItemSummaryPart {
 }
 
 union CodeInterpreterToolOutputType {
-    string,
-    logs: "logs",
-    image: "image"
+  string,
+  logs: "logs",
+  image: "image",
 }
 
 @discriminator("type")
 model CodeInterpreterToolOutput {
   @doc("The type of the output.")
   type: CodeInterpreterToolOutputType;
+}
+
+union CodeInterpreterContainerConfigurationType {
+  string,
+  auto: "auto",
+}
+
+@discriminator("type")  
+model CodeInterpreterContainerConfiguration {  
+  @doc("The type of the output.")  
+  type: CodeInterpreterContainerConfigurationType;  
 }

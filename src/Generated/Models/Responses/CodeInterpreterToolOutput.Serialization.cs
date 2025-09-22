@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    [PersistableModelProxy(typeof(UnknownCodeInterpreterToolOutput))]
+    [PersistableModelProxy(typeof(InternalUnknownCodeInterpreterToolOutput))]
     public partial class CodeInterpreterToolOutput : IJsonModel<CodeInterpreterToolOutput>
     {
         internal CodeInterpreterToolOutput()
@@ -86,7 +86,7 @@ namespace OpenAI.Responses
                         return CodeInterpreterToolImageOutput.DeserializeCodeInterpreterToolImageOutput(element, options);
                 }
             }
-            return UnknownCodeInterpreterToolOutput.DeserializeUnknownCodeInterpreterToolOutput(element, options);
+            return InternalUnknownCodeInterpreterToolOutput.DeserializeInternalUnknownCodeInterpreterToolOutput(element, options);
         }
 
         BinaryData IPersistableModel<CodeInterpreterToolOutput>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

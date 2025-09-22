@@ -40,7 +40,7 @@ public class CodeInterpreterContainer
     {
         return this.ContainerId != null
             ? new BinaryData($"\"{ContainerId}\"")
-            : ContainerConfiguration is AutomaticCodeInterpreterContainerConfiguration autoConfig && autoConfig.FileIds?.Any() == true ?
+            : ContainerConfiguration is CodeInterpreterToolAuto autoConfig && autoConfig.FileIds?.Any() == true ?
             new BinaryData($"{{\"type\": \"auto\", \"file_ids\": [{string.Join(", ", autoConfig.FileIds.Select(id => $"\"{id}\""))}]}}") :
             new BinaryData("{\"type\": \"auto\"}");
     }

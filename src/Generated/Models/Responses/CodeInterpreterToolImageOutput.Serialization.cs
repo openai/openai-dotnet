@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class CodeInterpreterToolImageOutput : IJsonModel<CodeInterpreterToolImageOutput>
     {
-        internal CodeInterpreterToolImageOutput() : this(CodeInterpreterToolOutputType.Image, null, null)
+        internal CodeInterpreterToolImageOutput() : this(InternalCodeInterpreterToolOutputType.Image, null, null)
         {
         }
 
@@ -34,7 +34,7 @@ namespace OpenAI.Responses
             if (_additionalBinaryDataProperties?.ContainsKey("url") != true)
             {
                 writer.WritePropertyName("url"u8);
-                writer.WriteStringValue(Url.AbsoluteUri);
+                writer.WriteStringValue(ImageUri.AbsoluteUri);
             }
         }
 
@@ -57,25 +57,25 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            CodeInterpreterToolOutputType kind = default;
+            InternalCodeInterpreterToolOutputType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            Uri url = default;
+            Uri imageUri = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new CodeInterpreterToolOutputType(prop.Value.GetString());
+                    kind = new InternalCodeInterpreterToolOutputType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("url"u8))
                 {
-                    url = new Uri(prop.Value.GetString());
+                    imageUri = new Uri(prop.Value.GetString());
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new CodeInterpreterToolImageOutput(kind, additionalBinaryDataProperties, url);
+            return new CodeInterpreterToolImageOutput(kind, additionalBinaryDataProperties, imageUri);
         }
 
         BinaryData IPersistableModel<CodeInterpreterToolImageOutput>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

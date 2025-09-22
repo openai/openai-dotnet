@@ -12,14 +12,14 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class CodeInterpreterToolLogsOutput : CodeInterpreterToolOutput
     {
-        public CodeInterpreterToolLogsOutput(string logs) : base(CodeInterpreterToolOutputType.Logs)
+        public CodeInterpreterToolLogsOutput(string logs) : base(InternalCodeInterpreterToolOutputType.Logs)
         {
             Argument.AssertNotNull(logs, nameof(logs));
 
             Logs = logs;
         }
 
-        internal CodeInterpreterToolLogsOutput(CodeInterpreterToolOutputType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string logs) : base(kind, additionalBinaryDataProperties)
+        internal CodeInterpreterToolLogsOutput(InternalCodeInterpreterToolOutputType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string logs) : base(kind, additionalBinaryDataProperties)
         {
             Logs = logs;
         }

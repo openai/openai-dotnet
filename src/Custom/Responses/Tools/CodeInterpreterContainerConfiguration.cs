@@ -13,6 +13,6 @@ public class CodeInterpreterContainerConfiguration
     /// </summary>
     /// <param name="fileIds">The list of file IDs associated with the container.</param>
     /// <returns>A new instance of the <see cref="AutomaticCodeInterpreterContainerConfiguration"/> class.</returns>
-    public static AutomaticCodeInterpreterContainerConfiguration CreateAutomaticConfiguration(IEnumerable<string> fileIds = null) =>
-        new AutomaticCodeInterpreterContainerConfiguration(fileIds);
+    public static CodeInterpreterToolAuto CreateAutomaticConfiguration(IEnumerable<string> fileIds = null) =>
+        new CodeInterpreterToolAuto(fileIds);
 }

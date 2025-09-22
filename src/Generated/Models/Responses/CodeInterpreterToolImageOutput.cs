@@ -12,18 +12,18 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class CodeInterpreterToolImageOutput : CodeInterpreterToolOutput
     {
-        public CodeInterpreterToolImageOutput(Uri url) : base(CodeInterpreterToolOutputType.Image)
+        public CodeInterpreterToolImageOutput(Uri imageUri) : base(InternalCodeInterpreterToolOutputType.Image)
         {
-            Argument.AssertNotNull(url, nameof(url));
+            Argument.AssertNotNull(imageUri, nameof(imageUri));
 
-            Url = url;
+            ImageUri = imageUri;
         }
 
-        internal CodeInterpreterToolImageOutput(CodeInterpreterToolOutputType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, Uri url) : base(kind, additionalBinaryDataProperties)
+        internal CodeInterpreterToolImageOutput(InternalCodeInterpreterToolOutputType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, Uri imageUri) : base(kind, additionalBinaryDataProperties)
         {
-            Url = url;
+            ImageUri = imageUri;
         }
 
-        public Uri Url { get; set; }
+        public Uri ImageUri { get; set; }
     }
 }

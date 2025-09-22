@@ -10,6 +10,9 @@ using Azure.ClientGenerator.Core;
 @@visibility(ItemResource.id, Lifecycle.Read);
 @@usage(ItemResource, Usage.input | Usage.output);
 
+@@visibility(CodeInterpreterToolCallItemResource.status, Lifecycle.Read);
+@@clientName(CodeInterpreterToolImageOutput.url, "ImageUri");
+
 @@visibility(ComputerToolCallItemResource.status, Lifecycle.Read);
 
 @@visibility(ComputerToolCallOutputItemResource.status, Lifecycle.Read);

@@ -5,14 +5,14 @@ namespace OpenAI.Responses;
 /// <summary>
 /// Represents a configuration for an automatic Code Interpreter container.
 /// </summary>
-public class AutomaticCodeInterpreterContainerConfiguration : CodeInterpreterContainerConfiguration
+public partial class CodeInterpreterToolAuto : CodeInterpreterContainerConfiguration
 {
 
     /// <summary>
     /// Initializes a new instance of the <see cref="AutomaticCodeInterpreterContainerConfiguration"/> class.
     /// </summary>
     /// <param name="fileIds"></param>
-    public AutomaticCodeInterpreterContainerConfiguration(IEnumerable<string> fileIds = null)
+    public CodeInterpreterToolAuto(IEnumerable<string> fileIds = null)
     {
         if (fileIds != null)
         {
