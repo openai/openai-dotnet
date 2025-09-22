@@ -10,7 +10,7 @@
       "rollForward": false
     },
     "azure.sdk.tools.testproxy": {
-      "version": "1.0.0-dev.20250805.1",
+      "version": "1.0.0-dev.20250922.2",
       "commands": [
         "test-proxy"
       ],
