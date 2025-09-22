@@ -4602,38 +4602,24 @@ namespace OpenAI.Realtime {
     }
 }
 namespace OpenAI.Responses {
-    public class AutomaticCodeInterpreterContainerConfiguration : CodeInterpreterContainerConfiguration {
-        public AutomaticCodeInterpreterContainerConfiguration(IEnumerable<string> fileIds = null);
-        public IList<string> FileIds { get; }
-    }
     [Experimental("OPENAI001")]
     public class CodeInterpreterCallResponseItem : ResponseItem, IJsonModel<CodeInterpreterCallResponseItem>, IPersistableModel<CodeInterpreterCallResponseItem> {
-        public CodeInterpreterCallResponseItem(CodeInterpreterCallStatus status, string code);
+        public CodeInterpreterCallResponseItem(string code);
         public string Code { get; set; }
         public string ContainerId { get; set; }
         public IList<CodeInterpreterToolOutput> Outputs { get; }
-        public CodeInterpreterCallStatus Status { get; set; }
+        public CodeInterpreterCallStatus? Status { get; }
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
-    [Experimental("OPENAI001")]
-    public readonly partial struct CodeInterpreterCallStatus : IEquatable<CodeInterpreterCallStatus> {
-        public CodeInterpreterCallStatus(string value);
-        public static CodeInterpreterCallStatus Completed { get; }
-        public static CodeInterpreterCallStatus InProgress { get; }
-        public static CodeInterpreterCallStatus Interpreting { get; }
-        public readonly bool Equals(CodeInterpreterCallStatus other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(CodeInterpreterCallStatus left, CodeInterpreterCallStatus right);
-        public static implicit operator CodeInterpreterCallStatus(string value);
-        public static implicit operator CodeInterpreterCallStatus?(string value);
-        public static bool operator !=(CodeInterpreterCallStatus left, CodeInterpreterCallStatus right);
-        public override readonly string ToString();
+    public enum CodeInterpreterCallStatus {
+        InProgress = 0,
+        Interpreting = 1,
+        Completed = 2,
+        Incomplete = 3,
+        Failed = 4
     }
     public class CodeInterpreterContainer {
         public CodeInterpreterContainer(CodeInterpreterContainerConfiguration containerConfiguration);
@@ -4641,8 +4627,13 @@ namespace OpenAI.Responses {
         public CodeInterpreterContainerConfiguration ContainerConfiguration { get; }
         public string ContainerId { get; }
     }
-    public class CodeInterpreterContainerConfiguration {
-        public static AutomaticCodeInterpreterContainerConfiguration CreateAutomaticConfiguration(IEnumerable<string> fileIds = null);
+    [Experimental("OPENAI001")]
+    public class CodeInterpreterContainerConfiguration : IJsonModel<CodeInterpreterContainerConfiguration>, IPersistableModel<CodeInterpreterContainerConfiguration> {
+        public static CodeInterpreterToolAuto CreateAutomaticConfiguration(IEnumerable<string> fileIds = null);
+        protected virtual CodeInterpreterContainerConfiguration JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual CodeInterpreterContainerConfiguration PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
     public class CodeInterpreterTool : ResponseTool, IJsonModel<CodeInterpreterTool>, IPersistableModel<CodeInterpreterTool> {
@@ -4653,9 +4644,19 @@ namespace OpenAI.Responses {
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
+    public class CodeInterpreterToolAuto : CodeInterpreterContainerConfiguration, IJsonModel<CodeInterpreterToolAuto>, IPersistableModel<CodeInterpreterToolAuto> {
+        public CodeInterpreterToolAuto();
+        public CodeInterpreterToolAuto(IEnumerable<string> fileIds = null);
+        public IList<string> FileIds { get; }
+        protected override CodeInterpreterContainerConfiguration JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override CodeInterpreterContainerConfiguration PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
     public class CodeInterpreterToolImageOutput : CodeInterpreterToolOutput, IJsonModel<CodeInterpreterToolImageOutput>, IPersistableModel<CodeInterpreterToolImageOutput> {
-        public CodeInterpreterToolImageOutput(Uri url);
-        public Uri Url { get; set; }
+        public CodeInterpreterToolImageOutput(Uri imageUri);
+        public Uri ImageUri { get; set; }
         protected override CodeInterpreterToolOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override CodeInterpreterToolOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -4671,28 +4672,11 @@ namespace OpenAI.Responses {
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
-    [PersistableModelProxy(typeof(UnknownCodeInterpreterToolOutput))]
     public class CodeInterpreterToolOutput : IJsonModel<CodeInterpreterToolOutput>, IPersistableModel<CodeInterpreterToolOutput> {
         protected virtual CodeInterpreterToolOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual CodeInterpreterToolOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    [Experimental("OPENAI001")]
-    public readonly partial struct CodeInterpreterToolOutputType : IEquatable<CodeInterpreterToolOutputType> {
-        public CodeInterpreterToolOutputType(string value);
-        public static CodeInterpreterToolOutputType Image { get; }
-        public static CodeInterpreterToolOutputType Logs { get; }
-        public readonly bool Equals(CodeInterpreterToolOutputType other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(CodeInterpreterToolOutputType left, CodeInterpreterToolOutputType right);
-        public static implicit operator CodeInterpreterToolOutputType(string value);
-        public static implicit operator CodeInterpreterToolOutputType?(string value);
-        public static bool operator !=(CodeInterpreterToolOutputType left, CodeInterpreterToolOutputType right);
-        public override readonly string ToString();
     }
     [Experimental("OPENAICUA001")]
     public class ComputerCallAction : IJsonModel<ComputerCallAction>, IPersistableModel<ComputerCallAction> {
@@ -5663,7 +5647,7 @@ namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class StreamingResponseCodeInterpreterCallInProgressUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCodeInterpreterCallInProgressUpdate>, IPersistableModel<StreamingResponseCodeInterpreterCallInProgressUpdate> {
         public string ItemId { get; }
-        public long OutputIndex { get; }
+        public int OutputIndex { get; }
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -5976,13 +5960,6 @@ namespace OpenAI.Responses {
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    [Experimental("OPENAI001")]
-    public class UnknownCodeInterpreterToolOutput : CodeInterpreterToolOutput, IJsonModel<CodeInterpreterToolOutput>, IPersistableModel<CodeInterpreterToolOutput> {
-        protected override CodeInterpreterToolOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override CodeInterpreterToolOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
