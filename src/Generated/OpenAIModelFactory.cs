@@ -561,13 +561,6 @@ namespace OpenAI
             return new FileSearchToolRankingOptions(ranker, scoreThreshold, additionalBinaryDataProperties: null);
         }
 
-        public static CodeInterpreterToolAuto CodeInterpreterToolAuto(IEnumerable<string> fileIds = default)
-        {
-            fileIds ??= new ChangeTrackingList<string>();
-
-            return new CodeInterpreterToolAuto(fileIds.ToList(), additionalBinaryDataProperties: null);
-        }
-
         public static McpToolFilter McpToolFilter(IEnumerable<string> toolNames = default)
         {
             toolNames ??= new ChangeTrackingList<string>();

@@ -1858,9 +1858,9 @@ model CodeInterpreterTool extends Tool {
  * Configuration for a code interpreter container. Optionally specify the IDs
  * of the files to run the code on.
  */
-model CodeInterpreterToolAuto /* extends CodeInterpreterContainerConfiguration */ {
+model CodeInterpreterToolAuto extends CodeInterpreterContainerConfiguration {
   @doc("Always `auto`.")
-  //type: CodeInterpreterContainerConfigurationType.auto;
+  type: CodeInterpreterContainerConfigurationType.auto;
 
   /** An optional list of uploaded files to make available to your code. */
   file_ids?: string[];

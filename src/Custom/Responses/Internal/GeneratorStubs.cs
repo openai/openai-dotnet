@@ -96,8 +96,6 @@ namespace OpenAI.Responses;
 [CodeGenType("ImageGenToolOutputFormat")] internal readonly partial struct InternalImageGenToolOutputFormat {}
 [CodeGenType("ImageGenToolModeration")] internal readonly partial struct InternalImageGenToolModeration {}
 [CodeGenType("ImageGenToolBackground")] internal readonly partial struct InternalImageGenToolBackground {}
-[CodeGenType("CodeInterpreterContainerConfigurationType")] internal readonly partial struct InternalCodeInterpreterContainerConfigurationType {}
-[CodeGenType("CodeInterpreterContainerConfiguration")] internal readonly partial struct InternalCodeInterpreterContainerConfiguration {}
 [CodeGenType("CodeInterpreterFileOutputType")] internal readonly partial struct InternalCodeInterpreterFileOutputType {}
 [CodeGenType("CodeInterpreterTextOutputType")] internal readonly partial struct InternalCodeInterpreterTextOutputType {}
 [CodeGenType("CodeInterpreterToolOutputType")] internal readonly partial struct InternalCodeInterpreterToolOutputType {}

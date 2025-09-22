@@ -4,3 +4,5 @@ namespace OpenAI.Responses;
 [CodeGenType("CodeInterpreterToolLogsOutput")] public partial class CodeInterpreterToolLogsOutput {}
 [CodeGenType("CodeInterpreterToolOutput")] public partial class CodeInterpreterToolOutput {}
 [CodeGenType("CodeInterpreterToolAuto")] public partial class CodeInterpreterToolAuto {}
+[CodeGenType("CodeInterpreterContainerConfiguration")] public partial class CodeInterpreterContainerConfiguration {}
+[CodeGenType("CodeInterpreterContainerConfigurationType")] readonly partial struct CodeInterpreterContainerConfigurationType {}

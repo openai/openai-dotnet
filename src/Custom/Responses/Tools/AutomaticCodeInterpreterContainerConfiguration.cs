@@ -9,7 +9,7 @@ public partial class CodeInterpreterToolAuto : CodeInterpreterContainerConfigura
 {
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="AutomaticCodeInterpreterContainerConfiguration"/> class.
+    /// Initializes a new instance of the <see cref="CodeInterpreterToolAuto"/> class.
     /// </summary>
     /// <param name="fileIds"></param>
     public CodeInterpreterToolAuto(IEnumerable<string> fileIds = null)

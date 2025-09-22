@@ -19,13 +19,14 @@ namespace OpenAI.Responses
             writer.WriteEndObject();
         }
 
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterToolAuto>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(CodeInterpreterToolAuto)} does not support writing '{format}' format.");
             }
+            base.JsonModelWriteCore(writer, options);
             if (Optional.IsCollectionDefined(FileIds) && _additionalBinaryDataProperties?.ContainsKey("file_ids") != true)
             {
                 writer.WritePropertyName("file_ids"u8);
@@ -41,31 +42,11 @@ namespace OpenAI.Responses
                 }
                 writer.WriteEndArray();
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
         }
 
-        CodeInterpreterToolAuto IJsonModel<CodeInterpreterToolAuto>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        CodeInterpreterToolAuto IJsonModel<CodeInterpreterToolAuto>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (CodeInterpreterToolAuto)JsonModelCreateCore(ref reader, options);
 
-        protected virtual CodeInterpreterToolAuto JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected override CodeInterpreterContainerConfiguration JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterToolAuto>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -82,10 +63,16 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            IList<string> fileIds = default;
+            CodeInterpreterContainerConfigurationType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            IList<string> fileIds = default;
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("type"u8))
+                {
+                    kind = new CodeInterpreterContainerConfigurationType(prop.Value.GetString());
+                    continue;
+                }
                 if (prop.NameEquals("file_ids"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -110,12 +97,12 @@ namespace OpenAI.Responses
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new CodeInterpreterToolAuto(fileIds ?? new ChangeTrackingList<string>(), additionalBinaryDataProperties);
+            return new CodeInterpreterToolAuto(kind, additionalBinaryDataProperties, fileIds ?? new ChangeTrackingList<string>());
         }
 
         BinaryData IPersistableModel<CodeInterpreterToolAuto>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterToolAuto>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -127,9 +114,9 @@ namespace OpenAI.Responses
             }
         }
 
-        CodeInterpreterToolAuto IPersistableModel<CodeInterpreterToolAuto>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        CodeInterpreterToolAuto IPersistableModel<CodeInterpreterToolAuto>.Create(BinaryData data, ModelReaderWriterOptions options) => (CodeInterpreterToolAuto)PersistableModelCreateCore(data, options);
 
-        protected virtual CodeInterpreterToolAuto PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected override CodeInterpreterContainerConfiguration PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterToolAuto>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)

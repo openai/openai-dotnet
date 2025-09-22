@@ -5,7 +5,7 @@ namespace OpenAI.Responses;
 /// <summary>
 /// Represents the configuration for a Code Interpreter container.
 /// </summary>
-public class CodeInterpreterContainerConfiguration
+public partial class CodeInterpreterContainerConfiguration
 {
 
     /// <summary>

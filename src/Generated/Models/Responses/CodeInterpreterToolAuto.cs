@@ -10,25 +10,16 @@ using OpenAI;
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
-    public partial class CodeInterpreterToolAuto
+    public partial class CodeInterpreterToolAuto : CodeInterpreterContainerConfiguration
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
-
-        public CodeInterpreterToolAuto() : this(null, null)
+        public CodeInterpreterToolAuto() : this(CodeInterpreterContainerConfigurationType.Auto, null, null)
         {
         }
 
-        internal CodeInterpreterToolAuto(IList<string> fileIds, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal CodeInterpreterToolAuto(CodeInterpreterContainerConfigurationType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<string> fileIds) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             FileIds = fileIds ?? new ChangeTrackingList<string>();
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
-        }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
         }
     }
 }
