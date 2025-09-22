@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal readonly partial struct InternalRealtimeTranscriptionSessionCreateResponseInputAudioTranscriptionModel : IEquatable<InternalRealtimeTranscriptionSessionCreateResponseInputAudioTranscriptionModel>
+    internal readonly partial struct InternalRealtimeTranscriptionSessionCreateResponseInputAudioTranscriptionModel : ValueType, IEquatable<InternalRealtimeTranscriptionSessionCreateResponseInputAudioTranscriptionModel>
     {
         private readonly string _value;
         private const string Gpt4oTranscribeValue = "gpt-4o-transcribe";

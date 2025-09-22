@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct ResponseErrorCode : IEquatable<ResponseErrorCode>
+    public readonly partial struct ResponseErrorCode : ValueType, IEquatable<ResponseErrorCode>
     {
         private readonly string _value;
         private const string ServerErrorValue = "server_error";

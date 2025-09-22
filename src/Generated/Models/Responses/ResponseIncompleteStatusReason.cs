@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct ResponseIncompleteStatusReason : IEquatable<ResponseIncompleteStatusReason>
+    public readonly partial struct ResponseIncompleteStatusReason : ValueType, IEquatable<ResponseIncompleteStatusReason>
     {
         private readonly string _value;
         private const string MaxOutputTokensValue = "max_output_tokens";

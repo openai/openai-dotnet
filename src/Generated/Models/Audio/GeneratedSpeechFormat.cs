@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Audio
 {
-    public readonly partial struct GeneratedSpeechFormat : IEquatable<GeneratedSpeechFormat>
+    public readonly partial struct GeneratedSpeechFormat : ValueType, IEquatable<GeneratedSpeechFormat>
     {
         private readonly string _value;
         private const string Mp3Value = "mp3";

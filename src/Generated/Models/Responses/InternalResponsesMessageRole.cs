@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal readonly partial struct InternalResponsesMessageRole : IEquatable<InternalResponsesMessageRole>
+    internal readonly partial struct InternalResponsesMessageRole : ValueType, IEquatable<InternalResponsesMessageRole>
     {
         private readonly string _value;
         private const string SystemValue = "system";

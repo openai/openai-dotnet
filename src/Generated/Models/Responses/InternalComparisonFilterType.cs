@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal readonly partial struct InternalComparisonFilterType : IEquatable<InternalComparisonFilterType>
+    internal readonly partial struct InternalComparisonFilterType : ValueType, IEquatable<InternalComparisonFilterType>
     {
         private readonly string _value;
         private const string EqValue = "eq";

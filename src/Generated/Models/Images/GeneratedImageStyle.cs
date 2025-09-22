@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Images
 {
-    public readonly partial struct GeneratedImageStyle : IEquatable<GeneratedImageStyle>
+    public readonly partial struct GeneratedImageStyle : ValueType, IEquatable<GeneratedImageStyle>
     {
         private readonly string _value;
         private const string VividValue = "vivid";

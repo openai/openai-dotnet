@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.FineTuning
 {
-    internal readonly partial struct InternalCreateFineTuningJobRequestHyperparametersBatchSizeChoiceEnum : IEquatable<InternalCreateFineTuningJobRequestHyperparametersBatchSizeChoiceEnum>
+    internal readonly partial struct InternalCreateFineTuningJobRequestHyperparametersBatchSizeChoiceEnum : ValueType, IEquatable<InternalCreateFineTuningJobRequestHyperparametersBatchSizeChoiceEnum>
     {
         private readonly string _value;
         private const string AutoValue = "auto";

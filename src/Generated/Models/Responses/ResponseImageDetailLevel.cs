@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct ResponseImageDetailLevel : IEquatable<ResponseImageDetailLevel>
+    public readonly partial struct ResponseImageDetailLevel : ValueType, IEquatable<ResponseImageDetailLevel>
     {
         private readonly string _value;
         private const string LowValue = "low";

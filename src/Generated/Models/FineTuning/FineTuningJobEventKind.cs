@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.FineTuning
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct FineTuningJobEventKind : IEquatable<FineTuningJobEventKind>
+    public readonly partial struct FineTuningJobEventKind : ValueType, IEquatable<FineTuningJobEventKind>
     {
         private readonly string _value;
         private const string MessageValue = "message";

@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Assistants
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct RunIncompleteReason : IEquatable<RunIncompleteReason>
+    public readonly partial struct RunIncompleteReason : ValueType, IEquatable<RunIncompleteReason>
     {
         private readonly string _value;
         private const string MaxCompletionTokensValue = "max_completion_tokens";

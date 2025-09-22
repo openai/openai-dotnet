@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal readonly partial struct InternalMessageDeltaContentImageFileObjectImageFileDetail : IEquatable<InternalMessageDeltaContentImageFileObjectImageFileDetail>
+    internal readonly partial struct InternalMessageDeltaContentImageFileObjectImageFileDetail : ValueType, IEquatable<InternalMessageDeltaContentImageFileObjectImageFileDetail>
     {
         private readonly string _value;
         private const string AutoValue = "auto";

@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Images
 {
-    public readonly partial struct GeneratedImageQuality : IEquatable<GeneratedImageQuality>
+    public readonly partial struct GeneratedImageQuality : ValueType, IEquatable<GeneratedImageQuality>
     {
         private readonly string _value;
         private const string StandardValue = "standard";

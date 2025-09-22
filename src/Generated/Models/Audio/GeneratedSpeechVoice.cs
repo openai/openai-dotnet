@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Audio
 {
-    public readonly partial struct GeneratedSpeechVoice : IEquatable<GeneratedSpeechVoice>
+    public readonly partial struct GeneratedSpeechVoice : ValueType, IEquatable<GeneratedSpeechVoice>
     {
         private readonly string _value;
         private const string AlloyValue = "alloy";

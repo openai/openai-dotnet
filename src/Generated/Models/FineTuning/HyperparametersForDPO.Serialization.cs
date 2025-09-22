@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.FineTuning
 {
-    public partial class HyperparametersForDPO : IJsonModel<HyperparametersForDPO>
+    public partial class HyperparametersForDPO : MethodHyperparameters, IJsonModel<HyperparametersForDPO>
     {
         void IJsonModel<HyperparametersForDPO>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -19,13 +19,14 @@ namespace OpenAI.FineTuning
             writer.WriteEndObject();
         }
 
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<HyperparametersForDPO>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(HyperparametersForDPO)} does not support writing '{format}' format.");
             }
+            base.JsonModelWriteCore(writer, options);
             if (Optional.IsDefined(_Beta) && _additionalBinaryDataProperties?.ContainsKey("beta") != true)
             {
                 writer.WritePropertyName("beta"u8);
@@ -96,9 +97,9 @@ namespace OpenAI.FineTuning
             }
         }
 
-        HyperparametersForDPO IJsonModel<HyperparametersForDPO>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        HyperparametersForDPO IJsonModel<HyperparametersForDPO>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (HyperparametersForDPO)JsonModelCreateCore(ref reader, options);
 
-        protected virtual HyperparametersForDPO JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected override object JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<HyperparametersForDPO>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -166,7 +167,7 @@ namespace OpenAI.FineTuning
 
         BinaryData IPersistableModel<HyperparametersForDPO>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<HyperparametersForDPO>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -178,9 +179,9 @@ namespace OpenAI.FineTuning
             }
         }
 
-        HyperparametersForDPO IPersistableModel<HyperparametersForDPO>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        HyperparametersForDPO IPersistableModel<HyperparametersForDPO>.Create(BinaryData data, ModelReaderWriterOptions options) => (HyperparametersForDPO)PersistableModelCreateCore(data, options);
 
-        protected virtual HyperparametersForDPO PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected override object PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<HyperparametersForDPO>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)

@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal readonly partial struct InternalCompoundFilterType : IEquatable<InternalCompoundFilterType>
+    internal readonly partial struct InternalCompoundFilterType : ValueType, IEquatable<InternalCompoundFilterType>
     {
         private readonly string _value;
         private const string AndValue = "and";

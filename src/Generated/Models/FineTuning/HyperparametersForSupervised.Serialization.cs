@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.FineTuning
 {
-    public partial class HyperparametersForSupervised : IJsonModel<HyperparametersForSupervised>
+    public partial class HyperparametersForSupervised : MethodHyperparameters, IJsonModel<HyperparametersForSupervised>
     {
         void IJsonModel<HyperparametersForSupervised>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -19,13 +19,14 @@ namespace OpenAI.FineTuning
             writer.WriteEndObject();
         }
 
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<HyperparametersForSupervised>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(HyperparametersForSupervised)} does not support writing '{format}' format.");
             }
+            base.JsonModelWriteCore(writer, options);
             if (Optional.IsDefined(_BatchSize) && _additionalBinaryDataProperties?.ContainsKey("batch_size") != true)
             {
                 writer.WritePropertyName("batch_size"u8);
@@ -84,9 +85,9 @@ namespace OpenAI.FineTuning
             }
         }
 
-        HyperparametersForSupervised IJsonModel<HyperparametersForSupervised>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        HyperparametersForSupervised IJsonModel<HyperparametersForSupervised>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (HyperparametersForSupervised)JsonModelCreateCore(ref reader, options);
 
-        protected virtual HyperparametersForSupervised JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected override object JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<HyperparametersForSupervised>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -144,7 +145,7 @@ namespace OpenAI.FineTuning
 
         BinaryData IPersistableModel<HyperparametersForSupervised>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<HyperparametersForSupervised>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -156,9 +157,9 @@ namespace OpenAI.FineTuning
             }
         }
 
-        HyperparametersForSupervised IPersistableModel<HyperparametersForSupervised>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        HyperparametersForSupervised IPersistableModel<HyperparametersForSupervised>.Create(BinaryData data, ModelReaderWriterOptions options) => (HyperparametersForSupervised)PersistableModelCreateCore(data, options);
 
-        protected virtual HyperparametersForSupervised PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected override object PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<HyperparametersForSupervised>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)

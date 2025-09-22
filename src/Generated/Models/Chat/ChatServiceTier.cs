@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Chat
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct ChatServiceTier : IEquatable<ChatServiceTier>
+    public readonly partial struct ChatServiceTier : ValueType, IEquatable<ChatServiceTier>
     {
         private readonly string _value;
         private const string AutoValue = "auto";

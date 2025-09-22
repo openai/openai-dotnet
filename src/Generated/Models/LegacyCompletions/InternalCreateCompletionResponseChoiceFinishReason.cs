@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.LegacyCompletions
 {
-    internal readonly partial struct InternalCreateCompletionResponseChoiceFinishReason : IEquatable<InternalCreateCompletionResponseChoiceFinishReason>
+    internal readonly partial struct InternalCreateCompletionResponseChoiceFinishReason : ValueType, IEquatable<InternalCreateCompletionResponseChoiceFinishReason>
     {
         private readonly string _value;
         private const string StopValue = "stop";

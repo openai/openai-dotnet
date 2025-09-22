@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Audio
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct StreamingAudioTranscriptionUpdateKind : IEquatable<StreamingAudioTranscriptionUpdateKind>
+    public readonly partial struct StreamingAudioTranscriptionUpdateKind : ValueType, IEquatable<StreamingAudioTranscriptionUpdateKind>
     {
         private readonly string _value;
         private const string TranscriptTextDeltaValue = "transcript.text.delta";

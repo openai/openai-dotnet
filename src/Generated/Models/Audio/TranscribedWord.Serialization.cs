@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Audio
 {
-    public readonly partial struct TranscribedWord : IJsonModel<TranscribedWord>, IJsonModel<object>
+    public readonly partial struct TranscribedWord : ValueType, IJsonModel<TranscribedWord>, IJsonModel<object>
     {
         public TranscribedWord()
         {
@@ -67,9 +67,9 @@ namespace OpenAI.Audio
             }
         }
 
-        TranscribedWord IJsonModel<TranscribedWord>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        TranscribedWord IJsonModel<TranscribedWord>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (TranscribedWord)JsonModelCreateCore(ref reader, options);
 
-        private TranscribedWord JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        private object JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<TranscribedWord>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -127,9 +127,9 @@ namespace OpenAI.Audio
             }
         }
 
-        TranscribedWord IPersistableModel<TranscribedWord>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        TranscribedWord IPersistableModel<TranscribedWord>.Create(BinaryData data, ModelReaderWriterOptions options) => (TranscribedWord)PersistableModelCreateCore(data, options);
 
-        private TranscribedWord PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        private object PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<TranscribedWord>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)

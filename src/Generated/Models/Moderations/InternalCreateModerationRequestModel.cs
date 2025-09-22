@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Moderations
 {
-    internal readonly partial struct InternalCreateModerationRequestModel : IEquatable<InternalCreateModerationRequestModel>
+    internal readonly partial struct InternalCreateModerationRequestModel : ValueType, IEquatable<InternalCreateModerationRequestModel>
     {
         private readonly string _value;
         private const string OmniModerationLatestValue = "omni-moderation-latest";

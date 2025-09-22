@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    public readonly partial struct ChatImageDetailLevel : IEquatable<ChatImageDetailLevel>
+    public readonly partial struct ChatImageDetailLevel : ValueType, IEquatable<ChatImageDetailLevel>
     {
         private readonly string _value;
         private const string AutoValue = "auto";

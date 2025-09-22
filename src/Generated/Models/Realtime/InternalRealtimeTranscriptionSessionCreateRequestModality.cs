@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal readonly partial struct InternalRealtimeTranscriptionSessionCreateRequestModality : IEquatable<InternalRealtimeTranscriptionSessionCreateRequestModality>
+    internal readonly partial struct InternalRealtimeTranscriptionSessionCreateRequestModality : ValueType, IEquatable<InternalRealtimeTranscriptionSessionCreateRequestModality>
     {
         private readonly string _value;
         private const string TextValue = "text";

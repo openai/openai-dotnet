@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    internal readonly partial struct InternalCreateChatCompletionStreamResponseChoiceFinishReason : IEquatable<InternalCreateChatCompletionStreamResponseChoiceFinishReason>
+    internal readonly partial struct InternalCreateChatCompletionStreamResponseChoiceFinishReason : ValueType, IEquatable<InternalCreateChatCompletionStreamResponseChoiceFinishReason>
     {
         private readonly string _value;
         private const string StopValue = "stop";

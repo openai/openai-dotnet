@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Realtime
 {
     [Experimental("OPENAI002")]
-    public readonly partial struct SemanticEagernessLevel : IEquatable<SemanticEagernessLevel>
+    public readonly partial struct SemanticEagernessLevel : ValueType, IEquatable<SemanticEagernessLevel>
     {
         private readonly string _value;
         private const string LowValue = "low";

@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.VectorStores
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct VectorStoreFileErrorCode : IEquatable<VectorStoreFileErrorCode>
+    public readonly partial struct VectorStoreFileErrorCode : ValueType, IEquatable<VectorStoreFileErrorCode>
     {
         private readonly string _value;
         private const string ServerErrorValue = "server_error";

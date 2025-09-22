@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct ResponseReasoningSummaryVerbosity : IEquatable<ResponseReasoningSummaryVerbosity>
+    public readonly partial struct ResponseReasoningSummaryVerbosity : ValueType, IEquatable<ResponseReasoningSummaryVerbosity>
     {
         private readonly string _value;
         private const string AutoValue = "auto";

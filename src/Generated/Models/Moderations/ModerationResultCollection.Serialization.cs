@@ -5,13 +5,14 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Moderations
 {
-    public partial class ModerationResultCollection : IJsonModel<ModerationResultCollection>
+    public partial class ModerationResultCollection : ReadOnlyCollection<ModerationResult>, IJsonModel<ModerationResultCollection>
     {
         [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
@@ -53,10 +54,10 @@ namespace OpenAI.Moderations
             }
         }
 
-        ModerationResultCollection IJsonModel<ModerationResultCollection>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        ModerationResultCollection IJsonModel<ModerationResultCollection>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (ModerationResultCollection)JsonModelCreateCore(ref reader, options);
 
         [Experimental("OPENAI001")]
-        protected virtual ModerationResultCollection JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual object JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ModerationResultCollection>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -82,10 +83,10 @@ namespace OpenAI.Moderations
             }
         }
 
-        ModerationResultCollection IPersistableModel<ModerationResultCollection>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        ModerationResultCollection IPersistableModel<ModerationResultCollection>.Create(BinaryData data, ModelReaderWriterOptions options) => (ModerationResultCollection)PersistableModelCreateCore(data, options);
 
         [Experimental("OPENAI001")]
-        protected virtual ModerationResultCollection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual object PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ModerationResultCollection>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)

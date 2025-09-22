@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.FineTuning
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct FineTuningStatus : IEquatable<FineTuningStatus>
+    public readonly partial struct FineTuningStatus : ValueType, IEquatable<FineTuningStatus>
     {
         private readonly string _value;
         private const string ValidatingFilesValue = "validating_files";

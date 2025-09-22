@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Realtime
 {
     [Experimental("OPENAI002")]
-    public readonly partial struct RealtimeAudioFormat : IEquatable<RealtimeAudioFormat>
+    public readonly partial struct RealtimeAudioFormat : ValueType, IEquatable<RealtimeAudioFormat>
     {
         private readonly string _value;
         private const string Pcm16Value = "pcm16";

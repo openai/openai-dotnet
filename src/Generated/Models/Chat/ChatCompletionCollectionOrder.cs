@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Chat
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct ChatCompletionCollectionOrder : IEquatable<ChatCompletionCollectionOrder>
+    public readonly partial struct ChatCompletionCollectionOrder : ValueType, IEquatable<ChatCompletionCollectionOrder>
     {
         private readonly string _value;
         private const string AscendingValue = "asc";

@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct ResponseServiceTier : IEquatable<ResponseServiceTier>
+    public readonly partial struct ResponseServiceTier : ValueType, IEquatable<ResponseServiceTier>
     {
         private readonly string _value;
         private const string AutoValue = "auto";

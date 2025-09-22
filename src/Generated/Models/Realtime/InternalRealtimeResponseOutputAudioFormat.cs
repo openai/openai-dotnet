@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal readonly partial struct InternalRealtimeResponseOutputAudioFormat : IEquatable<InternalRealtimeResponseOutputAudioFormat>
+    internal readonly partial struct InternalRealtimeResponseOutputAudioFormat : ValueType, IEquatable<InternalRealtimeResponseOutputAudioFormat>
     {
         private readonly string _value;
         private const string Pcm16Value = "pcm16";

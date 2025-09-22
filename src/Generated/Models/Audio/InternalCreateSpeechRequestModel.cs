@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Audio
 {
-    internal readonly partial struct InternalCreateSpeechRequestModel : IEquatable<InternalCreateSpeechRequestModel>
+    internal readonly partial struct InternalCreateSpeechRequestModel : ValueType, IEquatable<InternalCreateSpeechRequestModel>
     {
         private readonly string _value;
         private const string Tts1Value = "tts-1";

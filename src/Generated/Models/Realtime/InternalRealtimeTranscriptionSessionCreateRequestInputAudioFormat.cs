@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal readonly partial struct InternalRealtimeTranscriptionSessionCreateRequestInputAudioFormat : IEquatable<InternalRealtimeTranscriptionSessionCreateRequestInputAudioFormat>
+    internal readonly partial struct InternalRealtimeTranscriptionSessionCreateRequestInputAudioFormat : ValueType, IEquatable<InternalRealtimeTranscriptionSessionCreateRequestInputAudioFormat>
     {
         private readonly string _value;
         private const string Pcm16Value = "pcm16";

@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Images
 {
-    internal readonly partial struct InternalCreateImageEditRequestQuality : IEquatable<InternalCreateImageEditRequestQuality>
+    internal readonly partial struct InternalCreateImageEditRequestQuality : ValueType, IEquatable<InternalCreateImageEditRequestQuality>
     {
         private readonly string _value;
         private const string StandardValue = "standard";

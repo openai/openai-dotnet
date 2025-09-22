@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.VectorStores
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct VectorStoreFileStatusFilter : IEquatable<VectorStoreFileStatusFilter>
+    public readonly partial struct VectorStoreFileStatusFilter : ValueType, IEquatable<VectorStoreFileStatusFilter>
     {
         private readonly string _value;
         private const string InProgressValue = "in_progress";

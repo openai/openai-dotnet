@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Batch
 {
-    internal readonly partial struct InternalBatchStatus : IEquatable<InternalBatchStatus>
+    internal readonly partial struct InternalBatchStatus : ValueType, IEquatable<InternalBatchStatus>
     {
         private readonly string _value;
         private const string ValidatingValue = "validating";

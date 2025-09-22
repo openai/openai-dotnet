@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Assistants
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct MessageFailureReason : IEquatable<MessageFailureReason>
+    public readonly partial struct MessageFailureReason : ValueType, IEquatable<MessageFailureReason>
     {
         private readonly string _value;
         private const string ContentFilterValue = "content_filter";

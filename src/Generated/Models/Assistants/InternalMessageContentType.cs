@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal readonly partial struct InternalMessageContentType : IEquatable<InternalMessageContentType>
+    internal readonly partial struct InternalMessageContentType : ValueType, IEquatable<InternalMessageContentType>
     {
         private readonly string _value;
         private const string TextValue = "text";

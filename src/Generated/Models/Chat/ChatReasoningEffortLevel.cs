@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Chat
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct ChatReasoningEffortLevel : IEquatable<ChatReasoningEffortLevel>
+    public readonly partial struct ChatReasoningEffortLevel : ValueType, IEquatable<ChatReasoningEffortLevel>
     {
         private readonly string _value;
         private const string LowValue = "low";

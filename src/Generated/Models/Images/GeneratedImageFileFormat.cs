@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Images
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct GeneratedImageFileFormat : IEquatable<GeneratedImageFileFormat>
+    public readonly partial struct GeneratedImageFileFormat : ValueType, IEquatable<GeneratedImageFileFormat>
     {
         private readonly string _value;
         private const string PngValue = "png";

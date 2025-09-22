@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal readonly partial struct InternalImageGenToolQuality : IEquatable<InternalImageGenToolQuality>
+    internal readonly partial struct InternalImageGenToolQuality : ValueType, IEquatable<InternalImageGenToolQuality>
     {
         private readonly string _value;
         private const string LowValue = "low";

@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Graders
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct GraderStringCheckOperation : IEquatable<GraderStringCheckOperation>
+    public readonly partial struct GraderStringCheckOperation : ValueType, IEquatable<GraderStringCheckOperation>
     {
         private readonly string _value;
         private const string EqValue = "eq";

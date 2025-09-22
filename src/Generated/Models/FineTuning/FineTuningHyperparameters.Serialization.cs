@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.FineTuning
 {
-    public readonly partial struct FineTuningHyperparameters : IJsonModel<FineTuningHyperparameters>, IJsonModel<object>
+    public readonly partial struct FineTuningHyperparameters : ValueType, IJsonModel<FineTuningHyperparameters>, IJsonModel<object>
     {
         public FineTuningHyperparameters()
         {
@@ -88,9 +88,9 @@ namespace OpenAI.FineTuning
             }
         }
 
-        FineTuningHyperparameters IJsonModel<FineTuningHyperparameters>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        FineTuningHyperparameters IJsonModel<FineTuningHyperparameters>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (FineTuningHyperparameters)JsonModelCreateCore(ref reader, options);
 
-        private FineTuningHyperparameters JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        private object JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FineTuningHyperparameters>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -161,9 +161,9 @@ namespace OpenAI.FineTuning
             }
         }
 
-        FineTuningHyperparameters IPersistableModel<FineTuningHyperparameters>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        FineTuningHyperparameters IPersistableModel<FineTuningHyperparameters>.Create(BinaryData data, ModelReaderWriterOptions options) => (FineTuningHyperparameters)PersistableModelCreateCore(data, options);
 
-        private FineTuningHyperparameters PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        private object PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<FineTuningHyperparameters>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)

@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Files
 {
-    internal readonly partial struct InternalUploadStatus : IEquatable<InternalUploadStatus>
+    internal readonly partial struct InternalUploadStatus : ValueType, IEquatable<InternalUploadStatus>
     {
         private readonly string _value;
         private const string PendingValue = "pending";

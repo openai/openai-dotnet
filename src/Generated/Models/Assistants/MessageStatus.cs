@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Assistants
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct MessageStatus : IEquatable<MessageStatus>
+    public readonly partial struct MessageStatus : ValueType, IEquatable<MessageStatus>
     {
         private readonly string _value;
         private const string InProgressValue = "in_progress";

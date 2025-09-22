@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal readonly partial struct InternalToolType : IEquatable<InternalToolType>
+    internal readonly partial struct InternalToolType : ValueType, IEquatable<InternalToolType>
     {
         private readonly string _value;
         private const string FileSearchValue = "file_search";

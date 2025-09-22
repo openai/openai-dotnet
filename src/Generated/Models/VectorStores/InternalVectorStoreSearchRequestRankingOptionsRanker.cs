@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.VectorStores
 {
-    internal readonly partial struct InternalVectorStoreSearchRequestRankingOptionsRanker : IEquatable<InternalVectorStoreSearchRequestRankingOptionsRanker>
+    internal readonly partial struct InternalVectorStoreSearchRequestRankingOptionsRanker : ValueType, IEquatable<InternalVectorStoreSearchRequestRankingOptionsRanker>
     {
         private readonly string _value;
         private const string AutoValue = "auto";

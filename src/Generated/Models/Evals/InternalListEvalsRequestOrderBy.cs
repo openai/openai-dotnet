@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal readonly partial struct InternalListEvalsRequestOrderBy : IEquatable<InternalListEvalsRequestOrderBy>
+    internal readonly partial struct InternalListEvalsRequestOrderBy : ValueType, IEquatable<InternalListEvalsRequestOrderBy>
     {
         private readonly string _value;
         private const string CreatedAtValue = "created_at";

@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -10,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.FineTuning
 {
-    internal partial class InternalFineTuningJobsPageToken : IJsonModel<InternalFineTuningJobsPageToken>
+    internal partial class InternalFineTuningJobsPageToken : ContinuationToken, IJsonModel<InternalFineTuningJobsPageToken>
     {
         void IJsonModel<InternalFineTuningJobsPageToken>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -19,13 +20,14 @@ namespace OpenAI.FineTuning
             writer.WriteEndObject();
         }
 
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalFineTuningJobsPageToken>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalFineTuningJobsPageToken)} does not support writing '{format}' format.");
             }
+            base.JsonModelWriteCore(writer, options);
             if (Optional.IsDefined(Limit) && _additionalBinaryDataProperties?.ContainsKey("limit") != true)
             {
                 writer.WritePropertyName("limit"u8);
@@ -58,9 +60,9 @@ namespace OpenAI.FineTuning
             }
         }
 
-        InternalFineTuningJobsPageToken IJsonModel<InternalFineTuningJobsPageToken>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        InternalFineTuningJobsPageToken IJsonModel<InternalFineTuningJobsPageToken>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalFineTuningJobsPageToken)JsonModelCreateCore(ref reader, options);
 
-        protected virtual InternalFineTuningJobsPageToken JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected override object JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalFineTuningJobsPageToken>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -104,7 +106,7 @@ namespace OpenAI.FineTuning
 
         BinaryData IPersistableModel<InternalFineTuningJobsPageToken>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalFineTuningJobsPageToken>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -116,9 +118,9 @@ namespace OpenAI.FineTuning
             }
         }
 
-        InternalFineTuningJobsPageToken IPersistableModel<InternalFineTuningJobsPageToken>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        InternalFineTuningJobsPageToken IPersistableModel<InternalFineTuningJobsPageToken>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalFineTuningJobsPageToken)PersistableModelCreateCore(data, options);
 
-        protected virtual InternalFineTuningJobsPageToken PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected override object PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalFineTuningJobsPageToken>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)

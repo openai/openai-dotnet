@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal readonly partial struct InternalEvalItemContentType : IEquatable<InternalEvalItemContentType>
+    internal readonly partial struct InternalEvalItemContentType : ValueType, IEquatable<InternalEvalItemContentType>
     {
         private readonly string _value;
         private const string InputTextValue = "input_text";

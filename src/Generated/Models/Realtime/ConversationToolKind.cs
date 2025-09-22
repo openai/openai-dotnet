@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Realtime
 {
     [Experimental("OPENAI002")]
-    public readonly partial struct ConversationToolKind : IEquatable<ConversationToolKind>
+    public readonly partial struct ConversationToolKind : ValueType, IEquatable<ConversationToolKind>
     {
         private readonly string _value;
         private const string FunctionValue = "function";

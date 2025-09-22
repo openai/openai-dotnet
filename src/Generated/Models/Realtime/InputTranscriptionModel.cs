@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Realtime
 {
     [Experimental("OPENAI002")]
-    public readonly partial struct InputTranscriptionModel : IEquatable<InputTranscriptionModel>
+    public readonly partial struct InputTranscriptionModel : ValueType, IEquatable<InputTranscriptionModel>
     {
         private readonly string _value;
         private const string Whisper1Value = "whisper-1";

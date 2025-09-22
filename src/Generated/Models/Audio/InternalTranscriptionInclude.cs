@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Audio
 {
-    internal readonly partial struct InternalTranscriptionInclude : IEquatable<InternalTranscriptionInclude>
+    internal readonly partial struct InternalTranscriptionInclude : ValueType, IEquatable<InternalTranscriptionInclude>
     {
         private readonly string _value;
         private const string LogprobsValue = "logprobs";

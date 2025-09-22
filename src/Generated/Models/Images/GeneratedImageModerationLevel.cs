@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Images
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct GeneratedImageModerationLevel : IEquatable<GeneratedImageModerationLevel>
+    public readonly partial struct GeneratedImageModerationLevel : ValueType, IEquatable<GeneratedImageModerationLevel>
     {
         private readonly string _value;
         private const string LowValue = "low";

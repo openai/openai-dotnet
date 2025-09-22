@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal readonly partial struct InternalRunStepDetailsType : IEquatable<InternalRunStepDetailsType>
+    internal readonly partial struct InternalRunStepDetailsType : ValueType, IEquatable<InternalRunStepDetailsType>
     {
         private readonly string _value;
         private const string MessageCreationValue = "message_creation";

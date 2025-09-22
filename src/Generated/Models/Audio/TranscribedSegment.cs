@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Audio
 {
-    public readonly partial struct TranscribedSegment
+    public readonly partial struct TranscribedSegment : ValueType
     {
         private readonly IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Internal
 {
-    internal readonly partial struct InternalVoiceIdsShared : IEquatable<InternalVoiceIdsShared>
+    internal readonly partial struct InternalVoiceIdsShared : ValueType, IEquatable<InternalVoiceIdsShared>
     {
         private readonly string _value;
         private const string AlloyValue = "alloy";

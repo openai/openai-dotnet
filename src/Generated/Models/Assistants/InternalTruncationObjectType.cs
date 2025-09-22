@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal readonly partial struct InternalTruncationObjectType : IEquatable<InternalTruncationObjectType>
+    internal readonly partial struct InternalTruncationObjectType : ValueType, IEquatable<InternalTruncationObjectType>
     {
         private readonly string _value;
         private const string AutoValue = "auto";

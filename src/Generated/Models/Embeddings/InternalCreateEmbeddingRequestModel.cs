@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Embeddings
 {
-    internal readonly partial struct InternalCreateEmbeddingRequestModel : IEquatable<InternalCreateEmbeddingRequestModel>
+    internal readonly partial struct InternalCreateEmbeddingRequestModel : ValueType, IEquatable<InternalCreateEmbeddingRequestModel>
     {
         private readonly string _value;
         private const string TextEmbeddingAda002Value = "text-embedding-ada-002";

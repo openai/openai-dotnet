@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal readonly partial struct InternalRealtimeItemType : IEquatable<InternalRealtimeItemType>
+    internal readonly partial struct InternalRealtimeItemType : ValueType, IEquatable<InternalRealtimeItemType>
     {
         private readonly string _value;
         private const string MessageValue = "message";

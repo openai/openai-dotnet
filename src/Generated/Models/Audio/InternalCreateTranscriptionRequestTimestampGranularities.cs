@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Audio
 {
-    internal readonly partial struct InternalCreateTranscriptionRequestTimestampGranularities : IEquatable<InternalCreateTranscriptionRequestTimestampGranularities>
+    internal readonly partial struct InternalCreateTranscriptionRequestTimestampGranularities : ValueType, IEquatable<InternalCreateTranscriptionRequestTimestampGranularities>
     {
         private readonly string _value;
         private const string WordValue = "word";

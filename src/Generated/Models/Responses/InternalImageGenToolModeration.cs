@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal readonly partial struct InternalImageGenToolModeration : IEquatable<InternalImageGenToolModeration>
+    internal readonly partial struct InternalImageGenToolModeration : ValueType, IEquatable<InternalImageGenToolModeration>
     {
         private readonly string _value;
         private const string AutoValue = "auto";

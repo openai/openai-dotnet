@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.VectorStores
 {
-    internal readonly partial struct InternalChunkingStrategyRequestParamType : IEquatable<InternalChunkingStrategyRequestParamType>
+    internal readonly partial struct InternalChunkingStrategyRequestParamType : ValueType, IEquatable<InternalChunkingStrategyRequestParamType>
     {
         private readonly string _value;
         private const string AutoValue = "auto";

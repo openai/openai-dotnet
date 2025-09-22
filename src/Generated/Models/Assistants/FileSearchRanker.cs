@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Assistants
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct FileSearchRanker : IEquatable<FileSearchRanker>
+    public readonly partial struct FileSearchRanker : ValueType, IEquatable<FileSearchRanker>
     {
         private readonly string _value;
         private const string AutoValue = "auto";

@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Audio
 {
-    public readonly partial struct AudioTranslationFormat : IEquatable<AudioTranslationFormat>
+    public readonly partial struct AudioTranslationFormat : ValueType, IEquatable<AudioTranslationFormat>
     {
         private readonly string _value;
         private const string JsonValue = "json";

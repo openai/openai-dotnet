@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Files
 {
-    internal readonly partial struct InternalCreateUploadRequestPurpose : IEquatable<InternalCreateUploadRequestPurpose>
+    internal readonly partial struct InternalCreateUploadRequestPurpose : ValueType, IEquatable<InternalCreateUploadRequestPurpose>
     {
         private readonly string _value;
         private const string AssistantsValue = "assistants";

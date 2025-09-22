@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal readonly partial struct InternalRealtimeSessionCreateRequestInputAudioNoiseReductionType : IEquatable<InternalRealtimeSessionCreateRequestInputAudioNoiseReductionType>
+    internal readonly partial struct InternalRealtimeSessionCreateRequestInputAudioNoiseReductionType : ValueType, IEquatable<InternalRealtimeSessionCreateRequestInputAudioNoiseReductionType>
     {
         private readonly string _value;
         private const string NearFieldValue = "near_field";

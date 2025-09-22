@@ -9,7 +9,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.FineTuning
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct FineTuningHyperparameters
+    public readonly partial struct FineTuningHyperparameters : ValueType
     {
         private readonly IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

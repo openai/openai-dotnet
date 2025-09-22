@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Assistants
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct RunStepErrorCode : IEquatable<RunStepErrorCode>
+    public readonly partial struct RunStepErrorCode : ValueType, IEquatable<RunStepErrorCode>
     {
         private readonly string _value;
         private const string ServerErrorValue = "server_error";

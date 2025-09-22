@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.LegacyCompletions
 {
-    internal readonly partial struct InternalCreateCompletionRequestModel : IEquatable<InternalCreateCompletionRequestModel>
+    internal readonly partial struct InternalCreateCompletionRequestModel : ValueType, IEquatable<InternalCreateCompletionRequestModel>
     {
         private readonly string _value;
         private const string Gpt35TurboInstructValue = "gpt-3.5-turbo-instruct";

@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal readonly partial struct InternalWebSearchUserLocationKind : IEquatable<InternalWebSearchUserLocationKind>
+    internal readonly partial struct InternalWebSearchUserLocationKind : ValueType, IEquatable<InternalWebSearchUserLocationKind>
     {
         private readonly string _value;
         private const string ApproximateValue = "approximate";

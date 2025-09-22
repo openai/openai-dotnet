@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Realtime
 {
     [Experimental("OPENAI002")]
-    public readonly partial struct ConversationMessageRole : IEquatable<ConversationMessageRole>
+    public readonly partial struct ConversationMessageRole : ValueType, IEquatable<ConversationMessageRole>
     {
         private readonly string _value;
         private const string SystemValue = "system";

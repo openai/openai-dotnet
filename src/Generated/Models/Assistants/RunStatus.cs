@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Assistants
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct RunStatus : IEquatable<RunStatus>
+    public readonly partial struct RunStatus : ValueType, IEquatable<RunStatus>
     {
         private readonly string _value;
         private const string QueuedValue = "queued";

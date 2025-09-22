@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.VectorStores
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct VectorStoreCollectionOrder : IEquatable<VectorStoreCollectionOrder>
+    public readonly partial struct VectorStoreCollectionOrder : ValueType, IEquatable<VectorStoreCollectionOrder>
     {
         private readonly string _value;
         private const string AscValue = "asc";

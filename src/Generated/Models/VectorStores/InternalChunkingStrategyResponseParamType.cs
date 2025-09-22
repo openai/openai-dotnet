@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.VectorStores
 {
-    internal readonly partial struct InternalChunkingStrategyResponseParamType : IEquatable<InternalChunkingStrategyResponseParamType>
+    internal readonly partial struct InternalChunkingStrategyResponseParamType : ValueType, IEquatable<InternalChunkingStrategyResponseParamType>
     {
         private readonly string _value;
         private const string StaticValue = "static";

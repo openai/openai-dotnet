@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Graders
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct GraderTextSimilarityEvaluationMetric : IEquatable<GraderTextSimilarityEvaluationMetric>
+    public readonly partial struct GraderTextSimilarityEvaluationMetric : ValueType, IEquatable<GraderTextSimilarityEvaluationMetric>
     {
         private readonly string _value;
         private const string FuzzyMatchValue = "fuzzy_match";

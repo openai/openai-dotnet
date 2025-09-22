@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Assistants
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct MessageCollectionOrder : IEquatable<MessageCollectionOrder>
+    public readonly partial struct MessageCollectionOrder : ValueType, IEquatable<MessageCollectionOrder>
     {
         private readonly string _value;
         private const string AscendingValue = "asc";

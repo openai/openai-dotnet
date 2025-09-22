@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Realtime
 {
     [Experimental("OPENAI002")]
-    public readonly partial struct ConversationIncompleteReason : IEquatable<ConversationIncompleteReason>
+    public readonly partial struct ConversationIncompleteReason : ValueType, IEquatable<ConversationIncompleteReason>
     {
         private readonly string _value;
         private const string TurnDetectedValue = "turn_detected";

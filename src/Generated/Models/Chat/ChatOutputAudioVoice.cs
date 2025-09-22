@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Chat
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct ChatOutputAudioVoice : IEquatable<ChatOutputAudioVoice>
+    public readonly partial struct ChatOutputAudioVoice : ValueType, IEquatable<ChatOutputAudioVoice>
     {
         private readonly string _value;
         private const string AlloyValue = "alloy";

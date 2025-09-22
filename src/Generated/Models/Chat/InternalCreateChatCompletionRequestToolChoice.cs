@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    internal readonly partial struct InternalCreateChatCompletionRequestToolChoice : IEquatable<InternalCreateChatCompletionRequestToolChoice>
+    internal readonly partial struct InternalCreateChatCompletionRequestToolChoice : ValueType, IEquatable<InternalCreateChatCompletionRequestToolChoice>
     {
         private readonly string _value;
         private const string NoneValue = "none";

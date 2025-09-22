@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Images
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct GeneratedImageBackground : IEquatable<GeneratedImageBackground>
+    public readonly partial struct GeneratedImageBackground : ValueType, IEquatable<GeneratedImageBackground>
     {
         private readonly string _value;
         private const string TransparentValue = "transparent";

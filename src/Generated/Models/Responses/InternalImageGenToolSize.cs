@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal readonly partial struct InternalImageGenToolSize : IEquatable<InternalImageGenToolSize>
+    internal readonly partial struct InternalImageGenToolSize : ValueType, IEquatable<InternalImageGenToolSize>
     {
         private readonly string _value;
         private const string _1024x1024Value = "1024x1024";

@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct ResponseItemCollectionOrder : IEquatable<ResponseItemCollectionOrder>
+    public readonly partial struct ResponseItemCollectionOrder : ValueType, IEquatable<ResponseItemCollectionOrder>
     {
         private readonly string _value;
         private const string AscendingValue = "asc";

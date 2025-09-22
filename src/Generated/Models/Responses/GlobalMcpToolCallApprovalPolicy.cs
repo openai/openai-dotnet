@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
-    public readonly partial struct GlobalMcpToolCallApprovalPolicy : IEquatable<GlobalMcpToolCallApprovalPolicy>
+    public readonly partial struct GlobalMcpToolCallApprovalPolicy : ValueType, IEquatable<GlobalMcpToolCallApprovalPolicy>
     {
         private readonly string _value;
         private const string AlwaysRequireApprovalValue = "always";

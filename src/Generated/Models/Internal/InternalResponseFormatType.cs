@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Internal
 {
-    internal readonly partial struct InternalResponseFormatType : IEquatable<InternalResponseFormatType>
+    internal readonly partial struct InternalResponseFormatType : ValueType, IEquatable<InternalResponseFormatType>
     {
         private readonly string _value;
         private const string TextValue = "text";

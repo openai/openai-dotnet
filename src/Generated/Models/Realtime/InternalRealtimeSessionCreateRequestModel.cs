@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal readonly partial struct InternalRealtimeSessionCreateRequestModel : IEquatable<InternalRealtimeSessionCreateRequestModel>
+    internal readonly partial struct InternalRealtimeSessionCreateRequestModel : ValueType, IEquatable<InternalRealtimeSessionCreateRequestModel>
     {
         private readonly string _value;
         private const string Gpt4oRealtimePreviewValue = "gpt-4o-realtime-preview";

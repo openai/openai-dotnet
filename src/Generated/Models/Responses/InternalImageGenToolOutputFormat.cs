@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal readonly partial struct InternalImageGenToolOutputFormat : IEquatable<InternalImageGenToolOutputFormat>
+    internal readonly partial struct InternalImageGenToolOutputFormat : ValueType, IEquatable<InternalImageGenToolOutputFormat>
     {
         private readonly string _value;
         private const string PngValue = "png";

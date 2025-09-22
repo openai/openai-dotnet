@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Realtime
 {
     [Experimental("OPENAI002")]
-    public readonly partial struct ResponseConversationSelection : IEquatable<ResponseConversationSelection>
+    public readonly partial struct ResponseConversationSelection : ValueType, IEquatable<ResponseConversationSelection>
     {
         private readonly string _value;
         private const string AutoValue = "auto";

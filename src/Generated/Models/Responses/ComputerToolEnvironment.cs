@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Responses
 {
     [Experimental("OPENAICUA001")]
-    public readonly partial struct ComputerToolEnvironment : IEquatable<ComputerToolEnvironment>
+    public readonly partial struct ComputerToolEnvironment : ValueType, IEquatable<ComputerToolEnvironment>
     {
         private readonly string _value;
         private const string WindowsValue = "windows";

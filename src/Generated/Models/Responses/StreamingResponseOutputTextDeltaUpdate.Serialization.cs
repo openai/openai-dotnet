@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class StreamingResponseOutputTextDeltaUpdate : IJsonModel<StreamingResponseOutputTextDeltaUpdate>
+    public partial class StreamingResponseOutputTextDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseOutputTextDeltaUpdate>
     {
         internal StreamingResponseOutputTextDeltaUpdate() : this(InternalResponseStreamEventType.ResponseOutputTextDelta, default, null, null, default, default, null)
         {

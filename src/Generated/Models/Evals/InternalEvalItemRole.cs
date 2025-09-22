@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal readonly partial struct InternalEvalItemRole : IEquatable<InternalEvalItemRole>
+    internal readonly partial struct InternalEvalItemRole : ValueType, IEquatable<InternalEvalItemRole>
     {
         private readonly string _value;
         private const string UserValue = "user";

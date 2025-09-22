@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Realtime
 {
     [Experimental("OPENAI002")]
-    public readonly partial struct ConversationStatus : IEquatable<ConversationStatus>
+    public readonly partial struct ConversationStatus : ValueType, IEquatable<ConversationStatus>
     {
         private readonly string _value;
         private const string CompletedValue = "completed";

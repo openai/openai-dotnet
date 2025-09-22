@@ -8,7 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Images
 {
-    public readonly partial struct GeneratedImageSize : IEquatable<GeneratedImageSize>
+    public readonly partial struct GeneratedImageSize : ValueType, IEquatable<GeneratedImageSize>
     {
         private readonly string _value;
         private const string AutoValue = "auto";
