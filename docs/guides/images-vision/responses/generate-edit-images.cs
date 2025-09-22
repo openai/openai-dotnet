@@ -16,7 +16,7 @@ OpenAIResponseClient client = new(model: "gpt-image-1", apiKey: key);
 OpenAIResponse response = (OpenAIResponse)client.CreateResponse(
         BinaryContent.Create(BinaryData.FromObjectAsJson(new
         {
-            model = "gpt-4.1",
+            model = "gpt-5",
             input = "Generate an image of gray tabby cat hugging an otter with an orange scarf",
             tools = new[]
             {
