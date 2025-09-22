@@ -119,6 +119,12 @@ public partial class OpenAIResponseClient
     [Experimental("OPENAI001")]
     public Uri Endpoint => _endpoint;
 
+    /// <summary>
+    /// Gets the name of the model used in requests sent to the service.
+    /// </summary>
+    [Experimental("OPENAI001")]
+    public string Model => _model;
+
     public virtual Task<ClientResult<OpenAIResponse>> CreateResponseAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
     {
         return CreateResponseAsync(inputItems, options, cancellationToken.ToRequestOptions() ?? new RequestOptions());
