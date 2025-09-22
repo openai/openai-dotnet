@@ -10,13 +10,13 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalImageGenToolCallItemResource : IJsonModel<InternalImageGenToolCallItemResource>
+    public partial class ImageGenerationCallResponseItem : IJsonModel<ImageGenerationCallResponseItem>
     {
-        internal InternalImageGenToolCallItemResource() : this(InternalItemType.ImageGenerationCall, null, null, default, null)
+        internal ImageGenerationCallResponseItem() : this(InternalItemType.ImageGenerationCall, null, null, default, null)
         {
         }
 
-        void IJsonModel<InternalImageGenToolCallItemResource>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<ImageGenerationCallResponseItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
@@ -25,16 +25,16 @@ namespace OpenAI.Responses
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalImageGenToolCallItemResource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ImageGenerationCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalImageGenToolCallItemResource)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(ImageGenerationCallResponseItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
             if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.ToString());
+                writer.WriteStringValue(Status.ToSerialString());
             }
             if (_additionalBinaryDataProperties?.ContainsKey("result") != true)
             {
@@ -50,20 +50,20 @@ namespace OpenAI.Responses
             }
         }
 
-        InternalImageGenToolCallItemResource IJsonModel<InternalImageGenToolCallItemResource>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalImageGenToolCallItemResource)JsonModelCreateCore(ref reader, options);
+        ImageGenerationCallResponseItem IJsonModel<ImageGenerationCallResponseItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (ImageGenerationCallResponseItem)JsonModelCreateCore(ref reader, options);
 
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalImageGenToolCallItemResource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ImageGenerationCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalImageGenToolCallItemResource)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(ImageGenerationCallResponseItem)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalImageGenToolCallItemResource(document.RootElement, options);
+            return DeserializeImageGenerationCallResponseItem(document.RootElement, options);
         }
 
-        internal static InternalImageGenToolCallItemResource DeserializeInternalImageGenToolCallItemResource(JsonElement element, ModelReaderWriterOptions options)
+        internal static ImageGenerationCallResponseItem DeserializeImageGenerationCallResponseItem(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -72,7 +72,7 @@ namespace OpenAI.Responses
             InternalItemType kind = default;
             string id = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            InternalImageGenToolCallItemResourceStatus status = default;
+            ImageGenerationCallStatus status = default;
             string result = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -88,7 +88,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("status"u8))
                 {
-                    status = new InternalImageGenToolCallItemResourceStatus(prop.Value.GetString());
+                    status = prop.Value.GetString().ToImageGenerationCallStatus();
                     continue;
                 }
                 if (prop.NameEquals("result"u8))
@@ -104,40 +104,40 @@ namespace OpenAI.Responses
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalImageGenToolCallItemResource(kind, id, additionalBinaryDataProperties, status, result);
+            return new ImageGenerationCallResponseItem(kind, id, additionalBinaryDataProperties, status, result);
         }
 
-        BinaryData IPersistableModel<InternalImageGenToolCallItemResource>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<ImageGenerationCallResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalImageGenToolCallItemResource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ImageGenerationCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(InternalImageGenToolCallItemResource)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ImageGenerationCallResponseItem)} does not support writing '{options.Format}' format.");
             }
         }
 
-        InternalImageGenToolCallItemResource IPersistableModel<InternalImageGenToolCallItemResource>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalImageGenToolCallItemResource)PersistableModelCreateCore(data, options);
+        ImageGenerationCallResponseItem IPersistableModel<ImageGenerationCallResponseItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (ImageGenerationCallResponseItem)PersistableModelCreateCore(data, options);
 
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalImageGenToolCallItemResource>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ImageGenerationCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalImageGenToolCallItemResource(document.RootElement, options);
+                        return DeserializeImageGenerationCallResponseItem(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalImageGenToolCallItemResource)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ImageGenerationCallResponseItem)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<InternalImageGenToolCallItemResource>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<ImageGenerationCallResponseItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

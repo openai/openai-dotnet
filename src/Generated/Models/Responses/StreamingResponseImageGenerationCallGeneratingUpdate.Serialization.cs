@@ -10,13 +10,13 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalResponseImageGenCallGeneratingEvent : IJsonModel<InternalResponseImageGenCallGeneratingEvent>
+    public partial class StreamingResponseImageGenerationCallGeneratingUpdate : IJsonModel<StreamingResponseImageGenerationCallGeneratingUpdate>
     {
-        internal InternalResponseImageGenCallGeneratingEvent() : this(InternalResponseStreamEventType.ResponseImageGenerationCallGenerating, default, null, default, null)
+        internal StreamingResponseImageGenerationCallGeneratingUpdate() : this(InternalResponseStreamEventType.ResponseImageGenerationCallGenerating, default, null, default, null)
         {
         }
 
-        void IJsonModel<InternalResponseImageGenCallGeneratingEvent>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<StreamingResponseImageGenerationCallGeneratingUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
@@ -25,10 +25,10 @@ namespace OpenAI.Responses
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseImageGenCallGeneratingEvent>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseImageGenerationCallGeneratingUpdate>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalResponseImageGenCallGeneratingEvent)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(StreamingResponseImageGenerationCallGeneratingUpdate)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
             if (_additionalBinaryDataProperties?.ContainsKey("output_index") != true)
@@ -43,20 +43,20 @@ namespace OpenAI.Responses
             }
         }
 
-        InternalResponseImageGenCallGeneratingEvent IJsonModel<InternalResponseImageGenCallGeneratingEvent>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalResponseImageGenCallGeneratingEvent)JsonModelCreateCore(ref reader, options);
+        StreamingResponseImageGenerationCallGeneratingUpdate IJsonModel<StreamingResponseImageGenerationCallGeneratingUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StreamingResponseImageGenerationCallGeneratingUpdate)JsonModelCreateCore(ref reader, options);
 
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseImageGenCallGeneratingEvent>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseImageGenerationCallGeneratingUpdate>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalResponseImageGenCallGeneratingEvent)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(StreamingResponseImageGenerationCallGeneratingUpdate)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalResponseImageGenCallGeneratingEvent(document.RootElement, options);
+            return DeserializeStreamingResponseImageGenerationCallGeneratingUpdate(document.RootElement, options);
         }
 
-        internal static InternalResponseImageGenCallGeneratingEvent DeserializeInternalResponseImageGenCallGeneratingEvent(JsonElement element, ModelReaderWriterOptions options)
+        internal static StreamingResponseImageGenerationCallGeneratingUpdate DeserializeStreamingResponseImageGenerationCallGeneratingUpdate(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -92,40 +92,40 @@ namespace OpenAI.Responses
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalResponseImageGenCallGeneratingEvent(kind, sequenceNumber, additionalBinaryDataProperties, outputIndex, itemId);
+            return new StreamingResponseImageGenerationCallGeneratingUpdate(kind, sequenceNumber, additionalBinaryDataProperties, outputIndex, itemId);
         }
 
-        BinaryData IPersistableModel<InternalResponseImageGenCallGeneratingEvent>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<StreamingResponseImageGenerationCallGeneratingUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseImageGenCallGeneratingEvent>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseImageGenerationCallGeneratingUpdate>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(InternalResponseImageGenCallGeneratingEvent)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(StreamingResponseImageGenerationCallGeneratingUpdate)} does not support writing '{options.Format}' format.");
             }
         }
 
-        InternalResponseImageGenCallGeneratingEvent IPersistableModel<InternalResponseImageGenCallGeneratingEvent>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalResponseImageGenCallGeneratingEvent)PersistableModelCreateCore(data, options);
+        StreamingResponseImageGenerationCallGeneratingUpdate IPersistableModel<StreamingResponseImageGenerationCallGeneratingUpdate>.Create(BinaryData data, ModelReaderWriterOptions options) => (StreamingResponseImageGenerationCallGeneratingUpdate)PersistableModelCreateCore(data, options);
 
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalResponseImageGenCallGeneratingEvent>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseImageGenerationCallGeneratingUpdate>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalResponseImageGenCallGeneratingEvent(document.RootElement, options);
+                        return DeserializeStreamingResponseImageGenerationCallGeneratingUpdate(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalResponseImageGenCallGeneratingEvent)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(StreamingResponseImageGenerationCallGeneratingUpdate)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<InternalResponseImageGenCallGeneratingEvent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<StreamingResponseImageGenerationCallGeneratingUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

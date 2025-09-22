@@ -91,7 +91,7 @@ namespace OpenAI.Responses
                     case "code_interpreter":
                         return InternalCodeInterpreterTool.DeserializeInternalCodeInterpreterTool(element, options);
                     case "image_generation":
-                        return InternalImageGenTool.DeserializeInternalImageGenTool(element, options);
+                        return ImageGenerationTool.DeserializeImageGenerationTool(element, options);
                     case "local_shell":
                         return InternalLocalShellTool.DeserializeInternalLocalShellTool(element, options);
                     case "mcp":

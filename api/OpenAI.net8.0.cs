@@ -4897,6 +4897,135 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
+    public class ImageGenerationCallResponseItem : ResponseItem, IJsonModel<ImageGenerationCallResponseItem>, IPersistableModel<ImageGenerationCallResponseItem> {
+        public ImageGenerationCallResponseItem(ImageGenerationCallStatus status, string result);
+        public string Result { get; set; }
+        public ImageGenerationCallStatus Status { get; set; }
+        protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public enum ImageGenerationCallStatus {
+        InProgress = 0,
+        Completed = 1,
+        Generating = 2,
+        Failed = 3
+    }
+    [Experimental("OPENAI001")]
+    public class ImageGenerationTool : ResponseTool, IJsonModel<ImageGenerationTool>, IPersistableModel<ImageGenerationTool> {
+        public ImageGenerationTool();
+        public ImageGenerationToolBackground? Background { get; set; }
+        public ImageGenerationToolInputImageMask InputImageMask { get; set; }
+        public string Model { get; set; }
+        public ImageGenerationToolModeration? Moderation { get; set; }
+        public int? OutputCompression { get; set; }
+        public ImageGenerationToolOutputFormat? OutputFormat { get; set; }
+        public int? PartialImages { get; set; }
+        public ImageGenerationToolQuality? Quality { get; set; }
+        public ImageGenerationToolSize? Size { get; set; }
+        protected override ResponseTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ImageGenerationToolBackground : IEquatable<ImageGenerationToolBackground> {
+        public ImageGenerationToolBackground(string value);
+        public static ImageGenerationToolBackground Auto { get; }
+        public static ImageGenerationToolBackground Opaque { get; }
+        public static ImageGenerationToolBackground Transparent { get; }
+        public readonly bool Equals(ImageGenerationToolBackground other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ImageGenerationToolBackground left, ImageGenerationToolBackground right);
+        public static implicit operator ImageGenerationToolBackground(string value);
+        public static implicit operator ImageGenerationToolBackground?(string value);
+        public static bool operator !=(ImageGenerationToolBackground left, ImageGenerationToolBackground right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class ImageGenerationToolInputImageMask : IJsonModel<ImageGenerationToolInputImageMask>, IPersistableModel<ImageGenerationToolInputImageMask> {
+        public string FileId { get; set; }
+        public string ImageUrl { get; set; }
+        protected virtual ImageGenerationToolInputImageMask JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual ImageGenerationToolInputImageMask PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ImageGenerationToolModeration : IEquatable<ImageGenerationToolModeration> {
+        public ImageGenerationToolModeration(string value);
+        public static ImageGenerationToolModeration Auto { get; }
+        public static ImageGenerationToolModeration Low { get; }
+        public readonly bool Equals(ImageGenerationToolModeration other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ImageGenerationToolModeration left, ImageGenerationToolModeration right);
+        public static implicit operator ImageGenerationToolModeration(string value);
+        public static implicit operator ImageGenerationToolModeration?(string value);
+        public static bool operator !=(ImageGenerationToolModeration left, ImageGenerationToolModeration right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ImageGenerationToolOutputFormat : IEquatable<ImageGenerationToolOutputFormat> {
+        public ImageGenerationToolOutputFormat(string value);
+        public static ImageGenerationToolOutputFormat Jpeg { get; }
+        public static ImageGenerationToolOutputFormat Png { get; }
+        public static ImageGenerationToolOutputFormat Webp { get; }
+        public readonly bool Equals(ImageGenerationToolOutputFormat other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ImageGenerationToolOutputFormat left, ImageGenerationToolOutputFormat right);
+        public static implicit operator ImageGenerationToolOutputFormat(string value);
+        public static implicit operator ImageGenerationToolOutputFormat?(string value);
+        public static bool operator !=(ImageGenerationToolOutputFormat left, ImageGenerationToolOutputFormat right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ImageGenerationToolQuality : IEquatable<ImageGenerationToolQuality> {
+        public ImageGenerationToolQuality(string value);
+        public static ImageGenerationToolQuality Auto { get; }
+        public static ImageGenerationToolQuality High { get; }
+        public static ImageGenerationToolQuality Low { get; }
+        public static ImageGenerationToolQuality Medium { get; }
+        public readonly bool Equals(ImageGenerationToolQuality other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ImageGenerationToolQuality left, ImageGenerationToolQuality right);
+        public static implicit operator ImageGenerationToolQuality(string value);
+        public static implicit operator ImageGenerationToolQuality?(string value);
+        public static bool operator !=(ImageGenerationToolQuality left, ImageGenerationToolQuality right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct ImageGenerationToolSize : IEquatable<ImageGenerationToolSize> {
+        public ImageGenerationToolSize(string value);
+        public static ImageGenerationToolSize _1024x1024 { get; }
+        public static ImageGenerationToolSize _1024x1536 { get; }
+        public static ImageGenerationToolSize _1536x1024 { get; }
+        public static ImageGenerationToolSize Auto { get; }
+        public readonly bool Equals(ImageGenerationToolSize other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ImageGenerationToolSize left, ImageGenerationToolSize right);
+        public static implicit operator ImageGenerationToolSize(string value);
+        public static implicit operator ImageGenerationToolSize?(string value);
+        public static bool operator !=(ImageGenerationToolSize left, ImageGenerationToolSize right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
     public class McpTool : ResponseTool, IJsonModel<McpTool>, IPersistableModel<McpTool> {
         public McpTool(string serverLabel, Uri serverUri);
         public McpToolFilter AllowedTools { get; set; }
@@ -5491,6 +5620,7 @@ namespace OpenAI.Responses {
         public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight);
         public static FileSearchTool CreateFileSearchTool(IEnumerable<string> vectorStoreIds, int? maxResultCount = null, FileSearchToolRankingOptions rankingOptions = null, BinaryData filters = null);
         public static FunctionTool CreateFunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled, string functionDescription = null);
+        public static ImageGenerationTool CreateImageGenerationTool(string model, ImageGenerationToolQuality? quality = null, ImageGenerationToolSize? size = null, ImageGenerationToolOutputFormat? outputFormat = null, int? outputCompression = null, ImageGenerationToolModeration? moderation = null, ImageGenerationToolBackground? background = null, ImageGenerationToolInputImageMask inputImageMask = null, int? partialImages = null);
         public static McpTool CreateMcpTool(string serverLabel, Uri serverUri, IDictionary<string, string> headers = null, McpToolFilter allowedTools = null, McpToolCallApprovalPolicy toolCallApprovalPolicy = null);
         public static WebSearchTool CreateWebSearchTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null);
         protected virtual ResponseTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -5636,6 +5766,44 @@ namespace OpenAI.Responses {
         public BinaryData FunctionArguments { get; }
         public string ItemId { get; }
         public int OutputIndex { get; }
+        protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class StreamingResponseImageGenerationCallCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseImageGenerationCallCompletedUpdate>, IPersistableModel<StreamingResponseImageGenerationCallCompletedUpdate> {
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class StreamingResponseImageGenerationCallGeneratingUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseImageGenerationCallGeneratingUpdate>, IPersistableModel<StreamingResponseImageGenerationCallGeneratingUpdate> {
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class StreamingResponseImageGenerationCallInProgressUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseImageGenerationCallInProgressUpdate>, IPersistableModel<StreamingResponseImageGenerationCallInProgressUpdate> {
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class StreamingResponseImageGenerationCallPartialImageUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseImageGenerationCallPartialImageUpdate>, IPersistableModel<StreamingResponseImageGenerationCallPartialImageUpdate> {
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string PartialImageB64 { get; }
+        public int PartialImageIndex { get; }
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
