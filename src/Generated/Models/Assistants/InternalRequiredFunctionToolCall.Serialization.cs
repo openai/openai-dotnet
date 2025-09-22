@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalRequiredFunctionToolCall : IJsonModel<InternalRequiredFunctionToolCall>
+    internal partial class InternalRequiredFunctionToolCall : InternalRequiredToolCall, IJsonModel<InternalRequiredFunctionToolCall>
     {
         internal InternalRequiredFunctionToolCall()
         {
@@ -67,9 +67,9 @@ namespace OpenAI.Assistants
             }
         }
 
-        InternalRequiredFunctionToolCall IJsonModel<InternalRequiredFunctionToolCall>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        InternalRequiredFunctionToolCall IJsonModel<InternalRequiredFunctionToolCall>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalRequiredFunctionToolCall)JsonModelCreateCore(ref reader, options);
 
-        protected virtual InternalRequiredFunctionToolCall JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual object JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRequiredFunctionToolCall>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -127,9 +127,9 @@ namespace OpenAI.Assistants
             }
         }
 
-        InternalRequiredFunctionToolCall IPersistableModel<InternalRequiredFunctionToolCall>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        InternalRequiredFunctionToolCall IPersistableModel<InternalRequiredFunctionToolCall>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalRequiredFunctionToolCall)PersistableModelCreateCore(data, options);
 
-        protected virtual InternalRequiredFunctionToolCall PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual object PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalRequiredFunctionToolCall>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)

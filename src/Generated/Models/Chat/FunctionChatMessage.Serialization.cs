@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    public partial class FunctionChatMessage : IJsonModel<FunctionChatMessage>
+    public partial class FunctionChatMessage : ChatMessage, IJsonModel<FunctionChatMessage>
     {
         internal FunctionChatMessage() : this(ChatMessageRole.Function, null, null, null)
         {

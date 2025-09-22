@@ -6,13 +6,14 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Images
 {
-    public partial class GeneratedImageCollection : IJsonModel<GeneratedImageCollection>
+    public partial class GeneratedImageCollection : ReadOnlyCollection<GeneratedImage>, IJsonModel<GeneratedImageCollection>
     {
         void IJsonModel<GeneratedImageCollection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -71,10 +72,10 @@ namespace OpenAI.Images
             }
         }
 
-        GeneratedImageCollection IJsonModel<GeneratedImageCollection>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        GeneratedImageCollection IJsonModel<GeneratedImageCollection>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (GeneratedImageCollection)JsonModelCreateCore(ref reader, options);
 
         [Experimental("OPENAI001")]
-        protected virtual GeneratedImageCollection JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual object JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<GeneratedImageCollection>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -146,10 +147,10 @@ namespace OpenAI.Images
             }
         }
 
-        GeneratedImageCollection IPersistableModel<GeneratedImageCollection>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        GeneratedImageCollection IPersistableModel<GeneratedImageCollection>.Create(BinaryData data, ModelReaderWriterOptions options) => (GeneratedImageCollection)PersistableModelCreateCore(data, options);
 
         [Experimental("OPENAI001")]
-        protected virtual GeneratedImageCollection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual object PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<GeneratedImageCollection>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)

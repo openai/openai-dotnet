@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.FineTuning
 {
-    public partial class HyperparametersForSupervised : IJsonModel<HyperparametersForSupervised>
+    public partial class HyperparametersForSupervised : MethodHyperparameters, IJsonModel<HyperparametersForSupervised>
     {
         void IJsonModel<HyperparametersForSupervised>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -84,9 +84,9 @@ namespace OpenAI.FineTuning
             }
         }
 
-        HyperparametersForSupervised IJsonModel<HyperparametersForSupervised>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        HyperparametersForSupervised IJsonModel<HyperparametersForSupervised>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (HyperparametersForSupervised)JsonModelCreateCore(ref reader, options);
 
-        protected virtual HyperparametersForSupervised JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual object JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<HyperparametersForSupervised>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -156,9 +156,9 @@ namespace OpenAI.FineTuning
             }
         }
 
-        HyperparametersForSupervised IPersistableModel<HyperparametersForSupervised>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        HyperparametersForSupervised IPersistableModel<HyperparametersForSupervised>.Create(BinaryData data, ModelReaderWriterOptions options) => (HyperparametersForSupervised)PersistableModelCreateCore(data, options);
 
-        protected virtual HyperparametersForSupervised PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual object PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<HyperparametersForSupervised>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)

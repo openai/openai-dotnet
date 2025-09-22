@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.FineTuning
 {
-    public partial class HyperparametersForDPO : IJsonModel<HyperparametersForDPO>
+    public partial class HyperparametersForDPO : MethodHyperparameters, IJsonModel<HyperparametersForDPO>
     {
         void IJsonModel<HyperparametersForDPO>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -96,9 +96,9 @@ namespace OpenAI.FineTuning
             }
         }
 
-        HyperparametersForDPO IJsonModel<HyperparametersForDPO>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        HyperparametersForDPO IJsonModel<HyperparametersForDPO>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (HyperparametersForDPO)JsonModelCreateCore(ref reader, options);
 
-        protected virtual HyperparametersForDPO JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual object JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<HyperparametersForDPO>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -178,9 +178,9 @@ namespace OpenAI.FineTuning
             }
         }
 
-        HyperparametersForDPO IPersistableModel<HyperparametersForDPO>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        HyperparametersForDPO IPersistableModel<HyperparametersForDPO>.Create(BinaryData data, ModelReaderWriterOptions options) => (HyperparametersForDPO)PersistableModelCreateCore(data, options);
 
-        protected virtual HyperparametersForDPO PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual object PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<HyperparametersForDPO>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)

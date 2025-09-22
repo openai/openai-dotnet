@@ -5,13 +5,14 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Files
 {
-    public partial class OpenAIFileCollection : IJsonModel<OpenAIFileCollection>
+    public partial class OpenAIFileCollection : ReadOnlyCollection<OpenAIFile>, IJsonModel<OpenAIFileCollection>
     {
         [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
@@ -63,10 +64,10 @@ namespace OpenAI.Files
             }
         }
 
-        OpenAIFileCollection IJsonModel<OpenAIFileCollection>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        OpenAIFileCollection IJsonModel<OpenAIFileCollection>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (OpenAIFileCollection)JsonModelCreateCore(ref reader, options);
 
         [Experimental("OPENAI001")]
-        protected virtual OpenAIFileCollection JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual object JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<OpenAIFileCollection>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -92,10 +93,10 @@ namespace OpenAI.Files
             }
         }
 
-        OpenAIFileCollection IPersistableModel<OpenAIFileCollection>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        OpenAIFileCollection IPersistableModel<OpenAIFileCollection>.Create(BinaryData data, ModelReaderWriterOptions options) => (OpenAIFileCollection)PersistableModelCreateCore(data, options);
 
         [Experimental("OPENAI001")]
-        protected virtual OpenAIFileCollection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual object PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<OpenAIFileCollection>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)

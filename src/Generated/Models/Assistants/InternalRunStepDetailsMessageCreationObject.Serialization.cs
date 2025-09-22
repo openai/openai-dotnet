@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalRunStepDetailsMessageCreationObject : IJsonModel<InternalRunStepDetailsMessageCreationObject>
+    internal partial class InternalRunStepDetailsMessageCreationObject : RunStepDetails, IJsonModel<InternalRunStepDetailsMessageCreationObject>
     {
         internal InternalRunStepDetailsMessageCreationObject() : this(InternalRunStepDetailsType.MessageCreation, null, null)
         {
