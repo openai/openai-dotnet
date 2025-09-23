@@ -7,8 +7,9 @@ using Azure.ClientGenerator.Core;
 @@alternateType(CreateResponse.service_tier, DotNetResponseServiceTier);
 @@alternateType(Response.service_tier, DotNetResponseServiceTier);
 
-@@visibility(ItemResource.id, Lifecycle.Read);
+// ------------ ItemResources ------------
 @@usage(ItemResource, Usage.input | Usage.output);
+@@visibility(ItemResource.id, Lifecycle.Read);
 
 @@visibility(CodeInterpreterToolCallItemResource.status, Lifecycle.Read);
 @@clientName(CodeInterpreterToolImageOutput.url, "ImageUri");
@@ -34,13 +35,6 @@ using Azure.ClientGenerator.Core;
 
 @@visibility(ResponsesMessageItemResource.status, Lifecycle.Read);
 
-@@clientName(FileSearchTool.max_num_results, "MaxResultCount");
-
-@@clientName(FunctionTool.name, "FunctionName");
-@@clientName(FunctionTool.description, "FunctionDescription");
-@@clientName(FunctionTool.parameters, "FunctionParameters");
-@@clientName(FunctionTool.strict, "StrictModeEnabled");
-
 @@alternateType(MCPApprovalRequestItemResource.arguments, unknown);
 @@clientName(MCPApprovalRequestItemResource.name, "ToolName");
 @@clientName(MCPApprovalRequestItemResource.arguments, "ToolArguments");
@@ -48,16 +42,31 @@ using Azure.ClientGenerator.Core;
 @@clientName(MCPApprovalResponseItemResource.approve, "Approved");
 
 @@alternateType(MCPCallItemResource.arguments, unknown);
-@@alternateType(MCPCallItemResource.error, unknown);
+@@alternateType(MCPCallItemResource.error, unknown | null);
 @@clientName(MCPCallItemResource.name, "ToolName");
 @@clientName(MCPCallItemResource.arguments, "ToolArguments");
 @@clientName(MCPCallItemResource.output, "ToolOutput");
 
-@@alternateType(MCPListToolsItemResource.error, unknown);
+@@alternateType(MCPListToolsItemResource.error, unknown | null);
 @@clientName(MCPListToolsItemResource.tools, "ToolDefinitions");
 
+// ------------ Tools ------------
+
+@@clientName(FileSearchTool.max_num_results, "MaxResultCount");
+
+@@clientName(FunctionTool.name, "FunctionName");
+@@clientName(FunctionTool.description, "FunctionDescription");
+@@clientName(FunctionTool.parameters, "FunctionParameters");
+@@clientName(FunctionTool.strict, "StrictModeEnabled");
+
 @@alternateType(MCPTool.server_url, url);
+@@alternateType(MCPTool.allowed_tools, MCPToolFilter | null);
 @@clientName(MCPTool.server_url, "ServerUri");
+@@clientName(MCPTool.authorization, "AuthorizationToken");
+
+@@clientName(MCPToolFilter.read_only, "IsReadOnly");
+
+// ------------ Streaming ------------
 
 @@alternateType(ResponseFunctionCallArgumentsDoneEvent.arguments, unknown);
 // @@clientName(ResponseFunctionCallArgumentsDoneEvent.arguments, "FunctionArguments");

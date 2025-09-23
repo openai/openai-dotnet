@@ -14,18 +14,21 @@ namespace OpenAI.Responses
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public McpToolFilter() : this(null, null)
+        public McpToolFilter() : this(null, default, null)
         {
         }
 
-        internal McpToolFilter(IList<string> toolNames, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal McpToolFilter(IList<string> toolNames, bool? isReadOnly, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             ToolNames = toolNames ?? new ChangeTrackingList<string>();
+            IsReadOnly = isReadOnly;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public IList<string> ToolNames { get; }
+
+        public bool? IsReadOnly { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

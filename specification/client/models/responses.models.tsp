@@ -48,16 +48,10 @@ union DotNetGlobalToolCallApprovalPolicy {
 @usage(Usage.input | Usage.output)
 model DotNetCustomToolCallApprovalPolicy {
   /** A list of tools that always require approval. */
-  always?: {
-    /** List of tools that require approval. */
-    tool_names?: string[];
-  };
+  always?: MCPToolFilter;
 
   /** A list of tools that never require approval. */
-  `never`?: {
-    /** List of tools that do not require approval. */
-    tool_names?: string[];
-  };
+  `never`?: MCPToolFilter;
 }
 
 @access(Access.public)

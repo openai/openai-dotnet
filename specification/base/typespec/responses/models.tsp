@@ -2102,6 +2102,7 @@ alias MCPListToolsItemBase = {
     
     """
 );
+
 /** A tool available on an MCP server. */
 model MCPListToolsTool {
   /** The name of the tool. */
@@ -2128,42 +2129,74 @@ model MCPTool extends Tool {
     """)
   type: ToolType.mcp;
 
-  /** A label for this MCP server, used to identify it in tool calls. */
+ /** A label for this MCP server, used to identify it in tool calls. */
   server_label: string;
 
-  /** The URL for the MCP server. */
-  server_url: string;
+  /**The URL for the MCP server. One of `server_url` or `connector_id` must be
+  provided.*/
+  server_url?: string;
 
-  /**
-   * Optional HTTP headers to send to the MCP server. Use for authentication
-   * or other purposes.
-   */
+  /**Identifier for service connectors, like those available in ChatGPT. One of
+  `server_url` or `connector_id` must be provided. Learn more about service
+  connectors [here](https://platform.openai.com/docs/guides/tools-remote-mcp#connectors).
+
+  Currently supported `connector_id` values are:
+
+  - Dropbox: `connector_dropbox`
+  - Gmail: `connector_gmail`
+  - Google Calendar: `connector_googlecalendar`
+  - Google Drive: `connector_googledrive`
+  - Microsoft Teams: `connector_microsoftteams`
+  - Outlook Calendar: `connector_outlookcalendar`
+  - Outlook Email: `connector_outlookemail`
+  - SharePoint: `connector_sharepoint`*/
+  connector_id?:
+    | "connector_dropbox"
+    | "connector_gmail"
+    | "connector_googlecalendar"
+    | "connector_googledrive"
+    | "connector_microsoftteams"
+    | "connector_outlookcalendar"
+    | "connector_outlookemail"
+    | "connector_sharepoint";
+
+  /**An OAuth access token that can be used with a remote MCP server, either
+  with a custom MCP server URL or a service connector. Your application
+  must handle the OAuth authorization flow and provide the token here.*/
+  authorization?: string;
+
+  /** Optional description of the MCP server, used to provide more context. */
+  server_description?: string;
+
+  /**Optional HTTP headers to send to the MCP server. Use for authentication
+  or other purposes.*/
   headers?: Record<string> | null;
 
   /** List of allowed tool names or a filter object. */
-  allowed_tools?: string[] | {
-    /** List of allowed tool names. */
-    tool_names?: string[];
-  } | null;
+  allowed_tools?: string[] | MCPToolFilter | null;
 
   /** Specify which of the MCP server's tools require approval. */
   require_approval?:
     | {
-        /** A list of tools that always require approval. */
-        always?: {
-          /** List of tools that require approval. */
-          tool_names?: string[];
-        };
-
-        /** A list of tools that never require approval. */
-        `never`?: {
-          /** List of tools that do not require approval. */
-          tool_names?: string[];
-        };
+        always?: MCPToolFilter;
+        `never`?: MCPToolFilter;
       }
     | "always"
     | "never"
-    | null = "always";
+    | null;
+}
+
+/** A filter object to specify which tools are allowed. */
+@summary("MCP tool filter")
+model MCPToolFilter {
+  /** List of allowed tool names. */
+  @summary("MCP allowed tools")
+  tool_names?: string[];
+
+  /**Indicates whether or not a tool modifies data or is read-only. If an
+  MCP server is [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+  it will match this filter.*/
+  read_only?: boolean;
 }
 
 // Tool customization: Rename to supply base for split input/output models
@@ -2268,7 +2301,7 @@ model ResponseMCPCallArgumentsDeltaEvent extends ResponseStreamEvent {
   item_id: string;
 
   /** The partial update to the arguments for the MCP tool call. */
-  delta: unknown;
+  delta: string;
 }
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
@@ -2283,8 +2316,8 @@ model ResponseMCPCallArgumentsDoneEvent extends ResponseStreamEvent {
   /** The unique identifier of the MCP tool call item being processed. */
   item_id: string;
 
-  /** The finalized arguments for the MCP tool call. */
-  arguments: unknown;
+  /** A JSON string containing the finalized arguments for the MCP tool call. */
+  arguments: string;
 }
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
@@ -2292,6 +2325,12 @@ model ResponseMCPCallArgumentsDoneEvent extends ResponseStreamEvent {
 model ResponseMCPCallCompletedEvent extends ResponseStreamEvent {
   /** The type of the event. Always 'response.mcp_call.completed'. */
   type: ResponseStreamEventType.response_mcp_call_completed;
+
+  /** The ID of the MCP tool call item that completed. */
+  item_id: string;
+
+  /** The index of the output item that completed. */
+  output_index: int32;
 }
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
@@ -2299,6 +2338,12 @@ model ResponseMCPCallCompletedEvent extends ResponseStreamEvent {
 model ResponseMCPCallFailedEvent extends ResponseStreamEvent {
   /** The type of the event. Always 'response.mcp_call.failed'. */
   type: ResponseStreamEventType.response_mcp_call_failed;
+
+  /** The ID of the MCP tool call item that failed. */
+  item_id: string;
+
+  /** The index of the output item that failed. */
+  output_index: int32;
 }
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
@@ -2319,6 +2364,12 @@ model ResponseMCPCallInProgressEvent extends ResponseStreamEvent {
 model ResponseMCPListToolsCompletedEvent extends ResponseStreamEvent {
   /** The type of the event. Always 'response.mcp_list_tools.completed'. */
   type: ResponseStreamEventType.response_mcp_list_tools_completed;
+
+  /** The ID of the MCP tool call item that produced this output. */
+  item_id: string;
+
+  /** The index of the output item that was processed. */
+  output_index: int32;
 }
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
@@ -2326,6 +2377,12 @@ model ResponseMCPListToolsCompletedEvent extends ResponseStreamEvent {
 model ResponseMCPListToolsFailedEvent extends ResponseStreamEvent {
   /** The type of the event. Always 'response.mcp_list_tools.failed'. */
   type: ResponseStreamEventType.response_mcp_list_tools_failed;
+
+  /** The ID of the MCP tool call item that failed. */
+  item_id: string;
+
+  /** The index of the output item that failed. */
+  output_index: int32;
 }
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
@@ -2333,6 +2390,12 @@ model ResponseMCPListToolsFailedEvent extends ResponseStreamEvent {
 model ResponseMCPListToolsInProgressEvent extends ResponseStreamEvent {
   /** The type of the event. Always 'response.mcp_list_tools.in_progress'. */
   type: ResponseStreamEventType.response_mcp_list_tools_in_progress;
+
+  /** The ID of the MCP tool call item that is being processed. */
+  item_id: string;
+
+  /** The index of the output item that is being processed. */
+  output_index: int32;
 }
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent

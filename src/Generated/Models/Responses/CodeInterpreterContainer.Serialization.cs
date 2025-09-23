@@ -80,15 +80,25 @@ namespace OpenAI.Responses
             string containerId = default;
             CodeInterpreterContainerConfiguration container = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-
-            if (element.ValueKind == JsonValueKind.String)
+            foreach (var prop in element.EnumerateObject())
             {
-                containerId = element.GetString();
-                return new CodeInterpreterContainer(containerId);
+                if (prop.NameEquals("container_id"u8))
+                {
+                    containerId = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("container"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    container = CodeInterpreterContainerConfiguration.DeserializeCodeInterpreterContainerConfiguration(prop.Value, options);
+                    continue;
+                }
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-
-            container = AutomaticCodeInterpreterContainerConfiguration.DeserializeAutomaticCodeInterpreterContainerConfiguration(element, options);
-
             return new CodeInterpreterContainer(containerId, container, additionalBinaryDataProperties);
         }
 
