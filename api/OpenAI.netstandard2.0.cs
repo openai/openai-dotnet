@@ -4472,6 +4472,7 @@ namespace OpenAI.Responses {
         public OpenAIResponseClient(string model, AuthenticationPolicy authenticationPolicy);
         public OpenAIResponseClient(string model, string apiKey);
         public Uri Endpoint { get; }
+        public string Model { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult CancelResponse(string responseId, RequestOptions options);
         public virtual ClientResult<OpenAIResponse> CancelResponse(string responseId, CancellationToken cancellationToken = default);

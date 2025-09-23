@@ -5080,6 +5080,8 @@ namespace OpenAI.Responses {
         public OpenAIResponseClient(string model, string apiKey);
         [Experimental("OPENAI001")]
         public Uri Endpoint { get; }
+        [Experimental("OPENAI001")]
+        public string Model { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult CancelResponse(string responseId, RequestOptions options);
         public virtual ClientResult<OpenAIResponse> CancelResponse(string responseId, CancellationToken cancellationToken = default);
