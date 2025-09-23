@@ -81,7 +81,7 @@ namespace OpenAI.Responses
                 switch (discriminator.GetString())
                 {
                     case "auto":
-                        return CodeInterpreterToolAuto.DeserializeCodeInterpreterToolAuto(element, options);
+                        return AutomaticCodeInterpreterContainerConfiguration.DeserializeAutomaticCodeInterpreterContainerConfiguration(element, options);
                 }
             }
             return InternalUnknownCodeInterpreterContainerConfiguration.DeserializeInternalUnknownCodeInterpreterContainerConfiguration(element, options);
