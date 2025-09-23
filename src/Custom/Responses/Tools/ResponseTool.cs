@@ -25,14 +25,14 @@ public partial class ResponseTool
 
     // CUSTOM: Added factory method as a convenience.
     [Experimental("OPENAICUA001")]
-    public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth,int displayHeight)
+    public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight)
     {
         return new ComputerTool(
             kind: InternalToolType.ComputerUsePreview,
             additionalBinaryDataProperties: null,
             environment: environment,
             displayWidth: displayWidth,
-            displayHeight:displayHeight);
+            displayHeight: displayHeight);
     }
 
     // CUSTOM: Added factory method as a convenience.
@@ -94,5 +94,20 @@ public partial class ResponseTool
             headers: headers,
             allowedTools: allowedTools,
             toolCallApprovalPolicy: toolCallApprovalPolicy);
+    }
+
+    /// <summary>
+    /// Creates a new instance of the <see cref="CodeInterpreterTool"/> class.
+    /// </summary>
+    /// <param name="container">The container for the code interpreter.</param>
+    /// <returns>A new instance of the <see cref="CodeInterpreterTool"/> class.</returns>
+    public static CodeInterpreterTool CreateCodeInterpreterTool(CodeInterpreterContainer container)
+    {
+        Argument.AssertNotNull(container, nameof(container));
+
+        return new CodeInterpreterTool(
+            kind: InternalToolType.CodeInterpreter,
+            additionalBinaryDataProperties: null,
+            container: container);
     }
 }

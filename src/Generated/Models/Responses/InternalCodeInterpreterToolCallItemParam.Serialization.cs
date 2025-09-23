@@ -41,25 +41,13 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("code"u8);
                 writer.WriteStringValue(Code);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("results") != true)
+            if (Optional.IsCollectionDefined(Outputs) && _additionalBinaryDataProperties?.ContainsKey("outputs") != true)
             {
-                writer.WritePropertyName("results"u8);
+                writer.WritePropertyName("outputs"u8);
                 writer.WriteStartArray();
-                foreach (BinaryData item in Results)
+                foreach (CodeInterpreterToolOutput item in Outputs)
                 {
-                    if (item == null)
-                    {
-                        writer.WriteNullValue();
-                        continue;
-                    }
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
+                    writer.WriteObjectValue(item, options);
                 }
                 writer.WriteEndArray();
             }
@@ -88,7 +76,7 @@ namespace OpenAI.Responses
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string containerId = default;
             string code = default;
-            IList<BinaryData> results = default;
+            IList<CodeInterpreterToolOutput> outputs = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -106,27 +94,24 @@ namespace OpenAI.Responses
                     code = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("results"u8))
+                if (prop.NameEquals("outputs"u8))
                 {
-                    List<BinaryData> array = new List<BinaryData>();
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    List<CodeInterpreterToolOutput> array = new List<CodeInterpreterToolOutput>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        if (item.ValueKind == JsonValueKind.Null)
-                        {
-                            array.Add(null);
-                        }
-                        else
-                        {
-                            array.Add(BinaryData.FromString(item.GetRawText()));
-                        }
+                        array.Add(CodeInterpreterToolOutput.DeserializeCodeInterpreterToolOutput(item, options));
                     }
-                    results = array;
+                    outputs = array;
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalCodeInterpreterToolCallItemParam(kind, additionalBinaryDataProperties, containerId, code, results);
+            return new InternalCodeInterpreterToolCallItemParam(kind, additionalBinaryDataProperties, containerId, code, outputs ?? new ChangeTrackingList<CodeInterpreterToolOutput>());
         }
 
         BinaryData IPersistableModel<InternalCodeInterpreterToolCallItemParam>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
