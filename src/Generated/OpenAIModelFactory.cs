@@ -561,11 +561,11 @@ namespace OpenAI
             return new FileSearchToolRankingOptions(ranker, scoreThreshold, additionalBinaryDataProperties: null);
         }
 
-        public static McpToolFilter McpToolFilter(IEnumerable<string> toolNames = default)
+        public static McpToolFilter McpToolFilter(IEnumerable<string> toolNames = default, bool? isReadOnly = default)
         {
             toolNames ??= new ChangeTrackingList<string>();
 
-            return new McpToolFilter(toolNames.ToList(), additionalBinaryDataProperties: null);
+            return new McpToolFilter(toolNames.ToList(), isReadOnly, additionalBinaryDataProperties: null);
         }
 
         public static ResponseTextOptions ResponseTextOptions(ResponseTextFormat textFormat = default)
