@@ -42,35 +42,40 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("size"u8);
                 writer.WriteStringValue(Size.Value.ToString());
             }
-            if (Optional.IsDefined(OutputFormat) && _additionalBinaryDataProperties?.ContainsKey("output_format") != true)
+            if (Optional.IsDefined(OutputFileFormat) && _additionalBinaryDataProperties?.ContainsKey("output_format") != true)
             {
                 writer.WritePropertyName("output_format"u8);
-                writer.WriteStringValue(OutputFormat.Value.ToString());
+                writer.WriteStringValue(OutputFileFormat.Value.ToString());
             }
-            if (Optional.IsDefined(OutputCompression) && _additionalBinaryDataProperties?.ContainsKey("output_compression") != true)
+            if (Optional.IsDefined(OutputCompressionFactor) && _additionalBinaryDataProperties?.ContainsKey("output_compression") != true)
             {
                 writer.WritePropertyName("output_compression"u8);
-                writer.WriteNumberValue(OutputCompression.Value);
+                writer.WriteNumberValue(OutputCompressionFactor.Value);
             }
-            if (Optional.IsDefined(Moderation) && _additionalBinaryDataProperties?.ContainsKey("moderation") != true)
+            if (Optional.IsDefined(ModerationLevel) && _additionalBinaryDataProperties?.ContainsKey("moderation") != true)
             {
                 writer.WritePropertyName("moderation"u8);
-                writer.WriteStringValue(Moderation.Value.ToString());
+                writer.WriteStringValue(ModerationLevel.Value.ToString());
             }
             if (Optional.IsDefined(Background) && _additionalBinaryDataProperties?.ContainsKey("background") != true)
             {
                 writer.WritePropertyName("background"u8);
                 writer.WriteStringValue(Background.Value.ToString());
             }
+            if (Optional.IsDefined(InputFidelityLevel) && _additionalBinaryDataProperties?.ContainsKey("input_fidelity") != true)
+            {
+                writer.WritePropertyName("input_fidelity"u8);
+                writer.WriteStringValue(InputFidelityLevel.Value.ToString());
+            }
             if (Optional.IsDefined(InputImageMask) && _additionalBinaryDataProperties?.ContainsKey("input_image_mask") != true)
             {
                 writer.WritePropertyName("input_image_mask"u8);
                 writer.WriteObjectValue(InputImageMask, options);
             }
-            if (Optional.IsDefined(PartialImages) && _additionalBinaryDataProperties?.ContainsKey("partial_images") != true)
+            if (Optional.IsDefined(PartialImageCount) && _additionalBinaryDataProperties?.ContainsKey("partial_images") != true)
             {
                 writer.WritePropertyName("partial_images"u8);
-                writer.WriteNumberValue(PartialImages.Value);
+                writer.WriteNumberValue(PartialImageCount.Value);
             }
         }
 
@@ -98,12 +103,13 @@ namespace OpenAI.Responses
             string model = default;
             ImageGenerationToolQuality? quality = default;
             ImageGenerationToolSize? size = default;
-            ImageGenerationToolOutputFormat? outputFormat = default;
-            int? outputCompression = default;
-            ImageGenerationToolModeration? moderation = default;
+            ImageGenerationToolOutputFileFormat? outputFileFormat = default;
+            int? outputCompressionFactor = default;
+            ImageGenerationToolModerationLevel? moderationLevel = default;
             ImageGenerationToolBackground? background = default;
+            ImageGenerationToolInputFidelityLevel? inputFidelityLevel = default;
             ImageGenerationToolInputImageMask inputImageMask = default;
-            int? partialImages = default;
+            int? partialImageCount = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -140,7 +146,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    outputFormat = new ImageGenerationToolOutputFormat(prop.Value.GetString());
+                    outputFileFormat = new ImageGenerationToolOutputFileFormat(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("output_compression"u8))
@@ -149,7 +155,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    outputCompression = prop.Value.GetInt32();
+                    outputCompressionFactor = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("moderation"u8))
@@ -158,7 +164,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    moderation = new ImageGenerationToolModeration(prop.Value.GetString());
+                    moderationLevel = new ImageGenerationToolModerationLevel(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("background"u8))
@@ -168,6 +174,15 @@ namespace OpenAI.Responses
                         continue;
                     }
                     background = new ImageGenerationToolBackground(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("input_fidelity"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    inputFidelityLevel = new ImageGenerationToolInputFidelityLevel(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("input_image_mask"u8))
@@ -185,7 +200,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    partialImages = prop.Value.GetInt32();
+                    partialImageCount = prop.Value.GetInt32();
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
@@ -197,12 +212,13 @@ namespace OpenAI.Responses
                 model,
                 quality,
                 size,
-                outputFormat,
-                outputCompression,
-                moderation,
+                outputFileFormat,
+                outputCompressionFactor,
+                moderationLevel,
                 background,
+                inputFidelityLevel,
                 inputImageMask,
-                partialImages);
+                partialImageCount);
         }
 
         BinaryData IPersistableModel<ImageGenerationTool>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

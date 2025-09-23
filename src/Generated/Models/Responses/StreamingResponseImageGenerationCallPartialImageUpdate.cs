@@ -11,20 +11,20 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseImageGenerationCallPartialImageUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseImageGenerationCallPartialImageUpdate(int sequenceNumber, int outputIndex, string itemId, int partialImageIndex, string partialImageB64) : base(InternalResponseStreamEventType.ResponseImageGenerationCallPartialImage, sequenceNumber)
+        internal StreamingResponseImageGenerationCallPartialImageUpdate(int sequenceNumber, int outputIndex, string itemId, int partialImageIndex, BinaryData partialImageBytes) : base(InternalResponseStreamEventType.ResponseImageGenerationCallPartialImage, sequenceNumber)
         {
             OutputIndex = outputIndex;
             ItemId = itemId;
             PartialImageIndex = partialImageIndex;
-            PartialImageB64 = partialImageB64;
+            PartialImageBytes = partialImageBytes;
         }
 
-        internal StreamingResponseImageGenerationCallPartialImageUpdate(InternalResponseStreamEventType kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, int outputIndex, string itemId, int partialImageIndex, string partialImageB64) : base(kind, sequenceNumber, additionalBinaryDataProperties)
+        internal StreamingResponseImageGenerationCallPartialImageUpdate(InternalResponseStreamEventType kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, int outputIndex, string itemId, int partialImageIndex, BinaryData partialImageBytes) : base(kind, sequenceNumber, additionalBinaryDataProperties)
         {
             OutputIndex = outputIndex;
             ItemId = itemId;
             PartialImageIndex = partialImageIndex;
-            PartialImageB64 = partialImageB64;
+            PartialImageBytes = partialImageBytes;
         }
 
         public int OutputIndex { get; }
@@ -33,6 +33,6 @@ namespace OpenAI.Responses
 
         public int PartialImageIndex { get; }
 
-        public string PartialImageB64 { get; }
+        public BinaryData PartialImageBytes { get; }
     }
 }

@@ -100,7 +100,7 @@ public partial class ResponseTool
     /// <summary>
     /// Creates a new instance of the <see cref="ImageGenerationTool"/> class.
     /// </summary>
-    public static ImageGenerationTool CreateImageGenerationTool(string model, ImageGenerationToolQuality? quality = null, ImageGenerationToolSize? size = null, ImageGenerationToolOutputFormat? outputFormat = null, int? outputCompression = null, ImageGenerationToolModeration? moderation = null, ImageGenerationToolBackground? background = null, ImageGenerationToolInputImageMask inputImageMask = null, int? partialImages = null)
+    public static ImageGenerationTool CreateImageGenerationTool(string model, ImageGenerationToolQuality? quality = null, ImageGenerationToolSize? size = null, ImageGenerationToolOutputFileFormat? outputFileFormat = null, int? outputCompressionFactor = null, ImageGenerationToolModerationLevel? moderationLevel = null, ImageGenerationToolBackground? background = null, ImageGenerationToolInputFidelityLevel? inputFidelityLevel = null, ImageGenerationToolInputImageMask inputImageMask = null, int? partialImageCount = null)
     {
         return new ImageGenerationTool(
             kind: InternalToolType.ImageGeneration,
@@ -108,11 +108,12 @@ public partial class ResponseTool
             model: model,
             quality: quality,
             size: size,
-            outputFormat: outputFormat,
-            outputCompression: outputCompression,
-            moderation: moderation,
+            outputFileFormat: outputFileFormat,
+            outputCompressionFactor: outputCompressionFactor,
+            moderationLevel: moderationLevel,
             background: background,
+            inputFidelityLevel: inputFidelityLevel,
             inputImageMask: inputImageMask,
-            partialImages: partialImages);
+            partialImageCount: partialImageCount);
     }
 }

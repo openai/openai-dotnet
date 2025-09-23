@@ -31,17 +31,18 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(ImageGenerationCallResponseItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
                 writer.WritePropertyName("status"u8);
-                writer.WriteStringValue(Status.ToSerialString());
+                writer.WriteStringValue(Status.Value.ToSerialString());
             }
             if (_additionalBinaryDataProperties?.ContainsKey("result") != true)
             {
-                if (Optional.IsDefined(Result))
+                if (Optional.IsDefined(GeneratedImageBytes))
                 {
                     writer.WritePropertyName("result"u8);
-                    writer.WriteStringValue(Result);
+                    writer.WriteBase64StringValue(GeneratedImageBytes.ToArray(), "D");
                 }
                 else
                 {
@@ -72,8 +73,8 @@ namespace OpenAI.Responses
             InternalItemType kind = default;
             string id = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            ImageGenerationCallStatus status = default;
-            string result = default;
+            ImageGenerationCallStatus? status = default;
+            BinaryData generatedImageBytes = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -95,16 +96,16 @@ namespace OpenAI.Responses
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        result = null;
+                        generatedImageBytes = null;
                         continue;
                     }
-                    result = prop.Value.GetString();
+                    generatedImageBytes = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ImageGenerationCallResponseItem(kind, id, additionalBinaryDataProperties, status, result);
+            return new ImageGenerationCallResponseItem(kind, id, additionalBinaryDataProperties, status, generatedImageBytes);
         }
 
         BinaryData IPersistableModel<ImageGenerationCallResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

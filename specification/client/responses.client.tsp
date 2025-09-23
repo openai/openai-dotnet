@@ -47,6 +47,9 @@ using Azure.ClientGenerator.Core;
 @@alternateType(MCPListToolsItemResource.error, unknown | null);
 @@clientName(MCPListToolsItemResource.tools, "ToolDefinitions");
 
+@@visibility(ImageGenToolCallItemResource.status, Lifecycle.Read);
+@@clientName(ImageGenToolCallItemResource.result, "GeneratedImageBytes");
+
 // ------------ Tools ------------
 
 @@clientName(FileSearchTool.max_num_results, "MaxResultCount");
@@ -74,3 +77,5 @@ using Azure.ClientGenerator.Core;
 // @@clientName(ResponseMCPCallArgumentsDoneEvent.arguments, "ToolArguments");
 
 @@alternateType(ResponseMCPCallArgumentsDeltaEvent.delta, unknown);
+
+@@clientName(ResponseImageGenCallPartialImageEvent.partial_image_b64, "PartialImageBytes");

@@ -1918,6 +1918,13 @@ model ImageGenTool extends Tool {
   background?: "transparent" | "opaque" | "auto" = "auto";
 
   @doc("""
+    Control how much effort the model will exert to match the style and features,
+    especially facial features, of input images. This parameter is only supported
+    for `gpt-image-1`. Supports `high` and `low`. Defaults to `low`.
+    """)
+  input_fidelity?: "low" | "high" = "low";
+
+  @doc("""
     Optional mask for inpainting. Contains `image_url`
     (string, optional) and `file_id` (string, optional).
     """)
@@ -1939,7 +1946,8 @@ model ImageGenTool extends Tool {
 /** An image generation request made by the model. */
 alias ImageGenToolCallItemBase = {
   /** The generated image encoded in base64. */
-  result: string | null;
+  @encode("base64", string)
+  result: bytes | null;
 };
 
 @@doc(ImageGenToolCallItemResource,
@@ -2287,7 +2295,8 @@ model ResponseImageGenCallPartialImageEvent extends ResponseStreamEvent {
   partial_image_index: int32;
 
   /** Base64-encoded partial image data, suitable for rendering as an image. */
-  partial_image_b64: string;
+  @encode("base64", string)
+  partial_image_b64: bytes;
 }
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent

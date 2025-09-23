@@ -5,7 +5,6 @@
 using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using OpenAI;
 
 namespace OpenAI.Responses
 {
@@ -18,28 +17,11 @@ namespace OpenAI.Responses
         private const string _1536x1024Value = "1536x1024";
         private const string AutoValue = "auto";
 
-        public ImageGenerationToolSize(string value)
-        {
-            Argument.AssertNotNull(value, nameof(value));
-
-            _value = value;
-        }
-
-        public static ImageGenerationToolSize _1024x1024 { get; } = new ImageGenerationToolSize(_1024x1024Value);
-
-        public static ImageGenerationToolSize _1024x1536 { get; } = new ImageGenerationToolSize(_1024x1536Value);
-
-        public static ImageGenerationToolSize _1536x1024 { get; } = new ImageGenerationToolSize(_1536x1024Value);
-
         public static ImageGenerationToolSize Auto { get; } = new ImageGenerationToolSize(AutoValue);
 
         public static bool operator ==(ImageGenerationToolSize left, ImageGenerationToolSize right) => left.Equals(right);
 
         public static bool operator !=(ImageGenerationToolSize left, ImageGenerationToolSize right) => !left.Equals(right);
-
-        public static implicit operator ImageGenerationToolSize(string value) => new ImageGenerationToolSize(value);
-
-        public static implicit operator ImageGenerationToolSize?(string value) => value == null ? null : new ImageGenerationToolSize(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override bool Equals(object obj) => obj is ImageGenerationToolSize other && Equals(other);

@@ -46,10 +46,10 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("partial_image_index"u8);
                 writer.WriteNumberValue(PartialImageIndex);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("partial_image_b64") != true)
+            if (_additionalBinaryDataProperties?.ContainsKey("PartialImageBytes") != true)
             {
-                writer.WritePropertyName("partial_image_b64"u8);
-                writer.WriteStringValue(PartialImageB64);
+                writer.WritePropertyName("PartialImageBytes"u8);
+                writer.WriteBase64StringValue(PartialImageBytes.ToArray(), "D");
             }
         }
 
@@ -78,7 +78,7 @@ namespace OpenAI.Responses
             int outputIndex = default;
             string itemId = default;
             int partialImageIndex = default;
-            string partialImageB64 = default;
+            BinaryData partialImageBytes = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -106,9 +106,9 @@ namespace OpenAI.Responses
                     partialImageIndex = prop.Value.GetInt32();
                     continue;
                 }
-                if (prop.NameEquals("partial_image_b64"u8))
+                if (prop.NameEquals("PartialImageBytes"u8))
                 {
-                    partialImageB64 = prop.Value.GetString();
+                    partialImageBytes = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
@@ -121,7 +121,7 @@ namespace OpenAI.Responses
                 outputIndex,
                 itemId,
                 partialImageIndex,
-                partialImageB64);
+                partialImageBytes);
         }
 
         BinaryData IPersistableModel<StreamingResponseImageGenerationCallPartialImageUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

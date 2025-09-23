@@ -241,10 +241,11 @@ public partial class ResponsesTests : SyncAsyncTestBase
                 ResponseTool.CreateImageGenerationTool(
                     model: "gpt-image-1",
                     quality: ImageGenerationToolQuality.High,
-                    size: ImageGenerationToolSize._1024x1024,
-                    outputFormat: ImageGenerationToolOutputFormat.Png,
-                    moderation: ImageGenerationToolModeration.Auto,
-                    background: ImageGenerationToolBackground.Transparent)
+                    size: ImageGenerationToolSize.W1024xH1024,
+                    outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
+                    moderationLevel: ImageGenerationToolModerationLevel.Auto,
+                    background: ImageGenerationToolBackground.Transparent,
+                    inputFidelityLevel: ImageGenerationToolInputFidelityLevel.High)
             }
         };
 
@@ -264,7 +265,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
 
         ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
         Assert.AreEqual(imageGenResponse.Status, ImageGenerationCallStatus.Completed);
-        Assert.That(imageGenResponse.Result, Is.Not.Null.And.Not.Empty);
+        Assert.That(imageGenResponse.GeneratedImageBytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
 
     [Test]
@@ -281,9 +282,9 @@ public partial class ResponsesTests : SyncAsyncTestBase
                 ResponseTool.CreateImageGenerationTool(
                     model: "gpt-image-1",
                     quality: ImageGenerationToolQuality.High,
-                    size: ImageGenerationToolSize._1024x1024,
-                    outputFormat: ImageGenerationToolOutputFormat.Png,
-                    moderation: ImageGenerationToolModeration.Auto,
+                    size: ImageGenerationToolSize.W1024xH1024,
+                    outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
+                    moderationLevel: ImageGenerationToolModerationLevel.Auto,
                     background: ImageGenerationToolBackground.Transparent)
             }
         };

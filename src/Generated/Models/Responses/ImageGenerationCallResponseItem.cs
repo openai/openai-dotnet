@@ -11,20 +11,17 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ImageGenerationCallResponseItem : ResponseItem
     {
-        public ImageGenerationCallResponseItem(ImageGenerationCallStatus status, string result) : base(InternalItemType.ImageGenerationCall)
+        public ImageGenerationCallResponseItem(BinaryData generatedImageBytes) : base(InternalItemType.ImageGenerationCall)
         {
-            Status = status;
-            Result = result;
+            GeneratedImageBytes = generatedImageBytes;
         }
 
-        internal ImageGenerationCallResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, ImageGenerationCallStatus status, string result) : base(kind, id, additionalBinaryDataProperties)
+        internal ImageGenerationCallResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, ImageGenerationCallStatus? status, BinaryData generatedImageBytes) : base(kind, id, additionalBinaryDataProperties)
         {
             Status = status;
-            Result = result;
+            GeneratedImageBytes = generatedImageBytes;
         }
 
-        public ImageGenerationCallStatus Status { get; set; }
-
-        public string Result { get; set; }
+        public BinaryData GeneratedImageBytes { get; set; }
     }
 }

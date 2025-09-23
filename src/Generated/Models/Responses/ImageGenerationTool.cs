@@ -11,21 +11,22 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ImageGenerationTool : ResponseTool
     {
-        public ImageGenerationTool() : this(InternalToolType.ImageGeneration, null, null, default, default, default, default, default, default, null, default)
+        public ImageGenerationTool() : this(InternalToolType.ImageGeneration, null, null, default, default, default, default, default, default, default, null, default)
         {
         }
 
-        internal ImageGenerationTool(InternalToolType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string model, ImageGenerationToolQuality? quality, ImageGenerationToolSize? size, ImageGenerationToolOutputFormat? outputFormat, int? outputCompression, ImageGenerationToolModeration? moderation, ImageGenerationToolBackground? background, ImageGenerationToolInputImageMask inputImageMask, int? partialImages) : base(kind, additionalBinaryDataProperties)
+        internal ImageGenerationTool(InternalToolType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string model, ImageGenerationToolQuality? quality, ImageGenerationToolSize? size, ImageGenerationToolOutputFileFormat? outputFileFormat, int? outputCompressionFactor, ImageGenerationToolModerationLevel? moderationLevel, ImageGenerationToolBackground? background, ImageGenerationToolInputFidelityLevel? inputFidelityLevel, ImageGenerationToolInputImageMask inputImageMask, int? partialImageCount) : base(kind, additionalBinaryDataProperties)
         {
             Model = model;
             Quality = quality;
             Size = size;
-            OutputFormat = outputFormat;
-            OutputCompression = outputCompression;
-            Moderation = moderation;
+            OutputFileFormat = outputFileFormat;
+            OutputCompressionFactor = outputCompressionFactor;
+            ModerationLevel = moderationLevel;
             Background = background;
+            InputFidelityLevel = inputFidelityLevel;
             InputImageMask = inputImageMask;
-            PartialImages = partialImages;
+            PartialImageCount = partialImageCount;
         }
 
         public string Model { get; set; }
@@ -34,16 +35,8 @@ namespace OpenAI.Responses
 
         public ImageGenerationToolSize? Size { get; set; }
 
-        public ImageGenerationToolOutputFormat? OutputFormat { get; set; }
-
-        public int? OutputCompression { get; set; }
-
-        public ImageGenerationToolModeration? Moderation { get; set; }
-
         public ImageGenerationToolBackground? Background { get; set; }
 
         public ImageGenerationToolInputImageMask InputImageMask { get; set; }
-
-        public int? PartialImages { get; set; }
     }
 }
