@@ -5027,9 +5027,13 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class McpTool : ResponseTool, IJsonModel<McpTool>, IPersistableModel<McpTool> {
+        public McpTool(string serverLabel, McpToolConnectorId connectorId);
         public McpTool(string serverLabel, Uri serverUri);
         public McpToolFilter AllowedTools { get; set; }
+        public string AuthorizationToken { get; set; }
+        public McpToolConnectorId? ConnectorId { get; set; }
         public IDictionary<string, string> Headers { get; set; }
+        public string ServerDescription { get; set; }
         public string ServerLabel { get; set; }
         public Uri ServerUri { get; set; }
         public McpToolCallApprovalPolicy ToolCallApprovalPolicy { get; set; }
@@ -5051,7 +5055,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class McpToolCallApprovalRequestItem : ResponseItem, IJsonModel<McpToolCallApprovalRequestItem>, IPersistableModel<McpToolCallApprovalRequestItem> {
-        public McpToolCallApprovalRequestItem(string serverLabel, string toolName, BinaryData toolArguments);
+        public McpToolCallApprovalRequestItem(string id, string serverLabel, string toolName, BinaryData toolArguments);
         public string ServerLabel { get; set; }
         public BinaryData ToolArguments { get; set; }
         public string ToolName { get; set; }
@@ -5085,6 +5089,28 @@ namespace OpenAI.Responses {
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
+    public readonly partial struct McpToolConnectorId : IEquatable<McpToolConnectorId> {
+        public McpToolConnectorId(string value);
+        public static McpToolConnectorId Dropbox { get; }
+        public static McpToolConnectorId Gmail { get; }
+        public static McpToolConnectorId GoogleCalendar { get; }
+        public static McpToolConnectorId GoogleDrive { get; }
+        public static McpToolConnectorId MicrosoftTeams { get; }
+        public static McpToolConnectorId OutlookCalendar { get; }
+        public static McpToolConnectorId OutlookEmail { get; }
+        public static McpToolConnectorId SharePoint { get; }
+        public readonly bool Equals(McpToolConnectorId other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(McpToolConnectorId left, McpToolConnectorId right);
+        public static implicit operator McpToolConnectorId(string value);
+        public static implicit operator McpToolConnectorId?(string value);
+        public static bool operator !=(McpToolConnectorId left, McpToolConnectorId right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
     public class McpToolDefinition : IJsonModel<McpToolDefinition>, IPersistableModel<McpToolDefinition> {
         public McpToolDefinition(string name, BinaryData inputSchema);
         public BinaryData Annotations { get; set; }
@@ -5109,6 +5135,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class McpToolFilter : IJsonModel<McpToolFilter>, IPersistableModel<McpToolFilter> {
+        public bool? IsReadOnly { get; set; }
         public IList<string> ToolNames { get; }
         protected virtual McpToolFilter JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -5182,6 +5209,8 @@ namespace OpenAI.Responses {
         public OpenAIResponseClient(string model, string apiKey);
         [Experimental("OPENAI001")]
         public Uri Endpoint { get; }
+        [Experimental("OPENAI001")]
+        public string Model { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult CancelResponse(string responseId, RequestOptions options);
         public virtual ClientResult<OpenAIResponse> CancelResponse(string responseId, CancellationToken cancellationToken = default);
@@ -5439,7 +5468,7 @@ namespace OpenAI.Responses {
         public static FileSearchCallResponseItem CreateFileSearchCallItem(IEnumerable<string> queries);
         public static FunctionCallResponseItem CreateFunctionCallItem(string callId, string functionName, BinaryData functionArguments);
         public static FunctionCallOutputResponseItem CreateFunctionCallOutputItem(string callId, string functionOutput);
-        public static McpToolCallApprovalRequestItem CreateMcpApprovalRequestItem(string serverLabel, string name, BinaryData arguments);
+        public static McpToolCallApprovalRequestItem CreateMcpApprovalRequestItem(string id, string serverLabel, string name, BinaryData arguments);
         public static McpToolCallApprovalResponseItem CreateMcpApprovalResponseItem(string approvalRequestId, bool approved);
         public static McpToolCallItem CreateMcpToolCallItem(string serverLabel, string name, BinaryData arguments);
         public static McpToolDefinitionListItem CreateMcpToolDefinitionListItem(string serverLabel, IEnumerable<McpToolDefinition> toolDefinitions);
@@ -5621,7 +5650,8 @@ namespace OpenAI.Responses {
         public static FileSearchTool CreateFileSearchTool(IEnumerable<string> vectorStoreIds, int? maxResultCount = null, FileSearchToolRankingOptions rankingOptions = null, BinaryData filters = null);
         public static FunctionTool CreateFunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled, string functionDescription = null);
         public static ImageGenerationTool CreateImageGenerationTool(string model, ImageGenerationToolQuality? quality = null, ImageGenerationToolSize? size = null, ImageGenerationToolOutputFormat? outputFormat = null, int? outputCompression = null, ImageGenerationToolModeration? moderation = null, ImageGenerationToolBackground? background = null, ImageGenerationToolInputImageMask inputImageMask = null, int? partialImages = null);
-        public static McpTool CreateMcpTool(string serverLabel, Uri serverUri, IDictionary<string, string> headers = null, McpToolFilter allowedTools = null, McpToolCallApprovalPolicy toolCallApprovalPolicy = null);
+        public static McpTool CreateMcpTool(string serverLabel, McpToolConnectorId connectorId, string authorizationToken = null, string serverDescription = null, IDictionary<string, string> headers = null, McpToolFilter allowedTools = null, McpToolCallApprovalPolicy toolCallApprovalPolicy = null);
+        public static McpTool CreateMcpTool(string serverLabel, Uri serverUri, string authorizationToken = null, string serverDescription = null, IDictionary<string, string> headers = null, McpToolFilter allowedTools = null, McpToolCallApprovalPolicy toolCallApprovalPolicy = null);
         public static WebSearchTool CreateWebSearchTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null);
         protected virtual ResponseTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -5847,6 +5877,8 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class StreamingResponseMcpCallCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpCallCompletedUpdate>, IPersistableModel<StreamingResponseMcpCallCompletedUpdate> {
+        public string ItemId { get; }
+        public int OutputIndex { get; }
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -5854,6 +5886,8 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class StreamingResponseMcpCallFailedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpCallFailedUpdate>, IPersistableModel<StreamingResponseMcpCallFailedUpdate> {
+        public string ItemId { get; }
+        public int OutputIndex { get; }
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -5870,6 +5904,8 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class StreamingResponseMcpListToolsCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpListToolsCompletedUpdate>, IPersistableModel<StreamingResponseMcpListToolsCompletedUpdate> {
+        public string ItemId { get; }
+        public int OutputIndex { get; }
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -5877,6 +5913,8 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class StreamingResponseMcpListToolsFailedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpListToolsFailedUpdate>, IPersistableModel<StreamingResponseMcpListToolsFailedUpdate> {
+        public string ItemId { get; }
+        public int OutputIndex { get; }
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -5884,6 +5922,8 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class StreamingResponseMcpListToolsInProgressUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpListToolsInProgressUpdate>, IPersistableModel<StreamingResponseMcpListToolsInProgressUpdate> {
+        public string ItemId { get; }
+        public int OutputIndex { get; }
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);

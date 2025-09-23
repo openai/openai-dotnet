@@ -15,16 +15,16 @@ namespace OpenAI.Responses
         {
         }
 
-        internal InternalMCPToolRequireApproval1(InternalMCPToolRequireApprovalAlways always, InternalMCPToolRequireApprovalNever never, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalMCPToolRequireApproval1(McpToolFilter always, McpToolFilter never, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Always = always;
             Never = never;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal InternalMCPToolRequireApprovalAlways Always { get; set; }
+        public McpToolFilter Always { get; set; }
 
-        internal InternalMCPToolRequireApprovalNever Never { get; set; }
+        public McpToolFilter Never { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {
