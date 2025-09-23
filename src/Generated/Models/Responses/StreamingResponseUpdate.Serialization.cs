@@ -174,15 +174,15 @@ namespace OpenAI.Responses
                     case "response.reasoning_summary.done":
                         return InternalResponseReasoningSummaryDoneEvent.DeserializeInternalResponseReasoningSummaryDoneEvent(element, options);
                     case "response.code_interpreter_call_code.delta":
-                        return InternalResponseCodeInterpreterCallCodeDeltaEvent.DeserializeInternalResponseCodeInterpreterCallCodeDeltaEvent(element, options);
+                        return StreamingResponseCodeInterpreterCallCodeDeltaUpdate.DeserializeStreamingResponseCodeInterpreterCallCodeDeltaUpdate(element, options);
                     case "response.code_interpreter_call_code.done":
-                        return InternalResponseCodeInterpreterCallCodeDoneEvent.DeserializeInternalResponseCodeInterpreterCallCodeDoneEvent(element, options);
+                        return StreamingResponseCodeInterpreterCallCodeDoneUpdate.DeserializeStreamingResponseCodeInterpreterCallCodeDoneUpdate(element, options);
                     case "response.code_interpreter_call.completed":
-                        return InternalResponseCodeInterpreterCallCompletedEvent.DeserializeInternalResponseCodeInterpreterCallCompletedEvent(element, options);
+                        return StreamingResponseCodeInterpreterCallCompletedUpdate.DeserializeStreamingResponseCodeInterpreterCallCompletedUpdate(element, options);
                     case "response.code_interpreter_call.in_progress":
-                        return InternalResponseCodeInterpreterCallInProgressEvent.DeserializeInternalResponseCodeInterpreterCallInProgressEvent(element, options);
+                        return StreamingResponseCodeInterpreterCallInProgressUpdate.DeserializeStreamingResponseCodeInterpreterCallInProgressUpdate(element, options);
                     case "response.code_interpreter_call.interpreting":
-                        return InternalResponseCodeInterpreterCallInterpretingEvent.DeserializeInternalResponseCodeInterpreterCallInterpretingEvent(element, options);
+                        return StreamingResponseCodeInterpreterCallInterpretingUpdate.DeserializeStreamingResponseCodeInterpreterCallInterpretingUpdate(element, options);
                 }
             }
             return UnknownResponseStreamEvent.DeserializeUnknownResponseStreamEvent(element, options);

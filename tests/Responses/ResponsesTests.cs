@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
+using OpenAI.Containers;
 using OpenAI.Files;
 using OpenAI.Responses;
 using OpenAI.Tests.Utility;
@@ -103,7 +104,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
                     BinaryData screenshotBytes = BinaryData.FromBytes(File.ReadAllBytes(screenshotPath));
                     ResponseItem screenshotReply = ResponseItem.CreateComputerCallOutputItem(
                         computerCall.CallId,
-                        ComputerCallOutput.CreateScreenshotOutput(screenshotBytes,"image/png"));
+                        ComputerCallOutput.CreateScreenshotOutput(screenshotBytes, "image/png"));
 
                     responseOptions.PreviousResponseId = response.Id;
                     response = await client.CreateResponseAsync([screenshotReply], responseOptions);
@@ -611,7 +612,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
             BinaryData.FromBytes(File.ReadAllBytes(filePath)),
             "test_favorite_foods.pdf",
             FileUploadPurpose.UserData);
-                Validate(newFileToUse);
+        Validate(newFileToUse);
 
         ResponseItem messageItem = ResponseItem.CreateUserMessageItem(
             [
