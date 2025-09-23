@@ -63,14 +63,14 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            CodeInterpreterContainerConfigurationType kind = default;
+            InternalCodeInterpreterContainerConfigurationType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             IList<string> fileIds = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new CodeInterpreterContainerConfigurationType(prop.Value.GetString());
+                    kind = new InternalCodeInterpreterContainerConfigurationType(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("file_ids"u8))

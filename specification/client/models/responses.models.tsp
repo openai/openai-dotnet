@@ -30,10 +30,10 @@ union ResponseItemCollectionOrder {
 @access(Access.public)
 @usage(Usage.input)
 model ResponseItemCollectionOptions {
-  ...CollectionAfterQueryParameter,
-  ...CollectionBeforeQueryParameter,
-  ...CollectionLimitQueryParameter,
-  ...ResponseItemCollectionOrderQueryParameter,
+  ...CollectionAfterQueryParameter;
+  ...CollectionBeforeQueryParameter;
+  ...CollectionLimitQueryParameter;
+  ...ResponseItemCollectionOrderQueryParameter;
 }
 
 @access(Access.public)
@@ -52,6 +52,7 @@ model DotNetCustomToolCallApprovalPolicy {
     /** List of tools that require approval. */
     tool_names?: string[];
   };
+
   /** A list of tools that never require approval. */
   `never`?: {
     /** List of tools that do not require approval. */
@@ -61,7 +62,14 @@ model DotNetCustomToolCallApprovalPolicy {
 
 @access(Access.public)
 @usage(Usage.input | Usage.output)
-model DotNetToolCallApprovalPolicy{
+model DotNetToolCallApprovalPolicy {
   global_policy?: DotNetGlobalToolCallApprovalPolicy;
   custom_policy?: DotNetCustomToolCallApprovalPolicy;
+}
+
+@access(Access.public)
+@usage(Usage.input | Usage.output)
+model DotNetCodeInterpreterContainer {
+  container_id?: string;
+  container?: CodeInterpreterContainerConfiguration;
 }

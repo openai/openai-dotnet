@@ -87,6 +87,6 @@ public partial class ResponseTool
         return new CodeInterpreterTool(
             kind: InternalToolType.CodeInterpreter,
             additionalBinaryDataProperties: null,
-            internalContainer: container.AsBinaryData());
+            container: container);
     }
 }

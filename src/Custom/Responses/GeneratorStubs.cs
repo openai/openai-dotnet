@@ -5,5 +5,3 @@ namespace OpenAI.Responses;
 [CodeGenType("CodeInterpreterToolOutput")] public partial class CodeInterpreterToolOutput {}
 [CodeGenType("CodeInterpreterToolAuto")] public partial class AutomaticCodeInterpreterContainerConfiguration {}
 [CodeGenType("CodeInterpreterContainerConfiguration")] public partial class CodeInterpreterContainerConfiguration {}
-[CodeGenType("CodeInterpreterContainerConfigurationType")] readonly partial struct CodeInterpreterContainerConfigurationType {}
-

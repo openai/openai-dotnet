@@ -12,11 +12,11 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class AutomaticCodeInterpreterContainerConfiguration : CodeInterpreterContainerConfiguration
     {
-        public AutomaticCodeInterpreterContainerConfiguration() : this(CodeInterpreterContainerConfigurationType.Auto, null, null)
+        public AutomaticCodeInterpreterContainerConfiguration() : this(InternalCodeInterpreterContainerConfigurationType.Auto, null, null)
         {
         }
 
-        internal AutomaticCodeInterpreterContainerConfiguration(CodeInterpreterContainerConfigurationType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<string> fileIds) : base(kind, additionalBinaryDataProperties)
+        internal AutomaticCodeInterpreterContainerConfiguration(InternalCodeInterpreterContainerConfigurationType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<string> fileIds) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             FileIds = fileIds ?? new ChangeTrackingList<string>();

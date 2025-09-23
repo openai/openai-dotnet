@@ -1,5 +1,6 @@
 namespace OpenAI.Responses;
 
+[CodeGenType("CodeInterpreterContainerConfigurationType")] internal readonly partial struct InternalCodeInterpreterContainerConfigurationType {}
 [CodeGenType("ComparisonFilter")] internal partial class InternalComparisonFilter {}
 [CodeGenType("ComparisonFilterEquals")] internal partial class InternalComparisonFilterEquals {}
 [CodeGenType("ComparisonFilterGreaterThan")] internal partial class InternalComparisonFilterGreaterThan {}

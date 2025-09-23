@@ -9,7 +9,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalUnknownCodeInterpreterContainerConfiguration : CodeInterpreterContainerConfiguration
     {
-        internal InternalUnknownCodeInterpreterContainerConfiguration(CodeInterpreterContainerConfigurationType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
+        internal InternalUnknownCodeInterpreterContainerConfiguration(InternalCodeInterpreterContainerConfigurationType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {
         }
     }

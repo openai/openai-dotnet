@@ -65,6 +65,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(ChatToolChoice))]
     [ModelReaderWriterBuildable(typeof(ChatWebSearchOptions))]
     [ModelReaderWriterBuildable(typeof(CodeInterpreterCallResponseItem))]
+    [ModelReaderWriterBuildable(typeof(CodeInterpreterContainer))]
     [ModelReaderWriterBuildable(typeof(CodeInterpreterContainerConfiguration))]
     [ModelReaderWriterBuildable(typeof(CodeInterpreterTool))]
     [ModelReaderWriterBuildable(typeof(CodeInterpreterToolDefinition))]

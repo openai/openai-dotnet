@@ -13,18 +13,18 @@ namespace OpenAI.Responses
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected CodeInterpreterContainerConfiguration(CodeInterpreterContainerConfigurationType kind)
+        private protected CodeInterpreterContainerConfiguration(InternalCodeInterpreterContainerConfigurationType kind)
         {
             Kind = kind;
         }
 
-        internal CodeInterpreterContainerConfiguration(CodeInterpreterContainerConfigurationType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal CodeInterpreterContainerConfiguration(InternalCodeInterpreterContainerConfigurationType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Kind = kind;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal CodeInterpreterContainerConfigurationType Kind { get; set; }
+        internal InternalCodeInterpreterContainerConfigurationType Kind { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

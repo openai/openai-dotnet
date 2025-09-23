@@ -12,16 +12,16 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class CodeInterpreterTool : ResponseTool
     {
-        internal CodeInterpreterTool(BinaryData internalContainer) : base(InternalToolType.CodeInterpreter)
+        public CodeInterpreterTool(CodeInterpreterContainer container) : base(InternalToolType.CodeInterpreter)
         {
-            Argument.AssertNotNull(internalContainer, nameof(internalContainer));
+            Argument.AssertNotNull(container, nameof(container));
 
-            InternalContainer = internalContainer;
+            Container = container;
         }
 
-        internal CodeInterpreterTool(InternalToolType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, BinaryData internalContainer) : base(kind, additionalBinaryDataProperties)
+        internal CodeInterpreterTool(InternalToolType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, CodeInterpreterContainer container) : base(kind, additionalBinaryDataProperties)
         {
-            InternalContainer = internalContainer;
+            Container = container;
         }
     }
 }
