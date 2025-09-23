@@ -1,5 +1,23 @@
 # Release History
 
+## 2.5.0 (2025-09-23)
+
+### Features Added
+
+- OpenAI.Responses:
+  - Added the `Model` property to `OpenAIResponseClient`.
+  - Added the `ServiceDescription` property to `McpTool`.
+  - Enabled support for connectors, which are OpenAI-maintained MCP wrappers for popular services like Microsoft Outlook or Dropbox.
+    - Added the `ConnectorId` property to `McpTool`.
+  - Enabled support for authentication with remote MCP servers.
+    - Added the `AuthorizationToken` property to `McpTool`.
+
+### Bugs Fixed
+
+- OpenAI.Responses:
+  - Fixed an issue with the constructor of `McpToolCallApprovalRequestItem` not taking the item ID as a parameter. MCP approval requests are correlated to MCP approval responses using this ID, which implies that this ID should be required.
+  - Fixed an issue with some of the MCP-related `StreamingResponseUpdate` classes missing the `ItemId` and `OutputIndex` properties.
+
 ## 2.4.0 (2025-09-05)
 
 ### Features Added
