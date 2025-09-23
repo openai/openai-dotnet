@@ -1,9 +1,9 @@
 // SAMPLE: Generate text from a simple prompt
-// GUIDANCE: Instructions to run this code: https://aka.ms/oai/net/start 
-#:package OpenAI@2.2.*-*
+// GUIDANCE: Instructions to run this code: https://aka.ms/oai/net/start
+#:package OpenAI@2.*
 #:property PublishAot=false
 
-using OpenAI.Chat; 
+using OpenAI.Chat;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ChatClient client = new("gpt-4.1", key);
@@ -15,7 +15,7 @@ options.Tools.Add(ChatTool.CreateFunctionTool(
     functionParameters: BinaryData.FromObjectAsJson(new
     {
         type = "object",
-        properties = new 
+        properties = new
         {
             utc = new
             {

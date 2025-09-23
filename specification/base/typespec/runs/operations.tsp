@@ -43,6 +43,7 @@ interface Runs {
   @operationId("listRuns")
   @tag("Assistants")
   @summary("Returns a list of runs belonging to a thread.")
+  @list
   listRuns(
     ...AcceptJsonHeader,
     ...AssistantsBetaHeader,
@@ -130,6 +131,7 @@ interface Runs {
   @operationId("listRunSteps")
   @tag("Assistants")
   @summary("Returns a list of run steps belonging to a run.")
+  @list
   listRunSteps(
     ...AcceptJsonHeader,
     ...AssistantsBetaHeader,

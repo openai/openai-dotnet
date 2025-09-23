@@ -116,9 +116,9 @@ public partial class ResponseItem
         return new ReferenceResponseItem(id);
     }
 
-    public static McpToolCallApprovalRequestItem CreateMcpApprovalRequestItem(string serverLabel, string name, BinaryData arguments)
+    public static McpToolCallApprovalRequestItem CreateMcpApprovalRequestItem(string id, string serverLabel, string name, BinaryData arguments)
     {
-        return new McpToolCallApprovalRequestItem(serverLabel, name, arguments);
+        return new McpToolCallApprovalRequestItem(id, serverLabel, name, arguments);
     }
 
     public static McpToolCallApprovalResponseItem CreateMcpApprovalResponseItem(string approvalRequestId, bool approved)

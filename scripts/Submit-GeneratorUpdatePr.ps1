@@ -93,7 +93,6 @@ function Get-PackageDependencies {
 
 $InjectedDependencies = @(
     '@azure-tools/typespec-client-generator-core',
-    '@azure-tools/typespec-azure-core',
     '@typespec/http',
     '@typespec/openapi'
 )

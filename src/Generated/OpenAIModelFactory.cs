@@ -561,11 +561,11 @@ namespace OpenAI
             return new FileSearchToolRankingOptions(ranker, scoreThreshold, additionalBinaryDataProperties: null);
         }
 
-        public static McpToolFilter McpToolFilter(IEnumerable<string> toolNames = default)
+        public static McpToolFilter McpToolFilter(IEnumerable<string> toolNames = default, bool? isReadOnly = default)
         {
             toolNames ??= new ChangeTrackingList<string>();
 
-            return new McpToolFilter(toolNames.ToList(), additionalBinaryDataProperties: null);
+            return new McpToolFilter(toolNames.ToList(), isReadOnly, additionalBinaryDataProperties: null);
         }
 
         public static ResponseTextOptions ResponseTextOptions(ResponseTextFormat textFormat = default)
@@ -1246,6 +1246,26 @@ namespace OpenAI
         public static ChatToolChoice ChatToolChoice()
         {
             return new ChatToolChoice(additionalBinaryDataProperties: null);
+        }
+
+        public static AssistantCollectionOptions AssistantCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, AssistantCollectionOrder? order = default)
+        {
+            return new AssistantCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+        }
+
+        public static MessageCollectionOptions MessageCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, MessageCollectionOrder? order = default)
+        {
+            return new MessageCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+        }
+
+        public static RunCollectionOptions RunCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, RunCollectionOrder? order = default)
+        {
+            return new RunCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+        }
+
+        public static RunStepCollectionOptions RunStepCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, RunStepCollectionOrder? order = default)
+        {
+            return new RunStepCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
         }
 
         public static AudioTranscription AudioTranscription(string task = default, string language = default, TimeSpan? duration = default, string text = default, IEnumerable<TranscribedWord> words = default, IEnumerable<TranscribedSegment> segments = default, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default)

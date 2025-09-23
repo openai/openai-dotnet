@@ -152,9 +152,9 @@ model ListAssistantsResponse {
   // Tool customization: add a clear enum enforcement of constrained 'object' label
   object: "list";
 
-  data: AssistantObject[];
+  @pageItems data: AssistantObject[];
   first_id: string;
-  last_id: string;
+  @continuationToken last_id: string;
   has_more: boolean;
 }
 
