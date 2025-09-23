@@ -4624,6 +4624,7 @@ namespace OpenAI.Responses {
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
+    [Experimental("OPENAI001")]
     public enum CodeInterpreterCallStatus {
         InProgress = 0,
         Interpreting = 1,
