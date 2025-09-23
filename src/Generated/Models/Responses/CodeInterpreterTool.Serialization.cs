@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class CodeInterpreterTool : IJsonModel<CodeInterpreterTool>
+    public partial class CodeInterpreterTool : ResponseTool, IJsonModel<CodeInterpreterTool>
     {
         internal CodeInterpreterTool() : this(InternalToolType.CodeInterpreter, null, null)
         {

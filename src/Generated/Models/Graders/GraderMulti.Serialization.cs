@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Graders
 {
-    public partial class GraderMulti : IJsonModel<GraderMulti>
+    public partial class GraderMulti : Grader, IJsonModel<GraderMulti>
     {
         internal GraderMulti() : this(GraderType.Multi, null, null, null, null)
         {

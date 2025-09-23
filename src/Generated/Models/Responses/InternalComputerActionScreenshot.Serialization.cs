@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalComputerActionScreenshot : IJsonModel<InternalComputerActionScreenshot>
+    internal partial class InternalComputerActionScreenshot : ComputerCallAction, IJsonModel<InternalComputerActionScreenshot>
     {
         void IJsonModel<InternalComputerActionScreenshot>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

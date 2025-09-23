@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class ComputerTool : IJsonModel<ComputerTool>
+    public partial class ComputerTool : ResponseTool, IJsonModel<ComputerTool>
     {
         internal ComputerTool() : this(InternalToolType.ComputerUsePreview, null, default, default, default)
         {

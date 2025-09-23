@@ -503,7 +503,8 @@ namespace OpenAI.FineTuning
         public static explicit operator InternalFineTuningJob(ClientResult result)
         {
             using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
+            BinaryData data = response.Content;
+            using JsonDocument document = JsonDocument.Parse(data);
             return DeserializeInternalFineTuningJob(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

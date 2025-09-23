@@ -4,10 +4,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace OpenAI.Embeddings
 {
-    public partial class OpenAIEmbeddingCollection
+    public partial class OpenAIEmbeddingCollection : ReadOnlyCollection<OpenAIEmbedding>
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

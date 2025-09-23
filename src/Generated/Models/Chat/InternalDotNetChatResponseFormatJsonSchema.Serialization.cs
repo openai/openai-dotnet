@@ -11,7 +11,7 @@ using OpenAI.Internal;
 
 namespace OpenAI.Chat
 {
-    internal partial class InternalDotNetChatResponseFormatJsonSchema : IJsonModel<InternalDotNetChatResponseFormatJsonSchema>
+    internal partial class InternalDotNetChatResponseFormatJsonSchema : ChatResponseFormat, IJsonModel<InternalDotNetChatResponseFormatJsonSchema>
     {
         internal InternalDotNetChatResponseFormatJsonSchema() : this(InternalResponseFormatType.JsonSchema, null, null)
         {

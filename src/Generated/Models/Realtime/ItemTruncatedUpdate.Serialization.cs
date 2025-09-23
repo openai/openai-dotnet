@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    public partial class ItemTruncatedUpdate : IJsonModel<ItemTruncatedUpdate>
+    public partial class ItemTruncatedUpdate : RealtimeUpdate, IJsonModel<ItemTruncatedUpdate>
     {
         internal ItemTruncatedUpdate() : this(RealtimeUpdateKind.ItemTruncated, null, null, null, default, default)
         {
