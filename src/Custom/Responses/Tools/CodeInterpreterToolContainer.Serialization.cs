@@ -29,9 +29,9 @@ public partial class CodeInterpreterToolContainer
         {
             writer.WriteStringValue(ContainerId);
         }
-        if (Optional.IsDefined(Container) && _additionalBinaryDataProperties?.ContainsKey("container") != true)
+        if (Optional.IsDefined(ContainerConfiguration) && _additionalBinaryDataProperties?.ContainsKey("container") != true)
         {
-            writer.WriteObjectValue(Container, options);
+            writer.WriteObjectValue(ContainerConfiguration, options);
         }
     }
 

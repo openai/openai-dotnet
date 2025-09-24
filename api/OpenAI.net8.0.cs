@@ -4669,7 +4669,7 @@ namespace OpenAI.Responses {
     public class CodeInterpreterToolContainer : IJsonModel<CodeInterpreterToolContainer>, IPersistableModel<CodeInterpreterToolContainer> {
         public CodeInterpreterToolContainer(CodeInterpreterToolContainerConfiguration containerConfiguration);
         public CodeInterpreterToolContainer(string containerId);
-        public CodeInterpreterToolContainerConfiguration Container { get; }
+        public CodeInterpreterToolContainerConfiguration ContainerConfiguration { get; }
         public string ContainerId { get; }
         protected virtual CodeInterpreterToolContainer JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);

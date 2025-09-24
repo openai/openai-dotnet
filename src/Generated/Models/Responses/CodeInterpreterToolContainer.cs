@@ -13,10 +13,10 @@ namespace OpenAI.Responses
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal CodeInterpreterToolContainer(string containerId, CodeInterpreterToolContainerConfiguration container, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal CodeInterpreterToolContainer(string containerId, CodeInterpreterToolContainerConfiguration containerConfiguration, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             ContainerId = containerId;
-            Container = container;
+            ContainerConfiguration = containerConfiguration;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 

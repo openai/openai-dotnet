@@ -31,12 +31,16 @@ public partial class CodeInterpreterToolContainer
     /// <param name="containerConfiguration">The configuration of the container.</param>
     public CodeInterpreterToolContainer(CodeInterpreterToolContainerConfiguration containerConfiguration)
     {
-        Container = containerConfiguration;
+        ContainerConfiguration = containerConfiguration;
     }
 
     // CUSTOM: Removed setter.
+    [CodeGenMember("ContainerId")]
     public string ContainerId { get; }
 
-    // CUSTOM: Removed setter.
-    public CodeInterpreterToolContainerConfiguration Container { get; }
+    // CUSTOM:
+    // - Renamed.
+    // - Removed setter.
+    [CodeGenMember("Container")]
+    public CodeInterpreterToolContainerConfiguration ContainerConfiguration { get; }
 }
