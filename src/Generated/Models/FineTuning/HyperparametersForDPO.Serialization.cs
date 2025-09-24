@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.FineTuning
 {
-    public partial class HyperparametersForDPO : IJsonModel<HyperparametersForDPO>
+    public partial class HyperparametersForDPO : MethodHyperparameters, IJsonModel<HyperparametersForDPO>
     {
         void IJsonModel<HyperparametersForDPO>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

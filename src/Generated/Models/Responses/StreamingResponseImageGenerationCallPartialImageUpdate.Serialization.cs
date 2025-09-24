@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class StreamingResponseImageGenerationCallPartialImageUpdate : IJsonModel<StreamingResponseImageGenerationCallPartialImageUpdate>
+    public partial class StreamingResponseImageGenerationCallPartialImageUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseImageGenerationCallPartialImageUpdate>
     {
         internal StreamingResponseImageGenerationCallPartialImageUpdate() : this(InternalResponseStreamEventType.ResponseImageGenerationCallPartialImage, default, null, default, null, default, null)
         {

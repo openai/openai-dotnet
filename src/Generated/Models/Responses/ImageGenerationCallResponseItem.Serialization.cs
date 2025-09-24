@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class ImageGenerationCallResponseItem : IJsonModel<ImageGenerationCallResponseItem>
+    public partial class ImageGenerationCallResponseItem : ResponseItem, IJsonModel<ImageGenerationCallResponseItem>
     {
         internal ImageGenerationCallResponseItem() : this(InternalItemType.ImageGenerationCall, null, null, default, null)
         {

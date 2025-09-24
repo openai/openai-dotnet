@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    public partial class InputAudioSpeechStartedUpdate : IJsonModel<InputAudioSpeechStartedUpdate>
+    public partial class InputAudioSpeechStartedUpdate : RealtimeUpdate, IJsonModel<InputAudioSpeechStartedUpdate>
     {
         internal InputAudioSpeechStartedUpdate() : this(RealtimeUpdateKind.InputSpeechStarted, null, null, null, default)
         {

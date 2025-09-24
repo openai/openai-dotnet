@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    public partial class ItemRetrievedUpdate : IJsonModel<ItemRetrievedUpdate>
+    public partial class ItemRetrievedUpdate : RealtimeUpdate, IJsonModel<ItemRetrievedUpdate>
     {
         internal ItemRetrievedUpdate() : this(RealtimeUpdateKind.ItemRetrieved, null, null, null)
         {

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class McpTool : IJsonModel<McpTool>
+    public partial class McpTool : ResponseTool, IJsonModel<McpTool>
     {
         internal McpTool() : this(InternalToolType.Mcp, null, null, null, default, null, null, null, null, null)
         {

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    internal partial class InternalChatCompletionRequestMessageContentPartAudio : IJsonModel<InternalChatCompletionRequestMessageContentPartAudio>
+    internal partial class InternalChatCompletionRequestMessageContentPartAudio : ChatMessageContentPart, IJsonModel<InternalChatCompletionRequestMessageContentPartAudio>
     {
         internal InternalChatCompletionRequestMessageContentPartAudio()
         {

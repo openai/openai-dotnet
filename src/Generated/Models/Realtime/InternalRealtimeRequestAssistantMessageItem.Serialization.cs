@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeRequestAssistantMessageItem : IJsonModel<InternalRealtimeRequestAssistantMessageItem>
+    internal partial class InternalRealtimeRequestAssistantMessageItem : InternalRealtimeRequestMessageItem, IJsonModel<InternalRealtimeRequestAssistantMessageItem>
     {
         internal InternalRealtimeRequestAssistantMessageItem() : this(default, null, null, ConversationMessageRole.Assistant, default, null)
         {

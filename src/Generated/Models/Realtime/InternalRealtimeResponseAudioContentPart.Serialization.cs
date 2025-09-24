@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeResponseAudioContentPart : IJsonModel<InternalRealtimeResponseAudioContentPart>
+    internal partial class InternalRealtimeResponseAudioContentPart : ConversationContentPart, IJsonModel<InternalRealtimeResponseAudioContentPart>
     {
         internal InternalRealtimeResponseAudioContentPart() : this(ConversationContentPartKind.OutputAudio, null, null)
         {

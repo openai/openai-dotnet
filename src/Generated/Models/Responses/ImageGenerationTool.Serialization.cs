@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class ImageGenerationTool : IJsonModel<ImageGenerationTool>
+    public partial class ImageGenerationTool : ResponseTool, IJsonModel<ImageGenerationTool>
     {
         void IJsonModel<ImageGenerationTool>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

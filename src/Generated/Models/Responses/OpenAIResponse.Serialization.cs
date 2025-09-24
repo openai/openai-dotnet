@@ -575,7 +575,8 @@ namespace OpenAI.Responses
         public static explicit operator OpenAIResponse(ClientResult result)
         {
             using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
+            BinaryData data = response.Content;
+            using JsonDocument document = JsonDocument.Parse(data);
             return DeserializeOpenAIResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

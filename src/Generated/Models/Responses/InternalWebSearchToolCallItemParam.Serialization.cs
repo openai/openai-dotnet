@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalWebSearchToolCallItemParam : IJsonModel<InternalWebSearchToolCallItemParam>
+    internal partial class InternalWebSearchToolCallItemParam : InternalItemParam, IJsonModel<InternalWebSearchToolCallItemParam>
     {
         void IJsonModel<InternalWebSearchToolCallItemParam>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
