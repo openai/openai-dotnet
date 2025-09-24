@@ -93,7 +93,6 @@ function Get-PackageDependencies {
 
 $InjectedDependencies = @(
     '@azure-tools/typespec-client-generator-core',
-    '@azure-tools/typespec-azure-core',
     '@typespec/http',
     '@typespec/openapi'
 )
@@ -215,13 +214,16 @@ try {
     }
     Pop-Location
 
-     # Export the API
-    Write-Log "Updating API"
+    # Build the updated library
+    Write-Log "Building the library"
     Push-Location "."
     try {
-        pwsh scripts/Export-Api.ps1
+        & dotnet build src/OpenAI.csproj
+        if ($LASTEXITCODE -ne 0) {
+            throw "Build failed with exit code $LASTEXITCODE"
+        }
     } catch {
-        Write-Warning-Log "Exporting API failed: $_"
+        Write-Warning-Log "Building the library failed: $_"
     }
     Pop-Location
     

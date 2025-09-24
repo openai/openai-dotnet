@@ -104,19 +104,19 @@ namespace OpenAI.Responses
                     case "image_generation_call":
                         return InternalImageGenToolCallItemResource.DeserializeInternalImageGenToolCallItemResource(element, options);
                     case "code_interpreter_call":
-                        return InternalCodeInterpreterToolCallItemResource.DeserializeInternalCodeInterpreterToolCallItemResource(element, options);
+                        return CodeInterpreterCallResponseItem.DeserializeCodeInterpreterCallResponseItem(element, options);
                     case "local_shell_call":
                         return InternalLocalShellToolCallItemResource.DeserializeInternalLocalShellToolCallItemResource(element, options);
                     case "local_shell_call_output":
                         return InternalLocalShellToolCallOutputItemResource.DeserializeInternalLocalShellToolCallOutputItemResource(element, options);
                     case "mcp_list_tools":
-                        return InternalMCPListToolsItemResource.DeserializeInternalMCPListToolsItemResource(element, options);
+                        return McpToolDefinitionListItem.DeserializeMcpToolDefinitionListItem(element, options);
                     case "mcp_approval_request":
-                        return InternalMCPApprovalRequestItemResource.DeserializeInternalMCPApprovalRequestItemResource(element, options);
+                        return McpToolCallApprovalRequestItem.DeserializeMcpToolCallApprovalRequestItem(element, options);
                     case "mcp_approval_response":
-                        return InternalMCPApprovalResponseItemResource.DeserializeInternalMCPApprovalResponseItemResource(element, options);
+                        return McpToolCallApprovalResponseItem.DeserializeMcpToolCallApprovalResponseItem(element, options);
                     case "mcp_call":
-                        return InternalMCPCallItemResource.DeserializeInternalMCPCallItemResource(element, options);
+                        return McpToolCallItem.DeserializeMcpToolCallItem(element, options);
                     case "message":
                         return MessageResponseItem.DeserializeMessageResponseItem(element, options);
                     case "item_reference":

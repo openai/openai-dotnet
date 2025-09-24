@@ -11,7 +11,7 @@ namespace OpenAI.Images
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ImageEditOptions(BinaryData image, string prompt, BinaryData mask, InternalCreateImageEditRequestBackground? background, InternalCreateImageEditRequestModel? model, long? n, GeneratedImageSize? size, GeneratedImageFormat? responseFormat, string endUserId, InternalCreateImageEditRequestQuality? quality, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ImageEditOptions(BinaryData image, string prompt, BinaryData mask, GeneratedImageBackground? background, InternalCreateImageEditRequestModel? model, long? n, GeneratedImageSize? size, GeneratedImageFormat? responseFormat, string endUserId, GeneratedImageQuality? quality, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Image = image;
             Prompt = prompt;
@@ -25,10 +25,6 @@ namespace OpenAI.Images
             Quality = quality;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-
-        internal InternalCreateImageEditRequestBackground? Background { get; set; }
-
-        internal InternalCreateImageEditRequestQuality? Quality { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

@@ -56,20 +56,20 @@ public class PaginationVisitor : ScmLibraryVisitor
             ("VectorStore", "VectorStoreCollectionOptions", _paginationParamsToReplace)
         },
         {
-            "GetFileAssociations",
-            ("VectorStoreFileAssociation", "VectorStoreFileAssociationCollectionOptions", _paginationParamsToReplace)
+            "GetVectorStoreFiles",
+            ("VectorStoreFile", "VectorStoreFileCollectionOptions", _paginationParamsToReplace)
         },
         {
-            "GetFileAssociationsAsync",
-            ("VectorStoreFileAssociation", "VectorStoreFileAssociationCollectionOptions", _paginationParamsToReplace)
+            "GetVectorStoreFilesAsync",
+            ("VectorStoreFile", "VectorStoreFileCollectionOptions", _paginationParamsToReplace)
         },
         {
-            "GetFileAssociationsInBatch",
-            ("VectorStoreFileAssociation", "VectorStoreFileAssociationCollectionOptions", _paginationParamsToReplace)
+            "GetVectorStoreFilesInBatch",
+            ("VectorStoreFile", "VectorStoreFileCollectionOptions", _paginationParamsToReplace)
         },
         {
-            "GetFileAssociationsInBatchAsync",
-            ("VectorStoreFileAssociation", "VectorStoreFileAssociationCollectionOptions", _paginationParamsToReplace)
+            "GetVectorStoreFilesInBatchAsync",
+            ("VectorStoreFile", "VectorStoreFileCollectionOptions", _paginationParamsToReplace)
         },
         {
             "GetContainers",
@@ -94,6 +94,38 @@ public class PaginationVisitor : ScmLibraryVisitor
         {
             "GetInputItemsAsync",
             ("ResponseItem", "ResponseItemCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetAssistants",
+            ("Assistant", "AssistantCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetAssistantsAsync",
+            ("Assistant", "AssistantCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetMessages",
+            ("ThreadMessage", "MessageCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetMessagesAsync",
+            ("ThreadMessage", "MessageCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetRuns",
+            ("ThreadRun", "RunCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetRunsAsync",
+            ("ThreadRun", "RunCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetRunSteps",
+            ("RunStep", "RunStepCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetRunStepsAsync",
+            ("RunStep", "RunStepCollectionOptions", _paginationParamsToReplace)
         }
     };
 

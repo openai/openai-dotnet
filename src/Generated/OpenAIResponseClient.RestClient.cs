@@ -39,7 +39,7 @@ namespace OpenAI.Responses
             {
                 foreach (var @param in includables)
                 {
-                    uri.AppendQuery("include[]", @param, true);
+                    uri.AppendQuery("include[]", @param.ToString(), true);
                 }
             }
             if (stream != null)

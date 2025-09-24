@@ -77,8 +77,8 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            InternalMCPToolRequireApprovalAlways always = default;
-            InternalMCPToolRequireApprovalNever never = default;
+            McpToolFilter always = default;
+            McpToolFilter never = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -88,7 +88,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    always = InternalMCPToolRequireApprovalAlways.DeserializeInternalMCPToolRequireApprovalAlways(prop.Value, options);
+                    always = McpToolFilter.DeserializeMcpToolFilter(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("never"u8))
@@ -97,7 +97,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    never = InternalMCPToolRequireApprovalNever.DeserializeInternalMCPToolRequireApprovalNever(prop.Value, options);
+                    never = McpToolFilter.DeserializeMcpToolFilter(prop.Value, options);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

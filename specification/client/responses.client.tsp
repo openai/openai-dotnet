@@ -7,8 +7,12 @@ using Azure.ClientGenerator.Core;
 @@alternateType(CreateResponse.service_tier, DotNetResponseServiceTier);
 @@alternateType(Response.service_tier, DotNetResponseServiceTier);
 
-@@visibility(ItemResource.id, Lifecycle.Read);
+// ------------ ItemResources ------------
 @@usage(ItemResource, Usage.input | Usage.output);
+@@visibility(ItemResource.id, Lifecycle.Read);
+
+@@visibility(CodeInterpreterToolCallItemResource.status, Lifecycle.Read);
+@@clientName(CodeInterpreterToolImageOutput.url, "ImageUri");
 
 @@visibility(ComputerToolCallItemResource.status, Lifecycle.Read);
 
@@ -17,9 +21,9 @@ using Azure.ClientGenerator.Core;
 @@visibility(FileSearchToolCallItemResource.status, Lifecycle.Read);
 
 @@visibility(FunctionToolCallItemResource.status, Lifecycle.Read);
+@@alternateType(FunctionToolCallItemResource.arguments, unknown);
 @@clientName(FunctionToolCallItemResource.name, "FunctionName");
 @@clientName(FunctionToolCallItemResource.arguments, "FunctionArguments");
-@@alternateType(FunctionToolCallItemResource.arguments, unknown);
 
 @@visibility(FunctionToolCallOutputItemResource.status, Lifecycle.Read);
 @@clientName(FunctionToolCallOutputItemResource.output, "FunctionOutput");
@@ -31,9 +35,45 @@ using Azure.ClientGenerator.Core;
 
 @@visibility(ResponsesMessageItemResource.status, Lifecycle.Read);
 
+@@alternateType(MCPApprovalRequestItemResource.arguments, unknown);
+@@clientName(MCPApprovalRequestItemResource.name, "ToolName");
+@@clientName(MCPApprovalRequestItemResource.arguments, "ToolArguments");
+
+@@clientName(MCPApprovalResponseItemResource.approve, "Approved");
+
+@@alternateType(MCPCallItemResource.arguments, unknown);
+@@alternateType(MCPCallItemResource.error, unknown | null);
+@@clientName(MCPCallItemResource.name, "ToolName");
+@@clientName(MCPCallItemResource.arguments, "ToolArguments");
+@@clientName(MCPCallItemResource.output, "ToolOutput");
+
+@@alternateType(MCPListToolsItemResource.error, unknown | null);
+@@clientName(MCPListToolsItemResource.tools, "ToolDefinitions");
+
+// ------------ Tools ------------
+
 @@clientName(FileSearchTool.max_num_results, "MaxResultCount");
 
 @@clientName(FunctionTool.name, "FunctionName");
 @@clientName(FunctionTool.description, "FunctionDescription");
 @@clientName(FunctionTool.parameters, "FunctionParameters");
 @@clientName(FunctionTool.strict, "StrictModeEnabled");
+
+@@alternateType(MCPTool.server_url, url);
+@@alternateType(MCPTool.allowed_tools, MCPToolFilter | null);
+@@clientName(MCPTool.server_url, "ServerUri");
+@@clientName(MCPTool.authorization, "AuthorizationToken");
+
+@@clientName(MCPToolFilter.read_only, "IsReadOnly");
+
+// ------------ Streaming ------------
+
+@@alternateType(ResponseFunctionCallArgumentsDoneEvent.arguments, unknown);
+// @@clientName(ResponseFunctionCallArgumentsDoneEvent.arguments, "FunctionArguments");
+
+@@alternateType(ResponseFunctionCallArgumentsDeltaEvent.delta, unknown);
+
+@@alternateType(ResponseMCPCallArgumentsDoneEvent.arguments, unknown);
+// @@clientName(ResponseMCPCallArgumentsDoneEvent.arguments, "ToolArguments");
+
+@@alternateType(ResponseMCPCallArgumentsDeltaEvent.delta, unknown);

@@ -3,8 +3,6 @@ import "../../entrypoints/sdk.dotnet/specialized-types.tsp";
 import "../common";
 import "./custom/items.tsp";
 
-using TypeSpec.OpenAPI;
-
 namespace OpenAI;
 
 @error
@@ -25,4 +23,27 @@ model ReasoningItemSummaryPart {
 model ReasoningItemSummaryTextPart extends ReasoningItemSummaryPart {
   type: ReasoningItemSummaryPartType.summary_text;
   text: string;
+}
+
+union CodeInterpreterToolOutputType {
+  string,
+  logs: "logs",
+  image: "image",
+}
+
+@discriminator("type")
+model CodeInterpreterToolOutput {
+  @doc("The type of the output.")
+  type: CodeInterpreterToolOutputType;
+}
+
+union CodeInterpreterContainerConfigurationType {
+  string,
+  auto: "auto",
+}
+
+@discriminator("type")
+model CodeInterpreterContainerConfiguration {  
+  @doc("The type of the output.")  
+  type: CodeInterpreterContainerConfigurationType;  
 }
