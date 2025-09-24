@@ -102,7 +102,7 @@ namespace OpenAI.Responses
                     case "reasoning":
                         return ReasoningResponseItem.DeserializeReasoningResponseItem(element, options);
                     case "image_generation_call":
-                        return InternalImageGenToolCallItemResource.DeserializeInternalImageGenToolCallItemResource(element, options);
+                        return ImageGenerationCallResponseItem.DeserializeImageGenerationCallResponseItem(element, options);
                     case "code_interpreter_call":
                         return CodeInterpreterCallResponseItem.DeserializeCodeInterpreterCallResponseItem(element, options);
                     case "local_shell_call":
