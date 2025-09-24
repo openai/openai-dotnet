@@ -561,6 +561,11 @@ namespace OpenAI
             return new FileSearchToolRankingOptions(ranker, scoreThreshold, additionalBinaryDataProperties: null);
         }
 
+        public static ImageGenerationToolInputImageMask ImageGenerationToolInputImageMask(string imageUrl = default, string fileId = default)
+        {
+            return new ImageGenerationToolInputImageMask(imageUrl, fileId, additionalBinaryDataProperties: null);
+        }
+
         public static McpToolFilter McpToolFilter(IEnumerable<string> toolNames = default, bool? isReadOnly = default)
         {
             toolNames ??= new ChangeTrackingList<string>();
