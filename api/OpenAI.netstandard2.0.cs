@@ -4035,20 +4035,41 @@ namespace OpenAI.Realtime {
     }
 }
 namespace OpenAI.Responses {
-    public class AutomaticCodeInterpreterContainerConfiguration : CodeInterpreterContainerConfiguration, IJsonModel<AutomaticCodeInterpreterContainerConfiguration>, IPersistableModel<AutomaticCodeInterpreterContainerConfiguration> {
-        public AutomaticCodeInterpreterContainerConfiguration();
-        public AutomaticCodeInterpreterContainerConfiguration(IEnumerable<string> fileIds = null);
+    public class AutomaticCodeInterpreterToolContainerConfiguration : CodeInterpreterToolContainerConfiguration, IJsonModel<AutomaticCodeInterpreterToolContainerConfiguration>, IPersistableModel<AutomaticCodeInterpreterToolContainerConfiguration> {
+        public AutomaticCodeInterpreterToolContainerConfiguration();
         public IList<string> FileIds { get; }
-        protected override CodeInterpreterContainerConfiguration JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override CodeInterpreterToolContainerConfiguration JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override CodeInterpreterContainerConfiguration PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override CodeInterpreterToolContainerConfiguration PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class CodeInterpreterCallImageOutput : CodeInterpreterCallOutput, IJsonModel<CodeInterpreterCallImageOutput>, IPersistableModel<CodeInterpreterCallImageOutput> {
+        public CodeInterpreterCallImageOutput(Uri imageUri);
+        public Uri ImageUri { get; set; }
+        protected override CodeInterpreterCallOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override CodeInterpreterCallOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class CodeInterpreterCallLogsOutput : CodeInterpreterCallOutput, IJsonModel<CodeInterpreterCallLogsOutput>, IPersistableModel<CodeInterpreterCallLogsOutput> {
+        public CodeInterpreterCallLogsOutput(string logs);
+        public string Logs { get; set; }
+        protected override CodeInterpreterCallOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override CodeInterpreterCallOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class CodeInterpreterCallOutput : IJsonModel<CodeInterpreterCallOutput>, IPersistableModel<CodeInterpreterCallOutput> {
+        protected virtual CodeInterpreterCallOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual CodeInterpreterCallOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class CodeInterpreterCallResponseItem : ResponseItem, IJsonModel<CodeInterpreterCallResponseItem>, IPersistableModel<CodeInterpreterCallResponseItem> {
         public CodeInterpreterCallResponseItem(string code);
         public string Code { get; set; }
         public string ContainerId { get; set; }
-        public IList<CodeInterpreterToolOutput> Outputs { get; }
+        public IList<CodeInterpreterCallOutput> Outputs { get; }
         public CodeInterpreterCallStatus? Status { get; }
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -4062,51 +4083,29 @@ namespace OpenAI.Responses {
         Incomplete = 3,
         Failed = 4
     }
-    public class CodeInterpreterContainer : IJsonModel<CodeInterpreterContainer>, IPersistableModel<CodeInterpreterContainer> {
-        public CodeInterpreterContainer(CodeInterpreterContainerConfiguration containerConfiguration);
-        public CodeInterpreterContainer(string containerId);
-        public CodeInterpreterContainerConfiguration Container { get; set; }
-        public string ContainerId { get; set; }
-        protected virtual CodeInterpreterContainer JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual CodeInterpreterContainer PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class CodeInterpreterContainerConfiguration : IJsonModel<CodeInterpreterContainerConfiguration>, IPersistableModel<CodeInterpreterContainerConfiguration> {
-        public static AutomaticCodeInterpreterContainerConfiguration CreateAutomaticConfiguration(IEnumerable<string> fileIds = null);
-        protected virtual CodeInterpreterContainerConfiguration JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual CodeInterpreterContainerConfiguration PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
     public class CodeInterpreterTool : ResponseTool, IJsonModel<CodeInterpreterTool>, IPersistableModel<CodeInterpreterTool> {
-        public CodeInterpreterTool(CodeInterpreterContainer container);
-        public CodeInterpreterContainer Container { get; }
+        public CodeInterpreterTool(CodeInterpreterToolContainer container);
+        public CodeInterpreterToolContainer Container { get; }
         protected override ResponseTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
-    public class CodeInterpreterToolImageOutput : CodeInterpreterToolOutput, IJsonModel<CodeInterpreterToolImageOutput>, IPersistableModel<CodeInterpreterToolImageOutput> {
-        public CodeInterpreterToolImageOutput(Uri imageUri);
-        public Uri ImageUri { get; set; }
-        protected override CodeInterpreterToolOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override CodeInterpreterToolOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class CodeInterpreterToolLogsOutput : CodeInterpreterToolOutput, IJsonModel<CodeInterpreterToolLogsOutput>, IPersistableModel<CodeInterpreterToolLogsOutput> {
-        public CodeInterpreterToolLogsOutput(string logs);
-        public string Logs { get; set; }
-        protected override CodeInterpreterToolOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override CodeInterpreterToolOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class CodeInterpreterToolOutput : IJsonModel<CodeInterpreterToolOutput>, IPersistableModel<CodeInterpreterToolOutput> {
-        protected virtual CodeInterpreterToolOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+    public class CodeInterpreterToolContainer : IJsonModel<CodeInterpreterToolContainer>, IPersistableModel<CodeInterpreterToolContainer> {
+        public CodeInterpreterToolContainer(CodeInterpreterToolContainerConfiguration containerConfiguration);
+        public CodeInterpreterToolContainer(string containerId);
+        public CodeInterpreterToolContainerConfiguration ContainerConfiguration { get; }
+        public string ContainerId { get; }
+        protected virtual CodeInterpreterToolContainer JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual CodeInterpreterToolOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual CodeInterpreterToolContainer PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class CodeInterpreterToolContainerConfiguration : IJsonModel<CodeInterpreterToolContainerConfiguration>, IPersistableModel<CodeInterpreterToolContainerConfiguration> {
+        public static AutomaticCodeInterpreterToolContainerConfiguration CreateAutomaticContainerConfiguration(IEnumerable<string> fileIds = null);
+        protected virtual CodeInterpreterToolContainerConfiguration JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual CodeInterpreterToolContainerConfiguration PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ComputerCallAction : IJsonModel<ComputerCallAction>, IPersistableModel<ComputerCallAction> {
@@ -4947,7 +4946,7 @@ namespace OpenAI.Responses {
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ResponseTool : IJsonModel<ResponseTool>, IPersistableModel<ResponseTool> {
-        public static CodeInterpreterTool CreateCodeInterpreterTool(CodeInterpreterContainer container);
+        public static CodeInterpreterTool CreateCodeInterpreterTool(CodeInterpreterToolContainer container);
         public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight);
         public static FileSearchTool CreateFileSearchTool(IEnumerable<string> vectorStoreIds, int? maxResultCount = null, FileSearchToolRankingOptions rankingOptions = null, BinaryData filters = null);
         public static FunctionTool CreateFunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled, string functionDescription = null);

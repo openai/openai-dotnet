@@ -63,7 +63,7 @@ model DotNetToolCallApprovalPolicy {
 
 @access(Access.public)
 @usage(Usage.input | Usage.output)
-model DotNetCodeInterpreterContainer {
+model DotNetCodeInterpreterToolContainer {
   container_id?: string;
   container?: CodeInterpreterContainerConfiguration;
 }

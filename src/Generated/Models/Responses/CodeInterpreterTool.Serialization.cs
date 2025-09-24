@@ -4,6 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -22,6 +23,21 @@ namespace OpenAI.Responses
             writer.WriteEndObject();
         }
 
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterTool>)this).GetFormatFromOptions(options) : options.Format;
+            if (format != "J")
+            {
+                throw new FormatException($"The model {nameof(CodeInterpreterTool)} does not support writing '{format}' format.");
+            }
+            base.JsonModelWriteCore(writer, options);
+            if (_additionalBinaryDataProperties?.ContainsKey("container") != true)
+            {
+                writer.WritePropertyName("container"u8);
+                writer.WriteObjectValue(Container, options);
+            }
+        }
+
         CodeInterpreterTool IJsonModel<CodeInterpreterTool>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (CodeInterpreterTool)JsonModelCreateCore(ref reader, options);
 
         protected override ResponseTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
@@ -33,6 +49,33 @@ namespace OpenAI.Responses
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeCodeInterpreterTool(document.RootElement, options);
+        }
+
+        internal static CodeInterpreterTool DeserializeCodeInterpreterTool(JsonElement element, ModelReaderWriterOptions options)
+        {
+            if (element.ValueKind == JsonValueKind.Null)
+            {
+                return null;
+            }
+            InternalToolType kind = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            CodeInterpreterToolContainer container = default;
+            foreach (var prop in element.EnumerateObject())
+            {
+                if (prop.NameEquals("type"u8))
+                {
+                    kind = new InternalToolType(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("container"u8))
+                {
+                    container = CodeInterpreterToolContainer.DeserializeCodeInterpreterToolContainer(prop.Value, options);
+                    continue;
+                }
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+            }
+            return new CodeInterpreterTool(kind, additionalBinaryDataProperties, container);
         }
 
         BinaryData IPersistableModel<CodeInterpreterTool>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

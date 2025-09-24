@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalUnknownCodeInterpreterContainerConfiguration : CodeInterpreterContainerConfiguration
+    internal partial class InternalUnknownCodeInterpreterContainerConfiguration : CodeInterpreterToolContainerConfiguration
     {
         internal InternalUnknownCodeInterpreterContainerConfiguration(InternalCodeInterpreterContainerConfigurationType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {

@@ -1,6 +1,12 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace OpenAI.Responses;
 
-// CUSTOM: Renamed and made public. Recreated as CLR enum.
+// CUSTOM:
+// - Added Experimental attribute.
+// - Renamed.
+// - Recreated as CLR enum.
+[Experimental("OPENAI001")]
 [CodeGenType("CodeInterpreterToolCallItemResourceStatus")]
 public enum CodeInterpreterCallStatus
 {

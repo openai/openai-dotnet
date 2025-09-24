@@ -1331,9 +1331,9 @@ namespace OpenAI
             return new McpToolCallApprovalPolicy(globalPolicy, customPolicy, additionalBinaryDataProperties: null);
         }
 
-        public static CodeInterpreterContainer CodeInterpreterContainer(string containerId = default, CodeInterpreterContainerConfiguration container = default)
+        public static CodeInterpreterToolContainer CodeInterpreterToolContainer(string containerId = default, CodeInterpreterToolContainerConfiguration containerConfiguration = default)
         {
-            return new CodeInterpreterContainer(containerId, container, additionalBinaryDataProperties: null);
+            return new CodeInterpreterToolContainer(containerId, containerConfiguration, additionalBinaryDataProperties: null);
         }
 
         public static VectorStoreCollectionOptions VectorStoreCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, VectorStoreCollectionOrder? order = default)

@@ -10,13 +10,13 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalUnknownCodeInterpreterContainerConfiguration : IJsonModel<CodeInterpreterContainerConfiguration>
+    internal partial class InternalUnknownCodeInterpreterContainerConfiguration : IJsonModel<CodeInterpreterToolContainerConfiguration>
     {
         internal InternalUnknownCodeInterpreterContainerConfiguration() : this(default, null)
         {
         }
 
-        void IJsonModel<CodeInterpreterContainerConfiguration>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<CodeInterpreterToolContainerConfiguration>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
@@ -25,25 +25,25 @@ namespace OpenAI.Responses
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterContainerConfiguration>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterToolContainerConfiguration>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(CodeInterpreterContainerConfiguration)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(CodeInterpreterToolContainerConfiguration)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
         }
 
-        CodeInterpreterContainerConfiguration IJsonModel<CodeInterpreterContainerConfiguration>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        CodeInterpreterToolContainerConfiguration IJsonModel<CodeInterpreterToolContainerConfiguration>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected override CodeInterpreterContainerConfiguration JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected override CodeInterpreterToolContainerConfiguration JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterContainerConfiguration>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterToolContainerConfiguration>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(CodeInterpreterContainerConfiguration)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(CodeInterpreterToolContainerConfiguration)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeCodeInterpreterContainerConfiguration(document.RootElement, options);
+            return DeserializeCodeInterpreterToolContainerConfiguration(document.RootElement, options);
         }
 
         internal static InternalUnknownCodeInterpreterContainerConfiguration DeserializeInternalUnknownCodeInterpreterContainerConfiguration(JsonElement element, ModelReaderWriterOptions options)
@@ -67,37 +67,37 @@ namespace OpenAI.Responses
             return new InternalUnknownCodeInterpreterContainerConfiguration(kind, additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<CodeInterpreterContainerConfiguration>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<CodeInterpreterToolContainerConfiguration>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterContainerConfiguration>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterToolContainerConfiguration>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(CodeInterpreterContainerConfiguration)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(CodeInterpreterToolContainerConfiguration)} does not support writing '{options.Format}' format.");
             }
         }
 
-        CodeInterpreterContainerConfiguration IPersistableModel<CodeInterpreterContainerConfiguration>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        CodeInterpreterToolContainerConfiguration IPersistableModel<CodeInterpreterToolContainerConfiguration>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        protected override CodeInterpreterContainerConfiguration PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected override CodeInterpreterToolContainerConfiguration PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterContainerConfiguration>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterToolContainerConfiguration>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeCodeInterpreterContainerConfiguration(document.RootElement, options);
+                        return DeserializeCodeInterpreterToolContainerConfiguration(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(CodeInterpreterContainerConfiguration)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(CodeInterpreterToolContainerConfiguration)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<CodeInterpreterContainerConfiguration>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<CodeInterpreterToolContainerConfiguration>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }
