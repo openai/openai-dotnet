@@ -145,6 +145,82 @@ AudioClient whisperClient = client.GetAudioClient("whisper-1");
 
 The OpenAI clients are **thread-safe** and can be safely registered as **singletons** in ASP.NET Core's Dependency Injection container. This maximizes resource efficiency and HTTP connection reuse.
 
+> ** For detailed dependency injection documentation, see [DEPENDENCY_INJECTION.md](DEPENDENCY_INJECTION.md)**
+
+### Using Extension Methods (Recommended)
+
+The library provides convenient extension methods for `IServiceCollection` to simplify client registration:
+
+```csharp
+using OpenAI.Extensions.DependencyInjection;
+
+// Register individual clients with API key
+builder.Services.AddOpenAIChat("gpt-4o", "your-api-key");
+builder.Services.AddOpenAIEmbeddings("text-embedding-3-small");
+
+// Or register the main OpenAI client factory
+builder.Services.AddOpenAI("your-api-key");
+builder.Services.AddOpenAIChat("gpt-4o"); // Uses the registered OpenAIClient
+```
+
+### Configuration from appsettings.json
+
+Configure OpenAI services using configuration files:
+
+```json
+{
+  "OpenAI": {
+    "ApiKey": "your-api-key",
+    "Endpoint": "https://api.openai.com/v1",
+    "DefaultChatModel": "gpt-4o",
+    "DefaultEmbeddingModel": "text-embedding-3-small",
+    "OrganizationId": "your-org-id"
+  }
+}
+```
+
+```csharp
+// Register services from configuration
+builder.Services.AddOpenAIFromConfiguration(builder.Configuration);
+
+// Add specific clients using default models from configuration
+builder.Services.AddChatClientFromConfiguration();
+builder.Services.AddEmbeddingClientFromConfiguration();
+
+// Or add all common clients at once
+builder.Services.AddAllOpenAIClientsFromConfiguration();
+```
+
+### Advanced Configuration
+
+For more complex scenarios, you can use the configuration action overloads:
+
+```csharp
+builder.Services.AddOpenAI("your-api-key", options =>
+{
+    options.Endpoint = new Uri("https://your-custom-endpoint.com");
+    options.OrganizationId = "your-org-id";
+    options.ProjectId = "your-project-id";
+});
+```
+
+### Using Environment Variables
+
+The extension methods automatically fall back to the `OPENAI_API_KEY` environment variable:
+
+```csharp
+// This will use the OPENAI_API_KEY environment variable
+builder.Services.AddOpenAIChat("gpt-4o");
+
+// Or configure from appsettings.json with environment variable fallback
+builder.Services.AddOpenAIFromConfiguration(builder.Configuration);
+```
+
+
+### Manual Registration (Legacy)
+
+You can still register clients manually if needed:
+
 Register the `ChatClient` as a singleton in your `Program.cs`:
 
 ```csharp
@@ -157,7 +233,9 @@ builder.Services.AddSingleton<ChatClient>(serviceProvider =>
 });
 ```
 
-Then inject and use the client in your controllers or services:
+### Injection and Usage
+
+Once registered, inject and use the clients in your controllers or services:
 
 ```csharp
 [ApiController]
