@@ -341,6 +341,126 @@ public partial class ResponsesTests : SyncAsyncTestBase
     }
 
     [Test]
+    public async Task ImageGenToolInputMaskWithImageBytes()
+    {
+        OpenAIResponseClient client = GetTestClient();
+
+        string imageFilename = "images_dog_and_cat.png";
+        string imagePath = Path.Combine("Assets", imageFilename);
+        ResponseCreationOptions options = new()
+        {
+            Tools =
+            {
+            ResponseTool.CreateImageGenerationTool(
+                model: "gpt-image-1",
+                outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
+                inputImageMask: new(BinaryData.FromBytes(File.ReadAllBytes(imagePath)), "image/png"))
+            }
+        };
+
+        OpenAIResponse response = await client.CreateResponseAsync(
+            "Generate an image of gray tabby cat hugging an otter with an orange scarf",
+            options);
+
+        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+        Assert.That(response.OutputItems[0], Is.InstanceOf<ImageGenerationCallResponseItem>());
+        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
+
+        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
+        Assert.That(message.Content, Has.Count.GreaterThan(0));
+        Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
+
+        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<ImageGenerationTool>());
+
+        ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
+        Assert.AreEqual(imageGenResponse.Status, ImageGenerationCallStatus.Completed);
+        Assert.That(imageGenResponse.GeneratedImageBytes.ToArray(), Is.Not.Null.And.Not.Empty);
+    }
+
+    [Test]
+    public async Task ImageGenToolInputMaskWithImageUri()
+    {
+        OpenAIResponseClient client = GetTestClient();
+
+        ResponseCreationOptions options = new()
+        {
+            Tools =
+            {
+            ResponseTool.CreateImageGenerationTool(
+                model: "gpt-image-1",
+                outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
+                inputImageMask: new(imageUri: new Uri("https://upload.wikimedia.org/wikipedia/commons/c/c3/Openai.png")))
+            }
+        };
+
+        OpenAIResponse response = await client.CreateResponseAsync(
+            "Generate an image of gray tabby cat hugging an otter with an orange scarf",
+            options);
+
+        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+        Assert.That(response.OutputItems[0], Is.InstanceOf<ImageGenerationCallResponseItem>());
+        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
+
+        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
+        Assert.That(message.Content, Has.Count.GreaterThan(0));
+        Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
+
+        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<ImageGenerationTool>());
+
+        ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
+        Assert.AreEqual(imageGenResponse.Status, ImageGenerationCallStatus.Completed);
+        Assert.That(imageGenResponse.GeneratedImageBytes.ToArray(), Is.Not.Null.And.Not.Empty);
+    }
+
+    [Test]
+    public async Task ImageGenToolInputMaskWithFileId()
+    {
+        OpenAIResponseClient client = GetTestClient();
+
+        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
+
+        string imageFilename = "images_dog_and_cat.png";
+        string imagePath = Path.Combine("Assets", imageFilename);
+        using Stream image = File.OpenRead(imagePath);
+        BinaryData imageData = BinaryData.FromStream(image);
+
+        OpenAIFile file = await fileClient.UploadFileAsync(
+            imageData,
+            imageFilename,
+            FileUploadPurpose.UserData);
+        Validate(file);
+
+        ResponseCreationOptions options = new()
+        {
+            Tools =
+            {
+            ResponseTool.CreateImageGenerationTool(
+                model: "gpt-image-1",
+                outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
+                inputImageMask: new(fileId: file.Id))
+            }
+        };
+
+        OpenAIResponse response = await client.CreateResponseAsync(
+            "Generate an image of gray tabby cat hugging an otter with an orange scarf",
+            options);
+
+        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+        Assert.That(response.OutputItems[0], Is.InstanceOf<ImageGenerationCallResponseItem>());
+        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
+
+        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
+        Assert.That(message.Content, Has.Count.GreaterThan(0));
+        Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
+
+        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<ImageGenerationTool>());
+
+        ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
+        Assert.AreEqual(imageGenResponse.Status, ImageGenerationCallStatus.Completed);
+        Assert.That(imageGenResponse.GeneratedImageBytes.ToArray(), Is.Not.Null.And.Not.Empty);
+    }
+
+    [Test]
     public async Task StreamingResponses()
     {
         OpenAIResponseClient client = GetTestClient("gpt-4o-mini"); // "computer-use-alpha");

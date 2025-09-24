@@ -5048,8 +5048,11 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ImageGenerationToolInputImageMask : IJsonModel<ImageGenerationToolInputImageMask>, IPersistableModel<ImageGenerationToolInputImageMask> {
-        public string FileId { get; set; }
-        public string ImageUrl { get; set; }
+        public ImageGenerationToolInputImageMask(BinaryData imageBytes, string imageBytesMediaType);
+        public ImageGenerationToolInputImageMask(string fileId);
+        public ImageGenerationToolInputImageMask(Uri imageUri);
+        public string FileId { get; }
+        public string ImageUrl { get; }
         protected virtual ImageGenerationToolInputImageMask JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ImageGenerationToolInputImageMask PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);

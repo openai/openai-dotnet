@@ -13,20 +13,12 @@ namespace OpenAI.Responses
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public ImageGenerationToolInputImageMask()
-        {
-        }
-
         internal ImageGenerationToolInputImageMask(string imageUrl, string fileId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             ImageUrl = imageUrl;
             FileId = fileId;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-
-        public string ImageUrl { get; set; }
-
-        public string FileId { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {
