@@ -101,7 +101,7 @@ public partial class ResponseTool
     /// </summary>
     /// <param name="container">The container for the code interpreter.</param>
     /// <returns>A new instance of the <see cref="CodeInterpreterTool"/> class.</returns>
-    public static CodeInterpreterTool CreateCodeInterpreterTool(CodeInterpreterContainer container)
+    public static CodeInterpreterTool CreateCodeInterpreterTool(CodeInterpreterToolContainer container)
     {
         Argument.AssertNotNull(container, nameof(container));
 

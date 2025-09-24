@@ -42,7 +42,7 @@ union CodeInterpreterContainerConfigurationType {
   auto: "auto",
 }
 
-@discriminator("type")  
+@discriminator("type")
 model CodeInterpreterContainerConfiguration {  
   @doc("The type of the output.")  
   type: CodeInterpreterContainerConfigurationType;  

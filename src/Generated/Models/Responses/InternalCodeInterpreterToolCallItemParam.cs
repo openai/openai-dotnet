@@ -15,21 +15,21 @@ namespace OpenAI.Responses
             Argument.AssertNotNull(code, nameof(code));
 
             Code = code;
-            Outputs = new ChangeTrackingList<CodeInterpreterToolOutput>();
+            Outputs = new ChangeTrackingList<CodeInterpreterCallOutput>();
         }
 
-        internal InternalCodeInterpreterToolCallItemParam(InternalItemType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string containerId, string code, IList<CodeInterpreterToolOutput> outputs) : base(kind, additionalBinaryDataProperties)
+        internal InternalCodeInterpreterToolCallItemParam(InternalItemType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string containerId, string code, IList<CodeInterpreterCallOutput> outputs) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             ContainerId = containerId;
             Code = code;
-            Outputs = outputs ?? new ChangeTrackingList<CodeInterpreterToolOutput>();
+            Outputs = outputs ?? new ChangeTrackingList<CodeInterpreterCallOutput>();
         }
 
         public string ContainerId { get; set; }
 
         public string Code { get; }
 
-        public IList<CodeInterpreterToolOutput> Outputs { get; }
+        public IList<CodeInterpreterCallOutput> Outputs { get; }
     }
 }

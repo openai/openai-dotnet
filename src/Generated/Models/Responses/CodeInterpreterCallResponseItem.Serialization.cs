@@ -51,7 +51,7 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("outputs"u8);
                 writer.WriteStartArray();
-                foreach (CodeInterpreterToolOutput item in Outputs)
+                foreach (CodeInterpreterCallOutput item in Outputs)
                 {
                     writer.WriteObjectValue(item, options);
                 }
@@ -84,7 +84,7 @@ namespace OpenAI.Responses
             CodeInterpreterCallStatus? status = default;
             string containerId = default;
             string code = default;
-            IList<CodeInterpreterToolOutput> outputs = default;
+            IList<CodeInterpreterCallOutput> outputs = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -118,10 +118,10 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    List<CodeInterpreterToolOutput> array = new List<CodeInterpreterToolOutput>();
+                    List<CodeInterpreterCallOutput> array = new List<CodeInterpreterCallOutput>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(CodeInterpreterToolOutput.DeserializeCodeInterpreterToolOutput(item, options));
+                        array.Add(CodeInterpreterCallOutput.DeserializeCodeInterpreterCallOutput(item, options));
                     }
                     outputs = array;
                     continue;
@@ -136,7 +136,7 @@ namespace OpenAI.Responses
                 status,
                 containerId,
                 code,
-                outputs ?? new ChangeTrackingList<CodeInterpreterToolOutput>());
+                outputs ?? new ChangeTrackingList<CodeInterpreterCallOutput>());
         }
 
         BinaryData IPersistableModel<CodeInterpreterCallResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

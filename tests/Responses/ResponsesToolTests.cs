@@ -403,7 +403,7 @@ public partial class ResponsesToolTests : SyncAsyncTestBase
     {
         OpenAIResponseClient client = GetTestClient();
 
-        ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new CodeInterpreterContainer(new AutomaticCodeInterpreterContainerConfiguration()));
+        ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new CodeInterpreterToolContainer(new AutomaticCodeInterpreterToolContainerConfiguration()));
         ResponseCreationOptions responseOptions = new()
         {
             Tools = { codeInterpreterTool },
@@ -434,7 +434,7 @@ public partial class ResponsesToolTests : SyncAsyncTestBase
     {
         OpenAIResponseClient client = GetTestClient();
 
-        ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new(new AutomaticCodeInterpreterContainerConfiguration(new List<string>())));
+        ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new(new AutomaticCodeInterpreterToolContainerConfiguration()));
         ResponseCreationOptions responseOptions = new()
         {
             Tools = { codeInterpreterTool },
@@ -544,7 +544,7 @@ public partial class ResponsesToolTests : SyncAsyncTestBase
             fileIds.Add(pythonFile.Id);
 
             // Create CodeInterpreter tool with uploaded file IDs
-            ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new(new AutomaticCodeInterpreterContainerConfiguration(fileIds)));
+            ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new(CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration(fileIds)));
             ResponseCreationOptions responseOptions = new()
             {
                 Tools = { codeInterpreterTool },
@@ -585,7 +585,7 @@ public partial class ResponsesToolTests : SyncAsyncTestBase
     {
         OpenAIResponseClient client = GetTestClient();
 
-        ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new CodeInterpreterContainer(new AutomaticCodeInterpreterContainerConfiguration()));
+        ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new CodeInterpreterToolContainer(new AutomaticCodeInterpreterToolContainerConfiguration()));
         ResponseCreationOptions responseOptions = new()
         {
             Tools = { codeInterpreterTool },
@@ -634,7 +634,7 @@ public partial class ResponsesToolTests : SyncAsyncTestBase
             fileIds.Add(csvFile.Id);
 
             // Create CodeInterpreter tool with uploaded file IDs
-            ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new CodeInterpreterContainer(new AutomaticCodeInterpreterContainerConfiguration(fileIds)));
+            ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new CodeInterpreterToolContainer(CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration(fileIds)));
             ResponseCreationOptions responseOptions = new()
             {
                 Tools = { codeInterpreterTool },

@@ -11,6 +11,9 @@
     - Added the `ConnectorId` property to `McpTool`.
   - Enabled support for authentication with remote MCP servers.
     - Added the `AuthorizationToken` property to `McpTool`.
+  - Enabled support for the Code Interpreter tool, which allows models to write and run Python code in a sandboxed environment to solve complex problems in domains like data analysis, coding, and math.
+    - Users can add the new `CodeInterpreterTool` to the `Tools` property of their `ResponseCreationOptions` and configure it.
+      - Use the `Container` property to configure the sandboxed environment, including any files that should be made available.
 
 ### Bugs Fixed
 
