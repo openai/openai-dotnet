@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalUnknownReasoningItemSummaryPart : IJsonModel<ReasoningSummaryPart>
+    internal partial class InternalUnknownReasoningItemSummaryPart : ReasoningSummaryPart, IJsonModel<ReasoningSummaryPart>
     {
         internal InternalUnknownReasoningItemSummaryPart() : this(default, null)
         {

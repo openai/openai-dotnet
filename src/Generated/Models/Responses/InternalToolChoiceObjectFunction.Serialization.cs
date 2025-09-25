@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalToolChoiceObjectFunction : IJsonModel<InternalToolChoiceObjectFunction>
+    internal partial class InternalToolChoiceObjectFunction : InternalToolChoiceObject, IJsonModel<InternalToolChoiceObjectFunction>
     {
         internal InternalToolChoiceObjectFunction() : this(InternalToolChoiceObjectType.Function, null, null)
         {

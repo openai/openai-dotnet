@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Graders
 {
-    public partial class UnknownGrader : IJsonModel<Grader>
+    public partial class UnknownGrader : Grader, IJsonModel<Grader>
     {
         internal UnknownGrader() : this(default, null)
         {

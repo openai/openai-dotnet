@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.FineTuning
 {
-    internal partial class UnknownCreateFineTuningJobRequestIntegration : IJsonModel<FineTuningIntegration>
+    internal partial class UnknownCreateFineTuningJobRequestIntegration : FineTuningIntegration, IJsonModel<FineTuningIntegration>
     {
         internal UnknownCreateFineTuningJobRequestIntegration() : this(default, null)
         {

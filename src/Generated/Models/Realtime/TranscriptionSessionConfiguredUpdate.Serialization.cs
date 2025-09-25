@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    public partial class TranscriptionSessionConfiguredUpdate : IJsonModel<TranscriptionSessionConfiguredUpdate>
+    public partial class TranscriptionSessionConfiguredUpdate : RealtimeUpdate, IJsonModel<TranscriptionSessionConfiguredUpdate>
     {
         internal TranscriptionSessionConfiguredUpdate() : this(RealtimeUpdateKind.TranscriptionSessionConfigured, null, null, null)
         {

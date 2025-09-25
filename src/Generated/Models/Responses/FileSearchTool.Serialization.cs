@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class FileSearchTool : IJsonModel<FileSearchTool>
+    public partial class FileSearchTool : ResponseTool, IJsonModel<FileSearchTool>
     {
         internal FileSearchTool() : this(InternalToolType.FileSearch, null, null, default, null, null)
         {

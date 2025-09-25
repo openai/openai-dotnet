@@ -49,10 +49,10 @@ public class OpenAILibraryVisitor : ScmLibraryVisitor
 
     protected override TypeProvider VisitType(TypeProvider type)
     {
-        if (type is ModelProvider { BaseModelProvider: null } && type.Fields.Count > 0)
+        var additionalPropertiesField = type.Fields.FirstOrDefault(f => f.Name == AdditionalPropertiesFieldName);
+        if (type is ModelProvider { BaseModelProvider: null } && additionalPropertiesField != null)
         {
             // Add an internal AdditionalProperties property to all base models
-            var additionalPropertiesField = type.Fields.Single(f => f.Name == AdditionalPropertiesFieldName);
             var properties = new List<PropertyProvider>(type.Properties)
             {
                 new PropertyProvider($"", MethodSignatureModifiers.Internal,

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalComputerActionDrag : IJsonModel<InternalComputerActionDrag>
+    internal partial class InternalComputerActionDrag : ComputerCallAction, IJsonModel<InternalComputerActionDrag>
     {
         internal InternalComputerActionDrag() : this(ComputerCallActionKind.Drag, null, null)
         {

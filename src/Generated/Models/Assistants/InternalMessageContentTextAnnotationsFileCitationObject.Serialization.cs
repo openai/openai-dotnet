@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalMessageContentTextAnnotationsFileCitationObject : IJsonModel<InternalMessageContentTextAnnotationsFileCitationObject>
+    internal partial class InternalMessageContentTextAnnotationsFileCitationObject : InternalMessageContentTextObjectAnnotation, IJsonModel<InternalMessageContentTextAnnotationsFileCitationObject>
     {
         internal InternalMessageContentTextAnnotationsFileCitationObject() : this(InternalMessageContentTextAnnotationType.FileCitation, null, null, null, default, default)
         {

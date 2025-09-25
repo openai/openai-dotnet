@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class FileSearchCallResponseItem : IJsonModel<FileSearchCallResponseItem>
+    public partial class FileSearchCallResponseItem : ResponseItem, IJsonModel<FileSearchCallResponseItem>
     {
         internal FileSearchCallResponseItem() : this(InternalItemType.FileSearchCall, null, null, default, null, null)
         {

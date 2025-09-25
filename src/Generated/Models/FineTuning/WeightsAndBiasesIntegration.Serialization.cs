@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.FineTuning
 {
-    public partial class WeightsAndBiasesIntegration : IJsonModel<WeightsAndBiasesIntegration>
+    public partial class WeightsAndBiasesIntegration : FineTuningIntegration, IJsonModel<WeightsAndBiasesIntegration>
     {
         internal WeightsAndBiasesIntegration() : this(InternalCreateFineTuningJobRequestIntegrationType.Wandb, null, null)
         {

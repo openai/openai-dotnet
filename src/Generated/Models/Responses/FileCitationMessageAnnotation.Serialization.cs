@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class FileCitationMessageAnnotation : IJsonModel<FileCitationMessageAnnotation>
+    public partial class FileCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<FileCitationMessageAnnotation>
     {
         internal FileCitationMessageAnnotation() : this(ResponseMessageAnnotationKind.FileCitation, null, null, default)
         {

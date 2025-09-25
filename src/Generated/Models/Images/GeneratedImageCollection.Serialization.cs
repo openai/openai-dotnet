@@ -6,13 +6,14 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Images
 {
-    public partial class GeneratedImageCollection : IJsonModel<GeneratedImageCollection>
+    public partial class GeneratedImageCollection : ReadOnlyCollection<GeneratedImage>, IJsonModel<GeneratedImageCollection>
     {
         void IJsonModel<GeneratedImageCollection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -170,7 +171,8 @@ namespace OpenAI.Images
         public static explicit operator GeneratedImageCollection(ClientResult result)
         {
             using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
+            BinaryData data = response.Content;
+            using JsonDocument document = JsonDocument.Parse(data);
             return DeserializeGeneratedImageCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

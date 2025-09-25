@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Internal
 {
-    internal partial class InternalUnknownResponseFormat : IJsonModel<InternalResponseFormat>
+    internal partial class InternalUnknownResponseFormat : InternalResponseFormat, IJsonModel<InternalResponseFormat>
     {
         internal InternalUnknownResponseFormat() : this(default, null)
         {

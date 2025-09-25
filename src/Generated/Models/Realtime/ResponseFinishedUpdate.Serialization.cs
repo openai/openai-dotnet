@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    public partial class ResponseFinishedUpdate : IJsonModel<ResponseFinishedUpdate>
+    public partial class ResponseFinishedUpdate : RealtimeUpdate, IJsonModel<ResponseFinishedUpdate>
     {
         internal ResponseFinishedUpdate() : this(RealtimeUpdateKind.ResponseFinished, null, null, null)
         {

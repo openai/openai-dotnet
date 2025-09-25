@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Graders
 {
-    public partial class GraderPython : IJsonModel<GraderPython>
+    public partial class GraderPython : Grader, IJsonModel<GraderPython>
     {
         internal GraderPython() : this(GraderType.Python, null, null, null, null)
         {

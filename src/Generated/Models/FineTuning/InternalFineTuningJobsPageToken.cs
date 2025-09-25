@@ -3,11 +3,12 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.Collections.Generic;
 
 namespace OpenAI.FineTuning
 {
-    internal partial class InternalFineTuningJobsPageToken
+    internal partial class InternalFineTuningJobsPageToken : ContinuationToken
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

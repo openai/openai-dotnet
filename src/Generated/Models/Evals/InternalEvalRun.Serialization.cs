@@ -341,7 +341,8 @@ namespace OpenAI.Evals
         public static explicit operator InternalEvalRun(ClientResult result)
         {
             using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
+            BinaryData data = response.Content;
+            using JsonDocument document = JsonDocument.Parse(data);
             return DeserializeInternalEvalRun(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
