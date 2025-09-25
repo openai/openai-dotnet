@@ -34566,5 +34566,7 @@
       }
     }
   ],
-  "Variables": {}
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
 }

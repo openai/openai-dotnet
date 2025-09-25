@@ -82,10 +82,11 @@ internal static class TestHelpers
         TestScenario scenario,
         string overrideModel = null,
         bool excludeDumpPolicy = false,
-        OpenAIClientOptions options = default)
+        OpenAIClientOptions options = default,
+        ApiKeyCredential credential = default)
     {
         options ??= new();
-        ApiKeyCredential credential = GetTestApiKeyCredential();
+        credential ??= GetTestApiKeyCredential();
 
         if (!excludeDumpPolicy)
         {

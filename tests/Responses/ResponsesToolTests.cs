@@ -75,7 +75,6 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(assistantMessageItem, Is.Not.Null);
     }
 
-    [Ignore("Cannot be tested reliably - Your organization must be verified to stream this model.")]
     [Test]
     public async Task MCPToolStreamingWorks()
     {
@@ -341,7 +340,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [Test]
     public async Task FileSearch()
     {
-        OpenAIFileClient fileClient = CreateProxyFromClient(GetTestClient<OpenAIFileClient>(TestScenario.Files));
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
         OpenAIFile testFile = await fileClient.UploadFileAsync(
             BinaryData.FromString("""
                     Travis's favorite food is pizza.
@@ -350,7 +349,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             FileUploadPurpose.UserData);
         Validate(testFile);
 
-        VectorStoreClient vscClient = GetTestClient<VectorStoreClient>(TestScenario.VectorStores);
+        VectorStoreClient vscClient = GetProxiedOpenAIClient<VectorStoreClient>(TestScenario.VectorStores);
         VectorStore vectorStore = await vscClient.CreateVectorStoreAsync(
             new VectorStoreCreationOptions()
             {

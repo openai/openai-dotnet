@@ -21,159 +21,144 @@ public partial class ImageVariationsTests : ImageTestFixtureBase
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateImageVariationWorks(ImageSourceKind imageSourceKind)
     {
-        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
+        string imageFilename = "images_dog_and_cat.png";
+        string imagePath = Path.Combine("Assets", imageFilename);
+        GeneratedImage image = null;
+
+        ImageVariationOptions options = new()
         {
-            ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
-            string imageFilename = "images_dog_and_cat.png";
-            string imagePath = Path.Combine("Assets", imageFilename);
-            GeneratedImage image = null;
+            ResponseFormat = GeneratedImageFormat.Uri,
+            Size = GeneratedImageSize.W256xH256
+        };
 
-            ImageVariationOptions options = new()
-            {
-                ResponseFormat = GeneratedImageFormat.Uri,
-                Size = GeneratedImageSize.W256xH256
-            };
+        if (imageSourceKind == ImageSourceKind.UsingStream)
+        {
+            using FileStream imageFile = File.OpenRead(imagePath);
 
-            if (imageSourceKind == ImageSourceKind.UsingStream)
-            {
-                using FileStream imageFile = File.OpenRead(imagePath);
-
-                image = await client.GenerateImageVariationAsync(imageFile, imageFilename, options);
-            }
-            else if (imageSourceKind == ImageSourceKind.UsingFilePath)
-            {
-                image = await client.GenerateImageVariationAsync(imagePath, options);
-            }
-            else
-            {
-                Assert.Fail("Invalid source kind.");
-            }
-
-            Assert.That(image.ImageUri, Is.Not.Null);
-            Assert.That(image.ImageBytes, Is.Null);
-
-            Console.WriteLine(image.ImageUri.AbsoluteUri);
-
-            await ValidateGeneratedImage(image.ImageUri, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
+            image = await client.GenerateImageVariationAsync(imageFile, imageFilename, options);
         }
+        else if (imageSourceKind == ImageSourceKind.UsingFilePath)
+        {
+            image = await client.GenerateImageVariationAsync(imagePath, options);
+        }
+        else
+        {
+            Assert.Fail("Invalid source kind.");
+        }
+
+        Assert.That(image.ImageUri, Is.Not.Null);
+        Assert.That(image.ImageBytes, Is.Null);
+
+        Console.WriteLine(image.ImageUri.AbsoluteUri);
+
+        await ValidateGeneratedImage(image.ImageUri, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
     }
 
     [Test]
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateImageVariationWithBytesResponseWorks(ImageSourceKind imageSourceKind)
     {
-        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
+        string imageFilename = "images_dog_and_cat.png";
+        string imagePath = Path.Combine("Assets", imageFilename);
+        GeneratedImage image = null;
+
+        ImageVariationOptions options = new()
         {
-            ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
-            string imageFilename = "images_dog_and_cat.png";
-            string imagePath = Path.Combine("Assets", imageFilename);
-            GeneratedImage image = null;
+            ResponseFormat = GeneratedImageFormat.Bytes,
+            Size = GeneratedImageSize.W256xH256
+        };
 
-            ImageVariationOptions options = new()
-            {
-                ResponseFormat = GeneratedImageFormat.Bytes,
-                Size = GeneratedImageSize.W256xH256
-            };
+        if (imageSourceKind == ImageSourceKind.UsingStream)
+        {
+            using FileStream imageFile = File.OpenRead(imagePath);
 
-            if (imageSourceKind == ImageSourceKind.UsingStream)
-            {
-                using FileStream imageFile = File.OpenRead(imagePath);
-
-                image = await client.GenerateImageVariationAsync(imageFile, imageFilename, options);
-            }
-            else if (imageSourceKind == ImageSourceKind.UsingFilePath)
-            {
-                image = await client.GenerateImageVariationAsync(imagePath, options);
-            }
-            else
-            {
-                Assert.Fail("Invalid source kind.");
-            }
-
-            Assert.That(image.ImageUri, Is.Null);
-            Assert.That(image.ImageBytes, Is.Not.Null);
-
-            await ValidateGeneratedImage(image.ImageBytes, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
+            image = await client.GenerateImageVariationAsync(imageFile, imageFilename, options);
         }
+        else if (imageSourceKind == ImageSourceKind.UsingFilePath)
+        {
+            image = await client.GenerateImageVariationAsync(imagePath, options);
+        }
+        else
+        {
+            Assert.Fail("Invalid source kind.");
+        }
+
+        Assert.That(image.ImageUri, Is.Null);
+        Assert.That(image.ImageBytes, Is.Not.Null);
+
+        await ValidateGeneratedImage(image.ImageBytes, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
     }
 
     [Test]
     public void GenerateImageVariationFromStreamCanParseServiceError()
     {
-        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
-        {
-            ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
-            string imageFilename = "images_dog_and_cat.png";
-            string imagePath = Path.Combine("Assets", imageFilename);
-            using FileStream imageFile = File.OpenRead(imagePath);
+        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
+        string imageFilename = "images_dog_and_cat.png";
+        string imagePath = Path.Combine("Assets", imageFilename);
+        using FileStream imageFile = File.OpenRead(imagePath);
 
-            ClientResultException ex = null;
+        ClientResultException ex = null;
 
-            ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageVariationAsync(imageFile, imageFilename));
-            Assert.That(ex.Status, Is.EqualTo(401));
-        }
+        ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageVariationAsync(imageFile, imageFilename));
+        Assert.That(ex.Status, Is.EqualTo(401));
     }
 
     [Test]
     public void GenerateImageVariationFromPathCanParseServiceError()
     {
-        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
-        {
-            ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
-            string imageFilename = "images_dog_and_cat.png";
-            string imagePath = Path.Combine("Assets", imageFilename);
+        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
+        string imageFilename = "images_dog_and_cat.png";
+        string imagePath = Path.Combine("Assets", imageFilename);
 
-            ClientResultException ex = null;
+        ClientResultException ex = null;
 
-            ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageVariationAsync(imagePath));
-            Assert.That(ex.Status, Is.EqualTo(401));
-        }
+        ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageVariationAsync(imagePath));
+        Assert.That(ex.Status, Is.EqualTo(401));
     }
 
     [Test]
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateMultipleImageVariationsWorks(ImageSourceKind imageSourceKind)
     {
-        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
+        string imageFilename = "images_dog_and_cat.png";
+        string imagePath = Path.Combine("Assets", imageFilename);
+        GeneratedImageCollection images = null;
+
+        ImageVariationOptions options = new()
         {
-            ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
-            string imageFilename = "images_dog_and_cat.png";
-            string imagePath = Path.Combine("Assets", imageFilename);
-            GeneratedImageCollection images = null;
+            ResponseFormat = GeneratedImageFormat.Uri,
+            Size = GeneratedImageSize.W256xH256
+        };
 
-            ImageVariationOptions options = new()
-            {
-                ResponseFormat = GeneratedImageFormat.Uri,
-                Size = GeneratedImageSize.W256xH256
-            };
+        if (imageSourceKind == ImageSourceKind.UsingStream)
+        {
+            using FileStream imageFile = File.OpenRead(imagePath);
 
-            if (imageSourceKind == ImageSourceKind.UsingStream)
-            {
-                using FileStream imageFile = File.OpenRead(imagePath);
+            images = await client.GenerateImageVariationsAsync(imageFile, imageFilename, 2, options);
+        }
+        else if (imageSourceKind == ImageSourceKind.UsingFilePath)
+        {
+            images = await client.GenerateImageVariationsAsync(imagePath, 2, options);
+        }
+        else
+        {
+            Assert.Fail("Invalid source kind.");
+        }
 
-                images = await client.GenerateImageVariationsAsync(imageFile, imageFilename, 2, options);
-            }
-            else if (imageSourceKind == ImageSourceKind.UsingFilePath)
-            {
-                images = await client.GenerateImageVariationsAsync(imagePath, 2, options);
-            }
-            else
-            {
-                Assert.Fail("Invalid source kind.");
-            }
+        long unixTime2024 = (new DateTimeOffset(2024, 01, 01, 0, 0, 0, TimeSpan.Zero)).ToUnixTimeSeconds();
 
-            long unixTime2024 = (new DateTimeOffset(2024, 01, 01, 0, 0, 0, TimeSpan.Zero)).ToUnixTimeSeconds();
+        Assert.That(images.CreatedAt.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2024));
+        Assert.That(images.Count, Is.EqualTo(2));
 
-            Assert.That(images.CreatedAt.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2024));
-            Assert.That(images.Count, Is.EqualTo(2));
-
-            foreach (GeneratedImage image in images)
-            {
-                Assert.That(image.ImageUri, Is.Not.Null);
-                Assert.That(image.ImageBytes, Is.Null);
-                Console.WriteLine(image.ImageUri.AbsoluteUri);
-                await ValidateGeneratedImage(image.ImageUri, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
-            }
+        foreach (GeneratedImage image in images)
+        {
+            Assert.That(image.ImageUri, Is.Not.Null);
+            Assert.That(image.ImageBytes, Is.Null);
+            Console.WriteLine(image.ImageUri.AbsoluteUri);
+            await ValidateGeneratedImage(image.ImageUri, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
         }
     }
 
@@ -181,78 +166,69 @@ public partial class ImageVariationsTests : ImageTestFixtureBase
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateMultipleImageVariationsWithBytesResponseWorks(ImageSourceKind imageSourceKind)
     {
-        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
+        string imageFilename = "images_dog_and_cat.png";
+        string imagePath = Path.Combine("Assets", imageFilename);
+        GeneratedImageCollection images = null;
+
+        ImageVariationOptions options = new()
         {
-            ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
-            string imageFilename = "images_dog_and_cat.png";
-            string imagePath = Path.Combine("Assets", imageFilename);
-            GeneratedImageCollection images = null;
+            ResponseFormat = GeneratedImageFormat.Bytes,
+            Size = GeneratedImageSize.W256xH256
+        };
 
-            ImageVariationOptions options = new()
-            {
-                ResponseFormat = GeneratedImageFormat.Bytes,
-                Size = GeneratedImageSize.W256xH256
-            };
+        if (imageSourceKind == ImageSourceKind.UsingStream)
+        {
+            using FileStream imageFile = File.OpenRead(imagePath);
 
-            if (imageSourceKind == ImageSourceKind.UsingStream)
-            {
-                using FileStream imageFile = File.OpenRead(imagePath);
+            images = await client.GenerateImageVariationsAsync(imageFile, imageFilename, 2, options);
+        }
+        else if (imageSourceKind == ImageSourceKind.UsingFilePath)
+        {
+            images = await client.GenerateImageVariationsAsync(imagePath, 2, options);
+        }
+        else
+        {
+            Assert.Fail("Invalid source kind.");
+        }
 
-                images = await client.GenerateImageVariationsAsync(imageFile, imageFilename, 2, options);
-            }
-            else if (imageSourceKind == ImageSourceKind.UsingFilePath)
-            {
-                images = await client.GenerateImageVariationsAsync(imagePath, 2, options);
-            }
-            else
-            {
-                Assert.Fail("Invalid source kind.");
-            }
+        long unixTime2024 = (new DateTimeOffset(2024, 01, 01, 0, 0, 0, TimeSpan.Zero)).ToUnixTimeSeconds();
 
-            long unixTime2024 = (new DateTimeOffset(2024, 01, 01, 0, 0, 0, TimeSpan.Zero)).ToUnixTimeSeconds();
+        Assert.That(images.CreatedAt.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2024));
+        Assert.That(images.Count, Is.EqualTo(2));
 
-            Assert.That(images.CreatedAt.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2024));
-            Assert.That(images.Count, Is.EqualTo(2));
-
-            foreach (GeneratedImage image in images)
-            {
-                Assert.That(image.ImageUri, Is.Null);
-                Assert.That(image.ImageBytes, Is.Not.Null);
-                await ValidateGeneratedImage(image.ImageBytes, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
-            }
+        foreach (GeneratedImage image in images)
+        {
+            Assert.That(image.ImageUri, Is.Null);
+            Assert.That(image.ImageBytes, Is.Not.Null);
+            await ValidateGeneratedImage(image.ImageBytes, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
         }
     }
 
     [Test]
     public void GenerateMultipleImageVariationsFromStreamCanParseServiceError()
     {
-        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
-        {
-            ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
-            string imageFilename = "images_dog_and_cat.png";
-            string imagePath = Path.Combine("Assets", imageFilename);
-            using FileStream imageFile = File.OpenRead(imagePath);
+        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
+        string imageFilename = "images_dog_and_cat.png";
+        string imagePath = Path.Combine("Assets", imageFilename);
+        using FileStream imageFile = File.OpenRead(imagePath);
 
-            ClientResultException ex = null;
+        ClientResultException ex = null;
 
-            ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageVariationsAsync(imageFile, imageFilename, 2));
-            Assert.That(ex.Status, Is.EqualTo(401));
-        }
+        ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageVariationsAsync(imageFile, imageFilename, 2));
+        Assert.That(ex.Status, Is.EqualTo(401));
     }
 
     [Test]
     public void GenerateMultipleImageVariationsFromPathCanParseServiceError()
     {
-        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
-        {
-            ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
-            string imageFilename = "images_dog_and_cat.png";
-            string imagePath = Path.Combine("Assets", imageFilename);
+        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
+        string imageFilename = "images_dog_and_cat.png";
+        string imagePath = Path.Combine("Assets", imageFilename);
 
-            ClientResultException ex = null;
+        ClientResultException ex = null;
 
-            ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageVariationsAsync(imagePath, 2));
-            Assert.That(ex.Status, Is.EqualTo(401));
-        }
+        ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageVariationsAsync(imagePath, 2));
+        Assert.That(ex.Status, Is.EqualTo(401));
     }
 }

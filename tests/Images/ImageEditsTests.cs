@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using OpenAI.Images;
 using OpenAI.Tests.Utility;
 using System;
@@ -20,322 +21,291 @@ public partial class ImageEditsTests : ImageTestFixtureBase
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateImageEditWorks(ImageSourceKind imageSourceKind)
     {
-        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
+
+        string maskFilename = "images_empty_room_with_mask.png";
+        string maskImagePath = Path.Combine("Assets", maskFilename);
+        GeneratedImage image = null;
+
+        ImageEditOptions options = new()
         {
-            ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
+            ResponseFormat = GeneratedImageFormat.Uri,
+            Size = GeneratedImageSize.W256xH256
+        };
 
-            string maskFilename = "images_empty_room_with_mask.png";
-            string maskImagePath = Path.Combine("Assets", maskFilename);
-            GeneratedImage image = null;
+        if (imageSourceKind == ImageSourceKind.UsingStream)
+        {
+            using FileStream mask = File.OpenRead(maskImagePath);
 
-            ImageEditOptions options = new()
-            {
-                ResponseFormat = GeneratedImageFormat.Uri,
-                Size = GeneratedImageSize.W256xH256
-            };
-
-            if (imageSourceKind == ImageSourceKind.UsingStream)
-            {
-                using FileStream mask = File.OpenRead(maskImagePath);
-
-                image = await client.GenerateImageEditAsync(mask, maskFilename, CatPrompt, options);
-            }
-            else if (imageSourceKind == ImageSourceKind.UsingFilePath)
-            {
-                image = await client.GenerateImageEditAsync(maskImagePath, CatPrompt, options);
-            }
-            else
-            {
-                Assert.Fail("Invalid source kind.");
-            }
-
-            Assert.That(image.ImageUri, Is.Not.Null);
-            Assert.That(image.ImageBytes, Is.Null);
-
-            Console.WriteLine(image.ImageUri.AbsoluteUri);
-
-            await ValidateGeneratedImage(image.ImageUri, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
+            image = await client.GenerateImageEditAsync(mask, maskFilename, CatPrompt, options);
         }
+        else if (imageSourceKind == ImageSourceKind.UsingFilePath)
+        {
+            image = await client.GenerateImageEditAsync(maskImagePath, CatPrompt, options);
+        }
+        else
+        {
+            Assert.Fail("Invalid source kind.");
+        }
+
+        Assert.That(image.ImageUri, Is.Not.Null);
+        Assert.That(image.ImageBytes, Is.Null);
+
+        Console.WriteLine(image.ImageUri.AbsoluteUri);
+
+        await ValidateGeneratedImage(image.ImageUri, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
     }
 
-    [Ignore("Test org cannot use this model")]
     [Test]
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GptImage1Works(ImageSourceKind imageSourceKind)
     {
-        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "gpt-image-1");
+
+        string maskFilename = "images_empty_room_with_mask.png";
+        string maskImagePath = Path.Combine("Assets", maskFilename);
+        GeneratedImage image = null;
+
+        ImageEditOptions options = new()
         {
-            ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "gpt-image-1");
+            Background = GeneratedImageBackground.Opaque,
+            Quality = GeneratedImageQuality.Low,
+            Size = GeneratedImageSize.W1024xH1024
+        };
 
-            string maskFilename = "images_empty_room_with_mask.png";
-            string maskImagePath = Path.Combine("Assets", maskFilename);
-            GeneratedImage image = null;
+        if (imageSourceKind == ImageSourceKind.UsingStream)
+        {
+            using FileStream mask = File.OpenRead(maskImagePath);
 
-            ImageEditOptions options = new()
-            {
-                Background = GeneratedImageBackground.Opaque,
-                Quality = GeneratedImageQuality.Low,
-                Size = GeneratedImageSize.W1024xH1024
-            };
-
-            if (imageSourceKind == ImageSourceKind.UsingStream)
-            {
-                using FileStream mask = File.OpenRead(maskImagePath);
-
-                image = await client.GenerateImageEditAsync(mask, maskFilename, CatPrompt, options);
-            }
-            else if (imageSourceKind == ImageSourceKind.UsingFilePath)
-            {
-                image = await client.GenerateImageEditAsync(maskImagePath, CatPrompt, options);
-            }
-            else
-            {
-                Assert.Fail("Invalid source kind.");
-            }
-
-            Assert.That(image.ImageUri, Is.Null);
-            Assert.That(image.ImageBytes, Is.Not.Null);
-
-            await ValidateGeneratedImage(image.ImageBytes, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
+            image = await client.GenerateImageEditAsync(mask, maskFilename, CatPrompt, options);
         }
+        else if (imageSourceKind == ImageSourceKind.UsingFilePath)
+        {
+            image = await client.GenerateImageEditAsync(maskImagePath, CatPrompt, options);
+        }
+        else
+        {
+            Assert.Fail("Invalid source kind.");
+        }
+
+        Assert.That(image.ImageUri, Is.Null);
+        Assert.That(image.ImageBytes, Is.Not.Null);
+
+        await ValidateGeneratedImage(image.ImageBytes, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
     }
 
     [Test]
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateImageEditWithBytesResponseWorks(ImageSourceKind imageSourceKind)
     {
-        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
+
+        string maskFilename = "images_empty_room_with_mask.png";
+        string maskImagePath = Path.Combine("Assets", maskFilename);
+        GeneratedImage image = null;
+
+        ImageEditOptions options = new()
         {
-            ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
+            ResponseFormat = GeneratedImageFormat.Bytes,
+            Size = GeneratedImageSize.W256xH256
+        };
 
-            string maskFilename = "images_empty_room_with_mask.png";
-            string maskImagePath = Path.Combine("Assets", maskFilename);
-            GeneratedImage image = null;
+        if (imageSourceKind == ImageSourceKind.UsingStream)
+        {
+            using FileStream mask = File.OpenRead(maskImagePath);
 
-            ImageEditOptions options = new()
-            {
-                ResponseFormat = GeneratedImageFormat.Bytes,
-                Size = GeneratedImageSize.W256xH256
-            };
-
-            if (imageSourceKind == ImageSourceKind.UsingStream)
-            {
-                using FileStream mask = File.OpenRead(maskImagePath);
-
-                image = await client.GenerateImageEditAsync(mask, maskFilename, CatPrompt, options);
-            }
-            else if (imageSourceKind == ImageSourceKind.UsingFilePath)
-            {
-                image = await client.GenerateImageEditAsync(maskImagePath, CatPrompt, options);
-            }
-            else
-            {
-                Assert.Fail("Invalid source kind.");
-            }
-
-            Assert.That(image.ImageUri, Is.Null);
-            Assert.That(image.ImageBytes, Is.Not.Null);
-
-            await ValidateGeneratedImage(image.ImageBytes, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
+            image = await client.GenerateImageEditAsync(mask, maskFilename, CatPrompt, options);
         }
+        else if (imageSourceKind == ImageSourceKind.UsingFilePath)
+        {
+            image = await client.GenerateImageEditAsync(maskImagePath, CatPrompt, options);
+        }
+        else
+        {
+            Assert.Fail("Invalid source kind.");
+        }
+
+        Assert.That(image.ImageUri, Is.Null);
+        Assert.That(image.ImageBytes, Is.Not.Null);
+
+        await ValidateGeneratedImage(image.ImageBytes, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
     }
 
     [Test]
     public void GenerateImageEditFromStreamCanParseServiceError()
     {
-        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
-        {
-            ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
-            string maskFilename = "images_empty_room_with_mask.png";
-            string maskImagePath = Path.Combine("Assets", maskFilename);
-            using FileStream mask = File.OpenRead(maskImagePath);
+        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
+        string maskFilename = "images_empty_room_with_mask.png";
+        string maskImagePath = Path.Combine("Assets", maskFilename);
+        using FileStream mask = File.OpenRead(maskImagePath);
 
-            ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageEditAsync(mask, maskFilename, CatPrompt));
+        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageEditAsync(mask, maskFilename, CatPrompt));
 
-            Assert.That(ex.Status, Is.EqualTo(401));
-        }
+        Assert.That(ex.Status, Is.EqualTo(401));
     }
 
     [Test]
     public void GenerateImageEditFromPathCanParseServiceError()
     {
-        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
-        {
-            ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
-            string maskFilename = "images_empty_room_with_mask.png";
-            string maskImagePath = Path.Combine("Assets", maskFilename);
+        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
+        string maskFilename = "images_empty_room_with_mask.png";
+        string maskImagePath = Path.Combine("Assets", maskFilename);
 
-            ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageEditAsync(maskImagePath, CatPrompt));
-            Assert.That(ex.Status, Is.EqualTo(401));
-        }
+        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageEditAsync(maskImagePath, CatPrompt));
+        Assert.That(ex.Status, Is.EqualTo(401));
     }
 
     [Test]
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateImageEditWithMaskFileWorks(ImageSourceKind imageSourceKind)
     {
-        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
+
+        string originalImageFilename = "images_empty_room.png";
+        string maskFilename = "images_empty_room_with_mask.png";
+        string originalImagePath = Path.Combine("Assets", originalImageFilename);
+        string maskImagePath = Path.Combine("Assets", maskFilename);
+        GeneratedImage image = null;
+
+        ImageEditOptions options = new()
         {
-            ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
+            ResponseFormat = GeneratedImageFormat.Uri,
+            Size = GeneratedImageSize.W256xH256
+        };
 
-            string originalImageFilename = "images_empty_room.png";
-            string maskFilename = "images_empty_room_with_mask.png";
-            string originalImagePath = Path.Combine("Assets", originalImageFilename);
-            string maskImagePath = Path.Combine("Assets", maskFilename);
-            GeneratedImage image = null;
+        if (imageSourceKind == ImageSourceKind.UsingStream)
+        {
+            using FileStream originalImage = File.OpenRead(originalImagePath);
+            using FileStream mask = File.OpenRead(maskImagePath);
 
-            ImageEditOptions options = new()
-            {
-                ResponseFormat = GeneratedImageFormat.Uri,
-                Size = GeneratedImageSize.W256xH256
-            };
-
-            if (imageSourceKind == ImageSourceKind.UsingStream)
-            {
-                using FileStream originalImage = File.OpenRead(originalImagePath);
-                using FileStream mask = File.OpenRead(maskImagePath);
-
-                image = await client.GenerateImageEditAsync(originalImage, originalImageFilename, CatPrompt, mask, maskFilename, options);
-            }
-            else if (imageSourceKind == ImageSourceKind.UsingFilePath)
-            {
-                image = await client.GenerateImageEditAsync(originalImagePath, CatPrompt, maskImagePath, options);
-            }
-            else
-            {
-                Assert.Fail("Invalid source kind.");
-            }
-
-            Assert.That(image.ImageUri, Is.Not.Null);
-            Assert.That(image.ImageBytes, Is.Null);
-            Console.WriteLine(image.ImageUri.AbsoluteUri);
-
-            await ValidateGeneratedImage(image.ImageUri, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
+            image = await client.GenerateImageEditAsync(originalImage, originalImageFilename, CatPrompt, mask, maskFilename, options);
         }
+        else if (imageSourceKind == ImageSourceKind.UsingFilePath)
+        {
+            image = await client.GenerateImageEditAsync(originalImagePath, CatPrompt, maskImagePath, options);
+        }
+        else
+        {
+            Assert.Fail("Invalid source kind.");
+        }
+
+        Assert.That(image.ImageUri, Is.Not.Null);
+        Assert.That(image.ImageBytes, Is.Null);
+        Console.WriteLine(image.ImageUri.AbsoluteUri);
+
+        await ValidateGeneratedImage(image.ImageUri, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
     }
 
     [Test]
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateImageEditWithMaskFileWithBytesResponseWorks(ImageSourceKind imageSourceKind)
     {
-        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
+
+        string originalImageFilename = "images_empty_room.png";
+        string maskFilename = "images_empty_room_with_mask.png";
+        string originalImagePath = Path.Combine("Assets", originalImageFilename);
+        string maskImagePath = Path.Combine("Assets", maskFilename);
+        GeneratedImage image = null;
+
+        ImageEditOptions options = new()
         {
-            ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
+            ResponseFormat = GeneratedImageFormat.Bytes,
+            Size = GeneratedImageSize.W256xH256
+        };
 
-            string originalImageFilename = "images_empty_room.png";
-            string maskFilename = "images_empty_room_with_mask.png";
-            string originalImagePath = Path.Combine("Assets", originalImageFilename);
-            string maskImagePath = Path.Combine("Assets", maskFilename);
-            GeneratedImage image = null;
+        if (imageSourceKind == ImageSourceKind.UsingStream)
+        {
+            using FileStream originalImage = File.OpenRead(originalImagePath);
+            using FileStream mask = File.OpenRead(maskImagePath);
 
-            ImageEditOptions options = new()
-            {
-                ResponseFormat = GeneratedImageFormat.Bytes,
-                Size = GeneratedImageSize.W256xH256
-            };
-
-            if (imageSourceKind == ImageSourceKind.UsingStream)
-            {
-                using FileStream originalImage = File.OpenRead(originalImagePath);
-                using FileStream mask = File.OpenRead(maskImagePath);
-
-                image = await client.GenerateImageEditAsync(originalImage, originalImageFilename, CatPrompt, mask, maskFilename, options);
-            }
-            else if (imageSourceKind == ImageSourceKind.UsingFilePath)
-            {
-                image = await client.GenerateImageEditAsync(originalImagePath, CatPrompt, maskImagePath, options);
-            }
-            else
-            {
-                Assert.Fail("Invalid source kind.");
-            }
-
-            Assert.That(image.ImageUri, Is.Null);
-            Assert.That(image.ImageBytes, Is.Not.Null);
-
-            await ValidateGeneratedImage(image.ImageBytes, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
+            image = await client.GenerateImageEditAsync(originalImage, originalImageFilename, CatPrompt, mask, maskFilename, options);
         }
+        else if (imageSourceKind == ImageSourceKind.UsingFilePath)
+        {
+            image = await client.GenerateImageEditAsync(originalImagePath, CatPrompt, maskImagePath, options);
+        }
+        else
+        {
+            Assert.Fail("Invalid source kind.");
+        }
+
+        Assert.That(image.ImageUri, Is.Null);
+        Assert.That(image.ImageBytes, Is.Not.Null);
+
+        await ValidateGeneratedImage(image.ImageBytes, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
     }
 
     [Test]
     public void GenerateImageEditWithMaskFileFromStreamCanParseServiceError()
     {
-        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
-        {
-            ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
-            string originalImageFilename = "images_empty_room.png";
-            string maskFilename = "images_empty_room_with_mask.png";
-            string originalImagePath = Path.Combine("Assets", originalImageFilename);
-            string maskImagePath = Path.Combine("Assets", maskFilename);
-            using FileStream originalImage = File.OpenRead(originalImagePath);
-            using FileStream mask = File.OpenRead(maskImagePath);
+        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
+        string originalImageFilename = "images_empty_room.png";
+        string maskFilename = "images_empty_room_with_mask.png";
+        string originalImagePath = Path.Combine("Assets", originalImageFilename);
+        string maskImagePath = Path.Combine("Assets", maskFilename);
+        using FileStream originalImage = File.OpenRead(originalImagePath);
+        using FileStream mask = File.OpenRead(maskImagePath);
 
-            ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageEditAsync(originalImage, originalImageFilename, CatPrompt, mask, maskFilename));
-            Assert.That(ex.Status, Is.EqualTo(401));
-        }
+        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageEditAsync(originalImage, originalImageFilename, CatPrompt, mask, maskFilename));
+        Assert.That(ex.Status, Is.EqualTo(401));
     }
 
     [Test]
     public void GenerateImageEditWithMaskFileFromPathCanParseServiceError()
     {
-        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
-        {
-            ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
-            string originalImageFilename = "images_empty_room.png";
-            string maskFilename = "images_empty_room_with_mask.png";
-            string originalImagePath = Path.Combine("Assets", originalImageFilename);
-            string maskImagePath = Path.Combine("Assets", maskFilename);
+        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
+        string originalImageFilename = "images_empty_room.png";
+        string maskFilename = "images_empty_room_with_mask.png";
+        string originalImagePath = Path.Combine("Assets", originalImageFilename);
+        string maskImagePath = Path.Combine("Assets", maskFilename);
 
-            ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageEditAsync(originalImagePath, CatPrompt, maskImagePath));
-            Assert.That(ex.Status, Is.EqualTo(401));
-        }
+        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageEditAsync(originalImagePath, CatPrompt, maskImagePath));
+        Assert.That(ex.Status, Is.EqualTo(401));
     }
 
     [Test]
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateMultipleImageEditsWorks(ImageSourceKind imageSourceKind)
     {
-        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
+
+        string maskFilename = "images_empty_room_with_mask.png";
+        string maskImagePath = Path.Combine("Assets", maskFilename);
+        GeneratedImageCollection images = null;
+
+        ImageEditOptions options = new()
         {
-            ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
+            ResponseFormat = GeneratedImageFormat.Uri,
+            Size = GeneratedImageSize.W256xH256
+        };
 
-            string maskFilename = "images_empty_room_with_mask.png";
-            string maskImagePath = Path.Combine("Assets", maskFilename);
-            GeneratedImageCollection images = null;
+        if (imageSourceKind == ImageSourceKind.UsingStream)
+        {
+            using FileStream mask = File.OpenRead(maskImagePath);
 
-            ImageEditOptions options = new()
-            {
-                ResponseFormat = GeneratedImageFormat.Uri,
-                Size = GeneratedImageSize.W256xH256
-            };
+            images = await client.GenerateImageEditsAsync(mask, maskFilename, CatPrompt, 2, options);
+        }
+        else if (imageSourceKind == ImageSourceKind.UsingFilePath)
+        {
+            images = await client.GenerateImageEditsAsync(maskImagePath, CatPrompt, 2, options);
+        }
+        else
+        {
+            Assert.Fail("Invalid source kind.");
+        }
 
-            if (imageSourceKind == ImageSourceKind.UsingStream)
-            {
-                using FileStream mask = File.OpenRead(maskImagePath);
+        long unixTime2024 = (new DateTimeOffset(2024, 01, 01, 0, 0, 0, TimeSpan.Zero)).ToUnixTimeSeconds();
 
-                images = await client.GenerateImageEditsAsync(mask, maskFilename, CatPrompt, 2, options);
-            }
-            else if (imageSourceKind == ImageSourceKind.UsingFilePath)
-            {
-                images = await client.GenerateImageEditsAsync(maskImagePath, CatPrompt, 2, options);
-            }
-            else
-            {
-                Assert.Fail("Invalid source kind.");
-            }
+        Assert.That(images.CreatedAt.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2024));
+        Assert.That(images.Count, Is.EqualTo(2));
 
-            long unixTime2024 = (new DateTimeOffset(2024, 01, 01, 0, 0, 0, TimeSpan.Zero)).ToUnixTimeSeconds();
-
-            Assert.That(images.CreatedAt.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2024));
-            Assert.That(images.Count, Is.EqualTo(2));
-
-            foreach (GeneratedImage image in images)
-            {
-                Assert.That(image.ImageUri, Is.Not.Null);
-                Assert.That(image.ImageBytes, Is.Null);
-                Console.WriteLine(image.ImageUri.AbsoluteUri);
-                await ValidateGeneratedImage(image.ImageUri, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
-            }
+        foreach (GeneratedImage image in images)
+        {
+            Assert.That(image.ImageUri, Is.Not.Null);
+            Assert.That(image.ImageBytes, Is.Null);
+            Console.WriteLine(image.ImageUri.AbsoluteUri);
+            await ValidateGeneratedImage(image.ImageUri, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
         }
     }
 
@@ -343,126 +313,114 @@ public partial class ImageEditsTests : ImageTestFixtureBase
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateMultipleImageEditsWithBytesResponseWorks(ImageSourceKind imageSourceKind)
     {
-        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
+
+        string maskFilename = "images_empty_room_with_mask.png";
+        string maskImagePath = Path.Combine("Assets", maskFilename);
+        GeneratedImageCollection images = null;
+
+        ImageEditOptions options = new()
         {
-            ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
+            ResponseFormat = GeneratedImageFormat.Bytes,
+            Size = GeneratedImageSize.W256xH256
+        };
 
-            string maskFilename = "images_empty_room_with_mask.png";
-            string maskImagePath = Path.Combine("Assets", maskFilename);
-            GeneratedImageCollection images = null;
+        if (imageSourceKind == ImageSourceKind.UsingStream)
+        {
+            using FileStream mask = File.OpenRead(maskImagePath);
 
-            ImageEditOptions options = new()
-            {
-                ResponseFormat = GeneratedImageFormat.Bytes,
-                Size = GeneratedImageSize.W256xH256
-            };
+            images = await client.GenerateImageEditsAsync(mask, maskFilename, CatPrompt, 2, options);
+        }
+        else if (imageSourceKind == ImageSourceKind.UsingFilePath)
+        {
+            images = await client.GenerateImageEditsAsync(maskImagePath, CatPrompt, 2, options);
+        }
+        else
+        {
+            Assert.Fail("Invalid source kind.");
+        }
 
-            if (imageSourceKind == ImageSourceKind.UsingStream)
-            {
-                using FileStream mask = File.OpenRead(maskImagePath);
+        long unixTime2024 = (new DateTimeOffset(2024, 01, 01, 0, 0, 0, TimeSpan.Zero)).ToUnixTimeSeconds();
 
-                images = await client.GenerateImageEditsAsync(mask, maskFilename, CatPrompt, 2, options);
-            }
-            else if (imageSourceKind == ImageSourceKind.UsingFilePath)
-            {
-                images = await client.GenerateImageEditsAsync(maskImagePath, CatPrompt, 2, options);
-            }
-            else
-            {
-                Assert.Fail("Invalid source kind.");
-            }
+        Assert.That(images.CreatedAt.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2024));
+        Assert.That(images.Count, Is.EqualTo(2));
 
-            long unixTime2024 = (new DateTimeOffset(2024, 01, 01, 0, 0, 0, TimeSpan.Zero)).ToUnixTimeSeconds();
-
-            Assert.That(images.CreatedAt.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2024));
-            Assert.That(images.Count, Is.EqualTo(2));
-
-            foreach (GeneratedImage image in images)
-            {
-                Assert.That(image.ImageUri, Is.Null);
-                Assert.That(image.ImageBytes, Is.Not.Null);
-                await ValidateGeneratedImage(image.ImageBytes, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
-            }
+        foreach (GeneratedImage image in images)
+        {
+            Assert.That(image.ImageUri, Is.Null);
+            Assert.That(image.ImageBytes, Is.Not.Null);
+            await ValidateGeneratedImage(image.ImageBytes, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
         }
     }
 
     [Test]
     public void GenerateMultipleImageEditsFromStreamCanParseServiceError()
     {
-        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
-        {
-            ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
-            string maskFilename = "images_empty_room_with_mask.png";
-            string maskImagePath = Path.Combine("Assets", maskFilename);
-            using FileStream mask = File.OpenRead(maskImagePath);
+        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
+        string maskFilename = "images_empty_room_with_mask.png";
+        string maskImagePath = Path.Combine("Assets", maskFilename);
+        using FileStream mask = File.OpenRead(maskImagePath);
 
-            ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageEditsAsync(mask, maskFilename, CatPrompt, 2));
-            Assert.That(ex.Status, Is.EqualTo(401));
-        }
+        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageEditsAsync(mask, maskFilename, CatPrompt, 2));
+        Assert.That(ex.Status, Is.EqualTo(401));
     }
 
     [Test]
     public void GenerateMultipleImageEditsFromPathCanParseServiceError()
     {
-        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
-        {
-            ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
-            string maskFilename = "images_empty_room_with_mask.png";
-            string maskImagePath = Path.Combine("Assets", maskFilename);
+        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
+        string maskFilename = "images_empty_room_with_mask.png";
+        string maskImagePath = Path.Combine("Assets", maskFilename);
 
-            ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageEditsAsync(maskImagePath, CatPrompt, 2));
-            Assert.That(ex.Status, Is.EqualTo(401));
-        }
+        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageEditsAsync(maskImagePath, CatPrompt, 2));
+        Assert.That(ex.Status, Is.EqualTo(401));
     }
 
     [Test]
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateMultipleImageEditsWithMaskFileWorks(ImageSourceKind imageSourceKind)
     {
-        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
+
+        string originalImageFilename = "images_empty_room.png";
+        string maskFilename = "images_empty_room_with_mask.png";
+        string originalImagePath = Path.Combine("Assets", originalImageFilename);
+        string maskImagePath = Path.Combine("Assets", maskFilename);
+        GeneratedImageCollection images = null;
+
+        ImageEditOptions options = new()
         {
-            ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
+            ResponseFormat = GeneratedImageFormat.Uri,
+            Size = GeneratedImageSize.W256xH256
+        };
 
-            string originalImageFilename = "images_empty_room.png";
-            string maskFilename = "images_empty_room_with_mask.png";
-            string originalImagePath = Path.Combine("Assets", originalImageFilename);
-            string maskImagePath = Path.Combine("Assets", maskFilename);
-            GeneratedImageCollection images = null;
+        if (imageSourceKind == ImageSourceKind.UsingStream)
+        {
+            using FileStream originalImage = File.OpenRead(originalImagePath);
+            using FileStream mask = File.OpenRead(maskImagePath);
 
-            ImageEditOptions options = new()
-            {
-                ResponseFormat = GeneratedImageFormat.Uri,
-                Size = GeneratedImageSize.W256xH256
-            };
+            images = await client.GenerateImageEditsAsync(originalImage, originalImageFilename, CatPrompt, mask, maskFilename, 2, options);
+        }
+        else if (imageSourceKind == ImageSourceKind.UsingFilePath)
+        {
+            images = await client.GenerateImageEditsAsync(originalImagePath, CatPrompt, maskImagePath, 2, options);
+        }
+        else
+        {
+            Assert.Fail("Invalid source kind.");
+        }
 
-            if (imageSourceKind == ImageSourceKind.UsingStream)
-            {
-                using FileStream originalImage = File.OpenRead(originalImagePath);
-                using FileStream mask = File.OpenRead(maskImagePath);
+        long unixTime2024 = (new DateTimeOffset(2024, 01, 01, 0, 0, 0, TimeSpan.Zero)).ToUnixTimeSeconds();
 
-                images = await client.GenerateImageEditsAsync(originalImage, originalImageFilename, CatPrompt, mask, maskFilename, 2, options);
-            }
-            else if (imageSourceKind == ImageSourceKind.UsingFilePath)
-            {
-                images = await client.GenerateImageEditsAsync(originalImagePath, CatPrompt, maskImagePath, 2, options);
-            }
-            else
-            {
-                Assert.Fail("Invalid source kind.");
-            }
+        Assert.That(images.CreatedAt.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2024));
+        Assert.That(images.Count, Is.EqualTo(2));
 
-            long unixTime2024 = (new DateTimeOffset(2024, 01, 01, 0, 0, 0, TimeSpan.Zero)).ToUnixTimeSeconds();
-
-            Assert.That(images.CreatedAt.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2024));
-            Assert.That(images.Count, Is.EqualTo(2));
-
-            foreach (GeneratedImage image in images)
-            {
-                Assert.That(image.ImageUri, Is.Not.Null);
-                Assert.That(image.ImageBytes, Is.Null);
-                Console.WriteLine(image.ImageUri.AbsoluteUri);
-                await ValidateGeneratedImage(image.ImageUri, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
-            }
+        foreach (GeneratedImage image in images)
+        {
+            Assert.That(image.ImageUri, Is.Not.Null);
+            Assert.That(image.ImageBytes, Is.Null);
+            Console.WriteLine(image.ImageUri.AbsoluteUri);
+            await ValidateGeneratedImage(image.ImageUri, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
         }
     }
 
@@ -470,83 +428,74 @@ public partial class ImageEditsTests : ImageTestFixtureBase
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateMultipleImageEditsWithMaskFileWithBytesResponseWorks(ImageSourceKind imageSourceKind)
     {
-        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
+
+        string originalImageFilename = "images_empty_room.png";
+        string maskFilename = "images_empty_room_with_mask.png";
+        string originalImagePath = Path.Combine("Assets", originalImageFilename);
+        string maskImagePath = Path.Combine("Assets", maskFilename);
+        GeneratedImageCollection images = null;
+
+        ImageEditOptions options = new()
         {
-            ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
+            ResponseFormat = GeneratedImageFormat.Bytes,
+            Size = GeneratedImageSize.W256xH256
+        };
 
-            string originalImageFilename = "images_empty_room.png";
-            string maskFilename = "images_empty_room_with_mask.png";
-            string originalImagePath = Path.Combine("Assets", originalImageFilename);
-            string maskImagePath = Path.Combine("Assets", maskFilename);
-            GeneratedImageCollection images = null;
+        if (imageSourceKind == ImageSourceKind.UsingStream)
+        {
+            using FileStream originalImage = File.OpenRead(originalImagePath);
+            using FileStream mask = File.OpenRead(maskImagePath);
 
-            ImageEditOptions options = new()
-            {
-                ResponseFormat = GeneratedImageFormat.Bytes,
-                Size = GeneratedImageSize.W256xH256
-            };
+            images = await client.GenerateImageEditsAsync(originalImage, originalImageFilename, CatPrompt, mask, maskFilename, 2, options);
+        }
+        else if (imageSourceKind == ImageSourceKind.UsingFilePath)
+        {
+            images = await client.GenerateImageEditsAsync(originalImagePath, CatPrompt, maskImagePath, 2, options);
+        }
+        else
+        {
+            Assert.Fail("Invalid source kind.");
+        }
 
-            if (imageSourceKind == ImageSourceKind.UsingStream)
-            {
-                using FileStream originalImage = File.OpenRead(originalImagePath);
-                using FileStream mask = File.OpenRead(maskImagePath);
+        long unixTime2024 = (new DateTimeOffset(2024, 01, 01, 0, 0, 0, TimeSpan.Zero)).ToUnixTimeSeconds();
 
-                images = await client.GenerateImageEditsAsync(originalImage, originalImageFilename, CatPrompt, mask, maskFilename, 2, options);
-            }
-            else if (imageSourceKind == ImageSourceKind.UsingFilePath)
-            {
-                images = await client.GenerateImageEditsAsync(originalImagePath, CatPrompt, maskImagePath, 2, options);
-            }
-            else
-            {
-                Assert.Fail("Invalid source kind.");
-            }
+        Assert.That(images.CreatedAt.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2024));
+        Assert.That(images.Count, Is.EqualTo(2));
 
-            long unixTime2024 = (new DateTimeOffset(2024, 01, 01, 0, 0, 0, TimeSpan.Zero)).ToUnixTimeSeconds();
-
-            Assert.That(images.CreatedAt.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2024));
-            Assert.That(images.Count, Is.EqualTo(2));
-
-            foreach (GeneratedImage image in images)
-            {
-                Assert.That(image.ImageUri, Is.Null);
-                Assert.That(image.ImageBytes, Is.Not.Null);
-                await ValidateGeneratedImage(image.ImageBytes, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
-            }
+        foreach (GeneratedImage image in images)
+        {
+            Assert.That(image.ImageUri, Is.Null);
+            Assert.That(image.ImageBytes, Is.Not.Null);
+            await ValidateGeneratedImage(image.ImageBytes, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
         }
     }
 
     [Test]
     public void GenerateMultipleImageEditsWithMaskFileFromStreamCanParseServiceError()
     {
-        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
-        {
-            ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
-            string originalImageFilename = "images_empty_room.png";
-            string maskFilename = "images_empty_room_with_mask.png";
-            string originalImagePath = Path.Combine("Assets", originalImageFilename);
-            string maskImagePath = Path.Combine("Assets", maskFilename);
-            using FileStream originalImage = File.OpenRead(originalImagePath);
-            using FileStream mask = File.OpenRead(maskImagePath);
+        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
+        string originalImageFilename = "images_empty_room.png";
+        string maskFilename = "images_empty_room_with_mask.png";
+        string originalImagePath = Path.Combine("Assets", originalImageFilename);
+        string maskImagePath = Path.Combine("Assets", maskFilename);
+        using FileStream originalImage = File.OpenRead(originalImagePath);
+        using FileStream mask = File.OpenRead(maskImagePath);
 
-            ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageEditsAsync(originalImage, originalImageFilename, CatPrompt, mask, maskFilename, 2));
-            Assert.That(ex.Status, Is.EqualTo(401));
-        }
+        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageEditsAsync(originalImage, originalImageFilename, CatPrompt, mask, maskFilename, 2));
+        Assert.That(ex.Status, Is.EqualTo(401));
     }
 
     [Test]
     public void GenerateMultipleImageEditsWithMaskFileFromPathCanParseServiceError()
     {
-        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
-        {
-            ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
-            string originalImageFilename = "images_empty_room.png";
-            string maskFilename = "images_empty_room_with_mask.png";
-            string originalImagePath = Path.Combine("Assets", originalImageFilename);
-            string maskImagePath = Path.Combine("Assets", maskFilename);
+        ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
+        string originalImageFilename = "images_empty_room.png";
+        string maskFilename = "images_empty_room_with_mask.png";
+        string originalImagePath = Path.Combine("Assets", originalImageFilename);
+        string maskImagePath = Path.Combine("Assets", maskFilename);
 
-            ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageEditsAsync(originalImagePath, CatPrompt, maskImagePath, 2));
-            Assert.That(ex.Status, Is.EqualTo(401));
-        }
+        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GenerateImageEditsAsync(originalImagePath, CatPrompt, maskImagePath, 2));
+        Assert.That(ex.Status, Is.EqualTo(401));
     }
 }

@@ -46,19 +46,23 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "98040eaf6868ba46-SEA",
+        "CF-RAY": "983df4018e2ab89e-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "1649",
+        "Content-Length": "1690",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 23:13:58 GMT",
+        "Date": "Tue, 23 Sep 2025 23:52:00 GMT",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "1027",
+        "openai-processing-ms": "1414",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
+        "Set-Cookie": [
+          "Sanitized",
+          "Sanitized"
+        ],
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "1031",
+        "x-envoy-upstream-service-time": "1420",
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "150000000",
         "x-ratelimit-remaining-requests": "29999",
@@ -68,11 +72,14 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_081f045b2a9e255b0068c9ef35b9b081938eb3ff90cf516d27",
+        "id": "resp_68d3329f57948195aa367352ad162cad0dbdf7995900095e",
         "object": "response",
-        "created_at": 1758064437,
+        "created_at": 1758671519,
         "status": "completed",
         "background": false,
+        "billing": {
+          "payer": "developer"
+        },
         "error": null,
         "incomplete_details": null,
         "instructions": null,
@@ -81,11 +88,11 @@
         "model": "gpt-4o-mini-2024-07-18",
         "output": [
           {
-            "id": "fc_081f045b2a9e255b0068c9ef3673bc8193ab54331307630861",
+            "id": "fc_68d332a0743881959b19821c9ceea91c0dbdf7995900095e",
             "type": "function_call",
             "status": "completed",
             "arguments": "{\"time_of_day\":\"morning\"}",
-            "call_id": "call_hEDXgthz7mdfMFLWwSK1hfJM",
+            "call_id": "call_LLIj0HSSt3jMl4hU3V4AKCUl",
             "name": "get_custom_greeting"
           }
         ],
@@ -142,5 +149,8 @@
       }
     }
   ],
-  "Variables": {}
+  "Variables": {
+    "DateTimeOffsetNow": "2025-09-23T16:52:00.7188033-07:00",
+    "OPEN-API-KEY": "api-key"
+  }
 }

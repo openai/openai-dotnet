@@ -1,0 +1,105 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "250",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-5",
+        "tools": [
+          {
+            "type": "mcp",
+            "server_label": "dmcp",
+            "server_url": "https://dmcp-server.deno.dev/sse",
+            "require_approval": "never"
+          }
+        ],
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Roll 2d4+1"
+              }
+            ]
+          }
+        ],
+        "stream": true
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "983dfa395968b9da-SEA",
+        "Connection": "keep-alive",
+        "Content-Type": "text/event-stream; charset=utf-8",
+        "Date": "Tue, 23 Sep 2025 23:56:13 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "130",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "140",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": [
+        "event: response.created\n",
+        "data: {\"type\":\"response.created\",\"sequence_number\":0,\"response\":{\"id\":\"resp_68d3339db9e48195bbfca8f41b7fd5c303e6ce4d32e09725\",\"object\":\"response\",\"created_at\":1758671773,\"status\":\"in_progress\",\"background\":false,\"error\":null,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-5-2025-08-07\",\"output\":[],\"parallel_tool_calls\":true,\"previous_response_id\":null,\"prompt_cache_key\":null,\"reasoning\":{\"effort\":\"medium\",\"summary\":null},\"safety_identifier\":null,\"service_tier\":\"auto\",\"store\":true,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":\"auto\",\"tools\":[{\"type\":\"mcp\",\"allowed_tools\":null,\"headers\":null,\"require_approval\":\"never\",\"server_description\":null,\"server_label\":\"dmcp\",\"server_url\":\"https://dmcp-server.deno.dev/<redacted>\"}],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":null,\"user\":null,\"metadata\":{}}}\n\n",
+        "event: response.in_progress\n",
+        "data: {\"type\":\"response.in_progress\",\"sequence_number\":1,\"response\":{\"id\":\"resp_68d3339db9e48195bbfca8f41b7fd5c303e6ce4d32e09725\",\"object\":\"response\",\"created_at\":1758671773,\"status\":\"in_progress\",\"background\":false,\"error\":null,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-5-2025-08-07\",\"output\":[],\"parallel_tool_calls\":true,\"previous_response_id\":null,\"prompt_cache_key\":null,\"reasoning\":{\"effort\":\"medium\",\"summary\":null},\"safety_identifier\":null,\"service_tier\":\"auto\",\"store\":true,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":\"auto\",\"tools\":[{\"type\":\"mcp\",\"allowed_tools\":null,\"headers\":null,\"require_approval\":\"never\",\"server_description\":null,\"server_label\":\"dmcp\",\"server_url\":\"https://dmcp-server.deno.dev/<redacted>\"}],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":null,\"user\":null,\"metadata\":{}}}\n\n",
+        "event: response.output_item.added\n",
+        "data: {\"type\":\"response.output_item.added\",\"sequence_number\":2,\"output_index\":0,\"item\":{\"id\":\"mcpl_68d3339dd8d88195866f42b292861d5c03e6ce4d32e09725\",\"type\":\"mcp_list_tools\",\"server_label\":\"dmcp\",\"tools\":[]}}\n\n",
+        "event: response.mcp_list_tools.in_progress\n",
+        "data: {\"type\":\"response.mcp_list_tools.in_progress\",\"sequence_number\":3,\"output_index\":0,\"item_id\":\"mcpl_68d3339dd8d88195866f42b292861d5c03e6ce4d32e09725\"}\n\n",
+        "event: response.mcp_list_tools.completed\n",
+        "data: {\"type\":\"response.mcp_list_tools.completed\",\"sequence_number\":4,\"output_index\":0,\"item_id\":\"mcpl_68d3339dd8d88195866f42b292861d5c03e6ce4d32e09725\"}\n\n",
+        "event: response.output_item.done\n",
+        "data: {\"type\":\"response.output_item.done\",\"sequence_number\":5,\"output_index\":0,\"item\":{\"id\":\"mcpl_68d3339dd8d88195866f42b292861d5c03e6ce4d32e09725\",\"type\":\"mcp_list_tools\",\"server_label\":\"dmcp\",\"tools\":[{\"annotations\":{\"read_only\":false},\"description\":\"\\n  Given a string of text describing a dice roll in \\n  Dungeons and Dragons, provide a result of the roll.\\n\\n  Example input: 2d6 + 1d4\\n  Example output: 14\\n\",\"input_schema\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"properties\":{\"diceRollExpression\":{\"type\":\"string\"}},\"required\":[\"diceRollExpression\"],\"additionalProperties\":false},\"name\":\"roll\"}]}}\n\n",
+        "event: response.output_item.added\n",
+        "data: {\"type\":\"response.output_item.added\",\"sequence_number\":6,\"output_index\":1,\"item\":{\"id\":\"rs_68d333a0e9848195b32012d7f0f3495d03e6ce4d32e09725\",\"type\":\"reasoning\",\"summary\":[]}}\n\n",
+        "event: response.output_item.done\n",
+        "data: {\"type\":\"response.output_item.done\",\"sequence_number\":7,\"output_index\":1,\"item\":{\"id\":\"rs_68d333a0e9848195b32012d7f0f3495d03e6ce4d32e09725\",\"type\":\"reasoning\",\"summary\":[]}}\n\n",
+        "event: response.output_item.added\n",
+        "data: {\"type\":\"response.output_item.added\",\"sequence_number\":8,\"output_index\":2,\"item\":{\"id\":\"mcp_68d333a3ac108195b1f6926e2eca571f03e6ce4d32e09725\",\"type\":\"mcp_call\",\"approval_request_id\":null,\"arguments\":\"\",\"error\":null,\"name\":\"roll\",\"output\":null,\"server_label\":\"dmcp\"}}\n\n",
+        "event: response.mcp_call.in_progress\n",
+        "data: {\"type\":\"response.mcp_call.in_progress\",\"sequence_number\":9,\"output_index\":2,\"item_id\":\"mcp_68d333a3ac108195b1f6926e2eca571f03e6ce4d32e09725\"}\n\n",
+        "event: response.mcp_call_arguments.delta\n",
+        "data: {\"type\":\"response.mcp_call_arguments.delta\",\"sequence_number\":10,\"output_index\":2,\"item_id\":\"mcp_68d333a3ac108195b1f6926e2eca571f03e6ce4d32e09725\",\"delta\":\"{\\\"diceRollExpression\\\":\\\"2d4+1\\\"}\",\"obfuscation\":\"8J\"}\n\n",
+        "event: response.mcp_call_arguments.done\n",
+        "data: {\"type\":\"response.mcp_call_arguments.done\",\"sequence_number\":11,\"output_index\":2,\"item_id\":\"mcp_68d333a3ac108195b1f6926e2eca571f03e6ce4d32e09725\",\"arguments\":\"{\\\"diceRollExpression\\\":\\\"2d4+1\\\"}\"}\n\n",
+        "event: response.mcp_call.completed\n",
+        "data: {\"type\":\"response.mcp_call.completed\",\"sequence_number\":12,\"output_index\":2,\"item_id\":\"mcp_68d333a3ac108195b1f6926e2eca571f03e6ce4d32e09725\"}\n\n",
+        "event: response.output_item.done\n",
+        "data: {\"type\":\"response.output_item.done\",\"sequence_number\":13,\"output_index\":2,\"item\":{\"id\":\"mcp_68d333a3ac108195b1f6926e2eca571f03e6ce4d32e09725\",\"type\":\"mcp_call\",\"approval_request_id\":null,\"arguments\":\"{\\\"diceRollExpression\\\":\\\"2d4+1\\\"}\",\"error\":null,\"name\":\"roll\",\"output\":\"6\",\"server_label\":\"dmcp\"}}\n\n",
+        "event: response.output_item.added\n",
+        "data: {\"type\":\"response.output_item.added\",\"sequence_number\":14,\"output_index\":3,\"item\":{\"id\":\"msg_68d333a5509c8195af3bf54fa15f8bbe03e6ce4d32e09725\",\"type\":\"message\",\"status\":\"in_progress\",\"content\":[],\"role\":\"assistant\"}}\n\n",
+        "event: response.content_part.added\n",
+        "data: {\"type\":\"response.content_part.added\",\"sequence_number\":15,\"item_id\":\"msg_68d333a5509c8195af3bf54fa15f8bbe03e6ce4d32e09725\",\"output_index\":3,\"content_index\":0,\"part\":{\"type\":\"output_text\",\"annotations\":[],\"logprobs\":[],\"text\":\"\"}}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"sequence_number\":16,\"item_id\":\"msg_68d333a5509c8195af3bf54fa15f8bbe03e6ce4d32e09725\",\"output_index\":3,\"content_index\":0,\"delta\":\"6\",\"logprobs\":[],\"obfuscation\":\"dVSmPnX350HKylP\"}\n\n",
+        "event: response.output_text.done\n",
+        "data: {\"type\":\"response.output_text.done\",\"sequence_number\":17,\"item_id\":\"msg_68d333a5509c8195af3bf54fa15f8bbe03e6ce4d32e09725\",\"output_index\":3,\"content_index\":0,\"text\":\"6\",\"logprobs\":[]}\n\n",
+        "event: response.content_part.done\n",
+        "data: {\"type\":\"response.content_part.done\",\"sequence_number\":18,\"item_id\":\"msg_68d333a5509c8195af3bf54fa15f8bbe03e6ce4d32e09725\",\"output_index\":3,\"content_index\":0,\"part\":{\"type\":\"output_text\",\"annotations\":[],\"logprobs\":[],\"text\":\"6\"}}\n\n",
+        "event: response.output_item.done\n",
+        "data: {\"type\":\"response.output_item.done\",\"sequence_number\":19,\"output_index\":3,\"item\":{\"id\":\"msg_68d333a5509c8195af3bf54fa15f8bbe03e6ce4d32e09725\",\"type\":\"message\",\"status\":\"completed\",\"content\":[{\"type\":\"output_text\",\"annotations\":[],\"logprobs\":[],\"text\":\"6\"}],\"role\":\"assistant\"}}\n\n",
+        "event: response.completed\n",
+        "data: {\"type\":\"response.completed\",\"sequence_number\":20,\"response\":{\"id\":\"resp_68d3339db9e48195bbfca8f41b7fd5c303e6ce4d32e09725\",\"object\":\"response\",\"created_at\":1758671773,\"status\":\"completed\",\"background\":false,\"error\":null,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-5-2025-08-07\",\"output\":[{\"id\":\"mcpl_68d3339dd8d88195866f42b292861d5c03e6ce4d32e09725\",\"type\":\"mcp_list_tools\",\"server_label\":\"dmcp\",\"tools\":[{\"annotations\":{\"read_only\":false},\"description\":\"\\n  Given a string of text describing a dice roll in \\n  Dungeons and Dragons, provide a result of the roll.\\n\\n  Example input: 2d6 + 1d4\\n  Example output: 14\\n\",\"input_schema\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"properties\":{\"diceRollExpression\":{\"type\":\"string\"}},\"required\":[\"diceRollExpression\"],\"additionalProperties\":false},\"name\":\"roll\"}]},{\"id\":\"rs_68d333a0e9848195b32012d7f0f3495d03e6ce4d32e09725\",\"type\":\"reasoning\",\"summary\":[]},{\"id\":\"mcp_68d333a3ac108195b1f6926e2eca571f03e6ce4d32e09725\",\"type\":\"mcp_call\",\"approval_request_id\":null,\"arguments\":\"{\\\"diceRollExpression\\\":\\\"2d4+1\\\"}\",\"error\":null,\"name\":\"roll\",\"output\":\"6\",\"server_label\":\"dmcp\"},{\"id\":\"msg_68d333a5509c8195af3bf54fa15f8bbe03e6ce4d32e09725\",\"type\":\"message\",\"status\":\"completed\",\"content\":[{\"type\":\"output_text\",\"annotations\":[],\"logprobs\":[],\"text\":\"6\"}],\"role\":\"assistant\"}],\"parallel_tool_calls\":true,\"previous_response_id\":null,\"prompt_cache_key\":null,\"reasoning\":{\"effort\":\"medium\",\"summary\":null},\"safety_identifier\":null,\"service_tier\":\"default\",\"store\":true,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":\"auto\",\"tools\":[{\"type\":\"mcp\",\"allowed_tools\":null,\"headers\":null,\"require_approval\":\"never\",\"server_description\":null,\"server_label\":\"dmcp\",\"server_url\":\"https://dmcp-server.deno.dev/<redacted>\"}],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":{\"input_tokens\":610,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":224,\"output_tokens_details\":{\"reasoning_tokens\":192},\"total_tokens\":834},\"user\":null,\"metadata\":{}}}\n\n"
+      ]
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

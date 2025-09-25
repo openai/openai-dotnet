@@ -72,7 +72,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         }
     }
 
-    [Ignore("Temporarily disabled due to this test consistently failing")]
+    [Ignore("Failing")]
     [Test]
     public async Task ComputerToolWithScreenshotRoundTrip()
     {
@@ -295,7 +295,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             options);
 
         Assert.That(response.Id, Is.Not.Null.And.Not.Empty);
-        Assert.That(response.CreatedAt, Is.GreaterThan(DateTimeOffset.Now - TimeSpan.FromDays(1)));
+        Assert.That(response.CreatedAt, Is.GreaterThan(Recording.Now - TimeSpan.FromDays(1)));
         // Assert.That(response.Status, Is.EqualTo(ResponsesStatus.Completed));
         Assert.That(response.Model, Is.Not.Null.And.Not.Empty);
         Assert.That(response.PreviousResponseId, Is.Null);
@@ -304,7 +304,6 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response.OutputItems.Count, Is.EqualTo(1));
     }
 
-    [Ignore("Temporarily disabled awaiting org verification.")]
     [Test]
     public async Task ResponsesWithReasoning()
     {

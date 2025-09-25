@@ -23,6 +23,14 @@ public class ImageTestFixtureBase : OpenAIRecordedTestBase
             {
                 Value = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII="
             }));
+
+        // Sanitize data URLs in chat messages to prevent huge base64 content
+        BodyRegexSanitizers.Add(new BodyRegexSanitizer(
+            new BodyRegexSanitizerBody()
+            {
+                Value = @"""url"": ""data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII=""",
+                Regex = @"""url""\s*:\s*""data:image/[^""]+"""
+            }));
     }
 
     public enum ImageSourceKind

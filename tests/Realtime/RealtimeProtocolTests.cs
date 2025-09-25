@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using OpenAI.Realtime;
 using System;
 using System.ClientModel;
@@ -18,6 +19,7 @@ public class RealtimeProtocolTests : RealtimeTestFixtureBase
     public RealtimeProtocolTests(bool isAsync) : base(isAsync)
     { }
 
+    [LiveOnly]
     [Test]
     public async Task ProtocolCanConfigureSession()
     {

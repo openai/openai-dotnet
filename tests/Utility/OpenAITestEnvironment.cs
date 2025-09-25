@@ -16,12 +16,12 @@ public class OpenAITestEnvironment : TestEnvironment
             "testproxy",
             "dotnet-devcert.pfx");
     }
-
-    public string OpenApiKey => GetRecordedVariable("OPEN-API-KEY", options => options.IsSecret());
+    
+    public string OpenApiKey => GetRecordedVariable("OPEN-API-KEY", options => options.IsSecret("api-key"));
 
     public override Dictionary<string, string> ParseEnvironmentFile() => new()
         {
-            { "OPEN-API-KEY", Environment.GetEnvironmentVariable("OPENAI_API_KEY") ?? string.Empty }
+            { "OPEN-API-KEY", Environment.GetEnvironmentVariable("OPENAI_API_KEY") ?? "api-key" }
         };
 
     public override Task WaitForEnvironmentAsync()

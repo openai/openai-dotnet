@@ -46,30 +46,33 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "98040eb69f2eba46-SEA",
+        "CF-RAY": "983df40f1ae7b89e-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "1662",
+        "Content-Length": "1703",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 23:14:00 GMT",
+        "Date": "Tue, 23 Sep 2025 23:52:02 GMT",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "1423",
+        "openai-processing-ms": "1063",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "1428",
+        "x-envoy-upstream-service-time": "1066",
         "x-ratelimit-limit-requests": "3000",
         "x-ratelimit-remaining-requests": "2999",
         "x-ratelimit-reset-requests": "20ms",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_0a2648b39d465a370068c9ef36e1c08196bff379c5df41534e",
+        "id": "resp_68d332a183548190abc2b9714196894c09bb15ad7f52951e",
         "object": "response",
-        "created_at": 1758064438,
+        "created_at": 1758671521,
         "status": "completed",
         "background": false,
+        "billing": {
+          "payer": "developer"
+        },
         "error": null,
         "incomplete_details": null,
         "instructions": null,
@@ -78,11 +81,11 @@
         "model": "computer-use-preview-2025-03-11",
         "output": [
           {
-            "id": "fc_0a2648b39d465a370068c9ef38053881969a18eb7fd3ad3cdc",
+            "id": "fc_68d332a261e48190851ac6fc8712219209bb15ad7f52951e",
             "type": "function_call",
             "status": "completed",
             "arguments": "{\"time_of_day\":\"morning\"}",
-            "call_id": "call_1xWzMgTrfnjd4lZozB6Agf68",
+            "call_id": "call_MiYPwOX81Mc5Cs2QVVyl1ntY",
             "name": "get_custom_greeting"
           }
         ],
@@ -139,5 +142,8 @@
       }
     }
   ],
-  "Variables": {}
+  "Variables": {
+    "DateTimeOffsetNow": "2025-09-23T16:52:02.4891129-07:00",
+    "OPEN-API-KEY": "api-key"
+  }
 }

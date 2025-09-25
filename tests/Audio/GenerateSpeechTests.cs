@@ -19,15 +19,12 @@ public partial class GenerateSpeechTests : OpenAIRecordedTestBase
     [Test]
     public async Task BasicTextToSpeechWorks()
     {
-        using (Recording.DisableRequestBodyRecording()) // Temp while multipart support in the test proxy is being implemented
-        {
-            AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_TTS);
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_TTS);
 
-            BinaryData audio = await client.GenerateSpeechAsync("Hello, world! This is a test.", GeneratedSpeechVoice.Shimmer);
+        BinaryData audio = await client.GenerateSpeechAsync("Hello, world! This is a test.", GeneratedSpeechVoice.Shimmer);
 
-            Assert.That(audio, Is.Not.Null);
-            await ValidateGeneratedAudio(audio, "hello");
-        }
+        Assert.That(audio, Is.Not.Null);
+        await ValidateGeneratedAudio(audio, "hello");
     }
 
     [Test]

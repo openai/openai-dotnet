@@ -15,25 +15,25 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9804328ab91fdf0b-SEA",
+        "CF-RAY": "984c3d061c3da362-SEA",
         "Connection": "keep-alive",
         "Content-Length": "476",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 23:38:26 GMT",
+        "Date": "Thu, 25 Sep 2025 17:28:30 GMT",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "88",
+        "openai-processing-ms": "92",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "93",
+        "x-envoy-upstream-service-time": "98",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
         "object": "realtime.transcription_session",
-        "id": "sess_CGZXea1l85yklP8shz3W0",
+        "id": "sess_CJk3aJlozxoHeenSSpts3",
         "expires_at": 0,
         "input_audio_noise_reduction": null,
         "turn_detection": {
@@ -45,12 +45,14 @@
         "input_audio_format": "pcm16",
         "input_audio_transcription": null,
         "client_secret": {
-          "value": "ek_68c9f4f26cb08191951bbbbf6d9c48fe",
-          "expires_at": 1758066506
+          "value": "ek_68d57bbe7d5c81918cc219c7bc2ef441",
+          "expires_at": 1758821910
         },
         "include": null
       }
     }
   ],
-  "Variables": {}
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
 }

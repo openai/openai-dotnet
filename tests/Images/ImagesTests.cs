@@ -53,23 +53,20 @@ public partial class ImagesTests : ImageTestFixtureBase
     [Test]
     public async Task GenerationWithBytesResponseWorks()
     {
-        using (Recording.DisableRequestBodyRecording()) // Do not record large images
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-3");
+
+        string prompt = "An isolated stop sign.";
+
+        ImageGenerationOptions options = new()
         {
-            ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-3");
+            ResponseFormat = GeneratedImageFormat.Bytes
+        };
 
-            string prompt = "An isolated stop sign.";
+        GeneratedImage image = await client.GenerateImageAsync(prompt, options);
+        Assert.That(image.ImageUri, Is.Null);
+        Assert.That(image.ImageBytes, Is.Not.Null);
 
-            ImageGenerationOptions options = new()
-            {
-                ResponseFormat = GeneratedImageFormat.Bytes
-            };
-
-            GeneratedImage image = await client.GenerateImageAsync(prompt, options);
-            Assert.That(image.ImageUri, Is.Null);
-            Assert.That(image.ImageBytes, Is.Not.Null);
-
-            await ValidateGeneratedImage(image.ImageBytes, ["stop"]);
-        }
+        await ValidateGeneratedImage(image.ImageBytes, ["stop"]);
     }
 
     [Test]
@@ -109,7 +106,6 @@ public partial class ImagesTests : ImageTestFixtureBase
         }
     }
 
-    [Ignore("Test org cannot use this model")]
     [Test]
     public async Task GenerationOfMultipleImagesWithBytesResponseWorks()
     {
@@ -142,7 +138,6 @@ public partial class ImagesTests : ImageTestFixtureBase
         Assert.That(ex.Status, Is.EqualTo(401));
     }
 
-    [Ignore("Test org cannot use this model")]
     [Test]
     public async Task GptImage1Works()
     {

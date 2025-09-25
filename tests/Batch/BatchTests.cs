@@ -21,7 +21,6 @@ public class BatchTests : OpenAIRecordedTestBase
     public BatchTests(bool isAsync) : base(isAsync)
     {
         TestTimeoutInSeconds = 65;
-        CompareBodies = false; // Temp pending multipart compare support
     }
 
     [Test]
