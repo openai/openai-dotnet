@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class McpToolCallItem : IJsonModel<McpToolCallItem>
+    public partial class McpToolCallItem : ResponseItem, IJsonModel<McpToolCallItem>
     {
         internal McpToolCallItem() : this(InternalItemType.McpCall, null, null, null, null, null, null, null)
         {
@@ -133,6 +133,7 @@ namespace OpenAI.Responses
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        error = null;
                         continue;
                     }
                     error = BinaryData.FromString(prop.Value.GetRawText());

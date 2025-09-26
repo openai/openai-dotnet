@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class WebSearchCallResponseItem : IJsonModel<WebSearchCallResponseItem>
+    public partial class WebSearchCallResponseItem : ResponseItem, IJsonModel<WebSearchCallResponseItem>
     {
         void IJsonModel<WebSearchCallResponseItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

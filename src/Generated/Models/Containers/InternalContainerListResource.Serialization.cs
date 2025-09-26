@@ -188,7 +188,8 @@ namespace OpenAI.Containers
         public static explicit operator InternalContainerListResource(ClientResult result)
         {
             using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
+            BinaryData data = response.Content;
+            using JsonDocument document = JsonDocument.Parse(data);
             return DeserializeInternalContainerListResource(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class UnknownRealtimeTurnDetection : IJsonModel<TurnDetectionOptions>
+    internal partial class UnknownRealtimeTurnDetection : TurnDetectionOptions, IJsonModel<TurnDetectionOptions>
     {
         internal UnknownRealtimeTurnDetection() : this(default, default, default, null)
         {

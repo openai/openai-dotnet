@@ -300,7 +300,8 @@ namespace OpenAI.VectorStores
         public static explicit operator VectorStore(ClientResult result)
         {
             using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
+            BinaryData data = response.Content;
+            using JsonDocument document = JsonDocument.Parse(data);
             return DeserializeVectorStore(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

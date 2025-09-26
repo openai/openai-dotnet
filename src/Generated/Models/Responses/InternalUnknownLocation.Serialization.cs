@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalUnknownLocation : IJsonModel<WebSearchToolLocation>
+    internal partial class InternalUnknownLocation : WebSearchToolLocation, IJsonModel<WebSearchToolLocation>
     {
         internal InternalUnknownLocation() : this(default, null)
         {

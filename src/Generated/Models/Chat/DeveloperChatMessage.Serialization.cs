@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    public partial class DeveloperChatMessage : IJsonModel<DeveloperChatMessage>
+    public partial class DeveloperChatMessage : ChatMessage, IJsonModel<DeveloperChatMessage>
     {
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

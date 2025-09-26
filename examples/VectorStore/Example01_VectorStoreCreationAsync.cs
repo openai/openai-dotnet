@@ -66,7 +66,7 @@ public partial class VectorStoreExamples
                     pollDelay = TimeSpan.FromMilliseconds(ms);
                 }
 
-                Thread.Sleep(pollDelay);
+                await Task.Delay(pollDelay);
             }
             else
             {

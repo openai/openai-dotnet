@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class McpToolDefinitionListItem : IJsonModel<McpToolDefinitionListItem>
+    public partial class McpToolDefinitionListItem : ResponseItem, IJsonModel<McpToolDefinitionListItem>
     {
         internal McpToolDefinitionListItem() : this(InternalItemType.McpListTools, null, null, null, null, null)
         {
@@ -116,6 +116,7 @@ namespace OpenAI.Responses
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        error = null;
                         continue;
                     }
                     error = BinaryData.FromString(prop.Value.GetRawText());

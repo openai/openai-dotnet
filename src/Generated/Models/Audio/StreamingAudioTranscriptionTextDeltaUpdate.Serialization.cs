@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Audio
 {
-    public partial class StreamingAudioTranscriptionTextDeltaUpdate : IJsonModel<StreamingAudioTranscriptionTextDeltaUpdate>
+    public partial class StreamingAudioTranscriptionTextDeltaUpdate : StreamingAudioTranscriptionUpdate, IJsonModel<StreamingAudioTranscriptionTextDeltaUpdate>
     {
         internal StreamingAudioTranscriptionTextDeltaUpdate() : this(StreamingAudioTranscriptionUpdateKind.TranscriptTextDelta, null, null, null)
         {

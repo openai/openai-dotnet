@@ -11,7 +11,7 @@ using OpenAI.Graders;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalGraderLabelModelParams : IJsonModel<InternalEvalGraderLabelModelParams>
+    internal partial class InternalEvalGraderLabelModelParams : InternalEvalGraderParams, IJsonModel<InternalEvalGraderLabelModelParams>
     {
         internal InternalEvalGraderLabelModelParams() : this(GraderType.LabelModel, null, null, null, null, null, null)
         {

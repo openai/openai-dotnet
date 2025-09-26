@@ -660,7 +660,8 @@ namespace OpenAI.Assistants
         public static explicit operator ThreadRun(ClientResult result)
         {
             using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
+            BinaryData data = response.Content;
+            using JsonDocument document = JsonDocument.Parse(data);
             return DeserializeThreadRun(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    public partial class ConversationSessionStartedUpdate : IJsonModel<ConversationSessionStartedUpdate>
+    public partial class ConversationSessionStartedUpdate : RealtimeUpdate, IJsonModel<ConversationSessionStartedUpdate>
     {
         internal ConversationSessionStartedUpdate() : this(RealtimeUpdateKind.SessionStarted, null, null, null)
         {

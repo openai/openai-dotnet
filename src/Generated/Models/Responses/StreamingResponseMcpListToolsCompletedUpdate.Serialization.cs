@@ -10,9 +10,9 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class StreamingResponseMcpListToolsCompletedUpdate : IJsonModel<StreamingResponseMcpListToolsCompletedUpdate>
+    public partial class StreamingResponseMcpListToolsCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpListToolsCompletedUpdate>
     {
-        internal StreamingResponseMcpListToolsCompletedUpdate() : this(InternalResponseStreamEventType.ResponseMcpListToolsCompleted, default, null)
+        internal StreamingResponseMcpListToolsCompletedUpdate() : this(InternalResponseStreamEventType.ResponseMcpListToolsCompleted, default, null, null, default)
         {
         }
 
@@ -31,6 +31,16 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(StreamingResponseMcpListToolsCompletedUpdate)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
+            if (_additionalBinaryDataProperties?.ContainsKey("item_id") != true)
+            {
+                writer.WritePropertyName("item_id"u8);
+                writer.WriteStringValue(ItemId);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("output_index") != true)
+            {
+                writer.WritePropertyName("output_index"u8);
+                writer.WriteNumberValue(OutputIndex);
+            }
         }
 
         StreamingResponseMcpListToolsCompletedUpdate IJsonModel<StreamingResponseMcpListToolsCompletedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StreamingResponseMcpListToolsCompletedUpdate)JsonModelCreateCore(ref reader, options);
@@ -55,6 +65,8 @@ namespace OpenAI.Responses
             InternalResponseStreamEventType kind = default;
             int sequenceNumber = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            string itemId = default;
+            int outputIndex = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -67,10 +79,20 @@ namespace OpenAI.Responses
                     sequenceNumber = prop.Value.GetInt32();
                     continue;
                 }
+                if (prop.NameEquals("item_id"u8))
+                {
+                    itemId = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("output_index"u8))
+                {
+                    outputIndex = prop.Value.GetInt32();
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new StreamingResponseMcpListToolsCompletedUpdate(kind, sequenceNumber, additionalBinaryDataProperties);
+            return new StreamingResponseMcpListToolsCompletedUpdate(kind, sequenceNumber, additionalBinaryDataProperties, itemId, outputIndex);
         }
 
         BinaryData IPersistableModel<StreamingResponseMcpListToolsCompletedUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

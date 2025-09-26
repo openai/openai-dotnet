@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalUnknownRealtimeAudioNoiseReduction : IJsonModel<InputNoiseReductionOptions>
+    internal partial class InternalUnknownRealtimeAudioNoiseReduction : InputNoiseReductionOptions, IJsonModel<InputNoiseReductionOptions>
     {
         internal InternalUnknownRealtimeAudioNoiseReduction() : this(default, null)
         {

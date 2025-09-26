@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeClientEventConversationItemDelete : IJsonModel<InternalRealtimeClientEventConversationItemDelete>
+    internal partial class InternalRealtimeClientEventConversationItemDelete : InternalRealtimeClientEvent, IJsonModel<InternalRealtimeClientEventConversationItemDelete>
     {
         internal InternalRealtimeClientEventConversationItemDelete() : this(InternalRealtimeClientEventType.ConversationItemDelete, null, null, null)
         {

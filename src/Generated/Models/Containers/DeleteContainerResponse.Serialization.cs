@@ -150,7 +150,8 @@ namespace OpenAI.Containers
         public static explicit operator DeleteContainerResponse(ClientResult result)
         {
             using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
+            BinaryData data = response.Content;
+            using JsonDocument document = JsonDocument.Parse(data);
             return DeserializeDeleteContainerResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

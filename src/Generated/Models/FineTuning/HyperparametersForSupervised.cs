@@ -9,7 +9,7 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.FineTuning
 {
     [Experimental("OPENAI001")]
-    public partial class HyperparametersForSupervised
+    public partial class HyperparametersForSupervised : MethodHyperparameters
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

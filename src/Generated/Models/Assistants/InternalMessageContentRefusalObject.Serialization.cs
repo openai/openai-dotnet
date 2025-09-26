@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalMessageContentRefusalObject : IJsonModel<InternalMessageContentRefusalObject>
+    internal partial class InternalMessageContentRefusalObject : MessageContent, IJsonModel<InternalMessageContentRefusalObject>
     {
         internal InternalMessageContentRefusalObject() : this(InternalMessageContentType.Refusal, null, null)
         {
