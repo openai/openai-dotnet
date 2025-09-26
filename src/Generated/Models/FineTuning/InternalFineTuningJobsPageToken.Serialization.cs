@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -10,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.FineTuning
 {
-    internal partial class InternalFineTuningJobsPageToken : IJsonModel<InternalFineTuningJobsPageToken>
+    internal partial class InternalFineTuningJobsPageToken : ContinuationToken, IJsonModel<InternalFineTuningJobsPageToken>
     {
         void IJsonModel<InternalFineTuningJobsPageToken>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

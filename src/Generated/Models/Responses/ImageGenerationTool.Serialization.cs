@@ -10,9 +10,9 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalImageGenTool : IJsonModel<InternalImageGenTool>
+    public partial class ImageGenerationTool : ResponseTool, IJsonModel<ImageGenerationTool>
     {
-        void IJsonModel<InternalImageGenTool>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<ImageGenerationTool>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
@@ -21,10 +21,10 @@ namespace OpenAI.Responses
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalImageGenTool>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ImageGenerationTool>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalImageGenTool)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(ImageGenerationTool)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
             if (Optional.IsDefined(Model) && _additionalBinaryDataProperties?.ContainsKey("model") != true)
@@ -42,52 +42,57 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("size"u8);
                 writer.WriteStringValue(Size.Value.ToString());
             }
-            if (Optional.IsDefined(OutputFormat) && _additionalBinaryDataProperties?.ContainsKey("output_format") != true)
+            if (Optional.IsDefined(OutputFileFormat) && _additionalBinaryDataProperties?.ContainsKey("output_format") != true)
             {
                 writer.WritePropertyName("output_format"u8);
-                writer.WriteStringValue(OutputFormat.Value.ToString());
+                writer.WriteStringValue(OutputFileFormat.Value.ToString());
             }
-            if (Optional.IsDefined(OutputCompression) && _additionalBinaryDataProperties?.ContainsKey("output_compression") != true)
+            if (Optional.IsDefined(OutputCompressionFactor) && _additionalBinaryDataProperties?.ContainsKey("output_compression") != true)
             {
                 writer.WritePropertyName("output_compression"u8);
-                writer.WriteNumberValue(OutputCompression.Value);
+                writer.WriteNumberValue(OutputCompressionFactor.Value);
             }
-            if (Optional.IsDefined(Moderation) && _additionalBinaryDataProperties?.ContainsKey("moderation") != true)
+            if (Optional.IsDefined(ModerationLevel) && _additionalBinaryDataProperties?.ContainsKey("moderation") != true)
             {
                 writer.WritePropertyName("moderation"u8);
-                writer.WriteStringValue(Moderation.Value.ToString());
+                writer.WriteStringValue(ModerationLevel.Value.ToString());
             }
             if (Optional.IsDefined(Background) && _additionalBinaryDataProperties?.ContainsKey("background") != true)
             {
                 writer.WritePropertyName("background"u8);
                 writer.WriteStringValue(Background.Value.ToString());
             }
+            if (Optional.IsDefined(InputFidelityLevel) && _additionalBinaryDataProperties?.ContainsKey("input_fidelity") != true)
+            {
+                writer.WritePropertyName("input_fidelity"u8);
+                writer.WriteStringValue(InputFidelityLevel.Value.ToString());
+            }
             if (Optional.IsDefined(InputImageMask) && _additionalBinaryDataProperties?.ContainsKey("input_image_mask") != true)
             {
                 writer.WritePropertyName("input_image_mask"u8);
                 writer.WriteObjectValue(InputImageMask, options);
             }
-            if (Optional.IsDefined(PartialImages) && _additionalBinaryDataProperties?.ContainsKey("partial_images") != true)
+            if (Optional.IsDefined(PartialImageCount) && _additionalBinaryDataProperties?.ContainsKey("partial_images") != true)
             {
                 writer.WritePropertyName("partial_images"u8);
-                writer.WriteNumberValue(PartialImages.Value);
+                writer.WriteNumberValue(PartialImageCount.Value);
             }
         }
 
-        InternalImageGenTool IJsonModel<InternalImageGenTool>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalImageGenTool)JsonModelCreateCore(ref reader, options);
+        ImageGenerationTool IJsonModel<ImageGenerationTool>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (ImageGenerationTool)JsonModelCreateCore(ref reader, options);
 
         protected override ResponseTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalImageGenTool>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ImageGenerationTool>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalImageGenTool)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(ImageGenerationTool)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalImageGenTool(document.RootElement, options);
+            return DeserializeImageGenerationTool(document.RootElement, options);
         }
 
-        internal static InternalImageGenTool DeserializeInternalImageGenTool(JsonElement element, ModelReaderWriterOptions options)
+        internal static ImageGenerationTool DeserializeImageGenerationTool(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -96,14 +101,15 @@ namespace OpenAI.Responses
             InternalToolType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string model = default;
-            InternalImageGenToolQuality? quality = default;
-            InternalImageGenToolSize? size = default;
-            InternalImageGenToolOutputFormat? outputFormat = default;
-            int? outputCompression = default;
-            InternalImageGenToolModeration? moderation = default;
-            InternalImageGenToolBackground? background = default;
-            InternalImageGenToolInputImageMask inputImageMask = default;
-            int? partialImages = default;
+            ImageGenerationToolQuality? quality = default;
+            ImageGenerationToolSize? size = default;
+            ImageGenerationToolOutputFileFormat? outputFileFormat = default;
+            int? outputCompressionFactor = default;
+            ImageGenerationToolModerationLevel? moderationLevel = default;
+            ImageGenerationToolBackground? background = default;
+            ImageGenerationToolInputFidelityLevel? inputFidelityLevel = default;
+            ImageGenerationToolInputImageMask inputImageMask = default;
+            int? partialImageCount = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -122,7 +128,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    quality = new InternalImageGenToolQuality(prop.Value.GetString());
+                    quality = new ImageGenerationToolQuality(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("size"u8))
@@ -131,7 +137,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    size = new InternalImageGenToolSize(prop.Value.GetString());
+                    size = new ImageGenerationToolSize(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("output_format"u8))
@@ -140,7 +146,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    outputFormat = new InternalImageGenToolOutputFormat(prop.Value.GetString());
+                    outputFileFormat = new ImageGenerationToolOutputFileFormat(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("output_compression"u8))
@@ -149,7 +155,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    outputCompression = prop.Value.GetInt32();
+                    outputCompressionFactor = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("moderation"u8))
@@ -158,7 +164,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    moderation = new InternalImageGenToolModeration(prop.Value.GetString());
+                    moderationLevel = new ImageGenerationToolModerationLevel(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("background"u8))
@@ -167,7 +173,16 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    background = new InternalImageGenToolBackground(prop.Value.GetString());
+                    background = new ImageGenerationToolBackground(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("input_fidelity"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    inputFidelityLevel = new ImageGenerationToolInputFidelityLevel(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("input_image_mask"u8))
@@ -176,7 +191,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    inputImageMask = InternalImageGenToolInputImageMask.DeserializeInternalImageGenToolInputImageMask(prop.Value, options);
+                    inputImageMask = ImageGenerationToolInputImageMask.DeserializeImageGenerationToolInputImageMask(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("partial_images"u8))
@@ -185,57 +200,58 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    partialImages = prop.Value.GetInt32();
+                    partialImageCount = prop.Value.GetInt32();
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalImageGenTool(
+            return new ImageGenerationTool(
                 kind,
                 additionalBinaryDataProperties,
                 model,
                 quality,
                 size,
-                outputFormat,
-                outputCompression,
-                moderation,
+                outputFileFormat,
+                outputCompressionFactor,
+                moderationLevel,
                 background,
+                inputFidelityLevel,
                 inputImageMask,
-                partialImages);
+                partialImageCount);
         }
 
-        BinaryData IPersistableModel<InternalImageGenTool>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<ImageGenerationTool>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalImageGenTool>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ImageGenerationTool>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(InternalImageGenTool)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ImageGenerationTool)} does not support writing '{options.Format}' format.");
             }
         }
 
-        InternalImageGenTool IPersistableModel<InternalImageGenTool>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalImageGenTool)PersistableModelCreateCore(data, options);
+        ImageGenerationTool IPersistableModel<ImageGenerationTool>.Create(BinaryData data, ModelReaderWriterOptions options) => (ImageGenerationTool)PersistableModelCreateCore(data, options);
 
         protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalImageGenTool>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ImageGenerationTool>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalImageGenTool(document.RootElement, options);
+                        return DeserializeImageGenerationTool(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalImageGenTool)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ImageGenerationTool)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<InternalImageGenTool>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<ImageGenerationTool>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class AutomaticCodeInterpreterToolContainerConfiguration : IJsonModel<AutomaticCodeInterpreterToolContainerConfiguration>
+    public partial class AutomaticCodeInterpreterToolContainerConfiguration : CodeInterpreterToolContainerConfiguration, IJsonModel<AutomaticCodeInterpreterToolContainerConfiguration>
     {
         void IJsonModel<AutomaticCodeInterpreterToolContainerConfiguration>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

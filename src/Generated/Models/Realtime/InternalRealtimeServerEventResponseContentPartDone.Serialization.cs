@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeServerEventResponseContentPartDone : IJsonModel<InternalRealtimeServerEventResponseContentPartDone>
+    internal partial class InternalRealtimeServerEventResponseContentPartDone : RealtimeUpdate, IJsonModel<InternalRealtimeServerEventResponseContentPartDone>
     {
         internal InternalRealtimeServerEventResponseContentPartDone() : this(RealtimeUpdateKind.ItemContentPartFinished, null, null, null, null, default, default, null)
         {

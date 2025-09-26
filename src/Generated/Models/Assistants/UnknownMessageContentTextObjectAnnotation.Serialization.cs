@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class UnknownMessageContentTextObjectAnnotation : IJsonModel<InternalMessageContentTextObjectAnnotation>
+    internal partial class UnknownMessageContentTextObjectAnnotation : InternalMessageContentTextObjectAnnotation, IJsonModel<InternalMessageContentTextObjectAnnotation>
     {
         internal UnknownMessageContentTextObjectAnnotation() : this(default, null)
         {

@@ -11,7 +11,7 @@ using OpenAI.Evals;
 
 namespace OpenAI.Graders
 {
-    public partial class GraderLabelModel : IJsonModel<GraderLabelModel>
+    public partial class GraderLabelModel : Grader, IJsonModel<GraderLabelModel>
     {
         internal GraderLabelModel() : this(GraderType.LabelModel, null, null, null, null, null, null)
         {

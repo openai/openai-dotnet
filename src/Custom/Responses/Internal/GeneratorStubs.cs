@@ -91,21 +91,12 @@ namespace OpenAI.Responses;
 [CodeGenType("UnknownTool")] internal partial class InternalUnknownTool {}
 [CodeGenType("UnknownToolChoiceObject")] internal partial class InternalUnknownToolChoiceObject {}
 [CodeGenType("WebSearchToolCallItemParam")] internal partial class InternalWebSearchToolCallItemParam {}
-[CodeGenType("ImageGenToolModel")] internal readonly partial struct InternalImageGenToolModel {}
-[CodeGenType("ImageGenToolQuality")] internal readonly partial struct InternalImageGenToolQuality {}
-[CodeGenType("ImageGenToolSize")] internal readonly partial struct InternalImageGenToolSize {}
-[CodeGenType("ImageGenToolOutputFormat")] internal readonly partial struct InternalImageGenToolOutputFormat {}
-[CodeGenType("ImageGenToolModeration")] internal readonly partial struct InternalImageGenToolModeration {}
-[CodeGenType("ImageGenToolBackground")] internal readonly partial struct InternalImageGenToolBackground {}
 [CodeGenType("CodeInterpreterFileOutputType")] internal readonly partial struct InternalCodeInterpreterFileOutputType {}
 [CodeGenType("CodeInterpreterTextOutputType")] internal readonly partial struct InternalCodeInterpreterTextOutputType {}
 [CodeGenType("CodeInterpreterToolOutputType")] internal readonly partial struct InternalCodeInterpreterToolOutputType {}
 [CodeGenType("LocalShellExecActionType")] internal readonly partial struct InternalLocalShellExecActionType {}
-[CodeGenType("ImageGenToolCallItemResourceStatus")] internal readonly partial struct InternalImageGenToolCallItemResourceStatus {}
 [CodeGenType("LocalShellToolCallItemResourceStatus")] internal readonly partial struct InternalLocalShellToolCallItemResourceStatus {}
 [CodeGenType("LocalShellToolCallOutputItemResourceStatus")] internal readonly partial struct InternalLocalShellToolCallOutputItemResourceStatus {}
-[CodeGenType("ImageGenTool")] internal partial class InternalImageGenTool {}
-[CodeGenType("ImageGenToolInputImageMask")] internal partial class InternalImageGenToolInputImageMask {}
 [CodeGenType("LocalShellTool")] internal partial class InternalLocalShellTool {}
 [CodeGenType("MCPToolRequireApproval1")] internal partial class InternalMCPToolRequireApproval1 {}
 [CodeGenType("MCPToolRequireApprovalAlways")] internal partial class InternalMCPToolRequireApprovalAlways {}
@@ -124,13 +115,8 @@ namespace OpenAI.Responses;
 [CodeGenType("MCPApprovalRequestItemParam")] internal partial class InternalMCPApprovalRequestItemParam {}
 [CodeGenType("MCPApprovalResponseItemParam")] internal partial class InternalMCPApprovalResponseItemParam {}
 [CodeGenType("MCPCallItemParam")] internal partial class InternalMCPCallItemParam {}
-[CodeGenType("ImageGenToolCallItemResource")] internal partial class InternalImageGenToolCallItemResource {}
 [CodeGenType("LocalShellToolCallItemResource")] internal partial class InternalLocalShellToolCallItemResource {}
 [CodeGenType("LocalShellToolCallOutputItemResource")] internal partial class InternalLocalShellToolCallOutputItemResource {}
-[CodeGenType("ResponseImageGenCallCompletedEvent")] internal partial class InternalResponseImageGenCallCompletedEvent {}
-[CodeGenType("ResponseImageGenCallGeneratingEvent")] internal partial class InternalResponseImageGenCallGeneratingEvent {}
-[CodeGenType("ResponseImageGenCallInProgressEvent")] internal partial class InternalResponseImageGenCallInProgressEvent {}
-[CodeGenType("ResponseImageGenCallPartialImageEvent")] internal partial class InternalResponseImageGenCallPartialImageEvent {}
 [CodeGenType("ResponseReasoningDeltaEvent")] internal partial class InternalResponseReasoningDeltaEvent {}
 [CodeGenType("ResponseReasoningDoneEvent")] internal partial class InternalResponseReasoningDoneEvent {}
 [CodeGenType("ResponseReasoningSummaryDeltaEvent")] internal partial class InternalResponseReasoningSummaryDeltaEvent {}

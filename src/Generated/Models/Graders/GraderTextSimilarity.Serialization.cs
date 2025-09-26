@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Graders
 {
-    public partial class GraderTextSimilarity : IJsonModel<GraderTextSimilarity>
+    public partial class GraderTextSimilarity : Grader, IJsonModel<GraderTextSimilarity>
     {
         internal GraderTextSimilarity() : this(GraderType.TextSimilarity, null, null, null, null, default)
         {

@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    public partial class ToolChatMessage : IJsonModel<ToolChatMessage>
+    public partial class ToolChatMessage : ChatMessage, IJsonModel<ToolChatMessage>
     {
         internal ToolChatMessage() : this(ChatMessageRole.Tool, null, null, null)
         {

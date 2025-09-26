@@ -403,7 +403,7 @@ public partial class ResponsesToolTests : SyncAsyncTestBase
     {
         OpenAIResponseClient client = GetTestClient();
 
-        ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new CodeInterpreterToolContainer(new AutomaticCodeInterpreterToolContainerConfiguration()));
+        ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new CodeInterpreterToolContainer(CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration()));
         ResponseCreationOptions responseOptions = new()
         {
             Tools = { codeInterpreterTool },

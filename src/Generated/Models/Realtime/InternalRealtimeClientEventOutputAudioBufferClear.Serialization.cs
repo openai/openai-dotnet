@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeClientEventOutputAudioBufferClear : IJsonModel<InternalRealtimeClientEventOutputAudioBufferClear>
+    internal partial class InternalRealtimeClientEventOutputAudioBufferClear : InternalRealtimeClientEvent, IJsonModel<InternalRealtimeClientEventOutputAudioBufferClear>
     {
         void IJsonModel<InternalRealtimeClientEventOutputAudioBufferClear>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

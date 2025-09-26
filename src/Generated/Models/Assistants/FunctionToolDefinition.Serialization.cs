@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    public partial class FunctionToolDefinition : IJsonModel<FunctionToolDefinition>
+    public partial class FunctionToolDefinition : ToolDefinition, IJsonModel<FunctionToolDefinition>
     {
         void IJsonModel<FunctionToolDefinition>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

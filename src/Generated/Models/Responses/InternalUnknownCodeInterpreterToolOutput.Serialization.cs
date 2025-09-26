@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalUnknownCodeInterpreterToolOutput : IJsonModel<CodeInterpreterCallOutput>
+    internal partial class InternalUnknownCodeInterpreterToolOutput : CodeInterpreterCallOutput, IJsonModel<CodeInterpreterCallOutput>
     {
         internal InternalUnknownCodeInterpreterToolOutput() : this(default, null)
         {

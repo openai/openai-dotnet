@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    public partial class ConversationFunctionTool : IJsonModel<ConversationFunctionTool>
+    public partial class ConversationFunctionTool : ConversationTool, IJsonModel<ConversationFunctionTool>
     {
         internal ConversationFunctionTool() : this(ConversationToolKind.Function, null, null, null, null)
         {

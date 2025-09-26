@@ -4,27 +4,21 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalImageGenToolInputImageMask
+    [Experimental("OPENAI001")]
+    public partial class ImageGenerationToolInputImageMask
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public InternalImageGenToolInputImageMask()
-        {
-        }
-
-        internal InternalImageGenToolInputImageMask(string imageUrl, string fileId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ImageGenerationToolInputImageMask(string imageUrl, string fileId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             ImageUrl = imageUrl;
             FileId = fileId;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-
-        public string ImageUrl { get; set; }
-
-        public string FileId { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

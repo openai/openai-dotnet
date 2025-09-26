@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalItemContentInputText : IJsonModel<InternalEvalItemContentInputText>
+    internal partial class InternalEvalItemContentInputText : InternalEvalItemContent, IJsonModel<InternalEvalItemContentInputText>
     {
         internal InternalEvalItemContentInputText() : this(InternalEvalItemContentType.InputText, null, null)
         {
