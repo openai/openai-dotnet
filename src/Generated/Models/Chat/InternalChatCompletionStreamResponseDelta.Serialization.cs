@@ -5,6 +5,7 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -14,6 +15,14 @@ namespace OpenAI.Chat
     {
         void IJsonModel<InternalChatCompletionStreamResponseDelta>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -26,63 +35,62 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(InternalChatCompletionStreamResponseDelta)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Audio) && _additionalBinaryDataProperties?.ContainsKey("audio") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Optional.IsDefined(Audio) && !Patch.Contains("$.audio"u8))
             {
                 writer.WritePropertyName("audio"u8);
                 writer.WriteObjectValue(Audio, options);
             }
-            // Plugin customization: add Content.IsInnerCollectionDefined() check
-            if (Optional.IsDefined(Content) && Content.IsInnerCollectionDefined() && _additionalBinaryDataProperties?.ContainsKey("content") != true)
+            if (Optional.IsDefined(Content) && !Patch.Contains("$.content"u8))
             {
                 writer.WritePropertyName("content"u8);
                 SerializeContentValue(writer, options);
             }
-            if (Optional.IsDefined(FunctionCall) && _additionalBinaryDataProperties?.ContainsKey("function_call") != true)
+            if (Optional.IsDefined(FunctionCall) && !Patch.Contains("$.function_call"u8))
             {
                 writer.WritePropertyName("function_call"u8);
                 writer.WriteObjectValue(FunctionCall, options);
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (Optional.IsCollectionDefined(ToolCalls) && _additionalBinaryDataProperties?.ContainsKey("tool_calls") != true)
+            if (Patch.Contains("$.tool_calls"u8))
+            {
+                if (!Patch.IsRemoved("$.tool_calls"u8))
+                {
+                    writer.WritePropertyName("tool_calls"u8);
+                    writer.WriteRawValue(Patch.GetJson("$.tool_calls"u8));
+                }
+            }
+            else if (options.Format != "W" && Optional.IsCollectionDefined(ToolCalls))
             {
                 writer.WritePropertyName("tool_calls"u8);
                 writer.WriteStartArray();
-                foreach (StreamingChatToolCallUpdate item in ToolCalls)
+                for (int i = 0; i < ToolCalls.Count; i++)
                 {
-                    writer.WriteObjectValue(item, options);
+                    if (ToolCalls[i].Patch.IsRemoved("$"u8))
+                    {
+                        continue;
+                    }
+                    writer.WriteObjectValue(ToolCalls[i], options);
                 }
+                Patch.WriteTo(writer, "$.tool_calls"u8);
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(Role) && _additionalBinaryDataProperties?.ContainsKey("role") != true)
+            else
+            {
+                writer.WriteNull("tool_calls"u8);
+            }
+            if (Optional.IsDefined(Role) && !Patch.Contains("$.role"u8))
             {
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(Role.Value.ToSerialString());
             }
-            if (Optional.IsDefined(Refusal) && _additionalBinaryDataProperties?.ContainsKey("refusal") != true)
+            if (Optional.IsDefined(Refusal) && !Patch.Contains("$.refusal"u8))
             {
                 writer.WritePropertyName("refusal"u8);
                 writer.WriteStringValue(Refusal);
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalChatCompletionStreamResponseDelta IJsonModel<InternalChatCompletionStreamResponseDelta>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -95,10 +103,10 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(InternalChatCompletionStreamResponseDelta)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalChatCompletionStreamResponseDelta(document.RootElement, options);
+            return DeserializeInternalChatCompletionStreamResponseDelta(document.RootElement, null, options);
         }
 
-        internal static InternalChatCompletionStreamResponseDelta DeserializeInternalChatCompletionStreamResponseDelta(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalChatCompletionStreamResponseDelta DeserializeInternalChatCompletionStreamResponseDelta(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -110,7 +118,9 @@ namespace OpenAI.Chat
             IReadOnlyList<StreamingChatToolCallUpdate> toolCalls = default;
             ChatMessageRole? role = default;
             string refusal = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("audio"u8))
@@ -119,7 +129,7 @@ namespace OpenAI.Chat
                     {
                         continue;
                     }
-                    audio = StreamingChatOutputAudioUpdate.DeserializeStreamingChatOutputAudioUpdate(prop.Value, options);
+                    audio = StreamingChatOutputAudioUpdate.DeserializeStreamingChatOutputAudioUpdate(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("content"u8))
@@ -133,7 +143,7 @@ namespace OpenAI.Chat
                     {
                         continue;
                     }
-                    functionCall = StreamingChatFunctionCallUpdate.DeserializeStreamingChatFunctionCallUpdate(prop.Value, options);
+                    functionCall = StreamingChatFunctionCallUpdate.DeserializeStreamingChatFunctionCallUpdate(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("tool_calls"u8))
@@ -145,7 +155,7 @@ namespace OpenAI.Chat
                     List<StreamingChatToolCallUpdate> array = new List<StreamingChatToolCallUpdate>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(StreamingChatToolCallUpdate.DeserializeStreamingChatToolCallUpdate(item, options));
+                        array.Add(StreamingChatToolCallUpdate.DeserializeStreamingChatToolCallUpdate(item, item.GetUtf8Bytes(), options));
                     }
                     toolCalls = array;
                     continue;
@@ -169,8 +179,7 @@ namespace OpenAI.Chat
                     refusal = prop.Value.GetString();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new InternalChatCompletionStreamResponseDelta(
                 audio,
@@ -179,7 +188,7 @@ namespace OpenAI.Chat
                 toolCalls ?? new ChangeTrackingList<StreamingChatToolCallUpdate>(),
                 role,
                 refusal,
-                additionalBinaryDataProperties);
+                patch);
         }
 
         BinaryData IPersistableModel<InternalChatCompletionStreamResponseDelta>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -206,7 +215,7 @@ namespace OpenAI.Chat
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalChatCompletionStreamResponseDelta(document.RootElement, options);
+                        return DeserializeInternalChatCompletionStreamResponseDelta(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalChatCompletionStreamResponseDelta)} does not support reading '{options.Format}' format.");
@@ -214,5 +223,63 @@ namespace OpenAI.Chat
         }
 
         string IPersistableModel<InternalChatCompletionStreamResponseDelta>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("audio"u8))
+            {
+                return Audio.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("audio"u8.Length)], out value);
+            }
+            if (local.StartsWith("function_call"u8))
+            {
+                return FunctionCall.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("function_call"u8.Length)], out value);
+            }
+            if (local.StartsWith("tool_calls"u8))
+            {
+                int propertyLength = "tool_calls"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                return ToolCalls[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("audio"u8))
+            {
+                Audio.Patch.Set([.. "$"u8, .. local.Slice("audio"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("function_call"u8))
+            {
+                FunctionCall.Patch.Set([.. "$"u8, .. local.Slice("function_call"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("tool_calls"u8))
+            {
+                int propertyLength = "tool_calls"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                ToolCalls[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

@@ -88,7 +88,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    always = McpToolFilter.DeserializeMcpToolFilter(prop.Value, options);
+                    always = McpToolFilter.DeserializeMcpToolFilter(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("never"u8))
@@ -97,7 +97,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    never = McpToolFilter.DeserializeMcpToolFilter(prop.Value, options);
+                    never = McpToolFilter.DeserializeMcpToolFilter(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

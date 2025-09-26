@@ -13,7 +13,7 @@ namespace OpenAI.Chat
     [PersistableModelProxy(typeof(InternalUnknownChatMessage))]
     public partial class ChatMessage : IJsonModel<ChatMessage>
     {
-        internal ChatMessage() : this(default, null, null)
+        internal ChatMessage() : this(default, null, default)
         {
         }
 
@@ -25,37 +25,18 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(ChatMessage)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("role") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.role"u8))
             {
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(Role.ToSerialString());
             }
-            // Plugin customization: add Content.IsInnerCollectionDefined() check
-            if (Optional.IsDefined(Content) && Content.IsInnerCollectionDefined() && _additionalBinaryDataProperties?.ContainsKey("content") != true)
+            if (Optional.IsDefined(Content) && !Patch.Contains("$.content"u8))
             {
                 writer.WritePropertyName("content"u8);
                 SerializeContentValue(writer, options);
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         ChatMessage IJsonModel<ChatMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -69,10 +50,10 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(ChatMessage)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeChatMessage(document.RootElement, options);
+            return DeserializeChatMessage(document.RootElement, null, options);
         }
 
-        internal static ChatMessage DeserializeChatMessage(JsonElement element, ModelReaderWriterOptions options)
+        internal static ChatMessage DeserializeChatMessage(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -83,20 +64,20 @@ namespace OpenAI.Chat
                 switch (discriminator.GetString())
                 {
                     case "system":
-                        return SystemChatMessage.DeserializeSystemChatMessage(element, options);
+                        return SystemChatMessage.DeserializeSystemChatMessage(element, data, options);
                     case "developer":
-                        return DeveloperChatMessage.DeserializeDeveloperChatMessage(element, options);
+                        return DeveloperChatMessage.DeserializeDeveloperChatMessage(element, data, options);
                     case "user":
-                        return UserChatMessage.DeserializeUserChatMessage(element, options);
+                        return UserChatMessage.DeserializeUserChatMessage(element, data, options);
                     case "assistant":
-                        return AssistantChatMessage.DeserializeAssistantChatMessage(element, options);
+                        return AssistantChatMessage.DeserializeAssistantChatMessage(element, data, options);
                     case "tool":
-                        return ToolChatMessage.DeserializeToolChatMessage(element, options);
+                        return ToolChatMessage.DeserializeToolChatMessage(element, data, options);
                     case "function":
-                        return FunctionChatMessage.DeserializeFunctionChatMessage(element, options);
+                        return FunctionChatMessage.DeserializeFunctionChatMessage(element, data, options);
                 }
             }
-            return InternalUnknownChatMessage.DeserializeInternalUnknownChatMessage(element, options);
+            return InternalUnknownChatMessage.DeserializeInternalUnknownChatMessage(element, data, options);
         }
 
         BinaryData IPersistableModel<ChatMessage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -125,7 +106,7 @@ namespace OpenAI.Chat
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeChatMessage(document.RootElement, options);
+                        return DeserializeChatMessage(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ChatMessage)} does not support reading '{options.Format}' format.");

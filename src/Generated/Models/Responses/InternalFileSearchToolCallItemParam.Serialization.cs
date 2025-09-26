@@ -5,6 +5,7 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,12 +13,20 @@ namespace OpenAI.Responses
 {
     internal partial class InternalFileSearchToolCallItemParam : InternalItemParam, IJsonModel<InternalFileSearchToolCallItemParam>
     {
-        internal InternalFileSearchToolCallItemParam() : this(InternalItemType.FileSearchCall, null, null, null)
+        internal InternalFileSearchToolCallItemParam() : this(InternalItemType.FileSearchCall, default, null, null)
         {
         }
 
         void IJsonModel<InternalFileSearchToolCallItemParam>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -31,31 +40,65 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalFileSearchToolCallItemParam)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("queries") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$.queries"u8))
+            {
+                if (!Patch.IsRemoved("$.queries"u8))
+                {
+                    writer.WritePropertyName("queries"u8);
+                    writer.WriteRawValue(Patch.GetJson("$.queries"u8));
+                }
+            }
+            else
             {
                 writer.WritePropertyName("queries"u8);
                 writer.WriteStartArray();
-                foreach (string item in Queries)
+                for (int i = 0; i < Queries.Count; i++)
                 {
-                    if (item == null)
+                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.queries[{i}]")))
+                    {
+                        continue;
+                    }
+                    if (Queries[i] == null)
                     {
                         writer.WriteNullValue();
                         continue;
                     }
-                    writer.WriteStringValue(item);
+                    writer.WriteStringValue(Queries[i]);
                 }
+                Patch.WriteTo(writer, "$.queries"u8);
                 writer.WriteEndArray();
             }
-            if (Optional.IsCollectionDefined(Results) && _additionalBinaryDataProperties?.ContainsKey("results") != true)
+            if (Patch.Contains("$.results"u8))
+            {
+                if (!Patch.IsRemoved("$.results"u8))
+                {
+                    writer.WritePropertyName("results"u8);
+                    writer.WriteRawValue(Patch.GetJson("$.results"u8));
+                }
+            }
+            else if (Optional.IsCollectionDefined(Results))
             {
                 writer.WritePropertyName("results"u8);
                 writer.WriteStartArray();
-                foreach (FileSearchCallResult item in Results)
+                for (int i = 0; i < Results.Count; i++)
                 {
-                    writer.WriteObjectValue(item, options);
+                    if (Results[i].Patch.IsRemoved("$"u8))
+                    {
+                        continue;
+                    }
+                    writer.WriteObjectValue(Results[i], options);
                 }
+                Patch.WriteTo(writer, "$.results"u8);
                 writer.WriteEndArray();
             }
+            else
+            {
+                writer.WriteNull("results"u8);
+            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalFileSearchToolCallItemParam IJsonModel<InternalFileSearchToolCallItemParam>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalFileSearchToolCallItemParam)JsonModelCreateCore(ref reader, options);
@@ -68,17 +111,19 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalFileSearchToolCallItemParam)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalFileSearchToolCallItemParam(document.RootElement, options);
+            return DeserializeInternalFileSearchToolCallItemParam(document.RootElement, null, options);
         }
 
-        internal static InternalFileSearchToolCallItemParam DeserializeInternalFileSearchToolCallItemParam(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalFileSearchToolCallItemParam DeserializeInternalFileSearchToolCallItemParam(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalItemType kind = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             IList<string> queries = default;
             IList<FileSearchCallResult> results = default;
             foreach (var prop in element.EnumerateObject())
@@ -114,15 +159,14 @@ namespace OpenAI.Responses
                     List<FileSearchCallResult> array = new List<FileSearchCallResult>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(FileSearchCallResult.DeserializeFileSearchCallResult(item, options));
+                        array.Add(FileSearchCallResult.DeserializeFileSearchCallResult(item, item.GetUtf8Bytes(), options));
                     }
                     results = array;
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalFileSearchToolCallItemParam(kind, additionalBinaryDataProperties, queries, results ?? new ChangeTrackingList<FileSearchCallResult>());
+            return new InternalFileSearchToolCallItemParam(kind, patch, queries, results ?? new ChangeTrackingList<FileSearchCallResult>());
         }
 
         BinaryData IPersistableModel<InternalFileSearchToolCallItemParam>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -149,7 +193,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalFileSearchToolCallItemParam(document.RootElement, options);
+                        return DeserializeInternalFileSearchToolCallItemParam(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalFileSearchToolCallItemParam)} does not support reading '{options.Format}' format.");
@@ -157,5 +201,45 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<InternalFileSearchToolCallItemParam>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("results"u8))
+            {
+                int propertyLength = "results"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                return Results[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("results"u8))
+            {
+                int propertyLength = "results"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                Results[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

@@ -4,6 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -21,7 +22,43 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(McpToolCallApprovalPolicy)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeMcpToolCallApprovalPolicy(document.RootElement, options);
+            return DeserializeMcpToolCallApprovalPolicy(document.RootElement, null, options);
+        }
+
+        internal static McpToolCallApprovalPolicy DeserializeMcpToolCallApprovalPolicy(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        {
+            if (element.ValueKind == JsonValueKind.Null)
+            {
+                return null;
+            }
+            GlobalMcpToolCallApprovalPolicy? globalPolicy = default;
+            CustomMcpToolCallApprovalPolicy customPolicy = default;
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            foreach (var prop in element.EnumerateObject())
+            {
+                if (prop.NameEquals("global_policy"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    globalPolicy = new GlobalMcpToolCallApprovalPolicy(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("custom_policy"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    customPolicy = CustomMcpToolCallApprovalPolicy.DeserializeCustomMcpToolCallApprovalPolicy(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    continue;
+                }
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
+            }
+            return new McpToolCallApprovalPolicy(globalPolicy, customPolicy, patch);
         }
 
         BinaryData IPersistableModel<McpToolCallApprovalPolicy>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -48,7 +85,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeMcpToolCallApprovalPolicy(document.RootElement, options);
+                        return DeserializeMcpToolCallApprovalPolicy(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(McpToolCallApprovalPolicy)} does not support reading '{options.Format}' format.");
