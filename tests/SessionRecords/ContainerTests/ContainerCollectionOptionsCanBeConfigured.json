@@ -196,6 +196,7 @@
     }
   ],
   "Variables": {
-    "TEST_CONTAINER_ID": "cntr_68c9dceb9f8081908a49ffc9f5e59cc1043975e132963996"
+    "TEST_CONTAINER_ID": "cntr_68c9dceb9f8081908a49ffc9f5e59cc1043975e132963996",
+    "OPEN-API-KEY": "api-key"
   }
 }

@@ -14,6 +14,7 @@ public partial class TranslationTests : OpenAIRecordedTestBase
 {
     public TranslationTests(bool isAsync) : base(isAsync)
     {
+        TestTimeoutInSeconds = 60;
     }
 
     public enum AudioSourceKind

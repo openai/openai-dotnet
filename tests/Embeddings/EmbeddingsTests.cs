@@ -29,7 +29,7 @@ public class EmbeddingsTests : OpenAIRecordedTestBase
     [Test]
     public async Task GenerateSingleEmbedding()
     {
-        EmbeddingClient client = CreateProxyFromClient(new EmbeddingClient("text-embedding-3-small", new ApiKeyCredential(Environment.GetEnvironmentVariable("OPENAI_API_KEY")), InstrumentClientOptions(new OpenAIClientOptions())));
+        EmbeddingClient client = CreateProxyFromClient(new EmbeddingClient("text-embedding-3-small", new ApiKeyCredential(TestEnvironment.OpenApiKey), InstrumentClientOptions(new OpenAIClientOptions())));
 
         string input = "Hello, world!";
 
@@ -50,7 +50,7 @@ public class EmbeddingsTests : OpenAIRecordedTestBase
     [TestCase(EmbeddingsInputKind.UsingIntegers)]
     public async Task GenerateMultipleEmbeddings(EmbeddingsInputKind embeddingsInputKind)
     {
-        EmbeddingClient client = CreateProxyFromClient(new EmbeddingClient("text-embedding-3-small", new ApiKeyCredential(Environment.GetEnvironmentVariable("OPENAI_API_KEY")), InstrumentClientOptions(new OpenAIClientOptions())));
+        EmbeddingClient client = CreateProxyFromClient(new EmbeddingClient("text-embedding-3-small", new ApiKeyCredential(TestEnvironment.OpenApiKey), InstrumentClientOptions(new OpenAIClientOptions())));
 
         const int Dimensions = 456;
 
@@ -104,7 +104,6 @@ public class EmbeddingsTests : OpenAIRecordedTestBase
     }
 
     [Test]
-    [LiveOnly]
     public async Task BadOptions()
     {
         EmbeddingClient client = GetTestClient();

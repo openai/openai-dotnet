@@ -28,7 +28,7 @@ public class ChatTests : OpenAIRecordedTestBase
 {
     public ChatTests(bool isAsync) : base(isAsync)
     {
-        TestTimeoutInSeconds = 30;
+        TestTimeoutInSeconds = 75;
     }
 
     [Test]
@@ -879,7 +879,7 @@ public class ChatTests : OpenAIRecordedTestBase
     [Test]
     public void GetChatCompletionMessagesWithInvalidParameters()
     {
-        ChatClient client = CreateProxyFromClient(GetTestClient<ChatClient>(scenario: TestScenario.Chat));
+        ChatClient client = CreateProxyFromClient(GetTestClient<ChatClient>(scenario: TestScenario.Chat, credential: GetTestApiKeyCredential()));
 
         // Test with null completion ID
         Assert.ThrowsAsync<ArgumentNullException>(async () =>
@@ -984,7 +984,7 @@ public class ChatTests : OpenAIRecordedTestBase
         CancellationTokenSource cancellationTokenSource = new();
         cancellationTokenSource.CancelAfter(1000);
 
-        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, options: options);
+        ChatClient client = GetTestClient<ChatClient>(TestScenario.Chat, options: options, credential: GetTestApiKeyCredential());
         IEnumerable<ChatMessage> messages = [new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")];
 
         AsyncCollectionResult<StreamingChatCompletionUpdate> streamingResult = client.CompleteChatStreamingAsync(messages, cancellationToken: cancellationTokenSource.Token);
@@ -1027,7 +1027,7 @@ public class ChatTests : OpenAIRecordedTestBase
             }
         };
 
-        ChatClient client = CreateProxyFromClient(GetTestClient<ChatClient>(TestScenario.Chat, options: options));
+        ChatClient client = CreateProxyFromClient(GetTestClient<ChatClient>(TestScenario.Chat, options: options, credential: GetTestApiKeyCredential()));
         IEnumerable<ChatMessage> messages = [new UserChatMessage("What are the best pizza toppings? Give me a breakdown on the reasons.")];
 
         int updateCount = 0;

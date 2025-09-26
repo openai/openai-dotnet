@@ -16,9 +16,6 @@ namespace OpenAI.Tests.FineTuning;
 [Category("FineTuning")]
 public class FineTuningClientTests : OpenAIRecordedTestBase
 {
-
-
-    FineTuningClient client;
     OpenAIFileClient fileClient;
 
     string samplePath;
@@ -27,6 +24,9 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
     OpenAIFile sampleFile;
     OpenAIFile validationFile;
 
+    string sampleFileId;
+    string validationFileId;
+
     public FineTuningClientTests(bool isAsync) : base(isAsync)
     {
     }
@@ -34,20 +34,59 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
     [OneTimeSetUp]
     public void Setup()
     {
-        client = GetTestClient();
-        fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
+        if (Mode == RecordedTestMode.Playback)
+        {
+            return;
+        }
+        fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
 
         samplePath = Path.Combine("Assets", "fine_tuning_sample.jsonl");
         validationPath = Path.Combine("Assets", "fine_tuning_sample_validation.jsonl");
 
         sampleFile = fileClient.UploadFile(samplePath, FileUploadPurpose.FineTune);
+        sampleFileId = sampleFile.Id;
         validationFile = fileClient.UploadFile(validationPath, FileUploadPurpose.FineTune);
+        validationFileId = validationFile.Id;
 
+    }
+
+    [SetUp]
+    public void PerTestSetUp()
+    {
+        if (Mode == RecordedTestMode.Record)
+        {
+            Recording.SetVariable("SAMPLE_FILE_ID", sampleFileId);
+            Recording.SetVariable("VALIDATION_FILE_ID", validationFileId);
+            _ = Recording.Now; // To save the date time to the recording file
+        }
+        if (Mode == RecordedTestMode.Playback)
+        {
+            var sampleFileId = Recording.GetVariable("SAMPLE_FILE_ID", null);
+            var validationFileId = Recording.GetVariable("VALIDATION_FILE_ID", null);
+
+            sampleFile = OpenAIFilesModelFactory.OpenAIFileInfo(
+                id: sampleFileId,
+                sizeInBytes: 123,
+                createdAt: Recording.Now,
+                filename: samplePath,
+                purpose: FilePurpose.FineTune);
+
+            validationFile = OpenAIFilesModelFactory.OpenAIFileInfo(
+                id: validationFileId,
+                sizeInBytes: 123,
+                createdAt: Recording.Now,
+                filename: validationPath,
+                purpose: FilePurpose.FineTune);
+        }
     }
 
     [OneTimeTearDown]
     public void TearDown()
     {
+        if (Mode == RecordedTestMode.Playback)
+        {
+            return;
+        }
         fileClient.DeleteFile(sampleFile.Id);
         fileClient.DeleteFile(validationFile.Id);
     }
@@ -57,6 +96,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
     [Test]
     public async Task MinimalRequiredParams()
     {
+        FineTuningClient client = GetTestClient();
         FineTuningJob ft = await client.FineTuneAsync("gpt-3.5-turbo", sampleFile.Id, false);
 
         // Assert.AreEqual(0, ft.Hyperparameters.CycleCount);
@@ -88,7 +128,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
             Seed = 1234567
         };
 
-
+        FineTuningClient client = GetTestClient();
         FineTuningJob ft = await client.FineTuneAsync("gpt-3.5-turbo", sampleFile.Id, false, options);
 
         ft.CancelAndUpdate();
@@ -119,6 +159,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
     [Explicit("This test requires wandb.ai account and api key integration.")]
     public void WandBIntegrations()
     {
+        FineTuningClient client = GetTestClient();
         FineTuningJob job = client.FineTune(
             "gpt-3.5-turbo",
             sampleFile.Id,
@@ -133,6 +174,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
     [Test]
     public void ExceptionThrownOnInvalidFileName()
     {
+        FineTuningClient client = GetTestClient();
         Assert.ThrowsAsync<ClientResultException>(async () =>
             await client.FineTuneAsync(baseModel: "gpt-3.5-turbo", trainingFileId: "Invalid File Name", waitUntilCompleted: false)
         );
@@ -141,6 +183,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
     [Test]
     public void ExceptionThrownOnInvalidModelName()
     {
+        FineTuningClient client = GetTestClient();
         Assert.ThrowsAsync<ClientResultException>(async () =>
             await client.FineTuneAsync(baseModel: "gpt-nonexistent", trainingFileId: sampleFile.Id, waitUntilCompleted: false)
         );
@@ -149,6 +192,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
     [Test]
     public void ExceptionThrownOnInvalidValidationIdAsync()
     {
+        FineTuningClient client = GetTestClient();
         Assert.ThrowsAsync<ClientResultException>(async () =>
         {
             await client.FineTuneAsync(
@@ -160,13 +204,13 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
     }
 
     [Test]
-    public void GetJobs()
+    public async Task GetJobs()
     {
+        FineTuningClient client = GetTestClient();
+
         // Arrange
         Console.WriteLine("Getting jobs");
-        var jobs = IsAsync
-            ? client.GetJobsAsync().Take(10).ToBlockingEnumerable()
-            : client.GetJobs().Take(10);
+        var jobs = client.GetJobsAsync().Take(10).ToBlockingEnumerable();
 
         Console.WriteLine("Got jobs");
 
@@ -187,15 +231,16 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
     }
 
     [Test]
-    public void GetJobsWithAfter()
+    public async Task GetJobsWithAfter()
     {
-        var firstJob = client.GetJobs().First();
+        FineTuningClient client = GetTestClient();
+        var firstJob = await client.GetJobsAsync().FirstAsync();
 
         if (firstJob is null)
         {
             Assert.Fail("No jobs found. At least 2 jobs have to be found to run this test.");
         }
-        var secondJob = client.GetJobs(new() { AfterJobId = firstJob.JobId }).First();
+        var secondJob = await client.GetJobsAsync(new() { AfterJobId = firstJob.JobId }).FirstAsync();
 
         Assert.That(secondJob.JobId, Is.Not.EqualTo(firstJob.JobId));
         // Can't assert that one was created after the next because they might be created at the same second.
@@ -207,10 +252,11 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
     /// Second one is "validating training file"
     /// If this test starts failing because of the wrong count, please first check if the above is still true
     [Test]
-    public void GetJobEvents()
+    public async Task GetJobEvents()
     {
+        FineTuningClient client = GetTestClient();
         // Arrange
-        FineTuningJob job = client.FineTune("gpt-3.5-turbo", sampleFile.Id, false);
+        FineTuningJob job = await client.FineTuneAsync("gpt-3.5-turbo", sampleFile.Id, false);
 
         GetEventsOptions options = new()
         {
@@ -233,13 +279,13 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
     }
 
     [Test]
-    public void GetCheckpoints()
+    public async Task GetCheckpoints()
     {
+        FineTuningClient client = GetTestClient();
         // Arrange
         // TODO: When `status` option becomes available, use it to get a succeeded job
-        FineTuningJob job = client.GetJobs(new() { PageSize = 100 })
-                                  .Where((job) => job.Status == "succeeded")
-                                  .First();
+        FineTuningJob job = await client.GetJobsAsync(new() { PageSize = 100 })
+                                  .Where((job) => job.Status == "succeeded").FirstAsync();
 
 
         // Act

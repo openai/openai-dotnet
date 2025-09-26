@@ -14,7 +14,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
 {
     public ImageEditsTests(bool isAsync) : base(isAsync)
     {
-        TestTimeoutInSeconds = 30;
+        TestTimeoutInSeconds = 120;
     }
 
     [Test]

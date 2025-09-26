@@ -213,6 +213,7 @@
     }
   ],
   "Variables": {
-    "RandomSeed": "678184637"
+    "RandomSeed": "678184637",
+    "OPEN-API-KEY": "api-key"
   }
 }
