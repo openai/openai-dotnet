@@ -5330,14 +5330,14 @@ namespace OpenAI.Responses {
         public virtual ClientResult<ResponseDeletionResult> DeleteResponse(string responseId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> DeleteResponseAsync(string responseId, RequestOptions options);
         public virtual Task<ClientResult<ResponseDeletionResult>> DeleteResponseAsync(string responseId, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<ResponseItem> GetInputItems(string responseId, ResponseItemCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult GetInputItems(string responseId, int? limit, string order, string after, string before, RequestOptions options);
-        public virtual AsyncCollectionResult<ResponseItem> GetInputItemsAsync(string responseId, ResponseItemCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult GetInputItemsAsync(string responseId, int? limit, string order, string after, string before, RequestOptions options);
         public virtual ClientResult GetResponse(string responseId, bool? stream, int? startingAfter, RequestOptions options);
         public virtual ClientResult<OpenAIResponse> GetResponse(string responseId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GetResponseAsync(string responseId, bool? stream, int? startingAfter, RequestOptions options);
         public virtual Task<ClientResult<OpenAIResponse>> GetResponseAsync(string responseId, CancellationToken cancellationToken = default);
+        public virtual CollectionResult<ResponseItem> GetResponseInputItems(string responseId, ResponseItemCollectionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult GetResponseInputItems(string responseId, int? limit, string order, string after, string before, RequestOptions options);
+        public virtual AsyncCollectionResult<ResponseItem> GetResponseInputItemsAsync(string responseId, ResponseItemCollectionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult GetResponseInputItemsAsync(string responseId, int? limit, string order, string after, string before, RequestOptions options);
         public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, int? startingAfter = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, int? startingAfter = null, CancellationToken cancellationToken = default);
     }

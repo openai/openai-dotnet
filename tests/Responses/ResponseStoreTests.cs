@@ -49,7 +49,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         int totalCount = 0;
         string lastId = null;
 
-        await foreach (ResponseItem item in client.GetInputItemsAsync(response.Id, options))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id, options))
         {
             totalCount++;
             lastId = item.Id;
@@ -94,7 +94,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         string lastId = null;
         bool hasMultipleContentParts = false;
 
-        await foreach (ResponseItem item in client.GetInputItemsAsync(response.Id, options))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id, options))
         {
             totalCount++;
             lastId = item.Id;
@@ -129,7 +129,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         OpenAIResponse response = await client.CreateResponseAsync(inputItems);
 
         string afterId = null;
-        await foreach (ResponseItem first in client.GetInputItemsAsync(response.Id))
+        await foreach (ResponseItem first in client.GetResponseInputItemsAsync(response.Id))
         {
             afterId = first.Id;
             break;
@@ -144,7 +144,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
             PageSizeLimit = 2
         };
 
-        await foreach (ResponseItem item in client.GetInputItemsAsync(response.Id, options))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id, options))
         {
             count++;
             Assert.That(item.Id, Is.Not.EqualTo(afterId));
@@ -176,7 +176,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         };
 
         var asc = new List<ResponseItem>();
-        await foreach (ResponseItem item in client.GetInputItemsAsync(response.Id, ascOptions))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id, ascOptions))
         {
             asc.Add(item);
             if (asc.Count >= 2) break;
@@ -190,7 +190,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         };
 
         var desc = new List<ResponseItem>();
-        await foreach (ResponseItem item in client.GetInputItemsAsync(response.Id, descOptions))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id, descOptions))
         {
             desc.Add(item);
             if (desc.Count >= 2) break;
@@ -218,7 +218,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         var options = new ResponseItemCollectionOptions() { PageSizeLimit = 100 };
 
         int count = 0;
-        await foreach (ResponseItem item in client.GetInputItemsAsync(response.Id, options))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id, options))
         {
             count++;
             Assert.That(item.Id, Is.Not.Null.And.Not.Empty);
@@ -243,7 +243,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         var options = new ResponseItemCollectionOptions() { PageSizeLimit = 1 };
 
         int count = 0;
-        await foreach (ResponseItem item in client.GetInputItemsAsync(response.Id, options))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id, options))
         {
             count++;
             Assert.That(item.Id, Is.Not.Null.And.Not.Empty);
@@ -270,7 +270,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         try
         {
             int count = 0;
-            await foreach (ResponseItem item in client.GetInputItemsAsync(response.Id, cancellationToken: cts.Token))
+            await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id, cancellationToken: cts.Token))
             {
                 count++;
                 Assert.That(item.Id, Is.Not.Null.And.Not.Empty);
@@ -310,7 +310,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         };
 
         var items = new List<ResponseItem>();
-        await foreach (ResponseItem item in client.GetInputItemsAsync(response.Id, options, cts.Token))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id, options, cts.Token))
         {
             items.Add(item);
             Assert.That(item.Id, Is.Not.Null.And.Not.Empty);

@@ -819,7 +819,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
         }
 
         List<ResponseItem> listedItems = [];
-        await client.GetInputItemsAsync(response.Id).ForEachAsync(item => listedItems.Add(item));
+        await client.GetResponseInputItemsAsync(response.Id).ForEachAsync(item => listedItems.Add(item));
 
         if (instructionMethod == ResponsesTestInstructionMethod.InstructionsProperty)
         {
@@ -952,7 +952,7 @@ public partial class ResponsesTests : SyncAsyncTestBase
         Assert.That(turn2Message.Content, Has.Count.EqualTo(1));
         Assert.That(turn2Message.Content[0].Text, Does.Contain("22"));
 
-        await foreach (ResponseItem item in client.GetInputItemsAsync(turn2Response.Id))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(turn2Response.Id))
         { }
     }
 

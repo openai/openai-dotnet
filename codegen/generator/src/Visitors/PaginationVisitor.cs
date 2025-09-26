@@ -88,11 +88,11 @@ public class PaginationVisitor : ScmLibraryVisitor
             ("ContainerFileResource", "ContainerFileCollectionOptions", _paginationParamsToReplace)
         },
         {
-            "GetInputItems",
+            "GetResponseInputItems",
             ("ResponseItem", "ResponseItemCollectionOptions", _paginationParamsToReplace)
         },
         {
-            "GetInputItemsAsync",
+            "GetResponseInputItemsAsync",
             ("ResponseItem", "ResponseItemCollectionOptions", _paginationParamsToReplace)
         },
         {
