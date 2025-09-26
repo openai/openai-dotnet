@@ -107,8 +107,7 @@ namespace OpenAI.Moderations
         public static explicit operator ModerationResultCollection(ClientResult result)
         {
             using PipelineResponse response = result.GetRawResponse();
-            BinaryData data = response.Content;
-            using JsonDocument document = JsonDocument.Parse(data);
+            using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeModerationResultCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

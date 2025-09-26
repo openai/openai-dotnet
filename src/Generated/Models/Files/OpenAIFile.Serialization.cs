@@ -248,8 +248,7 @@ namespace OpenAI.Files
         public static explicit operator OpenAIFile(ClientResult result)
         {
             using PipelineResponse response = result.GetRawResponse();
-            BinaryData data = response.Content;
-            using JsonDocument document = JsonDocument.Parse(data);
+            using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeOpenAIFile(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

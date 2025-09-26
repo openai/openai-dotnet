@@ -188,8 +188,7 @@ namespace OpenAI.Responses
         public static explicit operator InternalResponseItemList(ClientResult result)
         {
             using PipelineResponse response = result.GetRawResponse();
-            BinaryData data = response.Content;
-            using JsonDocument document = JsonDocument.Parse(data);
+            using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeInternalResponseItemList(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

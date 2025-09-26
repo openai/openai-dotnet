@@ -160,8 +160,7 @@ namespace OpenAI.FineTuning
         public static explicit operator InternalListPaginatedFineTuningJobsResponse(ClientResult result)
         {
             using PipelineResponse response = result.GetRawResponse();
-            BinaryData data = response.Content;
-            using JsonDocument document = JsonDocument.Parse(data);
+            using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeInternalListPaginatedFineTuningJobsResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
