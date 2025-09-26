@@ -22,6 +22,6 @@ namespace OpenAI.Chat
             File = @file;
         }
 
-        internal InternalChatCompletionRequestMessageContentPartFileFile File { get; }
+        internal InternalChatCompletionRequestMessageContentPartFileFile File { get; set; }
     }
 }

@@ -27,9 +27,9 @@ namespace OpenAI.Chat
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public BinaryData Data { get; }
+        public BinaryData Data { get; set; }
 
-        public ChatInputAudioFormat Format { get; }
+        public ChatInputAudioFormat Format { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

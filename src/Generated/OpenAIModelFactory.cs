@@ -177,6 +177,11 @@ namespace OpenAI
                 additionalBinaryDataProperties: null);
         }
 
+        public static ChatMessageContentPart ChatMessageContentPart()
+        {
+            return new InternalUnknownChatCompletionRequestMessageContentPart(additionalBinaryDataProperties: null);
+        }
+
         public static ChatOutputAudio ChatOutputAudio(string id = default, DateTimeOffset expiresAt = default, BinaryData audioBytes = default, string transcript = default)
         {
             return new ChatOutputAudio(id, expiresAt, audioBytes, transcript, additionalBinaryDataProperties: null);
@@ -218,11 +223,6 @@ namespace OpenAI
         public static ChatMessage ChatMessage(string role = default, ChatMessageContent content = default)
         {
             return new InternalUnknownChatMessage(role.ToChatMessageRole(), content, additionalBinaryDataProperties: null);
-        }
-
-        public static ChatMessageContentPart ChatMessageContentPart()
-        {
-            return new InternalUnknownChatCompletionRequestMessageContentPart(additionalBinaryDataProperties: null);
         }
 
         public static SystemChatMessage SystemChatMessage(ChatMessageContent content = default, string participantName = default)
