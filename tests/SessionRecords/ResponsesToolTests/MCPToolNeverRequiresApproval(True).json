@@ -6,9 +6,9 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "236",
+        "Content-Length": "322",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
       },
       "RequestBody": {
         "model": "gpt-5",
@@ -17,6 +17,7 @@
             "type": "mcp",
             "server_label": "dmcp",
             "server_url": "https://dmcp-server.deno.dev/sse",
+            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
             "require_approval": "never"
           }
         ],
@@ -37,27 +38,30 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "98042072e91da9ba-SEA",
+        "CF-RAY": "984f0e43fabf76a0-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "2908",
+        "Content-Length": "3015",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 23:26:11 GMT",
+        "Date": "Fri, 26 Sep 2025 01:40:57 GMT",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "6239",
+        "openai-processing-ms": "5181",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "6241",
+        "x-envoy-upstream-service-time": "5186",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_0c000b6b6a400d9d0068c9f20d518c8196bc1991774f4654d7",
+        "id": "resp_68d5ef248d8081909c65b7dd58af056808ed287956d20c1d",
         "object": "response",
-        "created_at": 1758065165,
+        "created_at": 1758850852,
         "status": "completed",
         "background": false,
+        "billing": {
+          "payer": "developer"
+        },
         "error": null,
         "incomplete_details": null,
         "instructions": null,
@@ -66,7 +70,7 @@
         "model": "gpt-5-2025-08-07",
         "output": [
           {
-            "id": "mcpl_0c000b6b6a400d9d0068c9f20d82b08196813787d6f94d33ce",
+            "id": "mcpl_68d5ef24aba481908fa2e530bc0543ca08ed287956d20c1d",
             "type": "mcp_list_tools",
             "server_label": "dmcp",
             "tools": [
@@ -93,12 +97,12 @@
             ]
           },
           {
-            "id": "rs_0c000b6b6a400d9d0068c9f20eade48196b8b2e1db86b233aa",
+            "id": "rs_68d5ef25dd7c8190900c52df49df63ec08ed287956d20c1d",
             "type": "reasoning",
             "summary": []
           },
           {
-            "id": "mcp_0c000b6b6a400d9d0068c9f211f7588196b160031a0c5397af",
+            "id": "mcp_68d5ef27d2308190a303639021b0866008ed287956d20c1d",
             "type": "mcp_call",
             "approval_request_id": null,
             "arguments": "{\"diceRollExpression\":\"2d4+1\"}",
@@ -108,7 +112,7 @@
             "server_label": "dmcp"
           },
           {
-            "id": "msg_0c000b6b6a400d9d0068c9f2133b90819691850536ee2145e7",
+            "id": "msg_68d5ef29379881909d320a230bddcb2508ed287956d20c1d",
             "type": "message",
             "status": "completed",
             "content": [
@@ -116,7 +120,7 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "7"
+                "text": "You rolled 7."
               }
             ],
             "role": "assistant"
@@ -146,7 +150,7 @@
             "allowed_tools": null,
             "headers": null,
             "require_approval": "never",
-            "server_description": null,
+            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
             "server_label": "dmcp",
             "server_url": "https://dmcp-server.deno.dev/<redacted>"
           }
@@ -155,15 +159,15 @@
         "top_p": 1.0,
         "truncation": "disabled",
         "usage": {
-          "input_tokens": 542,
+          "input_tokens": 560,
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 160,
+          "output_tokens": 164,
           "output_tokens_details": {
             "reasoning_tokens": 128
           },
-          "total_tokens": 702
+          "total_tokens": 724
         },
         "user": null,
         "metadata": {}

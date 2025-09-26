@@ -6,9 +6,9 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "280",
+        "Content-Length": "366",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
       },
       "RequestBody": {
         "model": "gpt-5",
@@ -17,6 +17,7 @@
             "type": "mcp",
             "server_label": "dmcp",
             "server_url": "https://dmcp-server.deno.dev/sse",
+            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
             "allowed_tools": {
               "tool_names": [
                 "not_roll"
@@ -42,25 +43,25 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "980be18b3ba1a0f3-SEA",
+        "CF-RAY": "984f1f9c3dcd76a0-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "2046",
+        "Content-Length": "2125",
         "Content-Type": "application/json",
-        "Date": "Wed, 17 Sep 2025 22:01:22 GMT",
+        "Date": "Fri, 26 Sep 2025 01:52:54 GMT",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "7183",
+        "openai-processing-ms": "11294",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "7190",
+        "x-envoy-upstream-service-time": "11298",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_68cb2faad2608190a91000c7a562675603d0619cda9bdf8d",
+        "id": "resp_68d5f1eaffe08196a811a9bdfbe7bf490124d3cdd18e1cc8",
         "object": "response",
-        "created_at": 1758146474,
+        "created_at": 1758851563,
         "status": "completed",
         "background": false,
         "billing": {
@@ -74,18 +75,18 @@
         "model": "gpt-5-2025-08-07",
         "output": [
           {
-            "id": "mcpl_68cb2fab02a8819090dc4c39311f01c703d0619cda9bdf8d",
+            "id": "mcpl_68d5f1eb11088196ac46882c17f5223f0124d3cdd18e1cc8",
             "type": "mcp_list_tools",
             "server_label": "dmcp",
             "tools": []
           },
           {
-            "id": "rs_68cb2fad59b08190941c26f4fea9795303d0619cda9bdf8d",
+            "id": "rs_68d5f1ec98008196ad271ff18369979e0124d3cdd18e1cc8",
             "type": "reasoning",
             "summary": []
           },
           {
-            "id": "msg_68cb2fb1a26c819095085f3d90c017e803d0619cda9bdf8d",
+            "id": "msg_68d5f1f5cfec819681d8b5d1bf6863d00124d3cdd18e1cc8",
             "type": "message",
             "status": "completed",
             "content": [
@@ -93,7 +94,7 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "7 (4 + 2 + 1)"
+                "text": "You rolled 2d4+1: [3, 2] + 1 = 6"
               }
             ],
             "role": "assistant"
@@ -128,7 +129,7 @@
             },
             "headers": null,
             "require_approval": "never",
-            "server_description": null,
+            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
             "server_label": "dmcp",
             "server_url": "https://dmcp-server.deno.dev/<redacted>"
           }
@@ -137,15 +138,15 @@
         "top_p": 1.0,
         "truncation": "disabled",
         "usage": {
-          "input_tokens": 109,
+          "input_tokens": 127,
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 400,
+          "output_tokens": 603,
           "output_tokens_details": {
-            "reasoning_tokens": 384
+            "reasoning_tokens": 576
           },
-          "total_tokens": 509
+          "total_tokens": 730
         },
         "user": null,
         "metadata": {}

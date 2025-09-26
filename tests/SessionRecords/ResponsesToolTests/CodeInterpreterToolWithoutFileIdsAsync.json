@@ -6,24 +6,18 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "366",
+        "Content-Length": "223",
         "Content-Type": "application/json",
         "User-Agent": "OpenAI/2.5.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
       },
       "RequestBody": {
-        "model": "gpt-5",
+        "model": "gpt-4o-mini",
         "tools": [
           {
-            "type": "mcp",
-            "server_label": "dmcp",
-            "server_url": "https://dmcp-server.deno.dev/sse",
-            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-            "allowed_tools": {
-              "tool_names": [
-                "not_roll"
-              ]
-            },
-            "require_approval": "never"
+            "type": "code_interpreter",
+            "container": {
+              "type": "auto"
+            }
           }
         ],
         "input": [
@@ -33,7 +27,7 @@
             "content": [
               {
                 "type": "input_text",
-                "text": "Roll 2d4+1"
+                "text": "Calculate the factorial of 5 using Python code."
               }
             ]
           }
@@ -43,25 +37,31 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "984f13c90e2e76a0-SEA",
+        "CF-RAY": "984f1b209a4c76a0-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "2434",
+        "Content-Length": "1906",
         "Content-Type": "application/json",
-        "Date": "Fri, 26 Sep 2025 01:44:57 GMT",
+        "Date": "Fri, 26 Sep 2025 01:49:58 GMT",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "19318",
+        "openai-processing-ms": "19399",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "19326",
+        "x-envoy-upstream-service-time": "19401",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999765",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_68d5f006a7188196a950072e899156b0066815288118c52a",
+        "id": "resp_68d5f1337688819096b14bdf31e250180cd377c6f31fe963",
         "object": "response",
-        "created_at": 1758851078,
+        "created_at": 1758851379,
         "status": "completed",
         "background": false,
         "billing": {
@@ -72,21 +72,18 @@
         "instructions": null,
         "max_output_tokens": null,
         "max_tool_calls": null,
-        "model": "gpt-5-2025-08-07",
+        "model": "gpt-4o-mini-2024-07-18",
         "output": [
           {
-            "id": "mcpl_68d5f006c1d08196bee6939afa14d976066815288118c52a",
-            "type": "mcp_list_tools",
-            "server_label": "dmcp",
-            "tools": []
+            "id": "ci_68d5f13784348190bf7d2f53c8066cc60cd377c6f31fe963",
+            "type": "code_interpreter_call",
+            "status": "completed",
+            "code": "import math\n\n# Calculate the factorial of 5\nfactorial_of_5 = math.factorial(5)\nfactorial_of_5",
+            "container_id": "cntr_68d5f136fb048190a05cbed4dee86e9000009f696d5be1a1",
+            "outputs": null
           },
           {
-            "id": "rs_68d5f00d31b0819691463c71a4435462066815288118c52a",
-            "type": "reasoning",
-            "summary": []
-          },
-          {
-            "id": "msg_68d5f0192ef4819696e1b6cedb087a82066815288118c52a",
+            "id": "msg_68d5f1450e9081908d3b897f8fb9b89b0cd377c6f31fe963",
             "type": "message",
             "status": "completed",
             "content": [
@@ -94,21 +91,7 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "2d4+1"
-              }
-            ],
-            "role": "assistant"
-          },
-          {
-            "id": "msg_68d5f01952d481968568bd1f4f85ef2a066815288118c52a",
-            "type": "message",
-            "status": "completed",
-            "content": [
-              {
-                "type": "output_text",
-                "annotations": [],
-                "logprobs": [],
-                "text": "I rolled 2d4+1: 6"
+                "text": "The factorial of 5 is \\( 120 \\)."
               }
             ],
             "role": "assistant"
@@ -118,7 +101,7 @@
         "previous_response_id": null,
         "prompt_cache_key": null,
         "reasoning": {
-          "effort": "medium",
+          "effort": null,
           "summary": null
         },
         "safety_identifier": null,
@@ -134,33 +117,25 @@
         "tool_choice": "auto",
         "tools": [
           {
-            "type": "mcp",
-            "allowed_tools": {
-              "read_only": null,
-              "tool_names": [
-                "not_roll"
-              ]
-            },
-            "headers": null,
-            "require_approval": "never",
-            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
-            "server_label": "dmcp",
-            "server_url": "https://dmcp-server.deno.dev/<redacted>"
+            "type": "code_interpreter",
+            "container": {
+              "type": "auto"
+            }
           }
         ],
         "top_logprobs": 0,
         "top_p": 1.0,
         "truncation": "disabled",
         "usage": {
-          "input_tokens": 127,
+          "input_tokens": 389,
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 925,
+          "output_tokens": 47,
           "output_tokens_details": {
-            "reasoning_tokens": 896
+            "reasoning_tokens": 0
           },
-          "total_tokens": 1052
+          "total_tokens": 436
         },
         "user": null,
         "metadata": {}

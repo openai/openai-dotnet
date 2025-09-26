@@ -6,9 +6,9 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "276",
+        "Content-Length": "362",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
       },
       "RequestBody": {
         "model": "gpt-5",
@@ -17,6 +17,7 @@
             "type": "mcp",
             "server_label": "dmcp",
             "server_url": "https://dmcp-server.deno.dev/sse",
+            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
             "allowed_tools": {
               "tool_names": [
                 "roll"
@@ -42,25 +43,25 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "980be1703ba9a0f3-SEA",
+        "CF-RAY": "984f23b4785ac22a-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "3024",
+        "Content-Length": "3086",
         "Content-Type": "application/json",
-        "Date": "Wed, 17 Sep 2025 22:01:14 GMT",
+        "Date": "Fri, 26 Sep 2025 01:55:39 GMT",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "4133",
+        "openai-processing-ms": "8359",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "4141",
+        "x-envoy-upstream-service-time": "8363",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_68cb2fa681ac8197abd79194f5c6528c08f50ef09fe29d9c",
+        "id": "resp_68d5f292b59881939c97e4fc3f846b56048129c402a5db1e",
         "object": "response",
-        "created_at": 1758146470,
+        "created_at": 1758851730,
         "status": "completed",
         "background": false,
         "billing": {
@@ -74,7 +75,7 @@
         "model": "gpt-5-2025-08-07",
         "output": [
           {
-            "id": "mcpl_68cb2fa69e748197b5a6fecc0c4db4f708f50ef09fe29d9c",
+            "id": "mcpl_68d5f292d3788193a799a7e7870404fe048129c402a5db1e",
             "type": "mcp_list_tools",
             "server_label": "dmcp",
             "tools": [
@@ -101,22 +102,22 @@
             ]
           },
           {
-            "id": "rs_68cb2fa7f0648197aaff1395f426317208f50ef09fe29d9c",
+            "id": "rs_68d5f2943c30819382b5a1fd5302899c048129c402a5db1e",
             "type": "reasoning",
             "summary": []
           },
           {
-            "id": "mcp_68cb2fa90348819796d983f5f088a41b08f50ef09fe29d9c",
+            "id": "mcp_68d5f299a34c819380be2280d27991bd048129c402a5db1e",
             "type": "mcp_call",
             "approval_request_id": null,
             "arguments": "{\"diceRollExpression\":\"2d4+1\"}",
             "error": null,
             "name": "roll",
-            "output": "6",
+            "output": "5",
             "server_label": "dmcp"
           },
           {
-            "id": "msg_68cb2faa49748197b1cc48f28619cd6708f50ef09fe29d9c",
+            "id": "msg_68d5f29ab4b481939c80641b018605d6048129c402a5db1e",
             "type": "message",
             "status": "completed",
             "content": [
@@ -124,7 +125,7 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "6"
+                "text": "5"
               }
             ],
             "role": "assistant"
@@ -159,7 +160,7 @@
             },
             "headers": null,
             "require_approval": "never",
-            "server_description": null,
+            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
             "server_label": "dmcp",
             "server_url": "https://dmcp-server.deno.dev/<redacted>"
           }
@@ -168,15 +169,15 @@
         "top_p": 1.0,
         "truncation": "disabled",
         "usage": {
-          "input_tokens": 469,
+          "input_tokens": 652,
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 96,
+          "output_tokens": 224,
           "output_tokens_details": {
-            "reasoning_tokens": 64
+            "reasoning_tokens": 192
           },
-          "total_tokens": 565
+          "total_tokens": 876
         },
         "user": null,
         "metadata": {}

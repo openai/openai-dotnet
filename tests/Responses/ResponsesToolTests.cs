@@ -1,4 +1,5 @@
 using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using OpenAI.Containers;
 using OpenAI.Files;
 using OpenAI.Responses;
@@ -462,7 +463,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [Test]
     public async Task CodeInterpreterToolWithContainerIdFromContainerApi()
     {
-        ContainerClient containerClient = GetTestClient<ContainerClient>(TestScenario.Containers);
+        ContainerClient containerClient = GetProxiedOpenAIClient<ContainerClient>(TestScenario.Containers);
         OpenAIResponseClient client = GetTestClient();
 
         // Create a container first using the Containers API
@@ -518,7 +519,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [Test]
     public async Task CodeInterpreterToolWithUploadedFileIds()
     {
-        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
         OpenAIResponseClient client = GetTestClient();
 
         // Create some test files to upload
@@ -616,7 +617,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [Test]
     public async Task CodeInterpreterToolStreamingWithFiles()
     {
-        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
         OpenAIResponseClient client = GetTestClient();
 
         // Create test CSV data

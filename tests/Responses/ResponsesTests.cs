@@ -1,7 +1,6 @@
 ﻿using Microsoft.ClientModel.TestFramework;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
-using OpenAI.Containers;
 using OpenAI.Files;
 using OpenAI.Responses;
 using OpenAI.Tests.Utility;
@@ -265,7 +264,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<ImageGenerationTool>());
 
         ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
-        Assert.AreEqual(imageGenResponse.Status, ImageGenerationCallStatus.Completed);
+        Assert.That(imageGenResponse.Status, Is.EqualTo(ImageGenerationCallStatus.Completed));
         Assert.That(imageGenResponse.GeneratedImageBytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
 
@@ -373,7 +372,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<ImageGenerationTool>());
 
         ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
-        Assert.AreEqual(imageGenResponse.Status, ImageGenerationCallStatus.Completed);
+        Assert.That(imageGenResponse.Status, Is.EqualTo(ImageGenerationCallStatus.Completed));
         Assert.That(imageGenResponse.GeneratedImageBytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
 
@@ -408,7 +407,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<ImageGenerationTool>());
 
         ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
-        Assert.AreEqual(imageGenResponse.Status, ImageGenerationCallStatus.Completed);
+        Assert.That(imageGenResponse.Status, Is.EqualTo(ImageGenerationCallStatus.Completed));
         Assert.That(imageGenResponse.GeneratedImageBytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
 
@@ -456,7 +455,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<ImageGenerationTool>());
 
         ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
-        Assert.AreEqual(imageGenResponse.Status, ImageGenerationCallStatus.Completed);
+        Assert.That(imageGenResponse.Status, Is.EqualTo(ImageGenerationCallStatus.Completed));
         Assert.That(imageGenResponse.GeneratedImageBytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
 
@@ -732,6 +731,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             BinaryData.FromBytes(File.ReadAllBytes(filePath)),
             "test_favorite_foods.pdf",
             FileUploadPurpose.UserData);
+        }
 
         Validate(newFileToUse);
 

@@ -6,9 +6,9 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "262",
+        "Content-Length": "348",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
       },
       "RequestBody": {
         "model": "gpt-5",
@@ -17,6 +17,7 @@
             "type": "mcp",
             "server_label": "dmcp",
             "server_url": "https://dmcp-server.deno.dev/sse",
+            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
             "require_approval": {
               "never": {
                 "tool_names": [
@@ -43,25 +44,25 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "980bd848bf7ad44f-SEA",
+        "CF-RAY": "984f0e65ffaa76a0-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "3095",
+        "Content-Length": "3452",
         "Content-Type": "application/json",
-        "Date": "Wed, 17 Sep 2025 21:54:59 GMT",
+        "Date": "Fri, 26 Sep 2025 01:42:11 GMT",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "4204",
+        "openai-processing-ms": "73187",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "4207",
+        "x-envoy-upstream-service-time": "73190",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_68cb2e2fabd08194ad9f87d75d84c88b08eedbc37e8f035f",
+        "id": "resp_68d5ef2a34588194934496c354a83e7d01b804d9be6c5097",
         "object": "response",
-        "created_at": 1758146095,
+        "created_at": 1758850858,
         "status": "completed",
         "background": false,
         "billing": {
@@ -75,7 +76,7 @@
         "model": "gpt-5-2025-08-07",
         "output": [
           {
-            "id": "mcpl_68cb2e2fb7ac81949de10c34a724e14d08eedbc37e8f035f",
+            "id": "mcpl_68d5ef2a48888194978e15e52a24a0bd01b804d9be6c5097",
             "type": "mcp_list_tools",
             "server_label": "dmcp",
             "tools": [
@@ -102,22 +103,31 @@
             ]
           },
           {
-            "id": "rs_68cb2e31461c8194bd1b45031ec901d008eedbc37e8f035f",
+            "id": "rs_68d5ef2ba8d4819495067568b1d60c9001b804d9be6c5097",
             "type": "reasoning",
             "summary": []
           },
           {
-            "id": "mcp_68cb2e31feb4819491383af1434ca6cd08eedbc37e8f035f",
+            "id": "mcp_68d5ef2da17481949709d5068711bbd601b804d9be6c5097",
             "type": "mcp_call",
             "approval_request_id": null,
             "arguments": "{\"diceRollExpression\":\"2d4+1\"}",
-            "error": null,
+            "error": {
+              "type": "http_error",
+              "code": 424,
+              "message": "424: "
+            },
             "name": "roll",
-            "output": "3",
+            "output": null,
             "server_label": "dmcp"
           },
           {
-            "id": "msg_68cb2e337f4881948b5b8833ec4cd13f08eedbc37e8f035f",
+            "id": "rs_68d5ef69fa4881949b6896fb8a168b5901b804d9be6c5097",
+            "type": "reasoning",
+            "summary": []
+          },
+          {
+            "id": "msg_68d5ef72a6d881949112428a2ec8514d01b804d9be6c5097",
             "type": "message",
             "status": "completed",
             "content": [
@@ -125,7 +135,7 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "You rolled: 3"
+                "text": "The dice roller service is temporarily unavailable. Rolling locally:\n2d4+1 → [3, 2] + 1 = 6"
               }
             ],
             "role": "assistant"
@@ -163,7 +173,7 @@
                 ]
               }
             },
-            "server_description": null,
+            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
             "server_label": "dmcp",
             "server_url": "https://dmcp-server.deno.dev/<redacted>"
           }
@@ -172,15 +182,15 @@
         "top_p": 1.0,
         "truncation": "disabled",
         "usage": {
-          "input_tokens": 447,
+          "input_tokens": 582,
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 100,
+          "output_tokens": 638,
           "output_tokens_details": {
-            "reasoning_tokens": 64
+            "reasoning_tokens": 576
           },
-          "total_tokens": 547
+          "total_tokens": 1220
         },
         "user": null,
         "metadata": {}
