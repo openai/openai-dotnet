@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using OpenAI.Responses;
 
 namespace OpenAI.Chat;
 
@@ -29,7 +30,7 @@ public static partial class OpenAIChatModelFactory
         ChatCompletion(
             id: id,
             finishReason: finishReason,
-            content:content,
+            content: content,
             refusal: refusal,
             toolCalls: toolCalls,
             role: role,
@@ -374,5 +375,41 @@ public static partial class OpenAIChatModelFactory
             kind: kind,
             toolCallId: toolCallId,
             additionalBinaryDataProperties: null);
+    }
+
+    /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.ChatCompletionMessageListDatum"/>. </summary>
+    /// <returns> A new <see cref="OpenAI.Chat.ChatCompletionMessageListDatum"/> instance for mocking.</returns>
+    public static ChatCompletionMessageListDatum ChatCompletionMessageListDatum(
+        string id,
+        string content,
+        string refusal,
+        ChatMessageRole role,
+        IList<ChatMessageContentPart> contentParts = null,
+        IList<ChatToolCall> toolCalls = null,
+        IList<ChatMessageAnnotation> annotations = null,
+        string functionName = null,
+        string functionArguments = null,
+        ChatOutputAudio outputAudio = null)
+    {
+        InternalChatCompletionResponseMessageFunctionCall functionCall = null;
+        if (functionName != null && functionArguments != null)
+        {
+            functionCall = new(
+                name: functionName,
+                arguments: functionArguments,
+                additionalBinaryDataProperties: null);
+        }
+
+        return new ChatCompletionMessageListDatum(
+                content: content,
+                contentParts: contentParts,
+                refusal: refusal,
+                toolCalls: toolCalls.ToList().AsReadOnly(),
+                annotations: annotations.ToList().AsReadOnly(),
+                role: role,
+                functionCall: functionCall,
+                outputAudio: outputAudio,
+                id: id,
+                additionalBinaryDataProperties: null);
     }
 }
