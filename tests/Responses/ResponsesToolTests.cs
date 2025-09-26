@@ -392,7 +392,7 @@ public partial class ResponsesToolTests : SyncAsyncTestBase
         Assert.That(annotation.FileId, Is.EqualTo(testFile.Id));
         Assert.That(annotation.Index, Is.GreaterThan(0));
 
-        await foreach (ResponseItem inputItem in client.GetResponseInputItemsAsync(response.Id))
+        await foreach (ResponseItem inputItem in client.GetInputItemsAsync(response.Id))
         {
             Console.WriteLine(ModelReaderWriter.Write(inputItem).ToString());
         }
