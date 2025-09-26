@@ -266,34 +266,6 @@ public partial class OpenAIResponseClient
             cancellationToken);
     }
 
-    public virtual AsyncCollectionResult<ResponseItem> GetResponseInputItemsAsync(string responseId, ResponseItemCollectionOptions options = default, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
-
-        AsyncCollectionResult result = GetResponseInputItemsAsync(responseId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions());
-
-        if (result is not AsyncCollectionResult<ResponseItem> responsesItemCollection)
-        {
-            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'AsyncCollectionResult<ResponsesItem>'.");
-        }
-
-        return responsesItemCollection;
-    }
-
-    public virtual CollectionResult<ResponseItem> GetResponseInputItems(string responseId, ResponseItemCollectionOptions options = default, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
-
-        CollectionResult result = GetResponseInputItems(responseId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions());
-
-        if (result is not CollectionResult<ResponseItem> responsesItemCollection)
-        {
-            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'CollectionResult<ResponsesItem>'.");
-        }
-
-        return responsesItemCollection;
-    }
-
     public virtual async Task<ClientResult<ResponseDeletionResult>> DeleteResponseAsync(string responseId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));

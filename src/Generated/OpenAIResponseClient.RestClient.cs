@@ -84,7 +84,7 @@ namespace OpenAI.Responses
             return message;
         }
 
-        internal virtual PipelineMessage CreateGetInputItemsRequest(string responseId, int? limit, string order, string after, string before, RequestOptions options)
+        internal virtual PipelineMessage CreateGetResponseInputItemsRequest(string responseId, int? limit, string order, string after, string before, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);

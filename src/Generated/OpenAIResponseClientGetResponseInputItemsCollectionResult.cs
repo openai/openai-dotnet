@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class OpenAIResponseClientGetInputItemsCollectionResultOfT : CollectionResult<ResponseItem>
+    internal partial class OpenAIResponseClientGetResponseInputItemsCollectionResult : CollectionResult
     {
         private readonly OpenAIResponseClient _client;
         private readonly string _responseId;
@@ -20,7 +20,7 @@ namespace OpenAI.Responses
         private readonly string _before;
         private readonly RequestOptions _options;
 
-        public OpenAIResponseClientGetInputItemsCollectionResultOfT(OpenAIResponseClient client, string responseId, int? limit, string order, string after, string before, RequestOptions options)
+        public OpenAIResponseClientGetResponseInputItemsCollectionResult(OpenAIResponseClient client, string responseId, int? limit, string order, string after, string before, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
@@ -35,7 +35,7 @@ namespace OpenAI.Responses
 
         public override IEnumerable<ClientResult> GetRawPages()
         {
-            PipelineMessage message = _client.CreateGetInputItemsRequest(_responseId, _limit, _order, _after, _before, _options);
+            PipelineMessage message = _client.CreateGetResponseInputItemsRequest(_responseId, _limit, _order, _after, _before, _options);
             string nextToken = null;
             while (true)
             {
@@ -50,7 +50,7 @@ namespace OpenAI.Responses
                 {
                     yield break;
                 }
-                message = _client.CreateGetInputItemsRequest(_responseId, _limit, _order, nextToken, _before, _options);
+                message = _client.CreateGetResponseInputItemsRequest(_responseId, _limit, _order, nextToken, _before, _options);
             }
         }
 
@@ -65,11 +65,6 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-        }
-
-        protected override IEnumerable<ResponseItem> GetValuesFromPage(ClientResult page)
-        {
-            return ((InternalResponseItemList)page).Data;
         }
     }
 }

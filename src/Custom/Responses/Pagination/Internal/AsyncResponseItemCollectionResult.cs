@@ -83,7 +83,7 @@ internal class AsyncResponseItemCollectionResult : AsyncCollectionResult<Respons
 
     internal virtual async Task<ClientResult> GetResponsesAsync(string responseId, int? limit, string? order, string? after, string? before, RequestOptions? options)
     {
-        using PipelineMessage message = _parentClient.CreateGetInputItemsRequest(responseId, limit, order, after, before, options);
+        using PipelineMessage message = _parentClient.CreateGetResponseInputItemsRequest(responseId, limit, order, after, before, options);
         return ClientResult.FromResponse(await _parentClient.Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 }

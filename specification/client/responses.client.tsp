@@ -69,6 +69,8 @@ using Azure.ClientGenerator.Core;
 
 @@clientName(MCPToolFilter.read_only, "IsReadOnly");
 
+@@clientName(Responses.listInputItems, "GetResponseInputItems");
+
 // ------------ Streaming ------------
 
 @@alternateType(ResponseFunctionCallArgumentsDoneEvent.arguments, unknown);
