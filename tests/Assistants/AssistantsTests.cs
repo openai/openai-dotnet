@@ -1,10 +1,4 @@
-﻿using NUnit.Framework;
-using NUnit.Framework.Internal;
-using OpenAI.Assistants;
-using OpenAI.Files;
-using OpenAI.Tests.Utility;
-using OpenAI.VectorStores;
-using System;
+﻿using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
@@ -13,6 +7,12 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using NUnit.Framework;
+using NUnit.Framework.Internal;
+using OpenAI.Assistants;
+using OpenAI.Files;
+using OpenAI.Tests.Utility;
+using OpenAI.VectorStores;
 using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Assistants;
@@ -31,7 +31,6 @@ public class AssistantsTests : SyncAsyncTestBase
     private readonly List<string> _vectorStoreIdsToDelete = [];
 
     private static readonly DateTimeOffset s_2024 = new(2024, 1, 1, 0, 0, 0, TimeSpan.Zero);
-    private static readonly string s_testAssistantName = $".NET SDK Test Assistant - Please Delete Me";
     private static readonly string s_cleanupMetadataKey = $"test_metadata_cleanup_eligible";
 
     private static AssistantClient GetTestClient() => GetTestClient<AssistantClient>(TestScenario.Assistants);
@@ -1026,6 +1025,45 @@ public class AssistantsTests : SyncAsyncTestBase
             // Confirm that we always get the Content property, since we are always passing the `include[]` query parameter.
             Assert.That(runStep.Details.ToolCalls[0].FileSearchResults[0].Content, Has.Count.GreaterThan(0));
         });
+    }
+
+    [Test]
+    public async Task FileOnMessageWorks()
+    {
+        // First, we need to upload a simple test file.
+        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
+        OpenAIFile testFile = fileClient.UploadFile(
+            BinaryData.FromString("""
+            This file describes the favorite foods of several people.
+
+            Summanus Ferdinand: tacos
+            Tekakwitha Effie: pizza
+            Filip Carola: cake
+            """).ToStream(),
+            "favorite_foods.txt",
+            FileUploadPurpose.Assistants);
+        Validate(testFile);
+
+        AssistantClient client = GetTestClient();
+
+        var thread = client.CreateThread();
+        var assistant = client.CreateAssistant("gpt-4o-mini");
+
+        var message = await client.CreateMessageAsync(
+        thread.Value.Id,
+        MessageRole.User,
+        new[] {
+            MessageContent.FromText("What is this file?"),
+        },
+        new MessageCreationOptions()
+        {
+            Attachments = [
+                new MessageCreationAttachment(testFile.Id, new List<ToolDefinition>() { ToolDefinition.CreateFileSearch() }),
+                new MessageCreationAttachment(testFile.Id, new List<ToolDefinition>() { ToolDefinition.CreateCodeInterpreter() })
+                ]
+        });
+
+        var result = client.CreateRunStreamingAsync(thread.Value.Id, assistant.Value.Id);
     }
 
     [Test]
