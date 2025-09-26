@@ -219,8 +219,7 @@ namespace OpenAI.Assistants
         public static explicit operator AssistantThread(ClientResult result)
         {
             using PipelineResponse response = result.GetRawResponse();
-            BinaryData data = response.Content;
-            using JsonDocument document = JsonDocument.Parse(data);
+            using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeAssistantThread(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

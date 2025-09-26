@@ -365,8 +365,7 @@ namespace OpenAI.Realtime
         public static explicit operator InternalRealtimeSessionCreateResponse(ClientResult result)
         {
             using PipelineResponse response = result.GetRawResponse();
-            BinaryData data = response.Content;
-            using JsonDocument document = JsonDocument.Parse(data);
+            using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeInternalRealtimeSessionCreateResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

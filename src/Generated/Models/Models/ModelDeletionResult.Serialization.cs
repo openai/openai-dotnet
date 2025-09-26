@@ -156,8 +156,7 @@ namespace OpenAI.Models
         public static explicit operator ModelDeletionResult(ClientResult result)
         {
             using PipelineResponse response = result.GetRawResponse();
-            BinaryData data = response.Content;
-            using JsonDocument document = JsonDocument.Parse(data);
+            using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeModelDeletionResult(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

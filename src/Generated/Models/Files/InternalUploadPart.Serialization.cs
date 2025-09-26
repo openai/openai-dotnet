@@ -161,8 +161,7 @@ namespace OpenAI.Files
         public static explicit operator InternalUploadPart(ClientResult result)
         {
             using PipelineResponse response = result.GetRawResponse();
-            BinaryData data = response.Content;
-            using JsonDocument document = JsonDocument.Parse(data);
+            using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeInternalUploadPart(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
