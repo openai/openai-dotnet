@@ -1,0 +1,48 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/files",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "3163166",
+        "Content-Type": "multipart/form-data; boundary=\"n6RtcsdEYFWX5J5WC82x1pq82bA4b1PI325B11mgkwAF67O47YOZr9kbtbn3OuNz0Z=3rF\"",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 400,
+      "ResponseHeaders": {
+        "Access-Control-Allow-Origin": "*",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "980bd2d6ac4fd44f-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "231",
+        "Content-Type": "application/json",
+        "Date": "Wed, 17 Sep 2025 21:51:12 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "23",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "189",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "error": {
+          "message": "'world_domination' is not one of ['fine-tune', 'assistants', 'batch', 'user_data', 'vision', 'evals'] - 'purpose'",
+          "type": "invalid_request_error",
+          "param": "purpose",
+          "code": null
+        }
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

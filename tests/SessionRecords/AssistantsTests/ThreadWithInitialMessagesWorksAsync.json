@@ -1,0 +1,158 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/threads",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "276",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "Hello, world!"
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Can you describe this image for me?"
+              },
+              {
+                "type": "image_url",
+                "image_url": {
+                  "url": "https://test.openai.com/image.png"
+                }
+              }
+            ],
+            "metadata": {
+              "messageMetadata": "messageMetadataValue"
+            }
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803d63fced6a334-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "137",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:35:27 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "1247",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "1297",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "thread_Xllb8ESDQQEpQc2645E4PykP",
+        "object": "thread",
+        "created_at": 1758062126,
+        "metadata": {},
+        "tool_resources": {}
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_Xllb8ESDQQEpQc2645E4PykP/messages?order=asc",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803d6488a31a334-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1341",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:35:28 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "601",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "705",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "msg_DzGHstmWEETOrHwKKpUDadFZ",
+            "object": "thread.message",
+            "created_at": 1758062126,
+            "assistant_id": null,
+            "thread_id": "thread_Xllb8ESDQQEpQc2645E4PykP",
+            "run_id": null,
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": {
+                  "value": "Hello, world!",
+                  "annotations": []
+                }
+              }
+            ],
+            "attachments": [],
+            "metadata": {}
+          },
+          {
+            "id": "msg_a5FlHr5lIXVQbtEqP6yLqUCp",
+            "object": "thread.message",
+            "created_at": 1758062126,
+            "assistant_id": null,
+            "thread_id": "thread_Xllb8ESDQQEpQc2645E4PykP",
+            "run_id": null,
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": {
+                  "value": "Can you describe this image for me?",
+                  "annotations": []
+                }
+              },
+              {
+                "type": "image_url",
+                "image_url": {
+                  "url": "https://test.openai.com/image.png",
+                  "detail": "auto"
+                }
+              }
+            ],
+            "attachments": [],
+            "metadata": {
+              "messageMetadata": "messageMetadataValue"
+            }
+          }
+        ],
+        "first_id": "msg_DzGHstmWEETOrHwKKpUDadFZ",
+        "last_id": "msg_a5FlHr5lIXVQbtEqP6yLqUCp",
+        "has_more": false
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

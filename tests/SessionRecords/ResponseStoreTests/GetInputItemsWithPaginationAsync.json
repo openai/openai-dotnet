@@ -1,0 +1,274 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "365",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Item 1"
+              }
+            ]
+          },
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Item 2"
+              }
+            ]
+          },
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Item 3"
+              }
+            ]
+          },
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Item 4"
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "98041f72f816ba46-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1526",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 23:25:25 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "938",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "941",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999950",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_0eefe438d29f8b040068c9f1e45f58819697d75d9c3355caa8",
+        "object": "response",
+        "created_at": 1758065124,
+        "status": "completed",
+        "background": false,
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4o-mini-2024-07-18",
+        "output": [
+          {
+            "id": "msg_0eefe438d29f8b040068c9f1e4a4988196b6eb1b361fe7c25a",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "It looks like you're listing items, but I need more context to assist you. Could you please provide more details about what you're looking to do with these items?"
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "reasoning": {
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 31,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 33,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 64
+        },
+        "user": null,
+        "metadata": {}
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/responses/resp_0eefe438d29f8b040068c9f1e45f58819697d75d9c3355caa8/input_items?limit=2",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "98041f796c91ba46-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "731",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 23:25:25 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "173",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "182",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "msg_0eefe438d29f8b040068c9f1e4661c8196b7de7ded5a7f1957",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Item 4"
+              }
+            ],
+            "role": "user"
+          },
+          {
+            "id": "msg_0eefe438d29f8b040068c9f1e4661481968c285e88ec819325",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Item 3"
+              }
+            ],
+            "role": "user"
+          }
+        ],
+        "first_id": "msg_0eefe438d29f8b040068c9f1e4661c8196b7de7ded5a7f1957",
+        "has_more": true,
+        "last_id": "msg_0eefe438d29f8b040068c9f1e4661481968c285e88ec819325"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/responses/resp_0eefe438d29f8b040068c9f1e45f58819697d75d9c3355caa8/input_items?limit=2&after=msg_0eefe438d29f8b040068c9f1e4661481968c285e88ec819325",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "98041f7b1dadba46-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "732",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 23:25:25 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "117",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "121",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "msg_0eefe438d29f8b040068c9f1e4660c8196b2eed457129cf5d2",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Item 2"
+              }
+            ],
+            "role": "user"
+          },
+          {
+            "id": "msg_0eefe438d29f8b040068c9f1e465fc8196b472ae1dd238c11d",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Item 1"
+              }
+            ],
+            "role": "user"
+          }
+        ],
+        "first_id": "msg_0eefe438d29f8b040068c9f1e4660c8196b2eed457129cf5d2",
+        "has_more": false,
+        "last_id": "msg_0eefe438d29f8b040068c9f1e465fc8196b472ae1dd238c11d"
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

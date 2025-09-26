@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using NUnit.Framework.Internal;
 using OpenAI.Assistants;
 using OpenAI.Files;
@@ -19,10 +20,8 @@ namespace OpenAI.Tests.Assistants;
 
 #pragma warning disable OPENAI001
 
-[TestFixture(true)]
-[TestFixture(false)]
 [Category("Assistants")]
-public class AssistantsTests : SyncAsyncTestBase
+public class AssistantsTests : OpenAIRecordedTestBase
 {
     private readonly List<Assistant> _assistantsToDelete = [];
     private readonly List<AssistantThread> _threadsToDelete = [];
@@ -34,18 +33,19 @@ public class AssistantsTests : SyncAsyncTestBase
     private static readonly string s_testAssistantName = $".NET SDK Test Assistant - Please Delete Me";
     private static readonly string s_cleanupMetadataKey = $"test_metadata_cleanup_eligible";
 
-    private static AssistantClient GetTestClient() => GetTestClient<AssistantClient>(TestScenario.Assistants);
+    private AssistantClient GetTestClient() => GetProxiedOpenAIClient<AssistantClient>(TestScenario.Assistants);
 
     public AssistantsTests(bool isAsync)
         : base(isAsync)
     {
+        TestTimeoutInSeconds = 75;
     }
 
     [OneTimeTearDown]
     protected void Cleanup()
     {
-        // Skip cleanup if there is no API key (e.g., if we are not running live tests).
-        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPENAI_API_KEY")))
+        // Skip cleanup if playback or if there is no API key (e.g., if we are not running live tests).
+        if (Mode == RecordedTestMode.Playback || string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPENAI_API_KEY")))
         {
             return;
         }
@@ -88,22 +88,16 @@ public class AssistantsTests : SyncAsyncTestBase
     public async Task BasicAssistantOperationsWork()
     {
         AssistantClient client = GetTestClient();
-        Assistant assistant = IsAsync
-            ? await client.CreateAssistantAsync("gpt-4o-mini")
-            : client.CreateAssistant("gpt-4o-mini");
+        Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini");
         Validate(assistant);
         Assert.That(assistant.Name, Is.Null.Or.Empty);
-        AssistantModificationOptions modificationOptions = new AssistantModificationOptions()
+        AssistantModificationOptions modificationOptions = new()
         {
             Name = "test assistant name",
         };
-        assistant = IsAsync
-            ? await client.ModifyAssistantAsync(assistant.Id, modificationOptions)
-            : client.ModifyAssistant(assistant.Id, modificationOptions);
+        assistant = await client.ModifyAssistantAsync(assistant.Id, modificationOptions);
         Assert.That(assistant.Name, Is.EqualTo("test assistant name"));
-        AssistantDeletionResult deletionResult = IsAsync
-            ? await client.DeleteAssistantAsync(assistant.Id)
-            : client.DeleteAssistant(assistant.Id);
+        AssistantDeletionResult deletionResult = await client.DeleteAssistantAsync(assistant.Id);
         Assert.That(deletionResult.AssistantId, Is.EqualTo(assistant.Id));
         Assert.That(deletionResult.Deleted, Is.True);
         _assistantsToDelete.Remove(assistant);
@@ -114,11 +108,9 @@ public class AssistantsTests : SyncAsyncTestBase
                 [s_cleanupMetadataKey] = "hello!"
             },
         };
-        assistant = IsAsync
-            ? await client.CreateAssistantAsync("gpt-4o-mini", creationOptions)
-            : client.CreateAssistant("gpt-4o-mini", creationOptions);
+        assistant = await client.CreateAssistantAsync("gpt-4o-mini", creationOptions);
         Validate(assistant);
-        Assistant retrievedAssistant = client.GetAssistant(assistant.Id);
+        Assistant retrievedAssistant = await client.GetAssistantAsync(assistant.Id);
         Assert.That(retrievedAssistant.Id, Is.EqualTo(assistant.Id));
         Assert.That(retrievedAssistant.Metadata.TryGetValue(s_cleanupMetadataKey, out string metadataValue) && metadataValue == "hello!");
         modificationOptions = new AssistantModificationOptions()
@@ -128,29 +120,21 @@ public class AssistantsTests : SyncAsyncTestBase
                 [s_cleanupMetadataKey] = "goodbye!",
             },
         };
-        Assistant modifiedAssistant = IsAsync
-            ? await client.ModifyAssistantAsync(assistant.Id, modificationOptions)
-            : client.ModifyAssistant(assistant.Id, modificationOptions);
+        Assistant modifiedAssistant = await client.ModifyAssistantAsync(assistant.Id, modificationOptions);
         Assert.That(modifiedAssistant.Id, Is.EqualTo(assistant.Id));
         Assistant listedAssistant = null;
-        if (IsAsync)
-        {
-            AsyncCollectionResult<Assistant> recentAssistants = client.GetAssistantsAsync();
 
-            await foreach (Assistant pageItem in recentAssistants)
+        AsyncCollectionResult<Assistant> recentAssistants = client.GetAssistantsAsync();
+
+        await foreach (Assistant pageItem in recentAssistants)
+        {
+            if (pageItem.Id == assistant.Id)
             {
-                if (pageItem.Id == assistant.Id)
-                {
-                    listedAssistant = pageItem;
-                    break;
-                }
+                listedAssistant = pageItem;
+                break;
             }
         }
-        else
-        {
-            CollectionResult<Assistant> recentAssistants = client.GetAssistants();
-            listedAssistant = recentAssistants.FirstOrDefault(pageItem => pageItem.Id == assistant.Id);
-        }
+
         Assert.That(listedAssistant, Is.Not.Null);
         Assert.That(listedAssistant.Metadata.TryGetValue(s_cleanupMetadataKey, out string newMetadataValue) && newMetadataValue == "goodbye!");
     }
@@ -159,14 +143,10 @@ public class AssistantsTests : SyncAsyncTestBase
     public async Task BasicThreadOperationsWork()
     {
         AssistantClient client = GetTestClient();
-        AssistantThread thread = IsAsync
-            ? await client.CreateThreadAsync()
-            : client.CreateThread();
+        AssistantThread thread = await client.CreateThreadAsync();
         Validate(thread);
         Assert.That(thread.CreatedAt, Is.GreaterThan(s_2024));
-        ThreadDeletionResult deletionResult = IsAsync
-            ? await client.DeleteThreadAsync(thread.Id)
-            : client.DeleteThread(thread.Id);
+        ThreadDeletionResult deletionResult = await client.DeleteThreadAsync(thread.Id);
         Assert.That(deletionResult.ThreadId, Is.EqualTo(thread.Id));
         Assert.That(deletionResult.Deleted, Is.True);
         _threadsToDelete.Remove(thread);
@@ -178,14 +158,10 @@ public class AssistantsTests : SyncAsyncTestBase
                 ["threadMetadata"] = "threadMetadataValue",
             }
         };
-        thread = IsAsync
-            ? await client.CreateThreadAsync(options)
-            : client.CreateThread(options);
+        thread = await client.CreateThreadAsync(options);
         Validate(thread);
         Assert.That(thread.Metadata.TryGetValue("threadMetadata", out string threadMetadataValue) && threadMetadataValue == "threadMetadataValue");
-        AssistantThread retrievedThread = IsAsync
-            ? await client.GetThreadAsync(thread.Id)
-            : client.GetThread(thread.Id);
+        AssistantThread retrievedThread = await client.GetThreadAsync(thread.Id);
         Assert.That(retrievedThread.Id, Is.EqualTo(thread.Id));
         ThreadModificationOptions modificationOptions = new ThreadModificationOptions()
         {
@@ -194,9 +170,7 @@ public class AssistantsTests : SyncAsyncTestBase
                 ["threadMetadata"] = "newThreadMetadataValue",
             },
         };
-        thread = IsAsync
-            ? await client.ModifyThreadAsync(thread.Id, modificationOptions)
-            : client.ModifyThread(thread.Id, modificationOptions);
+        thread = await client.ModifyThreadAsync(thread.Id, modificationOptions);
         Assert.That(thread.Metadata.TryGetValue("threadMetadata", out threadMetadataValue) && threadMetadataValue == "newThreadMetadataValue");
     }
 
@@ -204,19 +178,15 @@ public class AssistantsTests : SyncAsyncTestBase
     public async Task BasicMessageOperationsWork()
     {
         AssistantClient client = GetTestClient();
-        AssistantThread thread = client.CreateThread();
+        AssistantThread thread = await client.CreateThreadAsync();
         Validate(thread);
-        ThreadMessage message = IsAsync
-            ? await client.CreateMessageAsync(thread.Id, MessageRole.User, ["Hello, world!"])
-            : client.CreateMessage(thread.Id, MessageRole.User, ["Hello, world!"]);
+        ThreadMessage message = await client.CreateMessageAsync(thread.Id, MessageRole.User, ["Hello, world!"]);
         Validate(message);
         Assert.That(message.CreatedAt, Is.GreaterThan(s_2024));
         Assert.That(message.Content?.Count, Is.EqualTo(1));
         Assert.That(message.Content[0], Is.Not.Null);
         Assert.That(message.Content[0].Text, Is.EqualTo("Hello, world!"));
-        MessageDeletionResult deletionResult = IsAsync
-            ? await client.DeleteMessageAsync(message.ThreadId, message.Id)
-            : client.DeleteMessage(message.ThreadId, message.Id);
+        MessageDeletionResult deletionResult = await client.DeleteMessageAsync(message.ThreadId, message.Id);
         Assert.That(deletionResult.MessageId, Is.EqualTo(message.Id));
         Assert.That(deletionResult.Deleted, Is.True);
         _messagesToDelete.Remove(message);
@@ -228,15 +198,11 @@ public class AssistantsTests : SyncAsyncTestBase
                 ["messageMetadata"] = "messageMetadataValue",
             },
         };
-        message = IsAsync
-            ? await client.CreateMessageAsync(thread.Id, MessageRole.User, ["Goodbye, world!"], creationOptions)
-            : client.CreateMessage(thread.Id, MessageRole.User, ["Goodbye, world!"], creationOptions);
+        message = await client.CreateMessageAsync(thread.Id, MessageRole.User, ["Goodbye, world!"], creationOptions);
         Validate(message);
         Assert.That(message.Metadata.TryGetValue("messageMetadata", out string metadataValue) && metadataValue == "messageMetadataValue");
 
-        ThreadMessage retrievedMessage = IsAsync
-            ? await client.GetMessageAsync(message.ThreadId, message.Id)
-            : client.GetMessage(message.ThreadId, message.Id);
+        ThreadMessage retrievedMessage = await client.GetMessageAsync(message.ThreadId, message.Id);
         Assert.That(retrievedMessage.Id, Is.EqualTo(message.Id));
 
         MessageModificationOptions modificationOptions = new MessageModificationOptions()
@@ -246,14 +212,10 @@ public class AssistantsTests : SyncAsyncTestBase
                 ["messageMetadata"] = "newValue",
             }
         };
-        message = IsAsync
-            ? await client.ModifyMessageAsync(message.ThreadId, message.Id, modificationOptions)
-            : client.ModifyMessage(message.ThreadId, message.Id, modificationOptions);
+        message = await client.ModifyMessageAsync(message.ThreadId, message.Id, modificationOptions);
         Assert.That(message.Metadata.TryGetValue("messageMetadata", out metadataValue) && metadataValue == "newValue");
 
-        List<ThreadMessage> messages = IsAsync
-            ? await client.GetMessagesAsync(thread.Id).ToListAsync()
-            : [.. client.GetMessages(thread.Id)];
+        List<ThreadMessage> messages = await client.GetMessagesAsync(thread.Id).ToListAsync();
 
         Assert.That(messages.Count, Is.EqualTo(1));
         Assert.That(messages[0].Id, Is.EqualTo(message.Id));
@@ -283,14 +245,10 @@ public class AssistantsTests : SyncAsyncTestBase
                 },
             },
         };
-        AssistantThread thread = IsAsync
-            ? await client.CreateThreadAsync(options)
-            : client.CreateThread(options);
+        AssistantThread thread = await client.CreateThreadAsync(options);
         Validate(thread);
         MessageCollectionOptions collectionOptions = new MessageCollectionOptions() { Order = MessageCollectionOrder.Ascending };
-        List<ThreadMessage> messages = IsAsync
-            ? await client.GetMessagesAsync(thread.Id, collectionOptions).ToListAsync()
-            : client.GetMessages(thread.Id, collectionOptions).ToList();
+        List<ThreadMessage> messages = await client.GetMessagesAsync(thread.Id, collectionOptions).ToListAsync();
         Assert.That(messages.Count, Is.EqualTo(2));
         Assert.That(messages[0].Role, Is.EqualTo(MessageRole.User));
         Assert.That(messages[0].Content?.Count, Is.EqualTo(1));
@@ -322,16 +280,12 @@ public class AssistantsTests : SyncAsyncTestBase
         }
         };
 
-        AssistantThread thread = IsAsync
-            ? await client.CreateThreadAsync(options)
-            : client.CreateThread(options);
+        AssistantThread thread = await client.CreateThreadAsync(options);
 
         Validate(thread);
 
         MessageCollectionOptions collectionOptions = new() { Order = MessageCollectionOrder.Ascending };
-        List<ThreadMessage> messages = IsAsync
-            ? await client.GetMessagesAsync(thread.Id, collectionOptions).ToListAsync()
-            : client.GetMessages(thread.Id, collectionOptions).ToList();
+        List<ThreadMessage> messages = await client.GetMessagesAsync(thread.Id, collectionOptions).ToListAsync();
 
         Assert.That(messages.Count, Is.EqualTo(1));
         Assert.That(messages[0].Role, Is.EqualTo(MessageRole.User));
@@ -345,42 +299,33 @@ public class AssistantsTests : SyncAsyncTestBase
     public async Task BasicRunOperationsWork()
     {
         AssistantClient client = GetTestClient();
-        Assistant assistant = client.CreateAssistant("gpt-4o-mini");
+        Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini");
         Validate(assistant);
-        AssistantThread thread = client.CreateThread();
+        AssistantThread thread = await client.CreateThreadAsync();
         Validate(thread);
-        List<ThreadRun> runs = IsAsync
-            ? await client.GetRunsAsync(thread.Id).ToListAsync()
-            : client.GetRuns(thread.Id).ToList();
+        List<ThreadRun> runs = await client.GetRunsAsync(thread.Id).ToListAsync();
         Assert.That(runs.Count, Is.EqualTo(0));
-        ThreadMessage message = client.CreateMessage(thread.Id, MessageRole.User, ["Hello, assistant!"]);
+        ThreadMessage message = await client.CreateMessageAsync(thread.Id, MessageRole.User, ["Hello, assistant!"]);
         Validate(message);
-        ThreadRun run = IsAsync
-            ? await client.CreateRunAsync(thread.Id, assistant.Id)
-            : client.CreateRun(thread.Id, assistant.Id);
+        ThreadRun run = await client.CreateRunAsync(thread.Id, assistant.Id);
         Validate(run);
         Assert.That(run.Status, Is.EqualTo(RunStatus.Queued));
         Assert.That(run.CreatedAt, Is.GreaterThan(s_2024));
-        ThreadRun retrievedRun = IsAsync
-            ? await client.GetRunAsync(run.ThreadId, run.Id)
-            : client.GetRun(run.ThreadId, run.Id);
+        ThreadRun retrievedRun = await client.GetRunAsync(run.ThreadId, run.Id);
         Assert.That(retrievedRun.Id, Is.EqualTo(run.Id));
-        runs = IsAsync
-                    ? await client.GetRunsAsync(thread.Id).ToListAsync()
-                    : client.GetRuns(thread.Id).ToList();
+        runs = await client.GetRunsAsync(thread.Id).ToListAsync();
         Assert.That(runs.Count, Is.EqualTo(1));
         Assert.That(runs[0].Id, Is.EqualTo(run.Id));
 
-        List<ThreadMessage> messages = IsAsync ?
-            await client.GetMessagesAsync(thread.Id).ToListAsync() :
-            client.GetMessages(thread.Id).ToList();
+        List<ThreadMessage> messages = await client.GetMessagesAsync(thread.Id).ToListAsync();
         Assert.That(messages.Count, Is.GreaterThanOrEqualTo(1));
         for (int i = 0; i < 10 && !run.Status.IsTerminal; i++)
         {
-            Thread.Sleep(1000);
-            run = IsAsync
-                ? await client.GetRunAsync(run.ThreadId, run.Id)
-                : client.GetRun(run.ThreadId, run.Id);
+            if (Mode != RecordedTestMode.Playback)
+            {
+                Thread.Sleep(1000);
+            }
+            run = await client.GetRunAsync(run.ThreadId, run.Id);
         }
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
         Assert.That(run.CompletedAt, Is.GreaterThan(s_2024));
@@ -389,9 +334,7 @@ public class AssistantsTests : SyncAsyncTestBase
         Assert.That(run.FailedAt, Is.Null);
         Assert.That(run.IncompleteDetails, Is.Null);
 
-        messages = IsAsync ?
-            await client.GetMessagesAsync(thread.Id).ToListAsync() :
-            client.GetMessages(thread.Id).ToList();
+        messages = await client.GetMessagesAsync(thread.Id).ToListAsync();
         Assert.That(messages.Count, Is.EqualTo(2));
 
         Assert.That(messages[0].Role, Is.EqualTo(MessageRole.Assistant));
@@ -403,15 +346,18 @@ public class AssistantsTests : SyncAsyncTestBase
     public async Task BasicRunStepFunctionalityWorks()
     {
         AssistantClient client = GetTestClient();
-        Assistant assistant = client.CreateAssistant("gpt-4o-mini", new AssistantCreationOptions()
+        Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini", new AssistantCreationOptions()
         {
             Tools = { new CodeInterpreterToolDefinition() },
             Instructions = "You help the user with mathematical descriptions and visualizations.",
         });
         Validate(assistant);
 
-        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
-        OpenAIFile equationFile = fileClient.UploadFile(
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
+        OpenAIFile equationFile;
+        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
+        {
+            equationFile = await fileClient.UploadFileAsync(
             BinaryData.FromString("""
             x,y
             2,5
@@ -420,9 +366,10 @@ public class AssistantsTests : SyncAsyncTestBase
             """).ToStream(),
             "text/csv",
             FileUploadPurpose.Assistants);
-        Validate(equationFile);
+            Validate(equationFile);
+        }
 
-        AssistantThread thread = client.CreateThread(new ThreadCreationOptions()
+        AssistantThread thread = await client.CreateThreadAsync(new ThreadCreationOptions()
         {
             InitialMessages =
             {
@@ -440,20 +387,21 @@ public class AssistantsTests : SyncAsyncTestBase
         });
         Validate(thread);
 
-        ThreadRun run = client.CreateRun(thread.Id, assistant.Id);
+        ThreadRun run = await client.CreateRunAsync(thread.Id, assistant.Id);
         Validate(run);
 
         while (!run.Status.IsTerminal)
         {
-            Thread.Sleep(1000);
-            run = client.GetRun(run.ThreadId, run.Id);
+            if (Mode != RecordedTestMode.Playback)
+            {
+                Thread.Sleep(1000);
+            }
+            run = await client.GetRunAsync(run.ThreadId, run.Id);
         }
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
         Assert.That(run.Usage?.TotalTokenCount, Is.GreaterThan(0));
 
-        List<RunStep> runSteps = IsAsync
-            ? await client.GetRunStepsAsync(run.ThreadId, run.Id).ToListAsync()
-            : client.GetRunSteps(run.ThreadId, run.Id).ToList();
+        List<RunStep> runSteps = await client.GetRunStepsAsync(run.ThreadId, run.Id).ToListAsync();
         RunStep firstStep = runSteps[0];
         RunStep secondStep = runSteps[1];
 
@@ -489,30 +437,24 @@ public class AssistantsTests : SyncAsyncTestBase
         {
             ResponseFormat = AssistantResponseFormat.CreateAutoFormat(),
         };
-        Assistant assistant = IsAsync
-            ? await client.CreateAssistantAsync("gpt-4o-mini", creationOptions)
-            : client.CreateAssistant("gpt-4o-mini", creationOptions);
+        Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini", creationOptions);
         Validate(assistant);
         Assert.That(assistant.ResponseFormat == "auto");
         AssistantModificationOptions modificationOptions = new AssistantModificationOptions()
         {
             ResponseFormat = AssistantResponseFormat.CreateTextFormat(),
         };
-        assistant = IsAsync
-            ? await client.ModifyAssistantAsync(assistant.Id, modificationOptions)
-            : client.ModifyAssistant(assistant.Id, modificationOptions);
+        assistant = await client.ModifyAssistantAsync(assistant.Id, modificationOptions);
         Assert.That(assistant.ResponseFormat == AssistantResponseFormat.CreateTextFormat());
-        AssistantThread thread = client.CreateThread();
+        AssistantThread thread = await client.CreateThreadAsync();
         Validate(thread);
-        ThreadMessage message = client.CreateMessage(thread.Id, MessageRole.User, ["Write some JSON for me!"]);
+        ThreadMessage message = await client.CreateMessageAsync(thread.Id, MessageRole.User, ["Write some JSON for me!"]);
         Validate(message);
         RunCreationOptions runCreationOptions = new RunCreationOptions()
         {
             ResponseFormat = AssistantResponseFormat.CreateJsonObjectFormat(),
         };
-        ThreadRun run = IsAsync
-            ? await client.CreateRunAsync(thread.Id, assistant.Id, runCreationOptions)
-            : client.CreateRun(thread.Id, assistant.Id, runCreationOptions);
+        ThreadRun run = await client.CreateRunAsync(thread.Id, assistant.Id, runCreationOptions);
         Assert.That(run.ResponseFormat == AssistantResponseFormat.CreateJsonObjectFormat());
     }
 
@@ -520,7 +462,7 @@ public class AssistantsTests : SyncAsyncTestBase
     public async Task FunctionToolsWork()
     {
         AssistantClient client = GetTestClient();
-        AssistantCreationOptions creationOptions = new AssistantCreationOptions()
+        AssistantCreationOptions creationOptions = new()
         {
             Tools =
             {
@@ -542,9 +484,7 @@ public class AssistantsTests : SyncAsyncTestBase
                 },
             },
         };
-        Assistant assistant = IsAsync
-            ? await client.CreateAssistantAsync("gpt-4o-mini", creationOptions)
-            : client.CreateAssistant("gpt-4o-mini", creationOptions);
+        Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini", creationOptions);
         Validate(assistant);
         Assert.That(assistant.Tools?.Count, Is.EqualTo(1));
 
@@ -560,17 +500,16 @@ public class AssistantsTests : SyncAsyncTestBase
         {
             AdditionalInstructions = "Call provided tools when appropriate.",
         };
-        ThreadRun run = IsAsync
-            ? await client.CreateThreadAndRunAsync(assistant.Id, threadCreationOptions, runCreationOptions)
-            : client.CreateThreadAndRun(assistant.Id, threadCreationOptions, runCreationOptions);
+        ThreadRun run = await client.CreateThreadAndRunAsync(assistant.Id, threadCreationOptions, runCreationOptions);
         Validate(run);
 
         for (int i = 0; i < 10 && !run.Status.IsTerminal; i++)
         {
-            Thread.Sleep(1000);
-            run = IsAsync
-                ? await client.GetRunAsync(run.ThreadId, run.Id)
-                : client.GetRun(run.ThreadId, run.Id);
+            if (Mode != RecordedTestMode.Playback)
+            {
+                Thread.Sleep(1000);
+            }
+            run = await client.GetRunAsync(run.ThreadId, run.Id);
         }
         Assert.That(run.Status, Is.EqualTo(RunStatus.RequiresAction));
         Assert.That(run.RequiredActions?.Count, Is.EqualTo(1));
@@ -578,21 +517,20 @@ public class AssistantsTests : SyncAsyncTestBase
         Assert.That(run.RequiredActions[0].FunctionName, Is.EqualTo("get_favorite_food_for_day_of_week"));
         Assert.That(run.RequiredActions[0].FunctionArguments, Is.Not.Null.And.Not.Empty);
 
-        run = IsAsync
-            ? await client.SubmitToolOutputsToRunAsync(run.ThreadId, run.Id, [new(run.RequiredActions[0].ToolCallId, "tacos")])
-            : client.SubmitToolOutputsToRun(run.ThreadId, run.Id, [new(run.RequiredActions[0].ToolCallId, "tacos")]);
+        run = await client.SubmitToolOutputsToRunAsync(run.ThreadId, run.Id, [new(run.RequiredActions[0].ToolCallId, "tacos")]);
         Assert.That(run.Status.IsTerminal, Is.False);
 
         for (int i = 0; i < 10 && !run.Status.IsTerminal; i++)
         {
-            Thread.Sleep(1000);
-            run = IsAsync
-                ? await client.GetRunAsync(run.ThreadId, run.Id)
-                : client.GetRun(run.ThreadId, run.Id);
+            if (Mode != RecordedTestMode.Playback)
+            {
+                Thread.Sleep(1000);
+            }
+            run = await client.GetRunAsync(run.ThreadId, run.Id);
         }
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
 
-        List<ThreadMessage> messages = client.GetMessages(run.ThreadId, new MessageCollectionOptions() { Order = MessageCollectionOrder.Descending }).ToList();
+        List<ThreadMessage> messages = await client.GetMessagesAsync(run.ThreadId, new MessageCollectionOptions() { Order = MessageCollectionOrder.Descending }).ToListAsync();
         Assert.That(messages.Count, Is.GreaterThan(1));
         Assert.That(messages[0].Role, Is.EqualTo(MessageRole.Assistant));
         Assert.That(messages[0].Content?[0], Is.Not.Null);
@@ -600,10 +538,8 @@ public class AssistantsTests : SyncAsyncTestBase
     }
 
     [Test]
-    public async Task StreamingRunWorksAsync()
+    public async Task StreamingRunWorks()
     {
-        AssertAsyncOnly();
-
         AssistantClient client = GetTestClient();
         Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini");
         Validate(assistant);
@@ -649,61 +585,9 @@ public class AssistantsTests : SyncAsyncTestBase
         Print(">>> Done <<<");
     }
 
-    [Test]
-    public void StreamingRunWorks()
-    {
-        AssertSyncOnly();
-
-        AssistantClient client = GetTestClient();
-        Assistant assistant = client.CreateAssistant("gpt-4o-mini");
-        Validate(assistant);
-
-        AssistantThread thread = client.CreateThread(new ThreadCreationOptions()
-        {
-            InitialMessages = { "Hello there, assistant! How are you today?", },
-        });
-        Validate(thread);
-
-        Stopwatch stopwatch = Stopwatch.StartNew();
-        void Print(string message) => Console.WriteLine($"[{stopwatch.ElapsedMilliseconds,6}] {message}");
-
-        CollectionResult<StreamingUpdate> streamingResult
-            = client.CreateRunStreaming(thread.Id, assistant.Id);
-
-        Print(">>> Connected <<<");
-
-        foreach (StreamingUpdate update in streamingResult)
-        {
-            string message = $"{update.UpdateKind} ";
-            if (update is RunUpdate runUpdate)
-            {
-                message += $"at {update.UpdateKind switch
-                {
-                    StreamingUpdateReason.RunCreated => runUpdate.Value.CreatedAt,
-                    StreamingUpdateReason.RunQueued => runUpdate.Value.StartedAt,
-                    StreamingUpdateReason.RunInProgress => runUpdate.Value.StartedAt,
-                    StreamingUpdateReason.RunCompleted => runUpdate.Value.CompletedAt,
-                    _ => "???",
-                }}";
-            }
-            if (update is MessageContentUpdate contentUpdate)
-            {
-                if (contentUpdate.Role.HasValue)
-                {
-                    message += $"[{contentUpdate.Role}]";
-                }
-                message += $"[{contentUpdate.MessageIndex}] {contentUpdate.Text}";
-            }
-            Print(message);
-        }
-        Print(">>> Done <<<");
-    }
-
     [TestCase]
-    public async Task StreamingToolCallAsync()
+    public async Task StreamingToolCall()
     {
-        AssertAsyncOnly();
-
         AssistantClient client = GetTestClient();
         FunctionToolDefinition getWeatherTool = new("get_current_weather")
         {
@@ -762,75 +646,16 @@ public class AssistantsTests : SyncAsyncTestBase
         } while (run?.Status.IsTerminal == false);
     }
 
-    [TestCase]
-    public void StreamingToolCall()
-    {
-        AssertSyncOnly();
-
-        AssistantClient client = GetTestClient();
-        FunctionToolDefinition getWeatherTool = new("get_current_weather")
-        {
-            Description = "Gets the user's current weather",
-        };
-        Assistant assistant = client.CreateAssistant("gpt-4o-mini", new()
-        {
-            Tools = { getWeatherTool }
-        });
-        Validate(assistant);
-
-        Stopwatch stopwatch = Stopwatch.StartNew();
-        void Print(string message) => Console.WriteLine($"[{stopwatch.ElapsedMilliseconds,6}] {message}");
-
-        Print(" >>> Beginning call ... ");
-        CollectionResult<StreamingUpdate> results = client.CreateThreadAndRunStreaming(
-            assistant.Id,
-            new()
-            {
-                InitialMessages = { "What should I wear outside right now?", },
-            });
-        Print(" >>> Starting enumeration ...");
-
-        ThreadRun run = null;
-
-        do
-        {
-            run = null;
-            List<ToolOutput> toolOutputs = [];
-            foreach (StreamingUpdate update in results)
-            {
-                string message = update.UpdateKind.ToString();
-
-                if (update is RunUpdate runUpdate)
-                {
-                    message += $" run_id:{runUpdate.Value.Id}";
-                    run = runUpdate.Value;
-                }
-                if (update is RequiredActionUpdate requiredActionUpdate)
-                {
-                    Assert.That(requiredActionUpdate.FunctionName, Is.EqualTo(getWeatherTool.FunctionName));
-                    Assert.That(requiredActionUpdate.GetThreadRun().Status, Is.EqualTo(RunStatus.RequiresAction));
-                    message += $" {requiredActionUpdate.FunctionName}";
-                    toolOutputs.Add(new(requiredActionUpdate.ToolCallId, "warm and sunny"));
-                }
-                if (update is MessageContentUpdate contentUpdate)
-                {
-                    message += $" {contentUpdate.Text}";
-                }
-                Print(message);
-            }
-            if (toolOutputs.Count > 0)
-            {
-                results = client.SubmitToolOutputsToRunStreaming(run.ThreadId, run.Id, toolOutputs);
-            }
-        } while (run?.Status.IsTerminal == false);
-    }
-
     [Test]
     public async Task FileSearchWorks()
     {
         // First, we need to upload a simple test file.
-        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
-        OpenAIFile testFile = fileClient.UploadFile(
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
+
+        OpenAIFile testFile;
+        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
+        {
+            testFile = await fileClient.UploadFileAsync(
             BinaryData.FromString("""
             This file describes the favorite foods of several people.
 
@@ -840,7 +665,8 @@ public class AssistantsTests : SyncAsyncTestBase
             """).ToStream(),
             "favorite_foods.txt",
             FileUploadPurpose.Assistants);
-        Validate(testFile);
+            Validate(testFile);
+        }
 
         AssistantClient client = GetTestClient();
 
@@ -861,7 +687,7 @@ public class AssistantsTests : SyncAsyncTestBase
             },
         };
 
-        AssistantCreationOptions creationOptions = new AssistantCreationOptions()
+        AssistantCreationOptions creationOptions = new()
         {
             Tools = { fileSearchTool },
             ToolResources = new()
@@ -871,9 +697,7 @@ public class AssistantsTests : SyncAsyncTestBase
         };
 
         // Create an assistant, using the creation helper to make a new vector store
-        Assistant assistant = IsAsync
-            ? await client.CreateAssistantAsync("gpt-4o-mini", creationOptions)
-            : client.CreateAssistant("gpt-4o-mini", creationOptions);
+        Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini", creationOptions);
         Validate(assistant);
         Assert.That(assistant.ToolResources?.FileSearch?.VectorStoreIds, Has.Count.EqualTo(1));
         string createdVectorStoreId = assistant.ToolResources.FileSearch.VectorStoreIds[0];
@@ -890,14 +714,12 @@ public class AssistantsTests : SyncAsyncTestBase
                 },
             },
         };
-        assistant = IsAsync
-            ? await client.ModifyAssistantAsync(assistant.Id, modificationOptions)
-            : client.ModifyAssistant(assistant.Id, modificationOptions);
+        assistant = await client.ModifyAssistantAsync(assistant.Id, modificationOptions);
         Assert.That(assistant.ToolResources?.FileSearch?.VectorStoreIds, Has.Count.EqualTo(1));
         Assert.That(assistant.ToolResources.FileSearch.VectorStoreIds[0], Is.EqualTo(createdVectorStoreId));
 
         // Create a thread with an override vector store
-        AssistantThread thread = client.CreateThread(new ThreadCreationOptions()
+        AssistantThread thread = await client.CreateThreadAsync(new ThreadCreationOptions()
         {
             InitialMessages = { "Using the files you have available, what's Filip's favorite food?" },
             ToolResources = new()
@@ -927,29 +749,26 @@ public class AssistantsTests : SyncAsyncTestBase
                 }
             }
         };
-        thread = IsAsync
-            ? await client.ModifyThreadAsync(thread.Id, threadModificationOptions)
-            : client.ModifyThread(thread.Id, threadModificationOptions);
+        thread = await client.ModifyThreadAsync(thread.Id, threadModificationOptions);
         Assert.That(thread.ToolResources?.FileSearch?.VectorStoreIds, Has.Count.EqualTo(1));
         Assert.That(thread.ToolResources.FileSearch.VectorStoreIds[0], Is.EqualTo(createdVectorStoreId));
 
-        ThreadRun run = IsAsync
-            ? await client.CreateRunAsync(thread.Id, assistant.Id)
-            : client.CreateRun(thread.Id, assistant.Id);
+        ThreadRun run = await client.CreateRunAsync(thread.Id, assistant.Id);
         Validate(run);
         do
         {
-            Thread.Sleep(1000);
-            run = IsAsync
-                ? await client.GetRunAsync(run.ThreadId, run.Id)
-                : client.GetRun(run.ThreadId, run.Id);
+            if (Mode != RecordedTestMode.Playback)
+            {
+                Thread.Sleep(1000);
+            }
+            run = await client.GetRunAsync(run.ThreadId, run.Id);
         } while (run?.Status.IsTerminal == false);
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
 
-        CollectionResult<ThreadMessage> messages = client.GetMessages(thread.Id, new() { Order = MessageCollectionOrder.Descending });
+        AsyncCollectionResult<ThreadMessage> messages = client.GetMessagesAsync(thread.Id, new() { Order = MessageCollectionOrder.Descending });
         int messageCount = 0;
         bool hasCake = false;
-        foreach (ThreadMessage message in messages)
+        await foreach (ThreadMessage message in messages)
         {
             messageCount++;
 
@@ -971,10 +790,10 @@ public class AssistantsTests : SyncAsyncTestBase
         Assert.That(hasCake, Is.True);
 
         // Validate GetRunSteps.
-        CollectionResult<RunStep> runSteps = client.GetRunSteps(run.ThreadId, run.Id);
-        Assert.That(runSteps, Is.Not.Null.And.Not.Empty);
+        AsyncCollectionResult<RunStep> runSteps = client.GetRunStepsAsync(run.ThreadId, run.Id);
+        //Assert.That(runSteps, Is.Not.Null.And.Not.Empty); TODO this doesn't work
 
-        List<RunStep> toolCallRunSteps = runSteps.Where(runStep => runStep.Kind == RunStepKind.ToolCall).ToList();
+        List<RunStep> toolCallRunSteps = await runSteps.Where(runStep => runStep.Kind == RunStepKind.ToolCall).ToListAsync();
         Assert.That(toolCallRunSteps, Is.Not.Null.And.Not.Empty);
 
         foreach (RunStep toolCallRunStep in toolCallRunSteps)
@@ -1014,7 +833,7 @@ public class AssistantsTests : SyncAsyncTestBase
         }
 
         // Also validate GetRunStep.
-        RunStep runStep = client.GetRunStep(run.ThreadId, run.Id, toolCallRunSteps[0].Id);
+        RunStep runStep = await client.GetRunStepAsync(run.ThreadId, run.Id, toolCallRunSteps[0].Id);
         Assert.That(runStep, Is.Not.Null);
         Assert.Multiple(() =>
         {
@@ -1029,10 +848,8 @@ public class AssistantsTests : SyncAsyncTestBase
     }
 
     [Test]
-    public void FileSearchStreamingWorksSync()
+    public async Task FileSearchStreamingWorks()
     {
-        AssertSyncOnly();
-
         const string fileContent = """
                 The favorite food of several people:
                 - Summanus Ferdinand: tacos
@@ -1042,102 +859,15 @@ public class AssistantsTests : SyncAsyncTestBase
 
         const string fileName = "favorite_foods.txt";
 
-        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
-        AssistantClient client = GetTestClient<AssistantClient>(TestScenario.Assistants);
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
+        AssistantClient client = GetProxiedOpenAIClient<AssistantClient>(TestScenario.Assistants);
 
-        // First, upload a simple test file.
-        OpenAIFile testFile = fileClient.UploadFile(BinaryData.FromString(fileContent), fileName, FileUploadPurpose.Assistants);
-        Validate(testFile);
-
-        // Create an assistant, using the creation helper to make a new vector store.
-        AssistantCreationOptions assistantCreationOptions = new()
+        OpenAIFile testFile;
+        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            Tools = { new FileSearchToolDefinition() },
-            ToolResources = new()
-            {
-                FileSearch = new()
-                {
-                    NewVectorStores = { new VectorStoreCreationHelper([testFile.Id]) }
-                }
-            }
-        };
-        Assistant assistant = client.CreateAssistant("gpt-4o-mini", assistantCreationOptions);
-        Validate(assistant);
-
-        Assert.That(assistant.ToolResources?.FileSearch?.VectorStoreIds, Has.Count.EqualTo(1));
-        string vectorStoreId = assistant.ToolResources.FileSearch.VectorStoreIds[0];
-        _vectorStoreIdsToDelete.Add(vectorStoreId);
-
-        // Create a thread.
-        ThreadCreationOptions threadCreationOptions = new()
-        {
-            InitialMessages = { "Using the files you have available, what's Filip's favorite food?" }
-        };
-        AssistantThread thread = client.CreateThread(threadCreationOptions);
-        Validate(thread);
-
-        string message = string.Empty;
-
-        // Create run and stream the results.
-        CollectionResult<StreamingUpdate> streamingResult = client.CreateRunStreaming(thread.Id, assistant.Id);
-
-        foreach (StreamingUpdate update in streamingResult)
-        {
-            if (update is MessageContentUpdate contentUpdate)
-            {
-                message += $"{contentUpdate.Text}";
-            }
-            else if (update is RunStepDetailsUpdate detailUpdate)
-            {
-                Assert.That(detailUpdate.FunctionName, Is.Null);
-            }
-            else if (update is RunStepUpdate runStepUpdate)
-            {
-                RunStep runStep = runStepUpdate.Value;
-                Assert.That(runStep, Is.Not.Null);
-
-                if (runStepUpdate.UpdateKind == StreamingUpdateReason.RunStepCompleted)
-                {
-                    if (runStep.Kind == RunStepKind.ToolCall)
-                    {
-                        Assert.Multiple(() =>
-                        {
-                            Assert.That(runStep.Kind, Is.EqualTo(RunStepKind.ToolCall));
-                            Assert.That(runStep.Details, Is.Not.Null);
-                            Assert.That(runStep.Details.ToolCalls, Has.Count.GreaterThan(0));
-                            Assert.That(runStep.Details.ToolCalls[0].Kind, Is.EqualTo(RunStepToolCallKind.FileSearch));
-
-                            // Confirm that we always get the Content property, since we are always passing the `include[]` query parameter.
-                            Assert.That(runStep.Details.ToolCalls[0].FileSearchResults[0].Content, Has.Count.GreaterThan(0));
-                        });
-                    }
-                }
-            }
+            // First, upload a simple test file.
+            testFile = await fileClient.UploadFileAsync(BinaryData.FromString(fileContent), fileName, FileUploadPurpose.Assistants);
         }
-
-
-        Assert.That(message, Does.Contain("cake"));
-    }
-
-    [Test]
-    public async Task FileSearchStreamingWorksAsync()
-    {
-        AssertAsyncOnly();
-
-        const string fileContent = """
-                The favorite food of several people:
-                - Summanus Ferdinand: tacos
-                - Tekakwitha Effie: pizza
-                - Filip Carola: cake
-                """;
-
-        const string fileName = "favorite_foods.txt";
-
-        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
-        AssistantClient client = GetTestClient<AssistantClient>(TestScenario.Assistants);
-
-        // First, upload a simple test file.
-        OpenAIFile testFile = await fileClient.UploadFileAsync(BinaryData.FromString(fileContent), fileName, FileUploadPurpose.Assistants);
         Validate(testFile);
 
         // Create an assistant, using the creation helper to make a new vector store.
@@ -1215,8 +945,6 @@ public class AssistantsTests : SyncAsyncTestBase
     [Test]
     public async Task Pagination_CanEnumerateAssistantsAsync()
     {
-        AssertAsyncOnly();
-
         const int TestAssistantCount = 10;
 
         AssistantClient client = GetTestClient();
@@ -1224,7 +952,7 @@ public class AssistantsTests : SyncAsyncTestBase
         // Create assistant collection
         for (int i = 0; i < 10; i++)
         {
-            Assistant assistant = client.CreateAssistant("gpt-4o-mini", new AssistantCreationOptions()
+            Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini", new AssistantCreationOptions()
             {
                 Name = $"Test Assistant {i}",
             });
@@ -1258,55 +986,8 @@ public class AssistantsTests : SyncAsyncTestBase
     }
 
     [Test]
-    public void Pagination_CanEnumerateAssistants()
+    public async Task Pagination_CanPageThroughAssistantCollection()
     {
-        AssertSyncOnly();
-
-        const int TestAssistantCount = 10;
-
-        AssistantClient client = GetTestClient();
-
-        // Create assistant collection
-        for (int i = 0; i < TestAssistantCount; i++)
-        {
-            Assistant assistant = client.CreateAssistant("gpt-4o-mini", new AssistantCreationOptions()
-            {
-                Name = $"Test Assistant {i}",
-            });
-            Validate(assistant);
-            Assert.That(assistant.Name, Is.EqualTo($"Test Assistant {i}"));
-        }
-
-        // Page through collection
-        int count = 0;
-        CollectionResult<Assistant> assistants = client.GetAssistants(new AssistantCollectionOptions() { Order = AssistantCollectionOrder.Descending });
-
-        int lastIdSeen = int.MaxValue;
-
-        foreach (Assistant assistant in assistants)
-        {
-            Console.WriteLine($"[{count,3}] {assistant.Id} {assistant.CreatedAt:s} {assistant.Name}");
-            if (assistant.Name?.StartsWith("Test Assistant ") == true)
-            {
-                Assert.That(int.TryParse(assistant.Name["Test Assistant ".Length..], out int seenId), Is.True);
-                Assert.That(seenId, Is.LessThan(lastIdSeen));
-                lastIdSeen = seenId;
-            }
-            count++;
-            if (lastIdSeen == 0 || count > 100)
-            {
-                break;
-            }
-        }
-
-        Assert.That(count, Is.GreaterThanOrEqualTo(TestAssistantCount));
-    }
-
-    [Test]
-    public async Task Pagination_CanPageThroughAssistantCollectionAsync()
-    {
-        AssertAsyncOnly();
-
         const int TestAssistantCount = 10;
         const int TestPageSizeLimit = 2;
 
@@ -1315,7 +996,7 @@ public class AssistantsTests : SyncAsyncTestBase
         // Create assistant collection
         for (int i = 0; i < TestAssistantCount; i++)
         {
-            Assistant assistant = client.CreateAssistant("gpt-4o-mini", new AssistantCreationOptions()
+            Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini", new AssistantCreationOptions()
             {
                 Name = $"Test Assistant {i}"
             });
@@ -1359,65 +1040,6 @@ public class AssistantsTests : SyncAsyncTestBase
         Assert.That(count, Is.GreaterThanOrEqualTo(TestAssistantCount));
         Assert.That(pageCount, Is.GreaterThanOrEqualTo(TestAssistantCount / TestPageSizeLimit));
     }
-
-    [Test]
-    public void Pagination_CanPageThroughAssistantCollection()
-    {
-        AssertSyncOnly();
-
-        const int TestAssistantCount = 10;
-        const int TestPageSizeLimit = 2;
-
-        AssistantClient client = GetTestClient();
-
-        // Create assistant collection
-        for (int i = 0; i < TestAssistantCount; i++)
-        {
-            Assistant assistant = client.CreateAssistant("gpt-4o-mini", new AssistantCreationOptions()
-            {
-                Name = $"Test Assistant {i}"
-            });
-            Validate(assistant);
-            Assert.That(assistant.Name, Is.EqualTo($"Test Assistant {i}"));
-        }
-
-        // Page through collection
-        int count = 0;
-        int pageCount = 0;
-        CollectionResult<Assistant> assistants = client.GetAssistants(
-            new AssistantCollectionOptions()
-            {
-                Order = AssistantCollectionOrder.Descending,
-                PageSizeLimit = TestPageSizeLimit
-            });
-
-        int lastIdSeen = int.MaxValue;
-
-        foreach (ClientResult page in assistants.GetRawPages())
-        {
-            foreach (Assistant assistant in GetAssistantsFromPage(page))
-            {
-                Console.WriteLine($"[{count,3}] {assistant.Id} {assistant.CreatedAt:s} {assistant.Name}");
-                if (assistant.Name?.StartsWith("Test Assistant ") == true)
-                {
-                    Assert.That(int.TryParse(assistant.Name["Test Assistant ".Length..], out int seenId), Is.True);
-                    Assert.That(seenId, Is.LessThan(lastIdSeen));
-                    lastIdSeen = seenId;
-                }
-                count++;
-            }
-
-            pageCount++;
-            if (lastIdSeen == 0 || count > 100)
-            {
-                break;
-            }
-        }
-
-        Assert.That(count, Is.GreaterThanOrEqualTo(TestAssistantCount));
-        Assert.That(pageCount, Is.GreaterThanOrEqualTo(TestAssistantCount / TestPageSizeLimit));
-    }
-
     private static IEnumerable<Assistant> GetAssistantsFromPage(ClientResult page)
     {
         PipelineResponse response = page.GetRawResponse();
@@ -1429,10 +1051,8 @@ public class AssistantsTests : SyncAsyncTestBase
     }
 
     [Test]
-    public async Task Pagination_CanRehydrateAssistantPageCollectionFromBytesAsync()
+    public async Task Pagination_CanRehydrateAssistantPageCollectionFromBytes()
     {
-        AssertAsyncOnly();
-
         const int TestAssistantCount = 10;
         const int TestPageSizeLimit = 2;
 
@@ -1441,7 +1061,7 @@ public class AssistantsTests : SyncAsyncTestBase
         // Create assistant collection
         for (int i = 0; i < TestAssistantCount; i++)
         {
-            Assistant assistant = client.CreateAssistant("gpt-4o-mini", new AssistantCreationOptions()
+            Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini", new AssistantCreationOptions()
             {
                 Name = $"Test Assistant {i}"
             });
@@ -1503,85 +1123,8 @@ public class AssistantsTests : SyncAsyncTestBase
     }
 
     [Test]
-    public void Pagination_CanRehydrateAssistantPageCollectionFromBytes()
+    public async Task Pagination_CanRehydrateAssistantPageCollectionFromPageToken()
     {
-        AssertSyncOnly();
-
-        const int TestAssistantCount = 10;
-        const int TestPageSizeLimit = 2;
-
-        AssistantClient client = GetTestClient();
-
-        // Create assistant collection
-        for (int i = 0; i < TestAssistantCount; i++)
-        {
-            Assistant assistant = client.CreateAssistant("gpt-4o-mini", new AssistantCreationOptions()
-            {
-                Name = $"Test Assistant {i}"
-            });
-            Validate(assistant);
-            Assert.That(assistant.Name, Is.EqualTo($"Test Assistant {i}"));
-        }
-
-        CollectionResult<Assistant> assistants = client.GetAssistants(
-            new AssistantCollectionOptions()
-            {
-                Order = AssistantCollectionOrder.Descending,
-                PageSizeLimit = TestPageSizeLimit
-            });
-
-        // Simulate rehydration of the collection
-        ClientResult firstPage = assistants.GetRawPages().First();
-        BinaryData rehydrationTokenBytes = assistants.GetContinuationToken(firstPage).ToBytes();
-        ContinuationToken rehydrationToken = ContinuationToken.FromBytes(rehydrationTokenBytes);
-
-        // This starts the collection on the second page.
-        CollectionResult<Assistant> rehydratedAssistants = client.GetAssistants(
-            new AssistantCollectionOptions
-            {
-                AfterId = rehydrationToken.ToBytes().ToString(),
-                Order = AssistantCollectionOrder.Descending,
-                PageSizeLimit = TestPageSizeLimit
-            });
-
-        // We already got the first page, so account for that.
-        int count = TestPageSizeLimit;
-        int pageCount = 1;
-
-        int lastIdSeen = int.MaxValue;
-
-        foreach (ClientResult page in rehydratedAssistants.GetRawPages())
-        {
-            foreach (Assistant assistant in GetAssistantsFromPage(page))
-            {
-                if (assistant.Name?.StartsWith("Test Assistant ") == true)
-                {
-                    Assert.That(int.TryParse(assistant.Name["Test Assistant ".Length..], out int seenId), Is.True);
-                    Assert.That(seenId, Is.LessThan(lastIdSeen));
-                    lastIdSeen = seenId;
-                }
-
-                count++;
-            }
-
-            pageCount++;
-            if (lastIdSeen == 0 || count > 100)
-            {
-                break;
-            }
-        }
-
-        // We should only see eight items and four pages because we rehydrated the
-        // collection starting on the second page.
-        Assert.That(count, Is.GreaterThanOrEqualTo(TestAssistantCount));
-        Assert.That(pageCount, Is.GreaterThanOrEqualTo(TestAssistantCount / TestPageSizeLimit));
-    }
-
-    [Test]
-    public async Task Pagination_CanRehydrateAssistantPageCollectionFromPageTokenAsync()
-    {
-        AssertAsyncOnly();
-
         const int TestAssistantCount = 10;
         const int TestPageSizeLimit = 2;
 
@@ -1591,7 +1134,7 @@ public class AssistantsTests : SyncAsyncTestBase
         List<Assistant> createdAssistants = [];
         for (int i = 0; i < TestAssistantCount; i++)
         {
-            Assistant assistant = client.CreateAssistant("gpt-4o-mini", new AssistantCreationOptions()
+            Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini", new AssistantCreationOptions()
             {
                 Name = $"Test Assistant {i}"
             });
@@ -1662,103 +1205,22 @@ public class AssistantsTests : SyncAsyncTestBase
     }
 
     [Test]
-    public void Pagination_CanRehydrateAssistantPageCollectionFromPageToken()
+    public async Task Pagination_CanRehydrateRunStepPageCollectionFromBytes()
     {
-        AssertSyncOnly();
-
-        const int TestAssistantCount = 10;
-        const int TestPageSizeLimit = 2;
-
         AssistantClient client = GetTestClient();
-
-        // Create assistant collection
-        List<Assistant> createdAssistants = [];
-        for (int i = 0; i < TestAssistantCount; i++)
-        {
-            Assistant assistant = client.CreateAssistant("gpt-4o-mini", new AssistantCreationOptions()
-            {
-                Name = $"Test Assistant {i}"
-            });
-            Validate(assistant);
-            Assert.That(assistant.Name, Is.EqualTo($"Test Assistant {i}"));
-
-            createdAssistants.Add(assistant);
-        }
-
-        CollectionResult<Assistant> assistants = client.GetAssistants(
-            new AssistantCollectionOptions()
-            {
-                Order = AssistantCollectionOrder.Descending,
-                PageSizeLimit = TestPageSizeLimit
-            });
-
-        // Since we asked for descending order, reverse the order of createdAssistants.
-        createdAssistants.Reverse();
-
-        // Call the rehydration method, passing a typed OpenAIPageToken
-        ClientResult firstPage = assistants.GetRawPages().First();
-        ContinuationToken nextPageToken = assistants.GetContinuationToken(firstPage);
-        CollectionResult<Assistant> rehydratedAssistantCollection = client.GetAssistants(new AssistantCollectionOptions
-        {
-            AfterId = nextPageToken.ToBytes().ToString(),
-            Order = AssistantCollectionOrder.Descending,
-            PageSizeLimit = TestPageSizeLimit
-        });
-
-        // Since we're asking for the next page after the first one, remove the first two items from the 
-        // createdAssistants
-        createdAssistants = createdAssistants.Skip(TestPageSizeLimit).ToList();
-
-        // We already got the first page, so account for that.
-        int count = TestPageSizeLimit;
-        int pageCount = 1;
-
-        int lastIdSeen = int.MaxValue;
-
-        List<Assistant> rehydratedAssistants = [];
-
-        foreach (ClientResult page in rehydratedAssistantCollection.GetRawPages())
-        {
-            foreach (Assistant assistant in GetAssistantsFromPage(page))
-            {
-                if (assistant.Name?.StartsWith("Test Assistant ") == true)
-                {
-                    Assert.That(int.TryParse(assistant.Name["Test Assistant ".Length..], out int seenId), Is.True);
-                    Assert.That(seenId, Is.LessThan(lastIdSeen));
-                    lastIdSeen = seenId;
-                    count++;
-                }
-                rehydratedAssistants.Add(assistant);
-            }
-
-            pageCount++;
-            if (lastIdSeen == 0 || count > 100)
-            {
-                break;
-            }
-        }
-
-        Assert.That(createdAssistants[0].Id, Is.EqualTo(rehydratedAssistants[0].Id));
-
-        Assert.That(count, Is.GreaterThanOrEqualTo(TestAssistantCount));
-        Assert.That(pageCount, Is.GreaterThanOrEqualTo(TestAssistantCount / TestPageSizeLimit));
-    }
-
-    [Test]
-    public async Task Pagination_CanRehydrateRunStepPageCollectionFromBytesAsync()
-    {
-        AssertAsyncOnly();
-
-        AssistantClient client = GetTestClient();
-        Assistant assistant = client.CreateAssistant("gpt-4o", new AssistantCreationOptions()
+        Assistant assistant = await client.CreateAssistantAsync("gpt-4o", new AssistantCreationOptions()
         {
             Tools = { new CodeInterpreterToolDefinition() },
             Instructions = "You help the user with mathematical descriptions and visualizations.",
         });
         Validate(assistant);
 
-        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
-        OpenAIFile equationFile = fileClient.UploadFile(
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
+
+        OpenAIFile equationFile;
+        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
+        {
+            equationFile = await fileClient.UploadFileAsync(
             BinaryData.FromString("""
             x,y
             2,5
@@ -1767,9 +1229,10 @@ public class AssistantsTests : SyncAsyncTestBase
             """).ToStream(),
             "text/csv",
             FileUploadPurpose.Assistants);
-        Validate(equationFile);
+            Validate(equationFile);
+        }
 
-        AssistantThread thread = client.CreateThread(new ThreadCreationOptions()
+        AssistantThread thread = await client.CreateThreadAsync(new ThreadCreationOptions()
         {
             InitialMessages =
             {
@@ -1787,13 +1250,16 @@ public class AssistantsTests : SyncAsyncTestBase
         });
         Validate(thread);
 
-        ThreadRun run = client.CreateRun(thread.Id, assistant.Id);
+        ThreadRun run = await client.CreateRunAsync(thread.Id, assistant.Id);
         Validate(run);
 
         while (!run.Status.IsTerminal)
         {
-            Thread.Sleep(1000);
-            run = client.GetRun(run.ThreadId, run.Id);
+            if (Mode != RecordedTestMode.Playback)
+            {
+                Thread.Sleep(1000);
+            }
+            run = await client.GetRunAsync(run.ThreadId, run.Id);
         }
         Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
         Assert.That(run.Usage?.TotalTokenCount, Is.GreaterThan(0));
@@ -1824,90 +1290,7 @@ public class AssistantsTests : SyncAsyncTestBase
                 .ToListAsync();
         }
 
-        CollectionAssert.AreEqual(runSteps, rehydratedRunSteps);
-    }
-
-    [Test]
-    public async Task Pagination_CanRehydrateRunStepPageCollectionFromBytes()
-    {
-        AssertSyncOnly();
-
-        AssistantClient client = GetTestClient();
-        Assistant assistant = client.CreateAssistant("gpt-4o", new AssistantCreationOptions()
-        {
-            Tools = { new CodeInterpreterToolDefinition() },
-            Instructions = "You help the user with mathematical descriptions and visualizations.",
-        });
-        Validate(assistant);
-
-        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
-        OpenAIFile equationFile = fileClient.UploadFile(
-            BinaryData.FromString("""
-            x,y
-            2,5
-            7,14,
-            8,22
-            """).ToStream(),
-            "text/csv",
-            FileUploadPurpose.Assistants);
-        Validate(equationFile);
-
-        AssistantThread thread = client.CreateThread(new ThreadCreationOptions()
-        {
-            InitialMessages =
-            {
-                "Describe the contents of any available tool resource file."
-                + " Graph a linear regression and provide the coefficient of correlation."
-                + " Explain any code executed to evaluate.",
-            },
-            ToolResources = new()
-            {
-                CodeInterpreter = new()
-                {
-                    FileIds = { equationFile.Id },
-                }
-            }
-        });
-        Validate(thread);
-
-        ThreadRun run = client.CreateRun(thread.Id, assistant.Id);
-        Validate(run);
-
-        while (!run.Status.IsTerminal)
-        {
-            Thread.Sleep(1000);
-            run = client.GetRun(run.ThreadId, run.Id);
-        }
-        Assert.That(run.Status, Is.EqualTo(RunStatus.Completed));
-        Assert.That(run.Usage?.TotalTokenCount, Is.GreaterThan(0));
-
-        IReadOnlyList<string> runSteps;
-        IReadOnlyList<string> rehydratedRunSteps;
-        {
-            const int numPerPage = 2;
-            CollectionResult<RunStep> results = client.GetRunSteps(run.ThreadId, run.Id, new() { PageSizeLimit = numPerPage });
-            runSteps = results
-                .Skip(numPerPage)
-                .Select(r => r.Id)
-                .ToList();
-
-            // Simulate rehydration of the collection
-            ContinuationToken rehydrationToken = results.GetContinuationToken(results.GetRawPages().FirstOrDefault());
-            rehydratedRunSteps = (await client.GetRunStepsAsync(
-                run.ThreadId,
-                run.Id,
-                new()
-                {
-                    AfterId = rehydrationToken.ToBytes().ToString(),
-                    PageSizeLimit = numPerPage
-                }
-            )
-                .ToListAsync())
-                .Select(r => r.Id)
-                .ToList();
-        }
-
-        CollectionAssert.AreEqual(runSteps, rehydratedRunSteps);
+        Assert.That(rehydratedRunSteps, Is.EqualTo(runSteps).AsCollection);
     }
 
     [Test]
@@ -1924,27 +1307,15 @@ public class AssistantsTests : SyncAsyncTestBase
                 new ThreadInitializationMessage(MessageRole.Assistant, [assistantMessageText]),
             }
         };
-        AssistantThread thread = IsAsync
-            ? await client.CreateThreadAsync(threadCreationOptions)
-            : client.CreateThread(threadCreationOptions);
+        AssistantThread thread = await client.CreateThreadAsync(threadCreationOptions);
         Validate(thread);
         List<ThreadMessage> messages = [];
         async ValueTask RefreshMessageListAsync()
         {
             messages.Clear();
-            if (IsAsync)
+            await foreach (ThreadMessage message in client.GetMessagesAsync(thread.Id))
             {
-                await foreach (ThreadMessage message in client.GetMessagesAsync(thread.Id))
-                {
-                    messages.Add(message);
-                }
-            }
-            else
-            {
-                foreach (ThreadMessage message in client.GetMessages(thread.Id))
-                {
-                    messages.Add(message);
-                }
+                messages.Add(message);
             }
         }
         await RefreshMessageListAsync();
@@ -1957,12 +1328,8 @@ public class AssistantsTests : SyncAsyncTestBase
         Assert.That(messages[0].Role, Is.EqualTo(MessageRole.Assistant));
         Assert.That(messages[0].Content[0].Text, Is.EqualTo(assistantMessageText));
         Assert.That(messages[0].Content[0].Text, Is.EqualTo(assistantMessageText));
-        ThreadMessage userMessage = IsAsync
-            ? await client.CreateMessageAsync(thread.Id, MessageRole.User, [MessageContent.FromText(userMessageText)])
-            : client.CreateMessage(thread.Id, MessageRole.User, [MessageContent.FromText(userMessageText)]);
-        ThreadMessage assistantMessage = IsAsync
-            ? await client.CreateMessageAsync(thread.Id, MessageRole.Assistant, [assistantMessageText])
-            : client.CreateMessage(thread.Id, MessageRole.Assistant, [assistantMessageText]);
+        ThreadMessage userMessage = await client.CreateMessageAsync(thread.Id, MessageRole.User, [MessageContent.FromText(userMessageText)]);
+        ThreadMessage assistantMessage = await client.CreateMessageAsync(thread.Id, MessageRole.Assistant, [assistantMessageText]);
         await RefreshMessageListAsync();
         Assert.That(messages.Count, Is.EqualTo(4));
         Assert.That(messages[3].Role, Is.EqualTo(MessageRole.User));

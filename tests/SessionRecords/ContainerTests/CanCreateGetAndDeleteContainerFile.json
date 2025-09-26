@@ -1,0 +1,151 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/containers/cntr_68c9dde6b288819096a5f7d5f57f33d80d62739fdf52061b/files",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "331",
+        "Content-Type": "multipart/form-data; boundary=\"dYRloOa3pDtrEidWH6TBD0jRxrUWaLb2xj=MfTAna=xh_Mc_C6V4w1w1B2sYtXaToRKu3h\"",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803a2d95a9530d1-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "294",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:00:21 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "893",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "898",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "cfile_68c9ddf564c48191be678656a5e878e4",
+        "object": "container.file",
+        "created_at": 1758060021,
+        "bytes": 44,
+        "container_id": "cntr_68c9dde6b288819096a5f7d5f57f33d80d62739fdf52061b",
+        "path": "/mnt/data/946e6dc94ac6aca10fa2bda7a127cba8-test-get-file.txt",
+        "source": "user"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/containers/cntr_68c9dde6b288819096a5f7d5f57f33d80d62739fdf52061b/files/cfile_68c9ddf564c48191be678656a5e878e4",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803a2df7d9430d1-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "294",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:00:22 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "446",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "449",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "cfile_68c9ddf564c48191be678656a5e878e4",
+        "object": "container.file",
+        "created_at": 1758060021,
+        "bytes": 44,
+        "container_id": "cntr_68c9dde6b288819096a5f7d5f57f33d80d62739fdf52061b",
+        "path": "/mnt/data/946e6dc94ac6aca10fa2bda7a127cba8-test-get-file.txt",
+        "source": "user"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/containers/cntr_68c9dde6b288819096a5f7d5f57f33d80d62739fdf52061b/files/cfile_68c9ddf564c48191be678656a5e878e4/content",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/octet-stream",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803a2e2ef9330d1-SEA",
+        "Connection": "keep-alive",
+        "Content-Disposition": "attachment; filename=\"file.txt\"; filename*=UTF-8''946e6dc94ac6aca10fa2bda7a127cba8-test-get-file.txt",
+        "Content-Length": "44",
+        "Content-Type": "text/plain; charset=utf-8",
+        "Date": "Tue, 16 Sep 2025 22:00:23 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "947",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "951",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": "Test file content for get/delete operations."
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/containers/cntr_68c9dde6b288819096a5f7d5f57f33d80d62739fdf52061b/files/cfile_68c9ddf564c48191be678656a5e878e4",
+      "RequestMethod": "DELETE",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9803a2e96ac430d1-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "109",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 22:00:24 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "1336",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "1341",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "cfile_68c9ddf564c48191be678656a5e878e4",
+        "object": "container.file.deleted",
+        "deleted": true
+      }
+    }
+  ],
+  "Variables": {
+    "TEST_CONTAINER_ID": "cntr_68c9dde6b288819096a5f7d5f57f33d80d62739fdf52061b",
+    "OPEN-API-KEY": "api-key"
+  }
+}

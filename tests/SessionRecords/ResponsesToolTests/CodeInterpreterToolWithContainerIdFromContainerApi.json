@@ -1,0 +1,223 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/containers",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "46",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "name": "test-container-for-code-interpreter"
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "984f26e8281776b2-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "300",
+        "Content-Type": "application/json",
+        "Date": "Fri, 26 Sep 2025 01:57:44 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "2709",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "2717",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "cntr_68d5f317eaac819094bcc30d643f61810ed10f63a396fcef",
+        "object": "container",
+        "created_at": 1758851863,
+        "status": "running",
+        "expires_after": {
+          "anchor": "last_active_at",
+          "minutes": 20
+        },
+        "last_active_at": 1758851863,
+        "name": "test-container-for-code-interpreter"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "263",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "tools": [
+          {
+            "type": "code_interpreter",
+            "container": "cntr_68d5f317eaac819094bcc30d643f61810ed10f63a396fcef"
+          }
+        ],
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Calculate the factorial of 5 using Python code."
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "984f26f9e90976b2-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1923",
+        "Content-Type": "application/json",
+        "Date": "Fri, 26 Sep 2025 01:57:55 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "10521",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "10524",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999765",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_68d5f318cb308193bebbc8ee652ebc3206e91633be51b939",
+        "object": "response",
+        "created_at": 1758851864,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4o-mini-2024-07-18",
+        "output": [
+          {
+            "id": "ci_68d5f319e2788193bb4a260378f6ffa506e91633be51b939",
+            "type": "code_interpreter_call",
+            "status": "completed",
+            "code": "import math\n\n# Calculate the factorial of 5\nfactorial_5 = math.factorial(5)\nfactorial_5",
+            "container_id": "cntr_68d5f317eaac819094bcc30d643f61810ed10f63a396fcef",
+            "outputs": null
+          },
+          {
+            "id": "msg_68d5f32213308193af7a64892ef48a1506e91633be51b939",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "The factorial of 5 is \\( 120 \\)."
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "reasoning": {
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [
+          {
+            "type": "code_interpreter",
+            "container": "cntr_68d5f317eaac819094bcc30d643f61810ed10f63a396fcef"
+          }
+        ],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 387,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 45,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 432
+        },
+        "user": null,
+        "metadata": {}
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/containers/cntr_68d5f317eaac819094bcc30d643f61810ed10f63a396fcef",
+      "RequestMethod": "DELETE",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "984f273cfc5476b2-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "119",
+        "Content-Type": "application/json",
+        "Date": "Fri, 26 Sep 2025 01:57:55 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "80",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "85",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "cntr_68d5f317eaac819094bcc30d643f61810ed10f63a396fcef",
+        "object": "container.deleted",
+        "deleted": true
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

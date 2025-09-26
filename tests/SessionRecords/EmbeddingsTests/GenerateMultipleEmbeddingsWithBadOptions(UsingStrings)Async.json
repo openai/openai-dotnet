@@ -1,0 +1,63 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/embeddings",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "97",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "input": [
+          "prompt"
+        ],
+        "model": "text-embedding-3-small",
+        "encoding_format": "base64",
+        "dimensions": -42
+      },
+      "StatusCode": 400,
+      "ResponseHeaders": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "980bc8225b04a3cb-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "161",
+        "Content-Type": "application/json",
+        "Date": "Wed, 17 Sep 2025 21:43:54 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "57",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Via": "envoy-router-5cc8bd48fd-vzplr",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "207",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "10000",
+        "x-ratelimit-limit-tokens": "10000000",
+        "x-ratelimit-remaining-requests": "9999",
+        "x-ratelimit-remaining-tokens": "9999999",
+        "x-ratelimit-reset-requests": "6ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "error": {
+          "message": "-42 is less than the minimum of 1 - 'dimensions'",
+          "type": "invalid_request_error",
+          "param": null,
+          "code": null
+        }
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

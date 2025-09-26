@@ -1,0 +1,173 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "366",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-5",
+        "tools": [
+          {
+            "type": "mcp",
+            "server_label": "dmcp",
+            "server_url": "https://dmcp-server.deno.dev/sse",
+            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
+            "allowed_tools": {
+              "tool_names": [
+                "not_roll"
+              ]
+            },
+            "require_approval": "never"
+          }
+        ],
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Roll 2d4+1"
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "984f13c90e2e76a0-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "2434",
+        "Content-Type": "application/json",
+        "Date": "Fri, 26 Sep 2025 01:44:57 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "19318",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "19326",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_68d5f006a7188196a950072e899156b0066815288118c52a",
+        "object": "response",
+        "created_at": 1758851078,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-5-2025-08-07",
+        "output": [
+          {
+            "id": "mcpl_68d5f006c1d08196bee6939afa14d976066815288118c52a",
+            "type": "mcp_list_tools",
+            "server_label": "dmcp",
+            "tools": []
+          },
+          {
+            "id": "rs_68d5f00d31b0819691463c71a4435462066815288118c52a",
+            "type": "reasoning",
+            "summary": []
+          },
+          {
+            "id": "msg_68d5f0192ef4819696e1b6cedb087a82066815288118c52a",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "2d4+1"
+              }
+            ],
+            "role": "assistant"
+          },
+          {
+            "id": "msg_68d5f01952d481968568bd1f4f85ef2a066815288118c52a",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "I rolled 2d4+1: 6"
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "reasoning": {
+          "effort": "medium",
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [
+          {
+            "type": "mcp",
+            "allowed_tools": {
+              "read_only": null,
+              "tool_names": [
+                "not_roll"
+              ]
+            },
+            "headers": null,
+            "require_approval": "never",
+            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
+            "server_label": "dmcp",
+            "server_url": "https://dmcp-server.deno.dev/<redacted>"
+          }
+        ],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 127,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 925,
+          "output_tokens_details": {
+            "reasoning_tokens": 896
+          },
+          "total_tokens": 1052
+        },
+        "user": null,
+        "metadata": {}
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

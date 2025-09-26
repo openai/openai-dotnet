@@ -1,0 +1,197 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/fine_tuning/jobs",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "71",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-3.5-turbo",
+        "training_file": "file-E8xsKBEp2QMT1sqSvXufXX"
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "984ef064ebf62760-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "935",
+        "Content-Type": "application/json",
+        "Date": "Fri, 26 Sep 2025 01:20:29 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "609",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "614",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "fine_tuning.job",
+        "id": "ftjob-bU0BCUHfNzRemYMFmIRItnOH",
+        "model": "gpt-3.5-turbo-0125",
+        "created_at": 1758849629,
+        "finished_at": null,
+        "fine_tuned_model": null,
+        "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+        "result_files": [],
+        "status": "validating_files",
+        "validation_file": null,
+        "training_file": "file-E8xsKBEp2QMT1sqSvXufXX",
+        "hyperparameters": {
+          "n_epochs": "auto",
+          "batch_size": "auto",
+          "learning_rate_multiplier": "auto"
+        },
+        "trained_tokens": null,
+        "error": {},
+        "user_provided_suffix": null,
+        "seed": 1821554894,
+        "estimated_finish": null,
+        "integrations": [],
+        "metadata": null,
+        "usage_metrics": null,
+        "shared_with_openai": false,
+        "eval_id": null,
+        "method": {
+          "type": "supervised",
+          "supervised": {
+            "hyperparameters": {
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto",
+              "n_epochs": "auto"
+            }
+          }
+        }
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/fine_tuning/jobs/ftjob-bU0BCUHfNzRemYMFmIRItnOH/cancel",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "0",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "984ef06998f12760-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "928",
+        "Content-Type": "application/json",
+        "Date": "Fri, 26 Sep 2025 01:20:30 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "350",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "365",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "fine_tuning.job",
+        "id": "ftjob-bU0BCUHfNzRemYMFmIRItnOH",
+        "model": "gpt-3.5-turbo-0125",
+        "created_at": 1758849629,
+        "finished_at": null,
+        "fine_tuned_model": null,
+        "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+        "result_files": [],
+        "status": "cancelled",
+        "validation_file": null,
+        "training_file": "file-E8xsKBEp2QMT1sqSvXufXX",
+        "hyperparameters": {
+          "n_epochs": "auto",
+          "batch_size": "auto",
+          "learning_rate_multiplier": "auto"
+        },
+        "trained_tokens": null,
+        "error": {},
+        "user_provided_suffix": null,
+        "seed": 1821554894,
+        "estimated_finish": null,
+        "integrations": [],
+        "metadata": null,
+        "usage_metrics": null,
+        "shared_with_openai": false,
+        "eval_id": null,
+        "method": {
+          "type": "supervised",
+          "supervised": {
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            }
+          }
+        }
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/fine_tuning/jobs/ftjob-bU0BCUHfNzRemYMFmIRItnOH/events?limit=1",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "984ef06c9c1e2760-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "331",
+        "Content-Type": "application/json",
+        "Date": "Fri, 26 Sep 2025 01:20:30 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "103",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "112",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "object": "fine_tuning.job.event",
+            "id": "ftevent-ilzTvboVXw15GKBFe7hYy5z1",
+            "created_at": 1758849629,
+            "level": "info",
+            "message": "Validating training file: file-E8xsKBEp2QMT1sqSvXufXX",
+            "data": {},
+            "type": "message"
+          }
+        ],
+        "has_more": true
+      }
+    }
+  ],
+  "Variables": {
+    "DateTimeOffsetNow": "2025-09-25T18:20:28.7991144-07:00",
+    "OPEN-API-KEY": "api-key",
+    "SAMPLE_FILE_ID": "file-E8xsKBEp2QMT1sqSvXufXX",
+    "VALIDATION_FILE_ID": "file-5XFEJs5JoMfPnuVXP8tQJE"
+  }
+}

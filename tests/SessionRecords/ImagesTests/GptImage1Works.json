@@ -1,0 +1,71 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/images/generations",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "175",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "prompt": "An isolated stop sign.",
+        "model": "gpt-image-1",
+        "n": 2,
+        "output_format": "webp",
+        "output_compression": 42,
+        "size": "1024x1536",
+        "moderation": "low",
+        "background": "transparent"
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "983dd2024db4df09-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "463",
+        "Content-Type": "application/json",
+        "Date": "Tue, 23 Sep 2025 23:29:17 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "30486",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "30491",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "created": 1758670157,
+        "background": "transparent",
+        "data": [
+          {
+            "b64_json": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII="
+          },
+          {
+            "b64_json": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVQYV2NgAAIAAAUAAarVyFEAAAAASUVORK5CYII="
+          }
+        ],
+        "output_format": "webp",
+        "quality": "medium",
+        "size": "1024x1536",
+        "usage": {
+          "input_tokens": 22,
+          "input_tokens_details": {
+            "image_tokens": 0,
+            "text_tokens": 22
+          },
+          "output_tokens": 3168,
+          "total_tokens": 3190
+        }
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

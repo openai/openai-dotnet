@@ -1,0 +1,150 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/images/generations",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "93",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "prompt": "An isolated stop sign.",
+        "model": "dall-e-3",
+        "quality": "standard",
+        "style": "natural"
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "980b8cdb6e89a37e-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "759",
+        "Content-Type": "application/json",
+        "Date": "Wed, 17 Sep 2025 21:03:38 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "12924",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "12929",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "created": 1758143018,
+        "data": [
+          {
+            "revised_prompt": "An image showcasing a traffic stop sign standing alone in an open landscape possibly a rural area. The sign should be bright red with clear white 'STOP' text, and the background showing a vast, empty terrain under a blue sky.",
+            "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-PIXDVx5fCtKDRGzfCtB6cjvP/user-Xm5Rs3WMoRD21YV6ZnFobsZJ/img-T4oNHZuRt9CJrMlotIG6X9Zp.png?st=2025-09-17T20%3A03%3A38Z&se=2025-09-17T22%3A03%3A38Z&sp=r&sv=Sanitized&sr=b&rscd=inline&rsct=image/png&skoid=38e27a3b-6174-4d3e-90ac-d7d9ad49543f&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-09-17T17%3A56%3A17Z&ske=2025-09-18T17%3A56%3A17Z&sks=b&skv=2024-08-04&sig=Sanitized"
+          }
+        ]
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "625",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "messages": [
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": "Describe this image for me. "
+              },
+              {
+                "type": "image_url",
+                "image_url": {
+                  "url": "https://oaidalleapiprodscus.blob.core.windows.net/private/org-PIXDVx5fCtKDRGzfCtB6cjvP/user-Xm5Rs3WMoRD21YV6ZnFobsZJ/img-T4oNHZuRt9CJrMlotIG6X9Zp.png?st=2025-09-17T20%3A03%3A38Z&se=2025-09-17T22%3A03%3A38Z&sp=r&sv=Sanitized&sr=b&rscd=inline&rsct=image/png&skoid=38e27a3b-6174-4d3e-90ac-d7d9ad49543f&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-09-17T17%3A56%3A17Z&ske=2025-09-18T17%3A56%3A17Z&sks=b&skv=2024-08-04&sig=Sanitized"
+                }
+              }
+            ]
+          }
+        ],
+        "model": "gpt-4o-mini",
+        "max_completion_tokens": 2048
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "980b8d2ceee1a37e-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1002",
+        "Content-Type": "application/json",
+        "Date": "Wed, 17 Sep 2025 21:03:42 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "3132",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "3187",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-input-images": "50000",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-input-images": "49999",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999227",
+        "x-ratelimit-reset-input-images": "1ms",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "chatcmpl-CGtbP3Q1QZBKk3iAHfgDIogsRvhnj",
+        "object": "chat.completion",
+        "created": 1758143019,
+        "model": "gpt-4o-mini-2024-07-18",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "The image features a bright red stop sign, which is octagonal in shape and prominently displays the word \"STOP\" in white letters. The sign is mounted on a metal pole and stands alone against a clear blue sky. The background shows a sparse landscape, with flat terrain and minimal features, emphasizing the sign's isolation. The overall composition is simple, focusing on the stop sign as the primary element.",
+              "refusal": null,
+              "annotations": []
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 25515,
+          "completion_tokens": 80,
+          "total_tokens": 25595,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "service_tier": "default",
+        "system_fingerprint": "Sanitized"
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

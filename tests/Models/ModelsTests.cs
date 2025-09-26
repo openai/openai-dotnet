@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using OpenAI.Models;
 using OpenAI.Tests.Utility;
 using System;
@@ -9,11 +10,8 @@ using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Models;
 
-[TestFixture(true)]
-[TestFixture(false)]
-[Parallelizable(ParallelScope.All)]
 [Category("Models")]
-public class ModelsTests : SyncAsyncTestBase
+public class ModelsTests : OpenAIRecordedTestBase
 {
     public ModelsTests(bool isAsync) : base(isAsync)
     {
@@ -22,11 +20,9 @@ public class ModelsTests : SyncAsyncTestBase
     [Test]
     public async Task ListModels()
     {
-        OpenAIModelClient client = GetTestClient<OpenAIModelClient>(TestScenario.Models);
+        OpenAIModelClient client = GetProxiedOpenAIClient<OpenAIModelClient>(TestScenario.Models);
 
-        OpenAIModelCollection allModels = IsAsync
-            ? await client.GetModelsAsync()
-            : client.GetModels();
+        OpenAIModelCollection allModels = await client.GetModelsAsync();
 
         OpenAIModel whisper = allModels.First(m => m.Id.Contains("whisper", StringComparison.InvariantCultureIgnoreCase));
         OpenAIModel turbo = allModels.First(m => m.Id.Contains("turbo", StringComparison.InvariantCultureIgnoreCase));
@@ -44,12 +40,10 @@ public class ModelsTests : SyncAsyncTestBase
     [Test]
     public async Task GetModelInfo()
     {
-        OpenAIModelClient client = GetTestClient<OpenAIModelClient>(TestScenario.Models);
+        OpenAIModelClient client = GetProxiedOpenAIClient<OpenAIModelClient>(TestScenario.Models);
         string modelId = "gpt-4o-mini";
 
-        OpenAIModel model = IsAsync
-            ? await client.GetModelAsync(modelId)
-            : client.GetModel(modelId);
+        OpenAIModel model = await client.GetModelAsync(modelId);
 
         long unixTime2020 = (new DateTimeOffset(2020, 01, 01, 0, 0, 0, TimeSpan.Zero)).ToUnixTimeSeconds();
 
@@ -62,17 +56,10 @@ public class ModelsTests : SyncAsyncTestBase
     [Test]
     public void GetModelCanParseServiceError()
     {
-        OpenAIModelClient client = GetTestClient<OpenAIModelClient>(TestScenario.Models);
+        OpenAIModelClient client = GetProxiedOpenAIClient<OpenAIModelClient>(TestScenario.Models);
         ClientResultException ex = null;
 
-        if (IsAsync)
-        {
-            ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GetModelAsync("fake_id"));
-        }
-        else
-        {
-            ex = Assert.Throws<ClientResultException>(() => client.GetModel("fake_id"));
-        }
+        ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GetModelAsync("fake_id"));
 
         Assert.That(ex.Status, Is.EqualTo(404));
     }
@@ -80,17 +67,10 @@ public class ModelsTests : SyncAsyncTestBase
     [Test]
     public void DeleteModelCanParseServiceError()
     {
-        OpenAIModelClient client = GetTestClient<OpenAIModelClient>(TestScenario.Models);
+        OpenAIModelClient client = GetProxiedOpenAIClient<OpenAIModelClient>(TestScenario.Models);
         ClientResultException ex = null;
 
-        if (IsAsync)
-        {
-            ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.DeleteModelAsync("fake_id"));
-        }
-        else
-        {
-            ex = Assert.Throws<ClientResultException>(() => client.DeleteModel("fake_id"));
-        }
+        ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.DeleteModelAsync("fake_id"));
 
         // If the model exists but the user doesn't own it, the service returns 403.
         // If the model doesn't exist at all, the service returns 404.

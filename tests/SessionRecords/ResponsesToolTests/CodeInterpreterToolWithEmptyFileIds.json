@@ -1,0 +1,165 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "290",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "tools": [
+          {
+            "type": "code_interpreter",
+            "container": {
+              "type": "auto"
+            }
+          }
+        ],
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Generate a simple chart using matplotlib. Ensure you emit debug logging and include any resulting log file output."
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "984f11939cfd76a0-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "3830",
+        "Content-Type": "application/json",
+        "Date": "Fri, 26 Sep 2025 01:43:25 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "17416",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "17419",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999490",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_68d5efac81348194973e5299ddacf0a3054a72cd66b99250",
+        "object": "response",
+        "created_at": 1758850988,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4o-mini-2024-07-18",
+        "output": [
+          {
+            "id": "ci_68d5efb0951c81948b913a1c56bfe9c9054a72cd66b99250",
+            "type": "code_interpreter_call",
+            "status": "completed",
+            "code": "import matplotlib.pyplot as plt\nimport numpy as np\nimport logging\n\n# Set up logging configuration\nlogging.basicConfig(filename='/mnt/data/matplotlib_debug.log', level=logging.DEBUG)\nlogger = logging.getLogger()\n\n# Generate sample data for the chart\nlogger.debug('Generating data for the chart.')\nx = np.linspace(0, 10, 100)  # X values\ny = np.sin(x)                 # Y values (sine function)\n\n# Create a simple line chart\nlogger.debug('Creating line chart.')\nplt.figure(figsize=(10, 5))\nplt.plot(x, y, label='Sine Wave', color='blue')\nplt.title('Simple Sine Wave Chart')\nplt.xlabel('X-axis')\nplt.ylabel('Y-axis')\nplt.axhline(0, color='black',linewidth=0.5, ls='--')\nplt.axvline(0, color='black',linewidth=0.5, ls='--')\nplt.grid(color = 'gray', linestyle = '--', linewidth = 0.5)\nplt.legend()\nplt.savefig('/mnt/data/sine_wave_chart.png')\nlogger.debug('Chart saved as sine_wave_chart.png.')\n\n# Close the plot\nplt.close()\n\n# Return the filename of the log and the chart\n('/mnt/data/matplotlib_debug.log', '/mnt/data/sine_wave_chart.png')",
+            "container_id": "cntr_68d5efaf9e248190b2cee604aeb6ae350f6f04931220df19",
+            "outputs": null
+          },
+          {
+            "id": "msg_68d5efbb27608194b8b0582e10af5b29054a72cd66b99250",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [
+                  {
+                    "type": "container_file_citation",
+                    "container_id": "cntr_68d5efaf9e248190b2cee604aeb6ae350f6f04931220df19",
+                    "end_index": 208,
+                    "file_id": "cfile_68d5efbdbf1481919739ea544a075837",
+                    "filename": "matplotlib_debug.log",
+                    "start_index": 170
+                  },
+                  {
+                    "type": "container_file_citation",
+                    "container_id": "cntr_68d5efaf9e248190b2cee604aeb6ae350f6f04931220df19",
+                    "end_index": 280,
+                    "file_id": "cfile_68d5efbdbf308191ac9c1ca19aaa5792",
+                    "filename": "sine_wave_chart.png",
+                    "start_index": 243
+                  }
+                ],
+                "logprobs": [],
+                "text": "I've generated a simple sine wave chart and created a debug log file. You can download both the log file and the chart using the links below:\n\n- [Download the debug log](sandbox:/mnt/data/matplotlib_debug.log)\n- [Download the sine wave chart](sandbox:/mnt/data/sine_wave_chart.png)"
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "reasoning": {
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [
+          {
+            "type": "code_interpreter",
+            "container": {
+              "type": "auto"
+            }
+          }
+        ],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 673,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 347,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 1020
+        },
+        "user": null,
+        "metadata": {}
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

@@ -1,0 +1,165 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/containers?limit=10&order=desc",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "98039d036b5508ad-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "3819",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 21:56:23 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "1657",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "1660",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "cntr_68c9dceb9f8081908a49ffc9f5e59cc1043975e132963996",
+            "object": "container",
+            "created_at": 1758059755,
+            "status": "running",
+            "expires_after": {
+              "anchor": "last_active_at",
+              "minutes": 20
+            },
+            "last_active_at": 1758059782,
+            "name": "test-container-3de6022508074c2798f2d8975109cdfa"
+          },
+          {
+            "id": "cntr_68c9dc8bf6b08190a781637c68b7507500af2fb63ac384dd",
+            "object": "container",
+            "created_at": 1758059659,
+            "status": "running",
+            "expires_after": {
+              "anchor": "last_active_at",
+              "minutes": 20
+            },
+            "last_active_at": 1758059782,
+            "name": "test-container-9cf38930509b471fbb7ffe3d99353ed3"
+          },
+          {
+            "id": "cntr_68c9d960b640819087ed1ade9514ed850495cbde5efe1b76",
+            "object": "container",
+            "created_at": 1758058848,
+            "status": "running",
+            "expires_after": {
+              "anchor": "last_active_at",
+              "minutes": 20
+            },
+            "last_active_at": 1758059782,
+            "name": "test-container-96ba173e04ae3bcd99869e56f0adbf3a"
+          },
+          {
+            "id": "cntr_68c9d9074c588190a2a2df23928516750c4ecaf999be4573",
+            "object": "container",
+            "created_at": 1758058759,
+            "status": "running",
+            "expires_after": {
+              "anchor": "last_active_at",
+              "minutes": 20
+            },
+            "last_active_at": 1758059782,
+            "name": "test-container-96ba173e04ae3bcd99869e56f0adbf3a"
+          },
+          {
+            "id": "cntr_68c9d871d0b881908dbdcb95f6f8fbe6024ebc23fb6c9ec8",
+            "object": "container",
+            "created_at": 1758058609,
+            "status": "running",
+            "expires_after": {
+              "anchor": "last_active_at",
+              "minutes": 20
+            },
+            "last_active_at": 1758059782,
+            "name": "test-container-96ba173e04ae3bcd99869e56f0adbf3a"
+          },
+          {
+            "id": "cntr_68c9d72a12cc81908d00352d19bc78e20769d55eaeaaa242",
+            "object": "container",
+            "created_at": 1758058282,
+            "status": "expired",
+            "expires_after": {
+              "anchor": "last_active_at",
+              "minutes": 20
+            },
+            "last_active_at": 1758059782,
+            "name": "test-container-96ba173e04ae3bcd99869e56f0adbf3a"
+          },
+          {
+            "id": "cntr_68c9d6fc731881909962f3ebd38cccba0a680e6075fc6d64",
+            "object": "container",
+            "created_at": 1758058236,
+            "status": "expired",
+            "expires_after": {
+              "anchor": "last_active_at",
+              "minutes": 20
+            },
+            "last_active_at": 1758059782,
+            "name": "test-container-96ba173e04ae3bcd99869e56f0adbf3a"
+          },
+          {
+            "id": "cntr_68c9d1fd59488190ba832229cad3a2c2071e14335129bb78",
+            "object": "container",
+            "created_at": 1758056957,
+            "status": "expired",
+            "expires_after": {
+              "anchor": "last_active_at",
+              "minutes": 20
+            },
+            "last_active_at": 1758059782,
+            "name": "test-container-a4b0ef957aa92adb4b1fb478e14870bf"
+          },
+          {
+            "id": "cntr_68c9d0e083008190af9b0cea8ab00e09031bdcdcd057baa9",
+            "object": "container",
+            "created_at": 1758056672,
+            "status": "expired",
+            "expires_after": {
+              "anchor": "last_active_at",
+              "minutes": 20
+            },
+            "last_active_at": 1758059782,
+            "name": "test-container-31904b8b3b33381ccc8991aa72b14c57"
+          },
+          {
+            "id": "cntr_68c9d00a26b481908ad9248ec319f1f40c5540cca399c421",
+            "object": "container",
+            "created_at": 1758056458,
+            "status": "expired",
+            "expires_after": {
+              "anchor": "last_active_at",
+              "minutes": 20
+            },
+            "last_active_at": 1758059782,
+            "name": "test-container-99a662a3b5ff2c008a6f777c6df1139d"
+          }
+        ],
+        "first_id": "cntr_68c9dceb9f8081908a49ffc9f5e59cc1043975e132963996",
+        "has_more": true,
+        "last_id": "cntr_68c9d00a26b481908ad9248ec319f1f40c5540cca399c421"
+      }
+    }
+  ],
+  "Variables": {
+    "TEST_CONTAINER_ID": "cntr_68c9dceb9f8081908a49ffc9f5e59cc1043975e132963996",
+    "OPEN-API-KEY": "api-key"
+  }
+}

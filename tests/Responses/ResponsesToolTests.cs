@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using OpenAI.Containers;
 using OpenAI.Files;
 using OpenAI.Responses;
@@ -16,15 +17,13 @@ using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Responses;
 
-[TestFixture(true)]
-[TestFixture(false)]
-[Parallelizable(ParallelScope.Fixtures)]
 [Category("Responses")]
 [Category("MCP")]
-public partial class ResponsesToolTests : SyncAsyncTestBase
+public partial class ResponsesToolTests : OpenAIRecordedTestBase
 {
     public ResponsesToolTests(bool isAsync) : base(isAsync)
     {
+        TestTimeoutInSeconds = 30;
     }
 
     [Test]
@@ -349,7 +348,7 @@ public partial class ResponsesToolTests : SyncAsyncTestBase
     [Test]
     public async Task FileSearch()
     {
-        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
         OpenAIFile testFile = await fileClient.UploadFileAsync(
             BinaryData.FromString("""
                     Travis's favorite food is pizza.
@@ -358,7 +357,7 @@ public partial class ResponsesToolTests : SyncAsyncTestBase
             FileUploadPurpose.UserData);
         Validate(testFile);
 
-        VectorStoreClient vscClient = GetTestClient<VectorStoreClient>(TestScenario.VectorStores);
+        VectorStoreClient vscClient = GetProxiedOpenAIClient<VectorStoreClient>(TestScenario.VectorStores);
         VectorStore vectorStore = await vscClient.CreateVectorStoreAsync(
             new VectorStoreCreationOptions()
             {
@@ -464,7 +463,7 @@ public partial class ResponsesToolTests : SyncAsyncTestBase
     [Test]
     public async Task CodeInterpreterToolWithContainerIdFromContainerApi()
     {
-        ContainerClient containerClient = GetTestClient<ContainerClient>(TestScenario.Containers);
+        ContainerClient containerClient = GetProxiedOpenAIClient<ContainerClient>(TestScenario.Containers);
         OpenAIResponseClient client = GetTestClient();
 
         // Create a container first using the Containers API
@@ -520,7 +519,7 @@ public partial class ResponsesToolTests : SyncAsyncTestBase
     [Test]
     public async Task CodeInterpreterToolWithUploadedFileIds()
     {
-        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
         OpenAIResponseClient client = GetTestClient();
 
         // Create some test files to upload
@@ -618,7 +617,7 @@ public partial class ResponsesToolTests : SyncAsyncTestBase
     [Test]
     public async Task CodeInterpreterToolStreamingWithFiles()
     {
-        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
         OpenAIResponseClient client = GetTestClient();
 
         // Create test CSV data
@@ -696,9 +695,9 @@ public partial class ResponsesToolTests : SyncAsyncTestBase
         }
     }
 
-    private static OpenAIResponseClient GetTestClient(string overrideModel = null) => GetTestClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel);
+    private OpenAIResponseClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel);
 
-        private static void ValidateCodeInterpreterEvent(ref int inProgressCount, ref int interpretingCount, ref int codeDeltaCount, ref int codeDoneCount, ref int completedCount, ref bool gotFinishedCodeInterpreterItem, StringBuilder codeBuilder, StreamingResponseUpdate update)
+    private static void ValidateCodeInterpreterEvent(ref int inProgressCount, ref int interpretingCount, ref int codeDeltaCount, ref int codeDoneCount, ref int completedCount, ref bool gotFinishedCodeInterpreterItem, StringBuilder codeBuilder, StreamingResponseUpdate update)
     {
         if (update is StreamingResponseCodeInterpreterCallInProgressUpdate codeInterpreterInProgressUpdate)
         {
