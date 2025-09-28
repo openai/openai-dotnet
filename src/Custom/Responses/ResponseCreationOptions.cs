@@ -33,6 +33,19 @@ public partial class ResponseCreationOptions
     // CUSTOM: Made internal. This value comes from a parameter on the client method.
     internal bool? Stream { get; set; }
 
+    // CUSTOM: Added prompt parameter support for stored prompts.
+    [CodeGenMember("Prompt")]
+    public ResponsePrompt Prompt { get; set; }
+
+    // CUSTOM: Added public default constructor now that there are no required properties.
+    public ResponseCreationOptions()
+    {
+        Input =  new ChangeTrackingList<ResponseItem>();
+        Metadata = new ChangeTrackingDictionary<string, string>();
+        Tools = new ChangeTrackingList<ResponseTool>();
+        Include = new ChangeTrackingList<InternalCreateResponsesRequestIncludable>();
+    }
+
     // CUSTOM: Renamed.
     [CodeGenMember("Background")]
     public bool? BackgroundModeEnabled { get; set; }
