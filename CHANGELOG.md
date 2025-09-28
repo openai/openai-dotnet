@@ -1,5 +1,15 @@
 # Release History
 
+## 2.6.0-beta.1 (Unreleased)
+
+### Features Added
+
+- OpenAI.Chat:
+  - Added the `Minimal` property to `ChatReasoningEffortLevel`
+
+- OpenAI.Responses:
+  - Added the `Minimal` property to `ResponseReasoningEffortLevel`
+
 ## 2.5.0 (2025-09-23)
 
 ### Features Added
