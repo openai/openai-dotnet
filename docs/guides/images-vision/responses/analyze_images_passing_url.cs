@@ -11,10 +11,12 @@ using OpenAI.Responses;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 OpenAIResponseClient client = new(model: "gpt-5", apiKey: key);
 
+Uri imageUrl = new("https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg");
+
 OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
     ResponseItem.CreateUserMessageItem([
         ResponseContentPart.CreateInputTextPart("What is in this image?"),
-        ResponseContentPart.CreateInputImagePart(new Uri("https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg"))
+        ResponseContentPart.CreateInputImagePart(imageUrl)
     ])
 ]);
 
