@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class FunctionTool : IJsonModel<FunctionTool>
+    public partial class FunctionTool : ResponseTool, IJsonModel<FunctionTool>
     {
         internal FunctionTool() : this(InternalToolType.Function, null, null, null, null, default)
         {

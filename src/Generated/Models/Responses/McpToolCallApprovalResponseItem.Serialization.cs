@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class McpToolCallApprovalResponseItem : IJsonModel<McpToolCallApprovalResponseItem>
+    public partial class McpToolCallApprovalResponseItem : ResponseItem, IJsonModel<McpToolCallApprovalResponseItem>
     {
         internal McpToolCallApprovalResponseItem() : this(InternalItemType.McpApprovalResponse, null, null, null, default, null)
         {

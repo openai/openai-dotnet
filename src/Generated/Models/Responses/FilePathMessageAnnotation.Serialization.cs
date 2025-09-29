@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class FilePathMessageAnnotation : IJsonModel<FilePathMessageAnnotation>
+    public partial class FilePathMessageAnnotation : ResponseMessageAnnotation, IJsonModel<FilePathMessageAnnotation>
     {
         internal FilePathMessageAnnotation() : this(ResponseMessageAnnotationKind.FilePath, null, null, default)
         {

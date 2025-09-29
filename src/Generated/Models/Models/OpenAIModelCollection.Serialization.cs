@@ -5,13 +5,14 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Models
 {
-    public partial class OpenAIModelCollection : IJsonModel<OpenAIModelCollection>
+    public partial class OpenAIModelCollection : ReadOnlyCollection<OpenAIModel>, IJsonModel<OpenAIModelCollection>
     {
         [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalItemContentRefusal : IJsonModel<InternalItemContentRefusal>
+    internal partial class InternalItemContentRefusal : ResponseContentPart, IJsonModel<InternalItemContentRefusal>
     {
         internal InternalItemContentRefusal() : this(InternalItemContentType.Refusal, null, null)
         {

@@ -24,8 +24,10 @@ public partial class McpToolCallApprovalPolicy
     }
 
     // CUSTOM: Removed setter.
+    [CodeGenMember("GlobalPolicy")]
     public GlobalMcpToolCallApprovalPolicy? GlobalPolicy { get; }
 
     // CUSTOM: Removed setter.
+    [CodeGenMember("CustomPolicy")]
     public CustomMcpToolCallApprovalPolicy CustomPolicy { get; }
 }

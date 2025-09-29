@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    internal partial class InternalChatCompletionRequestMessageContentPartFile : IJsonModel<InternalChatCompletionRequestMessageContentPartFile>
+    internal partial class InternalChatCompletionRequestMessageContentPartFile : ChatMessageContentPart, IJsonModel<InternalChatCompletionRequestMessageContentPartFile>
     {
         internal InternalChatCompletionRequestMessageContentPartFile()
         {

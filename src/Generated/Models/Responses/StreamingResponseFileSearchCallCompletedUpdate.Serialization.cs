@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class StreamingResponseFileSearchCallCompletedUpdate : IJsonModel<StreamingResponseFileSearchCallCompletedUpdate>
+    public partial class StreamingResponseFileSearchCallCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseFileSearchCallCompletedUpdate>
     {
         internal StreamingResponseFileSearchCallCompletedUpdate() : this(InternalResponseStreamEventType.ResponseFileSearchCallCompleted, default, null, default, null)
         {

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class UnknownRealtimeTool : IJsonModel<ConversationTool>
+    internal partial class UnknownRealtimeTool : ConversationTool, IJsonModel<ConversationTool>
     {
         internal UnknownRealtimeTool() : this(default, null)
         {

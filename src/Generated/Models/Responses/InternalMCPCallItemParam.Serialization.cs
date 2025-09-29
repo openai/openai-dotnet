@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalMCPCallItemParam : IJsonModel<InternalMCPCallItemParam>
+    internal partial class InternalMCPCallItemParam : InternalItemParam, IJsonModel<InternalMCPCallItemParam>
     {
         internal InternalMCPCallItemParam() : this(InternalItemType.McpCall, null, null, null, null, null, null)
         {
