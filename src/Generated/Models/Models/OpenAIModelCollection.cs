@@ -4,10 +4,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace OpenAI.Models
 {
-    public partial class OpenAIModelCollection
+    public partial class OpenAIModelCollection : ReadOnlyCollection<OpenAIModel>
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

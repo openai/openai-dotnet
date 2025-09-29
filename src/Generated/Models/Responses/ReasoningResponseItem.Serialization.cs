@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class ReasoningResponseItem : IJsonModel<ReasoningResponseItem>
+    public partial class ReasoningResponseItem : ResponseItem, IJsonModel<ReasoningResponseItem>
     {
         internal ReasoningResponseItem() : this(InternalItemType.Reasoning, null, null, default, null, null)
         {

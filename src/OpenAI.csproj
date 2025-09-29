@@ -8,7 +8,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>Copyright (c) 2024 OpenAI (https://openai.com)</Copyright>
 
-    <VersionPrefix>2.4.0</VersionPrefix>
+    <VersionPrefix>2.5.0</VersionPrefix>
     <VersionSuffix></VersionSuffix>
 
     <TargetFrameworks>net8.0;netstandard2.0</TargetFrameworks>
@@ -62,13 +62,6 @@
     <InternalsVisibleTo Include="Azure.AI.OpenAI" Condition="'$(Configuration)' == 'Unsigned'" />
   </ItemGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <!-- Allow use of unsafe code, for System.Net.ServerSentEvents polyfill on netstandard2.0
-         TODO https://github.com/openai/openai-dotnet/issues/41: Remove once polyfill for
-         System.Net.ServerSentEvents is removed in favor of referencing the package -->
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
     <!-- Normalize stored file paths in symbols when in a CI build. -->
     <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
@@ -81,7 +74,8 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-    <PackageReference Include="System.ClientModel" Version="1.6.1" />
+    <PackageReference Include="System.ClientModel" Version="1.7.0" />
+    <PackageReference Include="System.Net.ServerSentEvents" Version="9.0.9" />
   </ItemGroup>
 
   <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">

@@ -618,6 +618,12 @@ namespace OpenAILibraryPlugin.Visitors
 
         protected override PropertyProvider? VisitProperty(PropertyProvider property)
         {
+            // Skip properties that are already marked as experimental
+            if (property.Attributes.Any(attr => attr.Type.Equals(typeof(ExperimentalAttribute))))
+            {
+                return base.VisitProperty(property);
+            }
+
             // Skip properties that are not public or are in non-stable classes
             if ((!property.Modifiers.HasFlag(MethodSignatureModifiers.Public) &&
                     !property.Modifiers.HasFlag(MethodSignatureModifiers.Protected)) ||

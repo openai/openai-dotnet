@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalComputerActionScroll : IJsonModel<InternalComputerActionScroll>
+    internal partial class InternalComputerActionScroll : ComputerCallAction, IJsonModel<InternalComputerActionScroll>
     {
         internal InternalComputerActionScroll() : this(ComputerCallActionKind.Scroll, null, default, default, default, default)
         {

@@ -6,13 +6,14 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Images
 {
-    public partial class GeneratedImageCollection : IJsonModel<GeneratedImageCollection>
+    public partial class GeneratedImageCollection : ReadOnlyCollection<GeneratedImage>, IJsonModel<GeneratedImageCollection>
     {
         void IJsonModel<GeneratedImageCollection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

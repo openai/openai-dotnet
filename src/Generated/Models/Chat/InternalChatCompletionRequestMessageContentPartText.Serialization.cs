@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    internal partial class InternalChatCompletionRequestMessageContentPartText : IJsonModel<InternalChatCompletionRequestMessageContentPartText>
+    internal partial class InternalChatCompletionRequestMessageContentPartText : ChatMessageContentPart, IJsonModel<InternalChatCompletionRequestMessageContentPartText>
     {
         void IJsonModel<InternalChatCompletionRequestMessageContentPartText>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

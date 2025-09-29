@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalResponsesAssistantMessageItemParam : IJsonModel<InternalResponsesAssistantMessageItemParam>
+    internal partial class InternalResponsesAssistantMessageItemParam : InternalResponsesMessageItemParam, IJsonModel<InternalResponsesAssistantMessageItemParam>
     {
         internal InternalResponsesAssistantMessageItemParam() : this(default, null, InternalResponsesMessageRole.Assistant, null)
         {

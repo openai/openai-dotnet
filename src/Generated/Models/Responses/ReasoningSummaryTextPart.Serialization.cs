@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class ReasoningSummaryTextPart : IJsonModel<ReasoningSummaryTextPart>
+    public partial class ReasoningSummaryTextPart : ReasoningSummaryPart, IJsonModel<ReasoningSummaryTextPart>
     {
         internal ReasoningSummaryTextPart() : this(InternalReasoningItemSummaryPartType.SummaryText, null, null)
         {

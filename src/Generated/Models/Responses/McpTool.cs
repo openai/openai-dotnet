@@ -12,21 +12,14 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class McpTool : ResponseTool
     {
-        public McpTool(string serverLabel, Uri serverUri) : base(InternalToolType.Mcp)
-        {
-            Argument.AssertNotNull(serverLabel, nameof(serverLabel));
-            Argument.AssertNotNull(serverUri, nameof(serverUri));
-
-            ServerLabel = serverLabel;
-            ServerUri = serverUri;
-            Headers = new ChangeTrackingDictionary<string, string>();
-        }
-
-        internal McpTool(InternalToolType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string serverLabel, Uri serverUri, IDictionary<string, string> headers, McpToolFilter allowedTools, McpToolCallApprovalPolicy toolCallApprovalPolicy) : base(kind, additionalBinaryDataProperties)
+        internal McpTool(InternalToolType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string serverLabel, Uri serverUri, McpToolConnectorId? connectorId, string authorizationToken, string serverDescription, IDictionary<string, string> headers, McpToolFilter allowedTools, McpToolCallApprovalPolicy toolCallApprovalPolicy) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             ServerLabel = serverLabel;
             ServerUri = serverUri;
+            ConnectorId = connectorId;
+            AuthorizationToken = authorizationToken;
+            ServerDescription = serverDescription;
             Headers = headers ?? new ChangeTrackingDictionary<string, string>();
             AllowedTools = allowedTools;
             ToolCallApprovalPolicy = toolCallApprovalPolicy;
@@ -36,6 +29,14 @@ namespace OpenAI.Responses
 
         public Uri ServerUri { get; set; }
 
+        public McpToolConnectorId? ConnectorId { get; set; }
+
+        public string AuthorizationToken { get; set; }
+
+        public string ServerDescription { get; set; }
+
         public IDictionary<string, string> Headers { get; set; }
+
+        public McpToolFilter AllowedTools { get; set; }
     }
 }

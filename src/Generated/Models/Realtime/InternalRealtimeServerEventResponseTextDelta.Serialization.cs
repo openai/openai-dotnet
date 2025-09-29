@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeServerEventResponseTextDelta : IJsonModel<InternalRealtimeServerEventResponseTextDelta>
+    internal partial class InternalRealtimeServerEventResponseTextDelta : RealtimeUpdate, IJsonModel<InternalRealtimeServerEventResponseTextDelta>
     {
         internal InternalRealtimeServerEventResponseTextDelta() : this(RealtimeUpdateKind.ItemStreamingPartTextDelta, null, null, null, null, default, default, null)
         {

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalUnknownEvalItemContent : IJsonModel<InternalEvalItemContent>
+    internal partial class InternalUnknownEvalItemContent : InternalEvalItemContent, IJsonModel<InternalEvalItemContent>
     {
         internal InternalUnknownEvalItemContent() : this(default, null)
         {
