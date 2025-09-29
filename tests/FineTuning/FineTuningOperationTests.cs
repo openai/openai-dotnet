@@ -19,9 +19,9 @@ internal class FineTuningOperationTests
     public void TestInProgress()
     {
         var success = FineTuningStatus.Queued;
-        Assert.IsTrue(success.InProgress);
+        Assert.That(success.InProgress);
 
         var fail = FineTuningStatus.Failed;
-        Assert.IsFalse(fail.InProgress);
+        Assert.That(fail.InProgress, Is.False);
     }
 }
