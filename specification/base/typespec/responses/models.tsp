@@ -1858,11 +1858,9 @@ model CodeInterpreterTool extends Tool {
  * Configuration for a code interpreter container. Optionally specify the IDs
  * of the files to run the code on.
  */
-model CodeInterpreterToolAuto {
-  @doc("""
-    Always `auto`.
-    """)
-  type: "auto";
+model CodeInterpreterToolAuto extends CodeInterpreterContainerConfiguration {
+  @doc("Always `auto`.")
+  type: CodeInterpreterContainerConfigurationType.auto;
 
   /** An optional list of uploaded files to make available to your code. */
   file_ids?: string[];
@@ -1918,6 +1916,13 @@ model ImageGenTool extends Tool {
   background?: "transparent" | "opaque" | "auto" = "auto";
 
   @doc("""
+    Control how much effort the model will exert to match the style and features,
+    especially facial features, of input images. This parameter is only supported
+    for `gpt-image-1`. Supports `high` and `low`. Defaults to `low`.
+    """)
+  input_fidelity?: "low" | "high" = "low";
+
+  @doc("""
     Optional mask for inpainting. Contains `image_url`
     (string, optional) and `file_id` (string, optional).
     """)
@@ -1939,7 +1944,8 @@ model ImageGenTool extends Tool {
 /** An image generation request made by the model. */
 alias ImageGenToolCallItemBase = {
   /** The generated image encoded in base64. */
-  result: string | null;
+  @encode("base64", string)
+  result: bytes | null;
 };
 
 @@doc(ImageGenToolCallItemResource,
@@ -2287,7 +2293,8 @@ model ResponseImageGenCallPartialImageEvent extends ResponseStreamEvent {
   partial_image_index: int32;
 
   /** Base64-encoded partial image data, suitable for rendering as an image. */
-  partial_image_b64: string;
+  @encode("base64", string)
+  partial_image_b64: bytes;
 }
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
@@ -2508,25 +2515,20 @@ model ResponseReasoningSummaryDoneEvent extends ResponseStreamEvent {
   text: string;
 }
 
-/** The output of a code interpreter tool call that is a file. */
-model CodeInterpreterFileOutput {
-  @doc("""
-    The type of the code interpreter file output. Always `files`.
-    """)
-  type: "files";
+model CodeInterpreterToolLogsOutput extends CodeInterpreterToolOutput {
+  @doc("The type of the output. Always 'logs'.")
+  type: CodeInterpreterToolOutputType.logs;
 
-  files: CodeInterpreterFileOutputFile[];
+  @doc("The logs output from the code interpreter.")
+  logs: string;
 }
 
-/** The output of a code interpreter tool call that is text. */
-model CodeInterpreterTextOutput {
-  @doc("""
-    The type of the code interpreter text output. Always `logs`.
-    """)
-  type: "logs";
+model CodeInterpreterToolImageOutput extends CodeInterpreterToolOutput {
+  @doc("The type of the output. Always 'image'.")
+  type: CodeInterpreterToolOutputType.image;
 
-  /** The logs of the code interpreter tool call. */
-  logs: string;
+  @doc("The URL of the image output from the code interpreter.")
+  url: url;
 }
 
 // Tool customization: Rename to supply base for split input/output models
@@ -2538,8 +2540,8 @@ alias CodeInterpreterToolCallItemBase = {
   /** The code to run. */
   code: string;
 
-  /** The results of the code interpreter tool call. */
-  results: CodeInterpreterToolOutput[];
+  /** The outputs of the code interpreter tool call. */
+  outputs?: CodeInterpreterToolOutput[];
 };
 
 @@doc(CodeInterpreterToolCallItemResource,
@@ -2555,10 +2557,6 @@ alias CodeInterpreterToolCallItemBase = {
     """
 );
 /** The output of a code interpreter tool. */
-union CodeInterpreterToolOutput {
-  CodeInterpreterTextOutput,
-  CodeInterpreterFileOutput,
-}
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
 /** Emitted when there is a partial audio response. */
@@ -2613,6 +2611,9 @@ model ResponseCodeInterpreterCallCodeDeltaEvent extends ResponseStreamEvent {
   /** The index of the output item that the code interpreter call is in progress. */
   output_index: int32;
 
+  /** The unique identifier of the code interpreter tool call item. */
+  item_id: string;
+
   /** The partial code snippet added by the code interpreter. */
   delta: string;
 }
@@ -2627,6 +2628,9 @@ model ResponseCodeInterpreterCallCodeDoneEvent extends ResponseStreamEvent {
 
   /** The index of the output item that the code interpreter call is in progress. */
   output_index: int32;
+
+  /** The unique identifier of the code interpreter tool call item. */
+  item_id: string;
 
   /** The final code snippet output by the code interpreter. */
   code: string;
@@ -2643,8 +2647,8 @@ model ResponseCodeInterpreterCallCompletedEvent extends ResponseStreamEvent {
   /** The index of the output item that the code interpreter call is in progress. */
   output_index: int32;
 
-  // Tool customization: Use split resource type
-  code_interpreter_call: CodeInterpreterToolCallItemResource;
+  /** The unique identifier of the code interpreter tool call item. */
+  item_id: string;
 }
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
@@ -2658,8 +2662,8 @@ model ResponseCodeInterpreterCallInProgressEvent extends ResponseStreamEvent {
   /** The index of the output item that the code interpreter call is in progress. */
   output_index: int32;
 
-  // Tool customization: Use split resource type
-  code_interpreter_call: CodeInterpreterToolCallItemResource;
+  /** The unique identifier of the code interpreter tool call item. */
+  item_id: string;
 }
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
@@ -2673,8 +2677,8 @@ model ResponseCodeInterpreterCallInterpretingEvent extends ResponseStreamEvent {
   /** The index of the output item that the code interpreter call is in progress. */
   output_index: int32;
 
-  // Tool customization: Use split resource type
-  code_interpreter_call: CodeInterpreterToolCallItemResource;
+  /** The unique identifier of the code interpreter tool call item. */
+  item_id: string;
 }
 
 /** The top log probability of a token. */

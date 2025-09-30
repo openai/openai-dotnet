@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalImageGenToolCallItemParam : IJsonModel<InternalImageGenToolCallItemParam>
+    internal partial class InternalImageGenToolCallItemParam : InternalItemParam, IJsonModel<InternalImageGenToolCallItemParam>
     {
         internal InternalImageGenToolCallItemParam() : this(InternalItemType.ImageGenerationCall, null, null)
         {
@@ -36,7 +36,7 @@ namespace OpenAI.Responses
                 if (Optional.IsDefined(Result))
                 {
                     writer.WritePropertyName("result"u8);
-                    writer.WriteStringValue(Result);
+                    writer.WriteBase64StringValue(Result.ToArray(), "D");
                 }
                 else
                 {
@@ -66,7 +66,7 @@ namespace OpenAI.Responses
             }
             InternalItemType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            string result = default;
+            BinaryData result = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -81,7 +81,7 @@ namespace OpenAI.Responses
                         result = null;
                         continue;
                     }
-                    result = prop.Value.GetString();
+                    result = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

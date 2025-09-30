@@ -13,9 +13,8 @@ namespace OpenAI.Tests.Realtime;
 
 #pragma warning disable OPENAI002
 
-[Parallelizable(ParallelScope.All)]
 [Category("Conversation")]
-public class RealtimeTestFixtureBase : SyncAsyncTestBase
+public class RealtimeTestFixtureBase : OpenAIRecordedTestBase
 {
     public CancellationTokenSource CancellationTokenSource { get; }
     public CancellationToken CancellationToken => CancellationTokenSource?.Token ?? default;
@@ -32,9 +31,9 @@ public class RealtimeTestFixtureBase : SyncAsyncTestBase
 
     public static string GetTestModel() => GetModelForScenario(TestScenario.Realtime);
 
-    public static RealtimeClient GetTestClient(bool excludeDumpPolicy = false)
+    public RealtimeClient GetTestClient(bool excludeDumpPolicy = false)
     {
-        RealtimeClient client = GetTestClient<RealtimeClient>(
+        RealtimeClient client = GetProxiedOpenAIClient<RealtimeClient>(
             scenario: TestScenario.Realtime,
             excludeDumpPolicy: excludeDumpPolicy);
 

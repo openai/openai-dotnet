@@ -89,9 +89,9 @@ namespace OpenAI.Responses
                     case "web_search_preview":
                         return WebSearchTool.DeserializeWebSearchTool(element, options);
                     case "code_interpreter":
-                        return InternalCodeInterpreterTool.DeserializeInternalCodeInterpreterTool(element, options);
+                        return CodeInterpreterTool.DeserializeCodeInterpreterTool(element, options);
                     case "image_generation":
-                        return InternalImageGenTool.DeserializeInternalImageGenTool(element, options);
+                        return ImageGenerationTool.DeserializeImageGenerationTool(element, options);
                     case "local_shell":
                         return InternalLocalShellTool.DeserializeInternalLocalShellTool(element, options);
                     case "mcp":

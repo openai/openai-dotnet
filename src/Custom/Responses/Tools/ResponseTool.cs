@@ -1,4 +1,3 @@
-using OpenAI.Assistants;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -26,14 +25,14 @@ public partial class ResponseTool
 
     // CUSTOM: Added factory method as a convenience.
     [Experimental("OPENAICUA001")]
-    public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth,int displayHeight)
+    public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight)
     {
         return new ComputerTool(
             kind: InternalToolType.ComputerUsePreview,
             additionalBinaryDataProperties: null,
             environment: environment,
             displayWidth: displayWidth,
-            displayHeight:displayHeight);
+            displayHeight: displayHeight);
     }
 
     // CUSTOM: Added factory method as a convenience.
@@ -97,16 +96,39 @@ public partial class ResponseTool
             toolCallApprovalPolicy: toolCallApprovalPolicy);
     }
 
-	// <GP>
-	public static ResponseTool CreateCodeInterpreterTool(string type = "auto", IDictionary<string, BinaryData> additionalBinaryDataProperties = null)
+    /// <summary>
+    /// Creates a new instance of the <see cref="CodeInterpreterTool"/> class.
+    /// </summary>
+    /// <param name="container">The container for the code interpreter.</param>
+    /// <returns>A new instance of the <see cref="CodeInterpreterTool"/> class.</returns>
+    public static CodeInterpreterTool CreateCodeInterpreterTool(CodeInterpreterToolContainer container)
+    {
+        Argument.AssertNotNull(container, nameof(container));
 
-	{
-		return new InternalCodeInterpreterTool(
-			kind: InternalToolType.CodeInterpreter,
-			additionalBinaryDataProperties: additionalBinaryDataProperties,
-			container: new CodeInterpreterToolDefinition(kind: type, additionalBinaryDataProperties: null)
-			);
-	}
-	// </GP>
+        return new CodeInterpreterTool(
+            kind: InternalToolType.CodeInterpreter,
+            additionalBinaryDataProperties: null,
+            container: container);
+    }
+
+    // CUSTOM: Added factory method for a convenience.
+    /// <summary>
+    /// Creates a new instance of the <see cref="ImageGenerationTool"/> class.
+    /// </summary>
+    public static ImageGenerationTool CreateImageGenerationTool(string model, ImageGenerationToolQuality? quality = null, ImageGenerationToolSize? size = null, ImageGenerationToolOutputFileFormat? outputFileFormat = null, int? outputCompressionFactor = null, ImageGenerationToolModerationLevel? moderationLevel = null, ImageGenerationToolBackground? background = null, ImageGenerationToolInputFidelityLevel? inputFidelityLevel = null, ImageGenerationToolInputImageMask inputImageMask = null, int? partialImageCount = null)
+    {
+        return new ImageGenerationTool(
+            kind: InternalToolType.ImageGeneration,
+            additionalBinaryDataProperties: null,
+            model: model,
+            quality: quality,
+            size: size,
+            outputFileFormat: outputFileFormat,
+            outputCompressionFactor: outputCompressionFactor,
+            moderationLevel: moderationLevel,
+            background: background,
+            inputFidelityLevel: inputFidelityLevel,
+            inputImageMask: inputImageMask,
+            partialImageCount: partialImageCount);
+    }
 }
-

@@ -11,7 +11,7 @@ using OpenAI.Evals;
 
 namespace OpenAI.Graders
 {
-    public partial class GraderScoreModel : IJsonModel<GraderScoreModel>
+    public partial class GraderScoreModel : Grader, IJsonModel<GraderScoreModel>
     {
         internal GraderScoreModel() : this(GraderType.ScoreModel, null, null, null, null, null, null)
         {

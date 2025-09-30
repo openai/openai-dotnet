@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeClientEventInputAudioBufferAppend : IJsonModel<InternalRealtimeClientEventInputAudioBufferAppend>
+    internal partial class InternalRealtimeClientEventInputAudioBufferAppend : InternalRealtimeClientEvent, IJsonModel<InternalRealtimeClientEventInputAudioBufferAppend>
     {
         internal InternalRealtimeClientEventInputAudioBufferAppend() : this(InternalRealtimeClientEventType.InputAudioBufferAppend, null, null, null)
         {

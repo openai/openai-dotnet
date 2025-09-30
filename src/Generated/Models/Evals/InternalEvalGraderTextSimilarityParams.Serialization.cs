@@ -11,7 +11,7 @@ using OpenAI.Graders;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalGraderTextSimilarityParams : IJsonModel<InternalEvalGraderTextSimilarityParams>
+    internal partial class InternalEvalGraderTextSimilarityParams : InternalEvalGraderParams, IJsonModel<InternalEvalGraderTextSimilarityParams>
     {
         internal InternalEvalGraderTextSimilarityParams() : this(GraderType.TextSimilarity, null, null, null, null, default, default)
         {

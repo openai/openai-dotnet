@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    public partial class InputAudioTranscriptionDeltaUpdate : IJsonModel<InputAudioTranscriptionDeltaUpdate>
+    public partial class InputAudioTranscriptionDeltaUpdate : RealtimeUpdate, IJsonModel<InputAudioTranscriptionDeltaUpdate>
     {
         internal InputAudioTranscriptionDeltaUpdate() : this(RealtimeUpdateKind.InputTranscriptionDelta, null, null, null, default, null, null)
         {

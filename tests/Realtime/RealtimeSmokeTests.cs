@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using OpenAI.Realtime;
 using System;
 using System.ClientModel.Primitives;
@@ -9,9 +10,8 @@ namespace OpenAI.Tests.Realtime;
 
 #pragma warning disable OPENAI002
 
-[TestFixture(false)]
 [Category("Smoke")]
-public class RealtimeSmokeTests : RealtimeTestFixtureBase
+public class RealtimeSmokeTests : ClientTestBase
 {
     public RealtimeSmokeTests(bool isAsync) : base(isAsync)
     { }

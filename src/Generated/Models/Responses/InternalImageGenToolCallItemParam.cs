@@ -9,16 +9,16 @@ namespace OpenAI.Responses
 {
     internal partial class InternalImageGenToolCallItemParam : InternalItemParam
     {
-        public InternalImageGenToolCallItemParam(string result) : base(InternalItemType.ImageGenerationCall)
+        public InternalImageGenToolCallItemParam(BinaryData result) : base(InternalItemType.ImageGenerationCall)
         {
             Result = result;
         }
 
-        internal InternalImageGenToolCallItemParam(InternalItemType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string result) : base(kind, additionalBinaryDataProperties)
+        internal InternalImageGenToolCallItemParam(InternalItemType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, BinaryData result) : base(kind, additionalBinaryDataProperties)
         {
             Result = result;
         }
 
-        public string Result { get; }
+        public BinaryData Result { get; }
     }
 }

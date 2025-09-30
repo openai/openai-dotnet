@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalRunStepDeltaStepDetailsToolCallsFileSearchObject : IJsonModel<InternalRunStepDeltaStepDetailsToolCallsFileSearchObject>
+    internal partial class InternalRunStepDeltaStepDetailsToolCallsFileSearchObject : InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject, IJsonModel<InternalRunStepDeltaStepDetailsToolCallsFileSearchObject>
     {
         internal InternalRunStepDeltaStepDetailsToolCallsFileSearchObject() : this(RunStepToolCallKind.FileSearch, null, default, null, null)
         {

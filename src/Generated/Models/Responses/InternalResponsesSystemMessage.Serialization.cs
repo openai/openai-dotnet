@@ -10,9 +10,9 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-	public partial class InternalResponsesSystemMessage : IJsonModel<InternalResponsesSystemMessage>
+    internal partial class InternalResponsesSystemMessage : MessageResponseItem, IJsonModel<InternalResponsesSystemMessage>
     {
-		public InternalResponsesSystemMessage() : this(default, null, null, default, default, null)
+        internal InternalResponsesSystemMessage() : this(default, null, null, default, default, null)
         {
         }
 

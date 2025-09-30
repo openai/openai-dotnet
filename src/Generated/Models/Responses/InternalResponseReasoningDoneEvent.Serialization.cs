@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class InternalResponseReasoningDoneEvent : IJsonModel<InternalResponseReasoningDoneEvent>
+    internal partial class InternalResponseReasoningDoneEvent : StreamingResponseUpdate, IJsonModel<InternalResponseReasoningDoneEvent>
     {
         internal InternalResponseReasoningDoneEvent() : this(InternalResponseStreamEventType.ResponseReasoningDone, default, null, null, default, default, null)
         {

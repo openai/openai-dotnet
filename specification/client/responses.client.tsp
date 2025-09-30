@@ -11,6 +11,9 @@ using Azure.ClientGenerator.Core;
 @@usage(ItemResource, Usage.input | Usage.output);
 @@visibility(ItemResource.id, Lifecycle.Read);
 
+@@visibility(CodeInterpreterToolCallItemResource.status, Lifecycle.Read);
+@@clientName(CodeInterpreterToolImageOutput.url, "ImageUri");
+
 @@visibility(ComputerToolCallItemResource.status, Lifecycle.Read);
 
 @@visibility(ComputerToolCallOutputItemResource.status, Lifecycle.Read);
@@ -47,6 +50,9 @@ using Azure.ClientGenerator.Core;
 @@alternateType(MCPListToolsItemResource.error, unknown | null);
 @@clientName(MCPListToolsItemResource.tools, "ToolDefinitions");
 
+@@visibility(ImageGenToolCallItemResource.status, Lifecycle.Read);
+@@clientName(ImageGenToolCallItemResource.result, "GeneratedImageBytes");
+
 // ------------ Tools ------------
 
 @@clientName(FileSearchTool.max_num_results, "MaxResultCount");
@@ -74,3 +80,5 @@ using Azure.ClientGenerator.Core;
 // @@clientName(ResponseMCPCallArgumentsDoneEvent.arguments, "ToolArguments");
 
 @@alternateType(ResponseMCPCallArgumentsDeltaEvent.delta, unknown);
+
+@@clientName(ResponseImageGenCallPartialImageEvent.partial_image_b64, "PartialImageBytes");

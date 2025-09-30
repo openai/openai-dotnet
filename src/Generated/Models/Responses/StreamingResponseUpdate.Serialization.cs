@@ -9,27 +9,6 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-	/**************************************************************************
-    /* <GP> Added generic event handling for unsupported events               */
-	public class JsonResponsesResponseStreamEvent : StreamingResponseUpdate
-	{
-        internal JsonResponsesResponseStreamEvent() : this(string.Empty, default, ModelReaderWriterOptions.Json)
-        { }
-
-		public JsonResponsesResponseStreamEvent(string type, JsonElement element, ModelReaderWriterOptions options)
-		{
-			EventType = type;
-			Element = element.Clone();
-			Options = options;
-		}
-		public String EventType { get; }
-
-		public JsonElement Element { get; }
-		public ModelReaderWriterOptions Options { get; }
-	}
-	/* </GP> Added generic event handling for unsupported events              *
-     **************************************************************************/
-
     [PersistableModelProxy(typeof(UnknownResponseStreamEvent))]
     public partial class StreamingResponseUpdate : IJsonModel<StreamingResponseUpdate>
     {
@@ -159,13 +138,13 @@ namespace OpenAI.Responses
                     case "response.web_search_call.searching":
                         return StreamingResponseWebSearchCallSearchingUpdate.DeserializeStreamingResponseWebSearchCallSearchingUpdate(element, options);
                     case "response.image_generation_call.completed":
-                        return InternalResponseImageGenCallCompletedEvent.DeserializeInternalResponseImageGenCallCompletedEvent(element, options);
+                        return StreamingResponseImageGenerationCallCompletedUpdate.DeserializeStreamingResponseImageGenerationCallCompletedUpdate(element, options);
                     case "response.image_generation_call.generating":
-                        return InternalResponseImageGenCallGeneratingEvent.DeserializeInternalResponseImageGenCallGeneratingEvent(element, options);
+                        return StreamingResponseImageGenerationCallGeneratingUpdate.DeserializeStreamingResponseImageGenerationCallGeneratingUpdate(element, options);
                     case "response.image_generation_call.in_progress":
-                        return InternalResponseImageGenCallInProgressEvent.DeserializeInternalResponseImageGenCallInProgressEvent(element, options);
+                        return StreamingResponseImageGenerationCallInProgressUpdate.DeserializeStreamingResponseImageGenerationCallInProgressUpdate(element, options);
                     case "response.image_generation_call.partial_image":
-                        return InternalResponseImageGenCallPartialImageEvent.DeserializeInternalResponseImageGenCallPartialImageEvent(element, options);
+                        return StreamingResponseImageGenerationCallPartialImageUpdate.DeserializeStreamingResponseImageGenerationCallPartialImageUpdate(element, options);
                     case "response.mcp_call_arguments.delta":
                         return StreamingResponseMcpCallArgumentsDeltaUpdate.DeserializeStreamingResponseMcpCallArgumentsDeltaUpdate(element, options);
                     case "response.mcp_call_arguments.done":
@@ -195,27 +174,15 @@ namespace OpenAI.Responses
                     case "response.reasoning_summary.done":
                         return InternalResponseReasoningSummaryDoneEvent.DeserializeInternalResponseReasoningSummaryDoneEvent(element, options);
                     case "response.code_interpreter_call_code.delta":
-                        return InternalResponseCodeInterpreterCallCodeDeltaEvent.DeserializeInternalResponseCodeInterpreterCallCodeDeltaEvent(element, options);
+                        return StreamingResponseCodeInterpreterCallCodeDeltaUpdate.DeserializeStreamingResponseCodeInterpreterCallCodeDeltaUpdate(element, options);
                     case "response.code_interpreter_call_code.done":
-                        return InternalResponseCodeInterpreterCallCodeDoneEvent.DeserializeInternalResponseCodeInterpreterCallCodeDoneEvent(element, options);
+                        return StreamingResponseCodeInterpreterCallCodeDoneUpdate.DeserializeStreamingResponseCodeInterpreterCallCodeDoneUpdate(element, options);
                     case "response.code_interpreter_call.completed":
-                        return InternalResponseCodeInterpreterCallCompletedEvent.DeserializeInternalResponseCodeInterpreterCallCompletedEvent(element, options);
+                        return StreamingResponseCodeInterpreterCallCompletedUpdate.DeserializeStreamingResponseCodeInterpreterCallCompletedUpdate(element, options);
                     case "response.code_interpreter_call.in_progress":
-                        return InternalResponseCodeInterpreterCallInProgressEvent.DeserializeInternalResponseCodeInterpreterCallInProgressEvent(element, options);
+                        return StreamingResponseCodeInterpreterCallInProgressUpdate.DeserializeStreamingResponseCodeInterpreterCallInProgressUpdate(element, options);
                     case "response.code_interpreter_call.interpreting":
-                        return InternalResponseCodeInterpreterCallInterpretingEvent.DeserializeInternalResponseCodeInterpreterCallInterpretingEvent(element, options);
-					/**************************************************************************
-					 * <GP> Added generic event handling for unsupported events               *
-                     * The strings are intentionally handled to generate a compile time error *
-                     * once officially supported above.                                       */
-					case "response.mcp_call.arguments.delta":
-					case "response.mcp_call.arguments.done":
-					case "response.mcp_list_tools.completed:":
-					case "response.output_text_annotation.added":
-					default:
-						return new JsonResponsesResponseStreamEvent(discriminator.GetString(), element, options);
-					/* </GP> Added generic event handling for unsupported events              *
-						**************************************************************************/
+                        return StreamingResponseCodeInterpreterCallInterpretingUpdate.DeserializeStreamingResponseCodeInterpreterCallInterpretingUpdate(element, options);
                 }
             }
             return UnknownResponseStreamEvent.DeserializeUnknownResponseStreamEvent(element, options);

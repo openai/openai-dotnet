@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    public partial class InputAudioTranscriptionFailedUpdate : IJsonModel<InputAudioTranscriptionFailedUpdate>
+    public partial class InputAudioTranscriptionFailedUpdate : RealtimeUpdate, IJsonModel<InputAudioTranscriptionFailedUpdate>
     {
         internal InputAudioTranscriptionFailedUpdate() : this(RealtimeUpdateKind.InputTranscriptionFailed, null, null, null, default, null)
         {

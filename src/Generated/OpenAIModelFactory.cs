@@ -561,6 +561,11 @@ namespace OpenAI
             return new FileSearchToolRankingOptions(ranker, scoreThreshold, additionalBinaryDataProperties: null);
         }
 
+        public static ImageGenerationToolInputImageMask ImageGenerationToolInputImageMask(string imageUrl = default, string fileId = default)
+        {
+            return new ImageGenerationToolInputImageMask(imageUrl, fileId, additionalBinaryDataProperties: null);
+        }
+
         public static McpToolFilter McpToolFilter(IEnumerable<string> toolNames = default, bool? isReadOnly = default)
         {
             toolNames ??= new ChangeTrackingList<string>();
@@ -1331,6 +1336,11 @@ namespace OpenAI
         public static McpToolCallApprovalPolicy McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy? globalPolicy = default, CustomMcpToolCallApprovalPolicy customPolicy = default)
         {
             return new McpToolCallApprovalPolicy(globalPolicy, customPolicy, additionalBinaryDataProperties: null);
+        }
+
+        public static CodeInterpreterToolContainer CodeInterpreterToolContainer(string containerId = default, CodeInterpreterToolContainerConfiguration containerConfiguration = default)
+        {
+            return new CodeInterpreterToolContainer(containerId, containerConfiguration, additionalBinaryDataProperties: null);
         }
 
         public static VectorStoreCollectionOptions VectorStoreCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, VectorStoreCollectionOrder? order = default)

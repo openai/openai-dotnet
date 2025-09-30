@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class UriCitationMessageAnnotation : IJsonModel<UriCitationMessageAnnotation>
+    public partial class UriCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<UriCitationMessageAnnotation>
     {
         internal UriCitationMessageAnnotation() : this(ResponseMessageAnnotationKind.UriCitation, null, null, default, default, null)
         {

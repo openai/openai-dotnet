@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class StreamingResponseErrorUpdate : IJsonModel<StreamingResponseErrorUpdate>
+    public partial class StreamingResponseErrorUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseErrorUpdate>
     {
         internal StreamingResponseErrorUpdate() : this(InternalResponseStreamEventType.Error, default, null, null, null, null, null)
         {

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalItemReferenceItemParam : IJsonModel<InternalItemReferenceItemParam>
+    internal partial class InternalItemReferenceItemParam : InternalItemParam, IJsonModel<InternalItemReferenceItemParam>
     {
         internal InternalItemReferenceItemParam() : this(InternalItemType.ItemReference, null, null)
         {

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalItemContentInputAudio : IJsonModel<InternalItemContentInputAudio>
+    internal partial class InternalItemContentInputAudio : ResponseContentPart, IJsonModel<InternalItemContentInputAudio>
     {
         internal InternalItemContentInputAudio() : this(InternalItemContentType.InputAudio, null, null, default)
         {

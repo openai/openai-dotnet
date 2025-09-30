@@ -295,4 +295,91 @@ public partial class ResponsesSmokeTests
             Assert.That(additionalPropertyProperty.ValueKind, Is.EqualTo(JsonValueKind.True));
         }
     }
+
+    [Test]
+    [TestCase(true)]
+    [TestCase(false)]
+    public void SerializeCodeInterpreterToolContainerAsString(bool fromRawJson)
+    {
+        CodeInterpreterToolContainer container;
+        string containerId = "myContainerId";
+
+        if (fromRawJson)
+        {
+            BinaryData data = BinaryData.FromString($"\"{ containerId }\"");
+
+            // We deserialize the raw JSON. Later, we serialize it back and confirm nothing was lost in the process.
+            container = ModelReaderWriter.Read<CodeInterpreterToolContainer>(data);
+        }
+        else
+        {
+            // We construct a new instance. Later, we serialize it and confirm it was constructed correctly.
+            container = new CodeInterpreterToolContainer(containerId);
+        }
+
+        BinaryData serializedContainer = ModelReaderWriter.Write(container);
+        using JsonDocument containerAsJson = JsonDocument.Parse(serializedContainer);
+        Assert.That(containerAsJson.RootElement, Is.Not.Null);
+        Assert.That(containerAsJson.RootElement.ValueKind, Is.EqualTo(JsonValueKind.String));
+        Assert.That(containerAsJson.RootElement.ToString(), Is.EqualTo(containerId));
+    }
+
+    [Test]
+    [TestCase(true)]
+    [TestCase(false)]
+    public void SerializeCodeInterpreterToolContainerAsObject(bool fromRawJson)
+    {
+        const string fileId = "myFileId";
+
+        CodeInterpreterToolContainer container;
+
+        if (fromRawJson)
+        {
+            BinaryData data = BinaryData.FromString($$"""
+            {
+                "type": "auto",
+                "file_ids": ["{{fileId}}"],
+                "additional_property": true
+            }
+            """);
+
+            // We deserialize the raw JSON. Later, we serialize it back and confirm nothing was lost in the process.
+            container = ModelReaderWriter.Read<CodeInterpreterToolContainer>(data);
+        }
+        else
+        {
+            // We construct a new instance. Later, we serialize it and confirm it was constructed correctly.
+            AutomaticCodeInterpreterToolContainerConfiguration autoConfig = new()
+            {
+                FileIds = { fileId }
+            };
+
+            container = new CodeInterpreterToolContainer(autoConfig);
+        }
+
+        BinaryData serializedContainer = ModelReaderWriter.Write(container);
+        using JsonDocument containerAsJson = JsonDocument.Parse(serializedContainer);
+        Assert.That(containerAsJson.RootElement, Is.Not.Null);
+        Assert.That(containerAsJson.RootElement.ValueKind, Is.EqualTo(JsonValueKind.Object));
+
+        Assert.That(containerAsJson.RootElement.TryGetProperty("type", out JsonElement typeProperty), Is.True);
+        Assert.That(typeProperty, Is.Not.Null);
+        Assert.That(typeProperty.ValueKind, Is.EqualTo(JsonValueKind.String));
+        Assert.That(typeProperty.ToString(), Is.EqualTo("auto"));
+
+        Assert.That(containerAsJson.RootElement.TryGetProperty("file_ids", out JsonElement fileIdsProperty), Is.True);
+        Assert.That(fileIdsProperty, Is.Not.Null);
+        Assert.That(fileIdsProperty.ValueKind, Is.EqualTo(JsonValueKind.Array));
+        Assert.That(fileIdsProperty.EnumerateArray().FirstOrDefault(), Is.Not.Null);
+        Assert.That(fileIdsProperty.EnumerateArray().FirstOrDefault().ValueKind, Is.EqualTo(JsonValueKind.String));
+        Assert.That(fileIdsProperty.EnumerateArray().FirstOrDefault().ToString(), Is.EqualTo(fileId));
+
+        if (fromRawJson)
+        {
+            // Confirm that we also have the additional data.
+            Assert.That(containerAsJson.RootElement.TryGetProperty("additional_property", out JsonElement additionalPropertyProperty), Is.True);
+            Assert.That(additionalPropertyProperty, Is.Not.Null);
+            Assert.That(additionalPropertyProperty.ValueKind, Is.EqualTo(JsonValueKind.True));
+        }
+    }
 }

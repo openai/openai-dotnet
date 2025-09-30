@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class WebSearchToolApproximateLocation : IJsonModel<WebSearchToolApproximateLocation>
+    public partial class WebSearchToolApproximateLocation : WebSearchToolLocation, IJsonModel<WebSearchToolApproximateLocation>
     {
         void IJsonModel<WebSearchToolApproximateLocation>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
