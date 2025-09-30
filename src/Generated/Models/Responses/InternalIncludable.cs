@@ -17,7 +17,15 @@ namespace OpenAI.Responses
         private const string ReasoningEncryptedContentValue = "reasoning.encrypted_content";
         private const string CodeInterpreterCallOutputsValue = "code_interpreter_call.outputs";
 
-        public InternalIncludable(string value)
+		// <GP> added
+		private const string WebSearchCallActionSourcesValue = "web_search_call.action.sources";
+        private const string MessageOutputTextLogprobsValue = "message.output_text.logprobs";
+		public static InternalIncludable WebSearchCallActionSources { get; } = new InternalIncludable(WebSearchCallActionSourcesValue);
+
+		public static InternalIncludable MessageOutputTextLogprobs { get; } = new InternalIncludable(MessageOutputTextLogprobsValue);
+		// </GP>
+
+		public InternalIncludable(string value)
         {
             Argument.AssertNotNull(value, nameof(value));
 

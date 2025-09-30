@@ -25,9 +25,11 @@ namespace OpenAI.Responses
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal InternalItemType Kind { get; set; }
+        //<GP> made public
+        public InternalItemType Kind { get; set; }
+		//</GP>
 
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+		internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {
             get => _additionalBinaryDataProperties;
             set => _additionalBinaryDataProperties = value;

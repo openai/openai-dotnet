@@ -39,7 +39,7 @@ namespace OpenAI.Responses;
 [CodeGenType("ItemContentType")] internal readonly partial struct InternalItemContentType {}
 [CodeGenType("ItemParam")] public partial class InternalItemParam {}
 [CodeGenType("ItemReferenceItemParam")] internal partial class InternalItemReferenceItemParam {}
-[CodeGenType("ItemType")] internal readonly partial struct InternalItemType {}
+[CodeGenType("ItemType")] public readonly partial struct InternalItemType {}
 [CodeGenType("LocationType")] internal readonly partial struct InternalWebSearchUserLocationKind {}
 [CodeGenType("ModelIdsResponses")] internal readonly partial struct InternalModelIdsResponses {}
 [CodeGenType("RankingOptionsRanker1")] internal readonly partial struct InternalRankingOptionsRanker1 {}
@@ -60,7 +60,7 @@ namespace OpenAI.Responses;
 [CodeGenType("ResponsesMessageItemParam")] internal partial class InternalResponsesMessageItemParam {}
 [CodeGenType("ResponsesMessageRole")] internal readonly partial struct InternalResponsesMessageRole {}
 [CodeGenType("ResponsesSystemMessageItemParam")] internal partial class InternalResponsesSystemMessageItemParam {}
-[CodeGenType("ResponseStreamEventType")] internal readonly partial struct InternalResponseStreamEventType {}
+[CodeGenType("ResponseStreamEventType")] public readonly partial struct InternalResponseStreamEventType {}
 [CodeGenType("ResponsesUserMessageItemParam")] internal partial class InternalResponsesUserMessageItemParam {}
 [CodeGenType("ResponseTextFormatConfigurationJsonObject")] internal partial class InternalResponsesTextFormatJsonObject {}
 [CodeGenType("ResponseTextFormatConfigurationText")] internal partial class InternalResponsesTextFormatText {}

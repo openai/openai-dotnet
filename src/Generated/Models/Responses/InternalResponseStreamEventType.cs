@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal readonly partial struct InternalResponseStreamEventType : IEquatable<InternalResponseStreamEventType>
+    public readonly partial struct InternalResponseStreamEventType : IEquatable<InternalResponseStreamEventType>
     {
         private readonly string _value;
         private const string ResponseAudioDeltaValue = "response.audio.delta";
