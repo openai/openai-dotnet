@@ -1,0 +1,295 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/files",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "497",
+        "Content-Type": "multipart/form-data; boundary=\"GWaVKCrW2EbNqjitasdsTosOPPdmjoNNFRGwnH=5YqcFN8yO0GRwRqW8RCQFWUQi9wQcvd\"",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": [
+        "--GWaVKCrW2EbNqjitasdsTosOPPdmjoNNFRGwnH=5YqcFN8yO0GRwRqW8RCQFWUQi9wQcvd\r\n",
+        "Content-Disposition: form-data; name=file; filename=test_data.csv; filename*=utf-8''test_data.csv\r\n",
+        "\r\n",
+        "b64:bmFtZSxhZ2UsY2l0eQpBbGljZSwzMCxOZXcgWW9yawpCb2IsMjUsTG9zIEFuZ2VsZXMKQ2hhcmxpZSwzNSxDaGljYWdv",
+        "\r\n",
+        "--GWaVKCrW2EbNqjitasdsTosOPPdmjoNNFRGwnH=5YqcFN8yO0GRwRqW8RCQFWUQi9wQcvd\r\n",
+        "Content-Type: text/plain; charset=utf-8\r\n",
+        "Content-Disposition: form-data; name=purpose\r\n",
+        "\r\n",
+        "assistants",
+        "\r\n",
+        "--GWaVKCrW2EbNqjitasdsTosOPPdmjoNNFRGwnH=5YqcFN8yO0GRwRqW8RCQFWUQi9wQcvd--\r\n"
+      ],
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Allow-Origin": "*",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "984f273eadbf76b2-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "236",
+        "Content-Type": "application/json",
+        "Date": "Fri, 26 Sep 2025 01:57:56 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "327",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "343",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "file",
+        "id": "file-YGfBMcnzep36vcovKFhRLK",
+        "purpose": "assistants",
+        "filename": "test_data.csv",
+        "bytes": 69,
+        "created_at": 1758851875,
+        "expires_at": null,
+        "status": "processed",
+        "status_details": null
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/files",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "552",
+        "Content-Type": "multipart/form-data; boundary=\"NlDS9L7gKxKcUicdtwUs1q93PiX=XXlQDiU2KQ2W4Yb3zAawCsPVWMhw5oF8T2j=DiZZu9\"",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": [
+        "--NlDS9L7gKxKcUicdtwUs1q93PiX=XXlQDiU2KQ2W4Yb3zAawCsPVWMhw5oF8T2j=DiZZu9\r\n",
+        "Content-Disposition: form-data; name=file; filename=test_script.py; filename*=utf-8''test_script.py\r\n",
+        "\r\n",
+        "b64:IyBUaGlzIGlzIGEgc2ltcGxlIFB5dGhvbiBmaWxlCmRlZiBoZWxsbygpOgogICAgcHJpbnQoJ0hlbGxvIGZyb20gdXBsb2FkZWQgZmlsZSEnKQoKaWYgX19uYW1lX18gPT0gJ19fbWFpbl9fJzoKICAgIGhlbGxvKCk=",
+        "\r\n",
+        "--NlDS9L7gKxKcUicdtwUs1q93PiX=XXlQDiU2KQ2W4Yb3zAawCsPVWMhw5oF8T2j=DiZZu9\r\n",
+        "Content-Type: text/plain; charset=utf-8\r\n",
+        "Content-Disposition: form-data; name=purpose\r\n",
+        "\r\n",
+        "assistants",
+        "\r\n",
+        "--NlDS9L7gKxKcUicdtwUs1q93PiX=XXlQDiU2KQ2W4Yb3zAawCsPVWMhw5oF8T2j=DiZZu9--\r\n"
+      ],
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Allow-Origin": "*",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "984f2741584376b2-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "238",
+        "Content-Type": "application/json",
+        "Date": "Fri, 26 Sep 2025 01:57:56 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "723",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "731",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "file",
+        "id": "file-1CpqaD2sMRjWXwJTYjj1Y4",
+        "purpose": "assistants",
+        "filename": "test_script.py",
+        "bytes": 122,
+        "created_at": 1758851876,
+        "expires_at": null,
+        "status": "processed",
+        "status_details": null
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "371",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "tools": [
+          {
+            "type": "code_interpreter",
+            "container": {
+              "type": "auto",
+              "file_ids": [
+                "file-YGfBMcnzep36vcovKFhRLK",
+                "file-1CpqaD2sMRjWXwJTYjj1Y4"
+              ]
+            }
+          }
+        ],
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Analyze the CSV data in the uploaded file and create a simple visualization. Also run the Python script that was uploaded."
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "984f27469cd876b2-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "4035",
+        "Content-Type": "application/json",
+        "Date": "Fri, 26 Sep 2025 01:58:20 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "23504",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "23510",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999235",
+        "x-ratelimit-reset-requests": "1m0s",
+        "x-ratelimit-reset-tokens": "1m0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_68d5f324fb4c8196927527007172f9d00aafb0eb365d479b",
+        "object": "response",
+        "created_at": 1758851877,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4o-mini-2024-07-18",
+        "output": [
+          {
+            "id": "ci_68d5f329979081969bf3d1696a80e0630aafb0eb365d479b",
+            "type": "code_interpreter_call",
+            "status": "completed",
+            "code": "import pandas as pd\r\n\r\n# Load the CSV data\r\ncsv_file_path = '/mnt/data/file-YGfBMcnzep36vcovKFhRLK-test_data.csv'\r\ndata = pd.read_csv(csv_file_path)\r\n\r\n# Display the first few rows of the dataframe and its summary\r\ndata.head(), data.info()",
+            "container_id": "cntr_68d5f327b91c81909435d275fe074b49093afed850f1b7c8",
+            "outputs": null
+          },
+          {
+            "id": "ci_68d5f32f7f508196949476a077c0a52a0aafb0eb365d479b",
+            "type": "code_interpreter_call",
+            "status": "completed",
+            "code": "import matplotlib.pyplot as plt\r\n\r\n# Create a simple bar chart visualizing ages\r\nplt.figure(figsize=(8, 5))\r\nplt.bar(data['name'], data['age'], color='skyblue')\r\nplt.title('Ages of Individuals')\r\nplt.xlabel('Name')\r\nplt.ylabel('Age')\r\nplt.xticks(rotation=45)\r\nplt.grid(axis='y')\r\n\r\n# Save the plot\r\nplt_path = '/mnt/data/ages_bar_chart.png'\r\nplt.savefig(plt_path)\r\nplt.show(), plt_path",
+            "container_id": "cntr_68d5f327b91c81909435d275fe074b49093afed850f1b7c8",
+            "outputs": null
+          },
+          {
+            "id": "ci_68d5f3352b248196971ffd72b31839a40aafb0eb365d479b",
+            "type": "code_interpreter_call",
+            "status": "completed",
+            "code": "# Execute the uploaded Python script\r\nscript_file_path = '/mnt/data/file-1CpqaD2sMRjWXwJTYjj1Y4-test_script.py'\r\n\r\nwith open(script_file_path) as file:\r\n    exec(file.read())",
+            "container_id": "cntr_68d5f327b91c81909435d275fe074b49093afed850f1b7c8",
+            "outputs": null
+          },
+          {
+            "id": "msg_68d5f33931d88196b31663de8db347de0aafb0eb365d479b",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [
+                  {
+                    "type": "container_file_citation",
+                    "container_id": "cntr_68d5f327b91c81909435d275fe074b49093afed850f1b7c8",
+                    "end_index": 206,
+                    "file_id": "cfile_68d5f33c3858819192ae1a58775ed834",
+                    "filename": "ages_bar_chart.png",
+                    "start_index": 170
+                  }
+                ],
+                "logprobs": [],
+                "text": "I analyzed the uploaded CSV data and created a bar chart visualizing the ages of individuals. You can download the chart using the link below:\n\n![Download the Bar Chart](sandbox:/mnt/data/ages_bar_chart.png)\n\nAdditionally, the Python script was executed successfully, and it printed a message: **\"Hello from uploaded file!\"** \n\nIf you need any further analysis or assistance, feel free to ask!"
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "reasoning": {
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [
+          {
+            "type": "code_interpreter",
+            "container": {
+              "type": "auto",
+              "file_ids": [
+                "file-YGfBMcnzep36vcovKFhRLK",
+                "file-1CpqaD2sMRjWXwJTYjj1Y4"
+              ]
+            }
+          }
+        ],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 75773,
+          "input_tokens_details": {
+            "cached_tokens": 1408
+          },
+          "output_tokens": 315,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 76088
+        },
+        "user": null,
+        "metadata": {}
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

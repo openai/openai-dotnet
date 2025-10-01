@@ -1,0 +1,169 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "236",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "tools": [
+          {
+            "type": "web_search_preview"
+          }
+        ],
+        "tool_choice": {
+          "type": "web_search_preview"
+        },
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "What was a positive news story from today?"
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "980411430b9eba46-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "4732",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 23:15:46 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "3158",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "3163",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_0371fa63edfcc1ef0068c9ef9f47cc8193966cbe9073775d43",
+        "object": "response",
+        "created_at": 1758064543,
+        "status": "completed",
+        "background": false,
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4o-mini-2024-07-18",
+        "output": [
+          {
+            "id": "ws_0371fa63edfcc1ef0068c9ef9f5a888193974c26f9a550a83d",
+            "type": "web_search_call",
+            "status": "completed",
+            "action": {
+              "type": "search",
+              "query": "What was a positive news story from today?"
+            }
+          },
+          {
+            "id": "msg_0371fa63edfcc1ef0068c9ef9ff7ec81939c7464b3909d564a",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [
+                  {
+                    "type": "url_citation",
+                    "end_index": 595,
+                    "start_index": 482,
+                    "title": "Good News This Week: September 13, 2025 - LEGO, Koalas, & Scientists",
+                    "url": "https://www.goodgoodgood.co/articles/good-news-this-week-september-13-2025?utm_source=openai"
+                  },
+                  {
+                    "type": "url_citation",
+                    "end_index": 1069,
+                    "start_index": 926,
+                    "title": "GNR for Tuesday, September 16, 2025 — More and more good news!",
+                    "url": "https://www.dailykos.com/story/2025/9/16/2342576/-GNR-for-Tuesday-September-16-2025-More-and-more-good-news?utm_source=openai"
+                  },
+                  {
+                    "type": "url_citation",
+                    "end_index": 1608,
+                    "start_index": 1526,
+                    "title": "The Christian Science Monitor Daily for September 16, 2025",
+                    "url": "https://www.csmonitor.com/Daily/2025/20250916?utm_source=openai"
+                  }
+                ],
+                "logprobs": [],
+                "text": "On September 16, 2025, several positive news stories emerged:\n\n**Environmental Conservation in Australia**\n\nThe New South Wales government in Australia announced the creation of a significant national park to protect over 12,000 koalas. This initiative adds 176,000 hectares of forest to existing reserves, making it one of the state's largest national parks. The park will also impose an immediate ban on logging within its boundaries, safeguarding critical biodiversity hotspots. ([goodgoodgood.co](https://www.goodgoodgood.co/articles/good-news-this-week-september-13-2025?utm_source=openai))\n\n**Advancements in Renewable Energy**\n\nSingapore is set to begin constructing an 86-megawatt floating solar farm on the Pandan Reservoir, its largest reservoir. This project aims to generate 296 megawatts of clean energy, contributing significantly to the country's efforts to decarbonize and meet its energy demands sustainably. ([dailykos.com](https://www.dailykos.com/story/2025/9/16/2342576/-GNR-for-Tuesday-September-16-2025-More-and-more-good-news?utm_source=openai))\n\n**Global Efforts to Combat Overfishing**\n\nA global agreement to curb overfishing took effect, requiring governments to cut subsidies to fishing fleets to help protect dwindling stocks. The World Trade Organization deal entered into force after Brazil, Kenya, Tonga, and Vietnam signed on, bringing the total to 112 countries. The organization touts the deal as its first environmental pact and the first binding multilateral deal on ocean sustainability. ([csmonitor.com](https://www.csmonitor.com/Daily/2025/20250916?utm_source=openai))\n\nThese stories highlight significant strides in environmental conservation and sustainable energy, reflecting a global commitment to addressing ecological challenges. "
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "reasoning": {
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "auto",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": {
+          "type": "web_search_preview"
+        },
+        "tools": [
+          {
+            "type": "web_search_preview",
+            "search_context_size": "medium",
+            "user_location": {
+              "type": "approximate",
+              "city": null,
+              "country": "US",
+              "region": null,
+              "timezone": null
+            }
+          }
+        ],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 312,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 368,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 680
+        },
+        "user": null,
+        "metadata": {}
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}
