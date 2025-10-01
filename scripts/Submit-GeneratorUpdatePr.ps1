@@ -176,7 +176,7 @@ try {
     if (Test-Path $openAiCsprojPath) {
         $openAiCsproj = Get-Content $openAiCsprojPath -Raw
         $openAiCsproj = $openAiCsproj -replace '(<PackageReference Include="Microsoft\.TypeSpec\.Generator\.ClientModel" Version=")[^"]*(")', "`${1}$PackageVersion`${2}"
-        Set-Content -Path $openAiCsprojPath -Value $openAiCsproj
+        Set-Content -Path $openAiCsprojPath -Value $openAiCsproj -NoNewline
         Write-Log "Updated OpenAI csproj: $openAiCsprojPath"
     } else {
         Write-Warning-Log "OpenAI csproj not found at: $openAiCsprojPath"
