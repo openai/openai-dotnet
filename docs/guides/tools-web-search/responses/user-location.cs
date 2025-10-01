@@ -16,14 +16,14 @@ options.Tools.Add(ResponseTool.CreateWebSearchTool(
     userLocation: WebSearchToolLocation.CreateApproximateLocation(
         country: "GB",
         city: "London",
-        region: "London"
+        region: "Granary Square"
     )
 ));
 
 OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
     ResponseItem.CreateUserMessageItem([
         ResponseContentPart.CreateInputTextPart(
-            "What are the best restaurants around Granary Square?"
+            "What are the best restaurants near me?"
         )
     ])
 ], options);
