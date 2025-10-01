@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeServerEventResponseAudioDelta : RealtimeUpdate
+    public partial class InternalRealtimeServerEventResponseAudioDelta : RealtimeUpdate
     {
         internal InternalRealtimeServerEventResponseAudioDelta(string responseId, string itemId, int outputIndex, int contentIndex, BinaryData delta) : base(RealtimeUpdateKind.ItemStreamingPartAudioDelta)
         {

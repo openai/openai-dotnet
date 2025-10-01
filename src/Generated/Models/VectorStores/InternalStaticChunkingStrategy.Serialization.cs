@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.VectorStores
 {
-    internal partial class InternalStaticChunkingStrategy : IJsonModel<InternalStaticChunkingStrategy>
+    public partial class InternalStaticChunkingStrategy : IJsonModel<InternalStaticChunkingStrategy>
     {
         internal InternalStaticChunkingStrategy()
         {

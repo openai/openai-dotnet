@@ -6,7 +6,7 @@ namespace OpenAI.Realtime;
 
 [Experimental("OPENAI002")]
 [CodeGenType("RealtimeRequestSystemMessageItem")]
-internal partial class InternalRealtimeRequestSystemMessageItem
+public partial class InternalRealtimeRequestSystemMessageItem
 {
     [CodeGenMember("Content")]
     public IList<ConversationContentPart> Content { get; }

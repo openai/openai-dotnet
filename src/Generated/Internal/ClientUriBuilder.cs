@@ -9,7 +9,7 @@ using System.Text;
 
 namespace OpenAI
 {
-    internal partial class ClientUriBuilder
+    public partial class ClientUriBuilder
     {
         private UriBuilder _uriBuilder;
         private StringBuilder _pathBuilder;

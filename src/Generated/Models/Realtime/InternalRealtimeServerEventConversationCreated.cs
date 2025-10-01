@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeServerEventConversationCreated : RealtimeUpdate
+    public partial class InternalRealtimeServerEventConversationCreated : RealtimeUpdate
     {
         internal InternalRealtimeServerEventConversationCreated(InternalRealtimeServerEventConversationCreatedConversation conversation) : base(RealtimeUpdateKind.ConversationCreated)
         {

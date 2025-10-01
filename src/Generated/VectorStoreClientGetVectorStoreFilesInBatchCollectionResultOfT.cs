@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.VectorStores
 {
-    internal partial class VectorStoreClientGetVectorStoreFilesInBatchCollectionResultOfT : CollectionResult<VectorStoreFile>
+    public partial class VectorStoreClientGetVectorStoreFilesInBatchCollectionResultOfT : CollectionResult<VectorStoreFile>
     {
         private readonly VectorStoreClient _client;
         private readonly string _vectorStoreId;

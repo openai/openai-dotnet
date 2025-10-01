@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeRequestFunctionCallOutputItem : RealtimeItem
+    public partial class InternalRealtimeRequestFunctionCallOutputItem : RealtimeItem
     {
         public InternalRealtimeRequestFunctionCallOutputItem(string callId, string output) : base(InternalRealtimeItemType.FunctionCallOutput)
         {

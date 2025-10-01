@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalMessageDeltaContentTextAnnotationsFileCitationObjectFileCitation : IJsonModel<InternalMessageDeltaContentTextAnnotationsFileCitationObjectFileCitation>
+    public partial class InternalMessageDeltaContentTextAnnotationsFileCitationObjectFileCitation : IJsonModel<InternalMessageDeltaContentTextAnnotationsFileCitationObjectFileCitation>
     {
         void IJsonModel<InternalMessageDeltaContentTextAnnotationsFileCitationObjectFileCitation>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeServerEventErrorError : IJsonModel<InternalRealtimeServerEventErrorError>
+    public partial class InternalRealtimeServerEventErrorError : IJsonModel<InternalRealtimeServerEventErrorError>
     {
         internal InternalRealtimeServerEventErrorError()
         {

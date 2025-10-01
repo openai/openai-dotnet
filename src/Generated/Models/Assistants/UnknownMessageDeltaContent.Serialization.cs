@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class UnknownMessageDeltaContent : InternalMessageDeltaContent, IJsonModel<InternalMessageDeltaContent>
+    public partial class UnknownMessageDeltaContent : InternalMessageDeltaContent, IJsonModel<InternalMessageDeltaContent>
     {
         internal UnknownMessageDeltaContent() : this(default, null)
         {

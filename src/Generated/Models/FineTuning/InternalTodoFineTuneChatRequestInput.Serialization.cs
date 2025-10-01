@@ -11,7 +11,7 @@ using OpenAI.Chat;
 
 namespace OpenAI.FineTuning
 {
-    internal partial class InternalTodoFineTuneChatRequestInput : IJsonModel<InternalTodoFineTuneChatRequestInput>
+    public partial class InternalTodoFineTuneChatRequestInput : IJsonModel<InternalTodoFineTuneChatRequestInput>
     {
         void IJsonModel<InternalTodoFineTuneChatRequestInput>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

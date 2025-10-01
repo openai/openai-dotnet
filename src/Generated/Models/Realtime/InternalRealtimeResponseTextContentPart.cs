@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeResponseTextContentPart : ConversationContentPart
+    public partial class InternalRealtimeResponseTextContentPart : ConversationContentPart
     {
         internal InternalRealtimeResponseTextContentPart(string internalTextValue) : base(ConversationContentPartKind.OutputText)
         {

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeAudioFarFieldNoiseReduction : InputNoiseReductionOptions
+    public partial class InternalRealtimeAudioFarFieldNoiseReduction : InputNoiseReductionOptions
     {
         public InternalRealtimeAudioFarFieldNoiseReduction() : this(InputNoiseReductionKind.FarField, null)
         {

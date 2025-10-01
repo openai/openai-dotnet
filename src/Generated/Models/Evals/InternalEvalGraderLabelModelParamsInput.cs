@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalGraderLabelModelParamsInput
+    public partial class InternalEvalGraderLabelModelParamsInput
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

@@ -10,7 +10,7 @@ namespace OpenAI.Realtime;
 [CodeGenType("RealtimeServerVadTurnDetection")]
 [CodeGenSerialization(nameof(PrefixPaddingMs), DeserializationValueHook = nameof(DeserializeMillisecondDuration), SerializationValueHook = nameof(SerializePrefixPaddingMs))]
 [CodeGenSerialization(nameof(SilenceDurationMs), DeserializationValueHook = nameof(DeserializeMillisecondDuration), SerializationValueHook = nameof(SerializeSilenceDurationMs))]
-internal partial class InternalRealtimeServerVadTurnDetection
+public partial class InternalRealtimeServerVadTurnDetection
 {
     private static void DeserializeMillisecondDuration(JsonProperty property, ref TimeSpan? duration)
     {

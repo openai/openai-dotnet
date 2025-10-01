@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace OpenAI;
 
-internal partial class GenericActionPipelinePolicy : PipelinePolicy
+public partial class GenericActionPipelinePolicy : PipelinePolicy
 {
     private Action<PipelineMessage> _processMessageAction;
 

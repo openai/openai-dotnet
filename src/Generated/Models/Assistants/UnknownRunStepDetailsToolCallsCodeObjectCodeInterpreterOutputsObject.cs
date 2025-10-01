@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Assistants
 {
-    internal partial class UnknownRunStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject : RunStepCodeInterpreterOutput
+    public partial class UnknownRunStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject : RunStepCodeInterpreterOutput
     {
         internal UnknownRunStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject(InternalRunStepDetailsCodeInterpreterOutputType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {

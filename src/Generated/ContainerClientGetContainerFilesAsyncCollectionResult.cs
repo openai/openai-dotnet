@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Containers
 {
-    internal partial class ContainerClientGetContainerFilesAsyncCollectionResult : AsyncCollectionResult
+    public partial class ContainerClientGetContainerFilesAsyncCollectionResult : AsyncCollectionResult
     {
         private readonly ContainerClient _client;
         private readonly string _containerId;

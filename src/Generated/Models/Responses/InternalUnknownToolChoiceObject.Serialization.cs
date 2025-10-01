@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalUnknownToolChoiceObject : InternalToolChoiceObject, IJsonModel<InternalToolChoiceObject>
+    public partial class InternalUnknownToolChoiceObject : InternalToolChoiceObject, IJsonModel<InternalToolChoiceObject>
     {
         internal InternalUnknownToolChoiceObject() : this(default, null)
         {

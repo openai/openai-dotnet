@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalUnknownComputerAction : ComputerCallAction
+    public partial class InternalUnknownComputerAction : ComputerCallAction
     {
         internal InternalUnknownComputerAction(ComputerCallActionKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, additionalBinaryDataProperties)
         {

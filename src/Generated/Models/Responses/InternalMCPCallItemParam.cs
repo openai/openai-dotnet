@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalMCPCallItemParam : InternalItemParam
+    public partial class InternalMCPCallItemParam : InternalItemParam
     {
         public InternalMCPCallItemParam(string serverLabel, string name, string arguments) : base(InternalItemType.McpCall)
         {

@@ -9,7 +9,7 @@ using OpenAI.Internal;
 
 namespace OpenAI.Chat
 {
-    internal partial class InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1
+    public partial class InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

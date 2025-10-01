@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalComputerActionDoubleClick : ComputerCallAction, IJsonModel<InternalComputerActionDoubleClick>
+    public partial class InternalComputerActionDoubleClick : ComputerCallAction, IJsonModel<InternalComputerActionDoubleClick>
     {
         internal InternalComputerActionDoubleClick() : this(ComputerCallActionKind.DoubleClick, null, default, default)
         {

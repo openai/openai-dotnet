@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class UnknownRunStepObjectStepDetails : RunStepDetails, IJsonModel<RunStepDetails>
+    public partial class UnknownRunStepObjectStepDetails : RunStepDetails, IJsonModel<RunStepDetails>
     {
         internal UnknownRunStepObjectStepDetails() : this(default, null)
         {

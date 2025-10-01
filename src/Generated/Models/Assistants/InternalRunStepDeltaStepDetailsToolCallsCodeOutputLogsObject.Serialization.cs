@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalRunStepDeltaStepDetailsToolCallsCodeOutputLogsObject : RunStepUpdateCodeInterpreterOutput, IJsonModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputLogsObject>
+    public partial class InternalRunStepDeltaStepDetailsToolCallsCodeOutputLogsObject : RunStepUpdateCodeInterpreterOutput, IJsonModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputLogsObject>
     {
         internal InternalRunStepDeltaStepDetailsToolCallsCodeOutputLogsObject() : this(InternalRunStepDetailsCodeInterpreterOutputType.Logs, null, default, null)
         {

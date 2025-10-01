@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeResponse
+    public partial class InternalRealtimeResponse
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

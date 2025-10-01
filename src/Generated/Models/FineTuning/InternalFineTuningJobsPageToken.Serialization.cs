@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.FineTuning
 {
-    internal partial class InternalFineTuningJobsPageToken : ContinuationToken, IJsonModel<InternalFineTuningJobsPageToken>
+    public partial class InternalFineTuningJobsPageToken : ContinuationToken, IJsonModel<InternalFineTuningJobsPageToken>
     {
         void IJsonModel<InternalFineTuningJobsPageToken>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

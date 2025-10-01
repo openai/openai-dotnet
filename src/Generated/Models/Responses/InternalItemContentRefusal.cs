@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalItemContentRefusal : ResponseContentPart
+    public partial class InternalItemContentRefusal : ResponseContentPart
     {
         public InternalItemContentRefusal(string internalRefusal) : base(InternalItemContentType.Refusal)
         {

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Chat
 {
-    internal partial class InternalChatCompletionMessageToolCallChunkFunction
+    public partial class InternalChatCompletionMessageToolCallChunkFunction
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

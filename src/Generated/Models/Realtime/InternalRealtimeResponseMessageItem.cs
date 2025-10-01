@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeResponseMessageItem : InternalRealtimeResponseItem
+    public partial class InternalRealtimeResponseMessageItem : InternalRealtimeResponseItem
     {
         internal InternalRealtimeResponseMessageItem(string id, ConversationMessageRole role, IEnumerable<ConversationContentPart> content, ConversationItemStatus status) : base(InternalRealtimeItemType.Message, id)
         {

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalLocalShellTool : ResponseTool, IJsonModel<InternalLocalShellTool>
+    public partial class InternalLocalShellTool : ResponseTool, IJsonModel<InternalLocalShellTool>
     {
         void IJsonModel<InternalLocalShellTool>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

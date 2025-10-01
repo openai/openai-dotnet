@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-    internal abstract partial class InternalComparisonFilter
+    public abstract partial class InternalComparisonFilter
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

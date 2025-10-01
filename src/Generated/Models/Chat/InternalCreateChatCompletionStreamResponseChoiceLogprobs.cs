@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    internal partial class InternalCreateChatCompletionStreamResponseChoiceLogprobs
+    public partial class InternalCreateChatCompletionStreamResponseChoiceLogprobs
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

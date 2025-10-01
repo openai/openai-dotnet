@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalToolChoiceObjectCodeInterpreter : InternalToolChoiceObject
+    public partial class InternalToolChoiceObjectCodeInterpreter : InternalToolChoiceObject
     {
         public InternalToolChoiceObjectCodeInterpreter() : this(InternalToolChoiceObjectType.CodeInterpreter, null)
         {

@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal abstract partial class InternalCompoundFilter
+    public abstract partial class InternalCompoundFilter
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

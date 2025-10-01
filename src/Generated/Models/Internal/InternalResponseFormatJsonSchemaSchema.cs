@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Internal
 {
-    internal partial class InternalResponseFormatJsonSchemaSchema
+    public partial class InternalResponseFormatJsonSchemaSchema
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

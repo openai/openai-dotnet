@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.FineTuning
 {
-    internal readonly partial struct InternalFineTuneMethodType : IEquatable<InternalFineTuneMethodType>
+    public readonly partial struct InternalFineTuneMethodType : IEquatable<InternalFineTuneMethodType>
     {
         private readonly string _value;
         private const string SupervisedValue = "supervised";

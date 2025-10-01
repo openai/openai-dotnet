@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalThreadObjectToolResourcesCodeInterpreter
+    public partial class InternalThreadObjectToolResourcesCodeInterpreter
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

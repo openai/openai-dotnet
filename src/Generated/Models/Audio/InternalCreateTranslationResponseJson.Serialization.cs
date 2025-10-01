@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.Audio
 {
-    internal partial class InternalCreateTranslationResponseJson : IJsonModel<InternalCreateTranslationResponseJson>
+    public partial class InternalCreateTranslationResponseJson : IJsonModel<InternalCreateTranslationResponseJson>
     {
         internal InternalCreateTranslationResponseJson()
         {

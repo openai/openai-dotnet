@@ -8,7 +8,7 @@ namespace OpenAI.FineTuning;
 
 [Experimental("OPENAI001")]
 [CodeGenType("CreateFineTuningJobRequestHyperparametersNEpochsChoiceEnum")]
-internal readonly partial struct InternalCreateFineTuningJobRequestHyperparametersNEpochsChoiceEnum { }
+public readonly partial struct InternalCreateFineTuningJobRequestHyperparametersNEpochsChoiceEnum { }
 
 [Experimental("OPENAI001")]
 [CodeGenType("CreateFineTuningJobRequestHyperparametersNEpochsOption")]

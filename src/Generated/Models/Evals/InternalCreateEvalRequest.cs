@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalCreateEvalRequest
+    public partial class InternalCreateEvalRequest
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

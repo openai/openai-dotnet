@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal readonly partial struct InternalIncludedRunStepProperty : IEquatable<InternalIncludedRunStepProperty>
+    public readonly partial struct InternalIncludedRunStepProperty : IEquatable<InternalIncludedRunStepProperty>
     {
         private readonly string _value;
         private const string FileSearchResultContentValue = "step_details.tool_calls[*].file_search.results[*].content";

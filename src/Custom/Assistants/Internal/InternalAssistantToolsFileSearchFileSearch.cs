@@ -1,7 +1,7 @@
 namespace OpenAI.Assistants;
 
 [CodeGenType("AssistantToolsFileSearchFileSearch")]
-internal partial class InternalAssistantToolsFileSearchFileSearch
+public partial class InternalAssistantToolsFileSearchFileSearch
 {
     [CodeGenMember("MaxNumResults")]
     internal int? InternalMaxNumResults { get; set; }

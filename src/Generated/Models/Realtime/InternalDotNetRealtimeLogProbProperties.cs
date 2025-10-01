@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalDotNetRealtimeLogProbProperties
+    public partial class InternalDotNetRealtimeLogProbProperties
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

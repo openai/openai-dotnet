@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalAssistantToolsFileSearchTypeOnly
+    public partial class InternalAssistantToolsFileSearchTypeOnly
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

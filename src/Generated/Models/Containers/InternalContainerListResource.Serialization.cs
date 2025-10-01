@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.Containers
 {
-    internal partial class InternalContainerListResource : IJsonModel<InternalContainerListResource>
+    public partial class InternalContainerListResource : IJsonModel<InternalContainerListResource>
     {
         internal InternalContainerListResource() : this(null, null, null, null, default, null)
         {

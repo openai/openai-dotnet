@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalTopLogProb
+    public partial class InternalTopLogProb
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

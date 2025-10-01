@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalResponsesMessageItemParam : InternalItemParam, IJsonModel<InternalResponsesMessageItemParam>
+    public partial class InternalResponsesMessageItemParam : InternalItemParam, IJsonModel<InternalResponsesMessageItemParam>
     {
         internal InternalResponsesMessageItemParam() : this(InternalItemType.Message, null, default)
         {

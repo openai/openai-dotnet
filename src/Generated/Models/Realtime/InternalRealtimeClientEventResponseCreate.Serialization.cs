@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeClientEventResponseCreate : InternalRealtimeClientEvent, IJsonModel<InternalRealtimeClientEventResponseCreate>
+    public partial class InternalRealtimeClientEventResponseCreate : InternalRealtimeClientEvent, IJsonModel<InternalRealtimeClientEventResponseCreate>
     {
         void IJsonModel<InternalRealtimeClientEventResponseCreate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

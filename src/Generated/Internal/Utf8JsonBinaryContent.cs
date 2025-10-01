@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace OpenAI
 {
-    internal partial class Utf8JsonBinaryContent : BinaryContent
+    public partial class Utf8JsonBinaryContent : BinaryContent
     {
         private readonly MemoryStream _stream;
         private readonly BinaryContent _content;

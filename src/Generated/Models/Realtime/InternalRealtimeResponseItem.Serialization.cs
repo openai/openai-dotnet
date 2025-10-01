@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Realtime
 {
     [PersistableModelProxy(typeof(UnknownRealtimeResponseItem))]
-    internal abstract partial class InternalRealtimeResponseItem : IJsonModel<InternalRealtimeResponseItem>
+    public abstract partial class InternalRealtimeResponseItem : IJsonModel<InternalRealtimeResponseItem>
     {
         internal InternalRealtimeResponseItem()
         {

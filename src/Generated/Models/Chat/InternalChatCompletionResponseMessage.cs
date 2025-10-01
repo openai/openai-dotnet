@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    internal partial class InternalChatCompletionResponseMessage
+    public partial class InternalChatCompletionResponseMessage
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

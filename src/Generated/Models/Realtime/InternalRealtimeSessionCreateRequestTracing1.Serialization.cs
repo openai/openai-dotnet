@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeSessionCreateRequestTracing1 : IJsonModel<InternalRealtimeSessionCreateRequestTracing1>
+    public partial class InternalRealtimeSessionCreateRequestTracing1 : IJsonModel<InternalRealtimeSessionCreateRequestTracing1>
     {
         void IJsonModel<InternalRealtimeSessionCreateRequestTracing1>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

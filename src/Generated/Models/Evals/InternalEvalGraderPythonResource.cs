@@ -8,7 +8,7 @@ using OpenAI.Graders;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalGraderPythonResource : InternalEvalGraderResource
+    public partial class InternalEvalGraderPythonResource : InternalEvalGraderResource
     {
         internal InternalEvalGraderPythonResource(string name, string source) : base(GraderType.Python)
         {

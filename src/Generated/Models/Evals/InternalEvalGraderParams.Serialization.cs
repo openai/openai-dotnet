@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Evals
 {
     [PersistableModelProxy(typeof(InternalUnknownEvalGraderParams))]
-    internal abstract partial class InternalEvalGraderParams : IJsonModel<InternalEvalGraderParams>
+    public abstract partial class InternalEvalGraderParams : IJsonModel<InternalEvalGraderParams>
     {
         internal InternalEvalGraderParams()
         {

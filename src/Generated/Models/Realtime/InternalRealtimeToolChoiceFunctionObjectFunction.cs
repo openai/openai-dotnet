@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeToolChoiceFunctionObjectFunction
+    public partial class InternalRealtimeToolChoiceFunctionObjectFunction
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

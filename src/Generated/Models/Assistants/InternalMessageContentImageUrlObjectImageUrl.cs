@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalMessageContentImageUrlObjectImageUrl
+    public partial class InternalMessageContentImageUrlObjectImageUrl
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

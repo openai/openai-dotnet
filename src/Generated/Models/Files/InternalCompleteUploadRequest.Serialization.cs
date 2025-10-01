@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Files
 {
-    internal partial class InternalCompleteUploadRequest : IJsonModel<InternalCompleteUploadRequest>
+    public partial class InternalCompleteUploadRequest : IJsonModel<InternalCompleteUploadRequest>
     {
         internal InternalCompleteUploadRequest() : this(null, null, null)
         {

@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal readonly partial struct InternalRunStepDetailsCodeInterpreterOutputType : IEquatable<InternalRunStepDetailsCodeInterpreterOutputType>
+    public readonly partial struct InternalRunStepDetailsCodeInterpreterOutputType : IEquatable<InternalRunStepDetailsCodeInterpreterOutputType>
     {
         private readonly string _value;
         private const string LogsValue = "logs";

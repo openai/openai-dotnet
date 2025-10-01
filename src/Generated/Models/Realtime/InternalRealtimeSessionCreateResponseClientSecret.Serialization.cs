@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeSessionCreateResponseClientSecret : IJsonModel<InternalRealtimeSessionCreateResponseClientSecret>
+    public partial class InternalRealtimeSessionCreateResponseClientSecret : IJsonModel<InternalRealtimeSessionCreateResponseClientSecret>
     {
         internal InternalRealtimeSessionCreateResponseClientSecret()
         {

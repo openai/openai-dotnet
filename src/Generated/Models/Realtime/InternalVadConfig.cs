@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalVadConfig
+    public partial class InternalVadConfig
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

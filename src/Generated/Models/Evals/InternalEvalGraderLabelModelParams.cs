@@ -10,7 +10,7 @@ using OpenAI.Graders;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalGraderLabelModelParams : InternalEvalGraderParams
+    public partial class InternalEvalGraderLabelModelParams : InternalEvalGraderParams
     {
         public InternalEvalGraderLabelModelParams(string name, string model, IEnumerable<BinaryData> input, IEnumerable<string> labels, IEnumerable<string> passingLabels) : base(GraderType.LabelModel)
         {

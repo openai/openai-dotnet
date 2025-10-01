@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalRunStoredCompletionsDataContentSource : InternalEvalRunDataContentSource, IJsonModel<InternalEvalRunStoredCompletionsDataContentSource>
+    public partial class InternalEvalRunStoredCompletionsDataContentSource : InternalEvalRunDataContentSource, IJsonModel<InternalEvalRunStoredCompletionsDataContentSource>
     {
         internal InternalEvalRunStoredCompletionsDataContentSource() : this(InternalEvalRunDataContentSourceType.StoredCompletions, null, null, null, default, default, default)
         {

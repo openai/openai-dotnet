@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalLogsDataSourceConfigResource : InternalEvalDataSourceConfigResource
+    public partial class InternalEvalLogsDataSourceConfigResource : InternalEvalDataSourceConfigResource
     {
         internal InternalEvalLogsDataSourceConfigResource(IDictionary<string, string> metadata, IDictionary<string, BinaryData> schema) : base(InternalEvalDataSourceConfigType.Logs)
         {

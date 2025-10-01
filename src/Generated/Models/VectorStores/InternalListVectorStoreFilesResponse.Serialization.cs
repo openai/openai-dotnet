@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.VectorStores
 {
-    internal partial class InternalListVectorStoreFilesResponse : IJsonModel<InternalListVectorStoreFilesResponse>
+    public partial class InternalListVectorStoreFilesResponse : IJsonModel<InternalListVectorStoreFilesResponse>
     {
         internal InternalListVectorStoreFilesResponse() : this(null, null, null, null, default, null)
         {

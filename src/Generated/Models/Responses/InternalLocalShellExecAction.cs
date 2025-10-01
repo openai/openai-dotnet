@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalLocalShellExecAction
+    public partial class InternalLocalShellExecAction
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

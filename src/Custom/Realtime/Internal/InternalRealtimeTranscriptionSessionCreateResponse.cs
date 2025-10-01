@@ -15,7 +15,7 @@ namespace OpenAI.Realtime;
 /// </summary>
 [Experimental("OPENAI002")]
 [CodeGenType("RealtimeTranscriptionSessionCreateResponse")]
-internal partial class InternalRealtimeTranscriptionSessionCreateResponse
+public partial class InternalRealtimeTranscriptionSessionCreateResponse
 {
     public InternalRealtimeTranscriptionSessionCreateResponseClientSecret ClientSecret { get; }
 

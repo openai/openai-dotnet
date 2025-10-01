@@ -11,7 +11,7 @@ namespace OpenAI.LegacyCompletions;
 /// <summary> The service client for OpenAI legacy completion operations. </summary>
 [CodeGenType("Completions")]
 [CodeGenSuppress("LegacyCompletionClient", typeof(ClientPipeline), typeof(Uri))]
-internal partial class LegacyCompletionClient
+public partial class LegacyCompletionClient
 {
     private readonly string _model;
 

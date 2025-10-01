@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Moderations
 {
-    internal partial class InternalCreateModerationResponseResultCategoryAppliedInputTypes : IJsonModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>
+    public partial class InternalCreateModerationResponseResultCategoryAppliedInputTypes : IJsonModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>
     {
         internal InternalCreateModerationResponseResultCategoryAppliedInputTypes() : this(null, null, null, null, null, null, null, null, null, null, null, null, null, null)
         {

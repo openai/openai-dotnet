@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeTranscriptionSessionCreateRequestClientSecret
+    public partial class InternalRealtimeTranscriptionSessionCreateRequestClientSecret
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

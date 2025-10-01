@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalMessageDeltaObject
+    public partial class InternalMessageDeltaObject
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

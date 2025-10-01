@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeRequestTextContentPart : ConversationContentPart
+    public partial class InternalRealtimeRequestTextContentPart : ConversationContentPart
     {
         public InternalRealtimeRequestTextContentPart(string internalTextValue) : base(ConversationContentPartKind.InputText)
         {

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalCreateThreadAndRunRequest : IJsonModel<InternalCreateThreadAndRunRequest>
+    public partial class InternalCreateThreadAndRunRequest : IJsonModel<InternalCreateThreadAndRunRequest>
     {
         internal InternalCreateThreadAndRunRequest() : this(null, null, null, null, null, null, null, default, default, default, default, default, null, null, default, null, null)
         {

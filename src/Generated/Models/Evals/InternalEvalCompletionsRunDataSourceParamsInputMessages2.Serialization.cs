@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalCompletionsRunDataSourceParamsInputMessages2 : IJsonModel<InternalEvalCompletionsRunDataSourceParamsInputMessages2>
+    public partial class InternalEvalCompletionsRunDataSourceParamsInputMessages2 : IJsonModel<InternalEvalCompletionsRunDataSourceParamsInputMessages2>
     {
         internal InternalEvalCompletionsRunDataSourceParamsInputMessages2()
         {

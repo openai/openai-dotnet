@@ -8,7 +8,7 @@ namespace OpenAI.FineTuning;
 
 [Experimental("OPENAI001")]
 [CodeGenType("CreateFineTuningJobRequestHyperparametersBatchSizeChoiceEnum")]
-internal readonly partial struct InternalCreateFineTuningJobRequestHyperparametersBatchSizeChoiceEnum { }
+public readonly partial struct InternalCreateFineTuningJobRequestHyperparametersBatchSizeChoiceEnum { }
 
 [Experimental("OPENAI001")]
 [CodeGenType("CreateFineTuningJobRequestHyperparametersBatchSizeOption")]

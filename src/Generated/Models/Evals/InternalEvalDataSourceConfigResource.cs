@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Evals
 {
-    internal abstract partial class InternalEvalDataSourceConfigResource
+    public abstract partial class InternalEvalDataSourceConfigResource
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

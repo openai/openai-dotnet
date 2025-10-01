@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalMessageDeltaContentImageUrlObject : InternalMessageDeltaContent, IJsonModel<InternalMessageDeltaContentImageUrlObject>
+    public partial class InternalMessageDeltaContentImageUrlObject : InternalMessageDeltaContent, IJsonModel<InternalMessageDeltaContentImageUrlObject>
     {
         internal InternalMessageDeltaContentImageUrlObject() : this(InternalMessageContentType.ImageUrl, null, default, null)
         {

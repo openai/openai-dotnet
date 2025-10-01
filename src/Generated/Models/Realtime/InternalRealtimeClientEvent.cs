@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Realtime
 {
-    internal abstract partial class InternalRealtimeClientEvent
+    public abstract partial class InternalRealtimeClientEvent
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

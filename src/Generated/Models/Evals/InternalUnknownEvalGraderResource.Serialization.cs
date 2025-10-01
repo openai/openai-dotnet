@@ -11,7 +11,7 @@ using OpenAI.Graders;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalUnknownEvalGraderResource : InternalEvalGraderResource, IJsonModel<InternalEvalGraderResource>
+    public partial class InternalUnknownEvalGraderResource : InternalEvalGraderResource, IJsonModel<InternalEvalGraderResource>
     {
         internal InternalUnknownEvalGraderResource() : this(default, null)
         {

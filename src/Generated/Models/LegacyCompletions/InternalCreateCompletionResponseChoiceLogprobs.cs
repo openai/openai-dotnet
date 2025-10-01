@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.LegacyCompletions
 {
-    internal partial class InternalCreateCompletionResponseChoiceLogprobs
+    public partial class InternalCreateCompletionResponseChoiceLogprobs
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

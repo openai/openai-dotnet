@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalRunRequiredAction
+    public partial class InternalRunRequiredAction
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

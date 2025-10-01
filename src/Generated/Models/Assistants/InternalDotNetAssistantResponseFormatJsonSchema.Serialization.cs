@@ -11,7 +11,7 @@ using OpenAI.Internal;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalDotNetAssistantResponseFormatJsonSchema : AssistantResponseFormat, IJsonModel<InternalDotNetAssistantResponseFormatJsonSchema>
+    public partial class InternalDotNetAssistantResponseFormatJsonSchema : AssistantResponseFormat, IJsonModel<InternalDotNetAssistantResponseFormatJsonSchema>
     {
         internal InternalDotNetAssistantResponseFormatJsonSchema() : this(InternalResponseFormatType.JsonSchema, null, null)
         {

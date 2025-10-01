@@ -6,7 +6,7 @@ namespace OpenAI.FineTuning;
 
 [Experimental("OPENAI001")]
 [CodeGenType("CreateFineTuningJobRequestHyperparameters")]
-internal partial class HyperparameterOptions
+public partial class HyperparameterOptions
 {
     [CodeGenMember("NEpochs")]
     public HyperparameterEpochCount EpochCount { get; set; }

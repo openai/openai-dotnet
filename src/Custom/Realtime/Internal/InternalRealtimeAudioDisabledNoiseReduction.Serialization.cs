@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace OpenAI.Realtime;
 
-internal partial class InternalRealtimeAudioDisabledNoiseReduction : IJsonModel<InternalRealtimeAudioDisabledNoiseReduction>
+public partial class InternalRealtimeAudioDisabledNoiseReduction : IJsonModel<InternalRealtimeAudioDisabledNoiseReduction>
 {
     void IJsonModel<InternalRealtimeAudioDisabledNoiseReduction>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         => CustomSerializationHelpers.SerializeInstance(this, SerializeInternalRealtimeAudioDisabledNoiseReduction, writer, options);

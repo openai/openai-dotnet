@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Moderations
 {
-    internal partial class ModerationOptions
+    public partial class ModerationOptions
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

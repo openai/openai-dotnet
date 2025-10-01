@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeClientEventConversationItemCreate : InternalRealtimeClientEvent
+    public partial class InternalRealtimeClientEventConversationItemCreate : InternalRealtimeClientEvent
     {
         public InternalRealtimeClientEventConversationItemCreate(RealtimeItem item) : base(InternalRealtimeClientEventType.ConversationItemCreate)
         {

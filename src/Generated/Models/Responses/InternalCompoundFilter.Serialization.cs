@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Responses
 {
     [PersistableModelProxy(typeof(InternalUnknownCompoundFilter))]
-    internal abstract partial class InternalCompoundFilter : IJsonModel<InternalCompoundFilter>
+    public abstract partial class InternalCompoundFilter : IJsonModel<InternalCompoundFilter>
     {
         internal InternalCompoundFilter() : this(default, null, null)
         {

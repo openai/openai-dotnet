@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalRunFileContentDataContentSourceContent
+    public partial class InternalEvalRunFileContentDataContentSourceContent
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

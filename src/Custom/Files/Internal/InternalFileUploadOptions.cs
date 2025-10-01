@@ -4,7 +4,7 @@ namespace OpenAI.Files;
 
 [CodeGenType("CreateFileRequest")]
 [CodeGenSuppress("InternalFileUploadOptions", typeof(Stream), typeof(FileUploadPurpose))]
-internal partial class InternalFileUploadOptions
+public partial class InternalFileUploadOptions
 {
     // CUSTOM:
     // - Made internal. This value comes from a parameter on the client method.

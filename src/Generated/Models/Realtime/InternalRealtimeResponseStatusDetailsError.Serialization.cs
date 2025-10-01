@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeResponseStatusDetailsError : IJsonModel<InternalRealtimeResponseStatusDetailsError>
+    public partial class InternalRealtimeResponseStatusDetailsError : IJsonModel<InternalRealtimeResponseStatusDetailsError>
     {
         void IJsonModel<InternalRealtimeResponseStatusDetailsError>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

@@ -6,7 +6,7 @@ namespace OpenAI.Realtime;
 
 [Experimental("OPENAI002")]
 [CodeGenType("RealtimeResponse")]
-internal partial class InternalRealtimeResponse
+public partial class InternalRealtimeResponse
 {
     [CodeGenMember("Output")]
     public IReadOnlyList<RealtimeItem> Output { get; }

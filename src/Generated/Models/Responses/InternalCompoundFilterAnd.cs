@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalCompoundFilterAnd : InternalCompoundFilter
+    public partial class InternalCompoundFilterAnd : InternalCompoundFilter
     {
         public InternalCompoundFilterAnd(IEnumerable<BinaryData> filters) : base(InternalCompoundFilterType.And, filters)
         {

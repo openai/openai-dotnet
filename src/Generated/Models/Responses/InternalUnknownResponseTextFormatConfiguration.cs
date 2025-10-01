@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalUnknownResponseTextFormatConfiguration : ResponseTextFormat
+    public partial class InternalUnknownResponseTextFormatConfiguration : ResponseTextFormat
     {
         internal InternalUnknownResponseTextFormatConfiguration(InternalResponsesTextFormatType internalType, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(internalType != default ? internalType : "unknown", additionalBinaryDataProperties)
         {

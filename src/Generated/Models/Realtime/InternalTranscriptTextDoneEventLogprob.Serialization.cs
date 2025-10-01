@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalTranscriptTextDoneEventLogprob : IJsonModel<InternalTranscriptTextDoneEventLogprob>
+    public partial class InternalTranscriptTextDoneEventLogprob : IJsonModel<InternalTranscriptTextDoneEventLogprob>
     {
         void IJsonModel<InternalTranscriptTextDoneEventLogprob>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalMessageDeltaContentTextAnnotationsFilePathObject : InternalMessageDeltaTextContentAnnotation
+    public partial class InternalMessageDeltaContentTextAnnotationsFilePathObject : InternalMessageDeltaTextContentAnnotation
     {
         internal InternalMessageDeltaContentTextAnnotationsFilePathObject(int index) : base(InternalMessageContentTextAnnotationType.FilePath)
         {

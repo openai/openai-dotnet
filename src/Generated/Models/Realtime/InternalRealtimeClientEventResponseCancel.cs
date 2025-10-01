@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeClientEventResponseCancel : InternalRealtimeClientEvent
+    public partial class InternalRealtimeClientEventResponseCancel : InternalRealtimeClientEvent
     {
         public InternalRealtimeClientEventResponseCancel() : this(InternalRealtimeClientEventType.ResponseCancel, null, null, null)
         {

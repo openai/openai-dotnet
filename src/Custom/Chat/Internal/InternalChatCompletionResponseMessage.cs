@@ -5,7 +5,7 @@ namespace OpenAI.Chat;
 
 [CodeGenType("ChatCompletionResponseMessage")]
 [CodeGenSuppress("InternalChatCompletionResponseMessage", typeof(IEnumerable<ChatMessageContentPart>))]
-internal partial class InternalChatCompletionResponseMessage
+public partial class InternalChatCompletionResponseMessage
 {
     // CUSTOM: Changed type from InternalChatCompletionResponseMessageRole.
     /// <summary> The role of the author of this message. </summary>

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class OpenAIResponseClientGetInputItemsCollectionResultOfT : CollectionResult<ResponseItem>
+    public partial class OpenAIResponseClientGetInputItemsCollectionResultOfT : CollectionResult<ResponseItem>
     {
         private readonly OpenAIResponseClient _client;
         private readonly string _responseId;

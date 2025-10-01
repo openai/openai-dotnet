@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeToolChoiceFunctionObject : InternalRealtimeToolChoiceObject
+    public partial class InternalRealtimeToolChoiceFunctionObject : InternalRealtimeToolChoiceObject
     {
         internal InternalRealtimeToolChoiceFunctionObject(InternalRealtimeToolChoiceFunctionObjectFunction function) : base(ConversationToolKind.Function)
         {

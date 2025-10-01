@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeClientEventConversationItemDelete : InternalRealtimeClientEvent
+    public partial class InternalRealtimeClientEventConversationItemDelete : InternalRealtimeClientEvent
     {
         public InternalRealtimeClientEventConversationItemDelete(string itemId) : base(InternalRealtimeClientEventType.ConversationItemDelete)
         {

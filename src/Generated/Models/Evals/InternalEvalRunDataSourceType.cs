@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal readonly partial struct InternalEvalRunDataSourceType : IEquatable<InternalEvalRunDataSourceType>
+    public readonly partial struct InternalEvalRunDataSourceType : IEquatable<InternalEvalRunDataSourceType>
     {
         private readonly string _value;
         private const string JsonlValue = "jsonl";

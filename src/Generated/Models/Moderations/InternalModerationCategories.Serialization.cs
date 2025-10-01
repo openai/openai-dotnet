@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Moderations
 {
-    internal partial class InternalModerationCategories : IJsonModel<InternalModerationCategories>
+    public partial class InternalModerationCategories : IJsonModel<InternalModerationCategories>
     {
         internal InternalModerationCategories()
         {

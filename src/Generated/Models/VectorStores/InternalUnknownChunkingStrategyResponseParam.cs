@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.VectorStores
 {
-    internal partial class InternalUnknownChunkingStrategyResponseParam : InternalChunkingStrategyResponseParam
+    public partial class InternalUnknownChunkingStrategyResponseParam : InternalChunkingStrategyResponseParam
     {
         internal InternalUnknownChunkingStrategyResponseParam(InternalChunkingStrategyResponseParamType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {

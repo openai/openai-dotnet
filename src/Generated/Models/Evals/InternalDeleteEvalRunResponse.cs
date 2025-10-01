@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalDeleteEvalRunResponse
+    public partial class InternalDeleteEvalRunResponse
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

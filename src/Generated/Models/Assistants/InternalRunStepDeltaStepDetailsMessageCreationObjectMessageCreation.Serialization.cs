@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalRunStepDeltaStepDetailsMessageCreationObjectMessageCreation : IJsonModel<InternalRunStepDeltaStepDetailsMessageCreationObjectMessageCreation>
+    public partial class InternalRunStepDeltaStepDetailsMessageCreationObjectMessageCreation : IJsonModel<InternalRunStepDeltaStepDetailsMessageCreationObjectMessageCreation>
     {
         void IJsonModel<InternalRunStepDeltaStepDetailsMessageCreationObjectMessageCreation>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

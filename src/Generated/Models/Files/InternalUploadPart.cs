@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Files
 {
-    internal partial class InternalUploadPart
+    public partial class InternalUploadPart
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

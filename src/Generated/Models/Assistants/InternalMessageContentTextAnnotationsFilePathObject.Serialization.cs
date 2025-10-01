@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalMessageContentTextAnnotationsFilePathObject : InternalMessageContentTextObjectAnnotation, IJsonModel<InternalMessageContentTextAnnotationsFilePathObject>
+    public partial class InternalMessageContentTextAnnotationsFilePathObject : InternalMessageContentTextObjectAnnotation, IJsonModel<InternalMessageContentTextAnnotationsFilePathObject>
     {
         internal InternalMessageContentTextAnnotationsFilePathObject() : this(InternalMessageContentTextAnnotationType.FilePath, null, null, null, default, default)
         {

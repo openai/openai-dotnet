@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.LegacyCompletions
 {
-    internal partial class LegacyCompletionClient
+    public partial class LegacyCompletionClient
     {
         private readonly Uri _endpoint;
 

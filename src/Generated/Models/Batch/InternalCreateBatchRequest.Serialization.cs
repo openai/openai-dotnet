@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Batch
 {
-    internal partial class InternalCreateBatchRequest : IJsonModel<InternalCreateBatchRequest>
+    public partial class InternalCreateBatchRequest : IJsonModel<InternalCreateBatchRequest>
     {
         internal InternalCreateBatchRequest() : this(null, default, null, null, null)
         {

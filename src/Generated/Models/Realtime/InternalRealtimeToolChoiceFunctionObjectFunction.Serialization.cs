@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeToolChoiceFunctionObjectFunction : IJsonModel<InternalRealtimeToolChoiceFunctionObjectFunction>
+    public partial class InternalRealtimeToolChoiceFunctionObjectFunction : IJsonModel<InternalRealtimeToolChoiceFunctionObjectFunction>
     {
         internal InternalRealtimeToolChoiceFunctionObjectFunction()
         {

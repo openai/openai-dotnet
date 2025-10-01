@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    internal partial class InternalChatCompletionNamedToolChoiceFunction : IJsonModel<InternalChatCompletionNamedToolChoiceFunction>
+    public partial class InternalChatCompletionNamedToolChoiceFunction : IJsonModel<InternalChatCompletionNamedToolChoiceFunction>
     {
         internal InternalChatCompletionNamedToolChoiceFunction()
         {

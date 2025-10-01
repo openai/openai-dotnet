@@ -12,7 +12,7 @@ using OpenAI.Chat;
 
 namespace OpenAI.LegacyCompletions
 {
-    internal partial class InternalCreateCompletionResponse : IJsonModel<InternalCreateCompletionResponse>
+    public partial class InternalCreateCompletionResponse : IJsonModel<InternalCreateCompletionResponse>
     {
         internal InternalCreateCompletionResponse() : this(null, null, default, null, null, null, null, null)
         {

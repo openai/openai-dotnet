@@ -12,7 +12,7 @@ using OpenAI.Internal;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeSessionCreateResponse : IJsonModel<InternalRealtimeSessionCreateResponse>
+    public partial class InternalRealtimeSessionCreateResponse : IJsonModel<InternalRealtimeSessionCreateResponse>
     {
         internal InternalRealtimeSessionCreateResponse() : this(null, null, null, default, default, default, null, default, null, null, null, null, default, null, null)
         {

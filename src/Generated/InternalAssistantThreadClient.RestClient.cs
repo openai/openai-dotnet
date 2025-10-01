@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalAssistantThreadClient
+    public partial class InternalAssistantThreadClient
     {
         private static PipelineMessageClassifier _pipelineMessageClassifier200;
 

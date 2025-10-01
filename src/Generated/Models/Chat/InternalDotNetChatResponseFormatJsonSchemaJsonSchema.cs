@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    internal partial class InternalDotNetChatResponseFormatJsonSchemaJsonSchema
+    public partial class InternalDotNetChatResponseFormatJsonSchemaJsonSchema
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

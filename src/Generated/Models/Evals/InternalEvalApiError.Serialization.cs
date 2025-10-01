@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalApiError : IJsonModel<InternalEvalApiError>
+    public partial class InternalEvalApiError : IJsonModel<InternalEvalApiError>
     {
         internal InternalEvalApiError()
         {

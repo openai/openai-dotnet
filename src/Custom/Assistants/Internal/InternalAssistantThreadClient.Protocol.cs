@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
 
-internal partial class InternalAssistantThreadClient
+public partial class InternalAssistantThreadClient
 {
     /// <summary>
     /// [Protocol Method] Create a thread.

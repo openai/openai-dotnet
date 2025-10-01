@@ -9,7 +9,7 @@ using OpenAI.Internal;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeSessionCreateRequest
+    public partial class InternalRealtimeSessionCreateRequest
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    internal partial class InternalChatCompletionRequestMessageContentPartAudioInputAudio
+    public partial class InternalChatCompletionRequestMessageContentPartAudioInputAudio
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

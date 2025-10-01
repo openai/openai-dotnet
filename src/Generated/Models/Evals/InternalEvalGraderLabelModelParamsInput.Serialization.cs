@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalGraderLabelModelParamsInput : IJsonModel<InternalEvalGraderLabelModelParamsInput>
+    public partial class InternalEvalGraderLabelModelParamsInput : IJsonModel<InternalEvalGraderLabelModelParamsInput>
     {
         internal InternalEvalGraderLabelModelParamsInput()
         {

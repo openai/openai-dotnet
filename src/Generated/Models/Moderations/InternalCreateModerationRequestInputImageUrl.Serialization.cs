@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Moderations
 {
-    internal partial class InternalCreateModerationRequestInputImageUrl : IJsonModel<InternalCreateModerationRequestInputImageUrl>
+    public partial class InternalCreateModerationRequestInputImageUrl : IJsonModel<InternalCreateModerationRequestInputImageUrl>
     {
         internal InternalCreateModerationRequestInputImageUrl()
         {

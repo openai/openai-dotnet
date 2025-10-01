@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalWebSearchToolCallItemParam : InternalItemParam
+    public partial class InternalWebSearchToolCallItemParam : InternalItemParam
     {
         public InternalWebSearchToolCallItemParam() : this(InternalItemType.WebSearchCall, null)
         {

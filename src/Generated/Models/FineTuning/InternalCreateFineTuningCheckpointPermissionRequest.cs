@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.FineTuning
 {
-    internal partial class InternalCreateFineTuningCheckpointPermissionRequest
+    public partial class InternalCreateFineTuningCheckpointPermissionRequest
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

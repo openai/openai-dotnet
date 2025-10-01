@@ -9,7 +9,7 @@ using OpenAI.Internal;
 
 namespace OpenAI.Chat
 {
-    internal partial class InternalDotNetChatResponseFormatJsonSchema : ChatResponseFormat
+    public partial class InternalDotNetChatResponseFormatJsonSchema : ChatResponseFormat
     {
         internal InternalDotNetChatResponseFormatJsonSchema(InternalDotNetChatResponseFormatJsonSchemaJsonSchema jsonSchema) : base(InternalResponseFormatType.JsonSchema)
         {

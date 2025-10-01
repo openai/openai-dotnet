@@ -11,7 +11,7 @@ using OpenAI.Graders;
 
 namespace OpenAI.FineTuning
 {
-    internal partial class InternalFineTuneReinforcementMethod : IJsonModel<InternalFineTuneReinforcementMethod>
+    public partial class InternalFineTuneReinforcementMethod : IJsonModel<InternalFineTuneReinforcementMethod>
     {
         internal InternalFineTuneReinforcementMethod()
         {

@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalAssistantRunClientGetRunStepsAsyncCollectionResultOfT : AsyncCollectionResult<RunStep>
+    public partial class InternalAssistantRunClientGetRunStepsAsyncCollectionResultOfT : AsyncCollectionResult<RunStep>
     {
         private readonly InternalAssistantRunClient _client;
         private readonly string _threadId;

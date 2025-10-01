@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalRunToolCallObjectFunction : IJsonModel<InternalRunToolCallObjectFunction>
+    public partial class InternalRunToolCallObjectFunction : IJsonModel<InternalRunToolCallObjectFunction>
     {
         internal InternalRunToolCallObjectFunction()
         {

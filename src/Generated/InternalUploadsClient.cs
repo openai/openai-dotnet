@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.Files
 {
-    internal partial class InternalUploadsClient
+    public partial class InternalUploadsClient
     {
         private readonly Uri _endpoint;
 

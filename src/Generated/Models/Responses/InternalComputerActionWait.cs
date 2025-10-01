@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalComputerActionWait : ComputerCallAction
+    public partial class InternalComputerActionWait : ComputerCallAction
     {
         public InternalComputerActionWait() : this(ComputerCallActionKind.Wait, null)
         {

@@ -15,7 +15,7 @@ namespace OpenAI.Assistants;
 [CodeGenSuppress("ModifyThread", typeof(string), typeof(ThreadModificationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("DeleteThreadAsync", typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("DeleteThread", typeof(string), typeof(CancellationToken))]
-internal partial class InternalAssistantThreadClient
+public partial class InternalAssistantThreadClient
 {
     // CUSTOM:
     // - Used a custom pipeline.

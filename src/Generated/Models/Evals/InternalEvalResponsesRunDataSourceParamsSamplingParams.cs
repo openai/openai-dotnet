@@ -9,7 +9,7 @@ using OpenAI.Responses;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalResponsesRunDataSourceParamsSamplingParams
+    public partial class InternalEvalResponsesRunDataSourceParamsSamplingParams
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

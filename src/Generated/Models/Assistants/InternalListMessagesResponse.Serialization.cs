@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalListMessagesResponse : IJsonModel<InternalListMessagesResponse>
+    public partial class InternalListMessagesResponse : IJsonModel<InternalListMessagesResponse>
     {
         internal InternalListMessagesResponse() : this(null, null, null, null, default, null)
         {

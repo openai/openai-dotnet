@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeTranscriptionSessionCreateRequestInputAudioNoiseReduction1 : IJsonModel<InternalRealtimeTranscriptionSessionCreateRequestInputAudioNoiseReduction1>
+    public partial class InternalRealtimeTranscriptionSessionCreateRequestInputAudioNoiseReduction1 : IJsonModel<InternalRealtimeTranscriptionSessionCreateRequestInputAudioNoiseReduction1>
     {
         void IJsonModel<InternalRealtimeTranscriptionSessionCreateRequestInputAudioNoiseReduction1>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

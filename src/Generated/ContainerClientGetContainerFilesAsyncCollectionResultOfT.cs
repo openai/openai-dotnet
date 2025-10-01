@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.Containers
 {
-    internal partial class ContainerClientGetContainerFilesAsyncCollectionResultOfT : AsyncCollectionResult<ContainerFileResource>
+    public partial class ContainerClientGetContainerFilesAsyncCollectionResultOfT : AsyncCollectionResult<ContainerFileResource>
     {
         private readonly ContainerClient _client;
         private readonly string _containerId;

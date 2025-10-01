@@ -10,7 +10,7 @@ namespace OpenAI.Assistants;
 /// create an instance of this type.
 /// </remarks>
 [CodeGenType("MessageContentRefusalObject")]
-internal partial class InternalMessageContentRefusalObject
+public partial class InternalMessageContentRefusalObject
 {
     [CodeGenMember("Refusal")]
     public string InternalRefusal { get; set; }

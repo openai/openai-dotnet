@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalItemContentOutputAudio : ResponseContentPart
+    public partial class InternalItemContentOutputAudio : ResponseContentPart
     {
         public InternalItemContentOutputAudio(string data, string transcript) : base(InternalItemContentType.OutputAudio)
         {

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.LegacyCompletions
 {
-    internal partial class InternalCreateCompletionResponseChoice : IJsonModel<InternalCreateCompletionResponseChoice>
+    public partial class InternalCreateCompletionResponseChoice : IJsonModel<InternalCreateCompletionResponseChoice>
     {
         internal InternalCreateCompletionResponseChoice()
         {

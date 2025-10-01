@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Assistants;
 
-internal partial class InternalAssistantMessageClient
+public partial class InternalAssistantMessageClient
 {
     /// <summary>
     /// [Protocol Method] Create a message.

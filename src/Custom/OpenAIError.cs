@@ -11,7 +11,7 @@ namespace OpenAI.Internal;
 // - 'ToExceptionMessage' added for encapsulated message formatting
 
 [CodeGenType("Error")]
-internal partial class OpenAIError
+public partial class OpenAIError
 {
     internal static OpenAIError TryCreateFromResponse(PipelineResponse response)
     {
@@ -50,4 +50,4 @@ internal partial class OpenAIError
 // - Renamed
 
 [CodeGenType("ErrorResponse")]
-internal partial class OpenAIErrorResponse { }
+public partial class OpenAIErrorResponse { }

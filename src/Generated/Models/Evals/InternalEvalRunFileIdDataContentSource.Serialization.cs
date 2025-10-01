@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalRunFileIdDataContentSource : InternalEvalRunDataContentSource, IJsonModel<InternalEvalRunFileIdDataContentSource>
+    public partial class InternalEvalRunFileIdDataContentSource : InternalEvalRunDataContentSource, IJsonModel<InternalEvalRunFileIdDataContentSource>
     {
         internal InternalEvalRunFileIdDataContentSource() : this(InternalEvalRunDataContentSourceType.FileId, null, null)
         {

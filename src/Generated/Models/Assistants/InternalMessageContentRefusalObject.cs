@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalMessageContentRefusalObject : MessageContent
+    public partial class InternalMessageContentRefusalObject : MessageContent
     {
         public InternalMessageContentRefusalObject(string internalRefusal) : base(InternalMessageContentType.Refusal)
         {

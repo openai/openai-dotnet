@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject
+    public partial class InternalRunStepDetailsToolCallsFileSearchRankingOptionsObject
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

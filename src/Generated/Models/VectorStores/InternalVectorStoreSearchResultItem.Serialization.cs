@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.VectorStores
 {
-    internal partial class InternalVectorStoreSearchResultItem : IJsonModel<InternalVectorStoreSearchResultItem>
+    public partial class InternalVectorStoreSearchResultItem : IJsonModel<InternalVectorStoreSearchResultItem>
     {
         internal InternalVectorStoreSearchResultItem() : this(null, null, default, null, null, null)
         {

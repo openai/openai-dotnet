@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Realtime
 {
-    internal partial class UnknownRealtimeClientEvent : InternalRealtimeClientEvent
+    public partial class UnknownRealtimeClientEvent : InternalRealtimeClientEvent
     {
         internal UnknownRealtimeClientEvent(InternalRealtimeClientEventType kind, string eventId, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", eventId, additionalBinaryDataProperties)
         {

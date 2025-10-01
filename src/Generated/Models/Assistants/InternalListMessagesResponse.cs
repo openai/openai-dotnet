@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalListMessagesResponse
+    public partial class InternalListMessagesResponse
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

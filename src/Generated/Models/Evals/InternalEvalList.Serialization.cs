@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalList : IJsonModel<InternalEvalList>
+    public partial class InternalEvalList : IJsonModel<InternalEvalList>
     {
         internal InternalEvalList() : this(null, null, null, null, default, null)
         {

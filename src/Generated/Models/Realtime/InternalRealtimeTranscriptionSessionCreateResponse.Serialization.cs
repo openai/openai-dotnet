@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeTranscriptionSessionCreateResponse : IJsonModel<InternalRealtimeTranscriptionSessionCreateResponse>
+    public partial class InternalRealtimeTranscriptionSessionCreateResponse : IJsonModel<InternalRealtimeTranscriptionSessionCreateResponse>
     {
         internal InternalRealtimeTranscriptionSessionCreateResponse() : this(null, null, default, null, null, null)
         {

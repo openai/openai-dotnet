@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Audio
 {
-    internal partial class InternalUnknownCreateTranscriptionResponseStreamEvent : StreamingAudioTranscriptionUpdate
+    public partial class InternalUnknownCreateTranscriptionResponseStreamEvent : StreamingAudioTranscriptionUpdate
     {
         internal InternalUnknownCreateTranscriptionResponseStreamEvent(StreamingAudioTranscriptionUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {

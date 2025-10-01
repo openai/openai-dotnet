@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Batch
 {
-    internal partial class InternalListBatchesResponse
+    public partial class InternalListBatchesResponse
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalMessageContentImageUrlObject : MessageContent
+    public partial class InternalMessageContentImageUrlObject : MessageContent
     {
         internal InternalMessageContentImageUrlObject(InternalMessageContentImageUrlObjectImageUrl imageUrl) : base(InternalMessageContentType.ImageUrl)
         {

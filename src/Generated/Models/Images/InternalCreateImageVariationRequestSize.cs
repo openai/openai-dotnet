@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Images
 {
-    internal readonly partial struct InternalCreateImageVariationRequestSize : IEquatable<InternalCreateImageVariationRequestSize>
+    public readonly partial struct InternalCreateImageVariationRequestSize : IEquatable<InternalCreateImageVariationRequestSize>
     {
         private readonly string _value;
         private const string _256x256Value = "256x256";

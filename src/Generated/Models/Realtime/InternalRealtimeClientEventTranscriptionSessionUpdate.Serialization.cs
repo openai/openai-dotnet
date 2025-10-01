@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeClientEventTranscriptionSessionUpdate : InternalRealtimeClientEvent, IJsonModel<InternalRealtimeClientEventTranscriptionSessionUpdate>
+    public partial class InternalRealtimeClientEventTranscriptionSessionUpdate : InternalRealtimeClientEvent, IJsonModel<InternalRealtimeClientEventTranscriptionSessionUpdate>
     {
         internal InternalRealtimeClientEventTranscriptionSessionUpdate() : this(InternalRealtimeClientEventType.TranscriptionSessionUpdate, null, null, null)
         {

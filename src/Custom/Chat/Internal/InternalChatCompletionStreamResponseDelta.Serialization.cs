@@ -5,7 +5,7 @@ using System.Text.Json;
 namespace OpenAI.Chat;
 
 [CodeGenSerialization(nameof(Content), SerializationValueHook = nameof(SerializeContentValue), DeserializationValueHook = nameof(DeserializeContentValue))]
-internal partial class InternalChatCompletionStreamResponseDelta
+public partial class InternalChatCompletionStreamResponseDelta
 {
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private void SerializeContentValue(Utf8JsonWriter writer, ModelReaderWriterOptions options)

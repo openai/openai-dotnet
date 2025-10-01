@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalToolChoiceObjectFileSearch : InternalToolChoiceObject
+    public partial class InternalToolChoiceObjectFileSearch : InternalToolChoiceObject
     {
         public InternalToolChoiceObjectFileSearch() : this(InternalToolChoiceObjectType.FileSearch, null)
         {

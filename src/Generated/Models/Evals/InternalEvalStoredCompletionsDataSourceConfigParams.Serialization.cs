@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalStoredCompletionsDataSourceConfigParams : InternalEvalDataSourceConfigParams, IJsonModel<InternalEvalStoredCompletionsDataSourceConfigParams>
+    public partial class InternalEvalStoredCompletionsDataSourceConfigParams : InternalEvalDataSourceConfigParams, IJsonModel<InternalEvalStoredCompletionsDataSourceConfigParams>
     {
         void IJsonModel<InternalEvalStoredCompletionsDataSourceConfigParams>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

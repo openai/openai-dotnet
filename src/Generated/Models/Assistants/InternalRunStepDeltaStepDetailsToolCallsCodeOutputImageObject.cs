@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject : RunStepUpdateCodeInterpreterOutput
+    public partial class InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject : RunStepUpdateCodeInterpreterOutput
     {
         internal InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObject(int index) : base(InternalRunStepDetailsCodeInterpreterOutputType.Image)
         {

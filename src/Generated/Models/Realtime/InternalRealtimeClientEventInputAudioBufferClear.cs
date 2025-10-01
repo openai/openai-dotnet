@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeClientEventInputAudioBufferClear : InternalRealtimeClientEvent
+    public partial class InternalRealtimeClientEventInputAudioBufferClear : InternalRealtimeClientEvent
     {
         public InternalRealtimeClientEventInputAudioBufferClear() : this(InternalRealtimeClientEventType.InputAudioBufferClear, null, null)
         {

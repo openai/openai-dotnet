@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace OpenAI.Realtime;
 
-internal partial class InternalRealtimeNoTurnDetection : IJsonModel<InternalRealtimeNoTurnDetection>
+public partial class InternalRealtimeNoTurnDetection : IJsonModel<InternalRealtimeNoTurnDetection>
 {
     void IJsonModel<InternalRealtimeNoTurnDetection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         => CustomSerializationHelpers.SerializeInstance(this, SerializeInternalRealtimeNoTurnDetection, writer, options);

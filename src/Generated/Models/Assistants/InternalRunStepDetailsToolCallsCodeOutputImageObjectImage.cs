@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalRunStepDetailsToolCallsCodeOutputImageObjectImage
+    public partial class InternalRunStepDetailsToolCallsCodeOutputImageObjectImage
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

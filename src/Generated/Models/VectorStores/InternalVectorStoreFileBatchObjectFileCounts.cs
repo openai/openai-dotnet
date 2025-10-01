@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.VectorStores
 {
-    internal partial class InternalVectorStoreFileBatchObjectFileCounts
+    public partial class InternalVectorStoreFileBatchObjectFileCounts
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

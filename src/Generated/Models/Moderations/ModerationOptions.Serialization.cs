@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Moderations
 {
-    internal partial class ModerationOptions : IJsonModel<ModerationOptions>
+    public partial class ModerationOptions : IJsonModel<ModerationOptions>
     {
         void IJsonModel<ModerationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.Files
 {
-    internal partial class InternalUpload : IJsonModel<InternalUpload>
+    public partial class InternalUpload : IJsonModel<InternalUpload>
     {
         internal InternalUpload()
         {

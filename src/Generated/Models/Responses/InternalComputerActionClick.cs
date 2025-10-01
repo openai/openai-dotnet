@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalComputerActionClick : ComputerCallAction
+    public partial class InternalComputerActionClick : ComputerCallAction
     {
         public InternalComputerActionClick(ComputerCallActionMouseButton button, int x, int y) : base(ComputerCallActionKind.Click)
         {

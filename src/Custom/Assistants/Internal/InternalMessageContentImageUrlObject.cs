@@ -10,6 +10,6 @@ namespace OpenAI.Assistants;
 /// create an instance of this type.
 /// </remarks>
 [CodeGenType("MessageContentImageUrlObject")]
-internal partial class InternalMessageContentImageUrlObject
+public partial class InternalMessageContentImageUrlObject
 {
 }

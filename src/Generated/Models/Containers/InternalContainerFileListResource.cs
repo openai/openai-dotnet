@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Containers
 {
-    internal partial class InternalContainerFileListResource
+    public partial class InternalContainerFileListResource
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

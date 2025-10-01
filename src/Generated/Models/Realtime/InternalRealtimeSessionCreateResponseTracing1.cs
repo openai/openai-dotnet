@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeSessionCreateResponseTracing1
+    public partial class InternalRealtimeSessionCreateResponseTracing1
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

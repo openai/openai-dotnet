@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Internal
 {
-    internal partial class InternalWebSearchLocation : IJsonModel<InternalWebSearchLocation>
+    public partial class InternalWebSearchLocation : IJsonModel<InternalWebSearchLocation>
     {
         void IJsonModel<InternalWebSearchLocation>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

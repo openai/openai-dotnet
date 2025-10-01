@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalUpdateEvalRequest : IJsonModel<InternalUpdateEvalRequest>
+    public partial class InternalUpdateEvalRequest : IJsonModel<InternalUpdateEvalRequest>
     {
         void IJsonModel<InternalUpdateEvalRequest>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

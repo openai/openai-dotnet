@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Images
 {
-    internal readonly partial struct InternalCreateImageRequestModel : IEquatable<InternalCreateImageRequestModel>
+    public readonly partial struct InternalCreateImageRequestModel : IEquatable<InternalCreateImageRequestModel>
     {
         private readonly string _value;
         private const string DallE2Value = "dall-e-2";

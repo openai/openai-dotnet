@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Assistants
 {
-    internal partial class AssistantClientGetAssistantsAsyncCollectionResultOfT : AsyncCollectionResult<Assistant>
+    public partial class AssistantClientGetAssistantsAsyncCollectionResultOfT : AsyncCollectionResult<Assistant>
     {
         private readonly AssistantClient _client;
         private readonly int? _limit;

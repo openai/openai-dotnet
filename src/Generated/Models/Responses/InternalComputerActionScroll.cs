@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalComputerActionScroll : ComputerCallAction
+    public partial class InternalComputerActionScroll : ComputerCallAction
     {
         public InternalComputerActionScroll(int x, int y, int scrollX, int scrollY) : base(ComputerCallActionKind.Scroll)
         {

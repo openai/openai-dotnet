@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.VectorStores
 {
-    internal partial class InternalVectorStoreFileContentResponseDatum : IJsonModel<InternalVectorStoreFileContentResponseDatum>
+    public partial class InternalVectorStoreFileContentResponseDatum : IJsonModel<InternalVectorStoreFileContentResponseDatum>
     {
         void IJsonModel<InternalVectorStoreFileContentResponseDatum>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

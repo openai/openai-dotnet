@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalResponsesTextFormatJsonSchema : ResponseTextFormat
+    public partial class InternalResponsesTextFormatJsonSchema : ResponseTextFormat
     {
         public InternalResponsesTextFormatJsonSchema(string name, BinaryData schema) : base(InternalResponsesTextFormatType.JsonSchema)
         {

@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalMessageContentTextObject : MessageContent, IJsonModel<InternalMessageContentTextObject>
+    public partial class InternalMessageContentTextObject : MessageContent, IJsonModel<InternalMessageContentTextObject>
     {
         internal InternalMessageContentTextObject() : this(InternalMessageContentType.Text, null, null)
         {

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class UnknownAssistantToolDefinition : ToolDefinition, IJsonModel<ToolDefinition>
+    public partial class UnknownAssistantToolDefinition : ToolDefinition, IJsonModel<ToolDefinition>
     {
         internal UnknownAssistantToolDefinition() : this(default, null)
         {

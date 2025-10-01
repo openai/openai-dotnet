@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Images
 {
-    internal readonly partial struct InternalCreateImageVariationRequestResponseFormat : IEquatable<InternalCreateImageVariationRequestResponseFormat>
+    public readonly partial struct InternalCreateImageVariationRequestResponseFormat : IEquatable<InternalCreateImageVariationRequestResponseFormat>
     {
         private readonly string _value;
         private const string UrlValue = "url";

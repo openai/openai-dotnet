@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalComputerUsePreviewToolCallOutputItemParam : InternalItemParam
+    public partial class InternalComputerUsePreviewToolCallOutputItemParam : InternalItemParam
     {
         public InternalComputerUsePreviewToolCallOutputItemParam(string callId, ComputerCallOutput output) : base(InternalItemType.ComputerCallOutput)
         {

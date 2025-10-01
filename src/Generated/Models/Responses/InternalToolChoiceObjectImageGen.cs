@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalToolChoiceObjectImageGen : InternalToolChoiceObject
+    public partial class InternalToolChoiceObjectImageGen : InternalToolChoiceObject
     {
         public InternalToolChoiceObjectImageGen() : this(InternalToolChoiceObjectType.ImageGeneration, null)
         {

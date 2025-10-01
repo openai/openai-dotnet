@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Audio
 {
-    internal partial class InternalCreateTranslationResponseJson
+    public partial class InternalCreateTranslationResponseJson
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalRequiredFunctionToolCall : InternalRequiredToolCall, IJsonModel<InternalRequiredFunctionToolCall>
+    public partial class InternalRequiredFunctionToolCall : InternalRequiredToolCall, IJsonModel<InternalRequiredFunctionToolCall>
     {
         internal InternalRequiredFunctionToolCall()
         {

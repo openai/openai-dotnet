@@ -15,7 +15,7 @@ namespace OpenAI.Assistants;
 [CodeGenSuppress("ModifyMessage", typeof(string), typeof(string), typeof(MessageModificationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("DeleteMessageAsync", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("DeleteMessage", typeof(string), typeof(string), typeof(CancellationToken))]
-internal partial class InternalAssistantMessageClient
+public partial class InternalAssistantMessageClient
 {
     // CUSTOM:
     // - Used a custom pipeline.

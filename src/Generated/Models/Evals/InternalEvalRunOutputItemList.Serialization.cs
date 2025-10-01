@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalRunOutputItemList : IJsonModel<InternalEvalRunOutputItemList>
+    public partial class InternalEvalRunOutputItemList : IJsonModel<InternalEvalRunOutputItemList>
     {
         internal InternalEvalRunOutputItemList() : this(null, null, null, null, default, null)
         {

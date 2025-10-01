@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalUnknownMessageContent : MessageContent, IJsonModel<MessageContent>
+    public partial class InternalUnknownMessageContent : MessageContent, IJsonModel<MessageContent>
     {
         internal InternalUnknownMessageContent() : this(default, null)
         {

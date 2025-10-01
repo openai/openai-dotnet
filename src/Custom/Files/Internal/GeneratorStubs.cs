@@ -6,10 +6,10 @@ using System.Text.Json;
 namespace OpenAI.Files;
 
 [CodeGenType("DeleteFileResponseObject")]
-internal readonly partial struct InternalDeleteFileResponseObject { }
-[CodeGenType("AddUploadPartRequest")] internal partial class InternalAddUploadPartRequest { }
+public readonly partial struct InternalDeleteFileResponseObject { }
+[CodeGenType("AddUploadPartRequest")] public partial class InternalAddUploadPartRequest { }
 
-[CodeGenType("CompleteUploadRequest")] internal partial class InternalCompleteUploadRequest
+[CodeGenType("CompleteUploadRequest")] public partial class InternalCompleteUploadRequest
 {
     public static implicit operator BinaryContent(InternalCompleteUploadRequest internalCompleteUploadRequest)
     {
@@ -21,7 +21,7 @@ internal readonly partial struct InternalDeleteFileResponseObject { }
     }
 }
 
-[CodeGenType("CreateUploadRequest")] internal partial class InternalCreateUploadRequest
+[CodeGenType("CreateUploadRequest")] public partial class InternalCreateUploadRequest
 {
     public static implicit operator BinaryContent(InternalCreateUploadRequest internalCreateUploadRequest)
     {
@@ -33,13 +33,13 @@ internal readonly partial struct InternalDeleteFileResponseObject { }
     }
 }
 
-[CodeGenType("CreateUploadRequestPurpose")] internal readonly partial struct InternalCreateUploadRequestPurpose { }
-[CodeGenType("ListFilesResponseObject")] internal readonly partial struct InternalListFilesResponseObject { }
+[CodeGenType("CreateUploadRequestPurpose")] public readonly partial struct InternalCreateUploadRequestPurpose { }
+[CodeGenType("ListFilesResponseObject")] public readonly partial struct InternalListFilesResponseObject { }
 [CodeGenType("Upload")]
-internal partial class InternalUpload
+public partial class InternalUpload
 {
 }
-[CodeGenType("UploadObject")] internal readonly partial struct InternalUploadObject { }
-[CodeGenType("UploadPart")] internal partial class InternalUploadPart { }
-[CodeGenType("UploadPartObject")] internal readonly partial struct InternalUploadPartObject { }
-[CodeGenType("UploadStatus")] internal readonly partial struct InternalUploadStatus { }
+[CodeGenType("UploadObject")] public readonly partial struct InternalUploadObject { }
+[CodeGenType("UploadPart")] public partial class InternalUploadPart { }
+[CodeGenType("UploadPartObject")] public readonly partial struct InternalUploadPartObject { }
+[CodeGenType("UploadStatus")] public readonly partial struct InternalUploadStatus { }

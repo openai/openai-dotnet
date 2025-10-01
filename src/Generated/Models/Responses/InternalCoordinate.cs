@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalCoordinate
+    public partial class InternalCoordinate
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

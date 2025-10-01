@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalRunResultCounts : IJsonModel<InternalEvalRunResultCounts>
+    public partial class InternalEvalRunResultCounts : IJsonModel<InternalEvalRunResultCounts>
     {
         internal InternalEvalRunResultCounts()
         {

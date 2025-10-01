@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalAssistantToolsFileSearchFileSearch : IJsonModel<InternalAssistantToolsFileSearchFileSearch>
+    public partial class InternalAssistantToolsFileSearchFileSearch : IJsonModel<InternalAssistantToolsFileSearchFileSearch>
     {
         void IJsonModel<InternalAssistantToolsFileSearchFileSearch>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

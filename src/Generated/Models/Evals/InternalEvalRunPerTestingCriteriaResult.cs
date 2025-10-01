@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalRunPerTestingCriteriaResult
+    public partial class InternalEvalRunPerTestingCriteriaResult
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

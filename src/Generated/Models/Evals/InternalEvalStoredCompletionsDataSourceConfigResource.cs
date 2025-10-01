@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalStoredCompletionsDataSourceConfigResource : InternalEvalDataSourceConfigResource
+    public partial class InternalEvalStoredCompletionsDataSourceConfigResource : InternalEvalDataSourceConfigResource
     {
         internal InternalEvalStoredCompletionsDataSourceConfigResource(IDictionary<string, string> metadata, IDictionary<string, BinaryData> schema) : base(InternalEvalDataSourceConfigType.StoredCompletions)
         {

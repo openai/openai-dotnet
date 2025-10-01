@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Moderations
 {
-    internal partial class InternalCreateModerationResponseResultCategoryAppliedInputTypes
+    public partial class InternalCreateModerationResponseResultCategoryAppliedInputTypes
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

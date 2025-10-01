@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalRunStepDetailsToolCallsFunctionObject : RunStepToolCall
+    public partial class InternalRunStepDetailsToolCallsFunctionObject : RunStepToolCall
     {
         internal InternalRunStepDetailsToolCallsFunctionObject(string id, InternalRunStepDetailsToolCallsFunctionObjectFunction function) : base(RunStepToolCallKind.Function, id)
         {

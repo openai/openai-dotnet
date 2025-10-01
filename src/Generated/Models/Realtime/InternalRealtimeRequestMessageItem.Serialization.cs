@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeRequestMessageItem : RealtimeItem, IJsonModel<InternalRealtimeRequestMessageItem>
+    public partial class InternalRealtimeRequestMessageItem : RealtimeItem, IJsonModel<InternalRealtimeRequestMessageItem>
     {
         internal InternalRealtimeRequestMessageItem() : this(InternalRealtimeItemType.Message, null, null, default, default)
         {

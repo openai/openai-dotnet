@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalResponsesTextFormatText : ResponseTextFormat
+    public partial class InternalResponsesTextFormatText : ResponseTextFormat
     {
         public InternalResponsesTextFormatText() : this(InternalResponsesTextFormatType.Text, null)
         {

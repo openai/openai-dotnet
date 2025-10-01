@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalComputerToolCallOutputItemOutputComputerScreenshot : ComputerCallOutput
+    public partial class InternalComputerToolCallOutputItemOutputComputerScreenshot : ComputerCallOutput
     {
         public InternalComputerToolCallOutputItemOutputComputerScreenshot() : this(InternalComputerUsePreviewToolCallOutputOutputType.Screenshot, null, null, null)
         {

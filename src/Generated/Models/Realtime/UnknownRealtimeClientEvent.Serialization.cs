@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class UnknownRealtimeClientEvent : InternalRealtimeClientEvent, IJsonModel<InternalRealtimeClientEvent>
+    public partial class UnknownRealtimeClientEvent : InternalRealtimeClientEvent, IJsonModel<InternalRealtimeClientEvent>
     {
         internal UnknownRealtimeClientEvent() : this(default, null, null)
         {

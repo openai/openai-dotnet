@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalUnknownCodeInterpreterContainerConfiguration : CodeInterpreterToolContainerConfiguration, IJsonModel<CodeInterpreterToolContainerConfiguration>
+    public partial class InternalUnknownCodeInterpreterContainerConfiguration : CodeInterpreterToolContainerConfiguration, IJsonModel<CodeInterpreterToolContainerConfiguration>
     {
         internal InternalUnknownCodeInterpreterContainerConfiguration() : this(default, null)
         {

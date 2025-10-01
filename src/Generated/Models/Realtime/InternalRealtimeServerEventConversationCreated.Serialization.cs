@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeServerEventConversationCreated : RealtimeUpdate, IJsonModel<InternalRealtimeServerEventConversationCreated>
+    public partial class InternalRealtimeServerEventConversationCreated : RealtimeUpdate, IJsonModel<InternalRealtimeServerEventConversationCreated>
     {
         internal InternalRealtimeServerEventConversationCreated() : this(RealtimeUpdateKind.ConversationCreated, null, null, null)
         {

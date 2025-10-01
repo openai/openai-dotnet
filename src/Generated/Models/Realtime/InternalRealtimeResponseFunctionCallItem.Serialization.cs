@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeResponseFunctionCallItem : InternalRealtimeResponseItem, IJsonModel<InternalRealtimeResponseFunctionCallItem>
+    public partial class InternalRealtimeResponseFunctionCallItem : InternalRealtimeResponseItem, IJsonModel<InternalRealtimeResponseFunctionCallItem>
     {
         internal InternalRealtimeResponseFunctionCallItem() : this(null, InternalRealtimeItemType.FunctionCall, null, null, null, null, null, default)
         {

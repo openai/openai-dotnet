@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeRequestAssistantMessageItem : InternalRealtimeRequestMessageItem
+    public partial class InternalRealtimeRequestAssistantMessageItem : InternalRealtimeRequestMessageItem
     {
         internal InternalRealtimeRequestAssistantMessageItem(InternalRealtimeItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, ConversationMessageRole role, ConversationItemStatus? status, IList<ConversationContentPart> content) : base(kind, id, additionalBinaryDataProperties, role, status)
         {

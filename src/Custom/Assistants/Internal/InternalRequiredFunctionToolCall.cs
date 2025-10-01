@@ -4,7 +4,7 @@ namespace OpenAI.Assistants;
 /// A requested invocation of a defined function tool, needed by an Assistants API run to continue.
 /// </summary>
 [CodeGenType("RunToolCallObject")]
-internal partial class InternalRequiredFunctionToolCall : InternalRequiredToolCall
+public partial class InternalRequiredFunctionToolCall : InternalRequiredToolCall
 {
     // CUSTOM:
     //  - 'Function' is hidden and its constituent 'Name' and 'Arguments' members are promoted to direct visibility

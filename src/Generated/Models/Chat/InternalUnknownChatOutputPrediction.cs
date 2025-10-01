@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Chat
 {
-    internal partial class InternalUnknownChatOutputPrediction : ChatOutputPrediction
+    public partial class InternalUnknownChatOutputPrediction : ChatOutputPrediction
     {
         internal InternalUnknownChatOutputPrediction(InternalChatOutputPredictionKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {

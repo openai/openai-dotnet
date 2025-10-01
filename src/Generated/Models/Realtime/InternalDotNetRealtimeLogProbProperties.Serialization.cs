@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalDotNetRealtimeLogProbProperties : IJsonModel<InternalDotNetRealtimeLogProbProperties>
+    public partial class InternalDotNetRealtimeLogProbProperties : IJsonModel<InternalDotNetRealtimeLogProbProperties>
     {
         internal InternalDotNetRealtimeLogProbProperties() : this(null, default, null, null)
         {

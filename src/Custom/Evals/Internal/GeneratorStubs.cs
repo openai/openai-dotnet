@@ -3,92 +3,92 @@ using System.ClientModel;
 
 namespace OpenAI.Evals;
 
-[CodeGenType("CreateEvalRequest")] internal partial class InternalCreateEvalRequest {}
-[CodeGenType("CreateEvalRunRequest")] internal partial class InternalCreateEvalRunRequest {}
-[CodeGenType("DeleteEvalResponse")] internal partial class InternalDeleteEvalResponse {}
-[CodeGenType("DeleteEvalResponseObject")] internal readonly partial struct InternalDeleteEvalResponseObject {}
-[CodeGenType("DeleteEvalRunResponse")] internal partial class InternalDeleteEvalRunResponse {}
-[CodeGenType("DeleteEvalRunResponseObject")] internal readonly partial struct InternalDeleteEvalRunResponseObject {}
-[CodeGenType("Eval")] internal partial class InternalEval {}
-[CodeGenType("EvalApiError")] internal partial class InternalEvalApiError {}
-[CodeGenType("EvalCompletionsRunDataSourceParams")] internal partial class InternalEvalCompletionsRunDataSourceParams {}
-[CodeGenType("EvalCompletionsRunDataSourceParamsInputMessages1")] internal partial class InternalEvalCompletionsRunDataSourceParamsInputMessages1 {}
-[CodeGenType("EvalCompletionsRunDataSourceParamsInputMessages1Type")] internal readonly partial struct InternalEvalCompletionsRunDataSourceParamsInputMessages1Type {}
-[CodeGenType("EvalCompletionsRunDataSourceParamsInputMessages2")] internal partial class InternalEvalCompletionsRunDataSourceParamsInputMessages2 {}
-[CodeGenType("EvalCompletionsRunDataSourceParamsInputMessages2Type")] internal readonly partial struct InternalEvalCompletionsRunDataSourceParamsInputMessages2Type {}
-[CodeGenType("EvalCompletionsRunDataSourceParamsSamplingParams")] internal partial class InternalEvalCompletionsRunDataSourceParamsSamplingParams {}
-[CodeGenType("EvalCustomDataSourceConfigParams")] internal partial class InternalEvalCustomDataSourceConfigParams {}
-[CodeGenType("EvalCustomDataSourceConfigResource")] internal partial class InternalEvalCustomDataSourceConfigResource {}
-[CodeGenType("EvalDataSourceConfigParams")] internal partial class InternalEvalDataSourceConfigParams {}
-[CodeGenType("EvalDataSourceConfigResource")] internal partial class InternalEvalDataSourceConfigResource {}
-[CodeGenType("EvalDataSourceConfigType")] internal readonly partial struct InternalEvalDataSourceConfigType {}
-[CodeGenType("EvalGraderParams")] internal partial class InternalEvalGraderParams {}
-[CodeGenType("EvalGraderResource")] internal partial class InternalEvalGraderResource {}
-[CodeGenType("EvalGraderType")] internal readonly partial struct InternalEvalGraderType {}
-[CodeGenType("EvalItem")] internal partial class InternalEvalItem {}
-[CodeGenType("EvalItemContent")] internal partial class InternalEvalItemContent {}
-[CodeGenType("EvalItemContentInputText")] internal partial class InternalEvalItemContentInputText {}
-[CodeGenType("EvalItemContentOutputText")] internal partial class InternalEvalItemContentOutputText {}
-[CodeGenType("EvalItemContentType")] internal readonly partial struct InternalEvalItemContentType {}
-[CodeGenType("EvalItemRole")] internal readonly partial struct InternalEvalItemRole {}
-[CodeGenType("EvalItemType")] internal readonly partial struct InternalEvalItemType {}
-[CodeGenType("EvalJsonlRunDataSourceParams")] internal partial class InternalEvalJsonlRunDataSourceParams {}
-[CodeGenType("EvalLabelModelGraderParams")] internal partial class InternalEvalLabelModelGraderParams {}
-[CodeGenType("EvalLabelModelGraderParamsInput")] internal partial class InternalEvalLabelModelGraderParamsInput {}
-[CodeGenType("EvalLabelModelGraderResource")] internal partial class InternalEvalLabelModelGraderResource {}
-[CodeGenType("EvalList")] internal partial class InternalEvalList {}
-[CodeGenType("EvalListObject")] internal readonly partial struct InternalEvalListObject {}
-[CodeGenType("EvalLogsDataSourceConfigParams")] internal partial class InternalEvalLogsDataSourceConfigParams {}
-[CodeGenType("EvalObject")] internal readonly partial struct InternalEvalObject {}
-[CodeGenType("EvalPythonGraderParams")] internal partial class InternalEvalPythonGraderParams {}
-[CodeGenType("EvalPythonGraderResource")] internal partial class InternalEvalPythonGraderResource {}
-[CodeGenType("EvalResponsesRunDataSourceParams")] internal partial class InternalEvalResponsesRunDataSourceParams {}
-[CodeGenType("EvalResponsesRunDataSourceParamsInputMessages1")] internal partial class InternalEvalResponsesRunDataSourceParamsInputMessages1 {}
-[CodeGenType("EvalResponsesRunDataSourceParamsInputMessages1Type")] internal readonly partial struct InternalEvalResponsesRunDataSourceParamsInputMessages1Type {}
-[CodeGenType("EvalResponsesRunDataSourceParamsInputMessages2")] internal partial class InternalEvalResponsesRunDataSourceParamsInputMessages2 {}
-[CodeGenType("EvalResponsesRunDataSourceParamsInputMessages2Type")] internal readonly partial struct InternalEvalResponsesRunDataSourceParamsInputMessages2Type {}
-[CodeGenType("EvalResponsesRunDataSourceParamsInputMessagesTemplate1")] internal partial class InternalEvalResponsesRunDataSourceParamsInputMessagesTemplate1 {}
-[CodeGenType("EvalResponsesRunDataSourceParamsSamplingParams")] internal partial class InternalEvalResponsesRunDataSourceParamsSamplingParams {}
-[CodeGenType("EvalRun")] internal partial class InternalEvalRun {}
-[CodeGenType("EvalRunDataContentSource")] internal partial class InternalEvalRunDataContentSource {}
-[CodeGenType("EvalRunDataContentSourceType")] internal readonly partial struct InternalEvalRunDataContentSourceType {}
-[CodeGenType("EvalRunDataSourceParams")] internal partial class InternalEvalRunDataSourceParams {}
-[CodeGenType("EvalRunDataSourceResource")] internal partial class InternalEvalRunDataSourceResource {}
-[CodeGenType("EvalRunDataSourceType")] internal readonly partial struct InternalEvalRunDataSourceType {}
-[CodeGenType("EvalRunFileContentDataContentSource")] internal partial class InternalEvalRunFileContentDataContentSource {}
-[CodeGenType("EvalRunFileContentDataContentSourceContent")] internal partial class InternalEvalRunFileContentDataContentSourceContent {}
-[CodeGenType("EvalRunFileIdDataContentSource")] internal partial class InternalEvalRunFileIdDataContentSource {}
-[CodeGenType("EvalRunList")] internal partial class InternalEvalRunList {}
-[CodeGenType("EvalRunListObject")] internal readonly partial struct InternalEvalRunListObject {}
-[CodeGenType("EvalRunObject")] internal readonly partial struct InternalEvalRunObject {}
-[CodeGenType("EvalRunOutputItem")] internal partial class InternalEvalRunOutputItem {}
-[CodeGenType("EvalRunOutputItemList")] internal partial class InternalEvalRunOutputItemList {}
-[CodeGenType("EvalRunOutputItemListObject")] internal readonly partial struct InternalEvalRunOutputItemListObject {}
-[CodeGenType("EvalRunOutputItemObject")] internal readonly partial struct InternalEvalRunOutputItemObject {}
-[CodeGenType("EvalRunOutputItemSample")] internal partial class InternalEvalRunOutputItemSample {}
-[CodeGenType("EvalRunOutputItemSampleInput")] internal partial class InternalEvalRunOutputItemSampleInput {}
-[CodeGenType("EvalRunOutputItemSampleOutput")] internal partial class InternalEvalRunOutputItemSampleOutput {}
-[CodeGenType("EvalRunOutputItemSampleUsage")] internal partial class InternalEvalRunOutputItemSampleUsage {}
-[CodeGenType("EvalRunPerModelUsage")] internal partial class InternalEvalRunPerModelUsage {}
-[CodeGenType("EvalRunPerTestingCriteriaResult")] internal partial class InternalEvalRunPerTestingCriteriaResult {}
-[CodeGenType("EvalRunResponsesDataContentSource")] internal partial class InternalEvalRunResponsesDataContentSource {}
-[CodeGenType("EvalRunResultCounts")] internal partial class InternalEvalRunResultCounts {}
-[CodeGenType("EvalRunStoredCompletionsDataContentSource")] internal partial class InternalEvalRunStoredCompletionsDataContentSource {}
-[CodeGenType("EvalScoreModelGraderParams")] internal partial class InternalEvalScoreModelGraderParams {}
-[CodeGenType("EvalScoreModelGraderResource")] internal partial class InternalEvalScoreModelGraderResource {}
-[CodeGenType("EvalsErrorNotFoundResponse")] internal partial class InternalEvalsErrorNotFoundResponse {}
-[CodeGenType("EvalsErrorResponse")] internal partial class InternalEvalsErrorResponse {}
-[CodeGenType("EvalStoredCompletionsDataSourceConfigResource")] internal partial class InternalEvalStoredCompletionsDataSourceConfigResource {}
-[CodeGenType("EvalStringCheckGraderParams")] internal partial class InternalEvalStringCheckGraderParams {}
-[CodeGenType("EvalStringCheckGraderResource")] internal partial class InternalEvalStringCheckGraderResource {}
-[CodeGenType("EvalStringCheckGraderResourceOperation")] internal readonly partial struct InternalEvalStringCheckGraderResourceOperation {}
-[CodeGenType("EvalTextSimilarityGraderParams")] internal partial class InternalEvalTextSimilarityGraderParams {}
-[CodeGenType("EvalTextSimilarityGraderResource")] internal partial class InternalEvalTextSimilarityGraderResource {}
-[CodeGenType("EvalTextSimilarityGraderResourceEvaluationMetric")] internal readonly partial struct InternalEvalTextSimilarityGraderResourceEvaluationMetric {}
-[CodeGenType("GetEvalRunOutputItemsRequestStatus")] internal readonly partial struct InternalGetEvalRunOutputItemsRequestStatus {}
-[CodeGenType("GetEvalRunsRequestStatus")] internal readonly partial struct InternalGetEvalRunsRequestStatus {}
-[CodeGenType("ListEvalsRequestOrderBy")] internal readonly partial struct InternalListEvalsRequestOrderBy {}
-[CodeGenType("MetadataPropertyForRequest")] internal partial class InternalMetadataPropertyForRequest
+[CodeGenType("CreateEvalRequest")] public partial class InternalCreateEvalRequest {}
+[CodeGenType("CreateEvalRunRequest")] public partial class InternalCreateEvalRunRequest {}
+[CodeGenType("DeleteEvalResponse")] public partial class InternalDeleteEvalResponse {}
+[CodeGenType("DeleteEvalResponseObject")] public readonly partial struct InternalDeleteEvalResponseObject {}
+[CodeGenType("DeleteEvalRunResponse")] public partial class InternalDeleteEvalRunResponse {}
+[CodeGenType("DeleteEvalRunResponseObject")] public readonly partial struct InternalDeleteEvalRunResponseObject {}
+[CodeGenType("Eval")] public partial class InternalEval {}
+[CodeGenType("EvalApiError")] public partial class InternalEvalApiError {}
+[CodeGenType("EvalCompletionsRunDataSourceParams")] public partial class InternalEvalCompletionsRunDataSourceParams {}
+[CodeGenType("EvalCompletionsRunDataSourceParamsInputMessages1")] public partial class InternalEvalCompletionsRunDataSourceParamsInputMessages1 {}
+[CodeGenType("EvalCompletionsRunDataSourceParamsInputMessages1Type")] public readonly partial struct InternalEvalCompletionsRunDataSourceParamsInputMessages1Type {}
+[CodeGenType("EvalCompletionsRunDataSourceParamsInputMessages2")] public partial class InternalEvalCompletionsRunDataSourceParamsInputMessages2 {}
+[CodeGenType("EvalCompletionsRunDataSourceParamsInputMessages2Type")] public readonly partial struct InternalEvalCompletionsRunDataSourceParamsInputMessages2Type {}
+[CodeGenType("EvalCompletionsRunDataSourceParamsSamplingParams")] public partial class InternalEvalCompletionsRunDataSourceParamsSamplingParams {}
+[CodeGenType("EvalCustomDataSourceConfigParams")] public partial class InternalEvalCustomDataSourceConfigParams {}
+[CodeGenType("EvalCustomDataSourceConfigResource")] public partial class InternalEvalCustomDataSourceConfigResource {}
+[CodeGenType("EvalDataSourceConfigParams")] public partial class InternalEvalDataSourceConfigParams {}
+[CodeGenType("EvalDataSourceConfigResource")] public partial class InternalEvalDataSourceConfigResource {}
+[CodeGenType("EvalDataSourceConfigType")] public readonly partial struct InternalEvalDataSourceConfigType {}
+[CodeGenType("EvalGraderParams")] public partial class InternalEvalGraderParams {}
+[CodeGenType("EvalGraderResource")] public partial class InternalEvalGraderResource {}
+[CodeGenType("EvalGraderType")] public readonly partial struct InternalEvalGraderType {}
+[CodeGenType("EvalItem")] public partial class InternalEvalItem {}
+[CodeGenType("EvalItemContent")] public partial class InternalEvalItemContent {}
+[CodeGenType("EvalItemContentInputText")] public partial class InternalEvalItemContentInputText {}
+[CodeGenType("EvalItemContentOutputText")] public partial class InternalEvalItemContentOutputText {}
+[CodeGenType("EvalItemContentType")] public readonly partial struct InternalEvalItemContentType {}
+[CodeGenType("EvalItemRole")] public readonly partial struct InternalEvalItemRole {}
+[CodeGenType("EvalItemType")] public readonly partial struct InternalEvalItemType {}
+[CodeGenType("EvalJsonlRunDataSourceParams")] public partial class InternalEvalJsonlRunDataSourceParams {}
+[CodeGenType("EvalLabelModelGraderParams")] public partial class InternalEvalLabelModelGraderParams {}
+[CodeGenType("EvalLabelModelGraderParamsInput")] public partial class InternalEvalLabelModelGraderParamsInput {}
+[CodeGenType("EvalLabelModelGraderResource")] public partial class InternalEvalLabelModelGraderResource {}
+[CodeGenType("EvalList")] public partial class InternalEvalList {}
+[CodeGenType("EvalListObject")] public readonly partial struct InternalEvalListObject {}
+[CodeGenType("EvalLogsDataSourceConfigParams")] public partial class InternalEvalLogsDataSourceConfigParams {}
+[CodeGenType("EvalObject")] public readonly partial struct InternalEvalObject {}
+[CodeGenType("EvalPythonGraderParams")] public partial class InternalEvalPythonGraderParams {}
+[CodeGenType("EvalPythonGraderResource")] public partial class InternalEvalPythonGraderResource {}
+[CodeGenType("EvalResponsesRunDataSourceParams")] public partial class InternalEvalResponsesRunDataSourceParams {}
+[CodeGenType("EvalResponsesRunDataSourceParamsInputMessages1")] public partial class InternalEvalResponsesRunDataSourceParamsInputMessages1 {}
+[CodeGenType("EvalResponsesRunDataSourceParamsInputMessages1Type")] public readonly partial struct InternalEvalResponsesRunDataSourceParamsInputMessages1Type {}
+[CodeGenType("EvalResponsesRunDataSourceParamsInputMessages2")] public partial class InternalEvalResponsesRunDataSourceParamsInputMessages2 {}
+[CodeGenType("EvalResponsesRunDataSourceParamsInputMessages2Type")] public readonly partial struct InternalEvalResponsesRunDataSourceParamsInputMessages2Type {}
+[CodeGenType("EvalResponsesRunDataSourceParamsInputMessagesTemplate1")] public partial class InternalEvalResponsesRunDataSourceParamsInputMessagesTemplate1 {}
+[CodeGenType("EvalResponsesRunDataSourceParamsSamplingParams")] public partial class InternalEvalResponsesRunDataSourceParamsSamplingParams {}
+[CodeGenType("EvalRun")] public partial class InternalEvalRun {}
+[CodeGenType("EvalRunDataContentSource")] public partial class InternalEvalRunDataContentSource {}
+[CodeGenType("EvalRunDataContentSourceType")] public readonly partial struct InternalEvalRunDataContentSourceType {}
+[CodeGenType("EvalRunDataSourceParams")] public partial class InternalEvalRunDataSourceParams {}
+[CodeGenType("EvalRunDataSourceResource")] public partial class InternalEvalRunDataSourceResource {}
+[CodeGenType("EvalRunDataSourceType")] public readonly partial struct InternalEvalRunDataSourceType {}
+[CodeGenType("EvalRunFileContentDataContentSource")] public partial class InternalEvalRunFileContentDataContentSource {}
+[CodeGenType("EvalRunFileContentDataContentSourceContent")] public partial class InternalEvalRunFileContentDataContentSourceContent {}
+[CodeGenType("EvalRunFileIdDataContentSource")] public partial class InternalEvalRunFileIdDataContentSource {}
+[CodeGenType("EvalRunList")] public partial class InternalEvalRunList {}
+[CodeGenType("EvalRunListObject")] public readonly partial struct InternalEvalRunListObject {}
+[CodeGenType("EvalRunObject")] public readonly partial struct InternalEvalRunObject {}
+[CodeGenType("EvalRunOutputItem")] public partial class InternalEvalRunOutputItem {}
+[CodeGenType("EvalRunOutputItemList")] public partial class InternalEvalRunOutputItemList {}
+[CodeGenType("EvalRunOutputItemListObject")] public readonly partial struct InternalEvalRunOutputItemListObject {}
+[CodeGenType("EvalRunOutputItemObject")] public readonly partial struct InternalEvalRunOutputItemObject {}
+[CodeGenType("EvalRunOutputItemSample")] public partial class InternalEvalRunOutputItemSample {}
+[CodeGenType("EvalRunOutputItemSampleInput")] public partial class InternalEvalRunOutputItemSampleInput {}
+[CodeGenType("EvalRunOutputItemSampleOutput")] public partial class InternalEvalRunOutputItemSampleOutput {}
+[CodeGenType("EvalRunOutputItemSampleUsage")] public partial class InternalEvalRunOutputItemSampleUsage {}
+[CodeGenType("EvalRunPerModelUsage")] public partial class InternalEvalRunPerModelUsage {}
+[CodeGenType("EvalRunPerTestingCriteriaResult")] public partial class InternalEvalRunPerTestingCriteriaResult {}
+[CodeGenType("EvalRunResponsesDataContentSource")] public partial class InternalEvalRunResponsesDataContentSource {}
+[CodeGenType("EvalRunResultCounts")] public partial class InternalEvalRunResultCounts {}
+[CodeGenType("EvalRunStoredCompletionsDataContentSource")] public partial class InternalEvalRunStoredCompletionsDataContentSource {}
+[CodeGenType("EvalScoreModelGraderParams")] public partial class InternalEvalScoreModelGraderParams {}
+[CodeGenType("EvalScoreModelGraderResource")] public partial class InternalEvalScoreModelGraderResource {}
+[CodeGenType("EvalsErrorNotFoundResponse")] public partial class InternalEvalsErrorNotFoundResponse {}
+[CodeGenType("EvalsErrorResponse")] public partial class InternalEvalsErrorResponse {}
+[CodeGenType("EvalStoredCompletionsDataSourceConfigResource")] public partial class InternalEvalStoredCompletionsDataSourceConfigResource {}
+[CodeGenType("EvalStringCheckGraderParams")] public partial class InternalEvalStringCheckGraderParams {}
+[CodeGenType("EvalStringCheckGraderResource")] public partial class InternalEvalStringCheckGraderResource {}
+[CodeGenType("EvalStringCheckGraderResourceOperation")] public readonly partial struct InternalEvalStringCheckGraderResourceOperation {}
+[CodeGenType("EvalTextSimilarityGraderParams")] public partial class InternalEvalTextSimilarityGraderParams {}
+[CodeGenType("EvalTextSimilarityGraderResource")] public partial class InternalEvalTextSimilarityGraderResource {}
+[CodeGenType("EvalTextSimilarityGraderResourceEvaluationMetric")] public readonly partial struct InternalEvalTextSimilarityGraderResourceEvaluationMetric {}
+[CodeGenType("GetEvalRunOutputItemsRequestStatus")] public readonly partial struct InternalGetEvalRunOutputItemsRequestStatus {}
+[CodeGenType("GetEvalRunsRequestStatus")] public readonly partial struct InternalGetEvalRunsRequestStatus {}
+[CodeGenType("ListEvalsRequestOrderBy")] public readonly partial struct InternalListEvalsRequestOrderBy {}
+[CodeGenType("MetadataPropertyForRequest")] public partial class InternalMetadataPropertyForRequest
 {
     public static implicit operator BinaryContent(InternalMetadataPropertyForRequest internalMetadataPropertyForRequest)
     {
@@ -99,25 +99,25 @@ namespace OpenAI.Evals;
         return BinaryContent.Create(internalMetadataPropertyForRequest, ModelSerializationExtensions.WireOptions);
     }
 }
-[CodeGenType("UnknownEvalDataSourceConfigParams")] internal partial class InternalUnknownEvalDataSourceConfigParams {}
-[CodeGenType("UnknownEvalDataSourceConfigResource")] internal partial class InternalUnknownEvalDataSourceConfigResource {}
-[CodeGenType("UnknownEvalGraderParams")] internal partial class InternalUnknownEvalGraderParams {}
-[CodeGenType("UnknownEvalGraderResource")] internal partial class InternalUnknownEvalGraderResource {}
-[CodeGenType("UnknownEvalItemContent")] internal partial class InternalUnknownEvalItemContent {}
-[CodeGenType("UnknownEvalRunDataContentSource")] internal partial class InternalUnknownEvalRunDataContentSource {}
-[CodeGenType("UnknownEvalRunDataSourceParams")] internal partial class InternalUnknownEvalRunDataSourceParams {}
-[CodeGenType("UpdateEvalRequest")] internal partial class InternalUpdateEvalRequest {}
-[CodeGenType("EvalLogsDataSourceConfigResource")] internal partial class InternalEvalLogsDataSourceConfigResource {}
-[CodeGenType("EvalGraderLabelModelResource")] internal partial class InternalEvalGraderLabelModelResource {}
-[CodeGenType("EvalGraderTextSimilarityResource")] internal partial class InternalEvalGraderTextSimilarityResource {}
-[CodeGenType("EvalGraderPythonResource")] internal partial class InternalEvalGraderPythonResource {}
-[CodeGenType("EvalGraderScoreModelResource")] internal partial class InternalEvalGraderScoreModelResource {}
-[CodeGenType("EvalStoredCompletionsDataSourceConfigParams")] internal partial class InternalEvalStoredCompletionsDataSourceConfigParams {}
-[CodeGenType("EvalGraderLabelModelParams")] internal partial class InternalEvalGraderLabelModelParams {}
-[CodeGenType("EvalGraderLabelModelParamsInput")] internal partial class InternalEvalGraderLabelModelParamsInput {}
-[CodeGenType("EvalGraderStringCheckParams")] internal partial class InternalEvalGraderStringCheckParams {}
-[CodeGenType("EvalGraderStringCheckParamsOperation")] internal readonly partial struct InternalEvalGraderStringCheckParamsOperation {}
-[CodeGenType("EvalGraderTextSimilarityParams")] internal partial class InternalEvalGraderTextSimilarityParams {}
-[CodeGenType("EvalGraderPythonParams")] internal partial class InternalEvalGraderPythonParams {}
-[CodeGenType("EvalGraderScoreModelParams")] internal partial class InternalEvalGraderScoreModelParams {}
-[CodeGenType("EvalResponsesRunDataSourceParamsSamplingParamsText")] internal partial class InternalEvalResponsesRunDataSourceParamsSamplingParamsText {}
+[CodeGenType("UnknownEvalDataSourceConfigParams")] public partial class InternalUnknownEvalDataSourceConfigParams {}
+[CodeGenType("UnknownEvalDataSourceConfigResource")] public partial class InternalUnknownEvalDataSourceConfigResource {}
+[CodeGenType("UnknownEvalGraderParams")] public partial class InternalUnknownEvalGraderParams {}
+[CodeGenType("UnknownEvalGraderResource")] public partial class InternalUnknownEvalGraderResource {}
+[CodeGenType("UnknownEvalItemContent")] public partial class InternalUnknownEvalItemContent {}
+[CodeGenType("UnknownEvalRunDataContentSource")] public partial class InternalUnknownEvalRunDataContentSource {}
+[CodeGenType("UnknownEvalRunDataSourceParams")] public partial class InternalUnknownEvalRunDataSourceParams {}
+[CodeGenType("UpdateEvalRequest")] public partial class InternalUpdateEvalRequest {}
+[CodeGenType("EvalLogsDataSourceConfigResource")] public partial class InternalEvalLogsDataSourceConfigResource {}
+[CodeGenType("EvalGraderLabelModelResource")] public partial class InternalEvalGraderLabelModelResource {}
+[CodeGenType("EvalGraderTextSimilarityResource")] public partial class InternalEvalGraderTextSimilarityResource {}
+[CodeGenType("EvalGraderPythonResource")] public partial class InternalEvalGraderPythonResource {}
+[CodeGenType("EvalGraderScoreModelResource")] public partial class InternalEvalGraderScoreModelResource {}
+[CodeGenType("EvalStoredCompletionsDataSourceConfigParams")] public partial class InternalEvalStoredCompletionsDataSourceConfigParams {}
+[CodeGenType("EvalGraderLabelModelParams")] public partial class InternalEvalGraderLabelModelParams {}
+[CodeGenType("EvalGraderLabelModelParamsInput")] public partial class InternalEvalGraderLabelModelParamsInput {}
+[CodeGenType("EvalGraderStringCheckParams")] public partial class InternalEvalGraderStringCheckParams {}
+[CodeGenType("EvalGraderStringCheckParamsOperation")] public readonly partial struct InternalEvalGraderStringCheckParamsOperation {}
+[CodeGenType("EvalGraderTextSimilarityParams")] public partial class InternalEvalGraderTextSimilarityParams {}
+[CodeGenType("EvalGraderPythonParams")] public partial class InternalEvalGraderPythonParams {}
+[CodeGenType("EvalGraderScoreModelParams")] public partial class InternalEvalGraderScoreModelParams {}
+[CodeGenType("EvalResponsesRunDataSourceParamsSamplingParamsText")] public partial class InternalEvalResponsesRunDataSourceParamsSamplingParamsText {}

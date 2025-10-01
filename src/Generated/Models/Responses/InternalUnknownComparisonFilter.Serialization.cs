@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalUnknownComparisonFilter : InternalComparisonFilter, IJsonModel<InternalComparisonFilter>
+    public partial class InternalUnknownComparisonFilter : InternalComparisonFilter, IJsonModel<InternalComparisonFilter>
     {
         internal InternalUnknownComparisonFilter() : this(default, null, null, null)
         {

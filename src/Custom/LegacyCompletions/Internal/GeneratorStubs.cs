@@ -8,7 +8,7 @@ namespace OpenAI.LegacyCompletions;
 // CUSTOM: Made internal.
 
 [CodeGenType("CreateCompletionRequest")]
-internal partial class InternalCreateCompletionRequest
+public partial class InternalCreateCompletionRequest
 {
     public static implicit operator BinaryContent(InternalCreateCompletionRequest internalCreateCompletionRequest)
     {
@@ -21,21 +21,21 @@ internal partial class InternalCreateCompletionRequest
 }
 
 [CodeGenType("CreateCompletionRequestModel")]
-internal readonly partial struct InternalCreateCompletionRequestModel { }
+public readonly partial struct InternalCreateCompletionRequestModel { }
 
 [CodeGenType("CreateCompletionResponse")]
-internal partial class InternalCreateCompletionResponse
+public partial class InternalCreateCompletionResponse
 {
 }
 
 [CodeGenType("CreateCompletionResponseChoice")]
-internal partial class InternalCreateCompletionResponseChoice { }
+public partial class InternalCreateCompletionResponseChoice { }
 
 [CodeGenType("CreateCompletionResponseChoiceFinishReason")]
-internal readonly partial struct InternalCreateCompletionResponseChoiceFinishReason { }
+public readonly partial struct InternalCreateCompletionResponseChoiceFinishReason { }
 
 [CodeGenType("CreateCompletionResponseChoiceLogprobs1")]
-internal partial class InternalCreateCompletionResponseChoiceLogprobs { }
+public partial class InternalCreateCompletionResponseChoiceLogprobs { }
 
 [CodeGenType("CreateCompletionResponseObject")]
-internal readonly partial struct InternalCreateCompletionResponseObject { }
+public readonly partial struct InternalCreateCompletionResponseObject { }

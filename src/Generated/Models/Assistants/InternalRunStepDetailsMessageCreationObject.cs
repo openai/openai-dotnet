@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalRunStepDetailsMessageCreationObject : RunStepDetails
+    public partial class InternalRunStepDetailsMessageCreationObject : RunStepDetails
     {
         internal InternalRunStepDetailsMessageCreationObject(InternalRunStepDetailsMessageCreationObjectMessageCreation messageCreation) : base(InternalRunStepDetailsType.MessageCreation)
         {

@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace OpenAI
 {
-    internal partial class ChangeTrackingList<T> : IList<T>, IReadOnlyList<T>
+    public partial class ChangeTrackingList<T> : IList<T>, IReadOnlyList<T>
     {
         private IList<T> _innerList;
 

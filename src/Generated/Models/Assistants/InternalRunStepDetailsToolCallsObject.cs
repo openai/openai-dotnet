@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalRunStepDetailsToolCallsObject : RunStepDetails
+    public partial class InternalRunStepDetailsToolCallsObject : RunStepDetails
     {
         internal InternalRunStepDetailsToolCallsObject(IEnumerable<RunStepToolCall> internalToolCalls) : base(InternalRunStepDetailsType.ToolCalls)
         {

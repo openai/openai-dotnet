@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage
+    public partial class InternalRunStepDeltaStepDetailsToolCallsCodeOutputImageObjectImage
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

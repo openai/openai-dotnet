@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.FineTuning
 {
-    internal partial class InternalFineTuningJobRequestMethodSupervised
+    public partial class InternalFineTuningJobRequestMethodSupervised
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

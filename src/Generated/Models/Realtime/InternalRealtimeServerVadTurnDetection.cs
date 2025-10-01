@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeServerVadTurnDetection : TurnDetectionOptions
+    public partial class InternalRealtimeServerVadTurnDetection : TurnDetectionOptions
     {
         public InternalRealtimeServerVadTurnDetection() : this(TurnDetectionKind.ServerVoiceActivityDetection, default, default, null, default, default, default)
         {

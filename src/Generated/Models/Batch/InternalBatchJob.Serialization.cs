@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.Batch
 {
-    internal partial class InternalBatchJob : IJsonModel<InternalBatchJob>
+    public partial class InternalBatchJob : IJsonModel<InternalBatchJob>
     {
         internal InternalBatchJob() : this(null, null, null, null, null, null, default, null, null, default, default, default, default, default, default, default, default, default, null, null, null)
         {

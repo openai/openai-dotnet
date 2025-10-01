@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalComputerActionKeyPress : ComputerCallAction, IJsonModel<InternalComputerActionKeyPress>
+    public partial class InternalComputerActionKeyPress : ComputerCallAction, IJsonModel<InternalComputerActionKeyPress>
     {
         internal InternalComputerActionKeyPress() : this(ComputerCallActionKind.KeyPress, null, null)
         {

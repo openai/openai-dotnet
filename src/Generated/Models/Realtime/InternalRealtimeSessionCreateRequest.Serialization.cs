@@ -11,7 +11,7 @@ using OpenAI.Internal;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeSessionCreateRequest : IJsonModel<InternalRealtimeSessionCreateRequest>
+    public partial class InternalRealtimeSessionCreateRequest : IJsonModel<InternalRealtimeSessionCreateRequest>
     {
         void IJsonModel<InternalRealtimeSessionCreateRequest>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

@@ -4,7 +4,7 @@ using System.Text.Json;
 namespace OpenAI.Chat;
 
 [CodeGenSuppress("global::System.ClientModel.Primitives.IJsonModel<OpenAI.Chat.ChatMessage>.Write", typeof(Utf8JsonWriter), typeof(ModelReaderWriterOptions))]
-internal partial class InternalUnknownChatMessage : IJsonModel<ChatMessage>
+public partial class InternalUnknownChatMessage : IJsonModel<ChatMessage>
 {
     void IJsonModel<ChatMessage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         => CustomSerializationHelpers.SerializeInstance<ChatMessage, InternalUnknownChatMessage>(this, WriteCore, writer, options);

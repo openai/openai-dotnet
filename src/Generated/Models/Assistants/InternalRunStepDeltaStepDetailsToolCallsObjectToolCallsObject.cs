@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Assistants
 {
-    internal abstract partial class InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject
+    public abstract partial class InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

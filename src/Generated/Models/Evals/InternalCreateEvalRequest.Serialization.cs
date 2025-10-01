@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalCreateEvalRequest : IJsonModel<InternalCreateEvalRequest>
+    public partial class InternalCreateEvalRequest : IJsonModel<InternalCreateEvalRequest>
     {
         internal InternalCreateEvalRequest() : this(null, null, null, null, null)
         {

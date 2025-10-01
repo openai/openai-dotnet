@@ -1,7 +1,7 @@
 namespace OpenAI.Assistants;
 
 [CodeGenType("RunStepDetailsToolCallsFileSearchObjectFileSearch")]
-internal partial class InternalRunStepDetailsToolCallsFileSearchObjectFileSearch
+public partial class InternalRunStepDetailsToolCallsFileSearchObjectFileSearch
 {
     // CUSTOM: reuse input model for ranking options, which differs only in the request presence of 'auto' as a selection
     /// <inheritdoc cref="FileSearchToolDefinition.RankingOptions"/>

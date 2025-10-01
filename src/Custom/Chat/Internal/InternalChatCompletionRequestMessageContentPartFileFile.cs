@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 namespace OpenAI.Chat;
 
 [CodeGenType("ChatCompletionRequestMessageContentPartFileFile")]
-internal partial class InternalChatCompletionRequestMessageContentPartFileFile
+public partial class InternalChatCompletionRequestMessageContentPartFileFile
 {
     private BinaryData _fileBytes;
     private string _fileBytesMediaType;

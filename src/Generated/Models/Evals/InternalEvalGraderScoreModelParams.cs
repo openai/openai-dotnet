@@ -10,7 +10,7 @@ using OpenAI.Graders;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalGraderScoreModelParams : InternalEvalGraderParams
+    public partial class InternalEvalGraderScoreModelParams : InternalEvalGraderParams
     {
         internal InternalEvalGraderScoreModelParams(string name, string model, IEnumerable<InternalEvalItem> input) : base(GraderType.ScoreModel)
         {

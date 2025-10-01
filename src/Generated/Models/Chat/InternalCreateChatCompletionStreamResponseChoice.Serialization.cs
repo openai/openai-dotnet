@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    internal partial class InternalCreateChatCompletionStreamResponseChoice : IJsonModel<InternalCreateChatCompletionStreamResponseChoice>
+    public partial class InternalCreateChatCompletionStreamResponseChoice : IJsonModel<InternalCreateChatCompletionStreamResponseChoice>
     {
         internal InternalCreateChatCompletionStreamResponseChoice()
         {

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Files
 {
-    internal partial class InternalAddUploadPartRequest : IJsonModel<InternalAddUploadPartRequest>
+    public partial class InternalAddUploadPartRequest : IJsonModel<InternalAddUploadPartRequest>
     {
         internal InternalAddUploadPartRequest()
         {

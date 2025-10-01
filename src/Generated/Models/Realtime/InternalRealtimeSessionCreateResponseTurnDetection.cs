@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeSessionCreateResponseTurnDetection
+    public partial class InternalRealtimeSessionCreateResponseTurnDetection
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

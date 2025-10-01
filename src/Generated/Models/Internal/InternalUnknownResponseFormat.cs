@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Internal
 {
-    internal partial class InternalUnknownResponseFormat : InternalResponseFormat
+    public partial class InternalUnknownResponseFormat : InternalResponseFormat
     {
         internal InternalUnknownResponseFormat(InternalResponseFormatType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {

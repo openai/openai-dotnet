@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Chat
 {
-    internal partial class InternalChatCompletionRequestMessageContentPartText : ChatMessageContentPart
+    public partial class InternalChatCompletionRequestMessageContentPartText : ChatMessageContentPart
     {
         public InternalChatCompletionRequestMessageContentPartText()
         {

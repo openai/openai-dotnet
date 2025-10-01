@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalApiError
+    public partial class InternalEvalApiError
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

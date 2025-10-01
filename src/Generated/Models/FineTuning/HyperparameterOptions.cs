@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.FineTuning
 {
-    internal partial class HyperparameterOptions
+    public partial class HyperparameterOptions
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

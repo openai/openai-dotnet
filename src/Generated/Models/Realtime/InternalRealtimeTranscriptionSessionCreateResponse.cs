@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeTranscriptionSessionCreateResponse
+    public partial class InternalRealtimeTranscriptionSessionCreateResponse
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

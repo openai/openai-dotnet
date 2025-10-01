@@ -1,6 +1,6 @@
 ﻿namespace OpenAI.Assistants;
 
 [CodeGenType("UnknownMessageDeltaTextContentAnnotation")]
-internal partial class UnknownMessageDeltaTextContentAnnotation
+public partial class UnknownMessageDeltaTextContentAnnotation
 {
 }

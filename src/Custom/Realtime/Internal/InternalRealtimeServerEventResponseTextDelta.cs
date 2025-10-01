@@ -15,5 +15,5 @@ namespace OpenAI.Realtime;
 /// </summary>
 [Experimental("OPENAI002")]
 [CodeGenType("RealtimeServerEventResponseTextDelta")]
-internal partial class InternalRealtimeServerEventResponseTextDelta
+public partial class InternalRealtimeServerEventResponseTextDelta
 { }

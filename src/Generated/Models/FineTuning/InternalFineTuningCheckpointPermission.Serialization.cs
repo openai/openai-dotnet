@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.FineTuning
 {
-    internal partial class InternalFineTuningCheckpointPermission : IJsonModel<InternalFineTuningCheckpointPermission>
+    public partial class InternalFineTuningCheckpointPermission : IJsonModel<InternalFineTuningCheckpointPermission>
     {
         internal InternalFineTuningCheckpointPermission()
         {

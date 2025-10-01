@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalItemContentInputImage : ResponseContentPart
+    public partial class InternalItemContentInputImage : ResponseContentPart
     {
         public InternalItemContentInputImage() : this(InternalItemContentType.InputImage, null, null, null, default)
         {

@@ -4,7 +4,7 @@ using System.Text.Json;
 
 namespace OpenAI.Assistants;
 
-internal partial class InternalAssistantResponseFormatPlainTextNoObject : IJsonModel<InternalAssistantResponseFormatPlainTextNoObject>
+public partial class InternalAssistantResponseFormatPlainTextNoObject : IJsonModel<InternalAssistantResponseFormatPlainTextNoObject>
 {
     internal static void SerializeInternalAssistantResponseFormatPlainTextNoObject(InternalAssistantResponseFormatPlainTextNoObject instance, Utf8JsonWriter writer, ModelReaderWriterOptions options = null)
     {

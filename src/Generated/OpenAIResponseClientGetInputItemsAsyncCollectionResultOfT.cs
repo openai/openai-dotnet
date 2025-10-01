@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class OpenAIResponseClientGetInputItemsAsyncCollectionResultOfT : AsyncCollectionResult<ResponseItem>
+    public partial class OpenAIResponseClientGetInputItemsAsyncCollectionResultOfT : AsyncCollectionResult<ResponseItem>
     {
         private readonly OpenAIResponseClient _client;
         private readonly string _responseId;

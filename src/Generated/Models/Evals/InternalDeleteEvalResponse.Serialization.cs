@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalDeleteEvalResponse : IJsonModel<InternalDeleteEvalResponse>
+    public partial class InternalDeleteEvalResponse : IJsonModel<InternalDeleteEvalResponse>
     {
         internal InternalDeleteEvalResponse()
         {

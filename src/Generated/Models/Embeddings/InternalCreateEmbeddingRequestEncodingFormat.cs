@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Embeddings
 {
-    internal readonly partial struct InternalCreateEmbeddingRequestEncodingFormat : IEquatable<InternalCreateEmbeddingRequestEncodingFormat>
+    public readonly partial struct InternalCreateEmbeddingRequestEncodingFormat : IEquatable<InternalCreateEmbeddingRequestEncodingFormat>
     {
         private readonly string _value;
         private const string FloatValue = "float";

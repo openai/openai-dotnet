@@ -11,7 +11,7 @@ using OpenAI.Internal;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalDotNetAssistantResponseFormatText : AssistantResponseFormat, IJsonModel<InternalDotNetAssistantResponseFormatText>
+    public partial class InternalDotNetAssistantResponseFormatText : AssistantResponseFormat, IJsonModel<InternalDotNetAssistantResponseFormatText>
     {
         void IJsonModel<InternalDotNetAssistantResponseFormatText>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

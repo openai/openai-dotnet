@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeServerEventResponseContentPartDone : RealtimeUpdate
+    public partial class InternalRealtimeServerEventResponseContentPartDone : RealtimeUpdate
     {
         internal InternalRealtimeServerEventResponseContentPartDone(string responseId, string itemId, int outputIndex, int contentIndex, ConversationContentPart internalContentPart) : base(RealtimeUpdateKind.ItemContentPartFinished)
         {

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeTranscriptionSessionCreateRequestInputAudioNoiseReduction1
+    public partial class InternalRealtimeTranscriptionSessionCreateRequestInputAudioNoiseReduction1
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalMCPToolRequireApproval1
+    public partial class InternalMCPToolRequireApproval1
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

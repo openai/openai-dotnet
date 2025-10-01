@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Batch
 {
-    internal partial class InternalBatchJob
+    public partial class InternalBatchJob
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

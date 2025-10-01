@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError
+    public partial class InternalRealtimeServerEventConversationItemInputAudioTranscriptionFailedError
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

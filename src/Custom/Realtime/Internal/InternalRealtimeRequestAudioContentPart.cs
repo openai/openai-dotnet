@@ -4,7 +4,7 @@ namespace OpenAI.Realtime;
 
 [Experimental("OPENAI002")]
 [CodeGenType("RealtimeRequestAudioContentPart")]
-internal partial class InternalRealtimeRequestAudioContentPart
+public partial class InternalRealtimeRequestAudioContentPart
 {
     [CodeGenMember("Transcript")]
     public string InternalTranscriptValue { get; set; }

@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 namespace OpenAI.Chat;
 
 [CodeGenSerialization(nameof(Content), SerializationValueHook = nameof(SerializeContentValue), DeserializationValueHook = nameof(DeserializeContentValue))]
-internal partial class InternalChatOutputPredictionContent
+public partial class InternalChatOutputPredictionContent
 {
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

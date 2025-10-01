@@ -8,7 +8,7 @@ namespace OpenAI.FineTuning;
 
 [Experimental("OPENAI001")]
 [CodeGenType("CreateFineTuningJobRequestHyperparametersLearningRateMultiplierChoiceEnum")]
-internal readonly partial struct InternalCreateFineTuningJobRequestHyperparametersLearningRateMultiplierChoiceEnum { }
+public readonly partial struct InternalCreateFineTuningJobRequestHyperparametersLearningRateMultiplierChoiceEnum { }
 
 [Experimental("OPENAI001")]
 [CodeGenType("CreateFineTuningJobRequestHyperparametersLearningRateMultiplierOption")]

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalToolChoiceObjectComputer : InternalToolChoiceObject
+    public partial class InternalToolChoiceObjectComputer : InternalToolChoiceObject
     {
         public InternalToolChoiceObjectComputer() : this(InternalToolChoiceObjectType.Computer, null)
         {

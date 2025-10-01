@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalComputerActionMove : ComputerCallAction, IJsonModel<InternalComputerActionMove>
+    public partial class InternalComputerActionMove : ComputerCallAction, IJsonModel<InternalComputerActionMove>
     {
         internal InternalComputerActionMove() : this(ComputerCallActionKind.Move, null, default, default)
         {

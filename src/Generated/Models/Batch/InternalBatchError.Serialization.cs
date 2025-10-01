@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Batch
 {
-    internal partial class InternalBatchError : IJsonModel<InternalBatchError>
+    public partial class InternalBatchError : IJsonModel<InternalBatchError>
     {
         void IJsonModel<InternalBatchError>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

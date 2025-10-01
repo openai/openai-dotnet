@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeClientEventInputAudioBufferAppend : InternalRealtimeClientEvent
+    public partial class InternalRealtimeClientEventInputAudioBufferAppend : InternalRealtimeClientEvent
     {
         public InternalRealtimeClientEventInputAudioBufferAppend(BinaryData audio) : base(InternalRealtimeClientEventType.InputAudioBufferAppend)
         {

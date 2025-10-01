@@ -18,7 +18,7 @@ namespace OpenAI.Assistants;
 [CodeGenSuppress("CancelRun", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("SubmitToolOutputsToRunAsync", typeof(string), typeof(string),  typeof(InternalSubmitToolOutputsRunRequest), typeof(CancellationToken))]
 [CodeGenSuppress("SubmitToolOutputsToRun", typeof(string), typeof(string),  typeof(InternalSubmitToolOutputsRunRequest), typeof(CancellationToken))]
-internal partial class InternalAssistantRunClient
+public partial class InternalAssistantRunClient
 {
     // CUSTOM:
     // - Used a custom pipeline.

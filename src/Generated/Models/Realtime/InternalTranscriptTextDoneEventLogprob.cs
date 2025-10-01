@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalTranscriptTextDoneEventLogprob
+    public partial class InternalTranscriptTextDoneEventLogprob
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

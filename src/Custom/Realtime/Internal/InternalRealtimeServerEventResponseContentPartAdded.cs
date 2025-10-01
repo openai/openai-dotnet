@@ -13,7 +13,7 @@ namespace OpenAI.Realtime;
 /// </summary>
 [Experimental("OPENAI002")]
 [CodeGenType("RealtimeServerEventResponseContentPartAdded")]
-internal partial class InternalRealtimeServerEventResponseContentPartAdded
+public partial class InternalRealtimeServerEventResponseContentPartAdded
 {
     [CodeGenMember("Part")]
     private readonly ConversationContentPart _internalContentPart;

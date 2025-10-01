@@ -9,7 +9,7 @@ using OpenAI.Internal;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalDotNetAssistantResponseFormatJsonSchema : AssistantResponseFormat
+    public partial class InternalDotNetAssistantResponseFormatJsonSchema : AssistantResponseFormat
     {
         internal InternalDotNetAssistantResponseFormatJsonSchema(InternalDotNetAssistantResponseFormatJsonSchemaJsonSchema jsonSchema) : base(InternalResponseFormatType.JsonSchema)
         {

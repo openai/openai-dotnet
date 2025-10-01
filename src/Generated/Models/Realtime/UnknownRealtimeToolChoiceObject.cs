@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Realtime
 {
-    internal partial class UnknownRealtimeToolChoiceObject : InternalRealtimeToolChoiceObject
+    public partial class UnknownRealtimeToolChoiceObject : InternalRealtimeToolChoiceObject
     {
         internal UnknownRealtimeToolChoiceObject(ConversationToolKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {

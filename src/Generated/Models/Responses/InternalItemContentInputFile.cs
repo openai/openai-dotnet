@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalItemContentInputFile : ResponseContentPart
+    public partial class InternalItemContentInputFile : ResponseContentPart
     {
         public InternalItemContentInputFile() : this(InternalItemContentType.InputFile, null, null, null, null)
         {

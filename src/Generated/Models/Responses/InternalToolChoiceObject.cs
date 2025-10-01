@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-    internal abstract partial class InternalToolChoiceObject
+    public abstract partial class InternalToolChoiceObject
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

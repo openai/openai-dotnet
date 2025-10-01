@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalUnknownItemParam : InternalItemParam
+    public partial class InternalUnknownItemParam : InternalItemParam
     {
         internal InternalUnknownItemParam(InternalItemType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {

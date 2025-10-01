@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.VectorStores
 {
-    internal partial class InternalListVectorStoresResponse
+    public partial class InternalListVectorStoresResponse
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

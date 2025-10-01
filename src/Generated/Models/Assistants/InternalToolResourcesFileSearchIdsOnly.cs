@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalToolResourcesFileSearchIdsOnly
+    public partial class InternalToolResourcesFileSearchIdsOnly
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

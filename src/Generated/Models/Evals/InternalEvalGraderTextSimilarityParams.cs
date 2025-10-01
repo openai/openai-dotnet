@@ -9,7 +9,7 @@ using OpenAI.Graders;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalGraderTextSimilarityParams : InternalEvalGraderParams
+    public partial class InternalEvalGraderTextSimilarityParams : InternalEvalGraderParams
     {
         public InternalEvalGraderTextSimilarityParams(string name, string input, string reference, GraderTextSimilarityEvaluationMetric evaluationMetric, float passThreshold) : base(GraderType.TextSimilarity)
         {

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalLogsDataSourceConfigResource : InternalEvalDataSourceConfigResource, IJsonModel<InternalEvalLogsDataSourceConfigResource>
+    public partial class InternalEvalLogsDataSourceConfigResource : InternalEvalDataSourceConfigResource, IJsonModel<InternalEvalLogsDataSourceConfigResource>
     {
         internal InternalEvalLogsDataSourceConfigResource() : this(InternalEvalDataSourceConfigType.Logs, null, null, null)
         {

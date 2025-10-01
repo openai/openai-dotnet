@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalSubmitToolOutputsRunRequest : IJsonModel<InternalSubmitToolOutputsRunRequest>
+    public partial class InternalSubmitToolOutputsRunRequest : IJsonModel<InternalSubmitToolOutputsRunRequest>
     {
         internal InternalSubmitToolOutputsRunRequest() : this(null, default, null)
         {

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalLocalShellToolCallItemResource : ResponseItem, IJsonModel<InternalLocalShellToolCallItemResource>
+    public partial class InternalLocalShellToolCallItemResource : ResponseItem, IJsonModel<InternalLocalShellToolCallItemResource>
     {
         internal InternalLocalShellToolCallItemResource() : this(InternalItemType.LocalShellCall, null, null, default, null, null)
         {

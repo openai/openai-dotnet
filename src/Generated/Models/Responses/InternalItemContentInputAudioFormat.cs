@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal readonly partial struct InternalItemContentInputAudioFormat : IEquatable<InternalItemContentInputAudioFormat>
+    public readonly partial struct InternalItemContentInputAudioFormat : IEquatable<InternalItemContentInputAudioFormat>
     {
         private readonly string _value;
         private const string Mp3Value = "mp3";

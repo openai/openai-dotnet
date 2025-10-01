@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal readonly partial struct InternalRealtimeClientEventType : IEquatable<InternalRealtimeClientEventType>
+    public readonly partial struct InternalRealtimeClientEventType : IEquatable<InternalRealtimeClientEventType>
     {
         private readonly string _value;
         private const string SessionUpdateValue = "session.update";

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.FineTuning
 {
-    internal partial class InternalFineTuningIntegrationWandb : InternalFineTuningIntegration, IJsonModel<InternalFineTuningIntegrationWandb>
+    public partial class InternalFineTuningIntegrationWandb : InternalFineTuningIntegration, IJsonModel<InternalFineTuningIntegrationWandb>
     {
         internal InternalFineTuningIntegrationWandb() : this(InternalFineTuningIntegrationType.Wandb, null, null)
         {

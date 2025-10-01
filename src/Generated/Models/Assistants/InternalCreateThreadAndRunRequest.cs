@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalCreateThreadAndRunRequest
+    public partial class InternalCreateThreadAndRunRequest
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

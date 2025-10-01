@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.VectorStores
 {
-    internal partial class InternalVectorStoreFileContentResponseDatum
+    public partial class InternalVectorStoreFileContentResponseDatum
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

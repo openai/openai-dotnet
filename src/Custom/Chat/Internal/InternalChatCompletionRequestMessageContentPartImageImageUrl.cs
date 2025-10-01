@@ -6,7 +6,7 @@ namespace OpenAI.Chat;
 
 [CodeGenType("ChatCompletionRequestMessageContentPartImageImageUrl")]
 [CodeGenSuppress("InternalChatCompletionRequestMessageContentPartImageImageUrl", typeof(string))]
-internal partial class InternalChatCompletionRequestMessageContentPartImageImageUrl
+public partial class InternalChatCompletionRequestMessageContentPartImageImageUrl
 {
     private Uri _imageUri;
     private BinaryData _imageBytes;

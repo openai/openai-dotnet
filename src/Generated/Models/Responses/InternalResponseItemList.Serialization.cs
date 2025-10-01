@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalResponseItemList : IJsonModel<InternalResponseItemList>
+    public partial class InternalResponseItemList : IJsonModel<InternalResponseItemList>
     {
         internal InternalResponseItemList() : this(null, null, default, null, null, null)
         {

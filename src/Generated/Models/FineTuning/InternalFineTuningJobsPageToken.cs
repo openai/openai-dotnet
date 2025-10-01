@@ -8,7 +8,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.FineTuning
 {
-    internal partial class InternalFineTuningJobsPageToken : ContinuationToken
+    public partial class InternalFineTuningJobsPageToken : ContinuationToken
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

@@ -5,7 +5,7 @@ using System.Text.Json;
 
 namespace OpenAI.Chat;
 
-internal partial class InternalChatCompletionMessageToolCallChunkFunction : IJsonModel<InternalChatCompletionMessageToolCallChunkFunction>
+public partial class InternalChatCompletionMessageToolCallChunkFunction : IJsonModel<InternalChatCompletionMessageToolCallChunkFunction>
 {
     // CUSTOM: Replaced the call to WriteRawValue() for a call to WriteStringValue() because even though this property
     // is supposed to be a JSON object, the REST API handles it as a string given that there is no guarantee that it

@@ -9,7 +9,7 @@ using OpenAI.Graders;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalGraderPythonParams : InternalEvalGraderParams
+    public partial class InternalEvalGraderPythonParams : InternalEvalGraderParams
     {
         public InternalEvalGraderPythonParams(string name, string source) : base(GraderType.Python)
         {

@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Moderations
 {
-    internal partial class InternalCreateModerationRequestInputImageUrl
+    public partial class InternalCreateModerationRequestInputImageUrl
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalResponsesRunDataSourceParams : InternalEvalRunDataSourceParams
+    public partial class InternalEvalResponsesRunDataSourceParams : InternalEvalRunDataSourceParams
     {
         public InternalEvalResponsesRunDataSourceParams(BinaryData source) : base(InternalEvalRunDataSourceType.Responses)
         {

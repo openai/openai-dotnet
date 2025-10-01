@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal readonly partial struct InternalAssistantSupportedModels : IEquatable<InternalAssistantSupportedModels>
+    public readonly partial struct InternalAssistantSupportedModels : IEquatable<InternalAssistantSupportedModels>
     {
         private readonly string _value;
         private const string Gpt41Value = "gpt-4.1";

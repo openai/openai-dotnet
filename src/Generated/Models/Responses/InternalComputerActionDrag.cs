@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalComputerActionDrag : ComputerCallAction
+    public partial class InternalComputerActionDrag : ComputerCallAction
     {
         internal InternalComputerActionDrag(IEnumerable<InternalCoordinate> path) : base(ComputerCallActionKind.Drag)
         {

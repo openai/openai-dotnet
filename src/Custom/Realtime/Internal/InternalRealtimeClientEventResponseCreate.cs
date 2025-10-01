@@ -8,6 +8,6 @@ namespace OpenAI.Realtime;
 
 [Experimental("OPENAI002")]
 [CodeGenType("RealtimeClientEventResponseCreate")]
-internal partial class InternalRealtimeClientEventResponseCreate
+public partial class InternalRealtimeClientEventResponseCreate
 {
 }

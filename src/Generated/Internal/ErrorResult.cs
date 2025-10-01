@@ -7,7 +7,7 @@ using System.ClientModel.Primitives;
 
 namespace OpenAI
 {
-    internal partial class ErrorResult<T> : ClientResult<T>
+    public partial class ErrorResult<T> : ClientResult<T>
     {
         private readonly PipelineResponse _response;
         private readonly ClientResultException _exception;

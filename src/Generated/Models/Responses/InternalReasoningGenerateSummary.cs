@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal readonly partial struct InternalReasoningGenerateSummary : IEquatable<InternalReasoningGenerateSummary>
+    public readonly partial struct InternalReasoningGenerateSummary : IEquatable<InternalReasoningGenerateSummary>
     {
         private readonly string _value;
         private const string AutoValue = "auto";

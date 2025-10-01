@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.FineTuning
 {
-    internal partial class InternalFineTuningCheckpointPermission
+    public partial class InternalFineTuningCheckpointPermission
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

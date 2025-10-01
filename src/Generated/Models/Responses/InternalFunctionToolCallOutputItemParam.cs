@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalFunctionToolCallOutputItemParam : InternalItemParam
+    public partial class InternalFunctionToolCallOutputItemParam : InternalItemParam
     {
         public InternalFunctionToolCallOutputItemParam(string callId, string output) : base(InternalItemType.FunctionCallOutput)
         {

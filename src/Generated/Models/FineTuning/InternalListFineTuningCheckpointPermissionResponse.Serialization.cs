@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.FineTuning
 {
-    internal partial class InternalListFineTuningCheckpointPermissionResponse : IJsonModel<InternalListFineTuningCheckpointPermissionResponse>
+    public partial class InternalListFineTuningCheckpointPermissionResponse : IJsonModel<InternalListFineTuningCheckpointPermissionResponse>
     {
         internal InternalListFineTuningCheckpointPermissionResponse() : this(null, null, null, null, default, null)
         {

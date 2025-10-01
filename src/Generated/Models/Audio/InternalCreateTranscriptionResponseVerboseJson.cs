@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Audio
 {
-    internal partial class InternalCreateTranscriptionResponseVerboseJson
+    public partial class InternalCreateTranscriptionResponseVerboseJson
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

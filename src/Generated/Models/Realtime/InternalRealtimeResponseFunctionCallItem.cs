@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeResponseFunctionCallItem : InternalRealtimeResponseItem
+    public partial class InternalRealtimeResponseFunctionCallItem : InternalRealtimeResponseItem
     {
         internal InternalRealtimeResponseFunctionCallItem(string id, string name, string callId, string arguments, ConversationItemStatus status) : base(InternalRealtimeItemType.FunctionCall, id)
         {

@@ -10,7 +10,7 @@ using OpenAI;
 namespace OpenAI.Internal
 {
     [PersistableModelProxy(typeof(InternalUnknownResponseFormat))]
-    internal abstract partial class InternalResponseFormat : IJsonModel<InternalResponseFormat>
+    public abstract partial class InternalResponseFormat : IJsonModel<InternalResponseFormat>
     {
         internal InternalResponseFormat()
         {

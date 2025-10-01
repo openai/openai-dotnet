@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.FineTuning
 {
-    internal partial class InternalFineTuningJob : IJsonModel<InternalFineTuningJob>
+    public partial class InternalFineTuningJob : IJsonModel<InternalFineTuningJob>
     {
         internal InternalFineTuningJob() : this(null, null, default, null, null, default, default, null, null, null, null, default, default, null, null, null, default, default, null, null, null)
         {

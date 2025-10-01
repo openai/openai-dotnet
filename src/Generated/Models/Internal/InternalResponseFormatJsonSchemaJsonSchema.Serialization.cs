@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Internal
 {
-    internal partial class InternalResponseFormatJsonSchemaJsonSchema : IJsonModel<InternalResponseFormatJsonSchemaJsonSchema>
+    public partial class InternalResponseFormatJsonSchemaJsonSchema : IJsonModel<InternalResponseFormatJsonSchemaJsonSchema>
     {
         internal InternalResponseFormatJsonSchemaJsonSchema()
         {

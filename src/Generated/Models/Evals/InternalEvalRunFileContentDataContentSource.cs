@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalRunFileContentDataContentSource : InternalEvalRunDataContentSource
+    public partial class InternalEvalRunFileContentDataContentSource : InternalEvalRunDataContentSource
     {
         internal InternalEvalRunFileContentDataContentSource(IEnumerable<InternalEvalRunFileContentDataContentSourceContent> content) : base(InternalEvalRunDataContentSourceType.FileContent)
         {

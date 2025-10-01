@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.Files
 {
-    internal partial class InternalFileUploadOptions : IJsonModel<InternalFileUploadOptions>
+    public partial class InternalFileUploadOptions : IJsonModel<InternalFileUploadOptions>
     {
         void IJsonModel<InternalFileUploadOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

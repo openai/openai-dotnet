@@ -12,7 +12,7 @@ namespace OpenAI.Assistants;
 [CodeGenSuppress("CreateThreadAndRun", typeof(string), typeof(BinaryContent), typeof(RequestOptions))]
 [CodeGenSuppress("SubmitToolOutputsToRunAsync", typeof(string), typeof(string), typeof(string), typeof(BinaryContent),typeof(RequestOptions))]
 [CodeGenSuppress("SubmitToolOutputsToRun", typeof(string), typeof(string), typeof(string), typeof(BinaryContent), typeof(RequestOptions))]
-internal partial class InternalAssistantRunClient
+public partial class InternalAssistantRunClient
 {
     /// <summary>
     /// [Protocol Method] Create a thread and run it in one request.

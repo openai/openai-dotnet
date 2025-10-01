@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalAssistantMessageClient
+    public partial class InternalAssistantMessageClient
     {
         private readonly Uri _endpoint;
 

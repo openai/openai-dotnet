@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalUnknownEvalRunDataContentSource : InternalEvalRunDataContentSource
+    public partial class InternalUnknownEvalRunDataContentSource : InternalEvalRunDataContentSource
     {
         internal InternalUnknownEvalRunDataContentSource(InternalEvalRunDataContentSourceType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {

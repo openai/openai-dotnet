@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalMessageDeltaObjectDelta
+    public partial class InternalMessageDeltaObjectDelta
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

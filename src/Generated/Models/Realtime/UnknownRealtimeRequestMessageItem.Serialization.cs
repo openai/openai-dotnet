@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class UnknownRealtimeRequestMessageItem : InternalRealtimeRequestMessageItem, IJsonModel<InternalRealtimeRequestMessageItem>
+    public partial class UnknownRealtimeRequestMessageItem : InternalRealtimeRequestMessageItem, IJsonModel<InternalRealtimeRequestMessageItem>
     {
         internal UnknownRealtimeRequestMessageItem() : this(default, null, null, default, default)
         {

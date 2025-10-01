@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeClientEventConversationItemTruncate : InternalRealtimeClientEvent, IJsonModel<InternalRealtimeClientEventConversationItemTruncate>
+    public partial class InternalRealtimeClientEventConversationItemTruncate : InternalRealtimeClientEvent, IJsonModel<InternalRealtimeClientEventConversationItemTruncate>
     {
         internal InternalRealtimeClientEventConversationItemTruncate() : this(InternalRealtimeClientEventType.ConversationItemTruncate, null, null, null, default, default)
         {

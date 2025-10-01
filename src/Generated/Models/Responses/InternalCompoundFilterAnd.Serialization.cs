@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalCompoundFilterAnd : InternalCompoundFilter, IJsonModel<InternalCompoundFilterAnd>
+    public partial class InternalCompoundFilterAnd : InternalCompoundFilter, IJsonModel<InternalCompoundFilterAnd>
     {
         internal InternalCompoundFilterAnd() : this(InternalCompoundFilterType.And, null, null)
         {

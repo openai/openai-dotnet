@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalRunStepDelta : IJsonModel<InternalRunStepDelta>
+    public partial class InternalRunStepDelta : IJsonModel<InternalRunStepDelta>
     {
         internal InternalRunStepDelta()
         {

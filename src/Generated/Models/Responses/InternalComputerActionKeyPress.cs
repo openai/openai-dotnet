@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalComputerActionKeyPress : ComputerCallAction
+    public partial class InternalComputerActionKeyPress : ComputerCallAction
     {
         public InternalComputerActionKeyPress(IEnumerable<string> keys) : base(ComputerCallActionKind.KeyPress)
         {

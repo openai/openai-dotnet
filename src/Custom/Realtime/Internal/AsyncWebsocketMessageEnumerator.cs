@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Realtime;
 
-internal partial class AsyncWebsocketMessageResultEnumerator : IAsyncEnumerator<ClientResult>
+public partial class AsyncWebsocketMessageResultEnumerator : IAsyncEnumerator<ClientResult>
 {
     public ClientResult Current { get; private set; }
     private readonly CancellationToken _cancellationToken;

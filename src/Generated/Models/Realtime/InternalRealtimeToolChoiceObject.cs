@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Realtime
 {
-    internal abstract partial class InternalRealtimeToolChoiceObject
+    public abstract partial class InternalRealtimeToolChoiceObject
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

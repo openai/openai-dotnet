@@ -3,52 +3,52 @@ namespace OpenAI.Batch;
 // CUSTOM: Made internal.
 
 [CodeGenType("CreateBatchRequestCompletionWindow")]
-internal readonly partial struct InternalBatchCompletionTimeframe { }
+public readonly partial struct InternalBatchCompletionTimeframe { }
 
 [CodeGenType("BatchErrorsDatum")]
-internal partial class InternalBatchError { }
+public partial class InternalBatchError { }
 
 [CodeGenType("BatchErrors")]
-internal partial class InternalBatchErrors { }
+public partial class InternalBatchErrors { }
 
 [CodeGenType("BatchErrorsObject")]
-internal readonly partial struct InternalBatchErrorsObject { }
+public readonly partial struct InternalBatchErrorsObject { }
 
 [CodeGenType("Batch")]
-internal partial class InternalBatchJob { }
+public partial class InternalBatchJob { }
 
 [CodeGenType("BatchObject")]
-internal readonly partial struct InternalBatchObject { }
+public readonly partial struct InternalBatchObject { }
 
 [CodeGenType("BatchRequestCounts")]
-internal partial class InternalBatchRequestCounts { }
+public partial class InternalBatchRequestCounts { }
 
 [CodeGenType("BatchRequestInput")]
-internal partial class InternalBatchRequestInput { }
+public partial class InternalBatchRequestInput { }
 
 [CodeGenType("BatchRequestInputMethod")]
-internal readonly partial struct InternalBatchRequestInputMethod { }
+public readonly partial struct InternalBatchRequestInputMethod { }
 
 [CodeGenType("BatchRequestOutput")]
-internal partial class InternalBatchRequestOutput { }
+public partial class InternalBatchRequestOutput { }
 
 [CodeGenType("BatchRequestOutputError1")]
-internal partial class InternalBatchRequestOutputError { }
+public partial class InternalBatchRequestOutputError { }
 
 [CodeGenType("BatchRequestOutputResponse1")]
-internal partial class InternalBatchRequestOutputResponse { }
+public partial class InternalBatchRequestOutputResponse { }
 
 [CodeGenType("BatchStatus")]
-internal readonly partial struct InternalBatchStatus { }
+public readonly partial struct InternalBatchStatus { }
 
 [CodeGenType("CreateBatchRequest")]
-internal partial class InternalCreateBatchRequest { }
+public partial class InternalCreateBatchRequest { }
 
 [CodeGenType("CreateBatchRequestEndpoint")]
-internal readonly partial struct InternalCreateBatchRequestEndpoint { }
+public readonly partial struct InternalCreateBatchRequestEndpoint { }
 
 [CodeGenType("ListBatchesResponse")]
-internal partial class InternalListBatchesResponse { }
+public partial class InternalListBatchesResponse { }
 
 [CodeGenType("ListBatchesResponseObject")]
-internal readonly partial struct InternalListBatchesResponseObject { }
+public readonly partial struct InternalListBatchesResponseObject { }

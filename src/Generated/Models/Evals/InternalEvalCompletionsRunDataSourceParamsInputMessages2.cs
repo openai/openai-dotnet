@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalCompletionsRunDataSourceParamsInputMessages2
+    public partial class InternalEvalCompletionsRunDataSourceParamsInputMessages2
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

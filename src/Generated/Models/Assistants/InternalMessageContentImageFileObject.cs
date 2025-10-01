@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalMessageContentImageFileObject : MessageContent
+    public partial class InternalMessageContentImageFileObject : MessageContent
     {
         internal InternalMessageContentImageFileObject(InternalMessageContentItemFileObjectImageFile imageFile) : base(InternalMessageContentType.ImageFile)
         {

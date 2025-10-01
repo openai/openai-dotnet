@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeRequestAudioContentPart : ConversationContentPart
+    public partial class InternalRealtimeRequestAudioContentPart : ConversationContentPart
     {
         public InternalRealtimeRequestAudioContentPart() : this(ConversationContentPartKind.InputAudio, null, null)
         {

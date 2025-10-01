@@ -8,7 +8,7 @@ using OpenAI.Graders;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalUnknownEvalGraderResource : InternalEvalGraderResource
+    public partial class InternalUnknownEvalGraderResource : InternalEvalGraderResource
     {
         internal InternalUnknownEvalGraderResource(GraderType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {

@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalCustomDataSourceConfigParams : InternalEvalDataSourceConfigParams
+    public partial class InternalEvalCustomDataSourceConfigParams : InternalEvalDataSourceConfigParams
     {
         public InternalEvalCustomDataSourceConfigParams(IDictionary<string, BinaryData> itemSchema) : base(InternalEvalDataSourceConfigType.Custom)
         {

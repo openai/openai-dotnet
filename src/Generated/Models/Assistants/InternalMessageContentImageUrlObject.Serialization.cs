@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalMessageContentImageUrlObject : MessageContent, IJsonModel<InternalMessageContentImageUrlObject>
+    public partial class InternalMessageContentImageUrlObject : MessageContent, IJsonModel<InternalMessageContentImageUrlObject>
     {
         internal InternalMessageContentImageUrlObject() : this(InternalMessageContentType.ImageUrl, null, null)
         {

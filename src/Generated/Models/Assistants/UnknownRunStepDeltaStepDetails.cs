@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace OpenAI.Assistants
 {
-    internal partial class UnknownRunStepDeltaStepDetails : InternalRunStepDeltaStepDetails
+    public partial class UnknownRunStepDeltaStepDetails : InternalRunStepDeltaStepDetails
     {
         internal UnknownRunStepDeltaStepDetails(InternalRunStepDetailsType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {
