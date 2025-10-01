@@ -36,6 +36,8 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("content"u8);
                 SerializeContentValue(writer, options);
             }
+
+            Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 

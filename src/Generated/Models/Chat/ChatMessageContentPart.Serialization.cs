@@ -22,6 +22,8 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(ChatMessageContentPart)} does not support writing '{format}' format.");
             }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+            Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
