@@ -1213,6 +1213,8 @@ namespace OpenAI.Audio {
         [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         [Experimental("OPENAI001")]
+        public static explicit operator AudioTranslation(ClientResult result);
+        [Experimental("OPENAI001")]
         protected virtual AudioTranslation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
@@ -1342,6 +1344,7 @@ namespace OpenAI.Audio {
     public class StreamingAudioTranscriptionUpdate : IJsonModel<StreamingAudioTranscriptionUpdate>, IPersistableModel<StreamingAudioTranscriptionUpdate> {
         protected virtual StreamingAudioTranscriptionUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public static explicit operator StreamingAudioTranscriptionUpdate(ClientResult result);
         protected virtual StreamingAudioTranscriptionUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
@@ -1447,6 +1450,9 @@ namespace OpenAI.Chat {
         public ChatAudioOptions(ChatOutputAudioVoice outputAudioVoice, ChatOutputAudioFormat outputAudioFormat);
         public ChatOutputAudioFormat OutputAudioFormat { get; }
         public ChatOutputAudioVoice OutputAudioVoice { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         protected virtual ChatAudioOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ChatAudioOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -1531,6 +1537,9 @@ namespace OpenAI.Chat {
         public string Model { get; }
         [Experimental("OPENAI001")]
         public ChatOutputAudio OutputAudio { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public string Refusal { get; }
         public IReadOnlyList<ChatTokenLogProbabilityDetails> RefusalTokenLogProbabilities { get; }
         public ChatMessageRole Role { get; }
@@ -1557,6 +1566,9 @@ namespace OpenAI.Chat {
         public string Model { get; set; }
         public ChatCompletionCollectionOrder? Order { get; set; }
         public int? PageSizeLimit { get; set; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         protected virtual ChatCompletionCollectionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ChatCompletionCollectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -1582,6 +1594,9 @@ namespace OpenAI.Chat {
     public class ChatCompletionDeletionResult : IJsonModel<ChatCompletionDeletionResult>, IPersistableModel<ChatCompletionDeletionResult> {
         public string ChatCompletionId { get; }
         public bool Deleted { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         protected virtual ChatCompletionDeletionResult JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         public static explicit operator ChatCompletionDeletionResult(ClientResult result);
@@ -1593,6 +1608,9 @@ namespace OpenAI.Chat {
         public string AfterId { get; set; }
         public ChatCompletionMessageCollectionOrder? Order { get; set; }
         public int? PageSizeLimit { get; set; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         protected virtual ChatCompletionMessageCollectionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ChatCompletionMessageCollectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -1620,6 +1638,9 @@ namespace OpenAI.Chat {
         public string Content { get; }
         public string Id { get; }
         public ChatOutputAudio OutputAudio { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public string Refusal { get; }
         public IReadOnlyList<ChatToolCall> ToolCalls { get; }
         protected virtual ChatCompletionMessageListDatum JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -1643,6 +1664,9 @@ namespace OpenAI.Chat {
         public IDictionary<string, string> Metadata { get; }
         [Experimental("OPENAI001")]
         public ChatOutputPrediction OutputPrediction { get; set; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public float? PresencePenalty { get; set; }
         [Experimental("OPENAI001")]
         public ChatReasoningEffortLevel? ReasoningEffortLevel { get; set; }
@@ -1684,6 +1708,9 @@ namespace OpenAI.Chat {
         public string FunctionDescription { get; set; }
         public string FunctionName { get; }
         public BinaryData FunctionParameters { get; set; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         [Experimental("OPENAI001")]
         protected virtual ChatFunction JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         [Experimental("OPENAI001")]
@@ -1698,6 +1725,9 @@ namespace OpenAI.Chat {
         public ChatFunctionCall(string functionName, BinaryData functionArguments);
         public BinaryData FunctionArguments { get; }
         public string FunctionName { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         [Experimental("OPENAI001")]
         protected virtual ChatFunctionCall JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         [Experimental("OPENAI001")]
@@ -1709,6 +1739,9 @@ namespace OpenAI.Chat {
     }
     [Obsolete("This class is obsolete. Please use ChatToolChoice instead.")]
     public class ChatFunctionChoice : IJsonModel<ChatFunctionChoice>, IPersistableModel<ChatFunctionChoice> {
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public static ChatFunctionChoice CreateAutoChoice();
         public static ChatFunctionChoice CreateNamedChoice(string functionName);
         public static ChatFunctionChoice CreateNoneChoice();
@@ -1756,6 +1789,9 @@ namespace OpenAI.Chat {
     public class ChatInputTokenUsageDetails : IJsonModel<ChatInputTokenUsageDetails>, IPersistableModel<ChatInputTokenUsageDetails> {
         public int AudioTokenCount { get; }
         public int CachedTokenCount { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         [Experimental("OPENAI001")]
         protected virtual ChatInputTokenUsageDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         [Experimental("OPENAI001")]
@@ -1767,6 +1803,9 @@ namespace OpenAI.Chat {
     }
     public class ChatMessage : IJsonModel<ChatMessage>, IPersistableModel<ChatMessage> {
         public ChatMessageContent Content { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public static AssistantChatMessage CreateAssistantMessage(ChatCompletion chatCompletion);
         public static AssistantChatMessage CreateAssistantMessage(ChatFunctionCall functionCall);
         public static AssistantChatMessage CreateAssistantMessage(params ChatMessageContentPart[] contentParts);
@@ -1805,6 +1844,9 @@ namespace OpenAI.Chat {
     [Experimental("OPENAI001")]
     public class ChatMessageAnnotation : IJsonModel<ChatMessageAnnotation>, IPersistableModel<ChatMessageAnnotation> {
         public int EndIndex { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public int StartIndex { get; }
         public string WebResourceTitle { get; }
         public Uri WebResourceUri { get; }
@@ -1837,6 +1879,9 @@ namespace OpenAI.Chat {
         [Experimental("OPENAI001")]
         public ChatInputAudioFormat? InputAudioFormat { get; }
         public ChatMessageContentPartKind Kind { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public string Refusal { get; }
         public string Text { get; }
         [Experimental("OPENAI001")]
@@ -1879,6 +1924,9 @@ namespace OpenAI.Chat {
         public BinaryData AudioBytes { get; }
         public DateTimeOffset ExpiresAt { get; }
         public string Id { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public string Transcript { get; }
         protected virtual ChatOutputAudio JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -1909,6 +1957,9 @@ namespace OpenAI.Chat {
     public class ChatOutputAudioReference : IJsonModel<ChatOutputAudioReference>, IPersistableModel<ChatOutputAudioReference> {
         public ChatOutputAudioReference(string id);
         public string Id { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         protected virtual ChatOutputAudioReference JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ChatOutputAudioReference PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -1941,6 +1992,9 @@ namespace OpenAI.Chat {
     }
     [Experimental("OPENAI001")]
     public class ChatOutputPrediction : IJsonModel<ChatOutputPrediction>, IPersistableModel<ChatOutputPrediction> {
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public static ChatOutputPrediction CreateStaticContentPrediction(IEnumerable<ChatMessageContentPart> staticContentParts);
         public static ChatOutputPrediction CreateStaticContentPrediction(string staticContent);
         protected virtual ChatOutputPrediction JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -1952,6 +2006,9 @@ namespace OpenAI.Chat {
         [Experimental("OPENAI001")]
         public int AcceptedPredictionTokenCount { get; }
         public int AudioTokenCount { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public int ReasoningTokenCount { get; }
         [Experimental("OPENAI001")]
         public int RejectedPredictionTokenCount { get; }
@@ -1983,6 +2040,9 @@ namespace OpenAI.Chat {
         public override readonly string ToString();
     }
     public class ChatResponseFormat : IJsonModel<ChatResponseFormat>, IPersistableModel<ChatResponseFormat> {
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public static ChatResponseFormat CreateJsonObjectFormat();
         public static ChatResponseFormat CreateJsonSchemaFormat(string jsonSchemaFormatName, BinaryData jsonSchema, string jsonSchemaFormatDescription = null, bool? jsonSchemaIsStrict = null);
         public static ChatResponseFormat CreateTextFormat();
@@ -2022,6 +2082,9 @@ namespace OpenAI.Chat {
     }
     public class ChatTokenLogProbabilityDetails : IJsonModel<ChatTokenLogProbabilityDetails>, IPersistableModel<ChatTokenLogProbabilityDetails> {
         public float LogProbability { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public string Token { get; }
         public IReadOnlyList<ChatTokenTopLogProbabilityDetails> TopLogProbabilities { get; }
         public ReadOnlyMemory<byte>? Utf8Bytes { get; }
@@ -2036,6 +2099,9 @@ namespace OpenAI.Chat {
     }
     public class ChatTokenTopLogProbabilityDetails : IJsonModel<ChatTokenTopLogProbabilityDetails>, IPersistableModel<ChatTokenTopLogProbabilityDetails> {
         public float LogProbability { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public string Token { get; }
         public ReadOnlyMemory<byte>? Utf8Bytes { get; }
         [Experimental("OPENAI001")]
@@ -2052,6 +2118,9 @@ namespace OpenAI.Chat {
         public ChatInputTokenUsageDetails InputTokenDetails { get; }
         public int OutputTokenCount { get; }
         public ChatOutputTokenUsageDetails OutputTokenDetails { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public int TotalTokenCount { get; }
         [Experimental("OPENAI001")]
         protected virtual ChatTokenUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -2068,6 +2137,9 @@ namespace OpenAI.Chat {
         public BinaryData FunctionParameters { get; }
         public bool? FunctionSchemaIsStrict { get; }
         public ChatToolKind Kind { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public static ChatTool CreateFunctionTool(string functionName, string functionDescription = null, BinaryData functionParameters = null, bool? functionSchemaIsStrict = null);
         [Experimental("OPENAI001")]
         protected virtual ChatTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -2083,6 +2155,9 @@ namespace OpenAI.Chat {
         public string FunctionName { get; }
         public string Id { get; set; }
         public ChatToolCallKind Kind { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public static ChatToolCall CreateFunctionToolCall(string id, string functionName, BinaryData functionArguments);
         [Experimental("OPENAI001")]
         protected virtual ChatToolCall JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -2097,6 +2172,9 @@ namespace OpenAI.Chat {
         Function = 0
     }
     public class ChatToolChoice : IJsonModel<ChatToolChoice>, IPersistableModel<ChatToolChoice> {
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public static ChatToolChoice CreateAutoChoice();
         public static ChatToolChoice CreateFunctionChoice(string functionName);
         public static ChatToolChoice CreateNoneChoice();
@@ -2115,6 +2193,9 @@ namespace OpenAI.Chat {
     }
     [Experimental("OPENAI001")]
     public class ChatWebSearchOptions : IJsonModel<ChatWebSearchOptions>, IPersistableModel<ChatWebSearchOptions> {
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         protected virtual ChatWebSearchOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ChatWebSearchOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -2186,6 +2267,9 @@ namespace OpenAI.Chat {
         public string Model { get; }
         [Experimental("OPENAI001")]
         public StreamingChatOutputAudioUpdate OutputAudioUpdate { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public IReadOnlyList<ChatTokenLogProbabilityDetails> RefusalTokenLogProbabilities { get; }
         public string RefusalUpdate { get; }
         public ChatMessageRole? Role { get; }
@@ -2207,6 +2291,9 @@ namespace OpenAI.Chat {
     public class StreamingChatFunctionCallUpdate : IJsonModel<StreamingChatFunctionCallUpdate>, IPersistableModel<StreamingChatFunctionCallUpdate> {
         public BinaryData FunctionArgumentsUpdate { get; }
         public string FunctionName { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         [Experimental("OPENAI001")]
         protected virtual StreamingChatFunctionCallUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         [Experimental("OPENAI001")]
@@ -2221,6 +2308,9 @@ namespace OpenAI.Chat {
         public BinaryData AudioBytesUpdate { get; }
         public DateTimeOffset? ExpiresAt { get; }
         public string Id { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public string TranscriptUpdate { get; }
         protected virtual StreamingChatOutputAudioUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -2232,6 +2322,9 @@ namespace OpenAI.Chat {
         public string FunctionName { get; }
         public int Index { get; }
         public ChatToolCallKind Kind { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public string ToolCallId { get; }
         [Experimental("OPENAI001")]
         protected virtual StreamingChatToolCallUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -2489,6 +2582,9 @@ namespace OpenAI.Embeddings {
     public class EmbeddingGenerationOptions : IJsonModel<EmbeddingGenerationOptions>, IPersistableModel<EmbeddingGenerationOptions> {
         public int? Dimensions { get; set; }
         public string EndUserId { get; set; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         [Experimental("OPENAI001")]
         protected virtual EmbeddingGenerationOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         [Experimental("OPENAI001")]
@@ -2500,6 +2596,9 @@ namespace OpenAI.Embeddings {
     }
     public class EmbeddingTokenUsage : IJsonModel<EmbeddingTokenUsage>, IPersistableModel<EmbeddingTokenUsage> {
         public int InputTokenCount { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public int TotalTokenCount { get; }
         [Experimental("OPENAI001")]
         protected virtual EmbeddingTokenUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -2512,6 +2611,9 @@ namespace OpenAI.Embeddings {
     }
     public class OpenAIEmbedding : IJsonModel<OpenAIEmbedding>, IPersistableModel<OpenAIEmbedding> {
         public int Index { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         [Experimental("OPENAI001")]
         protected virtual OpenAIEmbedding JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         [Experimental("OPENAI001")]
@@ -2524,6 +2626,9 @@ namespace OpenAI.Embeddings {
     }
     public class OpenAIEmbeddingCollection : ObjectModel.ReadOnlyCollection<OpenAIEmbedding>, IJsonModel<OpenAIEmbeddingCollection>, IPersistableModel<OpenAIEmbeddingCollection> {
         public string Model { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public EmbeddingTokenUsage Usage { get; }
         [Experimental("OPENAI001")]
         protected virtual OpenAIEmbeddingCollection JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -4632,6 +4737,9 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class CodeInterpreterCallOutput : IJsonModel<CodeInterpreterCallOutput>, IPersistableModel<CodeInterpreterCallOutput> {
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         protected virtual CodeInterpreterCallOutput JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual CodeInterpreterCallOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -4672,6 +4780,9 @@ namespace OpenAI.Responses {
         public CodeInterpreterToolContainer(string containerId);
         public CodeInterpreterToolContainerConfiguration ContainerConfiguration { get; }
         public string ContainerId { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         protected virtual CodeInterpreterToolContainer JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual CodeInterpreterToolContainer PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -4679,6 +4790,9 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class CodeInterpreterToolContainerConfiguration : IJsonModel<CodeInterpreterToolContainerConfiguration>, IPersistableModel<CodeInterpreterToolContainerConfiguration> {
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public static AutomaticCodeInterpreterToolContainerConfiguration CreateAutomaticContainerConfiguration(IEnumerable<string> fileIds = null);
         protected virtual CodeInterpreterToolContainerConfiguration JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -4694,6 +4808,9 @@ namespace OpenAI.Responses {
         public IList<string> KeyPressKeyCodes { get; }
         public ComputerCallActionKind Kind { get; }
         public Drawing.Point? MoveCoordinates { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public Drawing.Point? ScrollCoordinates { get; }
         public int? ScrollHorizontalOffset { get; }
         public int? ScrollVerticalOffset { get; }
@@ -4734,6 +4851,9 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAICUA001")]
     public class ComputerCallOutput : IJsonModel<ComputerCallOutput>, IPersistableModel<ComputerCallOutput> {
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public static ComputerCallOutput CreateScreenshotOutput(BinaryData screenshotImageBytes, string screenshotImageBytesMediaType);
         public static ComputerCallOutput CreateScreenshotOutput(string screenshotImageFileId);
         public static ComputerCallOutput CreateScreenshotOutput(Uri screenshotImageUri);
@@ -4778,6 +4898,9 @@ namespace OpenAI.Responses {
         public string Code { get; set; }
         public string Id { get; set; }
         public string Message { get; set; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         protected virtual ComputerCallSafetyCheck JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ComputerCallSafetyCheck PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -4821,6 +4944,9 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class CustomMcpToolCallApprovalPolicy : IJsonModel<CustomMcpToolCallApprovalPolicy>, IPersistableModel<CustomMcpToolCallApprovalPolicy> {
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public McpToolFilter ToolsAlwaysRequiringApproval { get; set; }
         public McpToolFilter ToolsNeverRequiringApproval { get; set; }
         protected virtual CustomMcpToolCallApprovalPolicy JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -4864,6 +4990,9 @@ namespace OpenAI.Responses {
         public IDictionary<string, BinaryData> Attributes { get; }
         public string FileId { get; set; }
         public string Filename { get; set; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public float? Score { get; set; }
         public string Text { get; set; }
         protected virtual FileSearchCallResult JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -4909,6 +5038,9 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class FileSearchToolRankingOptions : IJsonModel<FileSearchToolRankingOptions>, IPersistableModel<FileSearchToolRankingOptions> {
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public FileSearchToolRanker? Ranker { get; set; }
         public float? ScoreThreshold { get; set; }
         protected virtual FileSearchToolRankingOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -5054,6 +5186,9 @@ namespace OpenAI.Responses {
         public ImageGenerationToolInputImageMask(Uri imageUri);
         public string FileId { get; }
         public string ImageUrl { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         protected virtual ImageGenerationToolInputImageMask JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ImageGenerationToolInputImageMask PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -5149,6 +5284,9 @@ namespace OpenAI.Responses {
         public McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy globalPolicy);
         public CustomMcpToolCallApprovalPolicy CustomPolicy { get; }
         public GlobalMcpToolCallApprovalPolicy? GlobalPolicy { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         protected virtual McpToolCallApprovalPolicy JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual McpToolCallApprovalPolicy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -5218,6 +5356,9 @@ namespace OpenAI.Responses {
         public string Description { get; set; }
         public BinaryData InputSchema { get; set; }
         public string Name { get; set; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         protected virtual McpToolDefinition JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual McpToolDefinition PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -5237,6 +5378,9 @@ namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class McpToolFilter : IJsonModel<McpToolFilter>, IPersistableModel<McpToolFilter> {
         public bool? IsReadOnly { get; set; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public IList<string> ToolNames { get; }
         protected virtual McpToolFilter JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -5281,6 +5425,9 @@ namespace OpenAI.Responses {
         public string Model { get; }
         public IList<ResponseItem> OutputItems { get; }
         public bool ParallelToolCallsEnabled { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public string PreviousResponseId { get; }
         public ResponseReasoningOptions ReasoningOptions { get; }
         public ResponseServiceTier? ServiceTier { get; }
@@ -5375,6 +5522,9 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ReasoningSummaryPart : IJsonModel<ReasoningSummaryPart>, IPersistableModel<ReasoningSummaryPart> {
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public static ReasoningSummaryTextPart CreateTextPart(string text);
         protected virtual ReasoningSummaryPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -5408,6 +5558,9 @@ namespace OpenAI.Responses {
         public string InputImageFileId { get; }
         public ResponseContentPartKind Kind { get; }
         public IReadOnlyList<ResponseMessageAnnotation> OutputTextAnnotations { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public string Refusal { get; }
         public string Text { get; }
         public static ResponseContentPart CreateInputFilePart(BinaryData fileBytes, string fileBytesMediaType, string filename);
@@ -5440,6 +5593,9 @@ namespace OpenAI.Responses {
         public int? MaxOutputTokenCount { get; set; }
         public IDictionary<string, string> Metadata { get; }
         public bool? ParallelToolCallsEnabled { get; set; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public string PreviousResponseId { get; set; }
         public ResponseReasoningOptions ReasoningOptions { get; set; }
         public ResponseServiceTier? ServiceTier { get; set; }
@@ -5459,6 +5615,9 @@ namespace OpenAI.Responses {
     public class ResponseDeletionResult : IJsonModel<ResponseDeletionResult>, IPersistableModel<ResponseDeletionResult> {
         public bool Deleted { get; }
         public string Id { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         protected virtual ResponseDeletionResult JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         public static explicit operator ResponseDeletionResult(ClientResult result);
@@ -5469,6 +5628,9 @@ namespace OpenAI.Responses {
     public class ResponseError : IJsonModel<ResponseError>, IPersistableModel<ResponseError> {
         public ResponseErrorCode Code { get; }
         public string Message { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         protected virtual ResponseError JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ResponseError PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -5525,6 +5687,9 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ResponseIncompleteStatusDetails : IJsonModel<ResponseIncompleteStatusDetails>, IPersistableModel<ResponseIncompleteStatusDetails> {
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public ResponseIncompleteStatusReason? Reason { get; }
         protected virtual ResponseIncompleteStatusDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -5550,6 +5715,9 @@ namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class ResponseInputTokenUsageDetails : IJsonModel<ResponseInputTokenUsageDetails>, IPersistableModel<ResponseInputTokenUsageDetails> {
         public int CachedTokenCount { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         protected virtual ResponseInputTokenUsageDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ResponseInputTokenUsageDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -5558,6 +5726,9 @@ namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class ResponseItem : IJsonModel<ResponseItem>, IPersistableModel<ResponseItem> {
         public string Id { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public static MessageResponseItem CreateAssistantMessageItem(IEnumerable<ResponseContentPart> contentParts);
         public static MessageResponseItem CreateAssistantMessageItem(string outputTextContent, IEnumerable<ResponseMessageAnnotation> annotations = null);
         [Experimental("OPENAICUA001")]
@@ -5592,6 +5763,9 @@ namespace OpenAI.Responses {
         public string BeforeId { get; set; }
         public ResponseItemCollectionOrder? Order { get; set; }
         public int? PageSizeLimit { get; set; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         protected virtual ResponseItemCollectionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ResponseItemCollectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -5616,6 +5790,9 @@ namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class ResponseMessageAnnotation : IJsonModel<ResponseMessageAnnotation>, IPersistableModel<ResponseMessageAnnotation> {
         public ResponseMessageAnnotationKind Kind { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         protected virtual ResponseMessageAnnotation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ResponseMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -5630,6 +5807,9 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ResponseOutputTokenUsageDetails : IJsonModel<ResponseOutputTokenUsageDetails>, IPersistableModel<ResponseOutputTokenUsageDetails> {
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public int ReasoningTokenCount { get; }
         protected virtual ResponseOutputTokenUsageDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -5656,6 +5836,9 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ResponseReasoningOptions : IJsonModel<ResponseReasoningOptions>, IPersistableModel<ResponseReasoningOptions> {
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public ResponseReasoningEffortLevel? ReasoningEffortLevel { get; set; }
         public ResponseReasoningSummaryVerbosity? ReasoningSummaryVerbosity { get; set; }
         protected virtual ResponseReasoningOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -5710,6 +5893,9 @@ namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class ResponseTextFormat : IJsonModel<ResponseTextFormat>, IPersistableModel<ResponseTextFormat> {
         public ResponseTextFormatKind Kind { get; set; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public static ResponseTextFormat CreateJsonObjectFormat();
         public static ResponseTextFormat CreateJsonSchemaFormat(string jsonSchemaFormatName, BinaryData jsonSchema, string jsonSchemaFormatDescription = null, bool? jsonSchemaIsStrict = null);
         public static ResponseTextFormat CreateTextFormat();
@@ -5727,6 +5913,9 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ResponseTextOptions : IJsonModel<ResponseTextOptions>, IPersistableModel<ResponseTextOptions> {
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public ResponseTextFormat TextFormat { get; set; }
         protected virtual ResponseTextOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -5739,6 +5928,9 @@ namespace OpenAI.Responses {
         public ResponseInputTokenUsageDetails InputTokenDetails { get; }
         public int OutputTokenCount { get; }
         public ResponseOutputTokenUsageDetails OutputTokenDetails { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public int TotalTokenCount { get; }
         protected virtual ResponseTokenUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -5747,6 +5939,9 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ResponseTool : IJsonModel<ResponseTool>, IPersistableModel<ResponseTool> {
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public static CodeInterpreterTool CreateCodeInterpreterTool(CodeInterpreterToolContainer container);
         [Experimental("OPENAICUA001")]
         public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight);
@@ -6163,6 +6358,9 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class StreamingResponseUpdate : IJsonModel<StreamingResponseUpdate>, IPersistableModel<StreamingResponseUpdate> {
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public int SequenceNumber { get; }
         protected virtual StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -6265,6 +6463,9 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class WebSearchToolLocation : IJsonModel<WebSearchToolLocation>, IPersistableModel<WebSearchToolLocation> {
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
         public static WebSearchToolApproximateLocation CreateApproximateLocation(string country = null, string region = null, string city = null, string timezone = null);
         protected virtual WebSearchToolLocation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);

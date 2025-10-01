@@ -3,7 +3,6 @@
 #nullable disable
 
 using System;
-using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Linq;
 using OpenAI.Assistants;
@@ -358,16 +357,16 @@ namespace OpenAI
             return new DeleteContainerFileResponse(id, @object, deleted, additionalBinaryDataProperties: null);
         }
 
-        public static OpenAIEmbeddingCollection OpenAIEmbeddingCollection(IEnumerable<OpenAIEmbedding> data = default, string model = default, string @object = default, EmbeddingTokenUsage usage = default, JsonPatch patch = default)
+        public static OpenAIEmbeddingCollection OpenAIEmbeddingCollection(IEnumerable<OpenAIEmbedding> data = default, string model = default, string @object = default, EmbeddingTokenUsage usage = default)
         {
             data ??= new ChangeTrackingList<OpenAIEmbedding>();
 
-            return new OpenAIEmbeddingCollection(data.ToList(), model, @object, usage, patch);
+            return new OpenAIEmbeddingCollection(data.ToList(), model, @object, usage, default);
         }
 
-        public static OpenAIEmbedding OpenAIEmbedding(int index = default, BinaryData embeddingProperty = default, string @object = default, JsonPatch patch = default)
+        public static OpenAIEmbedding OpenAIEmbedding(int index = default, BinaryData embeddingProperty = default, string @object = default)
         {
-            return new OpenAIEmbedding(index, embeddingProperty, @object, patch);
+            return new OpenAIEmbedding(index, embeddingProperty, @object, default);
         }
 
         public static EmbeddingTokenUsage EmbeddingTokenUsage(int inputTokenCount = default, int totalTokenCount = default)
