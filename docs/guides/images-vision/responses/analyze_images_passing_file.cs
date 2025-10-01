@@ -24,8 +24,8 @@ OpenAIFile file = await files.UploadFileAsync(BinaryData.FromStream(stream), fil
 
 OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
     ResponseItem.CreateUserMessageItem([
-        ResponseContentPart.CreateInputImagePart(file.Id),
-        ResponseContentPart.CreateInputTextPart("what's in this image?")
+        ResponseContentPart.CreateInputTextPart("what's in this image?"),
+        ResponseContentPart.CreateInputImagePart(file.Id)
     ])
 ]);
 
