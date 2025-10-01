@@ -214,6 +214,7 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(LogProb);
 // custom.tsp models
 @@dynamicModel(ResponseErrorResponse);
+@@dynamicModel(DeleteResponseResponse);
 @@dynamicModel(ReasoningItemSummaryPart);
 @@dynamicModel(ReasoningItemSummaryTextPart);
 @@dynamicModel(CodeInterpreterToolOutput);

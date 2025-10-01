@@ -2,7 +2,6 @@
 
 #nullable disable
 
-using System;
 using System.ClientModel.Primitives;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
@@ -13,16 +12,6 @@ namespace OpenAI.Embeddings
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
-
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal OpenAIEmbedding(int index, BinaryData embeddingProperty, string @object, in JsonPatch patch)
-        {
-            Index = index;
-            EmbeddingProperty = embeddingProperty;
-            Object = @object;
-            _patch = patch;
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]

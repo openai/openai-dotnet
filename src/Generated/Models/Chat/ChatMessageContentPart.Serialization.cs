@@ -39,15 +39,6 @@ namespace OpenAI.Chat
             return DeserializeChatMessageContentPart(document.RootElement, null, options);
         }
 
-        internal static ChatMessageContentPart DeserializeChatMessageContentPart(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
-        {
-            if (element.ValueKind == JsonValueKind.Null)
-            {
-                return null;
-            }
-            return InternalUnknownChatCompletionRequestMessageContentPart.DeserializeInternalUnknownChatCompletionRequestMessageContentPart(element, data, options);
-        }
-
         BinaryData IPersistableModel<ChatMessageContentPart>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         [Experimental("OPENAI001")]

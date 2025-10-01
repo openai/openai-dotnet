@@ -11,7 +11,9 @@ namespace OpenAI.Embeddings;
 [CodeGenSuppress("Data")]
 [CodeGenSuppress(nameof(OpenAIEmbeddingCollection))]
 [CodeGenSuppress(nameof(OpenAIEmbeddingCollection), typeof(string), typeof(EmbeddingTokenUsage))]
-[CodeGenSuppress(nameof(OpenAIEmbeddingCollection), typeof(string), typeof(string), typeof(EmbeddingTokenUsage), typeof(IDictionary<string, BinaryData>))]
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+[CodeGenSuppress(nameof(OpenAIEmbeddingCollection), typeof(string), typeof(string), typeof(EmbeddingTokenUsage), typeof(JsonPatch))]
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 public partial class OpenAIEmbeddingCollection : ReadOnlyCollection<OpenAIEmbedding>
 {
     // CUSTOM: Made private. This property does not add value in the context of a strongly-typed class.
@@ -42,15 +44,17 @@ public partial class OpenAIEmbeddingCollection : ReadOnlyCollection<OpenAIEmbedd
     /// <param name="model"> The name of the model used to generate the embedding. </param>
     /// <param name="object"> The object type, which is always "list". </param>
     /// <param name="usage"> The usage information for the request. </param>
-    /// <param name="serializedAdditionalRawData"> Keeps track of any properties unknown to the library. </param>
-    internal OpenAIEmbeddingCollection(IReadOnlyList<OpenAIEmbedding> data, string model, string @object, EmbeddingTokenUsage usage, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    /// <param name="patch"> Keeps track of any properties unknown to the library. </param>
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+    internal OpenAIEmbeddingCollection(IReadOnlyList<OpenAIEmbedding> data, string model, string @object, EmbeddingTokenUsage usage, in JsonPatch patch)
         : base([.. data])
     {
         Model = model;
         Object = @object;
         Usage = usage;
-        _additionalBinaryDataProperties = serializedAdditionalRawData;
+        _patch = patch;
     }
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
     // CUSTOM: Set the inherited Items property via the base constructor in favor of the suppressed Data property.
     /// <summary> Initializes a new instance of <see cref="OpenAIEmbeddingCollection"/> for deserialization. </summary>

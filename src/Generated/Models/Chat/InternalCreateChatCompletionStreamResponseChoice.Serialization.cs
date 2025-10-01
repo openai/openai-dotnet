@@ -4,7 +4,6 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -64,56 +63,6 @@ namespace OpenAI.Chat
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeInternalCreateChatCompletionStreamResponseChoice(document.RootElement, null, options);
-        }
-
-        internal static InternalCreateChatCompletionStreamResponseChoice DeserializeInternalCreateChatCompletionStreamResponseChoice(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
-        {
-            if (element.ValueKind == JsonValueKind.Null)
-            {
-                return null;
-            }
-            InternalChatCompletionStreamResponseDelta delta = default;
-            InternalCreateChatCompletionStreamResponseChoiceLogprobs logprobs = default;
-            ChatFinishReason? finishReason = default;
-            int index = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            foreach (var prop in element.EnumerateObject())
-            {
-                if (prop.NameEquals("delta"u8))
-                {
-                    delta = InternalChatCompletionStreamResponseDelta.DeserializeInternalChatCompletionStreamResponseDelta(prop.Value, prop.Value.GetUtf8Bytes(), options);
-                    continue;
-                }
-                if (prop.NameEquals("logprobs"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        logprobs = null;
-                        continue;
-                    }
-                    logprobs = InternalCreateChatCompletionStreamResponseChoiceLogprobs.DeserializeInternalCreateChatCompletionStreamResponseChoiceLogprobs(prop.Value, prop.Value.GetUtf8Bytes(), options);
-                    continue;
-                }
-                if (prop.NameEquals("finish_reason"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        finishReason = null;
-                        continue;
-                    }
-                    finishReason = prop.Value.GetString().ToChatFinishReason();
-                    continue;
-                }
-                if (prop.NameEquals("index"u8))
-                {
-                    index = prop.Value.GetInt32();
-                    continue;
-                }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
-            }
-            return new InternalCreateChatCompletionStreamResponseChoice(delta, logprobs, finishReason, index, patch);
         }
 
         BinaryData IPersistableModel<InternalCreateChatCompletionStreamResponseChoice>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

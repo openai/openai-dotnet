@@ -14,17 +14,6 @@ namespace OpenAI.Embeddings
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal OpenAIEmbeddingCollection(string model, string @object, EmbeddingTokenUsage usage, in JsonPatch patch)
-        {
-            Model = model;
-            Object = @object;
-            Usage = usage;
-            _patch = patch;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
-        }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;

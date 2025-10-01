@@ -7,7 +7,6 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -56,40 +55,6 @@ namespace OpenAI.Embeddings
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeOpenAIEmbeddingCollection(document.RootElement, null, options);
-        }
-
-        internal static OpenAIEmbeddingCollection DeserializeOpenAIEmbeddingCollection(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
-        {
-            if (element.ValueKind == JsonValueKind.Null)
-            {
-                return null;
-            }
-            string model = default;
-            string @object = default;
-            EmbeddingTokenUsage usage = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            foreach (var prop in element.EnumerateObject())
-            {
-                if (prop.NameEquals("model"u8))
-                {
-                    model = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("object"u8))
-                {
-                    @object = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("usage"u8))
-                {
-                    usage = EmbeddingTokenUsage.DeserializeEmbeddingTokenUsage(prop.Value, prop.Value.GetUtf8Bytes(), options);
-                    continue;
-                }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
-            }
-            return new OpenAIEmbeddingCollection(model, @object, usage, patch);
         }
 
         BinaryData IPersistableModel<OpenAIEmbeddingCollection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

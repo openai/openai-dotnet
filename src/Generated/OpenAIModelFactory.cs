@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Linq;
 using OpenAI.Assistants;
@@ -357,14 +358,16 @@ namespace OpenAI
             return new DeleteContainerFileResponse(id, @object, deleted, additionalBinaryDataProperties: null);
         }
 
-        public static OpenAIEmbeddingCollection OpenAIEmbeddingCollection(string model = default, string @object = default, EmbeddingTokenUsage usage = default)
+        public static OpenAIEmbeddingCollection OpenAIEmbeddingCollection(IEnumerable<OpenAIEmbedding> data = default, string model = default, string @object = default, EmbeddingTokenUsage usage = default, JsonPatch patch = default)
         {
-            return new OpenAIEmbeddingCollection(model, @object, usage, default);
+            data ??= new ChangeTrackingList<OpenAIEmbedding>();
+
+            return new OpenAIEmbeddingCollection(data.ToList(), model, @object, usage, patch);
         }
 
-        public static OpenAIEmbedding OpenAIEmbedding(int index = default, BinaryData embeddingProperty = default, string @object = default)
+        public static OpenAIEmbedding OpenAIEmbedding(int index = default, BinaryData embeddingProperty = default, string @object = default, JsonPatch patch = default)
         {
-            return new OpenAIEmbedding(index, embeddingProperty, @object, default);
+            return new OpenAIEmbedding(index, embeddingProperty, @object, patch);
         }
 
         public static EmbeddingTokenUsage EmbeddingTokenUsage(int inputTokenCount = default, int totalTokenCount = default)
@@ -697,7 +700,7 @@ namespace OpenAI
 
         public static ResponseDeletionResult ResponseDeletionResult(string id = default, string @object = default, bool deleted = default)
         {
-            return new ResponseDeletionResult(id, @object, deleted, additionalBinaryDataProperties: null);
+            return new ResponseDeletionResult(id, @object, deleted, default);
         }
 
         public static ImageGenerationOptions ImageGenerationOptions(string prompt = default, InternalCreateImageRequestModel? model = default, long? n = default, GeneratedImageQuality? quality = default, GeneratedImageFormat? responseFormat = default, GeneratedImageFileFormat? outputFileFormat = default, int? outputCompressionFactor = default, GeneratedImageSize? size = default, GeneratedImageModerationLevel? moderationLevel = default, GeneratedImageBackground? background = default, GeneratedImageStyle? style = default, string endUserId = default)

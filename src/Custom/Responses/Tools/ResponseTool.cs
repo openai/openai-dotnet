@@ -16,7 +16,7 @@ public partial class ResponseTool
 
         return new FunctionTool(
             kind: InternalToolType.Function,
-            additionalBinaryDataProperties: null,
+            patch: default,
             functionName: functionName,
             functionDescription: functionDescription,
             functionParameters: functionParameters,
@@ -29,7 +29,7 @@ public partial class ResponseTool
     {
         return new ComputerTool(
             kind: InternalToolType.ComputerUsePreview,
-            additionalBinaryDataProperties: null,
+            patch: default,
             environment: environment,
             displayWidth: displayWidth,
             displayHeight: displayHeight);
@@ -42,7 +42,7 @@ public partial class ResponseTool
 
         return new FileSearchTool(
             kind: InternalToolType.FileSearch,
-            additionalBinaryDataProperties: null,
+            patch: default,
             vectorStoreIds: vectorStoreIds.ToList(),
             maxResultCount: maxResultCount,
             rankingOptions: rankingOptions,
@@ -54,7 +54,7 @@ public partial class ResponseTool
     {
         return new WebSearchTool(
             kind: InternalToolType.WebSearchPreview,
-            additionalBinaryDataProperties: null,
+            patch: default,
             userLocation: userLocation,
             searchContextSize: searchContextSize);
     }
@@ -67,7 +67,7 @@ public partial class ResponseTool
 
         return new McpTool(
             kind: InternalToolType.Mcp,
-            additionalBinaryDataProperties: null,
+            patch: default,
             serverLabel: serverLabel,
             serverUri: serverUri,
             connectorId: null,
@@ -85,7 +85,7 @@ public partial class ResponseTool
 
         return new McpTool(
             kind: InternalToolType.Mcp,
-            additionalBinaryDataProperties: null,
+            patch: default,
             serverLabel: serverLabel,
             serverUri: null,
             connectorId: connectorId,
@@ -107,7 +107,7 @@ public partial class ResponseTool
 
         return new CodeInterpreterTool(
             kind: InternalToolType.CodeInterpreter,
-            additionalBinaryDataProperties: null,
+            patch: default,
             container: container);
     }
 
@@ -119,7 +119,7 @@ public partial class ResponseTool
     {
         return new ImageGenerationTool(
             kind: InternalToolType.ImageGeneration,
-            additionalBinaryDataProperties: null,
+            patch: default,
             model: model,
             quality: quality,
             size: size,
