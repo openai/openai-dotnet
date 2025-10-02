@@ -1,0 +1,1610 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/fine_tuning/jobs",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "984ef06fdfec2760-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "21863",
+        "Content-Type": "application/json",
+        "Date": "Fri, 26 Sep 2025 01:20:30 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "106",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "117",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-bU0BCUHfNzRemYMFmIRItnOH",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849629,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": null,
+            "training_file": "file-E8xsKBEp2QMT1sqSvXufXX",
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": null,
+            "seed": 1821554894,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": "auto",
+                  "batch_size": "auto",
+                  "learning_rate_multiplier": "auto"
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-QuUOrSeu4wBEq4Fa98klNPzt",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849626,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": "file-5XFEJs5JoMfPnuVXP8tQJE",
+            "training_file": "file-E8xsKBEp2QMT1sqSvXufXX",
+            "hyperparameters": {
+              "n_epochs": 1,
+              "batch_size": 2,
+              "learning_rate_multiplier": 3.0
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": "TestFTJob",
+            "seed": 1234567,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": 1,
+                  "batch_size": 2,
+                  "learning_rate_multiplier": 3.0
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-GHSN7rot4jyVbB745NTZUtLX",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849622,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": null,
+            "training_file": "file-MNu4SQN4hf2nJmWVXyv8qW",
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": null,
+            "seed": 2065781162,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": "auto",
+                  "batch_size": "auto",
+                  "learning_rate_multiplier": "auto"
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-jsCxV7QZJdzAOWpAoM4SVawx",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849620,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": null,
+            "training_file": "file-MNu4SQN4hf2nJmWVXyv8qW",
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": null,
+            "seed": 1722915021,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": "auto",
+                  "batch_size": "auto",
+                  "learning_rate_multiplier": "auto"
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-4BZEij3fAMrJmL4d2w0TKEMA",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849616,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": "file-1pjT5ZsASwTxBa62G85Vrh",
+            "training_file": "file-MNu4SQN4hf2nJmWVXyv8qW",
+            "hyperparameters": {
+              "n_epochs": 1,
+              "batch_size": 2,
+              "learning_rate_multiplier": 3.0
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": "TestFTJob",
+            "seed": 1234567,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": 1,
+                  "batch_size": 2,
+                  "learning_rate_multiplier": 3.0
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-PDH9P5a80YrVJCR1Gz2MAVnM",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849506,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": null,
+            "training_file": "file-BPYaTh7seBfCBdGyDe14i9",
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": null,
+            "seed": 559995283,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": "auto",
+                  "batch_size": "auto",
+                  "learning_rate_multiplier": "auto"
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-uEHGqN4ZXVPlcuvyNyfF8J14",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849503,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": null,
+            "training_file": "file-BPYaTh7seBfCBdGyDe14i9",
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": null,
+            "seed": 1152235351,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": "auto",
+                  "batch_size": "auto",
+                  "learning_rate_multiplier": "auto"
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-lAADGKnr29HIW7lj81l8Tgy5",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849501,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": "file-XJKUH73yvptwdYPi145gPo",
+            "training_file": "file-BPYaTh7seBfCBdGyDe14i9",
+            "hyperparameters": {
+              "n_epochs": 1,
+              "batch_size": 2,
+              "learning_rate_multiplier": 3.0
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": "TestFTJob",
+            "seed": 1234567,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": 1,
+                  "batch_size": 2,
+                  "learning_rate_multiplier": 3.0
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-kfrMkVSsSDUWR0cuad1g93Mf",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849491,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": null,
+            "training_file": "file-645ZeYeY91vWAQxF65HgaF",
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": null,
+            "seed": 21482785,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": "auto",
+                  "batch_size": "auto",
+                  "learning_rate_multiplier": "auto"
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-BQu7mlrETcQ5HUQp3iDNTUHl",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849489,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": null,
+            "training_file": "file-645ZeYeY91vWAQxF65HgaF",
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": null,
+            "seed": 1762675203,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": "auto",
+                  "batch_size": "auto",
+                  "learning_rate_multiplier": "auto"
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-1h29jmE7W5A0yNJiSZs1cQAZ",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849486,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": "file-LXkicbXP2fZa96KZ6AQFuJ",
+            "training_file": "file-645ZeYeY91vWAQxF65HgaF",
+            "hyperparameters": {
+              "n_epochs": 1,
+              "batch_size": 2,
+              "learning_rate_multiplier": 3.0
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": "TestFTJob",
+            "seed": 1234567,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": 1,
+                  "batch_size": 2,
+                  "learning_rate_multiplier": 3.0
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-eC5y8s7dqAf6R7KOHC6OypbR",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849409,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": null,
+            "training_file": "file-FK4CZWHh8svPRDtgYDdG8Q",
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": null,
+            "seed": 1105771340,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": "auto",
+                  "batch_size": "auto",
+                  "learning_rate_multiplier": "auto"
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-zLPw9IknQ6EIrXmK2pVMb7YF",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849407,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": null,
+            "training_file": "file-FK4CZWHh8svPRDtgYDdG8Q",
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": null,
+            "seed": 1353061951,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": "auto",
+                  "batch_size": "auto",
+                  "learning_rate_multiplier": "auto"
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-GDWqd65CSNkZvAqWZtmCzbVs",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849405,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": "file-N3kjhxZjzM9DwgKUZNJRjQ",
+            "training_file": "file-FK4CZWHh8svPRDtgYDdG8Q",
+            "hyperparameters": {
+              "n_epochs": 1,
+              "batch_size": 2,
+              "learning_rate_multiplier": 3.0
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": "TestFTJob",
+            "seed": 1234567,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": 1,
+                  "batch_size": 2,
+                  "learning_rate_multiplier": 3.0
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-WAtOqFtbmJZKR3w2vnjeJauO",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849399,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "failed",
+            "validation_file": null,
+            "training_file": "file-TgNMy4sT98A4SPRkCq3TCw",
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            },
+            "trained_tokens": null,
+            "error": {
+              "code": "deleted_training_file",
+              "param": "training_file",
+              "message": "The job failed because the training file was deleted"
+            },
+            "user_provided_suffix": null,
+            "seed": 303399559,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": "auto",
+                  "batch_size": "auto",
+                  "learning_rate_multiplier": "auto"
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-hH0F2W2xzx3cEW9RUsVwFdsm",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849397,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": null,
+            "training_file": "file-TgNMy4sT98A4SPRkCq3TCw",
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": null,
+            "seed": 784807601,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": "auto",
+                  "batch_size": "auto",
+                  "learning_rate_multiplier": "auto"
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-ObOhLiEA9AOnqhiRiOTov98Q",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849393,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": "file-LRGAc9JuMRgrzYMAjrdm1P",
+            "training_file": "file-TgNMy4sT98A4SPRkCq3TCw",
+            "hyperparameters": {
+              "n_epochs": 1,
+              "batch_size": 2,
+              "learning_rate_multiplier": 3.0
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": "TestFTJob",
+            "seed": 1234567,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": 1,
+                  "batch_size": 2,
+                  "learning_rate_multiplier": 3.0
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-uIfBoH0EMTEkfWwBgrxpvjyL",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758846539,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": null,
+            "training_file": "file-KDwioBm6ZmwsNbAE5jPSPZ",
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": null,
+            "seed": 1496467484,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": "auto",
+                  "batch_size": "auto",
+                  "learning_rate_multiplier": "auto"
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-r5mfaliCXEMhvtPsoAFgwiDX",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758846524,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": null,
+            "training_file": "file-CeWMDm3XekPnm9DZqqq1aM",
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": null,
+            "seed": 153968049,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": "auto",
+                  "batch_size": "auto",
+                  "learning_rate_multiplier": "auto"
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-NCdZzOiKFfkk8PZxiKaTSFsF",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758846381,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": null,
+            "training_file": "file-Dyy1iMrffGHGpXc16XAtsH",
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": null,
+            "seed": 1502582380,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": "auto",
+                  "batch_size": "auto",
+                  "learning_rate_multiplier": "auto"
+                }
+              }
+            }
+          }
+        ],
+        "has_more": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/fine_tuning/jobs?after=ftjob-bU0BCUHfNzRemYMFmIRItnOH",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "984ef07179b62760-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "21866",
+        "Content-Type": "application/json",
+        "Date": "Fri, 26 Sep 2025 01:20:37 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "99",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "4999",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-QuUOrSeu4wBEq4Fa98klNPzt",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849626,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": "file-5XFEJs5JoMfPnuVXP8tQJE",
+            "training_file": "file-E8xsKBEp2QMT1sqSvXufXX",
+            "hyperparameters": {
+              "n_epochs": 1,
+              "batch_size": 2,
+              "learning_rate_multiplier": 3.0
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": "TestFTJob",
+            "seed": 1234567,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": 1,
+                  "batch_size": 2,
+                  "learning_rate_multiplier": 3.0
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-GHSN7rot4jyVbB745NTZUtLX",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849622,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": null,
+            "training_file": "file-MNu4SQN4hf2nJmWVXyv8qW",
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": null,
+            "seed": 2065781162,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": "auto",
+                  "batch_size": "auto",
+                  "learning_rate_multiplier": "auto"
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-jsCxV7QZJdzAOWpAoM4SVawx",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849620,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": null,
+            "training_file": "file-MNu4SQN4hf2nJmWVXyv8qW",
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": null,
+            "seed": 1722915021,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": "auto",
+                  "batch_size": "auto",
+                  "learning_rate_multiplier": "auto"
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-4BZEij3fAMrJmL4d2w0TKEMA",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849616,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": "file-1pjT5ZsASwTxBa62G85Vrh",
+            "training_file": "file-MNu4SQN4hf2nJmWVXyv8qW",
+            "hyperparameters": {
+              "n_epochs": 1,
+              "batch_size": 2,
+              "learning_rate_multiplier": 3.0
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": "TestFTJob",
+            "seed": 1234567,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": 1,
+                  "batch_size": 2,
+                  "learning_rate_multiplier": 3.0
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-PDH9P5a80YrVJCR1Gz2MAVnM",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849506,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": null,
+            "training_file": "file-BPYaTh7seBfCBdGyDe14i9",
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": null,
+            "seed": 559995283,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": "auto",
+                  "batch_size": "auto",
+                  "learning_rate_multiplier": "auto"
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-uEHGqN4ZXVPlcuvyNyfF8J14",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849503,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": null,
+            "training_file": "file-BPYaTh7seBfCBdGyDe14i9",
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": null,
+            "seed": 1152235351,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": "auto",
+                  "batch_size": "auto",
+                  "learning_rate_multiplier": "auto"
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-lAADGKnr29HIW7lj81l8Tgy5",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849501,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": "file-XJKUH73yvptwdYPi145gPo",
+            "training_file": "file-BPYaTh7seBfCBdGyDe14i9",
+            "hyperparameters": {
+              "n_epochs": 1,
+              "batch_size": 2,
+              "learning_rate_multiplier": 3.0
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": "TestFTJob",
+            "seed": 1234567,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": 1,
+                  "batch_size": 2,
+                  "learning_rate_multiplier": 3.0
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-kfrMkVSsSDUWR0cuad1g93Mf",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849491,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": null,
+            "training_file": "file-645ZeYeY91vWAQxF65HgaF",
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": null,
+            "seed": 21482785,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": "auto",
+                  "batch_size": "auto",
+                  "learning_rate_multiplier": "auto"
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-BQu7mlrETcQ5HUQp3iDNTUHl",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849489,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": null,
+            "training_file": "file-645ZeYeY91vWAQxF65HgaF",
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": null,
+            "seed": 1762675203,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": "auto",
+                  "batch_size": "auto",
+                  "learning_rate_multiplier": "auto"
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-1h29jmE7W5A0yNJiSZs1cQAZ",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849486,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": "file-LXkicbXP2fZa96KZ6AQFuJ",
+            "training_file": "file-645ZeYeY91vWAQxF65HgaF",
+            "hyperparameters": {
+              "n_epochs": 1,
+              "batch_size": 2,
+              "learning_rate_multiplier": 3.0
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": "TestFTJob",
+            "seed": 1234567,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": 1,
+                  "batch_size": 2,
+                  "learning_rate_multiplier": 3.0
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-eC5y8s7dqAf6R7KOHC6OypbR",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849409,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": null,
+            "training_file": "file-FK4CZWHh8svPRDtgYDdG8Q",
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": null,
+            "seed": 1105771340,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": "auto",
+                  "batch_size": "auto",
+                  "learning_rate_multiplier": "auto"
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-zLPw9IknQ6EIrXmK2pVMb7YF",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849407,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": null,
+            "training_file": "file-FK4CZWHh8svPRDtgYDdG8Q",
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": null,
+            "seed": 1353061951,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": "auto",
+                  "batch_size": "auto",
+                  "learning_rate_multiplier": "auto"
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-GDWqd65CSNkZvAqWZtmCzbVs",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849405,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": "file-N3kjhxZjzM9DwgKUZNJRjQ",
+            "training_file": "file-FK4CZWHh8svPRDtgYDdG8Q",
+            "hyperparameters": {
+              "n_epochs": 1,
+              "batch_size": 2,
+              "learning_rate_multiplier": 3.0
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": "TestFTJob",
+            "seed": 1234567,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": 1,
+                  "batch_size": 2,
+                  "learning_rate_multiplier": 3.0
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-WAtOqFtbmJZKR3w2vnjeJauO",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849399,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "failed",
+            "validation_file": null,
+            "training_file": "file-TgNMy4sT98A4SPRkCq3TCw",
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            },
+            "trained_tokens": null,
+            "error": {
+              "code": "deleted_training_file",
+              "param": "training_file",
+              "message": "The job failed because the training file was deleted"
+            },
+            "user_provided_suffix": null,
+            "seed": 303399559,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": "auto",
+                  "batch_size": "auto",
+                  "learning_rate_multiplier": "auto"
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-hH0F2W2xzx3cEW9RUsVwFdsm",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849397,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": null,
+            "training_file": "file-TgNMy4sT98A4SPRkCq3TCw",
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": null,
+            "seed": 784807601,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": "auto",
+                  "batch_size": "auto",
+                  "learning_rate_multiplier": "auto"
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-ObOhLiEA9AOnqhiRiOTov98Q",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758849393,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": "file-LRGAc9JuMRgrzYMAjrdm1P",
+            "training_file": "file-TgNMy4sT98A4SPRkCq3TCw",
+            "hyperparameters": {
+              "n_epochs": 1,
+              "batch_size": 2,
+              "learning_rate_multiplier": 3.0
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": "TestFTJob",
+            "seed": 1234567,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": 1,
+                  "batch_size": 2,
+                  "learning_rate_multiplier": 3.0
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-uIfBoH0EMTEkfWwBgrxpvjyL",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758846539,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": null,
+            "training_file": "file-KDwioBm6ZmwsNbAE5jPSPZ",
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": null,
+            "seed": 1496467484,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": "auto",
+                  "batch_size": "auto",
+                  "learning_rate_multiplier": "auto"
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-r5mfaliCXEMhvtPsoAFgwiDX",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758846524,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": null,
+            "training_file": "file-CeWMDm3XekPnm9DZqqq1aM",
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": null,
+            "seed": 153968049,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": "auto",
+                  "batch_size": "auto",
+                  "learning_rate_multiplier": "auto"
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-NCdZzOiKFfkk8PZxiKaTSFsF",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758846381,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": null,
+            "training_file": "file-Dyy1iMrffGHGpXc16XAtsH",
+            "hyperparameters": {
+              "n_epochs": "auto",
+              "batch_size": "auto",
+              "learning_rate_multiplier": "auto"
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": null,
+            "seed": 1502582380,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": "auto",
+                  "batch_size": "auto",
+                  "learning_rate_multiplier": "auto"
+                }
+              }
+            }
+          },
+          {
+            "object": "fine_tuning.job",
+            "id": "ftjob-AjAavWYzStPusdGabmkfkTuo",
+            "model": "gpt-3.5-turbo-0125",
+            "created_at": 1758846379,
+            "finished_at": null,
+            "fine_tuned_model": null,
+            "organization_id": "org-PIXDVx5fCtKDRGzfCtB6cjvP",
+            "result_files": [],
+            "status": "cancelled",
+            "validation_file": "file-CuV5mj32EEFBS7jzQL7wTv",
+            "training_file": "file-Dyy1iMrffGHGpXc16XAtsH",
+            "hyperparameters": {
+              "n_epochs": 1,
+              "batch_size": 2,
+              "learning_rate_multiplier": 3.0
+            },
+            "trained_tokens": null,
+            "error": {},
+            "user_provided_suffix": "TestFTJob",
+            "seed": 1234567,
+            "estimated_finish": null,
+            "integrations": [],
+            "metadata": null,
+            "usage_metrics": null,
+            "shared_with_openai": false,
+            "eval_id": null,
+            "method": {
+              "type": "supervised",
+              "supervised": {
+                "hyperparameters": {
+                  "n_epochs": 1,
+                  "batch_size": 2,
+                  "learning_rate_multiplier": 3.0
+                }
+              }
+            }
+          }
+        ],
+        "has_more": true
+      }
+    }
+  ],
+  "Variables": {
+    "DateTimeOffsetNow": "2025-09-25T18:20:30.5499887-07:00",
+    "OPEN-API-KEY": "api-key",
+    "SAMPLE_FILE_ID": "file-E8xsKBEp2QMT1sqSvXufXX",
+    "VALIDATION_FILE_ID": "file-5XFEJs5JoMfPnuVXP8tQJE"
+  }
+}

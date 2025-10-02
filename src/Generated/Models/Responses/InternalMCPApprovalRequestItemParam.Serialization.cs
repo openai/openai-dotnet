@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalMCPApprovalRequestItemParam : IJsonModel<InternalMCPApprovalRequestItemParam>
+    internal partial class InternalMCPApprovalRequestItemParam : InternalItemParam, IJsonModel<InternalMCPApprovalRequestItemParam>
     {
         internal InternalMCPApprovalRequestItemParam() : this(InternalItemType.McpApprovalRequest, null, null, null, null)
         {

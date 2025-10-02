@@ -110,4 +110,25 @@ public partial class ResponseTool
             additionalBinaryDataProperties: null,
             container: container);
     }
+
+    // CUSTOM: Added factory method for a convenience.
+    /// <summary>
+    /// Creates a new instance of the <see cref="ImageGenerationTool"/> class.
+    /// </summary>
+    public static ImageGenerationTool CreateImageGenerationTool(string model, ImageGenerationToolQuality? quality = null, ImageGenerationToolSize? size = null, ImageGenerationToolOutputFileFormat? outputFileFormat = null, int? outputCompressionFactor = null, ImageGenerationToolModerationLevel? moderationLevel = null, ImageGenerationToolBackground? background = null, ImageGenerationToolInputFidelityLevel? inputFidelityLevel = null, ImageGenerationToolInputImageMask inputImageMask = null, int? partialImageCount = null)
+    {
+        return new ImageGenerationTool(
+            kind: InternalToolType.ImageGeneration,
+            additionalBinaryDataProperties: null,
+            model: model,
+            quality: quality,
+            size: size,
+            outputFileFormat: outputFileFormat,
+            outputCompressionFactor: outputCompressionFactor,
+            moderationLevel: moderationLevel,
+            background: background,
+            inputFidelityLevel: inputFidelityLevel,
+            inputImageMask: inputImageMask,
+            partialImageCount: partialImageCount);
+    }
 }

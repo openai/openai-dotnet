@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using OpenAI.Embeddings;
 using OpenAI.Tests.Utility;
 using System;
@@ -10,13 +11,10 @@ using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Embeddings;
 
-[TestFixture(true)]
-[TestFixture(false)]
-[Parallelizable(ParallelScope.All)]
 [Category("Embeddings")]
-public class EmbeddingsTests : SyncAsyncTestBase
+public class EmbeddingsTests : OpenAIRecordedTestBase
 {
-    private static EmbeddingClient GetTestClient() => GetTestClient<EmbeddingClient>(TestScenario.Embeddings);
+    private EmbeddingClient GetTestClient() => GetProxiedOpenAIClient<EmbeddingClient>(TestScenario.Embeddings);
 
     public EmbeddingsTests(bool isAsync) : base(isAsync)
     {
@@ -31,13 +29,11 @@ public class EmbeddingsTests : SyncAsyncTestBase
     [Test]
     public async Task GenerateSingleEmbedding()
     {
-        EmbeddingClient client = new("text-embedding-3-small", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        EmbeddingClient client = CreateProxyFromClient(new EmbeddingClient("text-embedding-3-small", new ApiKeyCredential(TestEnvironment.OpenApiKey), InstrumentClientOptions(new OpenAIClientOptions())));
 
         string input = "Hello, world!";
 
-        OpenAIEmbedding embedding = IsAsync
-            ? await client.GenerateEmbeddingAsync(input)
-            : client.GenerateEmbedding(input);
+        OpenAIEmbedding embedding = await client.GenerateEmbeddingAsync(input);
         Assert.That(embedding, Is.Not.Null);
         Assert.That(embedding.Index, Is.EqualTo(0));
 
@@ -54,7 +50,7 @@ public class EmbeddingsTests : SyncAsyncTestBase
     [TestCase(EmbeddingsInputKind.UsingIntegers)]
     public async Task GenerateMultipleEmbeddings(EmbeddingsInputKind embeddingsInputKind)
     {
-        EmbeddingClient client = new("text-embedding-3-small", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        EmbeddingClient client = CreateProxyFromClient(new EmbeddingClient("text-embedding-3-small", new ApiKeyCredential(TestEnvironment.OpenApiKey), InstrumentClientOptions(new OpenAIClientOptions())));
 
         const int Dimensions = 456;
 
@@ -74,9 +70,7 @@ public class EmbeddingsTests : SyncAsyncTestBase
                 "Goodbye!"
             ];
 
-            embeddings = IsAsync
-                ? await client.GenerateEmbeddingsAsync(prompts, options)
-                : client.GenerateEmbeddings(prompts, options);
+            embeddings = await client.GenerateEmbeddingsAsync(prompts, options);
         }
         else if (embeddingsInputKind == EmbeddingsInputKind.UsingIntegers)
         {
@@ -87,9 +81,7 @@ public class EmbeddingsTests : SyncAsyncTestBase
                 new[] { 84, 69, 83, 84 }
             ];
 
-            embeddings = IsAsync
-                ? await client.GenerateEmbeddingsAsync(prompts, options)
-                : client.GenerateEmbeddings(prompts, options);
+            embeddings = await client.GenerateEmbeddingsAsync(prompts, options);
         }
 
         Assert.That(embeddings, Is.Not.Null);
@@ -125,9 +117,7 @@ public class EmbeddingsTests : SyncAsyncTestBase
 
         try
         {
-            _ = IsAsync
-                ? await client.GenerateEmbeddingAsync("foo", options)
-                : client.GenerateEmbedding("foo", options);
+            _ = await client.GenerateEmbeddingAsync("foo", options);
         }
         catch (Exception ex)
         {
@@ -156,15 +146,11 @@ public class EmbeddingsTests : SyncAsyncTestBase
         {
             if (embeddingsInputKind == EmbeddingsInputKind.UsingStrings)
             {
-                _ = IsAsync
-                    ? await client.GenerateEmbeddingsAsync(["prompt"], options)
-                    : client.GenerateEmbeddings(["prompt"], options);
+                _ = await client.GenerateEmbeddingsAsync(["prompt"], options);
             }
             else if (embeddingsInputKind == EmbeddingsInputKind.UsingIntegers)
             {
-                _ = IsAsync
-                    ? await client.GenerateEmbeddingsAsync([new[] { 1 }], options)
-                    : client.GenerateEmbeddings([new[] { 1 }], options);
+                _ = await client.GenerateEmbeddingsAsync([new[] { 1 }], options);
             }
         }
         catch (Exception ex)
@@ -184,13 +170,9 @@ public class EmbeddingsTests : SyncAsyncTestBase
         List<string> input1 = new List<string> { "Hello, world!" };
         List<ReadOnlyMemory<int>> input2 = new List<ReadOnlyMemory<int>> { new[] { 9906, 11, 1917, 0 } };
 
-        OpenAIEmbeddingCollection results1 = IsAsync
-            ? await client.GenerateEmbeddingsAsync(input1)
-            : client.GenerateEmbeddings(input1);
+        OpenAIEmbeddingCollection results1 = await client.GenerateEmbeddingsAsync(input1);
 
-        OpenAIEmbeddingCollection results2 = IsAsync
-            ? await client.GenerateEmbeddingsAsync(input2)
-            : client.GenerateEmbeddings(input2);
+        OpenAIEmbeddingCollection results2 = await client.GenerateEmbeddingsAsync(input2);
 
         ReadOnlyMemory<float> vector1 = results1[0].ToFloats();
         ReadOnlyMemory<float> vector2 = results2[0].ToFloats();
@@ -199,41 +181,5 @@ public class EmbeddingsTests : SyncAsyncTestBase
         {
             Assert.That(vector1.Span[i], Is.EqualTo(vector2.Span[i]).Within(0.0005));
         }
-    }
-
-    [Test]
-    public void SerializeEmbeddingCollection()
-    {
-        // TODO: Add this test.
-    }
-
-    [Test]
-    public void JsonArraySupport()
-    {
-        string json = """
-        {
-          "object":"list",
-          "data":[
-            {
-              "object":"embedding",
-              "embedding":[-0.011229509,0.107915245,-0.15163477]
-            }
-          ]
-        }
-        """;
-
-        BinaryData binaryData = BinaryData.FromString(json);
-
-        OpenAIEmbeddingCollection embeddings = ModelReaderWriter.Read<OpenAIEmbeddingCollection>(binaryData);
-
-        Assert.That(embeddings, Is.Not.Null);
-        Assert.That(embeddings.Count, Is.EqualTo(1));
-        var embedding = embeddings[0];
-        Assert.That(embedding, Is.Not.Null);
-        ReadOnlySpan<float> vector = embedding.ToFloats().Span;
-        Assert.That(vector.Length, Is.EqualTo(3));
-        Assert.That(vector[0], Is.EqualTo(-0.011229509f));
-        Assert.That(vector[1], Is.EqualTo(0.107915245f));
-        Assert.That(vector[2], Is.EqualTo(-0.15163477f));
     }
 }

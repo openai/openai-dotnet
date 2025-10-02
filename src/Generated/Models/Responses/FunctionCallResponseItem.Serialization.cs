@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class FunctionCallResponseItem : IJsonModel<FunctionCallResponseItem>
+    public partial class FunctionCallResponseItem : ResponseItem, IJsonModel<FunctionCallResponseItem>
     {
         internal FunctionCallResponseItem() : this(InternalItemType.FunctionCall, null, null, default, null, null, null)
         {

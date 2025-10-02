@@ -1,0 +1,264 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "526",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "Tell me what's the current weather in the following cities: Santiago and Karachi."
+          }
+        ],
+        "model": "gpt-4o-mini",
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "description": "gets the current weather for a given city",
+              "name": "get_weather_for_city",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "city_name": {
+                    "type": "string",
+                    "description": "the name of a city, e.g. Johannesburg or Ho Chi Minh City."
+                  }
+                },
+                "required": [
+                  "city_name"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801a0f969ad08e7-SEA",
+        "Connection": "keep-alive",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 16:09:34 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "1644",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "1666",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999977",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "chatcmpl-CGSXElDpIQAHuEmGREmaFAdAKtfHF",
+        "object": "chat.completion",
+        "created": 1758038972,
+        "model": "gpt-4o-mini-2024-07-18",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": null,
+              "tool_calls": [
+                {
+                  "id": "call_He5ghpyh88FF1KlpT60kH5Qm",
+                  "type": "function",
+                  "function": {
+                    "name": "get_weather_for_city",
+                    "arguments": "{\"city_name\": \"Santiago\"}"
+                  }
+                },
+                {
+                  "id": "call_QcF8ZmmbSqiJFQdemjfUEwxN",
+                  "type": "function",
+                  "function": {
+                    "name": "get_weather_for_city",
+                    "arguments": "{\"city_name\": \"Karachi\"}"
+                  }
+                }
+              ],
+              "refusal": null,
+              "annotations": []
+            },
+            "logprobs": null,
+            "finish_reason": "tool_calls"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 81,
+          "completion_tokens": 52,
+          "total_tokens": 133,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "service_tier": "default",
+        "system_fingerprint": "fp_560af6e559"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "1011",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "Tell me what's the current weather in the following cities: Santiago and Karachi."
+          },
+          {
+            "role": "assistant",
+            "tool_calls": [
+              {
+                "id": "call_He5ghpyh88FF1KlpT60kH5Qm",
+                "type": "function",
+                "function": {
+                  "name": "get_weather_for_city",
+                  "arguments": "{\"city_name\": \"Santiago\"}"
+                }
+              },
+              {
+                "id": "call_QcF8ZmmbSqiJFQdemjfUEwxN",
+                "type": "function",
+                "function": {
+                  "name": "get_weather_for_city",
+                  "arguments": "{\"city_name\": \"Karachi\"}"
+                }
+              }
+            ]
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call_He5ghpyh88FF1KlpT60kH5Qm",
+            "content": "rainy"
+          },
+          {
+            "role": "tool",
+            "tool_call_id": "call_QcF8ZmmbSqiJFQdemjfUEwxN",
+            "content": "sunny"
+          }
+        ],
+        "model": "gpt-4o-mini",
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "description": "gets the current weather for a given city",
+              "name": "get_weather_for_city",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "city_name": {
+                    "type": "string",
+                    "description": "the name of a city, e.g. Johannesburg or Ho Chi Minh City."
+                  }
+                },
+                "required": [
+                  "city_name"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801a104792d08e7-SEA",
+        "Connection": "keep-alive",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 16:09:34 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "634",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "650",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999972",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "chatcmpl-CGSXGKxAFQyQSqdYDZNpOyaRFyPhG",
+        "object": "chat.completion",
+        "created": 1758038974,
+        "model": "gpt-4o-mini-2024-07-18",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "The current weather is as follows:\n- Santiago: Rainy\n- Karachi: Sunny",
+              "refusal": null,
+              "annotations": []
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 151,
+          "completion_tokens": 18,
+          "total_tokens": 169,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "service_tier": "default",
+        "system_fingerprint": "fp_560af6e559"
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

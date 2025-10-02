@@ -11,7 +11,7 @@ using OpenAI.Chat;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalRunResponsesDataContentSource : IJsonModel<InternalEvalRunResponsesDataContentSource>
+    internal partial class InternalEvalRunResponsesDataContentSource : InternalEvalRunDataContentSource, IJsonModel<InternalEvalRunResponsesDataContentSource>
     {
         void IJsonModel<InternalEvalRunResponsesDataContentSource>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

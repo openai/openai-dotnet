@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using OpenAI.Files;
 using OpenAI.Tests.Utility;
 using System;
@@ -9,13 +10,10 @@ using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Files;
 
-[TestFixture(true)]
-[TestFixture(false)]
-[Parallelizable(ParallelScope.Fixtures)]
 [Category("Uploads")]
-public class UploadsTests : SyncAsyncTestBase
+public class UploadsTests : OpenAIRecordedTestBase
 {
-    private static OpenAIFileClient GetTestClient() => GetTestClient<OpenAIFileClient>(TestScenario.Files);
+    private OpenAIFileClient GetTestClient() => GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
 
     public UploadsTests(bool isAsync) : base(isAsync)
     {
@@ -30,7 +28,7 @@ public class UploadsTests : SyncAsyncTestBase
         // are setting the internal Uploads client correctly.
 
         OpenAIFileClient fileClient = useTopLevelClient
-            ? TestHelpers.GetTestTopLevelClient().GetOpenAIFileClient()
+            ? GetProxiedTestTopLevelClient().GetOpenAIFileClient()
             : GetTestClient();
         BinaryContent content = BinaryContent.Create(BinaryData.FromObjectAsJson(new
         {
@@ -40,9 +38,7 @@ public class UploadsTests : SyncAsyncTestBase
             mime_type = "text/jsonl"
         }));
 
-        ClientResult result = IsAsync
-            ? await fileClient.CreateUploadAsync(content)
-            : fileClient.CreateUpload(content);
+        ClientResult result = await fileClient.CreateUploadAsync(content);
 
         BinaryData response = result.GetRawResponse().Content;
         using JsonDocument jsonDocument = JsonDocument.Parse(response);
@@ -63,82 +59,83 @@ public class UploadsTests : SyncAsyncTestBase
     [Test]
     public async Task AddUploadPartWorks()
     {
-        OpenAIFileClient fileClient = GetTestClient();
-        UploadDetails uploadDetails = await CreateTestUploadAsync(fileClient);
-        using MultiPartFormDataBinaryContent content = new();
+        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
+        {
+            OpenAIFileClient fileClient = GetTestClient();
+            UploadDetails uploadDetails = await CreateTestUploadAsync(fileClient);
+            using MultiPartFormDataBinaryContent content = new();
 
-        content.Add([1, 2, 3, 4], "data", "data", "application/octet-stream");
+            content.Add([1, 2, 3, 4], "data", "data", "application/octet-stream");
 
-        ClientResult result = IsAsync
-            ? await fileClient.AddUploadPartAsync(uploadDetails.Id, content, content.ContentType)
-            : fileClient.AddUploadPart(uploadDetails.Id, content, content.ContentType);
+            ClientResult result = await fileClient.AddUploadPartAsync(uploadDetails.Id, content, content.ContentType);
+            BinaryData response = result.GetRawResponse().Content;
+            using JsonDocument jsonDocument = JsonDocument.Parse(response);
+            UploadPartDetails uploadPartDetails = GetUploadPartDetails(jsonDocument);
 
-        BinaryData response = result.GetRawResponse().Content;
-        using JsonDocument jsonDocument = JsonDocument.Parse(response);
-        UploadPartDetails uploadPartDetails = GetUploadPartDetails(jsonDocument);
-
-        Assert.That(uploadPartDetails.Id, Does.StartWith("part_"));
-        Assert.That(uploadPartDetails.Object, Is.EqualTo("upload.part"));
-        Assert.That(uploadPartDetails.CreatedAt, Is.GreaterThanOrEqualTo(uploadDetails.CreatedAt));
-        Assert.That(uploadPartDetails.UploadId, Is.EqualTo(uploadDetails.Id));
+            Assert.That(uploadPartDetails.Id, Does.StartWith("part_"));
+            Assert.That(uploadPartDetails.Object, Is.EqualTo("upload.part"));
+            Assert.That(uploadPartDetails.CreatedAt, Is.GreaterThanOrEqualTo(uploadDetails.CreatedAt));
+            Assert.That(uploadPartDetails.UploadId, Is.EqualTo(uploadDetails.Id));
+        }
     }
 
     [Test]
     public async Task CompleteUploadWorks()
     {
-        OpenAIFileClient fileClient = GetTestClient();
-        UploadDetails createdUploadDetails = await CreateTestUploadAsync(fileClient);
-        using MultiPartFormDataBinaryContent firstPartContent = new();
-        using MultiPartFormDataBinaryContent secondPartContent = new();
-
-        firstPartContent.Add([1, 2, 3, 4], "data", "data", "application/octet-stream");
-        secondPartContent.Add([5, 6, 7, 8], "data", "data", "application/octet-stream");
-
-        UploadPartDetails firstPartDetails = await AddTestUploadPartAsync(fileClient, createdUploadDetails.Id, firstPartContent);
-        UploadPartDetails secondPartDetails = await AddTestUploadPartAsync(fileClient, createdUploadDetails.Id, secondPartContent);
-
-        BinaryContent content = BinaryContent.Create(BinaryData.FromObjectAsJson(new
+        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            part_ids = new[] {
+            OpenAIFileClient fileClient = GetTestClient();
+            UploadDetails createdUploadDetails = await CreateTestUploadAsync(fileClient);
+            using MultiPartFormDataBinaryContent firstPartContent = new();
+            using MultiPartFormDataBinaryContent secondPartContent = new();
+
+            firstPartContent.Add([1, 2, 3, 4], "data", "data", "application/octet-stream");
+            secondPartContent.Add([5, 6, 7, 8], "data", "data", "application/octet-stream");
+
+            UploadPartDetails firstPartDetails = await AddTestUploadPartAsync(fileClient, createdUploadDetails.Id, firstPartContent);
+            UploadPartDetails secondPartDetails = await AddTestUploadPartAsync(fileClient, createdUploadDetails.Id, secondPartContent);
+
+            BinaryContent content = BinaryContent.Create(BinaryData.FromObjectAsJson(new
+            {
+                part_ids = new[] {
                 firstPartDetails.Id,
                 secondPartDetails.Id
             }
-        }));
+            }));
 
-        ClientResult result = IsAsync
-            ? await fileClient.CompleteUploadAsync(createdUploadDetails.Id, content)
-            : fileClient.CompleteUpload(createdUploadDetails.Id, content);
+            ClientResult result = await fileClient.CompleteUploadAsync(createdUploadDetails.Id, content);
 
-        BinaryData response = result.GetRawResponse().Content;
-        using JsonDocument jsonDocument = JsonDocument.Parse(response);
-        JsonElement fileElement = jsonDocument.RootElement.GetProperty("file");
-        string fileId = fileElement.GetProperty("id").GetString();
+            BinaryData response = result.GetRawResponse().Content;
+            using JsonDocument jsonDocument = JsonDocument.Parse(response);
+            JsonElement fileElement = jsonDocument.RootElement.GetProperty("file");
+            string fileId = fileElement.GetProperty("id").GetString();
 
-        await fileClient.DeleteFileAsync(fileId);
+            await fileClient.DeleteFileAsync(fileId);
 
-        UploadDetails completedUploadDetails = GetUploadDetails(jsonDocument);
+            UploadDetails completedUploadDetails = GetUploadDetails(jsonDocument);
 
-        Assert.That(completedUploadDetails.Id, Is.EqualTo(createdUploadDetails.Id));
-        Assert.That(completedUploadDetails.Object, Is.EqualTo(createdUploadDetails.Object));
-        Assert.That(completedUploadDetails.Bytes, Is.EqualTo(createdUploadDetails.Bytes));
-        Assert.That(completedUploadDetails.CreatedAt, Is.EqualTo(createdUploadDetails.CreatedAt));
-        Assert.That(completedUploadDetails.Filename, Is.EqualTo(createdUploadDetails.Filename));
-        Assert.That(completedUploadDetails.Purpose, Is.EqualTo(createdUploadDetails.Purpose));
-        Assert.That(completedUploadDetails.Status, Is.EqualTo("completed"));
-        Assert.That(completedUploadDetails.ExpiresAt, Is.EqualTo(createdUploadDetails.ExpiresAt));
+            Assert.That(completedUploadDetails.Id, Is.EqualTo(createdUploadDetails.Id));
+            Assert.That(completedUploadDetails.Object, Is.EqualTo(createdUploadDetails.Object));
+            Assert.That(completedUploadDetails.Bytes, Is.EqualTo(createdUploadDetails.Bytes));
+            Assert.That(completedUploadDetails.CreatedAt, Is.EqualTo(createdUploadDetails.CreatedAt));
+            Assert.That(completedUploadDetails.Filename, Is.EqualTo(createdUploadDetails.Filename));
+            Assert.That(completedUploadDetails.Purpose, Is.EqualTo(createdUploadDetails.Purpose));
+            Assert.That(completedUploadDetails.Status, Is.EqualTo("completed"));
+            Assert.That(completedUploadDetails.ExpiresAt, Is.EqualTo(createdUploadDetails.ExpiresAt));
 
-        string fileObject = fileElement.GetProperty("object").GetString();
-        int fileBytes = fileElement.GetProperty("bytes").GetInt32();
-        long fileCreatedAt = fileElement.GetProperty("created_at").GetInt64();
-        string filename = fileElement.GetProperty("filename").GetString();
-        string filePurpose = fileElement.GetProperty("purpose").GetString();
+            string fileObject = fileElement.GetProperty("object").GetString();
+            int fileBytes = fileElement.GetProperty("bytes").GetInt32();
+            long fileCreatedAt = fileElement.GetProperty("created_at").GetInt64();
+            string filename = fileElement.GetProperty("filename").GetString();
+            string filePurpose = fileElement.GetProperty("purpose").GetString();
 
-        Assert.That(fileId, Does.StartWith("file-"));
-        Assert.That(fileObject, Is.EqualTo("file"));
-        Assert.That(fileBytes, Is.EqualTo(createdUploadDetails.Bytes));
-        Assert.That(fileCreatedAt, Is.GreaterThanOrEqualTo(createdUploadDetails.CreatedAt));
-        Assert.That(filename, Is.EqualTo(createdUploadDetails.Filename));
-        Assert.That(filePurpose, Is.EqualTo(createdUploadDetails.Purpose));
+            Assert.That(fileId, Does.StartWith("file-"));
+            Assert.That(fileObject, Is.EqualTo("file"));
+            Assert.That(fileBytes, Is.EqualTo(createdUploadDetails.Bytes));
+            Assert.That(fileCreatedAt, Is.GreaterThanOrEqualTo(createdUploadDetails.CreatedAt));
+            Assert.That(filename, Is.EqualTo(createdUploadDetails.Filename));
+            Assert.That(filePurpose, Is.EqualTo(createdUploadDetails.Purpose));
+        }
     }
 
     [Test]
@@ -147,9 +144,7 @@ public class UploadsTests : SyncAsyncTestBase
         OpenAIFileClient fileClient = GetTestClient();
         UploadDetails createdUploadDetails = await CreateTestUploadAsync(fileClient);
 
-        ClientResult result = IsAsync
-            ? await fileClient.CancelUploadAsync(createdUploadDetails.Id)
-            : fileClient.CancelUpload(createdUploadDetails.Id);
+        ClientResult result = await fileClient.CancelUploadAsync(createdUploadDetails.Id);
 
         BinaryData response = result.GetRawResponse().Content;
         using JsonDocument jsonDocument = JsonDocument.Parse(response);
@@ -170,7 +165,7 @@ public class UploadsTests : SyncAsyncTestBase
         BinaryContent content = BinaryContent.Create(BinaryData.FromObjectAsJson(new
         {
             purpose = "fine-tune",
-            filename = "uploads_test_file" + Guid.NewGuid() + ".jsonl",
+            filename = "uploads_test_file" + Recording.Random.NewGuid() + ".jsonl",
             bytes = 8,
             mime_type = "text/jsonl"
         }));

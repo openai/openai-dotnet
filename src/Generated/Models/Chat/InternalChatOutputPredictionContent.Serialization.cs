@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    internal partial class InternalChatOutputPredictionContent : IJsonModel<InternalChatOutputPredictionContent>
+    internal partial class InternalChatOutputPredictionContent : ChatOutputPrediction, IJsonModel<InternalChatOutputPredictionContent>
     {
         internal InternalChatOutputPredictionContent() : this(InternalChatOutputPredictionKind.StaticContent, null, null)
         {

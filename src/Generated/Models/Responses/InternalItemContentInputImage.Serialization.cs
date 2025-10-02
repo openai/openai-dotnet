@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalItemContentInputImage : IJsonModel<InternalItemContentInputImage>
+    internal partial class InternalItemContentInputImage : ResponseContentPart, IJsonModel<InternalItemContentInputImage>
     {
         void IJsonModel<InternalItemContentInputImage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

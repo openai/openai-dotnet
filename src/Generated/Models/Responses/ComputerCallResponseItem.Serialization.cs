@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class ComputerCallResponseItem : IJsonModel<ComputerCallResponseItem>
+    public partial class ComputerCallResponseItem : ResponseItem, IJsonModel<ComputerCallResponseItem>
     {
         internal ComputerCallResponseItem() : this(InternalItemType.ComputerCall, null, null, default, null, null, null)
         {

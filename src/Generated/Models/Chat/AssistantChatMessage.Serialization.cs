@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    public partial class AssistantChatMessage : IJsonModel<AssistantChatMessage>
+    public partial class AssistantChatMessage : ChatMessage, IJsonModel<AssistantChatMessage>
     {
         [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)

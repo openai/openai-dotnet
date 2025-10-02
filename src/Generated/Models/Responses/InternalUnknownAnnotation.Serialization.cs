@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalUnknownAnnotation : IJsonModel<ResponseMessageAnnotation>
+    internal partial class InternalUnknownAnnotation : ResponseMessageAnnotation, IJsonModel<ResponseMessageAnnotation>
     {
         internal InternalUnknownAnnotation() : this(default, null)
         {

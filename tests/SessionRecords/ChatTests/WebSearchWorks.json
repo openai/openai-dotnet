@@ -1,0 +1,108 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "141",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "What was a positive news story from today?"
+          }
+        ],
+        "model": "gpt-4o-search-preview",
+        "web_search_options": {}
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801cf1a2e9e98e5-SEA",
+        "Connection": "keep-alive",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 16:41:08 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "6383",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "6415",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-limit-tokens": "3000000",
+        "x-ratelimit-remaining-requests": "999",
+        "x-ratelimit-remaining-tokens": "2999987",
+        "x-ratelimit-reset-requests": "60ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "chatcmpl-bdb255a4-d0de-4da1-af27-398e7c679586",
+        "object": "chat.completion",
+        "created": 1758040861,
+        "model": "gpt-4o-search-preview-2025-03-11",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "As of September 16, 2025, one notable positive news story is the successful completion of a four-day workweek trial in Scotland. The trial, conducted at two government agencies—Accountant in Bankruptcy (AiB) and South of Scotland Enterprise (SSE)—involved 259 employees reducing their workweek to 32 hours without any loss of pay. The results were overwhelmingly positive, with 98% of staff at SSE reporting a significant boost in morale and motivation, and mental health scores at AiB improving by 18.4%. Additionally, productivity increased at both organizations, demonstrating the potential benefits of a shorter workweek in the public sector. ([positive.news](https://www.positive.news/society/good-news-stories-from-week-36-of-2025/?utm_source=openai))\n\nIn other uplifting news, the University of Sussex announced the launch of the UK's first undergraduate degree in climate justice, sustainability, and development, set to begin in 2026. This program aims to equip students with the knowledge and skills to address pressing environmental challenges and drive meaningful change. ([positive.news](https://www.positive.news/society/good-news-stories-from-week-09-of-2025/?utm_source=openai))\n\nThese developments highlight ongoing efforts to improve work-life balance and address environmental issues through education and policy initiatives. ",
+              "refusal": null,
+              "annotations": [
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "end_index": 757,
+                    "start_index": 647,
+                    "title": "What went right this week: the good news that matters - Positive News",
+                    "url": "https://www.positive.news/society/good-news-stories-from-week-36-of-2025/?utm_source=openai"
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "end_index": 1194,
+                    "start_index": 1084,
+                    "title": "What went right this week: the sceptic-defying green economy, plus more - Positive News",
+                    "url": "https://www.positive.news/society/good-news-stories-from-week-09-of-2025/?utm_source=openai"
+                  }
+                }
+              ]
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 9,
+          "completion_tokens": 274,
+          "total_tokens": 283,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "system_fingerprint": ""
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

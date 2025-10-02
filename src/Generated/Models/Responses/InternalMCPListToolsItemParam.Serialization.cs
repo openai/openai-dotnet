@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalMCPListToolsItemParam : IJsonModel<InternalMCPListToolsItemParam>
+    internal partial class InternalMCPListToolsItemParam : InternalItemParam, IJsonModel<InternalMCPListToolsItemParam>
     {
         internal InternalMCPListToolsItemParam() : this(InternalItemType.McpListTools, null, null, null, null)
         {

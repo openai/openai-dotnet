@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class StreamingResponseContentPartDoneUpdate : IJsonModel<StreamingResponseContentPartDoneUpdate>
+    public partial class StreamingResponseContentPartDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseContentPartDoneUpdate>
     {
         internal StreamingResponseContentPartDoneUpdate() : this(InternalResponseStreamEventType.ResponseContentPartDone, default, null, null, default, default, null)
         {

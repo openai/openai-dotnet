@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeServerEventOutputAudioBufferCleared : IJsonModel<InternalRealtimeServerEventOutputAudioBufferCleared>
+    internal partial class InternalRealtimeServerEventOutputAudioBufferCleared : RealtimeUpdate, IJsonModel<InternalRealtimeServerEventOutputAudioBufferCleared>
     {
         internal InternalRealtimeServerEventOutputAudioBufferCleared() : this(RealtimeUpdateKind.OutputAudioBufferCleared, null, null, null)
         {

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class StreamingResponseCodeInterpreterCallInterpretingUpdate : IJsonModel<StreamingResponseCodeInterpreterCallInterpretingUpdate>
+    public partial class StreamingResponseCodeInterpreterCallInterpretingUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCodeInterpreterCallInterpretingUpdate>
     {
         internal StreamingResponseCodeInterpreterCallInterpretingUpdate() : this(InternalResponseStreamEventType.ResponseCodeInterpreterCallInterpreting, default, null, default, null)
         {
