@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
-using OpenAI.Responses;
 using System;
+using OpenAI.Responses;
+using System.Threading.Tasks;
 
 namespace OpenAI.Examples;
 
@@ -12,7 +13,7 @@ namespace OpenAI.Examples;
 public partial class ResponseExamples
 {
     [Test]
-    public void Example07_InputAdditionalProperties()
+    public async Task Example07_InputAdditionalPropertiesAsync()
     {
         OpenAIResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
@@ -21,7 +22,7 @@ public partial class ResponseExamples
         options.Patch.Set("$.reasoning.effort"u8, "high");
         options.Patch.Set("$.text.verbosity"u8, "medium");
 
-        OpenAIResponse response = client.CreateResponse("What is the answer to the ultimate question of life, the universe, and everything?", options);
+        OpenAIResponse response = await client.CreateResponseAsync("What is the answer to the ultimate question of life, the universe, and everything?", options);
 
         Console.WriteLine($"[ASSISTANT]: {response.GetOutputText()}");
 
