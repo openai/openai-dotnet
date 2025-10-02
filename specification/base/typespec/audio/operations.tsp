@@ -3,6 +3,7 @@ import "@typespec/openapi";
 
 import "../common";
 import "./models.tsp";
+import "../../../client/models/audio.models.tsp";
 
 using TypeSpec.Http;
 using TypeSpec.OpenAPI;
@@ -40,12 +41,7 @@ interface Audio {
     | CreateTranscriptionResponseVerboseJson
     | CreateTranscriptionResponseJson
     | SseResponseOf<CreateTranscriptionResponseStreamEvent>
-    | {
-        // TODO: This response is not defined in the OpenAPI spec.
-        @header contentType: "text/plain";
-
-        @body responseBody: string;
-      }
+    | DotNetCombinedJsonTranscriptionResponse
     | ErrorResponse;
 
   @route("translations")
