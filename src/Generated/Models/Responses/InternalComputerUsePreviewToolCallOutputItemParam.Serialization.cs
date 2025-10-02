@@ -69,10 +69,6 @@ namespace OpenAI.Responses
                 Patch.WriteTo(writer, "$.acknowledged_safety_checks"u8);
                 writer.WriteEndArray();
             }
-            else
-            {
-                writer.WriteNull("acknowledged_safety_checks"u8);
-            }
             if (!Patch.Contains("$.output"u8))
             {
                 writer.WritePropertyName("output"u8);

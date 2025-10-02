@@ -62,10 +62,6 @@ namespace OpenAI.Chat
                 Patch.WriteTo(writer, "$.tool_calls"u8);
                 writer.WriteEndArray();
             }
-            else
-            {
-                writer.WriteNull("tool_calls"u8);
-            }
             if (Optional.IsDefined(FunctionCall) && !Patch.Contains("$.function_call"u8))
             {
                 writer.WritePropertyName("function_call"u8);

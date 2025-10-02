@@ -81,10 +81,6 @@ namespace OpenAI.Chat
                 Patch.WriteTo(writer, "$.tool_calls"u8);
                 writer.WriteEndArray();
             }
-            else
-            {
-                writer.WriteNull("tool_calls"u8);
-            }
             if (Patch.Contains("$.annotations"u8))
             {
                 if (!Patch.IsRemoved("$.annotations"u8))
@@ -107,10 +103,6 @@ namespace OpenAI.Chat
                 }
                 Patch.WriteTo(writer, "$.annotations"u8);
                 writer.WriteEndArray();
-            }
-            else
-            {
-                writer.WriteNull("annotations"u8);
             }
             if (!Patch.Contains("$.role"u8))
             {

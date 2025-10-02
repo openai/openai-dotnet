@@ -165,10 +165,6 @@ namespace OpenAI.Responses
                 Patch.WriteTo(writer, "$.tools"u8);
                 writer.WriteEndArray();
             }
-            else
-            {
-                writer.WriteNull("tools"u8);
-            }
             if (Optional.IsDefined(ToolChoice) && !Patch.Contains("$.tool_choice"u8))
             {
                 writer.WritePropertyName("tool_choice"u8);

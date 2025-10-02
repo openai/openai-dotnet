@@ -40,7 +40,7 @@ public partial class ResponseExamples
         var outputFormat = imageGenResponse.Patch.GetString("$.output_format"u8);
         var quality = imageGenResponse.Patch.GetString("$.quality"u8);
         var size = imageGenResponse.Patch.GetString("$.size"u8);
-        Console.WriteLine($"outputFormat={outputFormat}, quality={quality}, size={size}");
+        Console.WriteLine($"output_format={outputFormat}, quality={quality}, size={size}");
     }
 }
 

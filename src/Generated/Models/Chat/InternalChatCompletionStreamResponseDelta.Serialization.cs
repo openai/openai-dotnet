@@ -74,10 +74,6 @@ namespace OpenAI.Chat
                 Patch.WriteTo(writer, "$.tool_calls"u8);
                 writer.WriteEndArray();
             }
-            else
-            {
-                writer.WriteNull("tool_calls"u8);
-            }
             if (Optional.IsDefined(Role) && !Patch.Contains("$.role"u8))
             {
                 writer.WritePropertyName("role"u8);

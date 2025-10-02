@@ -64,10 +64,6 @@ namespace OpenAI.Responses
                 Patch.WriteTo(writer, "$.tool_names"u8);
                 writer.WriteEndArray();
             }
-            else
-            {
-                writer.WriteNull("tool_names"u8);
-            }
             if (Optional.IsDefined(IsReadOnly) && !Patch.Contains("$.read_only"u8))
             {
                 writer.WritePropertyName("read_only"u8);

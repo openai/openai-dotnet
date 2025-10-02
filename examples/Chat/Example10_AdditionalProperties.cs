@@ -22,8 +22,8 @@ public partial class ChatExamples
         Console.WriteLine($"[ASSISTANT]: {completion.Content[0].Text}");
 
         // You can also read additional properties back from the response
-        var effort = completion.Patch.GetString("$.reasoning_effort"u8);
-        Console.WriteLine($"effort={effort}");
+        var serviceTier = completion.Patch.GetString("$.service_tier"u8);
+        Console.WriteLine($"service_tier={serviceTier}");
     }
 }
 

@@ -133,10 +133,6 @@ namespace OpenAI.Chat
                 Patch.WriteTo(writer, "$.modalities"u8);
                 writer.WriteEndArray();
             }
-            else
-            {
-                writer.WriteNull("modalities"u8);
-            }
             if (Optional.IsDefined(ReasoningEffortLevel) && !Patch.Contains("$.reasoning_effort"u8))
             {
                 writer.WritePropertyName("reasoning_effort"u8);
@@ -200,10 +196,6 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("stop"u8);
                 SerializeStopSequencesValue(writer, options);
             }
-            else
-            {
-                writer.WriteNull("stop"u8);
-            }
             if (Optional.IsCollectionDefined(LogitBiases) && !Patch.Contains("$.logit_bias"u8))
             {
                 writer.WritePropertyName("logit_bias"u8);
@@ -262,10 +254,6 @@ namespace OpenAI.Chat
                 Patch.WriteTo(writer, "$.tools"u8);
                 writer.WriteEndArray();
             }
-            else
-            {
-                writer.WriteNull("tools"u8);
-            }
             if (Optional.IsDefined(ToolChoice) && !Patch.Contains("$.tool_choice"u8))
             {
                 writer.WritePropertyName("tool_choice"u8);
@@ -303,10 +291,6 @@ namespace OpenAI.Chat
                 }
                 Patch.WriteTo(writer, "$.functions"u8);
                 writer.WriteEndArray();
-            }
-            else
-            {
-                writer.WriteNull("functions"u8);
             }
 
             Patch.WriteTo(writer);
