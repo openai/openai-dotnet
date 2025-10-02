@@ -1,0 +1,149 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "318",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "metadata": {
+          "superfluous_key": "superfluous_value"
+        },
+        "model": "o3-mini",
+        "reasoning": {
+          "effort": "low",
+          "summary": "detailed"
+        },
+        "instructions": "Perform reasoning over any questions asked by the user.",
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "What's the best way to fold a burrito?"
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "983df5bfbb697696-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "4350",
+        "Content-Type": "application/json",
+        "Date": "Tue, 23 Sep 2025 23:53:16 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "5884",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Set-Cookie": [
+          "Sanitized",
+          "Sanitized"
+        ],
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "5889",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999777",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_68d332e6919c8193b843c8d22475bf2e05aca4fe69da03ca",
+        "object": "response",
+        "created_at": 1758671590,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "error": null,
+        "incomplete_details": null,
+        "instructions": "Perform reasoning over any questions asked by the user.",
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "o3-mini-2025-01-31",
+        "output": [
+          {
+            "id": "rs_68d332e7fa048193bb2bac3f979776d205aca4fe69da03ca",
+            "type": "reasoning",
+            "summary": [
+              {
+                "type": "summary_text",
+                "text": "**Exploring burrito folding techniques**\n\nI want to provide a clear answer about the best way to fold a burrito. The technique involves a few simple steps. First, lay out the tortilla and fill it with rice and beans. Next, I’ll explain how to fold the sides in and tuck them securely. I’ll suggest that the best approach is to fold smartly and then roll the ends. I'll create a detailed list of steps for the user to follow. Let’s get started on those instructions!"
+              }
+            ]
+          },
+          {
+            "id": "msg_68d332ea649881938e2b3ccec01a2efa05aca4fe69da03ca",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "Folding a burrito so that nothing spills out and you get neat, bite-sized pieces can be a bit of art. Here’s a step‐by‐step method that many consider the best way:\n\n1. Prepare and arrange your ingredients:\u2003\n\u2003• Warm your large-flour tortilla so it's soft and flexible.  \n\u2003• Place your fillings (rice, beans, meats, veggies, salsa, etc.) roughly in a line near the center, leaving extra space on the sides. This helps with an even fold and avoids overfilling.\n\n2. Position your tortilla:\u2003\n\u2003• Lay the tortilla on a flat surface with the center of the filling coming about two inches from the edge closest to you.\n\n3. Fold the bottom edge:\u2003\n\u2003• Take the edge nearest you and fold it up over the filling. This creates a nice base and encloses one side of the filling.\n\n4. Fold in the sides:\u2003\n\u2003• Next, gently fold in each side toward the center. These folds should encase the filling on the left and right sides.  \n\u2003• Be mindful not to overfill; otherwise, the sides won’t be able to cover the filling properly.\n\n5. Roll it up:\u2003\n\u2003• With the bottom and sides tucked in, continue rolling the tortilla away from you from the bottom edge.  \n\u2003• Roll tightly but gently to ensure the burrito holds together – a firm, tight roll is key to preventing spillage.\n\n6. Optionally secure:\u2003\n\u2003• If you’re taking it to-go, you might wrap it in foil which helps keep everything snug until you’re ready to eat.\n\nSome additional tips:  \n\u2003• Avoid overloading the burrito – leaving even a little extra space around the edges makes it easier to fold the sides without the filling spilling out.  \n\u2003• Using a slightly larger tortilla gives you more room to work with and is often easier for folding a well-contained burrito.  \n\u2003• Practice makes perfect! The more you roll burritos, the better your technique will become.\n\nThis method generally results in a compact, neat burrito with minimal risk during transport or eating. Enjoy your perfectly folded creation!"
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "reasoning": {
+          "effort": "low",
+          "summary": "detailed"
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 30,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 510,
+          "output_tokens_details": {
+            "reasoning_tokens": 64
+          },
+          "total_tokens": 540
+        },
+        "user": null,
+        "metadata": {
+          "superfluous_key": "superfluous_value"
+        }
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

@@ -1,7 +1,6 @@
 using Microsoft.TypeSpec.Generator.ClientModel;
 using Microsoft.TypeSpec.Generator.Primitives;
 using Microsoft.TypeSpec.Generator.Providers;
-using System.Reflection;
 
 namespace OpenAILibraryPlugin.Visitors;
 
@@ -17,16 +16,22 @@ public class NonAbstractPublicTypesVisitor : ScmLibraryVisitor
             && type.DeclarationModifiers.HasFlag(TypeSignatureModifiers.Abstract)
             && type.CustomCodeView?.DeclarationModifiers.HasFlag(TypeSignatureModifiers.Abstract) == false)
         {
-            // Keep types defined in custom code without 'abstract' non-abstract
+            var serializationProviders = type.SerializationProviders;
 
-            // To do: replace with this line when dependencies updated to include modifier support
-            // type.Update(modifiers: type.DeclarationModifiers & ~TypeSignatureModifiers.Abstract);
-            // To do: remove this reflection-based workaround for the above:
-            FieldInfo privateModifiersInfo = typeof(TypeProvider)
-                .GetField("_declarationModifiers", BindingFlags.Instance | BindingFlags.NonPublic)!;
-            TypeSignatureModifiers privateValue = (TypeSignatureModifiers)privateModifiersInfo.GetValue(type)!;
-            privateValue &= ~TypeSignatureModifiers.Abstract;
-            privateModifiersInfo.SetValue(type, privateValue);
+            // ensure we build the serialization attributes before we change the modifiers
+            foreach (var serialization in serializationProviders)
+            {
+                _ = serialization.Attributes;
+            }
+
+            // Keep types defined in custom code without 'abstract' non-abstract
+            type.Update(modifiers: type.DeclarationModifiers & ~TypeSignatureModifiers.Abstract);
+
+            // reset the serialization to pick up the new modifiers while keeping any serialization attributes
+            foreach (var serialization in serializationProviders)
+            {
+                serialization.Update(attributes: serialization.Attributes, reset: true);
+            }
         }
         return type;
     }
