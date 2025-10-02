@@ -17,7 +17,7 @@ public partial class ResponseExamples
     {
         OpenAIResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        // you can use the Patch property to set additional properties in the input
+        // You can use the Patch property to set additional properties in the request
         ResponseCreationOptions options = new();
         options.Patch.Set("$.reasoning.effort"u8, "high");
         options.Patch.Set("$.text.verbosity"u8, "medium");
@@ -26,7 +26,7 @@ public partial class ResponseExamples
 
         Console.WriteLine($"[ASSISTANT]: {response.GetOutputText()}");
 
-        // you can also read those properties back from the response
+        // You can also read additional properties back from the response
         var effort = response.Patch.GetString("$.reasoning.effort"u8);
         var verbosity = response.Patch.GetString("$.text.verbosity"u8);
         Console.WriteLine($"effort={effort}, verbosity={verbosity}");
