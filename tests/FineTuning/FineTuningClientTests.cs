@@ -204,7 +204,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
     }
 
     [Test]
-    public async Task GetJobs()
+    public void GetJobs()
     {
         FineTuningClient client = GetTestClient();
 

@@ -71,6 +71,8 @@ using TypeSpec.HttpClient.CSharp;
 
 @@clientName(MCPToolFilter.read_only, "IsReadOnly");
 
+@@clientName(Responses.listInputItems, "GetResponseInputItems");
+
 // ------------ Streaming ------------
 
 @@alternateType(ResponseFunctionCallArgumentsDoneEvent.arguments, unknown);
