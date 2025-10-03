@@ -294,6 +294,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         int inProgressCount = 0;
         int generateCount = 0;
         bool gotCompletedImageGenItem = false;
+        bool gotCompletedResponseItem = false;
 
         await foreach (StreamingResponseUpdate update
             in client.CreateResponseStreamingAsync(message, responseOptions))
@@ -330,9 +331,20 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
                 Assert.That(outputItemCompleteUpdate.OutputIndex, Is.EqualTo(0));
                 gotCompletedImageGenItem = true;
             }
+            else if (update is StreamingResponseOutputItemDoneUpdate outputItemDoneUpdate)
+            {
+                if (outputItemDoneUpdate.Item is ImageGenerationCallResponseItem imageGenCallItem)
+                {
+                    Assert.That(imageGenCallItem.Id, Is.Not.Null.And.Not.Empty);
+                    imageGenItemId ??= imageGenCallItem.Id;
+                    Assert.That(imageGenItemId, Is.EqualTo(outputItemDoneUpdate.Item.Id));
+                    Assert.That(outputItemDoneUpdate.OutputIndex, Is.EqualTo(0));
+                    gotCompletedResponseItem = true;
+                }
+            }
         }
 
-        Assert.That(gotCompletedImageGenItem, Is.True);
+        Assert.That(gotCompletedResponseItem || gotCompletedImageGenItem, Is.True);
         Assert.That(partialCount, Is.EqualTo(1));
         Assert.That(inProgressCount, Is.EqualTo(1));
         Assert.That(generateCount, Is.EqualTo(1));
