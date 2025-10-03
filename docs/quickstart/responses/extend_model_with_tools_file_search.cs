@@ -14,7 +14,7 @@ OpenAIResponseClient client = new(model: "gpt-5", apiKey: key);
 ResponseCreationOptions options = new();
 options.Tools.Add(ResponseTool.CreateFileSearchTool([ "<vector_store_id>" ]));
 
-OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
+OpenAIResponse response = client.CreateResponse([
     ResponseItem.CreateUserMessageItem([
         ResponseContentPart.CreateInputTextPart("What is deep research by OpenAI?")
     ])

@@ -19,7 +19,7 @@ options.Tools.Add(ResponseTool.CreateMcpTool(
     authorizationToken: authToken
 ));
 
-OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
+OpenAIResponse response = client.CreateResponse([
     ResponseItem.CreateUserMessageItem([
         ResponseContentPart.CreateInputTextPart("Create a payment link for $20")
     ])

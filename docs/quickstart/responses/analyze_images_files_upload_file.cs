@@ -15,7 +15,7 @@ OpenAIResponseClient client = new(model: "gpt-5", apiKey: key);
 OpenAIFileClient files = new(key);
 OpenAIFile file = files.UploadFile("draconomicon.pdf", FileUploadPurpose.UserData);
 
-OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
+OpenAIResponse response = client.CreateResponse([
     ResponseItem.CreateUserMessageItem([
         ResponseContentPart.CreateInputFilePart(file.Id),
         ResponseContentPart.CreateInputTextPart("What is the first dragon in the book?")
