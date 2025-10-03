@@ -20,7 +20,7 @@ options.Tools.Add(ResponseTool.CreateWebSearchTool(
     )
 ));
 
-OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
+OpenAIResponse response = client.CreateResponse([
     ResponseItem.CreateUserMessageItem([
         ResponseContentPart.CreateInputTextPart(
             "What are the best restaurants near me?"
