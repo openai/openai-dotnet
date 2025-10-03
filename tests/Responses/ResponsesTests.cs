@@ -416,17 +416,21 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     {
         OpenAIResponseClient client = GetTestClient();
 
-        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
 
         string imageFilename = "images_dog_and_cat.png";
         string imagePath = Path.Combine("Assets", imageFilename);
         using Stream image = File.OpenRead(imagePath);
         BinaryData imageData = BinaryData.FromStream(image);
 
-        OpenAIFile file = await fileClient.UploadFileAsync(
+        OpenAIFile file;
+        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
+        {
+            file = await fileClient.UploadFileAsync(
             imageData,
             imageFilename,
             FileUploadPurpose.UserData);
+        }
         Validate(file);
 
         ResponseCreationOptions options = new()
