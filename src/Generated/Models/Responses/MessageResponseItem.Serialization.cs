@@ -39,7 +39,9 @@ namespace OpenAI.Responses
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (options.Format != "W" && !Patch.Contains("$.status"u8))
+            // Plugin customization: remove options.Format != "W" check
+            // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
+            if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
             {
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.Value.ToSerialString());
@@ -49,8 +51,6 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(InternalRole.ToString());
             }
-
-            Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 

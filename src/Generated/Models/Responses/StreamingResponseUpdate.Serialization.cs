@@ -49,8 +49,6 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("sequence_number"u8);
                 writer.WriteNumberValue(SequenceNumber);
             }
-
-            Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 

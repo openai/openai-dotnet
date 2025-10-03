@@ -44,8 +44,6 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(Role.ToString());
             }
-
-            Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 

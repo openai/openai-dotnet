@@ -31,13 +31,12 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(Role.ToSerialString());
             }
-            if (Optional.IsDefined(Content) && !Patch.Contains("$.content"u8))
+            // Plugin customization: add Content.IsInnerCollectionDefined() check
+            if (Optional.IsDefined(Content) && Content.IsInnerCollectionDefined() && !Patch.Contains("$.content"u8))
             {
                 writer.WritePropertyName("content"u8);
                 SerializeContentValue(writer, options);
             }
-
-            Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 

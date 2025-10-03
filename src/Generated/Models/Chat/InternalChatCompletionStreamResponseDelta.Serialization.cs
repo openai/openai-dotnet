@@ -41,7 +41,8 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("audio"u8);
                 writer.WriteObjectValue(Audio, options);
             }
-            if (Optional.IsDefined(Content) && !Patch.Contains("$.content"u8))
+            // Plugin customization: add Content.IsInnerCollectionDefined() check
+            if (Optional.IsDefined(Content) && Content.IsInnerCollectionDefined() && !Patch.Contains("$.content"u8))
             {
                 writer.WritePropertyName("content"u8);
                 SerializeContentValue(writer, options);

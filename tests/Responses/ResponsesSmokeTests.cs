@@ -60,7 +60,7 @@ public partial class ResponsesSmokeTests
             @"{""type"":""item_reference"",""id"":""msg_1234""}",
             referenceItem => Assert.That(referenceItem.Id, Is.EqualTo("msg_1234")));
         AssertSerializationRoundTrip<MessageResponseItem>(
-            @"{""type"":""message"",""potato_details"":{""cultivar"":""russet""},""role"":""potato""}",
+            @"{""type"":""message"",""role"":""potato"",""potato_details"":{""cultivar"":""russet""}}",
             potatoMessage =>
             {
                 Assert.That(potatoMessage.Role, Is.EqualTo(MessageRole.Unknown));

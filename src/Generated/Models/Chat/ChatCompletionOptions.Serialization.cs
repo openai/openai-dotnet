@@ -102,10 +102,15 @@ namespace OpenAI.Chat
             }
             else
             {
-                writer.WritePropertyName("messages"u8);
-                SerializeMessagesValue(writer, options);
+                // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
+                if (Optional.IsCollectionDefined(Messages))
+                {
+                    writer.WritePropertyName("messages"u8);
+                    SerializeMessagesValue(writer, options);
+                }
             }
-            if (!Patch.Contains("$.model"u8))
+            // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
+            if (Optional.IsDefined(Model) && !Patch.Contains("$.model"u8))
             {
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(Model);
