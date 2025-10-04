@@ -14,7 +14,9 @@ public partial class ChatExamples
     {
         ChatClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        // You can use the Patch property to set additional properties in the request
+        // Add extra request fields using Patch.
+        // Patch lets you set fields that aren’t modeled on ChatCompletionOptions in the request payload.
+        // See the API docs https://platform.openai.com/docs/api-reference/chat/create for supported additional fields.
         ChatCompletionOptions options = new();
         options.Patch.Set("$.reasoning_effort"u8, "minimal");
 
@@ -22,7 +24,10 @@ public partial class ChatExamples
 
         Console.WriteLine($"[ASSISTANT]: {completion.Content[0].Text}");
 
-        // You can also read additional properties back from the response
+        // Read extra fields from the response via Patch.
+        // The service returns a field named `service_tier` that isn’t modeled on ChatCompletion.
+        // You can access its value by using the path with Patch.
+        // See the API docs https://platform.openai.com/docs/api-reference/chat/object for supported additional fields.
         var serviceTier = completion.Patch.GetString("$.service_tier"u8);
         Console.WriteLine($"service_tier={serviceTier}");
     }

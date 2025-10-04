@@ -16,7 +16,9 @@ public partial class ResponseExamples
     {
         OpenAIResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        // You can use the Patch property to set additional properties in the request
+        // Add extra request fields using Patch.
+        // Patch lets you set fields like `reasoning.effort` and `text.verbosity` that aren’t modeled on ResponseCreationOptions in the request payload.
+        // See the API docs https://platform.openai.com/docs/api-reference/responses/create for supported additional fields.
         ResponseCreationOptions options = new();
         options.Patch.Set("$.reasoning.effort"u8, "high");
         options.Patch.Set("$.text.verbosity"u8, "medium");
@@ -25,7 +27,10 @@ public partial class ResponseExamples
 
         Console.WriteLine($"[ASSISTANT]: {response.GetOutputText()}");
 
-        // You can also read additional properties back from the response
+        // Read extra fields from the response via Patch.
+        // The service returns fields like `reasoning.effort` and `text.verbosity` that aren’t modeled on OpenAIResponse.
+        // You can access their values by using the path with Patch.
+        // See the API docs https://platform.openai.com/docs/api-reference/responses/object for supported additional fields.
         var effort = response.Patch.GetString("$.reasoning.effort"u8);
         var verbosity = response.Patch.GetString("$.text.verbosity"u8);
         Console.WriteLine($"effort={effort}, verbosity={verbosity}");

@@ -35,7 +35,10 @@ public partial class ResponseExamples
         using FileStream stream = File.OpenWrite($"{Guid.NewGuid()}.png");
         bytes.ToStream().CopyTo(stream);
 
-        // You can use the Patch property to read additional properties from the response
+        // Read extra fields from the response via Patch.
+        // The service returns fields like `output_format` and `quality` that aren’t modeled on ImageGenerationCallResponseItem.
+        // You can access their values by using the path with Patch.
+        // See the API docs https://platform.openai.com/docs/api-reference/responses/object for supported additional fields.
         var outputFormat = imageGenResponse.Patch.GetString("$.output_format"u8);
         var quality = imageGenResponse.Patch.GetString("$.quality"u8);
         var size = imageGenResponse.Patch.GetString("$.size"u8);
