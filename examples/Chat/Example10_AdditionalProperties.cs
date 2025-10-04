@@ -8,6 +8,7 @@ namespace OpenAI.Examples;
 
 public partial class ChatExamples
 {
+    [Test]
     public void Example10_AdditionalProperties()
     {
         ChatClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
@@ -18,9 +19,7 @@ public partial class ChatExamples
         ChatCompletionOptions options = new();
         options.Patch.Set("$.reasoning_effort"u8, "minimal");
 
-        ChatCompletion completion = client.CompleteChat(
-            [new UserChatMessage("Say 'this is a test.'")],
-            options);
+        ChatCompletion completion = client.CompleteChat([new UserChatMessage("Say 'this is a test.'")], options);
 
         Console.WriteLine($"[ASSISTANT]: {completion.Content[0].Text}");
 
