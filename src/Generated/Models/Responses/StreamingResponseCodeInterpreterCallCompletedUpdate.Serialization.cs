@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,12 +12,20 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseCodeInterpreterCallCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCodeInterpreterCallCompletedUpdate>
     {
-        internal StreamingResponseCodeInterpreterCallCompletedUpdate() : this(InternalResponseStreamEventType.ResponseCodeInterpreterCallCompleted, default, null, default, null)
+        internal StreamingResponseCodeInterpreterCallCompletedUpdate() : this(InternalResponseStreamEventType.ResponseCodeInterpreterCallCompleted, default, default, default, null)
         {
         }
 
         void IJsonModel<StreamingResponseCodeInterpreterCallCompletedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -31,16 +39,20 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(StreamingResponseCodeInterpreterCallCompletedUpdate)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("output_index") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.output_index"u8))
             {
                 writer.WritePropertyName("output_index"u8);
                 writer.WriteNumberValue(OutputIndex);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("item_id") != true)
+            if (!Patch.Contains("$.item_id"u8))
             {
                 writer.WritePropertyName("item_id"u8);
                 writer.WriteStringValue(ItemId);
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         StreamingResponseCodeInterpreterCallCompletedUpdate IJsonModel<StreamingResponseCodeInterpreterCallCompletedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StreamingResponseCodeInterpreterCallCompletedUpdate)JsonModelCreateCore(ref reader, options);
@@ -53,10 +65,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(StreamingResponseCodeInterpreterCallCompletedUpdate)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeStreamingResponseCodeInterpreterCallCompletedUpdate(document.RootElement, options);
+            return DeserializeStreamingResponseCodeInterpreterCallCompletedUpdate(document.RootElement, null, options);
         }
 
-        internal static StreamingResponseCodeInterpreterCallCompletedUpdate DeserializeStreamingResponseCodeInterpreterCallCompletedUpdate(JsonElement element, ModelReaderWriterOptions options)
+        internal static StreamingResponseCodeInterpreterCallCompletedUpdate DeserializeStreamingResponseCodeInterpreterCallCompletedUpdate(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -64,7 +76,9 @@ namespace OpenAI.Responses
             }
             InternalResponseStreamEventType kind = default;
             int sequenceNumber = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             int outputIndex = default;
             string itemId = default;
             foreach (var prop in element.EnumerateObject())
@@ -89,10 +103,9 @@ namespace OpenAI.Responses
                     itemId = prop.Value.GetString();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new StreamingResponseCodeInterpreterCallCompletedUpdate(kind, sequenceNumber, additionalBinaryDataProperties, outputIndex, itemId);
+            return new StreamingResponseCodeInterpreterCallCompletedUpdate(kind, sequenceNumber, patch, outputIndex, itemId);
         }
 
         BinaryData IPersistableModel<StreamingResponseCodeInterpreterCallCompletedUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -119,7 +132,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeStreamingResponseCodeInterpreterCallCompletedUpdate(document.RootElement, options);
+                        return DeserializeStreamingResponseCodeInterpreterCallCompletedUpdate(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(StreamingResponseCodeInterpreterCallCompletedUpdate)} does not support reading '{options.Format}' format.");

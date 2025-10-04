@@ -65,7 +65,7 @@ namespace OpenAI.Assistants
                 }
                 if (prop.NameEquals("function"u8))
                 {
-                    function = InternalFunctionDefinition.DeserializeInternalFunctionDefinition(prop.Value, options);
+                    function = InternalFunctionDefinition.DeserializeInternalFunctionDefinition(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

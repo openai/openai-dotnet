@@ -2,8 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -18,12 +17,14 @@ namespace OpenAI.Responses
             DisplayHeight = displayHeight;
         }
 
-        internal ComputerTool(InternalToolType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, ComputerToolEnvironment environment, int displayWidth, int displayHeight) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal ComputerTool(InternalToolType kind, in JsonPatch patch, ComputerToolEnvironment environment, int displayWidth, int displayHeight) : base(kind, patch)
         {
             Environment = environment;
             DisplayWidth = displayWidth;
             DisplayHeight = displayHeight;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public ComputerToolEnvironment Environment { get; set; }
 

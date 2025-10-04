@@ -6,6 +6,7 @@ using Microsoft.TypeSpec.Generator.Providers;
 using Microsoft.TypeSpec.Generator.Snippets;
 using Microsoft.TypeSpec.Generator.Statements;
 using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Linq;
 using static Microsoft.TypeSpec.Generator.Snippets.Snippet;
@@ -46,6 +47,8 @@ public class OpenAILibraryVisitor : ScmLibraryVisitor
         ["ReasoningResponseItem"] = [_readonlyStatusReplacementInfo],
         ["WebSearchCallResponseItem"] = [_readonlyStatusReplacementInfo],
     };
+    private static readonly SingleLineCommentStatement OptionalDefinedCheckComment =
+        new("Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup");
 
     protected override TypeProvider VisitType(TypeProvider type)
     {
@@ -118,101 +121,161 @@ public class OpenAILibraryVisitor : ScmLibraryVisitor
 
     protected override MethodProvider VisitMethod(MethodProvider method)
     {
-        if (method.Signature.Name != JsonModelWriteCoreMethodName)
-        {
-            return method;
-        }
-
-        // If there are no body statements, return the method as is
-        if (method.BodyStatements == null)
-        {
-            return method;
-        }
-
-        // If the body statements are not MethodBodyStatements, return the method as is
-        if (method.BodyStatements is not MethodBodyStatements statements)
+        // If there are no body statements, or the body statements are not MethodBodyStatements,
+        // return the method as is return the method as is
+        if (method.Signature.Name != JsonModelWriteCoreMethodName ||
+            method.BodyStatements is not MethodBodyStatements statements)
         {
             return method;
         }
 
         var updatedStatements = new List<MethodBodyStatement>();
-        var flattenedStatements = statements.ToArray();
+        var flattenedStatements = new List<MethodBodyStatement>();
+
+        foreach (var stmt in statements)
+        {
+            if (stmt is SuppressionStatement { Inner: not null } suppressionStatement)
+            {
+                // TO-DO: remove once enumerable logic is updated to handle nested suppression statements
+                flattenedStatements.Add(suppressionStatement.DisableStatement);
+                flattenedStatements.AddRange(suppressionStatement.Inner);
+                flattenedStatements.Add(suppressionStatement.RestoreStatement);
+            }
+            else
+            {
+                flattenedStatements.Add(stmt);
+            }
+        }
 
         List<WritePropertyNameAdditionalReplacementInfo> additionalConditionsForWritingType
             = TypeNameToWritePropertyNameAdditionalConditionMap.GetValueOrDefault(method.EnclosingType.Name) ?? [];
 
-        for (int line = 0; line < flattenedStatements.Length; line++)
+        for (int line = 0; line < flattenedStatements.Count; line++)
         {
             var statement = flattenedStatements[line];
 
             // Much of the customization centers around treatment of WritePropertyName
             string? writePropertyNameTarget = GetWritePropertyNameTargetFromStatement(statement);
 
-            if (statement is IfStatement ifStatement)
+            switch (statement)
             {
-                // If we already have an if statement that contains property writing, we need to add the condition to the existing if statement
-                if (writePropertyNameTarget is not null)
-                {
-                    ifStatement.Update(condition: ifStatement.Condition.As<bool>().And(GetContainsKeyCondition(writePropertyNameTarget)));
-                }
-
-                // Handle writing AdditionalProperties
-                else if (ifStatement.Body.First() is ForEachStatement foreachStatement)
-                {
-                    foreachStatement.Body.Insert(
-                        0,
-                        new IfStatement(
-                            Static(new ModelSerializationExtensionsDefinition().Type).Invoke(
-                                IsSentinelValueMethodName,
-                                foreachStatement.ItemVariable.Property("Value")))
-                        {
-                            Continue
-                        });
-                }
-
-                updatedStatements.Add(ifStatement);
-            }
-            else if (writePropertyNameTarget is not null)
-            {
-                ScopedApi<bool> enclosingIfCondition = GetContainsKeyCondition(writePropertyNameTarget);
-
-                if (additionalConditionsForWritingType
-                    .FirstOrDefault(additionalCondition => additionalCondition.JsonName == writePropertyNameTarget)
-                    is WritePropertyNameAdditionalReplacementInfo matchingReplacementInfo)
-                {
-                    MethodBodyStatement commentStatement
-                        = new SingleLineCommentStatement("Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup");
-                    updatedStatements.Add(commentStatement);
-                    enclosingIfCondition = GetOptionalIsCollectionDefinedCondition(matchingReplacementInfo)
-                        .And(enclosingIfCondition);
-                }
-
-                var ifSt = new IfStatement(enclosingIfCondition) { statement };
-
-                // If this is a plain expression statement, we need to add the next statement as well which
-                // will either write the property value or start writing an array
-                if (statement is ExpressionStatement)
-                {
-                    ifSt.Add(flattenedStatements[++line]);
-                    // Include array writing in the if statement
-                    if (flattenedStatements[line + 1] is ForEachStatement)
-                    {
-                        // Foreach
-                        ifSt.Add(flattenedStatements[++line]);
-                        // End array
-                        ifSt.Add(flattenedStatements[++line]);
-                    }
-                }
-                updatedStatements.Add(ifSt);
-            }
-            else
-            {
-                updatedStatements.Add(statement);
+                // If we already have an if statement that contains property writing, we need to add the condition to the existing if statement.
+                // For dynamic models, we can skip adding the SARD condition.
+                case IfStatement ifStatement:
+                    ProcessIfStatement(ifStatement, writePropertyNameTarget, additionalConditionsForWritingType, updatedStatements);
+                    break;
+                case IfElseStatement ifElseStatement when GetPatchContainsExpression(ifElseStatement.If.Condition) != null:
+                    ProcessIfElseStatement(ifElseStatement, writePropertyNameTarget, additionalConditionsForWritingType, updatedStatements);
+                    break;
+                case var _ when writePropertyNameTarget is not null:
+                    line = ProcessWritePropertyNameStatement(statement, writePropertyNameTarget, additionalConditionsForWritingType, flattenedStatements, line, updatedStatements);
+                    break;
+                default:
+                    updatedStatements.Add(statement);
+                    break;
             }
         }
-        
+
         method.Update(bodyStatements: updatedStatements);
         return method;
+    }
+
+    private static void ProcessIfStatement(
+        IfStatement ifStatement,
+        string? writePropertyNameTarget,
+        List<WritePropertyNameAdditionalReplacementInfo> additionalConditionsForWritingType,
+        List<MethodBodyStatement> updatedStatements)
+    {
+        if (writePropertyNameTarget is not null)
+        {
+            ValueExpression? patchContainsCondition = GetPatchContainsExpression(ifStatement.Condition);
+
+            if (patchContainsCondition is null)
+            {
+                ifStatement.Update(condition: ifStatement.Condition.As<bool>().And(GetContainsKeyCondition(writePropertyNameTarget)));
+            }
+            else if (additionalConditionsForWritingType.FirstOrDefault(additionalCondition => additionalCondition.JsonName == writePropertyNameTarget) is var matchingReplacementInfo && matchingReplacementInfo != null)
+            {
+                updatedStatements.Add(OptionalDefinedCheckComment);
+                ifStatement.Update(condition: GetOptionalIsCollectionDefinedCondition(matchingReplacementInfo).And(ifStatement.Condition));
+            }
+        }
+        // Handle writing AdditionalProperties
+        else if (ifStatement.Body.First() is ForEachStatement foreachStatement)
+        {
+            foreachStatement.Body.Insert(
+                0,
+                new IfStatement(
+                    Static(new ModelSerializationExtensionsDefinition().Type).Invoke(
+                        IsSentinelValueMethodName,
+                        foreachStatement.ItemVariable.Property("Value")))
+                {
+                    Continue
+                });
+        }
+
+        updatedStatements.Add(ifStatement);
+    }
+
+    private static void ProcessIfElseStatement(
+        IfElseStatement ifElseStatement,
+        string? writePropertyNameTarget,
+        List<WritePropertyNameAdditionalReplacementInfo> additionalConditionsForWritingType,
+        List<MethodBodyStatement> updatedStatements)
+    {
+        if (ifElseStatement.Else is null)
+        {
+            updatedStatements.Add(ifElseStatement);
+            return;
+        }
+
+        if (additionalConditionsForWritingType.FirstOrDefault(additionalCondition => additionalCondition.JsonName == writePropertyNameTarget) is var matchingReplacementInfo && matchingReplacementInfo != null)
+        {
+            var enclosingCondition = GetOptionalIsCollectionDefinedCondition(matchingReplacementInfo);
+            var updatedCondition = new IfStatement(enclosingCondition) { ifElseStatement.Else };
+
+            ifElseStatement.Update(elseStatement: new MethodBodyStatements([OptionalDefinedCheckComment, updatedCondition]));
+        }
+
+        updatedStatements.Add(ifElseStatement);
+    }
+
+    private static int ProcessWritePropertyNameStatement(
+        MethodBodyStatement statement,
+        string writePropertyNameTarget,
+        List<WritePropertyNameAdditionalReplacementInfo> additionalConditionsForWritingType,
+        List<MethodBodyStatement> flattenedStatements,
+        int currentLine,
+        List<MethodBodyStatement> updatedStatements)
+    {
+        var line = currentLine;
+        ScopedApi<bool> enclosingIfCondition = GetContainsKeyCondition(writePropertyNameTarget);
+
+        if (additionalConditionsForWritingType.FirstOrDefault(additionalCondition => additionalCondition.JsonName == writePropertyNameTarget) is var matchingReplacementInfo && matchingReplacementInfo != null)
+        {
+            updatedStatements.Add(OptionalDefinedCheckComment);
+            enclosingIfCondition = GetOptionalIsCollectionDefinedCondition(matchingReplacementInfo).And(enclosingIfCondition);
+        }
+
+        var ifSt = new IfStatement(enclosingIfCondition) { statement };
+
+        // If this is a plain expression statement, we need to add the next statement as well which
+        // will either write the property value or start writing an array
+        if (statement is ExpressionStatement)
+        {
+            ifSt.Add(flattenedStatements[++line]);
+            // Include array writing in the if statement
+            if (flattenedStatements[line + 1] is ForEachStatement)
+            {
+                // Foreach
+                ifSt.Add(flattenedStatements[++line]);
+                // End array
+                ifSt.Add(flattenedStatements[++line]);
+            }
+        }
+
+        updatedStatements.Add(ifSt);
+        return line;
     }
 
     private static ScopedApi<bool> GetContainsKeyCondition(string propertyName)
@@ -234,6 +297,10 @@ public class OpenAILibraryVisitor : ScmLibraryVisitor
             && stringUnaryTargetExpression.Operand is LiteralExpression stringLiteralExpression)
         {
             return stringLiteralExpression.Literal?.ToString();
+        }
+        if (statement is SuppressionStatement suppressionStatement)
+        {
+            return GetWritePropertyNameTargetFromStatement(suppressionStatement.Inner);
         }
         else if (statement is MethodBodyStatements compoundStatements)
         {
@@ -269,5 +336,46 @@ public class OpenAILibraryVisitor : ScmLibraryVisitor
         public string PropertyName { get; set; } = propertyName;
         public string JsonName { get; set; } = jsonName;
         public bool IsCollection { get; set; } = isCollection;
+    }
+
+
+    /// <summary>
+    /// Recursively checks if the given expression or any of its sub-expressions is a call to Patch.Contains().
+    /// Handles various wrapping scenarios including unary operators, binary operators, and nested expressions.
+    /// </summary>
+    private static ValueExpression? GetPatchContainsExpression(ValueExpression? expression)
+    {
+        if (expression is null)
+        {
+            return null;
+        }
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+        return expression switch
+        {
+            // Case 1: Direct Patch.Contains() call
+            ScopedApi<bool> { Original: InvokeMethodExpression { InstanceReference: ScopedApi<JsonPatch> } } => expression,
+
+            // Case 2: !Patch.Contains() call
+            ScopedApi<bool> { Original: UnaryOperatorExpression { Operator: "!", Operand: ScopedApi<bool> { Original: InvokeMethodExpression { InstanceReference: ScopedApi<JsonPatch> } } } } => expression,
+
+            // Case 3 & 4: Binary operator expression (wrapped or unwrapped)
+            ScopedApi<bool> { Original: BinaryOperatorExpression binaryExpr } =>
+                GetPatchContainsExpression(binaryExpr.Left) ?? GetPatchContainsExpression(binaryExpr.Right),
+
+            BinaryOperatorExpression binaryExpr =>
+                GetPatchContainsExpression(binaryExpr.Left) ?? GetPatchContainsExpression(binaryExpr.Right),
+
+            // Case 5: Direct UnaryOperatorExpression (not wrapped in ScopedApi)
+            UnaryOperatorExpression { Operator: "!" } unaryExpr =>
+                GetPatchContainsExpression(unaryExpr.Operand) != null ? expression : null,
+
+            // Case 6: Direct InvokeMethodExpression (not wrapped in ScopedApi)
+            InvokeMethodExpression { InstanceReference: ScopedApi<JsonPatch> } => expression,
+
+            _ => null
+        };
+
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
     }
 }

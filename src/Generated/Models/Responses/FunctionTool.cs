@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -21,13 +21,15 @@ namespace OpenAI.Responses
             StrictModeEnabled = strictModeEnabled;
         }
 
-        internal FunctionTool(InternalToolType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string functionName, string functionDescription, BinaryData functionParameters, bool? strictModeEnabled) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal FunctionTool(InternalToolType kind, in JsonPatch patch, string functionName, string functionDescription, BinaryData functionParameters, bool? strictModeEnabled) : base(kind, patch)
         {
             FunctionName = functionName;
             FunctionDescription = functionDescription;
             FunctionParameters = functionParameters;
             StrictModeEnabled = strictModeEnabled;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string FunctionName { get; set; }
 

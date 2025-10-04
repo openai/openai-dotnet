@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -14,6 +14,14 @@ namespace OpenAI.Responses
     {
         void IJsonModel<InternalComputerToolCallOutputItemOutputComputerScreenshot>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -27,16 +35,20 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalComputerToolCallOutputItemOutputComputerScreenshot)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (Optional.IsDefined(ImageUrl) && _additionalBinaryDataProperties?.ContainsKey("image_url") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Optional.IsDefined(ImageUrl) && !Patch.Contains("$.image_url"u8))
             {
                 writer.WritePropertyName("image_url"u8);
                 writer.WriteStringValue(ImageUrl);
             }
-            if (Optional.IsDefined(FileId) && _additionalBinaryDataProperties?.ContainsKey("file_id") != true)
+            if (Optional.IsDefined(FileId) && !Patch.Contains("$.file_id"u8))
             {
                 writer.WritePropertyName("file_id"u8);
                 writer.WriteStringValue(FileId);
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalComputerToolCallOutputItemOutputComputerScreenshot IJsonModel<InternalComputerToolCallOutputItemOutputComputerScreenshot>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalComputerToolCallOutputItemOutputComputerScreenshot)JsonModelCreateCore(ref reader, options);
@@ -49,17 +61,19 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalComputerToolCallOutputItemOutputComputerScreenshot)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalComputerToolCallOutputItemOutputComputerScreenshot(document.RootElement, options);
+            return DeserializeInternalComputerToolCallOutputItemOutputComputerScreenshot(document.RootElement, null, options);
         }
 
-        internal static InternalComputerToolCallOutputItemOutputComputerScreenshot DeserializeInternalComputerToolCallOutputItemOutputComputerScreenshot(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalComputerToolCallOutputItemOutputComputerScreenshot DeserializeInternalComputerToolCallOutputItemOutputComputerScreenshot(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalComputerUsePreviewToolCallOutputOutputType kind = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string imageUrl = default;
             string fileId = default;
             foreach (var prop in element.EnumerateObject())
@@ -79,10 +93,9 @@ namespace OpenAI.Responses
                     fileId = prop.Value.GetString();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalComputerToolCallOutputItemOutputComputerScreenshot(kind, additionalBinaryDataProperties, imageUrl, fileId);
+            return new InternalComputerToolCallOutputItemOutputComputerScreenshot(kind, patch, imageUrl, fileId);
         }
 
         BinaryData IPersistableModel<InternalComputerToolCallOutputItemOutputComputerScreenshot>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -109,7 +122,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalComputerToolCallOutputItemOutputComputerScreenshot(document.RootElement, options);
+                        return DeserializeInternalComputerToolCallOutputItemOutputComputerScreenshot(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalComputerToolCallOutputItemOutputComputerScreenshot)} does not support reading '{options.Format}' format.");

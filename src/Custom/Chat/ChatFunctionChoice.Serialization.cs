@@ -1,6 +1,7 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 
 namespace OpenAI.Chat;
@@ -13,6 +14,14 @@ public partial class ChatFunctionChoice : IJsonModel<ChatFunctionChoice>
 
     internal static void SerializeChatFunctionChoice(ChatFunctionChoice instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        if (instance.Patch.Contains("$"u8))
+        {
+            writer.WriteRawValue(instance.Patch.GetJson("$"u8));
+            return;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
         if (instance._isPlainString)
         {
             writer.WriteStringValue(instance._string);
@@ -22,12 +31,14 @@ public partial class ChatFunctionChoice : IJsonModel<ChatFunctionChoice>
             writer.WriteStartObject();
             writer.WritePropertyName("name"u8);
             writer.WriteStringValue(instance._function.Name);
-            writer.WriteSerializedAdditionalRawData(instance._additionalBinaryDataProperties, options);
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            instance.Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             writer.WriteEndObject();
         }
     }
 
-    internal static ChatFunctionChoice DeserializeChatFunctionChoice(JsonElement element, ModelReaderWriterOptions options = null)
+    internal static ChatFunctionChoice DeserializeChatFunctionChoice(JsonElement element, BinaryData data, ModelReaderWriterOptions options = null)
     {
         options ??= ModelSerializationExtensions.WireOptions;
 
@@ -42,8 +53,9 @@ public partial class ChatFunctionChoice : IJsonModel<ChatFunctionChoice>
         else
         {
             string name = default;
-            IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-            Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var property in element.EnumerateObject())
             {
                 if (property.NameEquals("name"u8))
@@ -53,11 +65,10 @@ public partial class ChatFunctionChoice : IJsonModel<ChatFunctionChoice>
                 }
                 if (true)
                 {
-                    rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                    patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(property.Name)], property.Value.GetUtf8Bytes());
                 }
             }
-            serializedAdditionalRawData = rawDataDictionary;
-            return new ChatFunctionChoice(name, serializedAdditionalRawData);
+            return new ChatFunctionChoice(name, patch);
         }
     }
 }

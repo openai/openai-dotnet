@@ -2,8 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using OpenAI;
 
 namespace OpenAI.Internal
@@ -17,10 +16,12 @@ namespace OpenAI.Internal
             JsonSchema = jsonSchema;
         }
 
-        internal InternalResponseFormatJsonSchema(InternalResponseFormatType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalResponseFormatJsonSchemaJsonSchema jsonSchema) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalResponseFormatJsonSchema(InternalResponseFormatType kind, in JsonPatch patch, InternalResponseFormatJsonSchemaJsonSchema jsonSchema) : base(kind, patch)
         {
             JsonSchema = jsonSchema;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         internal InternalResponseFormatJsonSchemaJsonSchema JsonSchema { get; set; }
     }

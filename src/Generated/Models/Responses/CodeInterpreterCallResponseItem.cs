@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
@@ -20,7 +20,8 @@ namespace OpenAI.Responses
             Outputs = new ChangeTrackingList<CodeInterpreterCallOutput>();
         }
 
-        internal CodeInterpreterCallResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, CodeInterpreterCallStatus? status, string containerId, string code, IList<CodeInterpreterCallOutput> outputs) : base(kind, id, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal CodeInterpreterCallResponseItem(InternalItemType kind, string id, in JsonPatch patch, CodeInterpreterCallStatus? status, string containerId, string code, IList<CodeInterpreterCallOutput> outputs) : base(kind, id, patch)
         {
             // Plugin customization: ensure initialization of collections
             Status = status;
@@ -28,6 +29,7 @@ namespace OpenAI.Responses
             Code = code;
             Outputs = outputs ?? new ChangeTrackingList<CodeInterpreterCallOutput>();
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ContainerId { get; set; }
 

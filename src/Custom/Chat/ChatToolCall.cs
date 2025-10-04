@@ -60,6 +60,6 @@ public partial class ChatToolCall
             id: id,
             kind: ChatToolCallKind.Function,
             function: function,
-            additionalBinaryDataProperties: null);
+            patch: default);
     }
 }

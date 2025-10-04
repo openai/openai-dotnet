@@ -2,32 +2,34 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Chat
 {
     public partial class ChatOutputTokenUsageDetails
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
         internal ChatOutputTokenUsageDetails()
         {
         }
 
-        internal ChatOutputTokenUsageDetails(int acceptedPredictionTokenCount, int audioTokenCount, int reasoningTokenCount, int rejectedPredictionTokenCount, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal ChatOutputTokenUsageDetails(int acceptedPredictionTokenCount, int audioTokenCount, int reasoningTokenCount, int rejectedPredictionTokenCount, in JsonPatch patch)
         {
             AcceptedPredictionTokenCount = acceptedPredictionTokenCount;
             AudioTokenCount = audioTokenCount;
             ReasoningTokenCount = reasoningTokenCount;
             RejectedPredictionTokenCount = rejectedPredictionTokenCount;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
     }
 }

@@ -2,8 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -16,10 +15,12 @@ namespace OpenAI.Responses
             Response = response;
         }
 
-        internal StreamingResponseQueuedUpdate(InternalResponseStreamEventType kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, OpenAIResponse response) : base(kind, sequenceNumber, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal StreamingResponseQueuedUpdate(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch, OpenAIResponse response) : base(kind, sequenceNumber, patch)
         {
             Response = response;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public OpenAIResponse Response { get; }
     }

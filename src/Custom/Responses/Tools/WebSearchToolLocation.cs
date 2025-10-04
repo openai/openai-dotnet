@@ -9,7 +9,7 @@ public partial class WebSearchToolLocation
     {
         return new WebSearchToolApproximateLocation(
             kind: InternalWebSearchUserLocationKind.Approximate,
-            additionalBinaryDataProperties: null,
+            patch: default,
             country: country,
             region: region,
             city: city,

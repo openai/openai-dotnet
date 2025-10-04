@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -19,13 +19,15 @@ namespace OpenAI.Responses
             PartialImageBytes = partialImageBytes;
         }
 
-        internal StreamingResponseImageGenerationCallPartialImageUpdate(InternalResponseStreamEventType kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, int outputIndex, string itemId, int partialImageIndex, BinaryData partialImageBytes) : base(kind, sequenceNumber, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal StreamingResponseImageGenerationCallPartialImageUpdate(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch, int outputIndex, string itemId, int partialImageIndex, BinaryData partialImageBytes) : base(kind, sequenceNumber, patch)
         {
             OutputIndex = outputIndex;
             ItemId = itemId;
             PartialImageIndex = partialImageIndex;
             PartialImageBytes = partialImageBytes;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public int OutputIndex { get; }
 

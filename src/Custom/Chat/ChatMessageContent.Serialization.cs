@@ -42,7 +42,7 @@ public partial class ChatMessageContent
             List<ChatMessageContentPart> parts = [];
             foreach (JsonElement contentPartElement in element.EnumerateArray())
             {
-                parts.Add(ChatMessageContentPart.DeserializeChatMessageContentPart(contentPartElement, options));
+                parts.Add(ChatMessageContentPart.DeserializeChatMessageContentPart(contentPartElement, contentPartElement.GetUtf8Bytes(), options));
             }
             return new(parts);
         }

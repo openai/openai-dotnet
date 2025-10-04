@@ -49,6 +49,31 @@ internal class SseUpdateCollection<T> : CollectionResult<T>
 
     public SseUpdateCollection(
         Func<ClientResult> sendRequestFunc,
+        Func<JsonElement, BinaryData, ModelReaderWriterOptions, IEnumerable<T>> jsonMultiDeserializerFunc,
+        CancellationToken cancellationToken)
+            : this(
+                  sendRequestFunc,
+                  AsyncSseUpdateCollection<T>.DeserializeSseToMultipleViaJson(jsonMultiDeserializerFunc),
+                  cancellationToken)
+
+    {
+        Argument.AssertNotNull(jsonMultiDeserializerFunc, nameof(jsonMultiDeserializerFunc));
+    }
+
+    public SseUpdateCollection(
+        Func<ClientResult> sendRequestFunc,
+        Func<JsonElement, BinaryData, ModelReaderWriterOptions, T> jsonSingleDeserializerFunc,
+        CancellationToken cancellationToken)
+            : this(
+                  sendRequestFunc,
+                  AsyncSseUpdateCollection<T>.DeserializeSseToSingleViaJson(jsonSingleDeserializerFunc),
+                  cancellationToken)
+    {
+        Argument.AssertNotNull(jsonSingleDeserializerFunc, nameof(jsonSingleDeserializerFunc));
+    }
+
+    public SseUpdateCollection(
+        Func<ClientResult> sendRequestFunc,
         Func<SseItem<byte[]>, IEnumerable<T>> eventDeserializerFunc,
         CancellationToken cancellationToken)
     {

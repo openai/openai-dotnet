@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -14,6 +14,14 @@ namespace OpenAI.Responses
     {
         void IJsonModel<ResponseIncompleteStatusDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -26,31 +34,15 @@ namespace OpenAI.Responses
             {
                 throw new FormatException($"The model {nameof(ResponseIncompleteStatusDetails)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Reason) && _additionalBinaryDataProperties?.ContainsKey("reason") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Optional.IsDefined(Reason) && !Patch.Contains("$.reason"u8))
             {
                 writer.WritePropertyName("reason"u8);
                 writer.WriteStringValue(Reason.Value.ToString());
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         ResponseIncompleteStatusDetails IJsonModel<ResponseIncompleteStatusDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -63,17 +55,19 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(ResponseIncompleteStatusDetails)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeResponseIncompleteStatusDetails(document.RootElement, options);
+            return DeserializeResponseIncompleteStatusDetails(document.RootElement, null, options);
         }
 
-        internal static ResponseIncompleteStatusDetails DeserializeResponseIncompleteStatusDetails(JsonElement element, ModelReaderWriterOptions options)
+        internal static ResponseIncompleteStatusDetails DeserializeResponseIncompleteStatusDetails(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             ResponseIncompleteStatusReason? reason = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("reason"u8))
@@ -85,10 +79,9 @@ namespace OpenAI.Responses
                     reason = new ResponseIncompleteStatusReason(prop.Value.GetString());
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ResponseIncompleteStatusDetails(reason, additionalBinaryDataProperties);
+            return new ResponseIncompleteStatusDetails(reason, patch);
         }
 
         BinaryData IPersistableModel<ResponseIncompleteStatusDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -115,7 +108,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeResponseIncompleteStatusDetails(document.RootElement, options);
+                        return DeserializeResponseIncompleteStatusDetails(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ResponseIncompleteStatusDetails)} does not support reading '{options.Format}' format.");

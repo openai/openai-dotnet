@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
@@ -12,7 +13,8 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class McpTool : ResponseTool
     {
-        internal McpTool(InternalToolType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string serverLabel, Uri serverUri, McpToolConnectorId? connectorId, string authorizationToken, string serverDescription, IDictionary<string, string> headers, McpToolFilter allowedTools, McpToolCallApprovalPolicy toolCallApprovalPolicy) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal McpTool(InternalToolType kind, in JsonPatch patch, string serverLabel, Uri serverUri, McpToolConnectorId? connectorId, string authorizationToken, string serverDescription, IDictionary<string, string> headers, McpToolFilter allowedTools, McpToolCallApprovalPolicy toolCallApprovalPolicy) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             ServerLabel = serverLabel;
@@ -24,6 +26,7 @@ namespace OpenAI.Responses
             AllowedTools = allowedTools;
             ToolCallApprovalPolicy = toolCallApprovalPolicy;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ServerLabel { get; set; }
 

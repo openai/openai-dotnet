@@ -2,8 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using OpenAI;
 
 namespace OpenAI.Chat
@@ -17,10 +16,12 @@ namespace OpenAI.Chat
             ImageUrl = imageUrl;
         }
 
-        internal InternalChatCompletionRequestMessageContentPartImage(IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalChatCompletionRequestMessageContentPartImageImageUrl imageUrl) : base(additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalChatCompletionRequestMessageContentPartImage(in JsonPatch patch, InternalChatCompletionRequestMessageContentPartImageImageUrl imageUrl) : base(patch)
         {
             ImageUrl = imageUrl;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         internal InternalChatCompletionRequestMessageContentPartImageImageUrl ImageUrl { get; }
     }

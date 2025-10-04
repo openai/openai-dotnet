@@ -2,8 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -18,12 +17,14 @@ namespace OpenAI.Responses
             Code = code;
         }
 
-        internal StreamingResponseCodeInterpreterCallCodeDoneUpdate(InternalResponseStreamEventType kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, int outputIndex, string itemId, string code) : base(kind, sequenceNumber, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal StreamingResponseCodeInterpreterCallCodeDoneUpdate(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch, int outputIndex, string itemId, string code) : base(kind, sequenceNumber, patch)
         {
             OutputIndex = outputIndex;
             ItemId = itemId;
             Code = code;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public int OutputIndex { get; }
 

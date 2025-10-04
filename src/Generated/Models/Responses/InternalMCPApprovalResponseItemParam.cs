@@ -2,8 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using OpenAI;
 
 namespace OpenAI.Responses
@@ -18,12 +17,14 @@ namespace OpenAI.Responses
             Approve = approve;
         }
 
-        internal InternalMCPApprovalResponseItemParam(InternalItemType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string approvalRequestId, bool approve, string reason) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalMCPApprovalResponseItemParam(InternalItemType kind, in JsonPatch patch, string approvalRequestId, bool approve, string reason) : base(kind, patch)
         {
             ApprovalRequestId = approvalRequestId;
             Approve = approve;
             Reason = reason;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ApprovalRequestId { get; }
 

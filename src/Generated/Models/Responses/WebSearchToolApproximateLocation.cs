@@ -2,8 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -11,17 +10,19 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class WebSearchToolApproximateLocation : WebSearchToolLocation
     {
-        public WebSearchToolApproximateLocation() : this(InternalWebSearchUserLocationKind.Approximate, null, null, null, null, null)
+        public WebSearchToolApproximateLocation() : this(InternalWebSearchUserLocationKind.Approximate, default, null, null, null, null)
         {
         }
 
-        internal WebSearchToolApproximateLocation(InternalWebSearchUserLocationKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string country, string region, string city, string timezone) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal WebSearchToolApproximateLocation(InternalWebSearchUserLocationKind kind, in JsonPatch patch, string country, string region, string city, string timezone) : base(kind, patch)
         {
             Country = country;
             Region = region;
             City = city;
             Timezone = timezone;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Country { get; set; }
 

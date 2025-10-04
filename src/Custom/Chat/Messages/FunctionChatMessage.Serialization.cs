@@ -16,12 +16,22 @@ public partial class FunctionChatMessage : IJsonModel<FunctionChatMessage>
 
     internal override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        if (Patch.Contains("$"u8))
+        {
+            writer.WriteRawValue(Patch.GetJson("$"u8));
+            return;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
         writer.WriteStartObject();
         WriteRoleProperty(writer, options);
         WriteContentProperty(writer, options);
         writer.WritePropertyName("name"u8);
         writer.WriteStringValue(FunctionName);
-        writer.WriteSerializedAdditionalRawData(_additionalBinaryDataProperties, options);
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         writer.WriteEndObject();
     }
 }

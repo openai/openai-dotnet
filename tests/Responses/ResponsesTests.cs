@@ -294,6 +294,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         int inProgressCount = 0;
         int generateCount = 0;
         bool gotCompletedImageGenItem = false;
+        bool gotCompletedResponseItem = false;
 
         await foreach (StreamingResponseUpdate update
             in client.CreateResponseStreamingAsync(message, responseOptions))
@@ -330,9 +331,20 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
                 Assert.That(outputItemCompleteUpdate.OutputIndex, Is.EqualTo(0));
                 gotCompletedImageGenItem = true;
             }
+            else if (update is StreamingResponseOutputItemDoneUpdate outputItemDoneUpdate)
+            {
+                if (outputItemDoneUpdate.Item is ImageGenerationCallResponseItem imageGenCallItem)
+                {
+                    Assert.That(imageGenCallItem.Id, Is.Not.Null.And.Not.Empty);
+                    imageGenItemId ??= imageGenCallItem.Id;
+                    Assert.That(imageGenItemId, Is.EqualTo(outputItemDoneUpdate.Item.Id));
+                    Assert.That(outputItemDoneUpdate.OutputIndex, Is.EqualTo(0));
+                    gotCompletedResponseItem = true;
+                }
+            }
         }
 
-        Assert.That(gotCompletedImageGenItem, Is.True);
+        Assert.That(gotCompletedResponseItem || gotCompletedImageGenItem, Is.True);
         Assert.That(partialCount, Is.EqualTo(1));
         Assert.That(inProgressCount, Is.EqualTo(1));
         Assert.That(generateCount, Is.EqualTo(1));
@@ -416,17 +428,21 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     {
         OpenAIResponseClient client = GetTestClient();
 
-        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
 
         string imageFilename = "images_dog_and_cat.png";
         string imagePath = Path.Combine("Assets", imageFilename);
         using Stream image = File.OpenRead(imagePath);
         BinaryData imageData = BinaryData.FromStream(image);
 
-        OpenAIFile file = await fileClient.UploadFileAsync(
+        OpenAIFile file;
+        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
+        {
+            file = await fileClient.UploadFileAsync(
             imageData,
             imageFilename,
             FileUploadPurpose.UserData);
+        }
         Validate(file);
 
         ResponseCreationOptions options = new()

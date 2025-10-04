@@ -164,7 +164,7 @@ namespace OpenAI.LegacyCompletions
                     {
                         continue;
                     }
-                    usage = ChatTokenUsage.DeserializeChatTokenUsage(prop.Value, options);
+                    usage = ChatTokenUsage.DeserializeChatTokenUsage(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

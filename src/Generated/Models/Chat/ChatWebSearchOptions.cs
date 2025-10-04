@@ -2,8 +2,8 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI.Internal;
 
@@ -12,23 +12,24 @@ namespace OpenAI.Chat
     [Experimental("OPENAI001")]
     public partial class ChatWebSearchOptions
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
         public ChatWebSearchOptions()
         {
         }
 
-        internal ChatWebSearchOptions(InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1 userLocation, InternalWebSearchContextSize? searchContextSize, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal ChatWebSearchOptions(InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1 userLocation, InternalWebSearchContextSize? searchContextSize, in JsonPatch patch)
         {
             UserLocation = userLocation;
             SearchContextSize = searchContextSize;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
     }
 }

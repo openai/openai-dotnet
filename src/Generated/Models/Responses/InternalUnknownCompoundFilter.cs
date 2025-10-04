@@ -3,14 +3,17 @@
 #nullable disable
 
 using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 
 namespace OpenAI.Responses
 {
     internal partial class InternalUnknownCompoundFilter : InternalCompoundFilter
     {
-        internal InternalUnknownCompoundFilter(InternalCompoundFilterType kind, IList<BinaryData> filters, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", filters, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalUnknownCompoundFilter(InternalCompoundFilterType kind, IList<BinaryData> filters, in JsonPatch patch) : base(kind != default ? kind : "unknown", filters, patch)
         {
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

@@ -19,7 +19,7 @@ public partial class CodeInterpreterToolContainerConfiguration
     {
         return new AutomaticCodeInterpreterToolContainerConfiguration(
             kind: InternalCodeInterpreterContainerConfigurationType.Auto,
-            additionalBinaryDataProperties: null,
+            patch: default,
             fileIds: fileIds?.ToList());
     }
 }

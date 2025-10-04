@@ -2,19 +2,20 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 
 namespace OpenAI.Responses
 {
     internal partial class InternalToolChoiceObjectCodeInterpreter : InternalToolChoiceObject
     {
-        public InternalToolChoiceObjectCodeInterpreter() : this(InternalToolChoiceObjectType.CodeInterpreter, null)
+        public InternalToolChoiceObjectCodeInterpreter() : this(InternalToolChoiceObjectType.CodeInterpreter, default)
         {
         }
 
-        internal InternalToolChoiceObjectCodeInterpreter(InternalToolChoiceObjectType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalToolChoiceObjectCodeInterpreter(InternalToolChoiceObjectType kind, in JsonPatch patch) : base(kind, patch)
         {
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

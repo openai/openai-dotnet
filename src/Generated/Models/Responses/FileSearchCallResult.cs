@@ -3,7 +3,9 @@
 #nullable disable
 
 using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -12,13 +14,15 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class FileSearchCallResult
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
-        public FileSearchCallResult() : this(null, null, null, null, default, null)
+        public FileSearchCallResult() : this(null, null, null, null, default, default)
         {
         }
 
-        internal FileSearchCallResult(string fileId, string text, string filename, IDictionary<string, BinaryData> attributes, float? score, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal FileSearchCallResult(string fileId, string text, string filename, IDictionary<string, BinaryData> attributes, float? score, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             FileId = fileId;
@@ -26,8 +30,13 @@ namespace OpenAI.Responses
             Filename = filename;
             Attributes = attributes ?? new ChangeTrackingDictionary<string, BinaryData>();
             Score = score;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         public string FileId { get; set; }
 
@@ -38,11 +47,5 @@ namespace OpenAI.Responses
         public IDictionary<string, BinaryData> Attributes { get; }
 
         public float? Score { get; set; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
     }
 }

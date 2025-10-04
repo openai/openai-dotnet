@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using OpenAI;
 
 namespace OpenAI.Responses
@@ -19,13 +19,15 @@ namespace OpenAI.Responses
             Schema = schema;
         }
 
-        internal InternalResponsesTextFormatJsonSchema(InternalResponsesTextFormatType internalType, IDictionary<string, BinaryData> additionalBinaryDataProperties, string description, string name, BinaryData schema, bool? strict) : base(internalType, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalResponsesTextFormatJsonSchema(InternalResponsesTextFormatType internalType, in JsonPatch patch, string description, string name, BinaryData schema, bool? strict) : base(internalType, patch)
         {
             Description = description;
             Name = name;
             Schema = schema;
             Strict = strict;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Description { get; set; }
 

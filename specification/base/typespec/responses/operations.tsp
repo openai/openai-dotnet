@@ -56,11 +56,7 @@ interface Responses {
     @path
     @example("resp_677efb5139a88190b512bc3fef8e535d")
     response_id: string,
-  ): {
-    id: string;
-    object: "response";
-    deleted: true;
-  } | ResponseErrorResponse;
+  ): DeleteResponseResponse | ResponseErrorResponse;
 
   @post
   @route("{response_id}/cancel")

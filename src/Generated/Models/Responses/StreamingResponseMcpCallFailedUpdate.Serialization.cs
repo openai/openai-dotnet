@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,12 +12,20 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseMcpCallFailedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpCallFailedUpdate>
     {
-        internal StreamingResponseMcpCallFailedUpdate() : this(InternalResponseStreamEventType.ResponseMcpCallFailed, default, null, null, default)
+        internal StreamingResponseMcpCallFailedUpdate() : this(InternalResponseStreamEventType.ResponseMcpCallFailed, default, default, null, default)
         {
         }
 
         void IJsonModel<StreamingResponseMcpCallFailedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -31,16 +39,20 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(StreamingResponseMcpCallFailedUpdate)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("item_id") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.item_id"u8))
             {
                 writer.WritePropertyName("item_id"u8);
                 writer.WriteStringValue(ItemId);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("output_index") != true)
+            if (!Patch.Contains("$.output_index"u8))
             {
                 writer.WritePropertyName("output_index"u8);
                 writer.WriteNumberValue(OutputIndex);
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         StreamingResponseMcpCallFailedUpdate IJsonModel<StreamingResponseMcpCallFailedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StreamingResponseMcpCallFailedUpdate)JsonModelCreateCore(ref reader, options);
@@ -53,10 +65,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(StreamingResponseMcpCallFailedUpdate)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeStreamingResponseMcpCallFailedUpdate(document.RootElement, options);
+            return DeserializeStreamingResponseMcpCallFailedUpdate(document.RootElement, null, options);
         }
 
-        internal static StreamingResponseMcpCallFailedUpdate DeserializeStreamingResponseMcpCallFailedUpdate(JsonElement element, ModelReaderWriterOptions options)
+        internal static StreamingResponseMcpCallFailedUpdate DeserializeStreamingResponseMcpCallFailedUpdate(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -64,7 +76,9 @@ namespace OpenAI.Responses
             }
             InternalResponseStreamEventType kind = default;
             int sequenceNumber = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string itemId = default;
             int outputIndex = default;
             foreach (var prop in element.EnumerateObject())
@@ -89,10 +103,9 @@ namespace OpenAI.Responses
                     outputIndex = prop.Value.GetInt32();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new StreamingResponseMcpCallFailedUpdate(kind, sequenceNumber, additionalBinaryDataProperties, itemId, outputIndex);
+            return new StreamingResponseMcpCallFailedUpdate(kind, sequenceNumber, patch, itemId, outputIndex);
         }
 
         BinaryData IPersistableModel<StreamingResponseMcpCallFailedUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -119,7 +132,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeStreamingResponseMcpCallFailedUpdate(document.RootElement, options);
+                        return DeserializeStreamingResponseMcpCallFailedUpdate(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(StreamingResponseMcpCallFailedUpdate)} does not support reading '{options.Format}' format.");

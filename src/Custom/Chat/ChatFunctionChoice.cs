@@ -1,4 +1,5 @@
 using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 
 namespace OpenAI.Chat;
@@ -35,16 +36,18 @@ public partial class ChatFunctionChoice
     // CUSTOM: Added the function name parameter to the constructor that takes additional data to handle the object representation.
     /// <summary> Initializes a new instance of <see cref="ChatFunctionChoice"/>. </summary>
     /// <param name="functionName"> The function name. </param>
-    /// <param name="serializedAdditionalRawData"> Keeps track of any properties unknown to the library. </param>
-    internal ChatFunctionChoice(string functionName, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    /// <param name="patch"> Keeps track of any properties unknown to the library. </param>
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+    internal ChatFunctionChoice(string functionName, in JsonPatch patch)
     {
         Argument.AssertNotNull(functionName, nameof(functionName));
 
         _function = new(functionName);
         _isPlainString = false;
 
-        _additionalBinaryDataProperties = serializedAdditionalRawData;
+        _patch = patch;
     }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
     /// <summary>
     /// Creates an instance of <see cref="ChatFunctionChoice"/> that specifies the model must call a specific function,
@@ -56,7 +59,7 @@ public partial class ChatFunctionChoice
     {
         Argument.AssertNotNull(functionName, nameof(functionName));
 
-        return new(functionName, serializedAdditionalRawData: null);
+        return new(functionName, patch: default);
     }
 
     /// <summary>

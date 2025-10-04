@@ -21,7 +21,7 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(McpToolCallApprovalPolicy)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeMcpToolCallApprovalPolicy(document.RootElement, options);
+            return DeserializeMcpToolCallApprovalPolicy(document.RootElement, null, options);
         }
 
         BinaryData IPersistableModel<McpToolCallApprovalPolicy>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -48,7 +48,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeMcpToolCallApprovalPolicy(document.RootElement, options);
+                        return DeserializeMcpToolCallApprovalPolicy(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(McpToolCallApprovalPolicy)} does not support reading '{options.Format}' format.");

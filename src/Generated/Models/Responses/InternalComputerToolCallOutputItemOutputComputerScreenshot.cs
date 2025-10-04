@@ -2,22 +2,23 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 
 namespace OpenAI.Responses
 {
     internal partial class InternalComputerToolCallOutputItemOutputComputerScreenshot : ComputerCallOutput
     {
-        public InternalComputerToolCallOutputItemOutputComputerScreenshot() : this(InternalComputerUsePreviewToolCallOutputOutputType.Screenshot, null, null, null)
+        public InternalComputerToolCallOutputItemOutputComputerScreenshot() : this(InternalComputerUsePreviewToolCallOutputOutputType.Screenshot, default, null, null)
         {
         }
 
-        internal InternalComputerToolCallOutputItemOutputComputerScreenshot(InternalComputerUsePreviewToolCallOutputOutputType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string imageUrl, string fileId) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalComputerToolCallOutputItemOutputComputerScreenshot(InternalComputerUsePreviewToolCallOutputOutputType kind, in JsonPatch patch, string imageUrl, string fileId) : base(kind, patch)
         {
             ImageUrl = imageUrl;
             FileId = fileId;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ImageUrl { get; set; }
 

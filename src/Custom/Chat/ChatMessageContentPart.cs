@@ -1,4 +1,5 @@
 using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -42,6 +43,7 @@ public partial class ChatMessageContentPart
     }
 
     // CUSTOM: Added to support deserialization.
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     internal ChatMessageContentPart(
         ChatMessageContentPartKind kind,
         string text = default,
@@ -49,7 +51,7 @@ public partial class ChatMessageContentPart
         string refusal = default,
         InternalChatCompletionRequestMessageContentPartAudioInputAudio inputAudio = default,
         InternalChatCompletionRequestMessageContentPartFileFile fileFile = default,
-        IDictionary<string, BinaryData> serializedAdditionalRawData = default)
+        in JsonPatch patch = default)
     {
         _kind = kind;
         _text = text;
@@ -57,8 +59,9 @@ public partial class ChatMessageContentPart
         _refusal = refusal;
         _inputAudio = inputAudio;
         _fileFile = fileFile;
-        _additionalBinaryDataProperties = serializedAdditionalRawData;
+        _patch = patch;
     }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
     /// <summary> The kind of content part. </summary>
     public ChatMessageContentPartKind Kind => _kind;

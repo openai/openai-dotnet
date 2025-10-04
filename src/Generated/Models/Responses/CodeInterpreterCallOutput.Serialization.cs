@@ -18,6 +18,14 @@ namespace OpenAI.Responses
 
         void IJsonModel<CodeInterpreterCallOutput>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -30,31 +38,13 @@ namespace OpenAI.Responses
             {
                 throw new FormatException($"The model {nameof(CodeInterpreterCallOutput)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.type"u8))
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToString());
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         CodeInterpreterCallOutput IJsonModel<CodeInterpreterCallOutput>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -67,10 +57,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(CodeInterpreterCallOutput)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeCodeInterpreterCallOutput(document.RootElement, options);
+            return DeserializeCodeInterpreterCallOutput(document.RootElement, null, options);
         }
 
-        internal static CodeInterpreterCallOutput DeserializeCodeInterpreterCallOutput(JsonElement element, ModelReaderWriterOptions options)
+        internal static CodeInterpreterCallOutput DeserializeCodeInterpreterCallOutput(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -81,12 +71,12 @@ namespace OpenAI.Responses
                 switch (discriminator.GetString())
                 {
                     case "logs":
-                        return CodeInterpreterCallLogsOutput.DeserializeCodeInterpreterCallLogsOutput(element, options);
+                        return CodeInterpreterCallLogsOutput.DeserializeCodeInterpreterCallLogsOutput(element, data, options);
                     case "image":
-                        return CodeInterpreterCallImageOutput.DeserializeCodeInterpreterCallImageOutput(element, options);
+                        return CodeInterpreterCallImageOutput.DeserializeCodeInterpreterCallImageOutput(element, data, options);
                 }
             }
-            return InternalUnknownCodeInterpreterToolOutput.DeserializeInternalUnknownCodeInterpreterToolOutput(element, options);
+            return InternalUnknownCodeInterpreterToolOutput.DeserializeInternalUnknownCodeInterpreterToolOutput(element, data, options);
         }
 
         BinaryData IPersistableModel<CodeInterpreterCallOutput>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -113,7 +103,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeCodeInterpreterCallOutput(document.RootElement, options);
+                        return DeserializeCodeInterpreterCallOutput(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(CodeInterpreterCallOutput)} does not support reading '{options.Format}' format.");

@@ -2,23 +2,24 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 
 namespace OpenAI.Responses
 {
     internal partial class InternalItemContentInputImage : ResponseContentPart
     {
-        public InternalItemContentInputImage() : this(InternalItemContentType.InputImage, null, null, null, default)
+        public InternalItemContentInputImage() : this(InternalItemContentType.InputImage, default, null, null, default)
         {
         }
 
-        internal InternalItemContentInputImage(InternalItemContentType internalType, IDictionary<string, BinaryData> additionalBinaryDataProperties, string imageUrl, string fileId, ResponseImageDetailLevel? detail) : base(internalType, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalItemContentInputImage(InternalItemContentType internalType, in JsonPatch patch, string imageUrl, string fileId, ResponseImageDetailLevel? detail) : base(internalType, patch)
         {
             ImageUrl = imageUrl;
             FileId = fileId;
             Detail = detail;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ImageUrl { get; set; }
 
