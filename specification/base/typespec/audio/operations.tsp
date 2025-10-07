@@ -3,7 +3,6 @@ import "@typespec/openapi";
 
 import "../common";
 import "./models.tsp";
-import "../../../client/models/audio.models.tsp";
 
 using TypeSpec.Http;
 using TypeSpec.OpenAPI;
