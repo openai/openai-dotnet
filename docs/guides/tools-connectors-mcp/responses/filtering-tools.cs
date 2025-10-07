@@ -19,7 +19,7 @@ options.Tools.Add(ResponseTool.CreateMcpTool(
     toolCallApprovalPolicy: new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
 ));
 
-OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
+OpenAIResponse response = client.CreateResponse([
     ResponseItem.CreateUserMessageItem([
         ResponseContentPart.CreateInputTextPart("Roll 2d4+1")
     ])

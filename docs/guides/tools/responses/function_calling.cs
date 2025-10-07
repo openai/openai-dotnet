@@ -34,7 +34,7 @@ options.Tools.Add(ResponseTool.CreateFunctionTool(
     )
 );
 
-OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
+OpenAIResponse response = client.CreateResponse([
     ResponseItem.CreateUserMessageItem([
         ResponseContentPart.CreateInputTextPart("What is the weather like in Paris today?")
     ])

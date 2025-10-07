@@ -14,7 +14,7 @@ OpenAIResponseClient client = new(model: "gpt-5", apiKey: key);
 ResponseCreationOptions options = new();
 options.Tools.Add(ResponseTool.CreateWebSearchTool());
 
-OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
+OpenAIResponse response = client.CreateResponse([
     ResponseItem.CreateUserMessageItem([
         ResponseContentPart.CreateInputTextPart("What was a positive news story from today?")
     ])

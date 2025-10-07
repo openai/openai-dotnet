@@ -17,7 +17,7 @@ using Stream stream = await http.GetStreamAsync("https://www.berkshirehathaway.c
 OpenAIFileClient files = new(key);
 OpenAIFile file = files.UploadFile(stream, "2024ltr.pdf", FileUploadPurpose.UserData);
 
-OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
+OpenAIResponse response = client.CreateResponse([
     ResponseItem.CreateUserMessageItem([
         ResponseContentPart.CreateInputTextPart("Analyze the letter and provide a summary of the key points."),
         ResponseContentPart.CreateInputFilePart(file.Id)

@@ -13,7 +13,7 @@ OpenAIResponseClient client = new(model: "gpt-5", apiKey: key);
 
 Uri imageUrl = new("https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg");
 
-OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
+OpenAIResponse response = client.CreateResponse([
     ResponseItem.CreateUserMessageItem([
         ResponseContentPart.CreateInputTextPart("What is in this image?"),
         ResponseContentPart.CreateInputImagePart(imageUrl)
