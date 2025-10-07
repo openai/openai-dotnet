@@ -164,23 +164,6 @@ namespace OpenAI
             return new StreamingAudioTranscriptionTextDoneUpdate(StreamingAudioTranscriptionUpdateKind.TranscriptTextDone, additionalBinaryDataProperties: null, text, transcriptionTokenLogProbabilities.ToList());
         }
 
-        public static AudioTranscription AudioTranscription(string task = default, string language = default, TimeSpan? duration = default, string text = default, IEnumerable<TranscribedWord> words = default, IEnumerable<TranscribedSegment> segments = default, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default)
-        {
-            words ??= new ChangeTrackingList<TranscribedWord>();
-            segments ??= new ChangeTrackingList<TranscribedSegment>();
-            transcriptionTokenLogProbabilities ??= new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
-
-            return new AudioTranscription(
-                task,
-                language,
-                duration,
-                text,
-                words.ToList(),
-                segments.ToList(),
-                transcriptionTokenLogProbabilities.ToList(),
-                additionalBinaryDataProperties: null);
-        }
-
         public static AudioTranslation AudioTranslation(string task = default, string language = default, TimeSpan? duration = default, string text = default, IEnumerable<TranscribedSegment> segments = default)
         {
             segments ??= new ChangeTrackingList<TranscribedSegment>();
@@ -1256,6 +1239,23 @@ namespace OpenAI
         public static ItemRetrievedUpdate ItemRetrievedUpdate(string eventId = default, RealtimeItem item = default)
         {
             return new ItemRetrievedUpdate(RealtimeUpdateKind.ItemRetrieved, eventId, additionalBinaryDataProperties: null, item);
+        }
+
+        public static AudioTranscription AudioTranscription(string task = default, string language = default, TimeSpan? duration = default, string text = default, IEnumerable<TranscribedWord> words = default, IEnumerable<TranscribedSegment> segments = default, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default)
+        {
+            words ??= new ChangeTrackingList<TranscribedWord>();
+            segments ??= new ChangeTrackingList<TranscribedSegment>();
+            transcriptionTokenLogProbabilities ??= new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
+
+            return new AudioTranscription(
+                task,
+                language,
+                duration,
+                text,
+                words.ToList(),
+                segments.ToList(),
+                transcriptionTokenLogProbabilities.ToList(),
+                additionalBinaryDataProperties: null);
         }
 
         public static ChatFunctionChoice ChatFunctionChoice(string predefinedFunctionChoice = default)

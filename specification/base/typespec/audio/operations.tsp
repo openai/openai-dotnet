@@ -41,12 +41,6 @@ interface Audio {
     | CreateTranscriptionResponseVerboseJson
     | CreateTranscriptionResponseJson
     | SseResponseOf<CreateTranscriptionResponseStreamEvent>
-    | {
-        // TODO: This response is not defined in the OpenAPI spec.
-        @header contentType: "text/plain";
-
-        @body responseBody: string;
-      }
     | ErrorResponse;
 
   @route("translations")
