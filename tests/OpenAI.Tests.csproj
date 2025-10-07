@@ -6,7 +6,7 @@
     <NoWarn>$(NoWarn);CS1591</NoWarn>
 
    <!-- OPENAI001 - Ignore experimental warnings-->
-    <NoWarn>$(NoWarn);OPENAI001;</NoWarn>
+    <NoWarn>$(NoWarn);OPENAI001;SCME0001;</NoWarn>
 
     <LangVersion>latest</LangVersion>
   </PropertyGroup>

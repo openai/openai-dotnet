@@ -21,7 +21,7 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(CodeInterpreterToolContainer)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeCodeInterpreterToolContainer(document.RootElement, options);
+            return DeserializeCodeInterpreterToolContainer(document.RootElement, null, options);
         }
 
         BinaryData IPersistableModel<CodeInterpreterToolContainer>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -48,7 +48,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeCodeInterpreterToolContainer(document.RootElement, options);
+                        return DeserializeCodeInterpreterToolContainer(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(CodeInterpreterToolContainer)} does not support reading '{options.Format}' format.");

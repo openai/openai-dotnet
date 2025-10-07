@@ -179,19 +179,19 @@ namespace OpenAI
 
         public static ChatOutputAudio ChatOutputAudio(string id = default, DateTimeOffset expiresAt = default, BinaryData audioBytes = default, string transcript = default)
         {
-            return new ChatOutputAudio(id, expiresAt, audioBytes, transcript, additionalBinaryDataProperties: null);
+            return new ChatOutputAudio(id, expiresAt, audioBytes, transcript, default);
         }
 
         public static ChatTokenLogProbabilityDetails ChatTokenLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte>? utf8Bytes = default, IEnumerable<ChatTokenTopLogProbabilityDetails> topLogProbabilities = default)
         {
             topLogProbabilities ??= new ChangeTrackingList<ChatTokenTopLogProbabilityDetails>();
 
-            return new ChatTokenLogProbabilityDetails(token, logProbability, utf8Bytes, topLogProbabilities.ToList(), additionalBinaryDataProperties: null);
+            return new ChatTokenLogProbabilityDetails(token, logProbability, utf8Bytes, topLogProbabilities.ToList(), default);
         }
 
         public static ChatTokenTopLogProbabilityDetails ChatTokenTopLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte>? utf8Bytes = default)
         {
-            return new ChatTokenTopLogProbabilityDetails(token, logProbability, utf8Bytes, additionalBinaryDataProperties: null);
+            return new ChatTokenTopLogProbabilityDetails(token, logProbability, utf8Bytes, default);
         }
 
         public static ChatTokenUsage ChatTokenUsage(int outputTokenCount = default, int inputTokenCount = default, int totalTokenCount = default, ChatOutputTokenUsageDetails outputTokenDetails = default, ChatInputTokenUsageDetails inputTokenDetails = default)
@@ -202,42 +202,42 @@ namespace OpenAI
                 totalTokenCount,
                 outputTokenDetails,
                 inputTokenDetails,
-                additionalBinaryDataProperties: null);
+                default);
         }
 
         public static ChatOutputTokenUsageDetails ChatOutputTokenUsageDetails(int acceptedPredictionTokenCount = default, int audioTokenCount = default, int reasoningTokenCount = default, int rejectedPredictionTokenCount = default)
         {
-            return new ChatOutputTokenUsageDetails(acceptedPredictionTokenCount, audioTokenCount, reasoningTokenCount, rejectedPredictionTokenCount, additionalBinaryDataProperties: null);
+            return new ChatOutputTokenUsageDetails(acceptedPredictionTokenCount, audioTokenCount, reasoningTokenCount, rejectedPredictionTokenCount, default);
         }
 
         public static ChatInputTokenUsageDetails ChatInputTokenUsageDetails(int audioTokenCount = default, int cachedTokenCount = default)
         {
-            return new ChatInputTokenUsageDetails(audioTokenCount, cachedTokenCount, additionalBinaryDataProperties: null);
+            return new ChatInputTokenUsageDetails(audioTokenCount, cachedTokenCount, default);
         }
 
         public static ChatMessage ChatMessage(string role = default, ChatMessageContent content = default)
         {
-            return new InternalUnknownChatMessage(role.ToChatMessageRole(), content, additionalBinaryDataProperties: null);
+            return new InternalUnknownChatMessage(role.ToChatMessageRole(), content, default);
         }
 
         public static ChatMessageContentPart ChatMessageContentPart()
         {
-            return new InternalUnknownChatCompletionRequestMessageContentPart(additionalBinaryDataProperties: null);
+            return new InternalUnknownChatCompletionRequestMessageContentPart(default);
         }
 
         public static SystemChatMessage SystemChatMessage(ChatMessageContent content = default, string participantName = default)
         {
-            return new SystemChatMessage(default, content, additionalBinaryDataProperties: null, participantName);
+            return new SystemChatMessage(default, content, default, participantName);
         }
 
         public static DeveloperChatMessage DeveloperChatMessage(ChatMessageContent content = default, string participantName = default)
         {
-            return new DeveloperChatMessage(default, content, additionalBinaryDataProperties: null, participantName);
+            return new DeveloperChatMessage(default, content, default, participantName);
         }
 
         public static UserChatMessage UserChatMessage(ChatMessageContent content = default, string participantName = default)
         {
-            return new UserChatMessage(default, content, additionalBinaryDataProperties: null, participantName);
+            return new UserChatMessage(default, content, default, participantName);
         }
 
         public static AssistantChatMessage AssistantChatMessage(ChatMessageContent content = default, string refusal = default, string participantName = default, ChatOutputAudioReference outputAudioReference = default, IEnumerable<ChatToolCall> toolCalls = default, ChatFunctionCall functionCall = default)
@@ -247,7 +247,7 @@ namespace OpenAI
             return new AssistantChatMessage(
                 default,
                 content,
-                additionalBinaryDataProperties: null,
+                default,
                 refusal,
                 participantName,
                 outputAudioReference,
@@ -257,47 +257,47 @@ namespace OpenAI
 
         public static ChatOutputAudioReference ChatOutputAudioReference(string id = default)
         {
-            return new ChatOutputAudioReference(id, additionalBinaryDataProperties: null);
+            return new ChatOutputAudioReference(id, default);
         }
 
         public static ChatFunctionCall ChatFunctionCall(string functionName = default, BinaryData functionArguments = default)
         {
-            return new ChatFunctionCall(functionName, functionArguments, additionalBinaryDataProperties: null);
+            return new ChatFunctionCall(functionName, functionArguments, default);
         }
 
         public static ToolChatMessage ToolChatMessage(ChatMessageContent content = default, string toolCallId = default)
         {
-            return new ToolChatMessage(default, content, additionalBinaryDataProperties: null, toolCallId);
+            return new ToolChatMessage(default, content, default, toolCallId);
         }
 
         public static FunctionChatMessage FunctionChatMessage(ChatMessageContent content = default, string functionName = default)
         {
-            return new FunctionChatMessage(default, content, additionalBinaryDataProperties: null, functionName);
+            return new FunctionChatMessage(default, content, default, functionName);
         }
 
         public static ChatAudioOptions ChatAudioOptions(ChatOutputAudioVoice outputAudioVoice = default, ChatOutputAudioFormat outputAudioFormat = default)
         {
-            return new ChatAudioOptions(outputAudioVoice, outputAudioFormat, additionalBinaryDataProperties: null);
+            return new ChatAudioOptions(outputAudioVoice, outputAudioFormat, default);
         }
 
         public static ChatFunction ChatFunction(string functionDescription = default, string functionName = default, BinaryData functionParameters = default)
         {
-            return new ChatFunction(functionDescription, functionName, functionParameters, additionalBinaryDataProperties: null);
+            return new ChatFunction(functionDescription, functionName, functionParameters, default);
         }
 
         public static StreamingChatOutputAudioUpdate StreamingChatOutputAudioUpdate(string id = default, string transcriptUpdate = default, BinaryData audioBytesUpdate = default, DateTimeOffset? expiresAt = default)
         {
-            return new StreamingChatOutputAudioUpdate(id, transcriptUpdate, audioBytesUpdate, expiresAt, additionalBinaryDataProperties: null);
+            return new StreamingChatOutputAudioUpdate(id, transcriptUpdate, audioBytesUpdate, expiresAt, default);
         }
 
         public static StreamingChatFunctionCallUpdate StreamingChatFunctionCallUpdate(string functionName = default, BinaryData functionArgumentsUpdate = default)
         {
-            return new StreamingChatFunctionCallUpdate(functionName, functionArgumentsUpdate, additionalBinaryDataProperties: null);
+            return new StreamingChatFunctionCallUpdate(functionName, functionArgumentsUpdate, default);
         }
 
         public static ChatCompletionDeletionResult ChatCompletionDeletionResult(string @object = default, string chatCompletionId = default, bool deleted = default)
         {
-            return new ChatCompletionDeletionResult(@object, chatCompletionId, deleted, additionalBinaryDataProperties: null);
+            return new ChatCompletionDeletionResult(@object, chatCompletionId, deleted, default);
         }
 
         public static ContainerResource ContainerResource(string id = default, string @object = default, string name = default, DateTimeOffset createdAt = default, string status = default, ContainerResourceExpiresAfter expiresAfter = default)
@@ -361,17 +361,17 @@ namespace OpenAI
         {
             data ??= new ChangeTrackingList<OpenAIEmbedding>();
 
-            return new OpenAIEmbeddingCollection(data.ToList(), model, @object, usage, serializedAdditionalRawData: null);
+            return new OpenAIEmbeddingCollection(data.ToList(), model, @object, usage, default);
         }
 
         public static OpenAIEmbedding OpenAIEmbedding(int index = default, BinaryData embeddingProperty = default, string @object = default)
         {
-            return new OpenAIEmbedding(index, embeddingProperty, @object, serializedAdditionalRawData: null);
+            return new OpenAIEmbedding(index, embeddingProperty, @object, default);
         }
 
         public static EmbeddingTokenUsage EmbeddingTokenUsage(int inputTokenCount = default, int totalTokenCount = default)
         {
-            return new EmbeddingTokenUsage(inputTokenCount, totalTokenCount, additionalBinaryDataProperties: null);
+            return new EmbeddingTokenUsage(inputTokenCount, totalTokenCount, default);
         }
 
         public static OpenAIFileCollection OpenAIFileCollection(IEnumerable<OpenAIFile> data = default, string @object = default, string firstId = default, string lastId = default, bool hasMore = default)
@@ -558,41 +558,41 @@ namespace OpenAI
 
         public static FileSearchToolRankingOptions FileSearchToolRankingOptions(FileSearchToolRanker? ranker = default, float? scoreThreshold = default)
         {
-            return new FileSearchToolRankingOptions(ranker, scoreThreshold, additionalBinaryDataProperties: null);
+            return new FileSearchToolRankingOptions(ranker, scoreThreshold, default);
         }
 
         public static ImageGenerationToolInputImageMask ImageGenerationToolInputImageMask(string imageUrl = default, string fileId = default)
         {
-            return new ImageGenerationToolInputImageMask(imageUrl, fileId, additionalBinaryDataProperties: null);
+            return new ImageGenerationToolInputImageMask(imageUrl, fileId, default);
         }
 
         public static McpToolFilter McpToolFilter(IEnumerable<string> toolNames = default, bool? isReadOnly = default)
         {
             toolNames ??= new ChangeTrackingList<string>();
 
-            return new McpToolFilter(toolNames.ToList(), isReadOnly, additionalBinaryDataProperties: null);
+            return new McpToolFilter(toolNames.ToList(), isReadOnly, default);
         }
 
         public static ResponseTextOptions ResponseTextOptions(ResponseTextFormat textFormat = default)
         {
-            return new ResponseTextOptions(textFormat, additionalBinaryDataProperties: null);
+            return new ResponseTextOptions(textFormat, default);
         }
 
         public static ResponseMessageAnnotation ResponseMessageAnnotation(string kind = default)
         {
-            return new InternalUnknownAnnotation(kind.ToResponseMessageAnnotationKind(), additionalBinaryDataProperties: null);
+            return new InternalUnknownAnnotation(kind.ToResponseMessageAnnotationKind(), default);
         }
 
         public static FileCitationMessageAnnotation FileCitationMessageAnnotation(string fileId = default, int index = default)
         {
-            return new FileCitationMessageAnnotation(ResponseMessageAnnotationKind.FileCitation, additionalBinaryDataProperties: null, fileId, index);
+            return new FileCitationMessageAnnotation(ResponseMessageAnnotationKind.FileCitation, default, fileId, index);
         }
 
         public static UriCitationMessageAnnotation UriCitationMessageAnnotation(Uri uri = default, int startIndex = default, int endIndex = default, string title = default)
         {
             return new UriCitationMessageAnnotation(
                 ResponseMessageAnnotationKind.UriCitation,
-                additionalBinaryDataProperties: null,
+                default,
                 uri,
                 startIndex,
                 endIndex,
@@ -601,7 +601,7 @@ namespace OpenAI
 
         public static FilePathMessageAnnotation FilePathMessageAnnotation(string fileId = default, int index = default)
         {
-            return new FilePathMessageAnnotation(ResponseMessageAnnotationKind.FilePath, additionalBinaryDataProperties: null, fileId, index);
+            return new FilePathMessageAnnotation(ResponseMessageAnnotationKind.FilePath, default, fileId, index);
         }
 
         public static FileSearchCallResult FileSearchCallResult(string fileId = default, string text = default, string filename = default, IDictionary<string, BinaryData> attributes = default, float? score = default)
@@ -614,22 +614,22 @@ namespace OpenAI
                 filename,
                 attributes,
                 score,
-                additionalBinaryDataProperties: null);
+                default);
         }
 
         public static ComputerCallAction ComputerCallAction(string kind = default)
         {
-            return new InternalUnknownComputerAction(kind.ToComputerCallActionKind(), additionalBinaryDataProperties: null);
+            return new InternalUnknownComputerAction(kind.ToComputerCallActionKind(), default);
         }
 
         public static ComputerCallSafetyCheck ComputerCallSafetyCheck(string id = default, string code = default, string message = default)
         {
-            return new ComputerCallSafetyCheck(id, code, message, additionalBinaryDataProperties: null);
+            return new ComputerCallSafetyCheck(id, code, message, default);
         }
 
         public static McpToolDefinition McpToolDefinition(string name = default, string description = default, BinaryData inputSchema = default, BinaryData annotations = default)
         {
-            return new McpToolDefinition(name, description, inputSchema, annotations, additionalBinaryDataProperties: null);
+            return new McpToolDefinition(name, description, inputSchema, annotations, default);
         }
 
         public static OpenAIResponse OpenAIResponse(IDictionary<string, string> metadata = default, float? temperature = default, float? topP = default, string endUserId = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? backgroundModeEnabled = default, int? maxOutputTokenCount = default, string instructions = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, string id = default, string @object = default, ResponseStatus? status = default, DateTimeOffset createdAt = default, ResponseError error = default, ResponseIncompleteStatusDetails incompleteStatusDetails = default, IEnumerable<ResponseItem> outputItems = default, ResponseTokenUsage usage = default, bool parallelToolCallsEnabled = default)
@@ -663,17 +663,17 @@ namespace OpenAI
                 outputItems.ToList(),
                 usage,
                 parallelToolCallsEnabled,
-                additionalBinaryDataProperties: null);
+                default);
         }
 
         public static ResponseError ResponseError(ResponseErrorCode code = default, string message = default)
         {
-            return new ResponseError(code, message, additionalBinaryDataProperties: null);
+            return new ResponseError(code, message, default);
         }
 
         public static ResponseIncompleteStatusDetails ResponseIncompleteStatusDetails(ResponseIncompleteStatusReason? reason = default)
         {
-            return new ResponseIncompleteStatusDetails(reason, additionalBinaryDataProperties: null);
+            return new ResponseIncompleteStatusDetails(reason, default);
         }
 
         public static ResponseTokenUsage ResponseTokenUsage(int inputTokenCount = default, ResponseInputTokenUsageDetails inputTokenDetails = default, int outputTokenCount = default, ResponseOutputTokenUsageDetails outputTokenDetails = default, int totalTokenCount = default)
@@ -684,22 +684,22 @@ namespace OpenAI
                 outputTokenCount,
                 outputTokenDetails,
                 totalTokenCount,
-                additionalBinaryDataProperties: null);
+                default);
         }
 
         public static ResponseInputTokenUsageDetails ResponseInputTokenUsageDetails(int cachedTokenCount = default)
         {
-            return new ResponseInputTokenUsageDetails(cachedTokenCount, additionalBinaryDataProperties: null);
+            return new ResponseInputTokenUsageDetails(cachedTokenCount, default);
         }
 
         public static ResponseOutputTokenUsageDetails ResponseOutputTokenUsageDetails(int reasoningTokenCount = default)
         {
-            return new ResponseOutputTokenUsageDetails(reasoningTokenCount, additionalBinaryDataProperties: null);
+            return new ResponseOutputTokenUsageDetails(reasoningTokenCount, default);
         }
 
         public static ResponseDeletionResult ResponseDeletionResult(string id = default, string @object = default, bool deleted = default)
         {
-            return new ResponseDeletionResult(id, @object, deleted, additionalBinaryDataProperties: null);
+            return new ResponseDeletionResult(id, @object, deleted, default);
         }
 
         public static ImageGenerationOptions ImageGenerationOptions(string prompt = default, InternalCreateImageRequestModel? model = default, long? n = default, GeneratedImageQuality? quality = default, GeneratedImageFormat? responseFormat = default, GeneratedImageFileFormat? outputFileFormat = default, int? outputCompressionFactor = default, GeneratedImageSize? size = default, GeneratedImageModerationLevel? moderationLevel = default, GeneratedImageBackground? background = default, GeneratedImageStyle? style = default, string endUserId = default)
@@ -1241,31 +1241,14 @@ namespace OpenAI
             return new ItemRetrievedUpdate(RealtimeUpdateKind.ItemRetrieved, eventId, additionalBinaryDataProperties: null, item);
         }
 
-        public static AudioTranscription AudioTranscription(string task = default, string language = default, TimeSpan? duration = default, string text = default, IEnumerable<TranscribedWord> words = default, IEnumerable<TranscribedSegment> segments = default, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default)
+        public static ChatFunctionChoice ChatFunctionChoice()
         {
-            words ??= new ChangeTrackingList<TranscribedWord>();
-            segments ??= new ChangeTrackingList<TranscribedSegment>();
-            transcriptionTokenLogProbabilities ??= new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
-
-            return new AudioTranscription(
-                task,
-                language,
-                duration,
-                text,
-                words.ToList(),
-                segments.ToList(),
-                transcriptionTokenLogProbabilities.ToList(),
-                additionalBinaryDataProperties: null);
-        }
-
-        public static ChatFunctionChoice ChatFunctionChoice(string predefinedFunctionChoice = default)
-        {
-            return new ChatFunctionChoice(predefinedFunctionChoice);
+            return new ChatFunctionChoice(default);
         }
 
         public static ChatToolChoice ChatToolChoice()
         {
-            return new ChatToolChoice(additionalBinaryDataProperties: null);
+            return new ChatToolChoice(default);
         }
 
         public static AssistantCollectionOptions AssistantCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, AssistantCollectionOrder? order = default)
@@ -1288,6 +1271,23 @@ namespace OpenAI
             return new RunStepCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
         }
 
+        public static AudioTranscription AudioTranscription(string task = default, string language = default, TimeSpan? duration = default, string text = default, IEnumerable<TranscribedWord> words = default, IEnumerable<TranscribedSegment> segments = default, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default)
+        {
+            words ??= new ChangeTrackingList<TranscribedWord>();
+            segments ??= new ChangeTrackingList<TranscribedSegment>();
+            transcriptionTokenLogProbabilities ??= new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
+
+            return new AudioTranscription(
+                task,
+                language,
+                duration,
+                text,
+                words.ToList(),
+                segments.ToList(),
+                transcriptionTokenLogProbabilities.ToList(),
+                additionalBinaryDataProperties: null);
+        }
+
         public static ChatCompletionCollectionOptions ChatCompletionCollectionOptions(string afterId = default, int? pageSizeLimit = default, ChatCompletionCollectionOrder? order = default, IDictionary<string, string> metadata = default, string model = default)
         {
             metadata ??= new ChangeTrackingDictionary<string, string>();
@@ -1298,12 +1298,12 @@ namespace OpenAI
                 order,
                 metadata,
                 model,
-                additionalBinaryDataProperties: null);
+                default);
         }
 
         public static ChatCompletionMessageCollectionOptions ChatCompletionMessageCollectionOptions(string afterId = default, int? pageSizeLimit = default, ChatCompletionMessageCollectionOrder? order = default)
         {
-            return new ChatCompletionMessageCollectionOptions(afterId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+            return new ChatCompletionMessageCollectionOptions(afterId, pageSizeLimit, order, default);
         }
 
         public static ContainerCollectionOptions ContainerCollectionOptions(string afterId = default, int? pageSizeLimit = default, ContainerCollectionOrder? order = default)
@@ -1323,22 +1323,22 @@ namespace OpenAI
 
         public static ResponseItemCollectionOptions ResponseItemCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, ResponseItemCollectionOrder? order = default)
         {
-            return new ResponseItemCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+            return new ResponseItemCollectionOptions(afterId, beforeId, pageSizeLimit, order, default);
         }
 
         public static CustomMcpToolCallApprovalPolicy CustomMcpToolCallApprovalPolicy(McpToolFilter toolsAlwaysRequiringApproval = default, McpToolFilter toolsNeverRequiringApproval = default)
         {
-            return new CustomMcpToolCallApprovalPolicy(toolsAlwaysRequiringApproval, toolsNeverRequiringApproval, additionalBinaryDataProperties: null);
+            return new CustomMcpToolCallApprovalPolicy(toolsAlwaysRequiringApproval, toolsNeverRequiringApproval, default);
         }
 
         public static McpToolCallApprovalPolicy McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy? globalPolicy = default, CustomMcpToolCallApprovalPolicy customPolicy = default)
         {
-            return new McpToolCallApprovalPolicy(globalPolicy, customPolicy, additionalBinaryDataProperties: null);
+            return new McpToolCallApprovalPolicy(globalPolicy, customPolicy, default);
         }
 
         public static CodeInterpreterToolContainer CodeInterpreterToolContainer(string containerId = default, CodeInterpreterToolContainerConfiguration containerConfiguration = default)
         {
-            return new CodeInterpreterToolContainer(containerId, containerConfiguration, additionalBinaryDataProperties: null);
+            return new CodeInterpreterToolContainer(containerId, containerConfiguration, default);
         }
 
         public static VectorStoreCollectionOptions VectorStoreCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, VectorStoreCollectionOrder? order = default)

@@ -2,6 +2,7 @@ using OpenAI.Files;
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 
 namespace OpenAI.Chat;
@@ -14,6 +15,14 @@ public partial class ChatMessageContentPart : IJsonModel<ChatMessageContentPart>
 
     internal static void WriteCoreContentPart(ChatMessageContentPart instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        if (instance.Patch.Contains("$"u8))
+        {
+            writer.WriteRawValue(instance.Patch.GetJson("$"u8));
+            return;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
         writer.WriteStartObject();
         writer.WritePropertyName("type"u8);
         writer.WriteStringValue(instance._kind.ToSerialString());
@@ -43,11 +52,13 @@ public partial class ChatMessageContentPart : IJsonModel<ChatMessageContentPart>
             writer.WritePropertyName("file"u8);
             writer.WriteObjectValue(instance._fileFile, options);
         }
-        writer.WriteSerializedAdditionalRawData(instance._additionalBinaryDataProperties, options);
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        instance.Patch.WriteTo(writer);
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         writer.WriteEndObject();
     }
 
-    internal static ChatMessageContentPart DeserializeChatMessageContentPart(JsonElement element, ModelReaderWriterOptions options = null)
+    internal static ChatMessageContentPart DeserializeChatMessageContentPart(JsonElement element, BinaryData data, ModelReaderWriterOptions options = null)
     {
         options ??= ModelSerializationExtensions.WireOptions;
 
@@ -62,8 +73,9 @@ public partial class ChatMessageContentPart : IJsonModel<ChatMessageContentPart>
         InternalChatCompletionRequestMessageContentPartImageImageUrl imageUri = default;
         InternalChatCompletionRequestMessageContentPartAudioInputAudio inputAudio = default;
         InternalChatCompletionRequestMessageContentPartFileFile fileFile = default;
-        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         foreach (var property in element.EnumerateObject())
         {
             if (property.NameEquals("type"u8))
@@ -78,7 +90,7 @@ public partial class ChatMessageContentPart : IJsonModel<ChatMessageContentPart>
             }
             if (property.NameEquals("image_url"u8))
             {
-                imageUri = InternalChatCompletionRequestMessageContentPartImageImageUrl.DeserializeInternalChatCompletionRequestMessageContentPartImageImageUrl(property.Value, options);
+                imageUri = InternalChatCompletionRequestMessageContentPartImageImageUrl.DeserializeInternalChatCompletionRequestMessageContentPartImageImageUrl(property.Value, property.Value.GetUtf8Bytes(), options);
                 continue;
             }
             if (property.NameEquals("refusal"u8))
@@ -89,21 +101,20 @@ public partial class ChatMessageContentPart : IJsonModel<ChatMessageContentPart>
             if (property.NameEquals("input_audio"u8))
             {
                 inputAudio = InternalChatCompletionRequestMessageContentPartAudioInputAudio
-                    .DeserializeInternalChatCompletionRequestMessageContentPartAudioInputAudio(property.Value, options);
+                    .DeserializeInternalChatCompletionRequestMessageContentPartAudioInputAudio(property.Value, property.Value.GetUtf8Bytes(), options);
                 continue;
             }
             if (property.NameEquals("file"u8))
             {
                 fileFile = InternalChatCompletionRequestMessageContentPartFileFile
-                    .DeserializeInternalChatCompletionRequestMessageContentPartFileFile(property.Value, options);
+                    .DeserializeInternalChatCompletionRequestMessageContentPartFileFile(property.Value, property.Value.GetUtf8Bytes(), options);
                 continue;
             }
             if (true)
             {
-                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(property.Name)], property.Value.GetUtf8Bytes());
             }
         }
-        serializedAdditionalRawData = rawDataDictionary;
-        return new ChatMessageContentPart(kind, text, imageUri, refusal, inputAudio, fileFile, serializedAdditionalRawData);
+        return new ChatMessageContentPart(kind, text, imageUri, refusal, inputAudio, fileFile, patch);
     }
 }

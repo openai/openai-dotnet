@@ -27,7 +27,7 @@ internal partial class InternalChatCompletionRequestMessageContentPartFileFile
     private string _internalFileData;
 
     public InternalChatCompletionRequestMessageContentPartFileFile(BinaryData fileBytes, string fileBytesMediaType, string filename)
-        : this(filename: filename, null, null, null)
+        : this(filename: filename, null, null, default)
     {
         Argument.AssertNotNull(fileBytes, nameof(fileBytes));
         Argument.AssertNotNull(fileBytesMediaType, nameof(fileBytesMediaType));

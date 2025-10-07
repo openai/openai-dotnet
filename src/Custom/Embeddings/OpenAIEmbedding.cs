@@ -2,6 +2,7 @@ using System;
 using System.Buffers;
 using System.Buffers.Binary;
 using System.Buffers.Text;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text.Json;
@@ -73,17 +74,19 @@ public partial class OpenAIEmbedding
     /// listed in the [embedding guide](/docs/guides/embeddings).
     /// </param>
     /// <param name="object"> The object type, which is always "embedding". </param>
-    /// <param name="serializedAdditionalRawData"> Keeps track of any properties unknown to the library. </param>
-    internal OpenAIEmbedding(int index, BinaryData embeddingProperty, string @object, IDictionary<string, BinaryData> serializedAdditionalRawData)
+    /// <param name="patch"> Keeps track of any properties unknown to the library. </param>
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+    internal OpenAIEmbedding(int index, BinaryData embeddingProperty, string @object, in JsonPatch patch)
     {
         Index = index;
         EmbeddingProperty = embeddingProperty;
         Object = @object;
-        _additionalBinaryDataProperties = serializedAdditionalRawData;
+        _patch = patch;
 
         // Handle additional custom properties.
         _vector = ConvertToVectorOfFloats(embeddingProperty);
     }
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
     // CUSTOM: Entirely custom constructor used by the Model Factory.
     /// <summary> Initializes a new instance of <see cref="OpenAIEmbedding"/>. </summary>
