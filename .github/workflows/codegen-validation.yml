@@ -43,6 +43,13 @@ jobs:
           }
           
           Write-Host "Code generation completed successfully!"
+      
+      - name: Run codegen visitor tests
+        run: dotnet test codegen/generator/test/
+          --configuration Release
+          --logger "trx;LogFilePrefix=codegen"
+          --results-directory ${{github.workspace}}/artifacts/test-results
+          ${{ env.version_suffix_args}}
           
       - name: Check for uncommitted changes
         run: |
@@ -65,3 +72,10 @@ jobs:
           fi
           
           echo "No uncommitted changes detected - code generation is up to date!"
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: build-artifacts
+          path: ${{github.workspace}}/artifacts

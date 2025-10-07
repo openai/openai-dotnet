@@ -43,15 +43,8 @@ jobs:
           --logger "trx;LogFilePrefix=smoke"
           --results-directory ${{github.workspace}}/artifacts/test-results
           ${{ env.version_suffix_args}}
-      
-      - name: Run codegen visitor tests
-        run: dotnet test codegen/generator/test/
-          --configuration Release
-          --logger "trx;LogFilePrefix=codegen"
-          --results-directory ${{github.workspace}}/artifacts/test-results
-          ${{ env.version_suffix_args}}
 
-      - name: Upload artifacts
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
