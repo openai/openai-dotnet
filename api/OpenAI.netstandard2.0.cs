@@ -1051,6 +1051,7 @@ namespace OpenAI.Audio {
         public IReadOnlyList<TranscribedWord> Words { get; }
         protected virtual AudioTranscription JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public static explicit operator AudioTranscription(ClientResult result);
         protected virtual AudioTranscription PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }

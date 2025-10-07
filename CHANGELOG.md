@@ -2,13 +2,21 @@
 
 ## 2.6.0-beta.1 (Unreleased)
 
+### Acknowledgments
+
+Thank you to our developer community members who helped to make the OpenAI client library better with their contributions to this release:
+
+- Maksim Kurnakov _([GitHub](https://github.com/kurnakovv))_
+- Benjamin Pinter _([GitHub](https://github.com/BenjaminDavidPinter))_
+
 ### Features Added
 
 - OpenAI.Chat:
-  - Added the `Minimal` property to `ChatReasoningEffortLevel`
+  - Added the `Minimal` property to `ChatReasoningEffortLevel`_(A community contribution, courtesy of [kurnakovv](https://github.com/kurnakovv))_
 
 - OpenAI.Responses:
-  - Added the `Minimal` property to `ResponseReasoningEffortLevel`
+  - Added the `Minimal` property to `ResponseReasoningEffortLevel` _(A community contribution, courtesy of [kurnakovv](https://github.com/kurnakovv))_
+  - Added the `Model` property to `OpenAIResponseClient`  _(A community contribution, courtesy of [BenjaminDavidPinter](https://github.com/BenjaminDavidPinter))_
 
 ## 2.5.0 (2025-09-23)
 

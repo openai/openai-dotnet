@@ -1,6 +1,8 @@
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 
 namespace OpenAI.Audio;
@@ -26,5 +28,13 @@ public partial class AudioTranscription
 
         using var document = JsonDocument.Parse(response.Content);
         return DeserializeAudioTranscription(document.RootElement, null);
+    }
+
+    [Experimental("OPENAI001")]
+    public static explicit operator AudioTranscription(ClientResult result)
+    {
+        using PipelineResponse response = result.GetRawResponse();
+        using JsonDocument document = JsonDocument.Parse(response.Content);
+        return DeserializeAudioTranscription(document.RootElement, ModelSerializationExtensions.WireOptions);
     }
 }

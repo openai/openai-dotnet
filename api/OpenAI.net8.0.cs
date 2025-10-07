@@ -1157,6 +1157,8 @@ namespace OpenAI.Audio {
         [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         [Experimental("OPENAI001")]
+        public static explicit operator AudioTranscription(ClientResult result);
+        [Experimental("OPENAI001")]
         protected virtual AudioTranscription PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
