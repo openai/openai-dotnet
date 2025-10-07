@@ -18,6 +18,7 @@ public partial class ResponseExamples
 
         // Add extra request fields using Patch.
         // Patch lets you set fields like `model` that aren't exposed on ResponseCreationOptions.
+        // This overrides the model set on the client just for the request where this options instance is used.
         // See the API docs https://platform.openai.com/docs/api-reference/responses/create for supported additional fields.
         ResponseCreationOptions options = new();
         options.Patch.Set("$.model"u8, "gpt-5");
