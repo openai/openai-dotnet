@@ -41,7 +41,12 @@ interface Audio {
     | CreateTranscriptionResponseVerboseJson
     | CreateTranscriptionResponseJson
     | SseResponseOf<CreateTranscriptionResponseStreamEvent>
-    | DotNetCombinedJsonTranscriptionResponse
+    | {
+        // TODO: This response is not defined in the OpenAPI spec.
+        @header contentType: "text/plain";
+
+        @body responseBody: string;
+      }
     | ErrorResponse;
 
   @route("translations")
