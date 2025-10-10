@@ -47,3 +47,9 @@ model CodeInterpreterContainerConfiguration {
   @doc("The type of the output.")  
   type: CodeInterpreterContainerConfigurationType;  
 }
+
+model DeleteResponseResponse {
+    id: string;
+    object: "response";
+    deleted: true;
+};

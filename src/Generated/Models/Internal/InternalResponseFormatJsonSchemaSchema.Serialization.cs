@@ -50,10 +50,10 @@ namespace OpenAI.Internal
                 throw new FormatException($"The model {nameof(InternalResponseFormatJsonSchemaSchema)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalResponseFormatJsonSchemaSchema(document.RootElement, options);
+            return DeserializeInternalResponseFormatJsonSchemaSchema(document.RootElement, null, options);
         }
 
-        internal static InternalResponseFormatJsonSchemaSchema DeserializeInternalResponseFormatJsonSchemaSchema(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalResponseFormatJsonSchemaSchema DeserializeInternalResponseFormatJsonSchemaSchema(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -91,7 +91,7 @@ namespace OpenAI.Internal
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalResponseFormatJsonSchemaSchema(document.RootElement, options);
+                        return DeserializeInternalResponseFormatJsonSchemaSchema(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalResponseFormatJsonSchemaSchema)} does not support reading '{options.Format}' format.");

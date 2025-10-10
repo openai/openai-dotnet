@@ -485,6 +485,36 @@ public class ChatSmokeTests : ClientTestBase
     }
 
     [Test]
+    public void CanSerializeChatMessage()
+    {
+        var text = "Hello, world!";
+        ChatMessage message = new UserChatMessage(text);
+        message.Patch.Set("$.custom_property"u8, "custom_property");
+
+        BinaryData serialized = ModelReaderWriter.Write(message);
+        using JsonDocument doc = JsonDocument.Parse(serialized.ToString());
+        JsonElement root = doc.RootElement;
+
+        Assert.That(root, Is.Not.Null);
+        Assert.That(root.ValueKind, Is.EqualTo(JsonValueKind.Object));
+
+        Assert.That(root.TryGetProperty("content", out JsonElement contentProperty), Is.True);
+        Assert.That(contentProperty, Is.Not.Null);
+        Assert.That(contentProperty.ValueKind, Is.EqualTo(JsonValueKind.String));
+        Assert.That(contentProperty.ToString(), Is.EqualTo(text));
+
+        Assert.That(root.TryGetProperty("role", out JsonElement roleProperty), Is.True);
+        Assert.That(roleProperty, Is.Not.Null);
+        Assert.That(roleProperty.ValueKind, Is.EqualTo(JsonValueKind.String));
+        Assert.That(roleProperty.ToString(), Is.EqualTo("user"));
+
+        Assert.That(root.TryGetProperty("custom_property", out JsonElement customProperty), Is.True);
+        Assert.That(customProperty, Is.Not.Null);
+        Assert.That(customProperty.ValueKind, Is.EqualTo(JsonValueKind.String));
+        Assert.That(customProperty.ToString(), Is.EqualTo("custom_property"));
+    }
+
+    [Test]
     public void SerializeRefusalMessages()
     {
         AssistantChatMessage message = ModelReaderWriter.Read<AssistantChatMessage>(BinaryData.FromString("""

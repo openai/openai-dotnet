@@ -2,8 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -11,11 +10,12 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ImageGenerationTool : ResponseTool
     {
-        public ImageGenerationTool() : this(InternalToolType.ImageGeneration, null, null, default, default, default, default, default, default, default, null, default)
+        public ImageGenerationTool() : this(InternalToolType.ImageGeneration, default, null, default, default, default, default, default, default, default, null, default)
         {
         }
 
-        internal ImageGenerationTool(InternalToolType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string model, ImageGenerationToolQuality? quality, ImageGenerationToolSize? size, ImageGenerationToolOutputFileFormat? outputFileFormat, int? outputCompressionFactor, ImageGenerationToolModerationLevel? moderationLevel, ImageGenerationToolBackground? background, ImageGenerationToolInputFidelityLevel? inputFidelityLevel, ImageGenerationToolInputImageMask inputImageMask, int? partialImageCount) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal ImageGenerationTool(InternalToolType kind, in JsonPatch patch, string model, ImageGenerationToolQuality? quality, ImageGenerationToolSize? size, ImageGenerationToolOutputFileFormat? outputFileFormat, int? outputCompressionFactor, ImageGenerationToolModerationLevel? moderationLevel, ImageGenerationToolBackground? background, ImageGenerationToolInputFidelityLevel? inputFidelityLevel, ImageGenerationToolInputImageMask inputImageMask, int? partialImageCount) : base(kind, patch)
         {
             Model = model;
             Quality = quality;
@@ -28,6 +28,7 @@ namespace OpenAI.Responses
             InputImageMask = inputImageMask;
             PartialImageCount = partialImageCount;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public ImageGenerationToolQuality? Quality { get; set; }
 

@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using OpenAI;
 
 namespace OpenAI.Responses
@@ -17,8 +17,10 @@ namespace OpenAI.Responses
 
         }
 
-        internal InternalComparisonFilterLessThan(InternalComparisonFilterType kind, string key, BinaryData value, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, key, value, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalComparisonFilterLessThan(InternalComparisonFilterType kind, string key, BinaryData value, in JsonPatch patch) : base(kind, key, value, patch)
         {
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

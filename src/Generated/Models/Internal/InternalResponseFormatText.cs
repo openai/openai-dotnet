@@ -2,19 +2,20 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 
 namespace OpenAI.Internal
 {
     internal partial class InternalResponseFormatText : InternalResponseFormat
     {
-        public InternalResponseFormatText() : this(InternalResponseFormatType.Text, null)
+        public InternalResponseFormatText() : this(InternalResponseFormatType.Text, default)
         {
         }
 
-        internal InternalResponseFormatText(InternalResponseFormatType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalResponseFormatText(InternalResponseFormatType kind, in JsonPatch patch) : base(kind, patch)
         {
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

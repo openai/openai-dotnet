@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using OpenAI;
 
@@ -10,11 +10,12 @@ namespace OpenAI.Chat
 {
     public partial class AssistantChatMessage : ChatMessage
     {
-        internal AssistantChatMessage() : this(ChatMessageRole.Assistant, null, null, null, null, null, null, null)
+        internal AssistantChatMessage() : this(ChatMessageRole.Assistant, null, default, null, null, null, null, null)
         {
         }
 
-        internal AssistantChatMessage(ChatMessageRole role, ChatMessageContent content, IDictionary<string, BinaryData> additionalBinaryDataProperties, string refusal, string participantName, ChatOutputAudioReference outputAudioReference, IList<ChatToolCall> toolCalls, ChatFunctionCall functionCall) : base(role, content, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal AssistantChatMessage(ChatMessageRole role, ChatMessageContent content, in JsonPatch patch, string refusal, string participantName, ChatOutputAudioReference outputAudioReference, IList<ChatToolCall> toolCalls, ChatFunctionCall functionCall) : base(role, content, patch)
         {
             // Plugin customization: ensure initialization of collections
             Refusal = refusal;
@@ -23,6 +24,7 @@ namespace OpenAI.Chat
             ToolCalls = toolCalls ?? new ChangeTrackingList<ChatToolCall>();
             FunctionCall = functionCall;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Refusal { get; set; }
     }

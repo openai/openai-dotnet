@@ -2,8 +2,9 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 using OpenAI.Internal;
 
@@ -11,7 +12,8 @@ namespace OpenAI.Chat
 {
     internal partial class InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
         internal InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1(InternalWebSearchLocation approximate)
         {
@@ -20,21 +22,22 @@ namespace OpenAI.Chat
             Approximate = approximate;
         }
 
-        internal InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1(string kind, InternalWebSearchLocation approximate, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1(string kind, InternalWebSearchLocation approximate, in JsonPatch patch)
         {
             Kind = kind;
             Approximate = approximate;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         internal string Kind { get; } = "approximate";
 
         internal InternalWebSearchLocation Approximate { get; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
     }
 }
