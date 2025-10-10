@@ -25,8 +25,6 @@ namespace OpenAI.Containers
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal string Anchor { get; } = "last_active_at";
-
         public int Minutes { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData

@@ -2517,6 +2517,7 @@ namespace OpenAI.Containers {
     [Experimental("OPENAI001")]
     public class CreateContainerBodyExpiresAfter : IJsonModel<CreateContainerBodyExpiresAfter>, IPersistableModel<CreateContainerBodyExpiresAfter> {
         public CreateContainerBodyExpiresAfter(int minutes);
+        public string Anchor { get; }
         public int Minutes { get; }
         protected virtual CreateContainerBodyExpiresAfter JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
