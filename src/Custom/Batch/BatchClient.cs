@@ -14,8 +14,8 @@ namespace OpenAI.Batch;
 /// <summary> The service client for OpenAI batch operations. </summary>
 [CodeGenType("Batches")]
 [CodeGenSuppress("BatchClient", typeof(ClientPipeline), typeof(Uri))]
-[CodeGenSuppress("CreateBatch", typeof(string), typeof(InternalCreateBatchRequestEndpoint), typeof(string), typeof(IDictionary<string, string>), typeof(CancellationToken))]
-[CodeGenSuppress("CreateBatchAsync", typeof(string), typeof(InternalCreateBatchRequestEndpoint), typeof(string), typeof(IDictionary<string, string>), typeof(CancellationToken))]
+[CodeGenSuppress("CreateBatch", typeof(string), typeof(InternalCreateBatchRequestEndpoint), typeof(IDictionary<string, string>), typeof(CancellationToken))]
+[CodeGenSuppress("CreateBatchAsync", typeof(string), typeof(InternalCreateBatchRequestEndpoint), typeof(IDictionary<string, string>), typeof(CancellationToken))]
 [CodeGenSuppress("CreateBatch", typeof(BinaryContent), typeof(RequestOptions))]
 [CodeGenSuppress("CreateBatchAsync", typeof(BinaryContent), typeof(RequestOptions))]
 [CodeGenSuppress("GetBatch", typeof(string), typeof(CancellationToken))]

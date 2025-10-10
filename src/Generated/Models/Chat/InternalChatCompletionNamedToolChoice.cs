@@ -26,7 +26,7 @@ namespace OpenAI.Chat
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string Kind { get; } = "function";
+        internal string Kind { get; } = "function";
 
         internal InternalChatCompletionNamedToolChoiceFunction Function { get; }
 

@@ -25,4 +25,7 @@ public partial class ImageGenerationTool
     // CUSTOM:Renamed.
     [CodeGenMember("PartialImages")]
     public int? PartialImageCount { get; set; }
+
+    // CUSTOM: Convert to string to ensure backwards compatibility.
+    public string Model { get; set; }
 }

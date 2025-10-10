@@ -26,7 +26,7 @@ namespace OpenAI.Evals
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string Kind { get; } = "item_reference";
+        internal string Kind { get; } = "item_reference";
 
         public string ItemReference { get; }
 

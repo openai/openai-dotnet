@@ -107,6 +107,7 @@ namespace OpenAI.Responses;
 [CodeGenType("LogProb")] internal partial class InternalLogProb {}
 [CodeGenType("TopLogProb")] internal partial class InternalTopLogProb {}
 [CodeGenType("ImageGenToolCallItemParam")] internal partial class InternalImageGenToolCallItemParam {}
+[CodeGenType("ImageGenToolModel")] internal partial struct InternalImageGenToolModel { }
 [CodeGenType("CodeInterpreterToolCallItemParam")] internal partial class InternalCodeInterpreterToolCallItemParam {}
 [CodeGenType("LocalShellToolCallItemParam")] internal partial class InternalLocalShellToolCallItemParam {}
 [CodeGenType("LocalShellExecAction")] internal partial class InternalLocalShellExecAction {}

@@ -1097,6 +1097,7 @@ namespace OpenAI.Audio {
         public string Text { get; }
         protected virtual AudioTranslation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public static explicit operator AudioTranslation(ClientResult result);
         protected virtual AudioTranslation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
@@ -1207,6 +1208,7 @@ namespace OpenAI.Audio {
     public class StreamingAudioTranscriptionUpdate : IJsonModel<StreamingAudioTranscriptionUpdate>, IPersistableModel<StreamingAudioTranscriptionUpdate> {
         protected virtual StreamingAudioTranscriptionUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public static explicit operator StreamingAudioTranscriptionUpdate(ClientResult result);
         protected virtual StreamingAudioTranscriptionUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
@@ -2097,7 +2099,6 @@ namespace OpenAI.Containers {
     }
     public class CreateContainerBodyExpiresAfter : IJsonModel<CreateContainerBodyExpiresAfter>, IPersistableModel<CreateContainerBodyExpiresAfter> {
         public CreateContainerBodyExpiresAfter(int minutes);
-        public string Anchor { get; }
         public int Minutes { get; }
         protected virtual CreateContainerBodyExpiresAfter JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);

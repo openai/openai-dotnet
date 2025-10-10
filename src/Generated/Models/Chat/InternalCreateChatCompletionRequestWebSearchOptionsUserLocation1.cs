@@ -27,7 +27,7 @@ namespace OpenAI.Chat
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string Kind { get; } = "approximate";
+        internal string Kind { get; } = "approximate";
 
         internal InternalWebSearchLocation Approximate { get; }
 

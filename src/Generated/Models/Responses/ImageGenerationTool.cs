@@ -29,8 +29,6 @@ namespace OpenAI.Responses
             PartialImageCount = partialImageCount;
         }
 
-        public string Model { get; set; }
-
         public ImageGenerationToolQuality? Quality { get; set; }
 
         public ImageGenerationToolSize? Size { get; set; }

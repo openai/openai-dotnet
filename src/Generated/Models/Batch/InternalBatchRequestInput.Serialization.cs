@@ -34,7 +34,7 @@ namespace OpenAI.Batch
             if (Optional.IsDefined(Method) && _additionalBinaryDataProperties?.ContainsKey("method") != true)
             {
                 writer.WritePropertyName("method"u8);
-                writer.WriteStringValue(Method);
+                writer.WriteStringValue(Method.Value.ToString());
             }
             if (Optional.IsDefined(Url) && _additionalBinaryDataProperties?.ContainsKey("url") != true)
             {
@@ -83,7 +83,7 @@ namespace OpenAI.Batch
                 return null;
             }
             string customId = default;
-            string @method = default;
+            InternalBatchRequestInputMethod? @method = default;
             Uri url = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -95,7 +95,11 @@ namespace OpenAI.Batch
                 }
                 if (prop.NameEquals("method"u8))
                 {
-                    @method = prop.Value.GetString();
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    @method = new InternalBatchRequestInputMethod(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("url"u8))
