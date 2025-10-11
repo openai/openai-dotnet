@@ -261,7 +261,7 @@ public partial class OpenAIResponseClient
         return GetResponseStreamingAsync(responseId, cancellationToken.ToRequestOptions(streaming: true), startingAfter);
     }
 
-    internal virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, RequestOptions requestOptions, int? startingAfter = null)
+    internal AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, RequestOptions requestOptions, int? startingAfter = null)
     {
         Argument.AssertNotNull(responseId, nameof(responseId));
         Argument.AssertNotNull(requestOptions, nameof(requestOptions));
