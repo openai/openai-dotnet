@@ -228,11 +228,21 @@ public partial class OpenAIResponseClient
             cancellationToken);
     }
 
-    public virtual async Task<ClientResult<OpenAIResponse>> GetResponseAsync(string responseId, CancellationToken cancellationToken = default)
+    public virtual Task<ClientResult<OpenAIResponse>> GetResponseAsync(string responseId, CancellationToken cancellationToken = default)
+    {
+        return GetResponseAsync(responseId, cancellationToken.ToRequestOptions() ?? new RequestOptions());
+    }
+
+    internal async Task<ClientResult<OpenAIResponse>> GetResponseAsync(string responseId, RequestOptions requestOptions)
     {
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
+        Argument.AssertNotNull(requestOptions, nameof(requestOptions));
+        if (requestOptions.BufferResponse is false)
+        {
+            throw new InvalidOperationException("'requestOptions.BufferResponse' must be 'true' when calling 'GetResponseAsync'.");
+        }
 
-        ClientResult protocolResult = await GetResponseAsync(responseId, stream: null, startingAfter: null, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        ClientResult protocolResult = await GetResponseAsync(responseId, stream: null, startingAfter: null, requestOptions).ConfigureAwait(false);
         OpenAIResponse convenienceResult = (OpenAIResponse)protocolResult;
         return ClientResult.FromValue(convenienceResult, protocolResult.GetRawResponse());
     }
@@ -248,12 +258,22 @@ public partial class OpenAIResponseClient
 
     public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, int? startingAfter = null, CancellationToken cancellationToken = default)
     {
+        return GetResponseStreamingAsync(responseId, cancellationToken.ToRequestOptions(streaming: true), startingAfter);
+    }
+
+    internal virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, RequestOptions requestOptions, int? startingAfter = null)
+    {
         Argument.AssertNotNull(responseId, nameof(responseId));
+        Argument.AssertNotNull(requestOptions, nameof(requestOptions));
+        if (requestOptions.BufferResponse is true)
+        {
+            throw new InvalidOperationException("'requestOptions.BufferResponse' must be 'false' when calling 'GetResponseStreamingAsync'.");
+        }
 
         return new AsyncSseUpdateCollection<StreamingResponseUpdate>(
-            async () => await GetResponseAsync(responseId, stream: true, startingAfter, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
+            async () => await GetResponseAsync(responseId, stream: true, startingAfter, requestOptions).ConfigureAwait(false),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
-            cancellationToken);
+            requestOptions.CancellationToken);
     }
 
     public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, int? startingAfter = null, CancellationToken cancellationToken = default)
