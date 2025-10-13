@@ -16,13 +16,12 @@ namespace OpenAI.Chat
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal ChatCompletionMessageListDatum(string content, string refusal, ChatMessageRole role, string id)
+        internal ChatCompletionMessageListDatum(string content, string refusal, string id)
         {
             Content = content;
             Refusal = refusal;
             ToolCalls = new ChangeTrackingList<ChatToolCall>();
             Annotations = new ChangeTrackingList<ChatMessageAnnotation>();
-            Role = role;
             Id = id;
         }
 

@@ -5,7 +5,6 @@
 using System.ClientModel.Primitives;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using OpenAI;
 
 namespace OpenAI.Chat
 {
@@ -13,16 +12,6 @@ namespace OpenAI.Chat
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
-
-        internal ChatToolCall(string id, ChatToolCallKind kind, InternalChatCompletionMessageToolCallFunction function)
-        {
-            Argument.AssertNotNull(id, nameof(id));
-            Argument.AssertNotNull(function, nameof(function));
-
-            Id = id;
-            Kind = kind;
-            Function = function;
-        }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal ChatToolCall(string id, ChatToolCallKind kind, InternalChatCompletionMessageToolCallFunction function, in JsonPatch patch)

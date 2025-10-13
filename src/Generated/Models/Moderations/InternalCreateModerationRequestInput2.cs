@@ -26,7 +26,7 @@ namespace OpenAI.Moderations
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string Kind { get; } = "image_url";
+        internal string Kind { get; } = "image_url";
 
         internal InternalCreateModerationRequestInputImageUrl ImageUrl { get; }
 

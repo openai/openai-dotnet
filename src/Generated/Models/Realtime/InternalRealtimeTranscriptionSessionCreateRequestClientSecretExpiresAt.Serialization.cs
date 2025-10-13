@@ -29,7 +29,7 @@ namespace OpenAI.Realtime
             if (Optional.IsDefined(Anchor) && _additionalBinaryDataProperties?.ContainsKey("anchor") != true)
             {
                 writer.WritePropertyName("anchor"u8);
-                writer.WriteStringValue(Anchor);
+                writer.WriteStringValue(Anchor.Value.ToString());
             }
             if (Optional.IsDefined(Seconds) && _additionalBinaryDataProperties?.ContainsKey("seconds") != true)
             {
@@ -77,14 +77,18 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            string anchor = default;
+            InternalRealtimeTranscriptionSessionCreateRequestClientSecretExpiresAtAnchor? anchor = default;
             int? seconds = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("anchor"u8))
                 {
-                    anchor = prop.Value.GetString();
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    anchor = new InternalRealtimeTranscriptionSessionCreateRequestClientSecretExpiresAtAnchor(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("seconds"u8))

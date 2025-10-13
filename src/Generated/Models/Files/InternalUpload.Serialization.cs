@@ -69,7 +69,7 @@ namespace OpenAI.Files
             if (Optional.IsDefined(Object) && _additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object);
+                writer.WriteStringValue(Object.Value.ToString());
             }
             if (Optional.IsDefined(File) && _additionalBinaryDataProperties?.ContainsKey("file") != true)
             {
@@ -124,7 +124,7 @@ namespace OpenAI.Files
             string purpose = default;
             InternalUploadStatus status = default;
             DateTimeOffset expiresAt = default;
-            string @object = default;
+            InternalUploadObject? @object = default;
             OpenAIFile @file = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -166,7 +166,11 @@ namespace OpenAI.Files
                 }
                 if (prop.NameEquals("object"u8))
                 {
-                    @object = prop.Value.GetString();
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    @object = new InternalUploadObject(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("file"u8))
