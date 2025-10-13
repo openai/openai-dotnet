@@ -5,7 +5,9 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
 using OpenAI;
 
@@ -21,6 +23,24 @@ namespace OpenAI.Batch
         }
 
         public ClientPipeline Pipeline { get; }
+
+        public virtual ClientResult<InternalBatchJob> CreateBatch(string inputFileId, InternalCreateBatchRequestEndpoint endpoint, IDictionary<string, string> metadata = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(inputFileId, nameof(inputFileId));
+
+            InternalCreateBatchRequest spreadModel = new InternalCreateBatchRequest(default, endpoint, "24h", metadata, default);
+            ClientResult result = this.CreateBatch(spreadModel, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+            return ClientResult.FromValue((InternalBatchJob)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<InternalBatchJob>> CreateBatchAsync(string inputFileId, InternalCreateBatchRequestEndpoint endpoint, IDictionary<string, string> metadata = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(inputFileId, nameof(inputFileId));
+
+            InternalCreateBatchRequest spreadModel = new InternalCreateBatchRequest(default, endpoint, "24h", metadata, default);
+            ClientResult result = await this.CreateBatchAsync(spreadModel, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
+            return ClientResult.FromValue((InternalBatchJob)result, result.GetRawResponse());
+        }
 
         public virtual ClientResult GetBatch(string batchId, RequestOptions options)
         {

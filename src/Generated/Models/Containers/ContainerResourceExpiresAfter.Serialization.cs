@@ -29,7 +29,7 @@ namespace OpenAI.Containers
             if (Optional.IsDefined(Anchor) && _additionalBinaryDataProperties?.ContainsKey("anchor") != true)
             {
                 writer.WritePropertyName("anchor"u8);
-                writer.WriteStringValue(Anchor);
+                writer.WriteStringValue(Anchor.Value.ToString());
             }
             if (Optional.IsDefined(Minutes) && _additionalBinaryDataProperties?.ContainsKey("minutes") != true)
             {
@@ -77,14 +77,18 @@ namespace OpenAI.Containers
             {
                 return null;
             }
-            string anchor = default;
+            ContainerResourceExpiresAfterAnchor? anchor = default;
             int? minutes = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("anchor"u8))
                 {
-                    anchor = prop.Value.GetString();
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    anchor = new ContainerResourceExpiresAfterAnchor(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("minutes"u8))

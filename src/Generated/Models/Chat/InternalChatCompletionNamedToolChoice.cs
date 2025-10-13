@@ -35,7 +35,7 @@ namespace OpenAI.Chat
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public string Kind { get; } = "function";
+        internal string Kind { get; } = "function";
 
         internal InternalChatCompletionNamedToolChoiceFunction Function { get; }
     }

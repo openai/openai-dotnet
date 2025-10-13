@@ -39,7 +39,7 @@ namespace OpenAI.Responses
             if (Optional.IsDefined(Model) && !Patch.Contains("$.model"u8))
             {
                 writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model);
+                writer.WriteStringValue(Model.Value.ToString());
             }
             if (Optional.IsDefined(Quality) && !Patch.Contains("$.quality"u8))
             {
@@ -114,7 +114,7 @@ namespace OpenAI.Responses
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            string model = default;
+            ImageGenToolModel? model = default;
             ImageGenerationToolQuality? quality = default;
             ImageGenerationToolSize? size = default;
             ImageGenerationToolOutputFileFormat? outputFileFormat = default;
@@ -133,7 +133,11 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("model"u8))
                 {
-                    model = prop.Value.GetString();
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    model = new ImageGenToolModel(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("quality"u8))

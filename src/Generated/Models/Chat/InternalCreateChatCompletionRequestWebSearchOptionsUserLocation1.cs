@@ -36,7 +36,7 @@ namespace OpenAI.Chat
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public string Kind { get; } = "approximate";
+        internal string Kind { get; } = "approximate";
 
         internal InternalWebSearchLocation Approximate { get; }
     }

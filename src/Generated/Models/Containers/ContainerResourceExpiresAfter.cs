@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using OpenAI;
 
 namespace OpenAI.Containers
 {
@@ -17,14 +18,14 @@ namespace OpenAI.Containers
         {
         }
 
-        internal ContainerResourceExpiresAfter(string anchor, int? minutes, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ContainerResourceExpiresAfter(ContainerResourceExpiresAfterAnchor? anchor, int? minutes, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Anchor = anchor;
             Minutes = minutes;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string Anchor { get; }
+        public ContainerResourceExpiresAfterAnchor? Anchor { get; }
 
         public int? Minutes { get; }
 

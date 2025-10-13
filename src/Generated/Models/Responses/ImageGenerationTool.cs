@@ -4,18 +4,19 @@
 
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
+using OpenAI;
 
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
     public partial class ImageGenerationTool : ResponseTool
     {
-        public ImageGenerationTool() : this(InternalToolType.ImageGeneration, default, null, default, default, default, default, default, default, default, null, default)
+        public ImageGenerationTool() : this(InternalToolType.ImageGeneration, default, default, default, default, default, default, default, default, default, null, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ImageGenerationTool(InternalToolType kind, in JsonPatch patch, string model, ImageGenerationToolQuality? quality, ImageGenerationToolSize? size, ImageGenerationToolOutputFileFormat? outputFileFormat, int? outputCompressionFactor, ImageGenerationToolModerationLevel? moderationLevel, ImageGenerationToolBackground? background, ImageGenerationToolInputFidelityLevel? inputFidelityLevel, ImageGenerationToolInputImageMask inputImageMask, int? partialImageCount) : base(kind, patch)
+        internal ImageGenerationTool(InternalToolType kind, in JsonPatch patch, ImageGenToolModel? model, ImageGenerationToolQuality? quality, ImageGenerationToolSize? size, ImageGenerationToolOutputFileFormat? outputFileFormat, int? outputCompressionFactor, ImageGenerationToolModerationLevel? moderationLevel, ImageGenerationToolBackground? background, ImageGenerationToolInputFidelityLevel? inputFidelityLevel, ImageGenerationToolInputImageMask inputImageMask, int? partialImageCount) : base(kind, patch)
         {
             Model = model;
             Quality = quality;
@@ -30,7 +31,7 @@ namespace OpenAI.Responses
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string Model { get; set; }
+        public ImageGenToolModel? Model { get; set; }
 
         public ImageGenerationToolQuality? Quality { get; set; }
 

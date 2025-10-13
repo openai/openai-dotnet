@@ -33,7 +33,7 @@ namespace OpenAI.Batch
 
         internal InternalCreateBatchRequestEndpoint Endpoint { get; }
 
-        public string CompletionWindow { get; } = "24h";
+        internal string CompletionWindow { get; } = "24h";
 
         public IDictionary<string, string> Metadata { get; }
 

@@ -15,14 +15,13 @@ namespace OpenAI.Chat
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal InternalChatCompletionResponseMessage(ChatMessageContent content, string refusal, ChatMessageRole role)
+        internal InternalChatCompletionResponseMessage(ChatMessageContent content, string refusal)
         {
             // Plugin customization: ensure initialization of collections
             Content = content ?? new ChatMessageContent();
             Refusal = refusal;
             ToolCalls = new ChangeTrackingList<ChatToolCall>();
             Annotations = new ChangeTrackingList<ChatMessageAnnotation>();
-            Role = role;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

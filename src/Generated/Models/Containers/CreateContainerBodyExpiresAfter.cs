@@ -25,7 +25,7 @@ namespace OpenAI.Containers
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string Anchor { get; } = "last_active_at";
+        internal string Anchor { get; } = "last_active_at";
 
         public int Minutes { get; }
 
