@@ -7,4 +7,9 @@ public partial class WebSearchCallResponseItem
     // CUSTOM: Made nullable since this is a read-only property.
     [CodeGenMember("Status")]
     public WebSearchCallStatus? Status { get; }
+
+    // <GP>
+	[CodeGenMember("Action")]
+	public object Action { get;  }
+	// </GP>
 }
