@@ -59,6 +59,9 @@ namespace OpenAI.Responses
             string id = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             WebSearchCallStatus? status = default;
+            // <GP>
+            object action = null;
+            // </GP>
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -76,10 +79,17 @@ namespace OpenAI.Responses
                     status = prop.Value.GetString().ToWebSearchCallStatus();
                     continue;
                 }
+                // <GP>
+                if (prop.NameEquals("action"u8))
+                {
+                    action = ToObject(prop.Value);
+                    continue;
+                }
+                // </GP>
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new WebSearchCallResponseItem(kind, id, additionalBinaryDataProperties, status);
+            return new WebSearchCallResponseItem(kind, id, additionalBinaryDataProperties, status, action);
         }
 
         BinaryData IPersistableModel<WebSearchCallResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -114,5 +124,60 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<WebSearchCallResponseItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-    }
+
+
+
+        // <GP>
+        public static object ToObject(JsonElement element)
+        {
+            switch (element.ValueKind)
+            {
+                case JsonValueKind.Object:
+                    var dict = new Dictionary<string, object>();
+                    foreach (var property in element.EnumerateObject())
+                    {
+                        dict[property.Name] = ToObject(property.Value);
+                    }
+                    return dict;
+
+                case JsonValueKind.Array:
+                    var list = new List<object>();
+                    foreach (var item in element.EnumerateArray())
+                    {
+                        list.Add(ToObject(item));
+                    }
+                    return list;
+
+                case JsonValueKind.String:
+                    return element.GetString();
+
+                case JsonValueKind.Number:
+                    if (element.TryGetInt64(out long l))
+                        return l;
+                    return element.GetDouble();
+
+                case JsonValueKind.True:
+                    return true;
+
+                case JsonValueKind.False:
+                    return false;
+
+                case JsonValueKind.Null:
+                    return null;
+
+                default:
+                    throw new InvalidOperationException($"Unsupported JsonValueKind: {element.ValueKind}");
+            }
+        }
+
+        public static Dictionary<string, object> ToDictionary(JsonElement element)
+        {
+            if (element.ValueKind != JsonValueKind.Object)
+                throw new InvalidOperationException("Root element must be an object to convert to a dictionary.");
+
+            return (Dictionary<string, object>)ToObject(element);
+        }
+		// </GP>
+
+	}
 }
