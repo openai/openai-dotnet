@@ -25,11 +25,11 @@ public partial class CodeInterpreterToolContainer
         {
             throw new FormatException($"The model {nameof(CodeInterpreterToolContainer)} does not support writing '{format}' format.");
         }
-        if (Optional.IsDefined(ContainerId) && _additionalBinaryDataProperties?.ContainsKey("container_id") != true)
+        if (Optional.IsDefined(ContainerId) && _patch.Contains("$.container_id"u8) != true)
         {
             writer.WriteStringValue(ContainerId);
         }
-        if (Optional.IsDefined(ContainerConfiguration) && _additionalBinaryDataProperties?.ContainsKey("container") != true)
+        if (Optional.IsDefined(ContainerConfiguration) && _patch.Contains("$.container"u8) != true)
         {
             writer.WriteObjectValue(ContainerConfiguration, options);
         }
@@ -38,7 +38,7 @@ public partial class CodeInterpreterToolContainer
     // CUSTOM:
     // - Edited to deserialize a string value into a container ID component.
     // - Edited to deserialize an object value into a container configuration component.
-    internal static CodeInterpreterToolContainer DeserializeCodeInterpreterToolContainer(JsonElement element, ModelReaderWriterOptions options)
+    internal static CodeInterpreterToolContainer DeserializeCodeInterpreterToolContainer(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
     {
         if (element.ValueKind == JsonValueKind.Null)
         {
@@ -47,7 +47,9 @@ public partial class CodeInterpreterToolContainer
 
         string containerId = default;
         CodeInterpreterToolContainerConfiguration container = default;
-        IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         if (element.ValueKind == JsonValueKind.String)
         {
@@ -55,9 +57,9 @@ public partial class CodeInterpreterToolContainer
         }
         else
         {
-            container = CodeInterpreterToolContainerConfiguration.DeserializeCodeInterpreterToolContainerConfiguration(element, options);
+            container = CodeInterpreterToolContainerConfiguration.DeserializeCodeInterpreterToolContainerConfiguration(element, element.GetUtf8Bytes(), options);
         }
 
-        return new CodeInterpreterToolContainer(containerId, container, additionalBinaryDataProperties);
+        return new CodeInterpreterToolContainer(containerId, container, patch);
     }
 }

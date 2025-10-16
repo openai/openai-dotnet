@@ -24,7 +24,7 @@ namespace OpenAI.Realtime
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string Kind { get; } = "server_vad";
+        internal string Kind { get; } = "server_vad";
 
         public int? PrefixPaddingMs { get; set; }
 

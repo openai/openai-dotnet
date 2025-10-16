@@ -1,0 +1,149 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "408",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "computer-use-preview",
+        "tools": [
+          {
+            "type": "function",
+            "name": "get_custom_greeting",
+            "description": "invoked when user provides a typical greeting",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "time_of_day": {
+                  "type": "string"
+                }
+              }
+            },
+            "strict": false
+          }
+        ],
+        "truncation": "auto",
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "good morning, responses!"
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "983df40f1ae7b89e-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1703",
+        "Content-Type": "application/json",
+        "Date": "Tue, 23 Sep 2025 23:52:02 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "1063",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "1066",
+        "x-ratelimit-limit-requests": "3000",
+        "x-ratelimit-remaining-requests": "2999",
+        "x-ratelimit-reset-requests": "20ms",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_68d332a183548190abc2b9714196894c09bb15ad7f52951e",
+        "object": "response",
+        "created_at": 1758671521,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "computer-use-preview-2025-03-11",
+        "output": [
+          {
+            "id": "fc_68d332a261e48190851ac6fc8712219209bb15ad7f52951e",
+            "type": "function_call",
+            "status": "completed",
+            "arguments": "{\"time_of_day\":\"morning\"}",
+            "call_id": "call_MiYPwOX81Mc5Cs2QVVyl1ntY",
+            "name": "get_custom_greeting"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "reasoning": {
+          "effort": "medium",
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [
+          {
+            "type": "function",
+            "description": "invoked when user provides a typical greeting",
+            "name": "get_custom_greeting",
+            "parameters": {
+              "type": "object",
+              "properties": {
+                "time_of_day": {
+                  "type": "string"
+                }
+              }
+            },
+            "strict": false
+          }
+        ],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "auto",
+        "usage": {
+          "input_tokens": 48,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 20,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 68
+        },
+        "user": null,
+        "metadata": {}
+      }
+    }
+  ],
+  "Variables": {
+    "DateTimeOffsetNow": "2025-09-23T16:52:02.4891129-07:00",
+    "OPEN-API-KEY": "api-key"
+  }
+}

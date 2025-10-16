@@ -2,8 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using OpenAI;
 
 namespace OpenAI.Chat
@@ -17,10 +16,12 @@ namespace OpenAI.Chat
             InputAudio = inputAudio;
         }
 
-        internal InternalChatCompletionRequestMessageContentPartAudio(IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalChatCompletionRequestMessageContentPartAudioInputAudio inputAudio) : base(additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalChatCompletionRequestMessageContentPartAudio(in JsonPatch patch, InternalChatCompletionRequestMessageContentPartAudioInputAudio inputAudio) : base(patch)
         {
             InputAudio = inputAudio;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         internal InternalChatCompletionRequestMessageContentPartAudioInputAudio InputAudio { get; set; }
     }

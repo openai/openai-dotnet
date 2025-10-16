@@ -2,8 +2,10 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using OpenAI;
 
@@ -11,7 +13,8 @@ namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionMessageList
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
         internal InternalChatCompletionMessageList(IEnumerable<ChatCompletionMessageListDatum> data, string firstId, string lastId, bool hasMore)
         {
@@ -21,7 +24,8 @@ namespace OpenAI.Chat
             HasMore = hasMore;
         }
 
-        internal InternalChatCompletionMessageList(string @object, IList<ChatCompletionMessageListDatum> data, string firstId, string lastId, bool hasMore, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalChatCompletionMessageList(string @object, IList<ChatCompletionMessageListDatum> data, string firstId, string lastId, bool hasMore, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Object = @object;
@@ -29,8 +33,14 @@ namespace OpenAI.Chat
             FirstId = firstId;
             LastId = lastId;
             HasMore = hasMore;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         public string Object { get; } = "list";
 
@@ -41,11 +51,5 @@ namespace OpenAI.Chat
         public string LastId { get; }
 
         public bool HasMore { get; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
     }
 }

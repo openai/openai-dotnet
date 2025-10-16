@@ -5,6 +5,7 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,12 +13,20 @@ namespace OpenAI.Chat
 {
     public partial class ChatCompletionMessageListDatum : IJsonModel<ChatCompletionMessageListDatum>
     {
-        internal ChatCompletionMessageListDatum() : this(null, null, null, null, null, default, null, null, null, null)
+        internal ChatCompletionMessageListDatum() : this(null, null, null, null, null, default, null, null, null, default)
         {
         }
 
         void IJsonModel<ChatCompletionMessageListDatum>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -30,102 +39,117 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(ChatCompletionMessageListDatum)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("content") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Optional.IsDefined(Content) && !Patch.Contains("$.content"u8))
             {
-                if (Optional.IsDefined(Content))
+                writer.WritePropertyName("content"u8);
+                writer.WriteStringValue(Content);
+            }
+            else
+            {
+                writer.WriteNull("content"u8);
+            }
+            if (Patch.Contains("$.content_parts"u8))
+            {
+                if (!Patch.IsRemoved("$.content_parts"u8))
                 {
-                    writer.WritePropertyName("content"u8);
-                    writer.WriteStringValue(Content);
-                }
-                else
-                {
-                    writer.WriteNull("content"u8);
+                    writer.WritePropertyName("content_parts"u8);
+                    writer.WriteRawValue(Patch.GetJson("$.content_parts"u8));
                 }
             }
-            if (Optional.IsCollectionDefined(ContentParts) && _additionalBinaryDataProperties?.ContainsKey("content_parts") != true)
+            else if (Optional.IsCollectionDefined(ContentParts))
             {
                 writer.WritePropertyName("content_parts"u8);
                 writer.WriteStartArray();
-                foreach (ChatMessageContentPart item in ContentParts)
+                for (int i = 0; i < ContentParts.Count; i++)
                 {
-                    writer.WriteObjectValue(item, options);
+                    if (ContentParts[i].Patch.IsRemoved("$"u8))
+                    {
+                        continue;
+                    }
+                    writer.WriteObjectValue(ContentParts[i], options);
                 }
+                Patch.WriteTo(writer, "$.content_parts"u8);
                 writer.WriteEndArray();
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("refusal") != true)
+            if (Optional.IsDefined(Refusal) && !Patch.Contains("$.refusal"u8))
             {
-                if (Optional.IsDefined(Refusal))
+                writer.WritePropertyName("refusal"u8);
+                writer.WriteStringValue(Refusal);
+            }
+            else
+            {
+                writer.WriteNull("refusal"u8);
+            }
+            if (Patch.Contains("$.tool_calls"u8))
+            {
+                if (!Patch.IsRemoved("$.tool_calls"u8))
                 {
-                    writer.WritePropertyName("refusal"u8);
-                    writer.WriteStringValue(Refusal);
-                }
-                else
-                {
-                    writer.WriteNull("refusal"u8);
+                    writer.WritePropertyName("tool_calls"u8);
+                    writer.WriteRawValue(Patch.GetJson("$.tool_calls"u8));
                 }
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (Optional.IsCollectionDefined(ToolCalls) && _additionalBinaryDataProperties?.ContainsKey("tool_calls") != true)
+            else if (options.Format != "W" && Optional.IsCollectionDefined(ToolCalls))
             {
                 writer.WritePropertyName("tool_calls"u8);
                 writer.WriteStartArray();
-                foreach (ChatToolCall item in ToolCalls)
+                for (int i = 0; i < ToolCalls.Count; i++)
                 {
-                    writer.WriteObjectValue(item, options);
+                    if (ToolCalls[i].Patch.IsRemoved("$"u8))
+                    {
+                        continue;
+                    }
+                    writer.WriteObjectValue(ToolCalls[i], options);
                 }
+                Patch.WriteTo(writer, "$.tool_calls"u8);
                 writer.WriteEndArray();
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (Optional.IsCollectionDefined(Annotations) && _additionalBinaryDataProperties?.ContainsKey("annotations") != true)
+            if (Patch.Contains("$.annotations"u8))
+            {
+                if (!Patch.IsRemoved("$.annotations"u8))
+                {
+                    writer.WritePropertyName("annotations"u8);
+                    writer.WriteRawValue(Patch.GetJson("$.annotations"u8));
+                }
+            }
+            else if (options.Format != "W" && Optional.IsCollectionDefined(Annotations))
             {
                 writer.WritePropertyName("annotations"u8);
                 writer.WriteStartArray();
-                foreach (ChatMessageAnnotation item in Annotations)
+                for (int i = 0; i < Annotations.Count; i++)
                 {
-                    writer.WriteObjectValue(item, options);
+                    if (Annotations[i].Patch.IsRemoved("$"u8))
+                    {
+                        continue;
+                    }
+                    writer.WriteObjectValue(Annotations[i], options);
                 }
+                Patch.WriteTo(writer, "$.annotations"u8);
                 writer.WriteEndArray();
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("role") != true)
+            if (!Patch.Contains("$.role"u8))
             {
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(Role.ToSerialString());
             }
-            if (Optional.IsDefined(FunctionCall) && _additionalBinaryDataProperties?.ContainsKey("function_call") != true)
+            if (Optional.IsDefined(FunctionCall) && !Patch.Contains("$.function_call"u8))
             {
                 writer.WritePropertyName("function_call"u8);
                 writer.WriteObjectValue(FunctionCall, options);
             }
-            if (Optional.IsDefined(OutputAudio) && _additionalBinaryDataProperties?.ContainsKey("audio") != true)
+            if (Optional.IsDefined(OutputAudio) && !Patch.Contains("$.audio"u8))
             {
                 writer.WritePropertyName("audio"u8);
                 writer.WriteObjectValue(OutputAudio, options);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
+            if (!Patch.Contains("$.id"u8))
             {
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         ChatCompletionMessageListDatum IJsonModel<ChatCompletionMessageListDatum>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -138,10 +162,10 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(ChatCompletionMessageListDatum)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeChatCompletionMessageListDatum(document.RootElement, options);
+            return DeserializeChatCompletionMessageListDatum(document.RootElement, null, options);
         }
 
-        internal static ChatCompletionMessageListDatum DeserializeChatCompletionMessageListDatum(JsonElement element, ModelReaderWriterOptions options)
+        internal static ChatCompletionMessageListDatum DeserializeChatCompletionMessageListDatum(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -156,7 +180,9 @@ namespace OpenAI.Chat
             InternalChatCompletionResponseMessageFunctionCall functionCall = default;
             ChatOutputAudio outputAudio = default;
             string id = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("content"u8))
@@ -178,7 +204,7 @@ namespace OpenAI.Chat
                     List<ChatMessageContentPart> array = new List<ChatMessageContentPart>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ChatMessageContentPart.DeserializeChatMessageContentPart(item, options));
+                        array.Add(ChatMessageContentPart.DeserializeChatMessageContentPart(item, item.GetUtf8Bytes(), options));
                     }
                     contentParts = array;
                     continue;
@@ -202,7 +228,7 @@ namespace OpenAI.Chat
                     List<ChatToolCall> array = new List<ChatToolCall>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ChatToolCall.DeserializeChatToolCall(item, options));
+                        array.Add(ChatToolCall.DeserializeChatToolCall(item, item.GetUtf8Bytes(), options));
                     }
                     toolCalls = array;
                     continue;
@@ -216,7 +242,7 @@ namespace OpenAI.Chat
                     List<ChatMessageAnnotation> array = new List<ChatMessageAnnotation>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ChatMessageAnnotation.DeserializeChatMessageAnnotation(item, options));
+                        array.Add(ChatMessageAnnotation.DeserializeChatMessageAnnotation(item, item.GetUtf8Bytes(), options));
                     }
                     annotations = array;
                     continue;
@@ -232,7 +258,7 @@ namespace OpenAI.Chat
                     {
                         continue;
                     }
-                    functionCall = InternalChatCompletionResponseMessageFunctionCall.DeserializeInternalChatCompletionResponseMessageFunctionCall(prop.Value, options);
+                    functionCall = InternalChatCompletionResponseMessageFunctionCall.DeserializeInternalChatCompletionResponseMessageFunctionCall(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("audio"u8))
@@ -242,7 +268,7 @@ namespace OpenAI.Chat
                         outputAudio = null;
                         continue;
                     }
-                    outputAudio = ChatOutputAudio.DeserializeChatOutputAudio(prop.Value, options);
+                    outputAudio = ChatOutputAudio.DeserializeChatOutputAudio(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("id"u8))
@@ -250,8 +276,7 @@ namespace OpenAI.Chat
                     id = prop.Value.GetString();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new ChatCompletionMessageListDatum(
                 content,
@@ -263,7 +288,7 @@ namespace OpenAI.Chat
                 functionCall,
                 outputAudio,
                 id,
-                additionalBinaryDataProperties);
+                patch);
         }
 
         BinaryData IPersistableModel<ChatCompletionMessageListDatum>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -290,7 +315,7 @@ namespace OpenAI.Chat
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeChatCompletionMessageListDatum(document.RootElement, options);
+                        return DeserializeChatCompletionMessageListDatum(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ChatCompletionMessageListDatum)} does not support reading '{options.Format}' format.");
@@ -298,5 +323,96 @@ namespace OpenAI.Chat
         }
 
         string IPersistableModel<ChatCompletionMessageListDatum>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("function_call"u8))
+            {
+                return FunctionCall.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("function_call"u8.Length)], out value);
+            }
+            if (local.StartsWith("content_parts"u8))
+            {
+                int propertyLength = "content_parts"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                return ContentParts[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+            }
+            if (local.StartsWith("tool_calls"u8))
+            {
+                int propertyLength = "tool_calls"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                return ToolCalls[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+            }
+            if (local.StartsWith("annotations"u8))
+            {
+                int propertyLength = "annotations"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                return Annotations[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("function_call"u8))
+            {
+                FunctionCall.Patch.Set([.. "$"u8, .. local.Slice("function_call"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("content_parts"u8))
+            {
+                int propertyLength = "content_parts"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                ContentParts[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                return true;
+            }
+            if (local.StartsWith("tool_calls"u8))
+            {
+                int propertyLength = "tool_calls"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                ToolCalls[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                return true;
+            }
+            if (local.StartsWith("annotations"u8))
+            {
+                int propertyLength = "annotations"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                Annotations[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

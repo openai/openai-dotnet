@@ -16,7 +16,7 @@ OpenAIResponseClient client = new("gpt-4.1", key);
 OpenAIFileClient files = new(key);
 OpenAIFile file = files.UploadFile("draconomicon.pdf", FileUploadPurpose.UserData);
 
-OpenAIResponse response = (OpenAIResponse)client.CreateResponse(
+OpenAIResponse response = client.CreateResponse(
     BinaryContent.Create(BinaryData.FromObjectAsJson(
     new {
         model = "gpt-4.1",

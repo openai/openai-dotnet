@@ -157,7 +157,7 @@ namespace OpenAI.Evals
                     List<ResponseTool> array = new List<ResponseTool>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ResponseTool.DeserializeResponseTool(item, options));
+                        array.Add(ResponseTool.DeserializeResponseTool(item, item.GetUtf8Bytes(), options));
                     }
                     tools = array;
                     continue;

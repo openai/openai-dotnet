@@ -29,7 +29,7 @@ namespace OpenAI.Batch
             if (Optional.IsDefined(Object) && _additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object);
+                writer.WriteStringValue(Object.Value.ToString());
             }
             if (Optional.IsCollectionDefined(Data) && _additionalBinaryDataProperties?.ContainsKey("data") != true)
             {
@@ -82,14 +82,18 @@ namespace OpenAI.Batch
             {
                 return null;
             }
-            string @object = default;
+            InternalBatchErrorsObject? @object = default;
             IList<InternalBatchError> data = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("object"u8))
                 {
-                    @object = prop.Value.GetString();
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    @object = new InternalBatchErrorsObject(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("data"u8))

@@ -6,6 +6,7 @@ using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -22,36 +23,53 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(AssistantChatMessage)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (Optional.IsDefined(Refusal) && _additionalBinaryDataProperties?.ContainsKey("refusal") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Optional.IsDefined(Refusal) && !Patch.Contains("$.refusal"u8))
             {
                 writer.WritePropertyName("refusal"u8);
                 writer.WriteStringValue(Refusal);
             }
-            if (Optional.IsDefined(ParticipantName) && _additionalBinaryDataProperties?.ContainsKey("name") != true)
+            if (Optional.IsDefined(ParticipantName) && !Patch.Contains("$.name"u8))
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(ParticipantName);
             }
-            if (Optional.IsDefined(OutputAudioReference) && _additionalBinaryDataProperties?.ContainsKey("audio") != true)
+            if (Optional.IsDefined(OutputAudioReference) && !Patch.Contains("$.audio"u8))
             {
                 writer.WritePropertyName("audio"u8);
                 writer.WriteObjectValue(OutputAudioReference, options);
             }
-            if (Optional.IsCollectionDefined(ToolCalls) && _additionalBinaryDataProperties?.ContainsKey("tool_calls") != true)
+            if (Patch.Contains("$.tool_calls"u8))
+            {
+                if (!Patch.IsRemoved("$.tool_calls"u8))
+                {
+                    writer.WritePropertyName("tool_calls"u8);
+                    writer.WriteRawValue(Patch.GetJson("$.tool_calls"u8));
+                }
+            }
+            else if (Optional.IsCollectionDefined(ToolCalls))
             {
                 writer.WritePropertyName("tool_calls"u8);
                 writer.WriteStartArray();
-                foreach (ChatToolCall item in ToolCalls)
+                for (int i = 0; i < ToolCalls.Count; i++)
                 {
-                    writer.WriteObjectValue(item, options);
+                    if (ToolCalls[i].Patch.IsRemoved("$"u8))
+                    {
+                        continue;
+                    }
+                    writer.WriteObjectValue(ToolCalls[i], options);
                 }
+                Patch.WriteTo(writer, "$.tool_calls"u8);
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(FunctionCall) && _additionalBinaryDataProperties?.ContainsKey("function_call") != true)
+            if (Optional.IsDefined(FunctionCall) && !Patch.Contains("$.function_call"u8))
             {
                 writer.WritePropertyName("function_call"u8);
                 writer.WriteObjectValue(FunctionCall, options);
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         AssistantChatMessage IJsonModel<AssistantChatMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (AssistantChatMessage)JsonModelCreateCore(ref reader, options);
@@ -65,10 +83,10 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(AssistantChatMessage)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeAssistantChatMessage(document.RootElement, options);
+            return DeserializeAssistantChatMessage(document.RootElement, null, options);
         }
 
-        internal static AssistantChatMessage DeserializeAssistantChatMessage(JsonElement element, ModelReaderWriterOptions options)
+        internal static AssistantChatMessage DeserializeAssistantChatMessage(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -76,7 +94,9 @@ namespace OpenAI.Chat
             }
             ChatMessageRole role = default;
             ChatMessageContent content = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string refusal = default;
             string participantName = default;
             ChatOutputAudioReference outputAudioReference = default;
@@ -116,7 +136,7 @@ namespace OpenAI.Chat
                         outputAudioReference = null;
                         continue;
                     }
-                    outputAudioReference = ChatOutputAudioReference.DeserializeChatOutputAudioReference(prop.Value, options);
+                    outputAudioReference = ChatOutputAudioReference.DeserializeChatOutputAudioReference(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("tool_calls"u8))
@@ -128,7 +148,7 @@ namespace OpenAI.Chat
                     List<ChatToolCall> array = new List<ChatToolCall>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ChatToolCall.DeserializeChatToolCall(item, options));
+                        array.Add(ChatToolCall.DeserializeChatToolCall(item, item.GetUtf8Bytes(), options));
                     }
                     toolCalls = array;
                     continue;
@@ -140,16 +160,15 @@ namespace OpenAI.Chat
                         functionCall = null;
                         continue;
                     }
-                    functionCall = ChatFunctionCall.DeserializeChatFunctionCall(prop.Value, options);
+                    functionCall = ChatFunctionCall.DeserializeChatFunctionCall(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new AssistantChatMessage(
                 role,
                 content,
-                additionalBinaryDataProperties,
+                patch,
                 refusal,
                 participantName,
                 outputAudioReference,
@@ -183,7 +202,7 @@ namespace OpenAI.Chat
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeAssistantChatMessage(document.RootElement, options);
+                        return DeserializeAssistantChatMessage(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(AssistantChatMessage)} does not support reading '{options.Format}' format.");

@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,12 +12,20 @@ namespace OpenAI.Responses
 {
     internal partial class InternalItemContentRefusal : ResponseContentPart, IJsonModel<InternalItemContentRefusal>
     {
-        internal InternalItemContentRefusal() : this(InternalItemContentType.Refusal, null, null)
+        internal InternalItemContentRefusal() : this(InternalItemContentType.Refusal, default, null)
         {
         }
 
         void IJsonModel<InternalItemContentRefusal>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -31,11 +39,15 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalItemContentRefusal)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("refusal") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.refusal"u8))
             {
                 writer.WritePropertyName("refusal"u8);
                 writer.WriteStringValue(InternalRefusal);
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalItemContentRefusal IJsonModel<InternalItemContentRefusal>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalItemContentRefusal)JsonModelCreateCore(ref reader, options);
@@ -48,17 +60,19 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalItemContentRefusal)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalItemContentRefusal(document.RootElement, options);
+            return DeserializeInternalItemContentRefusal(document.RootElement, null, options);
         }
 
-        internal static InternalItemContentRefusal DeserializeInternalItemContentRefusal(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalItemContentRefusal DeserializeInternalItemContentRefusal(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalItemContentType internalType = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string internalRefusal = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -72,10 +86,9 @@ namespace OpenAI.Responses
                     internalRefusal = prop.Value.GetString();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalItemContentRefusal(internalType, additionalBinaryDataProperties, internalRefusal);
+            return new InternalItemContentRefusal(internalType, patch, internalRefusal);
         }
 
         BinaryData IPersistableModel<InternalItemContentRefusal>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -102,7 +115,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalItemContentRefusal(document.RootElement, options);
+                        return DeserializeInternalItemContentRefusal(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalItemContentRefusal)} does not support reading '{options.Format}' format.");

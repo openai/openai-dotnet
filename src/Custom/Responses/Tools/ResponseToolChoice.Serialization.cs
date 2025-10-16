@@ -50,6 +50,7 @@ public partial class ResponseToolChoice : IJsonModel<ResponseToolChoice>
                 InternalToolChoiceObject
                     .DeserializeInternalToolChoiceObject(
                         element,
+                        element.GetUtf8Bytes(),
                         options));
         }
         return null;

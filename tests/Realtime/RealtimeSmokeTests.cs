@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using OpenAI.Realtime;
 using System;
 using System.ClientModel.Primitives;
@@ -9,9 +10,8 @@ namespace OpenAI.Tests.Realtime;
 
 #pragma warning disable OPENAI002
 
-[TestFixture(false)]
 [Category("Smoke")]
-public class RealtimeSmokeTests : RealtimeTestFixtureBase
+public class RealtimeSmokeTests : ClientTestBase
 {
     public RealtimeSmokeTests(bool isAsync) : base(isAsync)
     { }
@@ -222,5 +222,76 @@ public class RealtimeSmokeTests : RealtimeTestFixtureBase
         """);
         RealtimeUpdate deserializedUpdate = ModelReaderWriter.Read<RealtimeUpdate>(serializedUnknownCommand);
         Assert.That(deserializedUpdate, Is.Not.Null);
+    }
+
+    [Test]
+    public void ResponseFinishedUpdateCreatedItemsRoundTrip()
+    {
+        // Create sample items to include in the response
+        RealtimeItem userMessageItem = RealtimeItem.CreateUserMessage(["Hello, world!"]);
+        userMessageItem.Id = "item_123";
+
+        RealtimeItem functionCallItem = RealtimeItem.CreateFunctionCall("test_function", "call_456", "{\"param\":\"value\"}");
+        functionCallItem.Id = "item_456";
+
+        RealtimeItem functionOutputItem = RealtimeItem.CreateFunctionCallOutput("call_456", "Function result");
+        functionOutputItem.Id = "item_789";
+
+        BinaryData serializedResponse = BinaryData.FromString($$"""
+        {
+          "type": "response.done",
+          "event_id": "event_123",
+          "response": {
+            "id": "response_abc",
+            "object": "realtime.response",
+            "status": "completed",
+            "status_details": null,
+            "output": [
+              {{ModelReaderWriter.Write(userMessageItem)}},
+              {{ModelReaderWriter.Write(functionCallItem)}},
+              {{ModelReaderWriter.Write(functionOutputItem)}}
+            ],
+            "usage": {
+              "total_tokens": 100,
+              "input_tokens": 50,
+              "output_tokens": 50
+            }
+          }
+        }
+        """);
+
+        // Deserialize the response
+        ResponseFinishedUpdate deserializedUpdate = ModelReaderWriter.Read<ResponseFinishedUpdate>(serializedResponse);
+        
+        // Validate CreatedItems property
+        Assert.That(deserializedUpdate, Is.Not.Null);
+        Assert.That(deserializedUpdate.CreatedItems, Is.Not.Null);
+        Assert.That(deserializedUpdate.CreatedItems, Has.Count.EqualTo(3));
+        
+        // Validate first item (user message)
+        Assert.That(deserializedUpdate.CreatedItems[0].Id, Is.EqualTo("item_123"));
+        Assert.That(deserializedUpdate.CreatedItems[0].MessageRole, Is.EqualTo(ConversationMessageRole.User));
+        Assert.That(deserializedUpdate.CreatedItems[0].MessageContentParts, Has.Count.EqualTo(1));
+        Assert.That(deserializedUpdate.CreatedItems[0].MessageContentParts[0].Text, Is.EqualTo("Hello, world!"));
+        
+        // Validate second item (function call)
+        Assert.That(deserializedUpdate.CreatedItems[1].Id, Is.EqualTo("item_456"));
+        Assert.That(deserializedUpdate.CreatedItems[1].FunctionName, Is.EqualTo("test_function"));
+        Assert.That(deserializedUpdate.CreatedItems[1].FunctionCallId, Is.EqualTo("call_456"));
+        Assert.That(deserializedUpdate.CreatedItems[1].FunctionArguments, Is.EqualTo("{\"param\":\"value\"}"));
+        
+        // Validate third item (function output) - just verify it was deserialized
+        Assert.That(deserializedUpdate.CreatedItems[2].Id, Is.EqualTo("item_789"));
+
+        // Serialize back and validate round-trip
+        BinaryData reserializedResponse = ModelReaderWriter.Write(deserializedUpdate);
+        var reserializedString = reserializedResponse.ToString();
+        Assert.That(reserializedString, Does.Contain(@"""object"":""realtime.response"""));
+
+        JsonNode reserializedNode = JsonNode.Parse(reserializedString);
+        Assert.That(reserializedNode["response"]?["output"]?.AsArray()?.Count, Is.EqualTo(3));
+        Assert.That(reserializedNode["response"]?["output"]?[0]?["id"]?.GetValue<string>(), Is.EqualTo("item_123"));
+        Assert.That(reserializedNode["response"]?["output"]?[1]?["id"]?.GetValue<string>(), Is.EqualTo("item_456"));
+        Assert.That(reserializedNode["response"]?["output"]?[2]?["id"]?.GetValue<string>(), Is.EqualTo("item_789"));
     }
 }
