@@ -19,25 +19,25 @@ namespace OpenAI.Chat
         internal ChatCompletionMessageListDatum(string content, string refusal, string id)
         {
             Content = content;
-            ContentParts = new ChangeTrackingList<ChatMessageContentPart>();
             Refusal = refusal;
             ToolCalls = new ChangeTrackingList<ChatToolCall>();
             Annotations = new ChangeTrackingList<ChatMessageAnnotation>();
+            ContentParts = new ChangeTrackingList<ChatMessageContentPart>();
             Id = id;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ChatCompletionMessageListDatum(string content, IList<ChatMessageContentPart> contentParts, string refusal, IReadOnlyList<ChatToolCall> toolCalls, IReadOnlyList<ChatMessageAnnotation> annotations, ChatMessageRole role, InternalChatCompletionResponseMessageFunctionCall functionCall, ChatOutputAudio outputAudio, string id, in JsonPatch patch)
+        internal ChatCompletionMessageListDatum(string content, string refusal, IReadOnlyList<ChatToolCall> toolCalls, IReadOnlyList<ChatMessageAnnotation> annotations, ChatMessageRole role, InternalChatCompletionResponseMessageFunctionCall functionCall, ChatOutputAudio outputAudio, IList<ChatMessageContentPart> contentParts, string id, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Content = content;
-            ContentParts = contentParts ?? new ChangeTrackingList<ChatMessageContentPart>();
             Refusal = refusal;
             ToolCalls = toolCalls ?? new ChangeTrackingList<ChatToolCall>();
             Annotations = annotations ?? new ChangeTrackingList<ChatMessageAnnotation>();
             Role = role;
             FunctionCall = functionCall;
             OutputAudio = outputAudio;
+            ContentParts = contentParts ?? new ChangeTrackingList<ChatMessageContentPart>();
             Id = id;
             _patch = patch;
             _patch.SetPropagators(PropagateSet, PropagateGet);
@@ -50,8 +50,6 @@ namespace OpenAI.Chat
 
         public string Content { get; }
 
-        public IList<ChatMessageContentPart> ContentParts { get; }
-
         public string Refusal { get; }
 
         public IReadOnlyList<ChatToolCall> ToolCalls { get; }
@@ -59,6 +57,8 @@ namespace OpenAI.Chat
         public IReadOnlyList<ChatMessageAnnotation> Annotations { get; }
 
         internal InternalChatCompletionResponseMessageFunctionCall FunctionCall { get; }
+
+        public IList<ChatMessageContentPart> ContentParts { get; }
 
         public string Id { get; }
     }

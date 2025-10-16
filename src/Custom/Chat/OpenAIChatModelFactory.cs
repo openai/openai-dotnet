@@ -62,19 +62,16 @@ public static partial class OpenAIChatModelFactory
         string systemFingerprint = null,
         ChatTokenUsage usage = default,
         ChatOutputAudio outputAudio = default,
-        IEnumerable<ChatMessageAnnotation> messageAnnotations = default,
-        IEnumerable<ChatMessageContentPart> contentParts = default)
+        IEnumerable<ChatMessageAnnotation> messageAnnotations = default)
     {
         content ??= new ChatMessageContent();
         toolCalls ??= new List<ChatToolCall>();
         contentTokenLogProbabilities ??= new List<ChatTokenLogProbabilityDetails>();
         refusalTokenLogProbabilities ??= new List<ChatTokenLogProbabilityDetails>();
         messageAnnotations ??= new List<ChatMessageAnnotation>();
-        contentParts ??= new List<ChatMessageContentPart>();
 
         InternalChatCompletionResponseMessage message = new(
             content: content,
-            contentParts: contentParts.ToList(),
             refusal: refusal,
             toolCalls: toolCalls.ToList(),
             annotations: messageAnnotations.ToList(),

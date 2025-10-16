@@ -13,7 +13,7 @@ namespace OpenAI.Chat
 {
     public partial class ChatCompletionMessageListDatum : IJsonModel<ChatCompletionMessageListDatum>
     {
-        internal ChatCompletionMessageListDatum() : this(null, null, null, null, null, default, null, null, null, default)
+        internal ChatCompletionMessageListDatum() : this(null, null, null, null, default, null, null, null, null, default)
         {
         }
 
@@ -48,29 +48,6 @@ namespace OpenAI.Chat
             else
             {
                 writer.WriteNull("content"u8);
-            }
-            if (Patch.Contains("$.content_parts"u8))
-            {
-                if (!Patch.IsRemoved("$.content_parts"u8))
-                {
-                    writer.WritePropertyName("content_parts"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.content_parts"u8));
-                }
-            }
-            else if (Optional.IsCollectionDefined(ContentParts))
-            {
-                writer.WritePropertyName("content_parts"u8);
-                writer.WriteStartArray();
-                for (int i = 0; i < ContentParts.Count; i++)
-                {
-                    if (ContentParts[i].Patch.IsRemoved("$"u8))
-                    {
-                        continue;
-                    }
-                    writer.WriteObjectValue(ContentParts[i], options);
-                }
-                Patch.WriteTo(writer, "$.content_parts"u8);
-                writer.WriteEndArray();
             }
             if (Optional.IsDefined(Refusal) && !Patch.Contains("$.refusal"u8))
             {
@@ -142,6 +119,29 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("audio"u8);
                 writer.WriteObjectValue(OutputAudio, options);
             }
+            if (Patch.Contains("$.content_parts"u8))
+            {
+                if (!Patch.IsRemoved("$.content_parts"u8))
+                {
+                    writer.WritePropertyName("content_parts"u8);
+                    writer.WriteRawValue(Patch.GetJson("$.content_parts"u8));
+                }
+            }
+            else if (Optional.IsCollectionDefined(ContentParts))
+            {
+                writer.WritePropertyName("content_parts"u8);
+                writer.WriteStartArray();
+                for (int i = 0; i < ContentParts.Count; i++)
+                {
+                    if (ContentParts[i].Patch.IsRemoved("$"u8))
+                    {
+                        continue;
+                    }
+                    writer.WriteObjectValue(ContentParts[i], options);
+                }
+                Patch.WriteTo(writer, "$.content_parts"u8);
+                writer.WriteEndArray();
+            }
             if (!Patch.Contains("$.id"u8))
             {
                 writer.WritePropertyName("id"u8);
@@ -172,13 +172,13 @@ namespace OpenAI.Chat
                 return null;
             }
             string content = default;
-            IList<ChatMessageContentPart> contentParts = default;
             string refusal = default;
             IReadOnlyList<ChatToolCall> toolCalls = default;
             IReadOnlyList<ChatMessageAnnotation> annotations = default;
             ChatMessageRole role = default;
             InternalChatCompletionResponseMessageFunctionCall functionCall = default;
             ChatOutputAudio outputAudio = default;
+            IList<ChatMessageContentPart> contentParts = default;
             string id = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -193,20 +193,6 @@ namespace OpenAI.Chat
                         continue;
                     }
                     content = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("content_parts"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    List<ChatMessageContentPart> array = new List<ChatMessageContentPart>();
-                    foreach (var item in prop.Value.EnumerateArray())
-                    {
-                        array.Add(ChatMessageContentPart.DeserializeChatMessageContentPart(item, item.GetUtf8Bytes(), options));
-                    }
-                    contentParts = array;
                     continue;
                 }
                 if (prop.NameEquals("refusal"u8))
@@ -271,6 +257,20 @@ namespace OpenAI.Chat
                     outputAudio = ChatOutputAudio.DeserializeChatOutputAudio(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
+                if (prop.NameEquals("content_parts"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    List<ChatMessageContentPart> array = new List<ChatMessageContentPart>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        array.Add(ChatMessageContentPart.DeserializeChatMessageContentPart(item, item.GetUtf8Bytes(), options));
+                    }
+                    contentParts = array;
+                    continue;
+                }
                 if (prop.NameEquals("id"u8))
                 {
                     id = prop.Value.GetString();
@@ -280,13 +280,13 @@ namespace OpenAI.Chat
             }
             return new ChatCompletionMessageListDatum(
                 content,
-                contentParts ?? new ChangeTrackingList<ChatMessageContentPart>(),
                 refusal,
                 toolCalls ?? new ChangeTrackingList<ChatToolCall>(),
                 annotations ?? new ChangeTrackingList<ChatMessageAnnotation>(),
                 role,
                 functionCall,
                 outputAudio,
+                contentParts ?? new ChangeTrackingList<ChatMessageContentPart>(),
                 id,
                 patch);
         }
@@ -334,16 +334,6 @@ namespace OpenAI.Chat
             {
                 return FunctionCall.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("function_call"u8.Length)], out value);
             }
-            if (local.StartsWith("content_parts"u8))
-            {
-                int propertyLength = "content_parts"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
-                {
-                    return false;
-                }
-                return ContentParts[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
-            }
             if (local.StartsWith("tool_calls"u8))
             {
                 int propertyLength = "tool_calls"u8.Length;
@@ -364,6 +354,16 @@ namespace OpenAI.Chat
                 }
                 return Annotations[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
             }
+            if (local.StartsWith("content_parts"u8))
+            {
+                int propertyLength = "content_parts"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                return ContentParts[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+            }
             return false;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -376,17 +376,6 @@ namespace OpenAI.Chat
             if (local.StartsWith("function_call"u8))
             {
                 FunctionCall.Patch.Set([.. "$"u8, .. local.Slice("function_call"u8.Length)], value);
-                return true;
-            }
-            if (local.StartsWith("content_parts"u8))
-            {
-                int propertyLength = "content_parts"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
-                {
-                    return false;
-                }
-                ContentParts[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
                 return true;
             }
             if (local.StartsWith("tool_calls"u8))
@@ -409,6 +398,17 @@ namespace OpenAI.Chat
                     return false;
                 }
                 Annotations[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                return true;
+            }
+            if (local.StartsWith("content_parts"u8))
+            {
+                int propertyLength = "content_parts"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                ContentParts[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
                 return true;
             }
             return false;

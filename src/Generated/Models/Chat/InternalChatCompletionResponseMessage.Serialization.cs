@@ -13,7 +13,7 @@ namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionResponseMessage : IJsonModel<InternalChatCompletionResponseMessage>
     {
-        internal InternalChatCompletionResponseMessage() : this(null, null, null, null, null, default, null, null, default)
+        internal InternalChatCompletionResponseMessage() : this(null, null, null, null, default, null, null, default)
         {
         }
 
@@ -48,29 +48,6 @@ namespace OpenAI.Chat
             else
             {
                 writer.WriteNull("content"u8);
-            }
-            if (Patch.Contains("$.content_parts"u8))
-            {
-                if (!Patch.IsRemoved("$.content_parts"u8))
-                {
-                    writer.WritePropertyName("content_parts"u8);
-                    writer.WriteRawValue(Patch.GetJson("$.content_parts"u8));
-                }
-            }
-            else if (Optional.IsCollectionDefined(ContentParts))
-            {
-                writer.WritePropertyName("content_parts"u8);
-                writer.WriteStartArray();
-                for (int i = 0; i < ContentParts.Count; i++)
-                {
-                    if (ContentParts[i].Patch.IsRemoved("$"u8))
-                    {
-                        continue;
-                    }
-                    writer.WriteObjectValue(ContentParts[i], options);
-                }
-                Patch.WriteTo(writer, "$.content_parts"u8);
-                writer.WriteEndArray();
             }
             if (Optional.IsDefined(Refusal) && !Patch.Contains("$.refusal"u8))
             {
@@ -167,7 +144,6 @@ namespace OpenAI.Chat
                 return null;
             }
             ChatMessageContent content = default;
-            IList<ChatMessageContentPart> contentParts = default;
             string refusal = default;
             IReadOnlyList<ChatToolCall> toolCalls = default;
             IReadOnlyList<ChatMessageAnnotation> annotations = default;
@@ -182,20 +158,6 @@ namespace OpenAI.Chat
                 if (prop.NameEquals("content"u8))
                 {
                     DeserializeContentValue(prop, ref content);
-                    continue;
-                }
-                if (prop.NameEquals("content_parts"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    List<ChatMessageContentPart> array = new List<ChatMessageContentPart>();
-                    foreach (var item in prop.Value.EnumerateArray())
-                    {
-                        array.Add(ChatMessageContentPart.DeserializeChatMessageContentPart(item, item.GetUtf8Bytes(), options));
-                    }
-                    contentParts = array;
                     continue;
                 }
                 if (prop.NameEquals("refusal"u8))
@@ -264,7 +226,6 @@ namespace OpenAI.Chat
             }
             return new InternalChatCompletionResponseMessage(
                 content,
-                contentParts ?? new ChangeTrackingList<ChatMessageContentPart>(),
                 refusal,
                 toolCalls ?? new ChangeTrackingList<ChatToolCall>(),
                 annotations ?? new ChangeTrackingList<ChatMessageAnnotation>(),
@@ -317,16 +278,6 @@ namespace OpenAI.Chat
             {
                 return Audio.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("audio"u8.Length)], out value);
             }
-            if (local.StartsWith("content_parts"u8))
-            {
-                int propertyLength = "content_parts"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
-                {
-                    return false;
-                }
-                return ContentParts[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
-            }
             if (local.StartsWith("tool_calls"u8))
             {
                 int propertyLength = "tool_calls"u8.Length;
@@ -359,17 +310,6 @@ namespace OpenAI.Chat
             if (local.StartsWith("audio"u8))
             {
                 Audio.Patch.Set([.. "$"u8, .. local.Slice("audio"u8.Length)], value);
-                return true;
-            }
-            if (local.StartsWith("content_parts"u8))
-            {
-                int propertyLength = "content_parts"u8.Length;
-                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
-                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
-                {
-                    return false;
-                }
-                ContentParts[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
                 return true;
             }
             if (local.StartsWith("tool_calls"u8))
