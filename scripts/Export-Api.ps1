@@ -107,7 +107,7 @@ function Invoke-GenAPI {
     Write-Output ""
 
     # System.ClientModel
-    $systemClientModelPath = Join-Path $nugetPackagesPath "system.clientmodel\1.6.1"
+    $systemClientModelPath = Join-Path $nugetPackagesPath "system.clientmodel\1.7.0"
     $systemClientModelRef = $null
     if (Test-Path $systemClientModelPath) {
         $systemClientModelRef = Get-ChildItem `
@@ -119,6 +119,21 @@ function Invoke-GenAPI {
 
     Write-Output "  * System.ClientModel:"
     Write-Output "    $($systemClientModelRef)"
+    Write-Output ""
+
+    # System.Net.ServerSentEvents
+    $systemNetServerSentEventsPath = Join-Path $nugetPackagesPath "system.net.serversentevents\9.0.9"
+    $systemNetServerSentEventsRef = $null
+    if (Test-Path $systemNetServerSentEventsPath) {
+        $systemNetServerSentEventsRef = Get-ChildItem `
+            -Path $systemNetServerSentEventsPath `
+            -Include $(($TargetFramework -eq "netstandard2.0") ? "netstandard2.0" : "net8.0") `
+            -Recurse |
+                Select-Object -Last 1
+    }
+
+    Write-Output "  * System.Net.ServerSentEvents:"
+    Write-Output "    $($systemNetServerSentEventsRef)"
     Write-Output ""
 
     # Microsoft.Extensions.Logging.Abstractions
@@ -209,6 +224,7 @@ function Invoke-GenAPI {
     
     if ($netRef) { $genapiArgs += @("--assembly-reference", $netRef) }
     if ($systemClientModelRef) { $genapiArgs += @("--assembly-reference", $systemClientModelRef) }
+    if ($systemNetServerSentEventsRef) { $genapiArgs += @("--assembly-reference", $systemNetServerSentEventsRef) }
     if ($microsoftExtensionsLoggingAbstractionsRef) { $genapiArgs += @("--assembly-reference", $microsoftExtensionsLoggingAbstractionsRef) }
     if ($microsoftExtensionsDependencyInjectionAbstractionsRef) { $genapiArgs += @("--assembly-reference", $microsoftExtensionsDependencyInjectionAbstractionsRef) }
     if ($systemMemoryDataRef) { $genapiArgs += @("--assembly-reference", $systemMemoryDataRef) }
