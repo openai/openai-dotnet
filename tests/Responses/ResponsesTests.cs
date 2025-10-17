@@ -154,6 +154,12 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response.OutputItems[0], Is.InstanceOf<WebSearchCallResponseItem>());
         Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
 
+        // Issue #760: Test Action property access
+        WebSearchCallResponseItem webSearchItem = (WebSearchCallResponseItem)response.OutputItems[0];
+        Assert.That(webSearchItem.Action, Is.Not.Null, "Action property should not be null - Issue #760 fix");
+        Assert.That(webSearchItem.Action.Type, Is.EqualTo("search"));
+        Assert.That(webSearchItem.Action.Query, Is.Not.Null.And.Not.Empty);
+
         MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
         Assert.That(message.Content, Has.Count.GreaterThan(0));
         Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));

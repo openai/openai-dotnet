@@ -44,6 +44,12 @@ namespace OpenAI.Responses
                 writer.WriteStringValue(Status.Value.ToSerialString());
             }
 
+            if (Optional.IsDefined(Action) && !Patch.Contains("$.action"u8))
+            {
+                writer.WritePropertyName("action"u8);
+                writer.WriteObjectValue(Action, options);
+            }
+
             Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
@@ -73,6 +79,7 @@ namespace OpenAI.Responses
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             WebSearchCallStatus? status = default;
+            WebSearchAction action = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -90,9 +97,17 @@ namespace OpenAI.Responses
                     status = prop.Value.GetString().ToWebSearchCallStatus();
                     continue;
                 }
+                if (prop.NameEquals("action"u8))
+                {
+                    if (prop.Value.ValueKind != JsonValueKind.Null)
+                    {
+                        action = WebSearchAction.DeserializeWebSearchAction(prop.Value, options);
+                    }
+                    continue;
+                }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new WebSearchCallResponseItem(kind, id, patch, status);
+            return new WebSearchCallResponseItem(kind, id, patch, status, action);
         }
 
         BinaryData IPersistableModel<WebSearchCallResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
