@@ -22,11 +22,12 @@ namespace OpenAI.Chat
             Refusal = refusal;
             ToolCalls = new ChangeTrackingList<ChatToolCall>();
             Annotations = new ChangeTrackingList<ChatMessageAnnotation>();
+            ContentParts = new ChangeTrackingList<ChatMessageContentPart>();
             Id = id;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ChatCompletionMessageListDatum(string content, string refusal, IReadOnlyList<ChatToolCall> toolCalls, IReadOnlyList<ChatMessageAnnotation> annotations, ChatMessageRole role, InternalChatCompletionResponseMessageFunctionCall functionCall, ChatOutputAudio outputAudio, string id, in JsonPatch patch)
+        internal ChatCompletionMessageListDatum(string content, string refusal, IReadOnlyList<ChatToolCall> toolCalls, IReadOnlyList<ChatMessageAnnotation> annotations, ChatMessageRole role, InternalChatCompletionResponseMessageFunctionCall functionCall, ChatOutputAudio outputAudio, IList<ChatMessageContentPart> contentParts, string id, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Content = content;
@@ -36,6 +37,7 @@ namespace OpenAI.Chat
             Role = role;
             FunctionCall = functionCall;
             OutputAudio = outputAudio;
+            ContentParts = contentParts ?? new ChangeTrackingList<ChatMessageContentPart>();
             Id = id;
             _patch = patch;
             _patch.SetPropagators(PropagateSet, PropagateGet);
@@ -55,6 +57,8 @@ namespace OpenAI.Chat
         public IReadOnlyList<ChatMessageAnnotation> Annotations { get; }
 
         internal InternalChatCompletionResponseMessageFunctionCall FunctionCall { get; }
+
+        public IList<ChatMessageContentPart> ContentParts { get; }
 
         public string Id { get; }
     }

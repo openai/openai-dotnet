@@ -36,8 +36,8 @@ namespace OpenAI.Chat
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public BinaryData Data { get; }
+        public BinaryData Data { get; set; }
 
-        public ChatInputAudioFormat Format { get; }
+        public ChatInputAudioFormat Format { get; set; }
     }
 }
