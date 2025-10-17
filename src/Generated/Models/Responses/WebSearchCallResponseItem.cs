@@ -10,15 +10,18 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class WebSearchCallResponseItem : ResponseItem
     {
-        public WebSearchCallResponseItem() : this(InternalItemType.WebSearchCall, null, default, default)
+        public WebSearchCallResponseItem() : this(InternalItemType.WebSearchCall, null, default, default, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal WebSearchCallResponseItem(InternalItemType kind, string id, in JsonPatch patch, WebSearchCallStatus? status) : base(kind, id, patch)
+        internal WebSearchCallResponseItem(InternalItemType kind, string id, in JsonPatch patch, WebSearchCallStatus? status, WebSearchAction action) : base(kind, id, patch)
         {
             Status = status;
+            Action = action;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        public WebSearchAction Action { get; }
     }
 }
