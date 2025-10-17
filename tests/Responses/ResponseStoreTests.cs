@@ -1,6 +1,5 @@
 ﻿using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
-using OpenAI.Chat;
 using OpenAI.Responses;
 using OpenAI.Tests.Utility;
 using System;
@@ -20,9 +19,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     {
     }
 
-    private OpenAIResponseClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel);
-
-    [Test]
+    [RecordedTest]
     public async Task GetInputItemsWithPagination()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -59,7 +56,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         Assert.That(lastId, Is.Not.Null);
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetInputItemsWithMultiPartPagination()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -111,7 +108,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         Assert.That(hasMultipleContentParts, "Expected at least one message with multiple content parts.");
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetInputItemsWithAfterIdPagination()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -152,7 +149,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         Assert.That(count, Is.GreaterThanOrEqualTo(0));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetInputItemsWithOrderFiltering()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -201,7 +198,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         Assert.That(asc[0].Id, Is.Not.EqualTo(desc[0].Id));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetInputItemsHandlesLargeLimits()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -226,7 +223,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         Assert.That(count, Is.GreaterThan(0));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetInputItemsWithMinimalLimits()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -251,7 +248,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         Assert.That(count, Is.GreaterThan(0));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetInputItemsWithCancellationToken()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -287,7 +284,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetInputItemsWithCombinedOptions()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -317,4 +314,6 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
 
         Assert.That(items, Has.Count.GreaterThan(0));
     }
+
+    private OpenAIResponseClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel);
 }

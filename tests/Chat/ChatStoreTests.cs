@@ -1,4 +1,4 @@
-﻿using Microsoft.ClientModel.TestFramework;
+using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Chat;
 using OpenAI.Tests.Utility;
@@ -12,16 +12,14 @@ using static OpenAI.Tests.TestHelpers;
 namespace OpenAI.Tests.Chat;
 
 [Category("StoredChat")]
-public class ChatStoreToolTests : OpenAIRecordedTestBase
+public class ChatStoreTests : OpenAIRecordedTestBase
 {
-    private const int s_delayInMilliseconds = 5000;
-
-    public ChatStoreToolTests(bool isAsync) : base(isAsync)
+    public ChatStoreTests(bool isAsync) : base(isAsync)
     {
         TestTimeoutInSeconds = 30;
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ChatMetadata()
     {
         ChatClient client = GetTestClient();
@@ -47,7 +45,7 @@ public class ChatStoreToolTests : OpenAIRecordedTestBase
         Assert.That(count, Is.GreaterThan(0));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionsWithPagination()
     {
         ChatClient client = GetTestClient();
@@ -104,7 +102,7 @@ public class ChatStoreToolTests : OpenAIRecordedTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionsWithAfterIdPagination()
     {
         ChatClient client = GetTestClient();
@@ -164,7 +162,7 @@ public class ChatStoreToolTests : OpenAIRecordedTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionsWithOrderFiltering()
     {
         ChatClient client = GetTestClient();
@@ -237,7 +235,7 @@ public class ChatStoreToolTests : OpenAIRecordedTestBase
     }
 
     [LiveOnly(Reason = "Temp while sorting out flakiness in playback")]
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionsWithMetadataFiltering()
     {
         ChatClient client = GetTestClient();
@@ -302,7 +300,7 @@ public class ChatStoreToolTests : OpenAIRecordedTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionsWithModelFiltering()
     {
         ChatClient client = GetTestClient();
@@ -346,7 +344,7 @@ public class ChatStoreToolTests : OpenAIRecordedTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionsWithEmptyOptions()
     {
         ChatClient client = GetTestClient();
@@ -384,7 +382,7 @@ public class ChatStoreToolTests : OpenAIRecordedTestBase
     }
 
     [LiveOnly(Reason ="Temp while sorting out flakiness in playback")]
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionsWithCombinedFilters()
     {
         ChatClient client = GetTestClient();
@@ -435,7 +433,7 @@ public class ChatStoreToolTests : OpenAIRecordedTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task StoredChatCompletionsWork()
     {
         ChatClient client = GetTestClient();
@@ -471,7 +469,7 @@ public class ChatStoreToolTests : OpenAIRecordedTestBase
     }
 
     [LiveOnly(Reason = "Temp while sorting out flakiness in playback")]
-    [Test]
+    [RecordedTest]
     public async Task UpdateChatCompletionWorks()
     {
         ChatClient client = GetTestClient();
@@ -513,7 +511,7 @@ public class ChatStoreToolTests : OpenAIRecordedTestBase
         });
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionsValidatesCollectionEnumeration()
     {
         ChatClient client = GetTestClient();
@@ -568,7 +566,7 @@ public class ChatStoreToolTests : OpenAIRecordedTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionsHandlesLargeLimits()
     {
         ChatClient client = GetTestClient();
@@ -609,7 +607,7 @@ public class ChatStoreToolTests : OpenAIRecordedTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionsWithMinimalLimits()
     {
         ChatClient client = GetTestClient();
@@ -650,7 +648,7 @@ public class ChatStoreToolTests : OpenAIRecordedTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionMessagesWithBasicUsage()
     {
         ChatClient client = GetTestClient();
@@ -690,7 +688,7 @@ public class ChatStoreToolTests : OpenAIRecordedTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionMessagesWithPagination()
     {
         ChatClient client = GetTestClient();
@@ -778,7 +776,7 @@ public class ChatStoreToolTests : OpenAIRecordedTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionMessagesWithAfterIdPagination()
     {
         ChatClient client = GetTestClient();
@@ -835,7 +833,7 @@ public class ChatStoreToolTests : OpenAIRecordedTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionMessagesWithOrderFiltering()
     {
         ChatClient client = GetTestClient();
@@ -894,7 +892,7 @@ public class ChatStoreToolTests : OpenAIRecordedTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionMessagesWithCancellationToken()
     {
         ChatClient client = GetTestClient();
@@ -946,7 +944,7 @@ public class ChatStoreToolTests : OpenAIRecordedTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionMessagesWithCombinedOptions()
     {
         ChatClient client = GetTestClient();
@@ -996,6 +994,8 @@ public class ChatStoreToolTests : OpenAIRecordedTestBase
         }
         catch { /* Ignore cleanup errors */ }
     }
+
+    private const int s_delayInMilliseconds = 5000;
 
     private ChatClient GetTestClient(string overrideModel = null)
         => GetProxiedOpenAIClient<ChatClient>(

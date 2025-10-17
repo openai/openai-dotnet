@@ -1,4 +1,4 @@
-﻿using Microsoft.ClientModel.TestFramework;
+using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Audio;
 using OpenAI.Tests.Utility;
@@ -26,7 +26,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         UsingFilePath,
     }
 
-    [Test]
+    [RecordedTest]
     [TestCase(AudioSourceKind.UsingStream)]
     [TestCase(AudioSourceKind.UsingFilePath)]
     public async Task TranscriptionWorks(AudioSourceKind audioSourceKind)
@@ -51,7 +51,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         Assert.That(transcription.Text.ToLowerInvariant(), Contains.Substring("hello"));
     }
 
-    [Test]
+    [RecordedTest]
     [TestCase(AudioTimestampGranularities.Default)]
     [TestCase(AudioTimestampGranularities.Word)]
     [TestCase(AudioTimestampGranularities.Segment)]
@@ -122,7 +122,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     [TestCase("text")]
     [TestCase("json")]
     [TestCase("verbose_json")]
@@ -185,7 +185,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task IncludesWork()
     {
         AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe);
@@ -203,7 +203,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         Assert.That(transcription.TranscriptionTokenLogProbabilities[0].Utf8Bytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
 
-    [Test]
+    [RecordedTest]
     public async Task StreamingIncludesWork()
     {
         AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe);
@@ -237,7 +237,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         Assert.That(streamedDeltaLogProbs, Has.Count.GreaterThan(0));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task BadTranscriptionRequest()
     {
         AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
@@ -264,7 +264,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         Assert.That(caughtException.Message?.ToLower(), Contains.Substring("invalid language"));
     }
 
-    [Test]
+    [RecordedTest]
     [TestCase(AudioSourceKind.UsingStream)]
     [TestCase(AudioSourceKind.UsingFilePath)]
     public async Task StreamingTranscriptionWorks(AudioSourceKind audioSourceKind)
@@ -309,7 +309,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
         inputStream?.Dispose();
     }
 
-    [Test]
+    [RecordedTest]
     [TestCase(AudioSourceKind.UsingStream)]
     [TestCase(AudioSourceKind.UsingFilePath)]
     public void StreamingTranscriptionThrowsForWhisperModel(AudioSourceKind audioSourceKind)

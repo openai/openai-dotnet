@@ -26,7 +26,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         TestTimeoutInSeconds = 30;
     }
 
-    [Test]
+    [RecordedTest]
     public async Task MCPToolWorks()
     {
         string serverLabel = "dmcp";
@@ -78,7 +78,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(assistantMessageItem, Is.Not.Null);
     }
 
-    [Test]
+    [RecordedTest]
     public async Task MCPToolStreamingWorks()
     {
         string serverLabel = "dmcp";
@@ -181,7 +181,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(mcpCallArgumentsDeltaUpdateCount, Is.GreaterThanOrEqualTo(mcpCallArgumentsDoneUpdateCount));
     }
 
-    [Test]
+    [RecordedTest]
     [TestCase(true)]
     [TestCase(false)]
     public async Task MCPToolNeverRequiresApproval(bool useGlobalPolicy)
@@ -222,7 +222,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(response.OutputItems.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(1));
     }
 
-    [Test]
+    [RecordedTest]
     [TestCase(true)]
     [TestCase(false)]
     public async Task MCPToolAlwaysRequiresApproval(bool useGlobalPolicy)
@@ -272,7 +272,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(response2.OutputItems.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(1));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task MCPToolWithAllowedTools()
     {
         string serverLabel = "dmcp";
@@ -313,7 +313,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(toolCallItem.Error, Is.Null);
     }
 
-    [Test]
+    [RecordedTest]
     public async Task MCPToolWithDisallowedTools()
     {
         string serverLabel = "dmcp";
@@ -345,7 +345,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(response.OutputItems.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(0));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task FileSearch()
     {
         OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
@@ -397,7 +397,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CodeInterpreterToolWithoutFileIds()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -428,7 +428,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<CodeInterpreterTool>());
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CodeInterpreterToolWithEmptyFileIds()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -460,7 +460,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<CodeInterpreterTool>());
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CodeInterpreterToolWithContainerIdFromContainerApi()
     {
         ContainerClient containerClient = GetProxiedOpenAIClient<ContainerClient>(TestScenario.Containers);
@@ -516,7 +516,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CodeInterpreterToolWithUploadedFileIds()
     {
         OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
@@ -579,7 +579,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CodeInterpreterToolStreaming()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -614,7 +614,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(completedCount, Is.GreaterThan(0));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CodeInterpreterToolStreamingWithFiles()
     {
         OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
@@ -695,8 +695,6 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         }
     }
 
-    private OpenAIResponseClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel);
-
     private static void ValidateCodeInterpreterEvent(ref int inProgressCount, ref int interpretingCount, ref int codeDeltaCount, ref int codeDoneCount, ref int completedCount, ref bool gotFinishedCodeInterpreterItem, StringBuilder codeBuilder, StreamingResponseUpdate update)
     {
         if (update is StreamingResponseCodeInterpreterCallInProgressUpdate codeInterpreterInProgressUpdate)
@@ -751,4 +749,6 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         }
     }
+
+    private OpenAIResponseClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel);
 }

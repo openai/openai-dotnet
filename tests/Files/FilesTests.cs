@@ -16,7 +16,12 @@ namespace OpenAI.Tests.Files;
 [Category("Files")]
 public class FilesTests : OpenAIRecordedTestBase
 {
-    private OpenAIFileClient GetTestClient() => GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
+    public enum FileSourceKind
+    {
+        UsingStream,
+        UsingFilePath,
+        UsingBinaryData
+    }
 
     public FilesTests(bool isAsync) : base(isAsync)
     {
@@ -34,7 +39,7 @@ public class FilesTests : OpenAIRecordedTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ListFiles()
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
@@ -124,16 +129,7 @@ public class FilesTests : OpenAIRecordedTestBase
         }
     }
 
-    public enum FileSourceKind
-    {
-        UsingStream,
-        UsingFilePath,
-        UsingBinaryData
-    }
-
-    private static Array s_fileSourceKindSource = Enum.GetValues(typeof(FileSourceKind));
-
-    [Test]
+    [RecordedTest]
     [TestCaseSource(nameof(s_fileSourceKindSource))]
     public async Task UploadFile(FileSourceKind fileSourceKind)
     {
@@ -195,7 +191,7 @@ public class FilesTests : OpenAIRecordedTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public void UploadFileCanParseServiceError()
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
@@ -210,7 +206,7 @@ public class FilesTests : OpenAIRecordedTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     [TestCase(true)]
     [TestCase(false)]
     public async Task DeleteFile(bool useFileInfoOverload)
@@ -240,7 +236,7 @@ public class FilesTests : OpenAIRecordedTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public void DeleteFileCanParseServiceError()
     {
         OpenAIFileClient client = GetTestClient();
@@ -249,7 +245,7 @@ public class FilesTests : OpenAIRecordedTestBase
         Assert.That(ex.Status, Is.EqualTo(404));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetFile()
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
@@ -288,7 +284,7 @@ public class FilesTests : OpenAIRecordedTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public void GetFileCanParseServiceError()
     {
         OpenAIFileClient client = GetTestClient();
@@ -297,7 +293,7 @@ public class FilesTests : OpenAIRecordedTestBase
         Assert.That(ex.Status, Is.EqualTo(404));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task DownloadContent()
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
@@ -331,7 +327,7 @@ public class FilesTests : OpenAIRecordedTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public void DownloadFileCanParseServiceError()
     {
         OpenAIFileClient client = GetTestClient();
@@ -340,13 +336,13 @@ public class FilesTests : OpenAIRecordedTestBase
         Assert.That(ex.Status, Is.EqualTo(404));
     }
 
-    [Test]
+    [RecordedTest]
     public void SerializeFileCollection()
     {
         // TODO: Add this test.
     }
 
-    [Test]
+    [RecordedTest]
     public async Task NonAsciiFilename()
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
@@ -360,7 +356,7 @@ public class FilesTests : OpenAIRecordedTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task UserDataPurpose()
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
@@ -373,6 +369,10 @@ public class FilesTests : OpenAIRecordedTestBase
             Assert.That(uploadedFile.Purpose, Is.EqualTo(FilePurpose.UserData));
         }
     }
+
+    private static Array s_fileSourceKindSource = Enum.GetValues(typeof(FileSourceKind));
+
+    private readonly List<string> FileIdsForCleanup = [];
 
     private void Validate<T>(T instance)
     {
@@ -387,5 +387,5 @@ public class FilesTests : OpenAIRecordedTestBase
         }
     }
 
-    private readonly List<string> FileIdsForCleanup = [];
+    private OpenAIFileClient GetTestClient() => GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
 }
