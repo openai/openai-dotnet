@@ -193,6 +193,77 @@ public partial class ModerationClient
         return ClientResult.FromValue((ModerationResultCollection)result, result.GetRawResponse());
     }
 
+    /// <summary>
+    /// Classifies if the multimodal inputs (text and/or images) are potentially harmful across several categories.
+    /// Returns a collection result (one entry per input).
+    /// </summary>
+    /// <param name="inputs">Sequence of moderation inputs (text and/or image URLs).</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <exception cref="ArgumentNullException">inputs is null.</exception>
+    /// <exception cref="ArgumentException">inputs is empty.</exception>
+    public virtual async Task<ClientResult<ModerationResultCollection>> ClassifyAsync(
+        IEnumerable<ModerationInput> inputs,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(inputs, nameof(inputs));
+
+        ModerationOptions options = new();
+        CreateModerationOptions(inputs, ref options);
+
+        using BinaryContent content = options.ToBinaryContent();
+        ClientResult result = await ClassifyTextAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return ClientResult.FromValue((ModerationResultCollection)result, result.GetRawResponse());
+    }
+
+    /// <summary>
+    /// Classifies if the multimodal inputs (text and/or images) are potentially harmful across several categories.
+    /// Returns a collection result (one entry per input).
+    /// </summary>
+    /// <param name="inputs">Sequence of moderation inputs (text and/or image URLs).</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <exception cref="ArgumentNullException">inputs is null.</exception>
+    /// <exception cref="ArgumentException">inputs is empty.</exception>
+    public virtual ClientResult<ModerationResultCollection> Classify(
+        IEnumerable<ModerationInput> inputs,
+        CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(inputs, nameof(inputs));
+
+        ModerationOptions options = new();
+        CreateModerationOptions(inputs, ref options);
+
+        using BinaryContent content = options.ToBinaryContent();
+        ClientResult result = ClassifyText(content, cancellationToken.ToRequestOptions());
+        return ClientResult.FromValue((ModerationResultCollection)result, result.GetRawResponse());
+    }
+
+    /// <summary>
+    /// Classifies a single multimodal input (text or image URL). Returns the first (and only) result.
+    /// </summary>
+    public virtual async Task<ClientResult<ModerationResult>> ClassifyAsync(
+        ModerationInput input,
+        CancellationToken cancellationToken = default)
+    {
+        // Reuse plural overload for consistency
+        ClientResult<ModerationResultCollection> result =
+            await ClassifyAsync(new[] { input }, cancellationToken).ConfigureAwait(false);
+
+        return ClientResult.FromValue(result.Value.FirstOrDefault(), result.GetRawResponse());
+    }
+
+    /// <summary>
+    /// Classifies a single multimodal input (text or image URL). Returns the first (and only) result.
+    /// </summary>
+    public virtual ClientResult<ModerationResult> Classify(
+        ModerationInput input,
+        CancellationToken cancellationToken = default)
+    {
+        ClientResult<ModerationResultCollection> result =
+            Classify([input], cancellationToken);
+
+        return ClientResult.FromValue(result.Value.FirstOrDefault(), result.GetRawResponse());
+    }
+
     private void CreateModerationOptions(string input, ref ModerationOptions options)
     {
         using MemoryStream stream = new();
@@ -215,6 +286,46 @@ public partial class ModerationClient
         foreach (string input in inputs)
         {
             writer.WriteStringValue(input);
+        }
+
+        writer.WriteEndArray();
+        writer.Flush();
+
+        options.Input = BinaryData.FromBytes(stream.GetBuffer().AsMemory(0, (int)stream.Length));
+        options.Model = _model;
+    }
+
+    private void CreateModerationOptions(IEnumerable<ModerationInput> inputs, ref ModerationOptions options)
+    {
+        using MemoryStream stream = new();
+        using Utf8JsonWriter writer = new(stream);
+
+        writer.WriteStartArray();
+
+        foreach (var item in inputs)
+        {
+            writer.WriteStartObject();
+
+            switch (item.Type)
+            {
+                case ModerationInputType.Text:
+                    writer.WriteString("type", "text");
+                    writer.WriteString("text", item.Text!);
+                    break;
+
+                case ModerationInputType.ImageUrl:
+                    writer.WriteString("type", "image_url");
+                    writer.WritePropertyName("image_url");
+                    writer.WriteStartObject();
+                    writer.WriteString("url", item.ImageUrl!);
+                    writer.WriteEndObject();
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(item.Type), item.Type, "Unsupported moderation input type.");
+            }
+
+            writer.WriteEndObject();
         }
 
         writer.WriteEndArray();
