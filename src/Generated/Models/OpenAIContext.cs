@@ -56,7 +56,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(ChatOutputAudioReference))]
     [ModelReaderWriterBuildable(typeof(ChatOutputPrediction))]
     [ModelReaderWriterBuildable(typeof(ChatOutputTokenUsageDetails))]
-    [ModelReaderWriterBuildable(typeof(ChatResponseFormat))]
+    [ModelReaderWriterBuildable(typeof(Chat.ChatResponseFormat))]
     [ModelReaderWriterBuildable(typeof(ChatTokenLogProbabilityDetails))]
     [ModelReaderWriterBuildable(typeof(ChatTokenTopLogProbabilityDetails))]
     [ModelReaderWriterBuildable(typeof(ChatTokenUsage))]

@@ -414,7 +414,7 @@ public class ChatTests : OpenAIRecordedTestBase
         ChatClient client = GetTestClient(overrideModel: "gpt-4o-mini");
         ChatCompletionOptions options = new()
         {
-            ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
+            ResponseFormat = OpenAI.Chat.ChatResponseFormat.CreateJsonSchemaFormat(
                 "some_color_schema",
                 BinaryData.FromBytes("""
                     {
@@ -438,7 +438,7 @@ public class ChatTests : OpenAIRecordedTestBase
             new UserChatMessage("Give me a JSON object with the following properties: red, green, and blue. The value "
                 + "of each property should be a string containing their RGB representation in hexadecimal.")
         ];
-        ChatCompletionOptions options = new() { ResponseFormat = ChatResponseFormat.CreateJsonObjectFormat() };
+        ChatCompletionOptions options = new() { ResponseFormat = OpenAI.Chat.ChatResponseFormat.CreateJsonObjectFormat() };
         ClientResult<ChatCompletion> result = await client.CompleteChatAsync(messages, options);
 
         JsonDocument jsonDocument = JsonDocument.Parse(result.Value.Content[0].Text);
@@ -481,7 +481,7 @@ public class ChatTests : OpenAIRecordedTestBase
         ];
         ChatCompletionOptions options = new ChatCompletionOptions()
         {
-            ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
+            ResponseFormat = OpenAI.Chat.ChatResponseFormat.CreateJsonSchemaFormat(
                 "test_schema",
                 BinaryData.FromBytes("""
                     {
@@ -528,7 +528,7 @@ public class ChatTests : OpenAIRecordedTestBase
         ];
         ChatCompletionOptions options = new ChatCompletionOptions()
         {
-            ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
+            ResponseFormat = OpenAI.Chat.ChatResponseFormat.CreateJsonSchemaFormat(
                 "food_recipe",
                 BinaryData.FromBytes("""
                     {
@@ -585,7 +585,7 @@ public class ChatTests : OpenAIRecordedTestBase
         ];
         ChatCompletionOptions options = new ChatCompletionOptions()
         {
-            ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
+            ResponseFormat = OpenAI.Chat.ChatResponseFormat.CreateJsonSchemaFormat(
                 "food_recipe",
                 BinaryData.FromBytes("""
                     {
