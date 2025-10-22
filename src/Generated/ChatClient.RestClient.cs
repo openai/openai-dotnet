@@ -26,7 +26,7 @@ namespace OpenAI.Chat
             }
             if (limit != null)
             {
-                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit, null), true);
+                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
             }
             if (order != null)
             {
@@ -40,7 +40,7 @@ namespace OpenAI.Chat
                     // Plugin customization: Properly handle metadata query parameters
                     uri.AppendQuery($"metadata[{@param.Key}]", @param.Value, true);
                 }
-                // Plugin customization: remove unnecessary AppendQueryDelimited for metadata
+                uri.AppendQueryDelimited("metadata", list, ",", escape: true);
             }
             if (model != null)
             {
@@ -121,7 +121,7 @@ namespace OpenAI.Chat
             }
             if (limit != null)
             {
-                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit, null), true);
+                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
             }
             if (order != null)
             {

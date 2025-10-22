@@ -21,7 +21,7 @@ namespace OpenAI.Containers
             uri.AppendPath("/containers", false);
             if (limit != null)
             {
-                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit, null), true);
+                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
             }
             if (order != null)
             {
@@ -103,7 +103,7 @@ namespace OpenAI.Containers
             uri.AppendPath("/files", false);
             if (limit != null)
             {
-                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit, null), true);
+                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
             }
             if (order != null)
             {
