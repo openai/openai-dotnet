@@ -4,17 +4,17 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Chat
 {
-    public partial class ChatCompletionStreamOptions2
+    public partial class ChatCompletionStreamOptions
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public ChatCompletionStreamOptions2()
+        public ChatCompletionStreamOptions()
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ChatCompletionStreamOptions2(bool? includeUsage, in JsonPatch patch)
+        internal ChatCompletionStreamOptions(bool? includeUsage, in JsonPatch patch)
         {
             IncludeUsage = includeUsage;
             _patch = patch;

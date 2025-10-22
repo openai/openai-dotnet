@@ -5,13 +5,13 @@ using System.Text.Json;
 
 namespace OpenAI.Chat
 {
-    public partial class ChatCompletionResponseMessageFunctionCall2 : IJsonModel<ChatCompletionResponseMessageFunctionCall2>
+    public partial class ChatCompletionResponseMessageFunctionCall : IJsonModel<ChatCompletionResponseMessageFunctionCall>
     {
-        internal ChatCompletionResponseMessageFunctionCall2()
+        internal ChatCompletionResponseMessageFunctionCall()
         {
         }
 
-        void IJsonModel<ChatCompletionResponseMessageFunctionCall2>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<ChatCompletionResponseMessageFunctionCall>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
@@ -20,10 +20,10 @@ namespace OpenAI.Chat
 
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionResponseMessageFunctionCall2>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionResponseMessageFunctionCall>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(ChatCompletionResponseMessageFunctionCall2)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(ChatCompletionResponseMessageFunctionCall)} does not support writing '{format}' format.");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
             {
@@ -57,20 +57,20 @@ namespace OpenAI.Chat
             }
         }
 
-        ChatCompletionResponseMessageFunctionCall2 IJsonModel<ChatCompletionResponseMessageFunctionCall2>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        ChatCompletionResponseMessageFunctionCall IJsonModel<ChatCompletionResponseMessageFunctionCall>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected virtual ChatCompletionResponseMessageFunctionCall2 JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual ChatCompletionResponseMessageFunctionCall JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionResponseMessageFunctionCall2>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionResponseMessageFunctionCall>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(ChatCompletionResponseMessageFunctionCall2)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(ChatCompletionResponseMessageFunctionCall)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeChatCompletionResponseMessageFunctionCall(document.RootElement, options);
         }
 
-        internal static ChatCompletionResponseMessageFunctionCall2 DeserializeChatCompletionResponseMessageFunctionCall(JsonElement element, ModelReaderWriterOptions options)
+        internal static ChatCompletionResponseMessageFunctionCall DeserializeChatCompletionResponseMessageFunctionCall(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -94,28 +94,28 @@ namespace OpenAI.Chat
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ChatCompletionResponseMessageFunctionCall2(name, arguments, additionalBinaryDataProperties);
+            return new ChatCompletionResponseMessageFunctionCall(name, arguments, additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<ChatCompletionResponseMessageFunctionCall2>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<ChatCompletionResponseMessageFunctionCall>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionResponseMessageFunctionCall2>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionResponseMessageFunctionCall>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(ChatCompletionResponseMessageFunctionCall2)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ChatCompletionResponseMessageFunctionCall)} does not support writing '{options.Format}' format.");
             }
         }
 
-        ChatCompletionResponseMessageFunctionCall2 IPersistableModel<ChatCompletionResponseMessageFunctionCall2>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        ChatCompletionResponseMessageFunctionCall IPersistableModel<ChatCompletionResponseMessageFunctionCall>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        protected virtual ChatCompletionResponseMessageFunctionCall2 PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual ChatCompletionResponseMessageFunctionCall PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionResponseMessageFunctionCall2>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionResponseMessageFunctionCall>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -124,10 +124,10 @@ namespace OpenAI.Chat
                         return DeserializeChatCompletionResponseMessageFunctionCall(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(ChatCompletionResponseMessageFunctionCall2)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ChatCompletionResponseMessageFunctionCall)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<ChatCompletionResponseMessageFunctionCall2>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<ChatCompletionResponseMessageFunctionCall>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

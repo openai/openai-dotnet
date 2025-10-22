@@ -5,12 +5,12 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Chat
 {
     [Experimental("OPENAI001")]
-    public partial class CreateChatCompletionResponseChoice2
+    public partial class CreateChatCompletionResponseChoice
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal CreateChatCompletionResponseChoice2(ChatFinishReason finishReason, int index, ChatCompletionResponseMessage2 message, CreateChatCompletionResponseChoiceLogprobs logprobs)
+        internal CreateChatCompletionResponseChoice(ChatFinishReason finishReason, int index, ChatCompletionResponseMessage message, CreateChatCompletionResponseChoiceLogprobs logprobs)
         {
             FinishReason = finishReason;
             Index = index;
@@ -18,7 +18,7 @@ namespace OpenAI.Chat
             Logprobs = logprobs;
         }
 
-        internal CreateChatCompletionResponseChoice2(ChatFinishReason finishReason, int index, ChatCompletionResponseMessage2 message, CreateChatCompletionResponseChoiceLogprobs logprobs, in JsonPatch patch)
+        internal CreateChatCompletionResponseChoice(ChatFinishReason finishReason, int index, ChatCompletionResponseMessage message, CreateChatCompletionResponseChoiceLogprobs logprobs, in JsonPatch patch)
         {
             FinishReason = finishReason;
             Index = index;
@@ -31,7 +31,7 @@ namespace OpenAI.Chat
 
         public int Index { get; }
 
-        public ChatCompletionResponseMessage2 Message { get; }
+        public ChatCompletionResponseMessage Message { get; }
 
         public CreateChatCompletionResponseChoiceLogprobs Logprobs { get; }
 

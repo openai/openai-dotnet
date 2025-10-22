@@ -6,11 +6,11 @@ using OpenAI.Chat;
 namespace OpenAI.Chat
 {
     [Experimental("OPENAI001")]
-    public partial class ChatCompletionResponseMessage2
+    public partial class ChatCompletionResponseMessage
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ChatCompletionResponseMessage2(string content, string refusal)
+        internal ChatCompletionResponseMessage(string content, string refusal)
         {
             Content = content;
             Refusal = refusal;
@@ -18,7 +18,7 @@ namespace OpenAI.Chat
             Annotations = new ChangeTrackingList<ChatMessageAnnotation>();
         }
 
-        internal ChatCompletionResponseMessage2(string content, string refusal, IReadOnlyList<ChatToolCall> toolCalls, IReadOnlyList<ChatMessageAnnotation> annotations, ChatMessageRole role, ChatCompletionResponseMessageFunctionCall2 functionCall, ChatOutputAudio audio, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ChatCompletionResponseMessage(string content, string refusal, IReadOnlyList<ChatToolCall> toolCalls, IReadOnlyList<ChatMessageAnnotation> annotations, ChatMessageRole role, ChatCompletionResponseMessageFunctionCall functionCall, ChatOutputAudio audio, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Content = content;
@@ -41,7 +41,7 @@ namespace OpenAI.Chat
 
         public ChatMessageRole Role { get; } = ChatMessageRole.Assistant;
 
-        public ChatCompletionResponseMessageFunctionCall2 FunctionCall { get; }
+        public ChatCompletionResponseMessageFunctionCall FunctionCall { get; }
 
         public ChatOutputAudio Audio { get; }
 

@@ -33,7 +33,7 @@ namespace OpenAI.Chat
         }
 
 #pragma warning disable  SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CreateChatCompletionOptions(IDictionary<string, string> metadata, float? temperature, float? topP, string user, ChatServiceTier? serviceTier, IList<ChatMessage> messages, string model, IList<CreateChatCompletionRequestModality2> modalities, ChatReasoningEffortLevel? reasoningEffort, int? maxCompletionTokens, float? frequencyPenalty, float? presencePenalty, ChatWebSearchOptions webSearchOptions, int? topLogprobs, ChatResponseFormat responseFormat, ChatAudioOptions audio, bool? store, bool? stream, IList<string> stop, IDictionary<int, int> logitBias, bool? logprobs, int? maxTokens, int? n, ChatOutputPrediction prediction, long? seed, ChatCompletionStreamOptions2 streamOptions, IList<ChatTool> tools, BinaryData toolChoice, bool? parallelToolCalls, BinaryData functionCall, IList<ChatFunction> functions, in JsonPatch patch)
+        internal CreateChatCompletionOptions(IDictionary<string, string> metadata, float? temperature, float? topP, string user, ChatServiceTier? serviceTier, IList<ChatMessage> messages, string model, IList<CreateChatCompletionRequestModality2> modalities, ChatReasoningEffortLevel? reasoningEffort, int? maxCompletionTokens, float? frequencyPenalty, float? presencePenalty, ChatWebSearchOptions webSearchOptions, int? topLogprobs, ChatResponseFormat responseFormat, ChatAudioOptions audio, bool? store, bool? stream, IList<string> stop, IDictionary<int, int> logitBias, bool? logprobs, int? maxTokens, int? n, ChatOutputPrediction prediction, long? seed, ChatCompletionStreamOptions streamOptions, IList<ChatTool> tools, BinaryData toolChoice, bool? parallelToolCalls, BinaryData functionCall, IList<ChatFunction> functions, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -122,7 +122,7 @@ namespace OpenAI.Chat
 
         public long? Seed { get; set; }
 
-        public ChatCompletionStreamOptions2 StreamOptions { get; set; }
+        public ChatCompletionStreamOptions StreamOptions { get; set; }
 
         public IList<ChatTool> Tools { get; }
 
@@ -302,7 +302,7 @@ namespace OpenAI.Chat
             int? n = default;
             ChatOutputPrediction prediction = default;
             long? seed = default;
-            ChatCompletionStreamOptions2 streamOptions = default;
+            ChatCompletionStreamOptions streamOptions = default;
             IList<ChatTool> tools = default;
             BinaryData toolChoice = default;
             bool? parallelToolCalls = default;
@@ -562,7 +562,7 @@ namespace OpenAI.Chat
                         streamOptions = null;
                         continue;
                     }
-                    streamOptions = ChatCompletionStreamOptions2.DeserializeChatCompletionStreamOptions(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    streamOptions = ChatCompletionStreamOptions.DeserializeChatCompletionStreamOptions(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("tools"u8))

@@ -13,7 +13,7 @@ namespace OpenAI.Chat
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal ChatCompletionResult(string id, IEnumerable<CreateChatCompletionResponseChoice2> choices, DateTimeOffset created, string model)
+        internal ChatCompletionResult(string id, IEnumerable<CreateChatCompletionResponseChoice> choices, DateTimeOffset created, string model)
         {
             Id = id;
             Choices = choices.ToList();
@@ -21,11 +21,11 @@ namespace OpenAI.Chat
             Model = model;
         }
 
-        internal ChatCompletionResult(string id, IList<CreateChatCompletionResponseChoice2> choices, DateTimeOffset created, string model, ChatServiceTier? serviceTier, string systemFingerprint, string @object, ChatTokenUsage usage, in JsonPatch patch)
+        internal ChatCompletionResult(string id, IList<CreateChatCompletionResponseChoice> choices, DateTimeOffset created, string model, ChatServiceTier? serviceTier, string systemFingerprint, string @object, ChatTokenUsage usage, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
-            Choices = choices ?? new ChangeTrackingList<CreateChatCompletionResponseChoice2>();
+            Choices = choices ?? new ChangeTrackingList<CreateChatCompletionResponseChoice>();
             Created = created;
             Model = model;
             ServiceTier = serviceTier;
@@ -37,7 +37,7 @@ namespace OpenAI.Chat
 
         public string Id { get; }
 
-        public IList<CreateChatCompletionResponseChoice2> Choices { get; }
+        public IList<CreateChatCompletionResponseChoice> Choices { get; }
 
         public DateTimeOffset Created { get; }
 
