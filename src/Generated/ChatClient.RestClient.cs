@@ -40,7 +40,7 @@ namespace OpenAI.Chat
                     // Plugin customization: Properly handle metadata query parameters
                     uri.AppendQuery($"metadata[{@param.Key}]", @param.Value, true);
                 }
-                uri.AppendQueryDelimited("metadata", list, ",", escape: true);
+                // Plugin customization: remove unnecessary AppendQueryDelimited for metadata
             }
             if (model != null)
             {
