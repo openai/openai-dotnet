@@ -44,11 +44,11 @@ namespace OpenAI.Responses
             }
             if (stream != null)
             {
-                uri.AppendQuery("stream", TypeFormatters.ConvertToString(stream, null), true);
+                uri.AppendQuery("stream", TypeFormatters.ConvertToString(stream), true);
             }
             if (startingAfter != null)
             {
-                uri.AppendQuery("starting_after", TypeFormatters.ConvertToString(startingAfter, null), true);
+                uri.AppendQuery("starting_after", TypeFormatters.ConvertToString(startingAfter), true);
             }
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;
@@ -93,7 +93,7 @@ namespace OpenAI.Responses
             uri.AppendPath("/input_items", false);
             if (limit != null)
             {
-                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit, null), true);
+                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
             }
             if (order != null)
             {
