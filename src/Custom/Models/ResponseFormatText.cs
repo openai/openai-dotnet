@@ -1,18 +1,16 @@
-using System;
 using System.ClientModel.Primitives;
 using OpenAI.Chat;
-using OpenAI.Internal;
 
-namespace OpenAI
+namespace OpenAI.Chat
 {
-    internal partial class ResponseFormatText : ChatResponseFormat
+    public partial class ResponseFormatText : ResponseFormat
     {
-        public ResponseFormatText() : this(ResponseFormatType2.Text, default)
+        public ResponseFormatText() : this(ResponseFormatType.Text, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseFormatText(ResponseFormatType2 kind, in JsonPatch patch) : base(kind switch{ ResponseFormatType2.Text => InternalResponseFormatType.Text, ResponseFormatType2.JsonObject => InternalResponseFormatType.JsonObject, ResponseFormatType2.JsonSchema => InternalResponseFormatType.JsonSchema, _ => throw new InvalidOperationException("Unknown response format type") }, patch)
+        public ResponseFormatText(ResponseFormatType kind, in JsonPatch patch) : base(kind)
         {
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

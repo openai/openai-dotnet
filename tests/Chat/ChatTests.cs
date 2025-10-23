@@ -139,6 +139,30 @@ public class ChatTests : OpenAIRecordedTestBase
         Assert.That(result.Value.Content[0].Text.ToLowerInvariant(), Does.Contain("dog").Or.Contain("cat").IgnoreCase);
     }
 
+    [Ignore("Temporarily disabled due to service instability.")]
+    [RecordedTest]
+    public async Task ChatWithVision_PM()
+    {
+        string mediaType = "image/png";
+        string filePath = Path.Combine("Assets", "images_dog_and_cat.png");
+        using Stream stream = File.OpenRead(filePath);
+        BinaryData imageData = BinaryData.FromStream(stream);
+
+        ChatClient client = GetTestClient();
+        IEnumerable<ChatMessage> messages = [
+            new UserChatMessage(
+                ChatMessageContentPart.CreateTextPart("Describe this image for me."),
+                ChatMessageContentPart.CreateImagePart(imageData, mediaType)),
+        ];
+        ChatCompletionOptions options = new() { MaxOutputTokenCount = 2048 };
+
+        CreateChatCompletionOptions request = CreateChatCompletionOptions.Create(messages, client, options);
+        ClientResult<ChatCompletionResult> result = await client.CompleteChatAsync(request);
+        ChatCompletionResult completion = result.Value;
+        Console.WriteLine(completion.Choices[0].Message.Content);
+        Assert.That(completion.Choices[0].Message.Content.ToLowerInvariant(), Does.Contain("dog").Or.Contain("cat").IgnoreCase);
+    }
+
     [Test]
     public async Task ChatWithBasicAudioOutput()
     {
@@ -243,6 +267,100 @@ public class ChatTests : OpenAIRecordedTestBase
         ChatTokenUsage streamedUsage = null;
         using MemoryStream outputAudioStream = new();
         await foreach (StreamingChatCompletionUpdate update in client.CompleteChatStreamingAsync(messages, options))
+        {
+            Assert.That(update.ContentUpdate, Has.Count.EqualTo(0));
+            StreamingChatOutputAudioUpdate outputAudioUpdate = update.OutputAudioUpdate;
+
+            if (update.Usage is not null)
+            {
+                Assert.That(streamedUsage, Is.Null);
+                streamedUsage = update.Usage;
+            }
+            if (outputAudioUpdate is not null)
+            {
+                string serializedOutputAudioUpdate = ModelReaderWriter.Write(outputAudioUpdate).ToString();
+                Assert.That(serializedOutputAudioUpdate, Is.Not.Null.And.Not.Empty);
+
+                if (outputAudioUpdate.Id is not null)
+                {
+                    Assert.That(streamedCorrelationId, Is.Null.Or.EqualTo(streamedCorrelationId));
+                    streamedCorrelationId ??= outputAudioUpdate.Id;
+                }
+                if (outputAudioUpdate.ExpiresAt.HasValue)
+                {
+                    Assert.That(streamedExpiresAt.HasValue, Is.False);
+                    streamedExpiresAt = outputAudioUpdate.ExpiresAt;
+                }
+                streamedTranscriptBuilder.Append(outputAudioUpdate.TranscriptUpdate);
+                outputAudioStream.Write(outputAudioUpdate.AudioBytesUpdate);
+            }
+        }
+        Assert.That(streamedCorrelationId, Is.Not.Null.And.Not.Empty);
+        Assert.That(streamedExpiresAt.HasValue, Is.True);
+        Assert.That(streamedTranscriptBuilder.ToString(), Is.Not.Null.And.Not.Empty);
+        Assert.That(outputAudioStream.Length, Is.GreaterThan(9000));
+        Assert.That(streamedUsage?.InputTokenDetails?.AudioTokenCount, Is.GreaterThan(0));
+        Assert.That(streamedUsage?.OutputTokenDetails?.AudioTokenCount, Is.GreaterThan(0));
+    }
+
+    [RecordedTest]
+    public async Task ChatWithAudio_PM()
+    {
+        ChatClient client = GetTestClient(overrideModel: "gpt-4o-audio-preview");
+
+        string helloWorldAudioPath = Path.Join("Assets", "audio_hello_world.mp3");
+        BinaryData helloWorldAudioBytes = BinaryData.FromBytes(File.ReadAllBytes(helloWorldAudioPath));
+        ChatMessageContentPart helloWorldAudioContentPart = ChatMessageContentPart.CreateInputAudioPart(
+            helloWorldAudioBytes,
+            ChatInputAudioFormat.Mp3);
+        string whatsTheWeatherAudioPath = Path.Join("Assets", "realtime_whats_the_weather_pcm16_24khz_mono.wav");
+        BinaryData whatsTheWeatherAudioBytes = BinaryData.FromBytes(File.ReadAllBytes(whatsTheWeatherAudioPath));
+        ChatMessageContentPart whatsTheWeatherAudioContentPart = ChatMessageContentPart.CreateInputAudioPart(
+            whatsTheWeatherAudioBytes,
+            ChatInputAudioFormat.Wav);
+
+        List<ChatMessage> messages = [new UserChatMessage([helloWorldAudioContentPart])];
+
+        ChatCompletionOptions options = new()
+        {
+            ResponseModalities = ChatResponseModalities.Text | ChatResponseModalities.Audio,
+            AudioOptions = new(ChatOutputAudioVoice.Alloy, ChatOutputAudioFormat.Pcm16)
+        };
+
+        CreateChatCompletionOptions requestBody = CreateChatCompletionOptions.Create(messages, client, options);
+        ChatCompletionResult response = (ChatCompletionResult)await client.CompleteChatAsync(requestBody);
+        ChatCompletionResponseMessage message = response.Choices[0].Message;
+        Assert.That(response, Is.Not.Null);
+        Assert.That(message.Content, Is.Null);
+
+        ChatOutputAudio outputAudio = message.Audio;
+        Assert.That(outputAudio, Is.Not.Null);
+        Assert.That(outputAudio.Id, Is.Not.Null.And.Not.Empty);
+        Assert.That(outputAudio.AudioBytes, Is.Not.Null);
+        Assert.That(outputAudio.Transcript, Is.Not.Null.And.Not.Empty);
+
+        ChatCompletionRequestAssistantMessage audioHistoryMessage = ChatMessage.CreateAssistantMessage(message);
+        Assert.That(audioHistoryMessage, Is.InstanceOf<ChatCompletionRequestAssistantMessage>());
+        Assert.That(audioHistoryMessage.Content, Has.Count.EqualTo(0));
+
+        Assert.That(audioHistoryMessage.Audio?.Id, Is.EqualTo(message.Audio.Id));
+        messages.Add(audioHistoryMessage);
+
+        messages.Add(
+            new UserChatMessage(
+                [
+                    "Please answer the following spoken question:",
+                    ChatMessageContentPart.CreateInputAudioPart(whatsTheWeatherAudioBytes, ChatInputAudioFormat.Wav),
+                ]));
+
+        string streamedCorrelationId = null;
+        DateTimeOffset? streamedExpiresAt = null;
+        StringBuilder streamedTranscriptBuilder = new();
+        ChatTokenUsage streamedUsage = null;
+        using MemoryStream outputAudioStream = new();
+
+        var requestOptions = CreateChatCompletionOptions.Create(messages, client, options, true);
+        await foreach (StreamingChatCompletionUpdate update in client.CompleteChatStreamingAsync(requestOptions))
         {
             Assert.That(update.ContentUpdate, Has.Count.EqualTo(0));
             StreamingChatOutputAudioUpdate outputAudioUpdate = update.OutputAudioUpdate;

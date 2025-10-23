@@ -7,10 +7,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Security.Principal;
 using System.Text;
 using System.Text.Json;
-using OpenAI.Internal;
 
 namespace OpenAI.Chat
 {
@@ -19,21 +17,14 @@ namespace OpenAI.Chat
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public CreateChatCompletionOptions(IEnumerable<ChatMessage> messages, string model)
+        public CreateChatCompletionOptions(IEnumerable<ChatMessage> messages, string model) :
+            this(default, default, default, default, default, messages?.ToList(), model, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default)
         {
             Argument.AssertNotNull(messages, nameof(messages));
-
-            Metadata = new ChangeTrackingDictionary<string, string>();
-            Messages = messages.ToList();
-            Model = model;
-            Modalities = new ChangeTrackingList<CreateChatCompletionRequestModality2>();
-            LogitBias = new ChangeTrackingDictionary<int, int>();
-            Tools = new ChangeTrackingList<ChatTool>();
-            Functions = new ChangeTrackingList<ChatFunction>();
         }
 
 #pragma warning disable  SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CreateChatCompletionOptions(IDictionary<string, string> metadata, float? temperature, float? topP, string user, ChatServiceTier? serviceTier, IList<ChatMessage> messages, string model, IList<CreateChatCompletionRequestModality2> modalities, ChatReasoningEffortLevel? reasoningEffort, int? maxCompletionTokens, float? frequencyPenalty, float? presencePenalty, ChatWebSearchOptions webSearchOptions, int? topLogprobs, ChatResponseFormat responseFormat, ChatAudioOptions audio, bool? store, bool? stream, IList<string> stop, IDictionary<int, int> logitBias, bool? logprobs, int? maxTokens, int? n, ChatOutputPrediction prediction, long? seed, ChatCompletionStreamOptions streamOptions, IList<ChatTool> tools, BinaryData toolChoice, bool? parallelToolCalls, BinaryData functionCall, IList<ChatFunction> functions, in JsonPatch patch)
+        internal CreateChatCompletionOptions(IDictionary<string, string> metadata, float? temperature, float? topP, string user, ChatServiceTier? serviceTier, IList<ChatMessage> messages, string model, IList<CreateChatCompletionRequestModality> modalities, ChatReasoningEffortLevel? reasoningEffort, int? maxCompletionTokens, float? frequencyPenalty, float? presencePenalty, ChatWebSearchOptions webSearchOptions, int? topLogprobs, ResponseFormat responseFormat, ChatAudioOptions audio, bool? store, bool? stream, IList<string> stop, IDictionary<int, int> logitBias, bool? logprobs, int? maxTokens, int? n, ChatOutputPrediction prediction, long? seed, ChatCompletionStreamOptions streamOptions, IList<ChatTool> tools, BinaryData toolChoice, bool? parallelToolCalls, BinaryData functionCall, IList<ChatFunction> functions, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -43,7 +34,7 @@ namespace OpenAI.Chat
             ServiceTier = serviceTier;
             Messages = messages ?? new ChangeTrackingList<ChatMessage>();
             Model = model;
-            Modalities = modalities ?? new ChangeTrackingList<CreateChatCompletionRequestModality2>();
+            Modalities = modalities ?? new ChangeTrackingList<CreateChatCompletionRequestModality>();
             ReasoningEffort = reasoningEffort;
             MaxCompletionTokens = maxCompletionTokens;
             FrequencyPenalty = frequencyPenalty;
@@ -54,7 +45,7 @@ namespace OpenAI.Chat
             Audio = audio;
             Store = store;
             Stream = stream;
-            Stop = stop;
+            Stop = stop ?? new ChangeTrackingList<string>();
             LogitBias = logitBias ?? new ChangeTrackingDictionary<int, int>();
             Logprobs = logprobs;
             MaxTokens = maxTokens;
@@ -84,9 +75,9 @@ namespace OpenAI.Chat
 
         public IList<ChatMessage> Messages { get; }
 
-        public string Model { get; }
+        public string Model { get; set; }
 
-        public IList<CreateChatCompletionRequestModality2> Modalities { get; set; }
+        public IList<CreateChatCompletionRequestModality> Modalities { get; set; }
 
         public ChatReasoningEffortLevel? ReasoningEffort { get; set; }
 
@@ -100,7 +91,7 @@ namespace OpenAI.Chat
 
         public int? TopLogprobs { get; set; }
 
-        public ChatResponseFormat ResponseFormat { get; set; }
+        public ResponseFormat ResponseFormat { get; set; }
 
         public ChatAudioOptions Audio { get; set; }
 
@@ -163,8 +154,7 @@ namespace OpenAI.Chat
             {
                 InternalDotNetChatResponseFormatText => new ResponseFormatText(),
                 InternalDotNetChatResponseFormatJsonObject => new ResponseFormatJsonObject(),
-                InternalDotNetChatResponseFormatJsonSchema js => new ResponseFormatJsonSchema(new ResponseFormatJsonSchemaJsonSchema(
-                    js.JsonSchema.Description, js.JsonSchema.Name, js.JsonSchema.Schema, js.JsonSchema.Strict, js.JsonSchema.Patch)),
+                InternalDotNetChatResponseFormatJsonSchema js => new ResponseFormatJsonSchema(new ResponseFormatJsonSchemaJsonSchema(js.JsonSchema.Name)),
                 _ => null,
             };
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -225,11 +215,11 @@ namespace OpenAI.Chat
 
             if (options.ResponseModalities.HasFlag(ChatResponseModalities.Audio))
             {
-                request.Modalities.Add(CreateChatCompletionRequestModality2.Audio);
+                request.Modalities.Add(CreateChatCompletionRequestModality.Audio);
             }
             if (options.ResponseModalities.HasFlag(ChatResponseModalities.Text))
             {
-                request.Modalities.Add(CreateChatCompletionRequestModality2.Text);
+                request.Modalities.Add(CreateChatCompletionRequestModality.Text);
             }
             if (options.StreamOptions != null)
             {
@@ -284,14 +274,14 @@ namespace OpenAI.Chat
             ChatServiceTier? serviceTier = default;
             IList<ChatMessage> messages = default;
             string model = default;
-            IList<CreateChatCompletionRequestModality2> modalities = default;
+            IList<CreateChatCompletionRequestModality> modalities = default;
             ChatReasoningEffortLevel? reasoningEffort = default;
             int? maxCompletionTokens = default;
             float? frequencyPenalty = default;
             float? presencePenalty = default;
             ChatWebSearchOptions webSearchOptions = default;
             int? topLogprobs = default;
-            ChatResponseFormat responseFormat = default;
+            ResponseFormat responseFormat = default;
             ChatAudioOptions audio = default;
             bool? store = default;
             bool? stream = default;
@@ -389,10 +379,10 @@ namespace OpenAI.Chat
                     {
                         continue;
                     }
-                    List<CreateChatCompletionRequestModality2> array = new List<CreateChatCompletionRequestModality2>();
+                    List<CreateChatCompletionRequestModality> array = new List<CreateChatCompletionRequestModality>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add((CreateChatCompletionRequestModality2)Enum.Parse(typeof(CreateChatCompletionRequestModality2), item.GetString()));
+                        array.Add(item.GetString().ToCreateChatCompletionRequestModality());
                     }
                     modalities = array;
                     continue;
@@ -462,7 +452,7 @@ namespace OpenAI.Chat
                     {
                         continue;
                     }
-                    responseFormat = ChatResponseFormat.DeserializeChatResponseFormat(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    responseFormat = ResponseFormat.DeserializeResponseFormat(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("audio"u8))
@@ -630,7 +620,7 @@ namespace OpenAI.Chat
                 serviceTier,
                 messages,
                 model,
-                modalities ?? new ChangeTrackingList<CreateChatCompletionRequestModality2>(),
+                modalities ?? new ChangeTrackingList<CreateChatCompletionRequestModality>(),
                 reasoningEffort,
                 maxCompletionTokens,
                 frequencyPenalty,
@@ -660,7 +650,7 @@ namespace OpenAI.Chat
         protected override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
-            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionOptions>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<CreateChatCompletionOptions>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(ChatCompletionOptions)} does not support writing '{format}' format.");
@@ -757,7 +747,7 @@ namespace OpenAI.Chat
                     {
                         continue;
                     }
-                    writer.WriteStringValue(Modalities[i].ToString());
+                    writer.WriteStringValue(Modalities[i].ToSerialString());
                 }
                 Patch.WriteTo(writer, "$.modalities"u8);
                 writer.WriteEndArray();

@@ -133,7 +133,7 @@ namespace OpenAI.Chat
                     List<CreateChatCompletionResponseChoice> array = new List<CreateChatCompletionResponseChoice>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(CreateChatCompletionResponseChoice.DeserializeCreateChatCompletionResponseChoice(prop.Value, prop.Value.GetUtf8Bytes(), options));
+                        array.Add(CreateChatCompletionResponseChoice.DeserializeCreateChatCompletionResponseChoice(item, item.GetUtf8Bytes(), options));
                     }
                     choices = array;
                     continue;

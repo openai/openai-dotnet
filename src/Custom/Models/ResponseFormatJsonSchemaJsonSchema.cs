@@ -3,9 +3,9 @@ using System.ClientModel.Primitives;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 
-namespace OpenAI;
+namespace OpenAI.Chat;
 
-internal partial class ResponseFormatJsonSchemaJsonSchema
+public partial class ResponseFormatJsonSchemaJsonSchema
 {
     [Experimental("SCME0001")]
     private JsonPatch _patch;
@@ -18,7 +18,7 @@ internal partial class ResponseFormatJsonSchemaJsonSchema
     }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-    internal ResponseFormatJsonSchemaJsonSchema(string description, string name, BinaryData schema, bool? strict, in JsonPatch patch)
+    public ResponseFormatJsonSchemaJsonSchema(string description, string name, BinaryData schema, bool? strict, in JsonPatch patch)
     {
         Description = description;
         Name = name;

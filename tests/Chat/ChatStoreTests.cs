@@ -4,6 +4,7 @@ using OpenAI.Chat;
 using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -86,6 +87,127 @@ public class ChatStoreToolTests : OpenAIRecordedTestBase
             lastId = fetchedCompletion.Id;
             Assert.That(fetchedCompletion.Id, Is.Not.Null.And.Not.Empty);
             Assert.That(fetchedCompletion.Content, Is.Not.Null);
+
+            if (totalCount >= 2) break; // Stop after getting 2 items
+        }
+
+        Assert.That(totalCount, Is.EqualTo(2));
+        Assert.That(lastId, Is.Not.Null);
+
+        // Clean up
+        foreach (var id in completionIds)
+        {
+            try
+            {
+                await client.DeleteChatCompletionAsync(id);
+            }
+            catch { /* Ignore cleanup errors */ }
+        }
+    }
+
+    [RecordedTest]
+    public async Task GetChatCompletionsWithPagination_PM()
+    {
+        ChatClient client = GetTestClient();
+
+        // Create multiple completions with stored output enabled
+        var completionIds = new List<string>();
+        for (int i = 0; i < 3; i++)
+        {
+            ChatCompletionOptions options = new()
+            {
+                StoredOutputEnabled = true,
+                Metadata = { ["test_key"] = $"test_value_{i}" }
+            };
+
+            ChatCompletion completion = await client.CompleteChatAsync(
+                [$"Test message {i}: Say 'Hello World {i}'"],
+                options);
+
+            completionIds.Add(completion.Id);
+        }
+
+        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+
+        // Test pagination with limit
+        ChatCompletionCollectionOptions paginationOptions = new()
+        {
+            PageSizeLimit = 2
+        };
+
+        int totalCount = 0;
+        string lastId = null;
+
+        await foreach (var fetchedCompletion in client.GetChatCompletionsAsync(after: null, limit: 2, order: null, metadata: null))
+        {
+            totalCount++;
+            lastId = fetchedCompletion.Id;
+            Assert.That(fetchedCompletion.Id, Is.Not.Null.And.Not.Empty);
+            Assert.That(fetchedCompletion.Choices[0].Message.Content, Is.Not.Null);
+
+            if (totalCount >= 2) break; // Stop after getting 2 items
+        }
+
+        Assert.That(totalCount, Is.EqualTo(2));
+        Assert.That(lastId, Is.Not.Null);
+
+        // Clean up
+        foreach (var id in completionIds)
+        {
+            try
+            {
+                await client.DeleteChatCompletionAsync(id);
+            }
+            catch { /* Ignore cleanup errors */ }
+        }
+    }
+
+    [RecordedTest]
+    public async Task GetChatCompletionsWithPagination_PMwRequestOptions()
+    {
+        ChatClient client = GetTestClient();
+
+        // Create multiple completions with stored output enabled
+        var completionIds = new List<string>();
+        for (int i = 0; i < 3; i++)
+        {
+            ChatCompletionOptions options = new()
+            {
+                StoredOutputEnabled = true,
+                Metadata = { ["test_key"] = $"test_value_{i}" }
+            };
+
+            ChatCompletion completion = await client.CompleteChatAsync(
+                [$"Test message {i}: Say 'Hello World {i}'"],
+                options);
+
+            completionIds.Add(completion.Id);
+        }
+
+        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+
+        // Test pagination with limit
+        ChatCompletionCollectionOptions paginationOptions = new()
+        {
+            PageSizeLimit = 2
+        };
+
+        int totalCount = 0;
+        string lastId = null;
+
+        AsyncCollectionResult foo = client.GetChatCompletionsAsync(after: null, limit: 2, order: null, metadata: null, model: null, options: new RequestOptions());
+
+        await foreach (ChatCompletionList fetchedCompletion in foo.GetRawPagesAsync())
+        {
+            foreach(ChatCompletionResult item in fetchedCompletion.Data)
+            {
+                totalCount++;
+                lastId = item.Id;
+                Assert.That(item.Id, Is.Not.Null.And.Not.Empty);
+                Assert.That(item.Choices[0].Message.Content, Is.Not.Null);
+
+                if (totalCount >= 2) break; // Stop after getting 2 items
+            }
 
             if (totalCount >= 2) break; // Stop after getting 2 items
         }

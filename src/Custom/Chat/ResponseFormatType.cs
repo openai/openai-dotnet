@@ -1,11 +1,9 @@
-using System;
 using System.Diagnostics.CodeAnalysis;
-using OpenAI.Internal;
 
-namespace OpenAI
+namespace OpenAI.Chat
 {
     [Experimental("OPENAI001")]
-    public enum ResponseFormatType2
+    public enum ResponseFormatType
     {
         Text,
         JsonObject,
