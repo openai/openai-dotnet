@@ -7,6 +7,7 @@ using Azure.ClientGenerator.Core;
 using TypeSpec.HttpClient.CSharp;
 
 @@clientName(createEmbedding, "GenerateEmbeddings");
+
 @@clientLocation(createEmbedding, "Embeddings");
 
 // ------------ JsonPatch ------------

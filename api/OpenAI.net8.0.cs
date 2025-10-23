@@ -3659,6 +3659,7 @@ namespace OpenAI.Images {
         public GeneratedImageQuality(string value);
         [Experimental("OPENAI001")]
         public static GeneratedImageQuality Auto { get; }
+        public static GeneratedImageQuality HD { get; }
         public static GeneratedImageQuality High { get; }
         [Experimental("OPENAI001")]
         public static GeneratedImageQuality Low { get; }
@@ -3768,6 +3769,12 @@ namespace OpenAI.Images {
         public GeneratedImageBackground? Background { get; set; }
         public string EndUserId { get; set; }
         [Experimental("OPENAI001")]
+        public ImageInputFidelity? InputFidelity { get; set; }
+        [Experimental("OPENAI001")]
+        public int? OutputCompressionFactor { get; set; }
+        [Experimental("OPENAI001")]
+        public GeneratedImageFileFormat? OutputFileFormat { get; set; }
+        [Experimental("OPENAI001")]
         public GeneratedImageQuality? Quality { get; set; }
         public GeneratedImageFormat? ResponseFormat { get; set; }
         public GeneratedImageSize? Size { get; set; }
@@ -3804,9 +3811,25 @@ namespace OpenAI.Images {
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
+    public readonly partial struct ImageInputFidelity : IEquatable<ImageInputFidelity> {
+        public ImageInputFidelity(string value);
+        public static ImageInputFidelity High { get; }
+        public static ImageInputFidelity Low { get; }
+        public readonly bool Equals(ImageInputFidelity other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ImageInputFidelity left, ImageInputFidelity right);
+        public static implicit operator ImageInputFidelity(string value);
+        public static implicit operator ImageInputFidelity?(string value);
+        public static bool operator !=(ImageInputFidelity left, ImageInputFidelity right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
     public class ImageInputTokenUsageDetails : IJsonModel<ImageInputTokenUsageDetails>, IPersistableModel<ImageInputTokenUsageDetails> {
-        public int ImageTokenCount { get; }
-        public int TextTokenCount { get; }
+        public long ImageTokenCount { get; }
+        public long TextTokenCount { get; }
         protected virtual ImageInputTokenUsageDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ImageInputTokenUsageDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -3814,10 +3837,10 @@ namespace OpenAI.Images {
     }
     [Experimental("OPENAI001")]
     public class ImageTokenUsage : IJsonModel<ImageTokenUsage>, IPersistableModel<ImageTokenUsage> {
-        public int InputTokenCount { get; }
+        public long InputTokenCount { get; }
         public ImageInputTokenUsageDetails InputTokenDetails { get; }
-        public int OutputTokenCount { get; }
-        public int TotalTokenCount { get; }
+        public long OutputTokenCount { get; }
+        public long TotalTokenCount { get; }
         protected virtual ImageTokenUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ImageTokenUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -3842,6 +3865,10 @@ namespace OpenAI.Images {
         public static GeneratedImageCollection GeneratedImageCollection(DateTimeOffset createdAt = default, IEnumerable<GeneratedImage> items = null, ImageTokenUsage usage = null);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static GeneratedImageCollection GeneratedImageCollection(DateTimeOffset createdAt, IEnumerable<GeneratedImage> items);
+        [Experimental("OPENAI001")]
+        public static ImageInputTokenUsageDetails ImageInputTokenUsageDetails(long textTokenCount = 0, long imageTokenCount = 0);
+        [Experimental("OPENAI001")]
+        public static ImageTokenUsage ImageTokenUsage(long inputTokenCount = 0, long outputTokenCount = 0, long totalTokenCount = 0, ImageInputTokenUsageDetails inputTokenDetails = null);
     }
 }
 namespace OpenAI.Models {

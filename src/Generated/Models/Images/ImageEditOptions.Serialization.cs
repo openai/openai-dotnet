@@ -79,10 +79,35 @@ namespace OpenAI.Images
                 writer.WritePropertyName("response_format"u8);
                 writer.WriteStringValue(ResponseFormat.Value.ToString());
             }
+            if (Optional.IsDefined(OutputFileFormat) && _additionalBinaryDataProperties?.ContainsKey("output_format") != true)
+            {
+                writer.WritePropertyName("output_format"u8);
+                writer.WriteStringValue(OutputFileFormat.Value.ToString());
+            }
+            if (Optional.IsDefined(OutputCompressionFactor) && _additionalBinaryDataProperties?.ContainsKey("output_compression") != true)
+            {
+                writer.WritePropertyName("output_compression"u8);
+                writer.WriteNumberValue(OutputCompressionFactor.Value);
+            }
             if (Optional.IsDefined(EndUserId) && _additionalBinaryDataProperties?.ContainsKey("user") != true)
             {
                 writer.WritePropertyName("user"u8);
                 writer.WriteStringValue(EndUserId);
+            }
+            if (Optional.IsDefined(InputFidelity) && _additionalBinaryDataProperties?.ContainsKey("input_fidelity") != true)
+            {
+                writer.WritePropertyName("input_fidelity"u8);
+                writer.WriteStringValue(InputFidelity.Value.ToString());
+            }
+            if (Optional.IsDefined(Stream) && _additionalBinaryDataProperties?.ContainsKey("stream") != true)
+            {
+                writer.WritePropertyName("stream"u8);
+                writer.WriteBooleanValue(Stream.Value);
+            }
+            if (Optional.IsDefined(PartialImages) && _additionalBinaryDataProperties?.ContainsKey("partial_images") != true)
+            {
+                writer.WritePropertyName("partial_images"u8);
+                writer.WriteNumberValue(PartialImages.Value);
             }
             if (Optional.IsDefined(Quality) && _additionalBinaryDataProperties?.ContainsKey("quality") != true)
             {
@@ -139,7 +164,12 @@ namespace OpenAI.Images
             long? n = default;
             GeneratedImageSize? size = default;
             GeneratedImageFormat? responseFormat = default;
+            GeneratedImageFileFormat? outputFileFormat = default;
+            int? outputCompressionFactor = default;
             string endUserId = default;
+            ImageInputFidelity? inputFidelity = default;
+            bool? stream = default;
+            int? partialImages = default;
             GeneratedImageQuality? quality = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -213,9 +243,59 @@ namespace OpenAI.Images
                     responseFormat = new GeneratedImageFormat(prop.Value.GetString());
                     continue;
                 }
+                if (prop.NameEquals("output_format"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        outputFileFormat = null;
+                        continue;
+                    }
+                    outputFileFormat = new GeneratedImageFileFormat(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("output_compression"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        outputCompressionFactor = null;
+                        continue;
+                    }
+                    outputCompressionFactor = prop.Value.GetInt32();
+                    continue;
+                }
                 if (prop.NameEquals("user"u8))
                 {
                     endUserId = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("input_fidelity"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        inputFidelity = null;
+                        continue;
+                    }
+                    inputFidelity = new ImageInputFidelity(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("stream"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        stream = null;
+                        continue;
+                    }
+                    stream = prop.Value.GetBoolean();
+                    continue;
+                }
+                if (prop.NameEquals("partial_images"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        partialImages = null;
+                        continue;
+                    }
+                    partialImages = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("quality"u8))
@@ -240,7 +320,12 @@ namespace OpenAI.Images
                 n,
                 size,
                 responseFormat,
+                outputFileFormat,
+                outputCompressionFactor,
                 endUserId,
+                inputFidelity,
+                stream,
+                partialImages,
                 quality,
                 additionalBinaryDataProperties);
         }

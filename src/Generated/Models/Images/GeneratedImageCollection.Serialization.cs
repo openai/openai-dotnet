@@ -45,6 +45,26 @@ namespace OpenAI.Images
                 }
                 writer.WriteEndArray();
             }
+            if (Optional.IsDefined(Background) && _additionalBinaryDataProperties?.ContainsKey("background") != true)
+            {
+                writer.WritePropertyName("background"u8);
+                writer.WriteStringValue(Background.Value.ToString());
+            }
+            if (Optional.IsDefined(OutputFormat) && _additionalBinaryDataProperties?.ContainsKey("output_format") != true)
+            {
+                writer.WritePropertyName("output_format"u8);
+                writer.WriteStringValue(OutputFormat.Value.ToString());
+            }
+            if (Optional.IsDefined(Size) && _additionalBinaryDataProperties?.ContainsKey("size") != true)
+            {
+                writer.WritePropertyName("size"u8);
+                writer.WriteStringValue(Size.Value.ToString());
+            }
+            if (Optional.IsDefined(Quality) && _additionalBinaryDataProperties?.ContainsKey("quality") != true)
+            {
+                writer.WritePropertyName("quality"u8);
+                writer.WriteStringValue(Quality.Value.ToString());
+            }
             if (Optional.IsDefined(Usage) && _additionalBinaryDataProperties?.ContainsKey("usage") != true)
             {
                 writer.WritePropertyName("usage"u8);
@@ -94,6 +114,10 @@ namespace OpenAI.Images
             }
             DateTimeOffset createdAt = default;
             IList<GeneratedImage> data = default;
+            InternalImagesResponseBackground? background = default;
+            InternalImagesResponseOutputFormat? outputFormat = default;
+            InternalImagesResponseSize? size = default;
+            InternalImagesResponseQuality? quality = default;
             ImageTokenUsage usage = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -117,6 +141,42 @@ namespace OpenAI.Images
                     data = array;
                     continue;
                 }
+                if (prop.NameEquals("background"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    background = new InternalImagesResponseBackground(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("output_format"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    outputFormat = new InternalImagesResponseOutputFormat(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("size"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    size = new InternalImagesResponseSize(prop.Value.GetString());
+                    continue;
+                }
+                if (prop.NameEquals("quality"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    quality = new InternalImagesResponseQuality(prop.Value.GetString());
+                    continue;
+                }
                 if (prop.NameEquals("usage"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -129,7 +189,15 @@ namespace OpenAI.Images
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new GeneratedImageCollection(createdAt, data ?? new ChangeTrackingList<GeneratedImage>(), usage, additionalBinaryDataProperties);
+            return new GeneratedImageCollection(
+                createdAt,
+                data ?? new ChangeTrackingList<GeneratedImage>(),
+                background,
+                outputFormat,
+                size,
+                quality,
+                usage,
+                additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<GeneratedImageCollection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

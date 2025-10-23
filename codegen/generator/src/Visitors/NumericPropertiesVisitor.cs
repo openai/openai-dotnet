@@ -18,6 +18,12 @@ public class NumericPropertiesVisitor : ScmLibraryVisitor
     {
         "OpenAI.Chat.ChatCompletionOptions.Seed",
         "OpenAI.LegacyCompletions.InternalCreateCompletionRequest.Seed",
+
+        "OpenAI.Images.ImageTokenUsage.InputTokenCount",
+        "OpenAI.Images.ImageTokenUsage.OutputTokenCount",
+        "OpenAI.Images.ImageTokenUsage.TotalTokenCount",
+        "OpenAI.Images.ImageInputTokenUsageDetails.ImageTokens",
+        "OpenAI.Images.ImageInputTokenUsageDetails.TextTokens",
     };
 
     protected override PropertyProvider? PreVisitProperty(InputProperty property, PropertyProvider? propertyProvider)

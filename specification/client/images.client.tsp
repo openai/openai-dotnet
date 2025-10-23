@@ -4,6 +4,10 @@ import "@azure-tools/typespec-client-generator-core";
 using OpenAI;
 using Azure.ClientGenerator.Core;
 
-@@clientName(Images.createImage, "GenerateImages");
-@@clientName(Images.createImageEdit, "GenerateImageEdits");
-@@clientName(Images.createImageVariation, "GenerateImageVariations");
+@@clientName(createImage, "GenerateImages");
+@@clientName(createImageEdit, "GenerateImageEdits");
+@@clientName(createImageVariation, "GenerateImageVariations");
+
+@@clientLocation(createImage, "Images");
+@@clientLocation(createImageEdit, "Images");
+@@clientLocation(createImageVariation, "Images");

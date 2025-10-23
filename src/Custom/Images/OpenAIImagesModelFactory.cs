@@ -34,9 +34,37 @@ public static partial class OpenAIImagesModelFactory
         items ??= new List<GeneratedImage>();
 
         return new GeneratedImageCollection(
-            data: items.ToList(),
-            usage: usage,
             createdAt: createdAt,
+            data: items.ToList(),
+            background: null,
+            outputFormat: null,
+            size: null,
+            quality: null,
+            usage: usage,
+            additionalBinaryDataProperties: null);
+    }
+
+    /// <summary> Initializes a new instance of <see cref="OpenAI.Images.ImageInputTokenUsageDetails"/>. </summary>
+    /// <returns> A new <see cref="OpenAI.Images.ImageInputTokenUsageDetails"/> instance for mocking. </returns>.
+    [Experimental("OPENAI001")]
+    public static ImageInputTokenUsageDetails ImageInputTokenUsageDetails(long textTokenCount = default, long imageTokenCount = default)
+    {
+        return new ImageInputTokenUsageDetails(
+            textTokenCount: textTokenCount,
+            imageTokenCount: imageTokenCount,
+            additionalBinaryDataProperties: null);
+    }
+
+    /// <summary> Initializes a new instance of <see cref="OpenAI.Images.ImageTokenUsage"/>. </summary>
+    /// <returns> A new <see cref="OpenAI.Images.ImageTokenUsage"/> instance for mocking. </returns>.
+    [Experimental("OPENAI001")]
+    public static ImageTokenUsage ImageTokenUsage(long inputTokenCount = default, long outputTokenCount = default, long totalTokenCount = default, ImageInputTokenUsageDetails inputTokenDetails = default)
+    {
+        return new ImageTokenUsage(
+            inputTokenCount: inputTokenCount,
+            outputTokenCount: outputTokenCount,
+            totalTokenCount: totalTokenCount,
+            inputTokenDetails: inputTokenDetails,
             additionalBinaryDataProperties: null);
     }
 }

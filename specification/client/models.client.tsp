@@ -4,10 +4,9 @@ import "@azure-tools/typespec-client-generator-core";
 using OpenAI;
 using Azure.ClientGenerator.Core;
 
-@@clientLocation(listModels, "Models");
 @@clientName(listModels, "GetModels");
-
-@@clientLocation(deleteModel, "Models");
-
-@@clientLocation(retrieveModel, "Models");
 @@clientName(retrieveModel, "GetModel");
+
+@@clientLocation(listModels, "Models");
+@@clientLocation(deleteModel, "Models");
+@@clientLocation(retrieveModel, "Models");

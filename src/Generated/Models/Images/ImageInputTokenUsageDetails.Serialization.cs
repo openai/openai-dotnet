@@ -81,19 +81,19 @@ namespace OpenAI.Images
             {
                 return null;
             }
-            int textTokenCount = default;
-            int imageTokenCount = default;
+            long textTokenCount = default;
+            long imageTokenCount = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("text_tokens"u8))
                 {
-                    textTokenCount = prop.Value.GetInt32();
+                    textTokenCount = prop.Value.GetInt64();
                     continue;
                 }
                 if (prop.NameEquals("image_tokens"u8))
                 {
-                    imageTokenCount = prop.Value.GetInt32();
+                    imageTokenCount = prop.Value.GetInt64();
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
