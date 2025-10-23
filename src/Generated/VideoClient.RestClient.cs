@@ -21,7 +21,7 @@ namespace OpenAI.Videos
             uri.AppendPath("/videos", false);
             if (limit != null)
             {
-                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit, null), true);
+                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
             }
             if (order != null)
             {
