@@ -14,6 +14,7 @@ import "./client/responses.client.tsp";
 import "./client/runs.client.tsp";
 import "./client/threads.client.tsp";
 import "./client/vector-stores.client.tsp";
+import "./client/videos.client.tsp";
 
 import "./client/models/assistants.models.tsp";
 import "./client/models/audio.models.tsp";
