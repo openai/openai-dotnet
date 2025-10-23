@@ -92,7 +92,7 @@ public class MetadataQueryParamVisitor : ScmLibraryVisitor
                     if (statement is ExpressionStatement expressionStatement3 &&
                         expressionStatement3.Expression is InvokeMethodExpression invokeMethodExpression &&
                         invokeMethodExpression.MethodName == "AppendQueryDelimited" &&
-                        invokeMethodExpression.Arguments.Count == 5 &&
+                        invokeMethodExpression.Arguments.Count == 4 &&
                         invokeMethodExpression.Arguments[0].ToDisplayString() == "\"metadata\"")
                     {
                         return new SingleLineCommentStatement("Plugin customization: remove unnecessary AppendQueryDelimited for metadata");
