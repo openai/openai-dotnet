@@ -25,7 +25,7 @@ namespace OpenAI {
         public virtual OpenAIResponseClient GetOpenAIResponseClient(string model);
         public virtual RealtimeClient GetRealtimeClient();
         public virtual VectorStoreClient GetVectorStoreClient();
-        public virtual Videos.VideosClient GetVideosClient();
+        public virtual Videos.VideoClient GetVideoClient();
     }
     public class OpenAIClientOptions : ClientPipelineOptions {
         public Uri Endpoint { get; set; }
@@ -6010,14 +6010,14 @@ namespace OpenAI.VectorStores {
     }
 }
 namespace OpenAI.Videos {
-    public class VideosClient {
-        protected VideosClient();
-        public VideosClient(ApiKeyCredential credential, OpenAIClientOptions options);
-        public VideosClient(ApiKeyCredential credential);
-        public VideosClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
-        public VideosClient(AuthenticationPolicy authenticationPolicy);
-        protected internal VideosClient(ClientPipeline pipeline, OpenAIClientOptions options);
-        public VideosClient(string apiKey);
+    public class VideoClient {
+        protected VideoClient();
+        public VideoClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public VideoClient(ApiKeyCredential credential);
+        public VideoClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public VideoClient(AuthenticationPolicy authenticationPolicy);
+        protected internal VideoClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        public VideoClient(string apiKey);
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult CreateVideo(BinaryContent content, string contentType, RequestOptions options = null);

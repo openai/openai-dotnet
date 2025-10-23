@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Videos
 {
-    public partial class VideosClient
+    public partial class VideoClient
     {
         private static PipelineMessageClassifier _pipelineMessageClassifier200;
 

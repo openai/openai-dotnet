@@ -12,11 +12,11 @@ using OpenAI;
 namespace OpenAI.Videos
 {
     [Experimental("OPENAI001")]
-    public partial class VideosClient
+    public partial class VideoClient
     {
         private readonly Uri _endpoint;
 
-        protected VideosClient()
+        protected VideoClient()
         {
         }
 

@@ -50,7 +50,7 @@ namespace OpenAI;
 [CodeGenSuppress("_cachedRealtimeClient")]
 [CodeGenSuppress("_cachedOpenAIResponseClient")]
 [CodeGenSuppress("_cachedVectorStoreClient")]
-[CodeGenSuppress("_cachedVideosClient")]
+[CodeGenSuppress("_cachedVideoClient")]
 [CodeGenSuppress("_cachedInternalAssistantMessageClient")]
 [CodeGenSuppress("_cachedInternalAssistantRunClient")]
 [CodeGenSuppress("_cachedInternalAssistantThreadClient")]
@@ -72,7 +72,7 @@ namespace OpenAI;
 [CodeGenSuppress("GetRealtimeClient")]
 [CodeGenSuppress("GetOpenAIResponseClient")]
 [CodeGenSuppress("GetVectorStoreClient")]
-[CodeGenSuppress("GetVideosClient")]
+[CodeGenSuppress("GetVideoClient")]
 [CodeGenSuppress("GetInternalAssistantMessageClient")]
 [CodeGenSuppress("GetInternalAssistantRunClient")]
 [CodeGenSuppress("GetInternalAssistantThreadClient")]
@@ -344,19 +344,19 @@ public partial class OpenAIClient
     [Experimental("OPENAI001")]
     public virtual ContainerClient GetContainerClient() => new(Pipeline, _options);
 
+    /// <summary>
+    /// Gets a new instance of <see cref="VideoClient"/> that reuses the client configuration details provided to
+    /// the <see cref="OpenAIClient"/> instance.
+    /// </summary>
+    /// <returns></returns>
+    [Experimental("OPENAI001")]
+    public virtual VideoClient GetVideoClient() => new(Pipeline, _options);
+
     internal static AuthenticationPolicy CreateApiKeyAuthenticationPolicy(ApiKeyCredential credential)
     {
         Argument.AssertNotNull(credential, nameof(credential));
         return ApiKeyAuthenticationPolicy.CreateHeaderApiKeyPolicy(credential, AuthorizationHeader, AuthorizationApiKeyPrefix);
     }
-
-    /// <summary>
-    /// Gets a new instance of <see cref="VideosClient"/> that reuses the client configuration details provided to
-    /// the <see cref="OpenAIClient"/> instance.
-    /// </summary>
-    /// <returns></returns>
-    [Experimental("OPENAI001")]
-    public virtual VideosClient GetVideosClient() => new(Pipeline, _options);
 
     internal static ClientPipeline CreatePipeline(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
     {
