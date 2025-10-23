@@ -8,7 +8,6 @@ namespace OpenAI.Videos;
 // CUSTOM:
 // - Renamed.
 // - Suppressed constructor that takes endpoint parameter; endpoint is now a property in the options class.
-// - Suppressed methods that only take the options parameter.
 /// <summary> The service client for OpenAI video operations. </summary>
 [CodeGenType("Videos")]
 [CodeGenSuppress("VideoClient", typeof(ClientPipeline), typeof(Uri))]
@@ -44,7 +43,7 @@ public partial class VideoClient
     }
 
     // CUSTOM: Added as a convenience.
-    /// <summary> Initializes a new instance of <see cref="GraderClient"/>. </summary>
+    /// <summary> Initializes a new instance of <see cref="VideoClient"/>. </summary>
     /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
     public VideoClient(AuthenticationPolicy authenticationPolicy) : this(authenticationPolicy, new OpenAIClientOptions())
@@ -52,7 +51,7 @@ public partial class VideoClient
     }
 
     // CUSTOM: Added as a convenience.
-    /// <summary> Initializes a new instance of <see cref="GraderClient"/>. </summary>
+    /// <summary> Initializes a new instance of <see cref="VideoClient"/>. </summary>
     /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
@@ -69,7 +68,7 @@ public partial class VideoClient
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
     // - Made protected.
-    /// <summary> Initializes a new instance of <see cref="GraderClient"/>. </summary>
+    /// <summary> Initializes a new instance of <see cref="VideoClient"/>. </summary>
     /// <param name="pipeline"> The HTTP pipeline to send and receive REST requests and responses. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> is null. </exception>
