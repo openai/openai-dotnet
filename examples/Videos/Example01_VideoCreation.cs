@@ -17,10 +17,10 @@ namespace OpenAI.Examples;
 // please acknowledge their experimental status by suppressing the corresponding warning.
 #pragma warning disable OPENAI001
 
-public partial class VectorStoreExamples
+public partial class VideoExamples
 {
     [Test]
-    public void Example01_SimpleVideoCreation()
+    public void Example01_VideoCreation()
     {
         // 1) Create the client
         VideoClient client = new(new ApiKeyCredential(Environment.GetEnvironmentVariable("OPENAI_API_KEY")));
