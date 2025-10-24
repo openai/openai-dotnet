@@ -22,6 +22,8 @@ namespace OpenAI.Chat;
 [CodeGenSuppress("CompleteChatAsync", typeof(ChatCompletionOptions), typeof(CancellationToken))]
 [CodeGenSuppress("GetChatCompletionMessagesAsync", typeof(string), typeof(string), typeof(int?), typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("GetChatCompletionMessages", typeof(string), typeof(string), typeof(int?), typeof(string), typeof(RequestOptions))]
+[CodeGenSuppress("GetChatCompletions", typeof(string), typeof(string), typeof(int?), typeof(string), typeof(IDictionary<string, string>), typeof(string), typeof(RequestOptions))]
+[CodeGenSuppress("GetChatCompletionMessages", typeof(string), typeof(string), typeof(int?), typeof(string), typeof(IDictionary<string, string>), typeof(string), typeof(RequestOptions))]
 public partial class ChatClient
 {
     private readonly string _model;
@@ -466,32 +468,32 @@ public partial class ChatClient
     }
 
     [Experimental("OPENAI001")]
-        public virtual CollectionResult GetChatCompletionMessages(GetChatCompletionMessageOptions options, RequestOptions requestOptions = null)
-        {
-            Argument.AssertNotNullOrEmpty(options.CompletionId, nameof(options.CompletionId));
+    public virtual CollectionResult GetChatCompletionMessages(GetChatCompletionMessageOptions options, RequestOptions requestOptions = null)
+    {
+        Argument.AssertNotNullOrEmpty(options.CompletionId, nameof(options.CompletionId));
 
-            return new ChatClientGetChatCompletionMessagesCollectionResult(
-                this,
-                options.CompletionId,
-                options.After,
-                options.Limit,
-                options.Order,
-                requestOptions);
-        }
+        return new ChatClientGetChatCompletionMessagesCollectionResult(
+            this,
+            options.CompletionId,
+            options.After,
+            options.Limit,
+            options.Order,
+            requestOptions);
+    }
 
-        [Experimental("OPENAI001")]
-        public virtual AsyncCollectionResult GetChatCompletionMessagesAsync(GetChatCompletionMessageOptions options, RequestOptions requestOptions = null)
-        {
-            Argument.AssertNotNullOrEmpty(options.CompletionId, nameof(options.CompletionId));
+    [Experimental("OPENAI001")]
+    public virtual AsyncCollectionResult GetChatCompletionMessagesAsync(GetChatCompletionMessageOptions options, RequestOptions requestOptions = null)
+    {
+        Argument.AssertNotNullOrEmpty(options.CompletionId, nameof(options.CompletionId));
 
-            return new ChatClientGetChatCompletionMessagesAsyncCollectionResult(
-                this,
-                options.CompletionId,
-                options.After,
-                options.Limit,
-                options.Order,
-                requestOptions);
-        }
+        return new ChatClientGetChatCompletionMessagesAsyncCollectionResult(
+            this,
+            options.CompletionId,
+            options.After,
+            options.Limit,
+            options.Order,
+            requestOptions);
+    }
 
     // CUSTOM:
     // - Call FromClientResult.
@@ -544,33 +546,53 @@ public partial class ChatClient
     }
 
     [Experimental("OPENAI001")]
-    public virtual CollectionResult<ChatCompletionResult> GetChatCompletions(string after, int? limit, ChatCompletionCollectionOrder? order, IDictionary<string, string> metadata, string model = null, CancellationToken cancellationToken = default)
+    [OverloadResolutionPriority(2)]
+    public virtual ClientResult<ChatCompletionList> GetChatCompletions(GetChatCompletionsOptions options, CancellationToken cancellationToken = default)
     {
-        return new ChatClientGetPMChatCompletionsCollectionResultOfT(
-            this,
-            after,
-            limit,
-            order?.ToString(),
-            metadata,
-            model,
-            cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
-    }
-
-    [Experimental("OPENAI001")]
-    public virtual AsyncCollectionResult<ChatCompletionResult> GetChatCompletionsAsync(string after, int? limit, ChatCompletionCollectionOrder? order, IDictionary<string, string> metadata, string model = null, CancellationToken cancellationToken = default)
-    {
-        return new ChatPMClientGetChatCompletionsAsyncCollectionResultOfT(
-            this,
-            after,
-            limit,
-            order?.ToString(),
-            metadata,
-            model,
-            cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        PipelineMessage message = CreateGetChatCompletionsRequest(options.After, options.Limit, options.Order, options.Metadata, options.Model, cancellationToken.ToRequestOptions());
+        ClientResult result = ClientResult.FromResponse(Pipeline.ProcessMessage(message, cancellationToken.ToRequestOptions()));
+        return ClientResult.FromValue((ChatCompletionList)result, result.GetRawResponse());
     }
 
     [Experimental("OPENAI001")]
     [OverloadResolutionPriority(2)]
+    public virtual async Task<ClientResult<ChatCompletionList>> GetChatCompletionsAsync(GetChatCompletionsOptions options, CancellationToken cancellationToken = default)
+    {
+        PipelineMessage message = CreateGetChatCompletionsRequest(options.After, options.Limit, options.Order, options.Metadata, options.Model, cancellationToken.ToRequestOptions());
+        ClientResult result = ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, cancellationToken.ToRequestOptions()));
+        return ClientResult.FromValue((ChatCompletionList)result, result.GetRawResponse());
+    }
+
+    [Experimental("OPENAI001")]
+    [OverloadResolutionPriority(1)]
+    public virtual CollectionResult GetChatCompletions(GetChatCompletionsOptions options, RequestOptions requestOptions)
+    {
+        return new ChatClientGetChatCompletionsCollectionResult(
+            this,
+            options.After,
+            options.Limit,
+            options.Order,
+            options.Metadata,
+            options.Model,
+            requestOptions);
+    }
+
+    [Experimental("OPENAI001")]
+    [OverloadResolutionPriority(1)]
+    public virtual AsyncCollectionResult GetChatCompletionsAsync(GetChatCompletionsOptions options, RequestOptions requestOptions)
+    {
+        return new ChatClientGetChatCompletionsAsyncCollectionResult(
+            this,
+            options.After,
+            options.Limit,
+            options.Order,
+            options.Metadata,
+            options.Model,
+            requestOptions);
+    }
+
+    [Experimental("OPENAI001")]
+    [OverloadResolutionPriority(1)]
     public virtual ClientResult UpdateChatCompletion(UpdateChatCompletionOptions options, RequestOptions requestOptions = null)
     {
         Argument.AssertNotNull(options, nameof(options));
@@ -580,7 +602,7 @@ public partial class ChatClient
     }
 
     [Experimental("OPENAI001")]
-    [OverloadResolutionPriority(2)]
+    [OverloadResolutionPriority(1)]
     public async virtual Task<ClientResult> UpdateChatCompletionAsync(UpdateChatCompletionOptions options, RequestOptions requestOptions = null)
     {
         Argument.AssertNotNull(options, nameof(options));
@@ -590,7 +612,7 @@ public partial class ChatClient
     }
 
     [Experimental("OPENAI001")]
-    [OverloadResolutionPriority(1)]
+    [OverloadResolutionPriority(2)]
     public virtual ClientResult<ChatCompletionResult> UpdateChatCompletion(UpdateChatCompletionOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
@@ -602,7 +624,7 @@ public partial class ChatClient
     }
 
     [Experimental("OPENAI001")]
-    [OverloadResolutionPriority(1)]
+    [OverloadResolutionPriority(2)]
     public async virtual Task<ClientResult<ChatCompletionResult>> UpdateChatCompletionAsync(UpdateChatCompletionOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));

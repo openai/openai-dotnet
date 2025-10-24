@@ -1,6 +1,7 @@
 ﻿using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using System.ClientModel;
+using System.Threading.Tasks;
 using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Utility
@@ -28,5 +29,15 @@ namespace OpenAI.Tests.Utility
         public ApiKeyCredential GetTestApiKeyCredential() => new(TestEnvironment.OpenApiKey);
 
         public OpenAIClient GetProxiedTestTopLevelClient() => GetProxiedOpenAIClient<OpenAIClient>(TestScenario.TopLevel);
+
+        public Task DelayIfNotInPlaybackAsync(int millisecondsDelay)
+        {
+            if (TestEnvironment.Mode == RecordedTestMode.Playback)
+            {
+                return Task.CompletedTask;
+            }
+            return Task.Delay(millisecondsDelay);
+        }
+
     }
 }

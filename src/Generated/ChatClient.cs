@@ -5,7 +5,6 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,32 +21,6 @@ namespace OpenAI.Chat
         }
 
         public ClientPipeline Pipeline { get; }
-
-        [Experimental("OPENAI001")]
-        public virtual CollectionResult GetChatCompletions(string after, int? limit, string order, IDictionary<string, string> metadata, string model, RequestOptions options)
-        {
-            return new ChatClientGetChatCompletionsCollectionResult(
-                this,
-                after,
-                limit,
-                order,
-                metadata,
-                model,
-                options);
-        }
-
-        [Experimental("OPENAI001")]
-        public virtual AsyncCollectionResult GetChatCompletionsAsync(string after, int? limit, string order, IDictionary<string, string> metadata, string model, RequestOptions options)
-        {
-            return new ChatClientGetChatCompletionsAsyncCollectionResult(
-                this,
-                after,
-                limit,
-                order,
-                metadata,
-                model,
-                options);
-        }
 
         [Experimental("OPENAI001")]
         public virtual CollectionResult<ChatCompletion> GetChatCompletions(ChatCompletionCollectionOptions options = default, CancellationToken cancellationToken = default)

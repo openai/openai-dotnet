@@ -138,15 +138,26 @@ public class ChatStoreToolTests : OpenAIRecordedTestBase
         int totalCount = 0;
         string lastId = null;
 
-        await foreach (var fetchedCompletion in client.GetChatCompletionsAsync(after: null, limit: 2, order: null, metadata: null))
+        // await foreach (var fetchedCompletion in client.GetChatCompletionsAsync(after: null, limit: 2, order: null, metadata: null))
+        var getOptions = GetChatCompletionsOptions.Create(client);
+        getOptions.Limit = 2;
+        ChatCompletionList result;
+        do
         {
-            totalCount++;
-            lastId = fetchedCompletion.Id;
-            Assert.That(fetchedCompletion.Id, Is.Not.Null.And.Not.Empty);
-            Assert.That(fetchedCompletion.Choices[0].Message.Content, Is.Not.Null);
+            result = await client.GetChatCompletionsAsync(getOptions).ConfigureAwait(false);
 
-            if (totalCount >= 2) break; // Stop after getting 2 items
-        }
+            foreach (var fetchedCompletion in result.Data)
+            {
+                totalCount++;
+                lastId = fetchedCompletion.Id;
+                Assert.That(fetchedCompletion.Id, Is.Not.Null.And.Not.Empty);
+                Assert.That(fetchedCompletion.Choices[0].Message.Content, Is.Not.Null);
+
+                if (totalCount >= 2) break; // Stop after getting 2 items
+            }
+
+        } while (result.HasMore);
+
 
         Assert.That(totalCount, Is.EqualTo(2));
         Assert.That(lastId, Is.Not.Null);
@@ -194,12 +205,14 @@ public class ChatStoreToolTests : OpenAIRecordedTestBase
 
         int totalCount = 0;
         string lastId = null;
+        var getOptions = GetChatCompletionsOptions.Create(client);
+        getOptions.Limit = 2;
 
-        AsyncCollectionResult foo = client.GetChatCompletionsAsync(after: null, limit: 2, order: null, metadata: null, model: null, options: new RequestOptions());
+        AsyncCollectionResult foo = client.GetChatCompletionsAsync(getOptions, requestOptions: new RequestOptions());
 
         await foreach (ChatCompletionList fetchedCompletion in foo.GetRawPagesAsync())
         {
-            foreach(ChatCompletionResult item in fetchedCompletion.Data)
+            foreach (ChatCompletionResult item in fetchedCompletion.Data)
             {
                 totalCount++;
                 lastId = item.Id;
@@ -505,7 +518,7 @@ public class ChatStoreToolTests : OpenAIRecordedTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [LiveOnly(Reason ="Temp while sorting out flakiness in playback")]
+    [LiveOnly(Reason = "Temp while sorting out flakiness in playback")]
     [Test]
     public async Task GetChatCompletionsWithCombinedFilters()
     {
@@ -592,13 +605,54 @@ public class ChatStoreToolTests : OpenAIRecordedTestBase
         });
     }
 
-    [LiveOnly(Reason = "Temp while sorting out flakiness in playback")]
-    [Test]
+    [RecordedTest]
     public async Task UpdateChatCompletionWorks()
     {
         ChatClient client = GetTestClient();
 
-        var testMetadataKey = $"test_key_{Guid.NewGuid():N}";
+        var testMetadataKey = $"{Recording.GenerateAlphaNumericId("test_key_", 10)}";
+        var initialOptions = new ChatCompletionOptions
+        {
+            StoredOutputEnabled = true,
+            Metadata = { [testMetadataKey] = "initial_value" }
+        };
+
+        ChatCompletion chatCompletion = await client.CompleteChatAsync(
+            [new UserChatMessage("Say `this is a test`.")],
+            initialOptions);
+
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be stored
+
+        var newMetadata = new Dictionary<string, string>
+        {
+            [testMetadataKey] = "updated_value",
+            ["updated_by"] = "unit_test"
+        };
+
+        ChatCompletion updated = await client.UpdateChatCompletionAsync(chatCompletion.Id, newMetadata);
+
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be updated
+
+        Assert.That(updated, Is.Not.Null);
+        Assert.That(updated.Id, Is.EqualTo(chatCompletion.Id));
+
+        ChatCompletionDeletionResult deletionResult = await client.DeleteChatCompletionAsync(chatCompletion.Id);
+        Assert.That(deletionResult.Deleted, Is.True);
+
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be deleted
+
+        Assert.ThrowsAsync<ClientResultException>(async () =>
+        {
+            _ = await client.GetChatCompletionAsync(chatCompletion.Id);
+        });
+    }
+
+    [RecordedTest]
+    public async Task UpdateChatCompletionWorks_PM()
+    {
+        ChatClient client = GetTestClient();
+
+        var testMetadataKey = $"{Recording.GenerateAlphaNumericId("test_key_", 10)}";
         var initialOptions = new ChatCompletionOptions
         {
             StoredOutputEnabled = true,
@@ -611,13 +665,14 @@ public class ChatStoreToolTests : OpenAIRecordedTestBase
 
         await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
 
-        var newMetadata = new Dictionary<string, string>
+        var updateOptions = new UpdateChatCompletionOptions()
         {
-            [testMetadataKey] = "updated_value",
-            ["updated_by"] = "unit_test"
+            CompletionId = chatCompletion.Id,
         };
+        updateOptions.Metadata.Add(testMetadataKey, "updated_value");
+        updateOptions.Metadata.Add("updated_by", "unit_test");
 
-        ChatCompletion updated = await client.UpdateChatCompletionAsync(chatCompletion.Id, newMetadata);
+        ChatCompletionResult updated = await client.UpdateChatCompletionAsync(updateOptions);
 
         await Task.Delay(s_delayInMilliseconds); // Wait for completions to be updated
 
