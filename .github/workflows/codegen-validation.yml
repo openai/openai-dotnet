@@ -6,6 +6,7 @@ on:
   pull_request:
     paths:
       - 'codegen/**'
+      - 'specification/**'
       - '.github/workflows/codegen-validation.yml'
       - 'scripts/Invoke-CodeGen.ps1'
     types: [opened, reopened, synchronize]
