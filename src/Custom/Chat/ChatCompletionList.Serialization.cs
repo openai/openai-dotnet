@@ -12,13 +12,13 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    internal partial class ChatCompletionMessageList : IJsonModel<ChatCompletionMessageList>
+    public partial class ChatCompletionList : IJsonModel<ChatCompletionList>
     {
-        internal ChatCompletionMessageList() : this(null, null, null, null, default, default)
+        internal ChatCompletionList() : this(null, null, null, null, default, default)
         {
         }
 
-        void IJsonModel<ChatCompletionMessageList>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<ChatCompletionList>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -35,10 +35,10 @@ namespace OpenAI.Chat
 
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionMessageList>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionList>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(ChatCompletionMessageList)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(ChatCompletionList)} does not support writing '{format}' format.");
             }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (!Patch.Contains("$.object"u8))
@@ -89,27 +89,27 @@ namespace OpenAI.Chat
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        ChatCompletionMessageList IJsonModel<ChatCompletionMessageList>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        ChatCompletionList IJsonModel<ChatCompletionList>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected virtual ChatCompletionMessageList JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual ChatCompletionList JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionMessageList>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionList>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(ChatCompletionMessageList)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(ChatCompletionList)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeChatCompletionMessageList(document.RootElement, null, options);
+            return DeserializeChatCompletionList(document.RootElement, null, options);
         }
 
-        internal static ChatCompletionMessageList DeserializeChatCompletionMessageList(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static ChatCompletionList DeserializeChatCompletionList(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             string @object = default;
-            IList<ChatCompletionMessageListDatum> data0 = default;
+            IList<ChatCompletionResult> data0 = default;
             string firstId = default;
             string lastId = default;
             bool hasMore = default;
@@ -125,10 +125,10 @@ namespace OpenAI.Chat
                 }
                 if (prop.NameEquals("data"u8))
                 {
-                    List<ChatCompletionMessageListDatum> array = new List<ChatCompletionMessageListDatum>();
+                    List<ChatCompletionResult> array = new List<ChatCompletionResult>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ChatCompletionMessageListDatum.DeserializeChatCompletionMessageListDatum(item, item.GetUtf8Bytes(), options));
+                        array.Add(ChatCompletionResult.DeserializeChatCompletionResult(item, item.GetUtf8Bytes(), options));
                     }
                     data0 = array;
                     continue;
@@ -150,7 +150,7 @@ namespace OpenAI.Chat
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ChatCompletionMessageList(
+            return new ChatCompletionList(
                 @object,
                 data0,
                 firstId,
@@ -159,45 +159,45 @@ namespace OpenAI.Chat
                 patch);
         }
 
-        BinaryData IPersistableModel<ChatCompletionMessageList>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<ChatCompletionList>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionMessageList>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionList>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(ChatCompletionMessageList)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ChatCompletionList)} does not support writing '{options.Format}' format.");
             }
         }
 
-        ChatCompletionMessageList IPersistableModel<ChatCompletionMessageList>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        ChatCompletionList IPersistableModel<ChatCompletionList>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        protected virtual ChatCompletionMessageList PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual ChatCompletionList PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionMessageList>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionList>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeChatCompletionMessageList(document.RootElement, data, options);
+                        return DeserializeChatCompletionList(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(ChatCompletionMessageList)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ChatCompletionList)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<ChatCompletionMessageList>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<ChatCompletionList>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        public static explicit operator ChatCompletionMessageList(ClientResult result)
+        public static explicit operator ChatCompletionList(ClientResult result)
         {
             using PipelineResponse response = result.GetRawResponse();
             BinaryData data = response.Content;
             using JsonDocument document = JsonDocument.Parse(data);
-            return DeserializeChatCompletionMessageList(document.RootElement, data, ModelSerializationExtensions.WireOptions);
+            return DeserializeChatCompletionList(document.RootElement, data, ModelSerializationExtensions.WireOptions);
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

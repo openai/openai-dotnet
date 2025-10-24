@@ -148,34 +148,6 @@ namespace OpenAI.Chat
         }
 
         [Experimental("OPENAI001")]
-        public virtual CollectionResult GetChatCompletionMessages(string completionId, string after, int? limit, string order, RequestOptions options)
-        {
-            Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
-
-            return new ChatClientGetChatCompletionMessagesCollectionResult(
-                this,
-                completionId,
-                after,
-                limit,
-                order,
-                options);
-        }
-
-        [Experimental("OPENAI001")]
-        public virtual AsyncCollectionResult GetChatCompletionMessagesAsync(string completionId, string after, int? limit, string order, RequestOptions options)
-        {
-            Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
-
-            return new ChatClientGetChatCompletionMessagesAsyncCollectionResult(
-                this,
-                completionId,
-                after,
-                limit,
-                order,
-                options);
-        }
-
-        [Experimental("OPENAI001")]
         public virtual CollectionResult<ChatCompletionMessageListDatum> GetChatCompletionMessages(string completionId, ChatCompletionMessageCollectionOptions options = default, CancellationToken cancellationToken = default)
         {
             Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));

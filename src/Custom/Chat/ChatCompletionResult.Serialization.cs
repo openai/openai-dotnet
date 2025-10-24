@@ -101,10 +101,10 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(ChatCompletionResult)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeCreateChatCompletionResponse(document.RootElement, null, options);
+            return DeserializeChatCompletionResult(document.RootElement, null, options);
         }
 
-        internal static ChatCompletionResult DeserializeCreateChatCompletionResponse(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static ChatCompletionResult DeserializeChatCompletionResult(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -214,7 +214,7 @@ namespace OpenAI.Chat
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeCreateChatCompletionResponse(document.RootElement, data, options);
+                        return DeserializeChatCompletionResult(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ChatCompletionResult)} does not support reading '{options.Format}' format.");
@@ -228,13 +228,13 @@ namespace OpenAI.Chat
             using PipelineResponse response = result.GetRawResponse();
             BinaryData data = response.Content;
             using JsonDocument document = JsonDocument.Parse(data);
-            return DeserializeCreateChatCompletionResponse(document.RootElement, data, ModelSerializationExtensions.WireOptions);
+            return DeserializeChatCompletionResult(document.RootElement, data, ModelSerializationExtensions.WireOptions);
         }
 
         public static explicit operator ChatCompletionResult(BinaryData data)
         {
             using JsonDocument document = JsonDocument.Parse(data);
-            return DeserializeCreateChatCompletionResponse(document.RootElement, data, ModelSerializationExtensions.WireOptions);
+            return DeserializeChatCompletionResult(document.RootElement, data, ModelSerializationExtensions.WireOptions);
         }
     }
 }
