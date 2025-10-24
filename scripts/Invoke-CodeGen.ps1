@@ -16,7 +16,10 @@ param(
     [string]$LocalRepositoryPath,
 
     [Parameter(Mandatory = $false)]
-    [switch]$Force
+    [switch]$Force,
+
+    [Parameter(Mandatory = $false)]
+    [switch]$Clean
 )
 
 function Invoke-ScriptWithLogging {
@@ -292,6 +295,14 @@ try {
     }
 
     Write-ElapsedTime "npm ci complete"
+
+    if ($Clean) {
+        Invoke-ScriptWithLogging { npm run clean -w $codegenFolderPath }
+        if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+        }
+        Write-ElapsedTime "npm run clean complete"
+    }
 
     Invoke-ScriptWithLogging { npm run build -w $codegenFolderPath }
     if ($LASTEXITCODE -ne 0) {
