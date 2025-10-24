@@ -46,7 +46,7 @@ namespace OpenAI.Audio
             if (_additionalBinaryDataProperties?.ContainsKey("duration") != true)
             {
                 writer.WritePropertyName("duration"u8);
-                writer.WriteNumberValue(Convert.ToDouble(Duration.Value.ToString("s\\.FFF")));
+                writer.WriteNumberValue(Duration.Value.TotalSeconds);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
             {
