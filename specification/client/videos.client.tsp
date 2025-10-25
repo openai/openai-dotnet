@@ -21,3 +21,6 @@ using TypeSpec.HttpClient.CSharp;
 @@convenientAPI(GetVideo, false);
 @@convenientAPI(RetrieveVideoContent, false);
 @@convenientAPI(CreateVideoRemix, false);
+
+// Rename method
+@@clientName(RetrieveVideoContent, "DownloadVideo");

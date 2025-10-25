@@ -3,13 +3,9 @@ using NUnit.Framework.Internal;
 using OpenAI.Videos;
 using System;
 using System.ClientModel;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.IO;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace OpenAI.Examples;
 

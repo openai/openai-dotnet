@@ -78,7 +78,7 @@ namespace OpenAI.Videos
             return message;
         }
 
-        internal virtual PipelineMessage CreateRetrieveVideoContentRequest(string videoId, string variant, RequestOptions options)
+        internal virtual PipelineMessage CreateDownloadVideoRequest(string videoId, string variant, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);

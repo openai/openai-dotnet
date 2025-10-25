@@ -38,7 +38,7 @@ namespace OpenAI {
         [Experimental("OPENAI001")]
         public virtual VectorStoreClient GetVectorStoreClient();
         [Experimental("OPENAI001")]
-        public virtual Videos.VideoClient GetVideoClient();
+        public virtual VideoClient GetVideoClient();
     }
     public class OpenAIClientOptions : ClientPipelineOptions {
         public Uri Endpoint { get; set; }
@@ -6837,11 +6837,11 @@ namespace OpenAI.Videos {
         public virtual Task<ClientResult> CreateVideoRemixAsync(string videoId, BinaryContent content, string contentType, RequestOptions options = null);
         public virtual ClientResult DeleteVideo(string videoId, RequestOptions options = null);
         public virtual Task<ClientResult> DeleteVideoAsync(string videoId, RequestOptions options = null);
+        public virtual ClientResult DownloadVideo(string videoId, string variant = null, RequestOptions options = null);
+        public virtual Task<ClientResult> DownloadVideoAsync(string videoId, string variant = null, RequestOptions options = null);
         public virtual ClientResult GetVideo(string videoId, RequestOptions options = null);
         public virtual Task<ClientResult> GetVideoAsync(string videoId, RequestOptions options = null);
         public virtual ClientResult GetVideos(long? limit = null, string order = null, string after = null, RequestOptions options = null);
         public virtual Task<ClientResult> GetVideosAsync(long? limit = null, string order = null, string after = null, RequestOptions options = null);
-        public virtual ClientResult RetrieveVideoContent(string videoId, string variant = null, RequestOptions options = null);
-        public virtual Task<ClientResult> RetrieveVideoContentAsync(string videoId, string variant = null, RequestOptions options = null);
     }
 }

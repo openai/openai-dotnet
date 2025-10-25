@@ -82,19 +82,19 @@ namespace OpenAI.Videos
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult RetrieveVideoContent(string videoId, string variant = default, RequestOptions options = null)
+        public virtual ClientResult DownloadVideo(string videoId, string variant = default, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(videoId, nameof(videoId));
 
-            using PipelineMessage message = CreateRetrieveVideoContentRequest(videoId, variant, options);
+            using PipelineMessage message = CreateDownloadVideoRequest(videoId, variant, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> RetrieveVideoContentAsync(string videoId, string variant = default, RequestOptions options = null)
+        public virtual async Task<ClientResult> DownloadVideoAsync(string videoId, string variant = default, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(videoId, nameof(videoId));
 
-            using PipelineMessage message = CreateRetrieveVideoContentRequest(videoId, variant, options);
+            using PipelineMessage message = CreateDownloadVideoRequest(videoId, variant, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
