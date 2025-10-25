@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.ClientModel.TestFramework;
@@ -23,7 +23,7 @@ public partial class TranslationTests : OpenAIRecordedTestBase
         UsingFilePath,
     }
 
-    [Test]
+    [RecordedTest]
     [TestCase(AudioSourceKind.UsingStream)]
     [TestCase(AudioSourceKind.UsingFilePath)]
     public async Task TranslationWorks(AudioSourceKind audioSourceKind)
@@ -48,7 +48,7 @@ public partial class TranslationTests : OpenAIRecordedTestBase
         Assert.That(translation.Text.ToLowerInvariant(), Contains.Substring("whisper"));
     }
 
-    [Test]
+    [RecordedTest]
     [TestCase("text")]
     [TestCase("json")]
     [TestCase("verbose_json")]

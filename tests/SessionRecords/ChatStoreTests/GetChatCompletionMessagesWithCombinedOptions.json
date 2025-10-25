@@ -1,0 +1,250 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "207",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "metadata": {
+          "test_scenario": "combined_options"
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": "Combined options test: Provide a detailed explanation of artificial intelligence."
+          }
+        ],
+        "model": "gpt-4o-mini",
+        "store": true
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801a4a38c1ab9f8-SEA",
+        "Connection": "keep-alive",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 16:12:21 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "18583",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "18604",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999977",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "chatcmpl-CGSZe0uGDGwEL5cDzfDMfICxOnS2s",
+        "object": "chat.completion",
+        "created": 1758039122,
+        "model": "gpt-4o-mini-2024-07-18",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "Artificial Intelligence (AI) refers to the simulation of human intelligence processes by machines, particularly computer systems. These processes include learning (the acquisition of information and rules for using it), reasoning (using rules to reach approximate or definite conclusions), and self-correction. Here’s a detailed breakdown of the key components, types, applications, and implications of AI:\n\n### 1. **Key Components of AI:**\n\n- **Machine Learning (ML):** A subset of AI that focuses on the development of algorithms that enable computers to learn from and make predictions based on data. It involves training models on large datasets to recognize patterns and make decisions without being explicitly programmed for each task.\n\n- **Deep Learning:** A further subset of machine learning that uses neural networks with many layers (deep neural networks) to analyze various factors of data. This approach is particularly effective for tasks such as image and speech recognition.\n\n- **Natural Language Processing (NLP):** This area of AI focuses on the interaction between computers and humans through natural language. It encompasses the ability of machines to understand, interpret, and respond to human language in a valuable way. Applications include chatbots, language translation, and sentiment analysis.\n\n- **Computer Vision:** The field of AI that enables machines to interpret and make decisions based on visual data, such as images or videos. It has applications in facial recognition, object detection, and autonomous vehicles.\n\n- **Expert Systems:** AI programs that mimic the decision-making abilities of a human expert. They use a set of human-crafted rules and knowledge bases to solve complex problems in specific domains (e.g., medical diagnosis).\n\n### 2. **Types of AI:**\n\n- **Narrow AI (Weak AI):** Systems designed to perform a specific task or a narrow range of tasks, such as virtual assistants (like Siri or Alexa), recommendation systems, or autonomous vehicles.\n\n- **General AI (Strong AI):** This theoretical concept refers to a form of intelligence that can understand, learn, and apply intelligence across a wide range of tasks, similar to a human being. As of now, general AI remains largely speculative and is a subject of ongoing research.\n\n- **Superintelligent AI:** A hypothetical AI that surpasses human intelligence across virtually all domains. This form of AI raises questions about ethics, control, and the future of human existence.\n\n### 3. **Applications of AI:**\n\n- **Healthcare:** AI is used for predictive analytics, personalized medicine, diagnostics, and robotic surgeries. It helps in processing vast amounts of medical data to enhance patient care.\n\n- **Finance:** AI applications include fraud detection, algorithmic trading, credit scoring, and customer service automation via chatbots.\n\n- **Transportation:** Self-driving cars rely heavily on AI for navigation, obstacle detection, and decision-making. AI systems optimize traffic management and logistics.\n\n- **Manufacturing:** AI enhances automation, predictive maintenance, and quality control processes in factories, improving efficiency and reducing costs.\n\n- **Education:** AI-driven personalized learning experiences adapt to individual student needs, providing tailored content and feedback.\n\n### 4. **Ethical Considerations and Challenges:**\n\n- **Bias and Fairness:** AI systems can perpetuate and even exacerbate existing biases present in training data, leading to unfair outcomes. Ensuring fairness and accountability in AI systems is a critical challenge.\n\n- **Privacy Issues:** The use of AI often involves the collection and analysis of large amounts of personal data, raising concerns about privacy and data security.\n\n- **Job Displacement:** The increased use of AI in various sectors may lead to job losses as tasks become automated. The challenge is to find ways to retrain and upskill the workforce.\n\n- **Control and Safety:** As AI systems become more capable, ensuring that they act safely and can be controlled becomes paramount, especially if they operate in critical sectors.\n\n### 5. **Future Implications:**\n\nThe future of AI holds both opportunities and challenges. Advancements could lead to unprecedented economic growth, improved quality of life, and solutions to complex global issues. However, they also raise significant concerns about ethical governance, societal impact, and the potential for misuse.\n\nIn conclusion, artificial intelligence encompasses a wide range of technologies and methodologies that enable machines to mimic human cognitive functions. Its transformative potential spans various industries, but it also calls for careful consideration of the ethical and social implications that accompany its integration into daily life. As a rapidly evolving field, AI will continue to reshape our future in numerous ways.",
+              "refusal": null,
+              "annotations": []
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 19,
+          "completion_tokens": 896,
+          "total_tokens": 915,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "service_tier": "default",
+        "system_fingerprint": "fp_560af6e559"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-CGSZe0uGDGwEL5cDzfDMfICxOnS2s/messages?limit=3&order=desc",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 404,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801a5187d4fb9f8-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "189",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 16:12:21 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "163",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "165",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "error": {
+          "message": "Completion chatcmpl-CGSZe0uGDGwEL5cDzfDMfICxOnS2s not found",
+          "type": "invalid_request_error",
+          "param": "completion_id",
+          "code": "not_found"
+        }
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-CGSZe0uGDGwEL5cDzfDMfICxOnS2s/messages?limit=3&order=desc",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 404,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801a51eba20b9f8-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "189",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 16:12:22 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "166",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "169",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "error": {
+          "message": "Completion chatcmpl-CGSZe0uGDGwEL5cDzfDMfICxOnS2s not found",
+          "type": "invalid_request_error",
+          "param": "completion_id",
+          "code": "not_found"
+        }
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-CGSZe0uGDGwEL5cDzfDMfICxOnS2s/messages?limit=3&order=desc",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801a52aac79b9f8-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "341",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 16:12:24 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "160",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "163",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "chatcmpl-CGSZe0uGDGwEL5cDzfDMfICxOnS2s-0",
+            "role": "user",
+            "content": "Combined options test: Provide a detailed explanation of artificial intelligence.",
+            "content_parts": null,
+            "name": null
+          }
+        ],
+        "first_id": "chatcmpl-CGSZe0uGDGwEL5cDzfDMfICxOnS2s-0",
+        "last_id": "chatcmpl-CGSZe0uGDGwEL5cDzfDMfICxOnS2s-0",
+        "has_more": false
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-CGSZe0uGDGwEL5cDzfDMfICxOnS2s",
+      "RequestMethod": "DELETE",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801a52c3df0b9f8-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "97",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 16:12:24 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "208",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "210",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "chat.completion.deleted",
+        "id": "chatcmpl-CGSZe0uGDGwEL5cDzfDMfICxOnS2s",
+        "deleted": true
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

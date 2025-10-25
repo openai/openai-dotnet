@@ -1,4 +1,4 @@
-﻿using Microsoft.ClientModel.TestFramework;
+using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Audio;
 using OpenAI.Tests.Utility;
@@ -16,7 +16,7 @@ public partial class GenerateSpeechTests : OpenAIRecordedTestBase
     {
     }
 
-    [Test]
+    [RecordedTest]
     public async Task BasicTextToSpeechWorks()
     {
         AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_TTS);
@@ -27,7 +27,7 @@ public partial class GenerateSpeechTests : OpenAIRecordedTestBase
         await ValidateGeneratedAudio(audio, "hello");
     }
 
-    [Test]
+    [RecordedTest]
     [TestCase(null)]
     [TestCase("mp3")]
     [TestCase("opus")]

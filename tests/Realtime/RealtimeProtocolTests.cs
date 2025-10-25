@@ -17,10 +17,11 @@ namespace OpenAI.Tests.Realtime;
 public class RealtimeProtocolTests : RealtimeTestFixtureBase
 {
     public RealtimeProtocolTests(bool isAsync) : base(isAsync)
-    { }
+    {
+    }
 
     [LiveOnly]
-    [Test]
+    [RecordedTest]
     public async Task ProtocolCanConfigureSession()
     {
         RealtimeClient client = GetTestClient();
@@ -87,7 +88,7 @@ public class RealtimeProtocolTests : RealtimeTestFixtureBase
         Assert.That(NodesOfType("response.output_item.done"), Has.Count.EqualTo(1));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CreateEphemeralToken()
     {
         RealtimeClient client = GetTestClient(excludeDumpPolicy: true);
@@ -111,7 +112,7 @@ public class RealtimeProtocolTests : RealtimeTestFixtureBase
         Assert.That(objectKind, Is.EqualTo("realtime.session"));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CreateEphemeralTranscriptionToken()
     {
         RealtimeClient client = GetTestClient(excludeDumpPolicy: true);

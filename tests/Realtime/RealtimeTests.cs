@@ -19,9 +19,11 @@ namespace OpenAI.Tests.Realtime;
 [LiveOnly(Reason = "Test framework doesn't support recording with web sockets yet")]
 public class RealtimeTests : RealtimeTestFixtureBase
 {
+    public enum TestAudioSendType { WithAudioStreamHelper, WithManualAudioChunks }
+
     public RealtimeTests(bool isAsync) : base(isAsync) { }
 
-    [Test]
+    [RecordedTest]
     public async Task CanConfigureSession()
     {
         RealtimeClient client = GetTestClient();
@@ -92,7 +94,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
     }
 
     [Ignore("Temporarily disabled because this test is consistently failing")]
-    [Test]
+    [RecordedTest]
     public async Task TextOnlyWorks()
     {
         RealtimeClient client = GetTestClient();
@@ -173,7 +175,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task TranscriptionOnlyWorks()
     {
         RealtimeClient client = GetTestClient();
@@ -239,7 +241,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
         Assert.That(transcriptionFinishedUpdates.Last().Item3, Is.GreaterThan(transcriptionDeltaUpdates.First().Item3));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ItemManipulationWorks()
     {
         RealtimeClient client = GetTestClient();
@@ -316,7 +318,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
         Assert.That(gotResponseFinished, Is.True);
     }
 
-    [Test]
+    [RecordedTest]
     public async Task AudioStreamConvenienceBlocksCorrectly()
     {
         RealtimeClient client = GetTestClient();
@@ -356,7 +358,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
         Assert.That(gotSpeechStarted, Is.True);
     }
 
-    [Test]
+    [RecordedTest]
     [TestCase(TestAudioSendType.WithAudioStreamHelper)]
     [TestCase(TestAudioSendType.WithManualAudioChunks)]
     public async Task AudioWithToolsWorks(TestAudioSendType audioSendType)
@@ -485,7 +487,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
         Assert.That(userTranscript, Is.Not.Null.And.Not.Empty);
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CanDisableVoiceActivityDetection()
     {
         RealtimeClient client = GetTestClient();
@@ -536,7 +538,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task BadCommandProvidesError()
     {
         RealtimeClient client = GetTestClient();
@@ -568,7 +570,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
         Assert.That(gotErrorUpdate, Is.True);
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CanAddItems()
     {
         RealtimeClient client = GetTestClient();
@@ -625,7 +627,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
         Assert.That(itemCreatedCount, Is.EqualTo(items.Count + 1));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CanUseOutOfBandResponses()
     {
         RealtimeClient client = GetTestClient();
@@ -700,12 +702,6 @@ public class RealtimeTests : RealtimeTestFixtureBase
         string secondResponse = secondResponseBuilder.ToString().ToLower();
         Assert.That(secondResponse, Is.Not.Null.And.Not.Empty);
         Assert.That(secondResponse, Does.Contain("bob"));
-    }
-
-    public enum TestAudioSendType
-    {
-        WithAudioStreamHelper,
-        WithManualAudioChunks
     }
 
     private class TestDelayedFileReadStream : FileStream

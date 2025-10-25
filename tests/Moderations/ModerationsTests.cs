@@ -15,7 +15,7 @@ public class ModerationsTests : OpenAIRecordedTestBase
     {
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ClassifySingleInput()
     {
         ModerationClient client = GetProxiedOpenAIClient<ModerationClient>(TestScenario.Moderations);
@@ -29,7 +29,7 @@ public class ModerationsTests : OpenAIRecordedTestBase
         Assert.That(moderation.Violence.Score, Is.GreaterThan(0.5));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ClassifyMultipleInputs()
     {
         ModerationClient client = GetProxiedOpenAIClient<ModerationClient>(TestScenario.Moderations);

@@ -23,6 +23,8 @@ namespace OpenAI.Tests.Responses;
 [Category("Responses")]
 public partial class ResponsesTests : OpenAIRecordedTestBase
 {
+    public enum ResponsesTestInstructionMethod { InstructionsProperty, SystemMessage, DeveloperMessage }
+
     public ResponsesTests(bool isAsync) : base(isAsync)
     {
         TestTimeoutInSeconds = 30;
@@ -57,9 +59,6 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         }
     }
 
-    private List<string> FileIdsToDelete = [];
-    private List<string> VectorStoreIdsToDelete = [];
-
     private void Validate<T>(T input) where T : class
     {
         if (input is OpenAIFile file)
@@ -73,7 +72,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [Ignore("Failing")]
-    [Test]
+    [RecordedTest]
     public async Task ComputerToolWithScreenshotRoundTrip()
     {
         OpenAIResponseClient client = GetTestClient("computer-use-preview-2025-03-11");
@@ -135,7 +134,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task WebSearchCall()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -161,7 +160,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(message.Content[0].OutputTextAnnotations, Has.Count.GreaterThan(0));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task WebSearchCallStreaming()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -229,7 +228,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(searchItemId, Is.Not.Null.And.Not.Empty);
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ResponseWithImageGenTool()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -268,7 +267,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(imageGenResponse.GeneratedImageBytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ImageGenToolStreaming()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -351,7 +350,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(imageGenItemId, Is.Not.Null.And.Not.Empty);
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ImageGenToolInputMaskWithImageBytes()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -388,7 +387,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(imageGenResponse.GeneratedImageBytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ImageGenToolInputMaskWithImageUri()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -423,7 +422,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(imageGenResponse.GeneratedImageBytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ImageGenToolInputMaskWithFileId()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -475,7 +474,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(imageGenResponse.GeneratedImageBytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
 
-    [Test]
+    [RecordedTest]
     public async Task StreamingResponses()
     {
         OpenAIResponseClient client = GetTestClient("gpt-4o-mini"); // "computer-use-alpha");
@@ -501,7 +500,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(string.Concat(deltaTextSegments), Is.EqualTo(finalResponseText));
     }
 
-    [Test]
+    [RecordedTest]
     [TestCase("gpt-4o-mini")]
     [TestCase("computer-use-preview")]
     public async Task ResponsesHelloWorldWithTool(string model)
@@ -550,7 +549,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response.OutputItems.Count, Is.EqualTo(1));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ResponsesWithReasoning()
     {
         OpenAIResponseClient client = GetTestClient("o3-mini");
@@ -590,7 +589,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(messageItem.Content?.FirstOrDefault().Text, Has.Length.GreaterThan(0));
     }
 
-    [Test]
+    [RecordedTest]
     [TestCase("computer-use-preview-2025-03-11")]
     [TestCase("gpt-4o-mini")]
     public async Task HelloWorldStreaming(string model)
@@ -613,7 +612,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CanDeleteResponse()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -634,7 +633,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.ThrowsAsync<ClientResultException>(RetrieveThatResponseAsync);
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CanOptOutOfStorage()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -650,7 +649,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(expectedException.Message, Does.Contain("not found"));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ResponseServiceTierWorks()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -666,7 +665,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response.ServiceTier, Is.EqualTo(ResponseServiceTier.Default));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task OutputTextMethod()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -695,7 +694,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response.GetOutputText(), Is.Null);
     }
 
-    [Test]
+    [RecordedTest]
     public async Task MessageHistoryWorks()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -712,7 +711,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [Ignore("Temporarily disabled due to service instability.")]
-    [Test]
+    [RecordedTest]
     public async Task ImageInputWorks()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -733,7 +732,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response.GetOutputText().ToLowerInvariant(), Does.Contain("dog").Or.Contain("cat").IgnoreCase);
     }
 
-    [Test]
+    [RecordedTest]
     public async Task FileInputFromIdWorks()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -762,7 +761,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response?.GetOutputText()?.ToLower(), Does.Contain("pizza"));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task FileInputFromBinaryWorks()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -782,14 +781,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response?.GetOutputText()?.ToLower(), Does.Contain("pizza"));
     }
 
-    public enum ResponsesTestInstructionMethod
-    {
-        InstructionsProperty,
-        SystemMessage,
-        DeveloperMessage
-    }
-
-    [Test]
+    [RecordedTest]
     [TestCase(ResponsesTestInstructionMethod.InstructionsProperty)]
     [TestCase(ResponsesTestInstructionMethod.SystemMessage)]
     [TestCase(ResponsesTestInstructionMethod.DeveloperMessage)]
@@ -859,7 +851,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task TwoTurnCrossModel()
     {
         OpenAIResponseClient client = GetTestClient("gpt-4o-mini");
@@ -876,7 +868,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             });
     }
 
-    [Test]
+    [RecordedTest]
     [TestCase("gpt-4o-mini")]
     [TestCase("computer-use-preview", Ignore = "Not yet supported with computer-use-preview")]
     public async Task StructuredOutputs(string modelName)
@@ -925,7 +917,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         });
     }
 
-    [Test]
+    [RecordedTest]
     public async Task FunctionCallWorks()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -973,7 +965,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         { }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task FunctionCallStreamingWorks()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -1023,7 +1015,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(functionCallArgumentsDeltaUpdateCount, Is.GreaterThanOrEqualTo(functionCallArgumentsDoneUpdateCount));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task MaxTokens()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -1043,7 +1035,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(message?.Status, Is.EqualTo(MessageStatus.Incomplete));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task FunctionToolChoiceWorks()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -1071,7 +1063,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [Ignore("Failing")]
-    [Test]
+    [RecordedTest]
     public async Task CanStreamBackgroundResponses()
     {
         OpenAIResponseClient client = GetTestClient("gpt-4.1-mini");
@@ -1132,7 +1124,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(completedResponse?.OutputItems?.FirstOrDefault(), Is.Not.Null);
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CanCancelBackgroundResponses()
     {
         OpenAIResponseClient client = GetTestClient("gpt-4.1-mini");
@@ -1153,6 +1145,9 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(cancelledResponse.Id, Is.EqualTo(response.Id));
         Assert.That(cancelledResponse.Status, Is.EqualTo(ResponseStatus.Cancelled));
     }
+
+    private List<string> FileIdsToDelete = [];
+    private List<string> VectorStoreIdsToDelete = [];
 
     private static readonly string s_GetWeatherAtLocationToolName = "get_weather_at_location";
     private static readonly ResponseTool s_GetWeatherAtLocationTool = ResponseTool.CreateFunctionTool(

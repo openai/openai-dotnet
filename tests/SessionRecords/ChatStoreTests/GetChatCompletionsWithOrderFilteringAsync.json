@@ -1,0 +1,715 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "133",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "metadata": {
+          "sequence": "0"
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": "Order test 0: Say 'Order 0'"
+          }
+        ],
+        "model": "gpt-4o-mini",
+        "store": true
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801ac929901b9f8-SEA",
+        "Connection": "keep-alive",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 16:17:27 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "230",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "256",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999992",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "chatcmpl-CGSet360vY9Yxvb0Rty9CTlJvkJgC",
+        "object": "chat.completion",
+        "created": 1758039447,
+        "model": "gpt-4o-mini-2024-07-18",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "Order 0",
+              "refusal": null,
+              "annotations": []
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 18,
+          "completion_tokens": 3,
+          "total_tokens": 21,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "service_tier": "default",
+        "system_fingerprint": "fp_560af6e559"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "133",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "metadata": {
+          "sequence": "1"
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": "Order test 1: Say 'Order 1'"
+          }
+        ],
+        "model": "gpt-4o-mini",
+        "store": true
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801ac9b5b9cb9f8-SEA",
+        "Connection": "keep-alive",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 16:17:29 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "258",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "287",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999990",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "chatcmpl-CGSeuTUw9RAKYr3Cbm7Cj0SRCbbSr",
+        "object": "chat.completion",
+        "created": 1758039448,
+        "model": "gpt-4o-mini-2024-07-18",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "Order 1.",
+              "refusal": null,
+              "annotations": []
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 18,
+          "completion_tokens": 4,
+          "total_tokens": 22,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "service_tier": "default",
+        "system_fingerprint": "fp_560af6e559"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions?limit=5&order=asc",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801acc36c91b9f8-SEA",
+        "Connection": "keep-alive",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 16:17:35 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "111",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "Vary": "Accept-Encoding",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "113",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "object": "chat.completion",
+            "id": "chatcmpl-C9EiRVpiZyZqeP5NuHNWTv7gqVE8J",
+            "model": "gpt-4o-mini-2024-07-18",
+            "created": 1756317555,
+            "request_id": "req_66ccba5574e946baaa9bb620ed4f52c6",
+            "tool_choice": null,
+            "usage": {
+              "total_tokens": 20,
+              "completion_tokens": 9,
+              "prompt_tokens": 11
+            },
+            "seed": -504747788098043840,
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "presence_penalty": 0.0,
+            "frequency_penalty": 0.0,
+            "system_fingerprint": "fp_560af6e559",
+            "input_user": null,
+            "service_tier": "default",
+            "tools": null,
+            "metadata": {
+              "my_metadata_key": "my_metadata_value"
+            },
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "content": "Hello! How can I assist you today?",
+                  "role": "assistant",
+                  "tool_calls": null,
+                  "function_call": null
+                },
+                "finish_reason": "stop",
+                "logprobs": null
+              }
+            ],
+            "response_format": null
+          },
+          {
+            "object": "chat.completion",
+            "id": "chatcmpl-C9EiRKleXmgYelKwYTeRxkRTNPpPc",
+            "model": "gpt-4o-mini-2024-07-18",
+            "created": 1756317555,
+            "request_id": "req_6b995a1398ac4693aab08083854468ea",
+            "tool_choice": null,
+            "usage": {
+              "total_tokens": 234,
+              "completion_tokens": 213,
+              "prompt_tokens": 21
+            },
+            "seed": -244262063926777786,
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "presence_penalty": 0.0,
+            "frequency_penalty": 0.0,
+            "system_fingerprint": "fp_560af6e559",
+            "input_user": null,
+            "service_tier": "default",
+            "tools": null,
+            "metadata": {
+              "test_scenario": "after_id_pagination"
+            },
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "content": "ID pagination is a method used to navigate through large datasets by utilizing unique identifiers (IDs) that represent the records. This technique enhances efficiency and performance, particularly when dealing with extensive datasets, as it allows for quick retrieval of specific pages without needing to process all records sequentially.\n\nDuring the ID pagination test, we assess the performance and accuracy of the pagination system under various scenarios, including large data volumes and high concurrency levels. The results typically indicate how well the system manages database queries and maintains state across user sessions. Key metrics include response time, system resource usage, and consistency of data returned across paginated requests.\n\nFurthermore, we may encounter potential challenges, such as ensuring that the dataset remains stable and unchanged during pagination or dealing with gaps in IDs due to deletions or insertions. Therefore, implementing robust error handling and consistency checks can help maintain the integrity of the user experience.\n\nIn conclusion, ID pagination offers significant advantages in terms of efficiency and scalability when properly implemented and tested. Continuous monitoring and optimization based on testing outcomes are essential to enhance user satisfaction and system performance.",
+                  "role": "assistant",
+                  "tool_calls": null,
+                  "function_call": null
+                },
+                "finish_reason": "stop",
+                "logprobs": null
+              }
+            ],
+            "response_format": null
+          },
+          {
+            "object": "chat.completion",
+            "id": "chatcmpl-C9EiSNamh4qjpLgaNUpBQmCyYAu2E",
+            "model": "gpt-4o-mini-2024-07-18",
+            "created": 1756317556,
+            "request_id": "req_47313bd0ac174cd180a4773f23fa6242",
+            "tool_choice": null,
+            "usage": {
+              "total_tokens": 29,
+              "completion_tokens": 8,
+              "prompt_tokens": 21
+            },
+            "seed": 7430457278248420484,
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "presence_penalty": 0.0,
+            "frequency_penalty": 0.0,
+            "system_fingerprint": "fp_560af6e559",
+            "input_user": null,
+            "service_tier": "default",
+            "tools": null,
+            "metadata": {
+              "test_scenario": "basic_messages"
+            },
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "content": "Hello, this is a test message.",
+                  "role": "assistant",
+                  "tool_calls": null,
+                  "function_call": null
+                },
+                "finish_reason": "stop",
+                "logprobs": null
+              }
+            ],
+            "response_format": null
+          },
+          {
+            "object": "chat.completion",
+            "id": "chatcmpl-C9EiTb5gZ8NqlQoOmlgBCM30egzBj",
+            "model": "gpt-4o-mini-2024-07-18",
+            "created": 1756317557,
+            "request_id": "req_a5296c54bc1e4e2ba26fc280c8e93709",
+            "tool_choice": null,
+            "usage": {
+              "total_tokens": 18,
+              "completion_tokens": 3,
+              "prompt_tokens": 15
+            },
+            "seed": 1877620068565677108,
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "presence_penalty": 0.0,
+            "frequency_penalty": 0.0,
+            "system_fingerprint": "fp_560af6e559",
+            "input_user": null,
+            "service_tier": "default",
+            "tools": null,
+            "metadata": {
+              "test_scenario": "cancellation_token"
+            },
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "content": "Hello World!",
+                  "role": "assistant",
+                  "tool_calls": null,
+                  "function_call": null
+                },
+                "finish_reason": "stop",
+                "logprobs": null
+              }
+            ],
+            "response_format": null
+          },
+          {
+            "object": "chat.completion",
+            "id": "chatcmpl-C9EiWkxI2kwATKSZeCr8eVvFu6p4Z",
+            "model": "gpt-4o-mini-2024-07-18",
+            "created": 1756317560,
+            "request_id": "req_a8e3d414ed624432a5939a2a64053700",
+            "tool_choice": null,
+            "usage": {
+              "total_tokens": 862,
+              "completion_tokens": 843,
+              "prompt_tokens": 19
+            },
+            "seed": 3649917191845051709,
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "presence_penalty": 0.0,
+            "frequency_penalty": 0.0,
+            "system_fingerprint": "fp_51db84afab",
+            "input_user": null,
+            "service_tier": "default",
+            "tools": null,
+            "metadata": {
+              "test_scenario": "combined_options"
+            },
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "content": "Artificial intelligence (AI) refers to the simulation of human intelligence processes by machines, particularly computer systems. These processes include learning (the acquisition of information and rules for using it), reasoning (the ability to solve problems through logical deduction), and self-correction. AI is a broad field that encompasses various sub-disciplines, approaches, and technologies, allowing machines to perform tasks that typically require human intelligence.\n\n### Key Components of Artificial Intelligence:\n\n1. **Machine Learning (ML)**:\n   - A subset of AI that focuses on the development of algorithms that enable computers to learn from and make predictions or decisions based on data. ML algorithms improve their performance as they are exposed to more data over time. Examples include supervised learning, unsupervised learning, and reinforcement learning.\n\n2. **Natural Language Processing (NLP)**:\n   - This area involves the interaction between computers and humans using natural language. The goal is to enable machines to understand, interpret, and respond to human language in a valuable way. Applications include chatbots, translation services, and sentiment analysis.\n\n3. **Computer Vision**:\n   - A field of AI that allows machines to interpret and make decisions based on visual data from the world. This includes recognizing objects in images, tracking movements, and interpreting actions. Applications are widespread, from facial recognition systems to autonomous vehicles.\n\n4. **Robotics**:\n   - The integration of AI in robotics allows machines to perform tasks that involve physical manipulation and movement. Robots can range from industrial robots performing repetitive assembly tasks to autonomous robots navigating complex environments.\n\n5. **Expert Systems**:\n   - These are AI programs that mimic the decision-making ability of a human expert. They utilize a knowledge base and a set of rules to analyze information and provide recommendations or decisions, often used in medical diagnosis, financial forecasting, and troubleshooting systems.\n\n6. **Neural Networks**:\n   - Inspired by the human brain, neural networks consist of interconnected nodes (neurons) that process data in layers. Deep learning, a subset of ML that utilizes deep neural networks, has gained prominence for its effectiveness in handling large datasets.\n\n### Applications of Artificial Intelligence:\n\n1. **Healthcare**: AI is used for predictive analytics, personalized medicine, image analysis in radiology, drug discovery, and patient monitoring systems. Machine learning algorithms can analyze vast amounts of health data to predict disease outbreaks or suggest treatment options.\n\n2. **Finance**: In the financial sector, AI algorithms can detect fraud, assess credit risk, automate trading, and offer personalized financial advice through robo-advisors.\n\n3. **Transportation**: Autonomous vehicles use AI to interpret sensor data and navigate safely in real-time. Traffic management systems can optimize traffic flow based on current conditions using AI-based predictions.\n\n4. **Customer Service**: AI-powered chatbots and virtual assistants can handle customer inquiries, provide support, and improve the customer experience by delivering personalized services.\n\n5. **Marketing**: AI helps in targeting specific audiences through data analysis, optimizing advertising campaigns, and personalizing content recommendation systems to enhance user engagement.\n\n### Challenges and Ethical Considerations:\n\nWhile AI presents numerous advantages, it also poses significant challenges, including:\n\n- **Bias and Fairness**: AI systems can perpetuate biases present in their training data, leading to unfair or discriminatory outcomes. Ensuring fairness in AI system design is crucial.\n  \n- **Privacy**: The use of AI in data collection raises concerns regarding individual privacy and data security, especially with facial recognition and surveillance technologies.\n  \n- **Job Displacement**: Automation from AI could lead to significant workforce displacement in various sectors, raising concerns about economic inequality and the future of work.\n\n- **Accountability**: Determining who is responsible for decisions made by AI systems, especially in critical areas like healthcare or autonomous driving, is a complex ethical question.\n\n### Conclusion:\n\nArtificial intelligence is a transformative technology with the potential to reshape industries and improve aspects of everyday life. However, careful consideration of its ethical implications and responsible development is essential to ensure that AI benefits humanity as a whole. As AI continues to evolve, ongoing research, public discourse, and regulatory frameworks will play critical roles in addressing the associated challenges and harnessing its full potential.",
+                  "role": "assistant",
+                  "tool_calls": null,
+                  "function_call": null
+                },
+                "finish_reason": "stop",
+                "logprobs": null
+              }
+            ],
+            "response_format": null
+          }
+        ],
+        "first_id": "chatcmpl-C9EiRVpiZyZqeP5NuHNWTv7gqVE8J",
+        "last_id": "chatcmpl-C9EiWkxI2kwATKSZeCr8eVvFu6p4Z",
+        "has_more": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions?limit=5&order=desc",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801acc4de47b9f8-SEA",
+        "Connection": "keep-alive",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 16:17:35 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "155",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "Vary": "Accept-Encoding",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "156",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "object": "chat.completion",
+            "id": "chatcmpl-CGSeuTUw9RAKYr3Cbm7Cj0SRCbbSr",
+            "model": "gpt-4o-mini-2024-07-18",
+            "created": 1758039448,
+            "request_id": "req_80f320f8d89648b0be46a07a6765a1b0",
+            "tool_choice": null,
+            "usage": {
+              "total_tokens": 22,
+              "completion_tokens": 4,
+              "prompt_tokens": 18
+            },
+            "seed": 6504111986003541147,
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "presence_penalty": 0.0,
+            "frequency_penalty": 0.0,
+            "system_fingerprint": "fp_560af6e559",
+            "input_user": null,
+            "service_tier": "default",
+            "tools": null,
+            "metadata": {
+              "sequence": "1"
+            },
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "content": "Order 1.",
+                  "role": "assistant",
+                  "tool_calls": null,
+                  "function_call": null
+                },
+                "finish_reason": "stop",
+                "logprobs": null
+              }
+            ],
+            "response_format": null
+          },
+          {
+            "object": "chat.completion",
+            "id": "chatcmpl-CGSet360vY9Yxvb0Rty9CTlJvkJgC",
+            "model": "gpt-4o-mini-2024-07-18",
+            "created": 1758039447,
+            "request_id": "req_fdaf92f88de94a64adb3c389d62b68b0",
+            "tool_choice": null,
+            "usage": {
+              "total_tokens": 21,
+              "completion_tokens": 3,
+              "prompt_tokens": 18
+            },
+            "seed": 7665785828093268818,
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "presence_penalty": 0.0,
+            "frequency_penalty": 0.0,
+            "system_fingerprint": "fp_560af6e559",
+            "input_user": null,
+            "service_tier": "default",
+            "tools": null,
+            "metadata": {
+              "sequence": "0"
+            },
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "content": "Order 0",
+                  "role": "assistant",
+                  "tool_calls": null,
+                  "function_call": null
+                },
+                "finish_reason": "stop",
+                "logprobs": null
+              }
+            ],
+            "response_format": null
+          },
+          {
+            "object": "chat.completion",
+            "id": "chatcmpl-CGSegUtT4zf5dgBVVAyO5kiBIsHHh",
+            "model": "gpt-4o-mini-2024-07-18",
+            "created": 1758039434,
+            "request_id": "req_c8885bb0f9a7481da8fdf20311a2a186",
+            "tool_choice": null,
+            "usage": {
+              "total_tokens": 21,
+              "completion_tokens": 4,
+              "prompt_tokens": 17
+            },
+            "seed": -8006104568267091986,
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "presence_penalty": 0.0,
+            "frequency_penalty": 0.0,
+            "system_fingerprint": "fp_51db84afab",
+            "input_user": null,
+            "service_tier": "default",
+            "tools": null,
+            "metadata": {},
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "content": "Testing minimal limits.",
+                  "role": "assistant",
+                  "tool_calls": null,
+                  "function_call": null
+                },
+                "finish_reason": "stop",
+                "logprobs": null
+              }
+            ],
+            "response_format": null
+          },
+          {
+            "object": "chat.completion",
+            "id": "chatcmpl-CGSeTawmszFg8VtfREOanMqFQprzh",
+            "model": "gpt-4o-mini-2024-07-18",
+            "created": 1758039421,
+            "request_id": "req_28deee5d169f4762a2a8e4b5b377f0d8",
+            "tool_choice": null,
+            "usage": {
+              "total_tokens": 24,
+              "completion_tokens": 9,
+              "prompt_tokens": 15
+            },
+            "seed": -3283729643532007623,
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "presence_penalty": 0.0,
+            "frequency_penalty": 0.0,
+            "system_fingerprint": "fp_560af6e559",
+            "input_user": null,
+            "service_tier": "default",
+            "tools": null,
+            "metadata": {},
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "content": "Hello! How can I assist you today?",
+                  "role": "assistant",
+                  "tool_calls": null,
+                  "function_call": null
+                },
+                "finish_reason": "stop",
+                "logprobs": null
+              }
+            ],
+            "response_format": null
+          },
+          {
+            "object": "chat.completion",
+            "id": "chatcmpl-CGScOqrPPI7eJ007gi2YNg9K4uDNr",
+            "model": "gpt-4o-mini-2024-07-18",
+            "created": 1758039292,
+            "request_id": "req_ca2ffd251ed245cc92b90ce35b52c482",
+            "tool_choice": null,
+            "usage": {
+              "total_tokens": 226,
+              "completion_tokens": 205,
+              "prompt_tokens": 21
+            },
+            "seed": 8943224875104653351,
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "presence_penalty": 0.0,
+            "frequency_penalty": 0.0,
+            "system_fingerprint": "fp_51db84afab",
+            "input_user": null,
+            "service_tier": "default",
+            "tools": null,
+            "metadata": {
+              "test_scenario": "after_id_pagination"
+            },
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "content": "Certainly! After conducting the ID pagination test, we observed several critical factors that influence both functionality and user experience. Firstly, the implementation of ID-based pagination allows for efficient retrieval of data, as IDs typically maintain a unique and sequential nature, enabling smooth traversal through records. This method significantly reduces the time taken to fetch datasets compared to other pagination techniques, particularly when handling large volumes of information.\n\nMoreover, during the test, we noted that the user interface remained intuitive, allowing users to navigate through pages seamlessly without confusion. Additionally, the performance metrics indicated minimal latency, even as the dataset's size increased. However, we also identified some areas for improvement. For instance, implementing better error handling for out-of-bounds ID requests could enhance robustness, ensuring users receive clear feedback rather than encountering vague errors.\n\nOverall, the ID pagination test not only confirmed the efficacy of this strategy in terms of performance and usability but also highlighted the need for ongoing refinement to improve resilience and user interaction. This insight will guide further optimization efforts in our development process.",
+                  "role": "assistant",
+                  "tool_calls": null,
+                  "function_call": null
+                },
+                "finish_reason": "stop",
+                "logprobs": null
+              }
+            ],
+            "response_format": null
+          }
+        ],
+        "first_id": "chatcmpl-CGSeuTUw9RAKYr3Cbm7Cj0SRCbbSr",
+        "last_id": "chatcmpl-CGScOqrPPI7eJ007gi2YNg9K4uDNr",
+        "has_more": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-CGSet360vY9Yxvb0Rty9CTlJvkJgC",
+      "RequestMethod": "DELETE",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801acc66825b9f8-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "97",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 16:17:35 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "128",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "130",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "chat.completion.deleted",
+        "id": "chatcmpl-CGSet360vY9Yxvb0Rty9CTlJvkJgC",
+        "deleted": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-CGSeuTUw9RAKYr3Cbm7Cj0SRCbbSr",
+      "RequestMethod": "DELETE",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9801acc7b98cb9f8-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "97",
+        "Content-Type": "application/json",
+        "Date": "Tue, 16 Sep 2025 16:17:36 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "166",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "167",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "chat.completion.deleted",
+        "id": "chatcmpl-CGSeuTUw9RAKYr3Cbm7Cj0SRCbbSr",
+        "deleted": true
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}
