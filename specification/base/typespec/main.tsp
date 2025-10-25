@@ -19,4 +19,5 @@ import "./runs";
 import "./threads";
 import "./responses";
 import "./vector-stores";
+import "./videos";
 import "./uploads";

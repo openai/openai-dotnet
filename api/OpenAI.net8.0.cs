@@ -37,6 +37,8 @@ namespace OpenAI {
         public virtual RealtimeClient GetRealtimeClient();
         [Experimental("OPENAI001")]
         public virtual VectorStoreClient GetVectorStoreClient();
+        [Experimental("OPENAI001")]
+        public virtual VideoClient GetVideoClient();
     }
     public class OpenAIClientOptions : ClientPipelineOptions {
         public Uri Endpoint { get; set; }
@@ -6814,5 +6816,32 @@ namespace OpenAI.VectorStores {
         InProgress = 1,
         Completed = 2,
         Expired = 3
+    }
+}
+namespace OpenAI.Videos {
+    [Experimental("OPENAI001")]
+    public class VideoClient {
+        protected VideoClient();
+        public VideoClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public VideoClient(ApiKeyCredential credential);
+        public VideoClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public VideoClient(AuthenticationPolicy authenticationPolicy);
+        protected internal VideoClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        public VideoClient(string apiKey);
+        [Experimental("OPENAI001")]
+        public Uri Endpoint { get; }
+        public ClientPipeline Pipeline { get; }
+        public virtual ClientResult CreateVideo(BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual Task<ClientResult> CreateVideoAsync(BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual ClientResult CreateVideoRemix(string videoId, BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual Task<ClientResult> CreateVideoRemixAsync(string videoId, BinaryContent content, string contentType, RequestOptions options = null);
+        public virtual ClientResult DeleteVideo(string videoId, RequestOptions options = null);
+        public virtual Task<ClientResult> DeleteVideoAsync(string videoId, RequestOptions options = null);
+        public virtual ClientResult DownloadVideo(string videoId, string variant = null, RequestOptions options = null);
+        public virtual Task<ClientResult> DownloadVideoAsync(string videoId, string variant = null, RequestOptions options = null);
+        public virtual ClientResult GetVideo(string videoId, RequestOptions options = null);
+        public virtual Task<ClientResult> GetVideoAsync(string videoId, RequestOptions options = null);
+        public virtual ClientResult GetVideos(long? limit = null, string order = null, string after = null, RequestOptions options = null);
+        public virtual Task<ClientResult> GetVideosAsync(long? limit = null, string order = null, string after = null, RequestOptions options = null);
     }
 }
