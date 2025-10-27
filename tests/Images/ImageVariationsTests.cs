@@ -1,5 +1,4 @@
 ﻿using Microsoft.ClientModel.TestFramework;
-using Microsoft.ClientModel.TestFramework.TestProxy.Admin;
 using NUnit.Framework;
 using OpenAI.Images;
 using System;
@@ -17,7 +16,7 @@ public partial class ImageVariationsTests : ImageTestFixtureBase
         TestTimeoutInSeconds = 30;
     }
 
-    [Test]
+    [RecordedTest]
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateImageVariationWorks(ImageSourceKind imageSourceKind)
     {
@@ -55,7 +54,7 @@ public partial class ImageVariationsTests : ImageTestFixtureBase
         await ValidateGeneratedImage(image.ImageUri, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
     }
 
-    [Test]
+    [RecordedTest]
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateImageVariationWithBytesResponseWorks(ImageSourceKind imageSourceKind)
     {
@@ -91,7 +90,7 @@ public partial class ImageVariationsTests : ImageTestFixtureBase
         await ValidateGeneratedImage(image.ImageBytes, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
     }
 
-    [Test]
+    [RecordedTest]
     public void GenerateImageVariationFromStreamCanParseServiceError()
     {
         ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
@@ -105,7 +104,7 @@ public partial class ImageVariationsTests : ImageTestFixtureBase
         Assert.That(ex.Status, Is.EqualTo(401));
     }
 
-    [Test]
+    [RecordedTest]
     public void GenerateImageVariationFromPathCanParseServiceError()
     {
         ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
@@ -118,7 +117,7 @@ public partial class ImageVariationsTests : ImageTestFixtureBase
         Assert.That(ex.Status, Is.EqualTo(401));
     }
 
-    [Test]
+    [RecordedTest]
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateMultipleImageVariationsWorks(ImageSourceKind imageSourceKind)
     {
@@ -162,7 +161,7 @@ public partial class ImageVariationsTests : ImageTestFixtureBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateMultipleImageVariationsWithBytesResponseWorks(ImageSourceKind imageSourceKind)
     {
@@ -205,7 +204,7 @@ public partial class ImageVariationsTests : ImageTestFixtureBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public void GenerateMultipleImageVariationsFromStreamCanParseServiceError()
     {
         ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
@@ -219,7 +218,7 @@ public partial class ImageVariationsTests : ImageTestFixtureBase
         Assert.That(ex.Status, Is.EqualTo(401));
     }
 
-    [Test]
+    [RecordedTest]
     public void GenerateMultipleImageVariationsFromPathCanParseServiceError()
     {
         ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));

@@ -1,4 +1,4 @@
-﻿using Microsoft.ClientModel.TestFramework;
+using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Files;
 using OpenAI.Tests.Utility;
@@ -13,13 +13,11 @@ namespace OpenAI.Tests.Files;
 [Category("Uploads")]
 public class UploadsTests : OpenAIRecordedTestBase
 {
-    private OpenAIFileClient GetTestClient() => GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
-
     public UploadsTests(bool isAsync) : base(isAsync)
     {
     }
 
-    [Test]
+    [RecordedTest]
     [TestCase(true)]
     [TestCase(false)]
     public async Task CreateUploadWorks(bool useTopLevelClient)
@@ -56,7 +54,7 @@ public class UploadsTests : OpenAIRecordedTestBase
         Assert.That(uploadDetails.ExpiresAt, Is.GreaterThan(uploadDetails.CreatedAt));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task AddUploadPartWorks()
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
@@ -79,7 +77,7 @@ public class UploadsTests : OpenAIRecordedTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CompleteUploadWorks()
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
@@ -138,7 +136,7 @@ public class UploadsTests : OpenAIRecordedTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CancelUploadWorks()
     {
         OpenAIFileClient fileClient = GetTestClient();
@@ -225,6 +223,8 @@ public class UploadsTests : OpenAIRecordedTestBase
             UploadId = uploadId
         };
     }
+
+    private OpenAIFileClient GetTestClient() => GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
 
     private readonly struct UploadDetails
     {

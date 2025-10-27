@@ -1,7 +1,6 @@
 ﻿using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Images;
-using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.IO;
@@ -17,7 +16,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
         TestTimeoutInSeconds = 120;
     }
 
-    [Test]
+    [RecordedTest]
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateImageEditWorks(ImageSourceKind imageSourceKind)
     {
@@ -56,7 +55,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
         await ValidateGeneratedImage(image.ImageUri, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
     }
 
-    [Test]
+    [RecordedTest]
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GptImage1Works(ImageSourceKind imageSourceKind)
     {
@@ -94,7 +93,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
         await ValidateGeneratedImage(image.ImageBytes, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
     }
 
-    [Test]
+    [RecordedTest]
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateImageEditWithBytesResponseWorks(ImageSourceKind imageSourceKind)
     {
@@ -131,7 +130,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
         await ValidateGeneratedImage(image.ImageBytes, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
     }
 
-    [Test]
+    [RecordedTest]
     public void GenerateImageEditFromStreamCanParseServiceError()
     {
         ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
@@ -144,7 +143,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
         Assert.That(ex.Status, Is.EqualTo(401));
     }
 
-    [Test]
+    [RecordedTest]
     public void GenerateImageEditFromPathCanParseServiceError()
     {
         ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
@@ -155,7 +154,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
         Assert.That(ex.Status, Is.EqualTo(401));
     }
 
-    [Test]
+    [RecordedTest]
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateImageEditWithMaskFileWorks(ImageSourceKind imageSourceKind)
     {
@@ -196,7 +195,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
         await ValidateGeneratedImage(image.ImageUri, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
     }
 
-    [Test]
+    [RecordedTest]
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateImageEditWithMaskFileWithBytesResponseWorks(ImageSourceKind imageSourceKind)
     {
@@ -236,7 +235,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
         await ValidateGeneratedImage(image.ImageBytes, ["cat", "owl", "animal"], "Note that it likely depicts some sort of animal.");
     }
 
-    [Test]
+    [RecordedTest]
     public void GenerateImageEditWithMaskFileFromStreamCanParseServiceError()
     {
         ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
@@ -251,7 +250,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
         Assert.That(ex.Status, Is.EqualTo(401));
     }
 
-    [Test]
+    [RecordedTest]
     public void GenerateImageEditWithMaskFileFromPathCanParseServiceError()
     {
         ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
@@ -264,7 +263,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
         Assert.That(ex.Status, Is.EqualTo(401));
     }
 
-    [Test]
+    [RecordedTest]
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateMultipleImageEditsWorks(ImageSourceKind imageSourceKind)
     {
@@ -309,7 +308,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateMultipleImageEditsWithBytesResponseWorks(ImageSourceKind imageSourceKind)
     {
@@ -353,7 +352,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public void GenerateMultipleImageEditsFromStreamCanParseServiceError()
     {
         ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
@@ -365,7 +364,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
         Assert.That(ex.Status, Is.EqualTo(401));
     }
 
-    [Test]
+    [RecordedTest]
     public void GenerateMultipleImageEditsFromPathCanParseServiceError()
     {
         ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
@@ -376,7 +375,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
         Assert.That(ex.Status, Is.EqualTo(401));
     }
 
-    [Test]
+    [RecordedTest]
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateMultipleImageEditsWithMaskFileWorks(ImageSourceKind imageSourceKind)
     {
@@ -424,7 +423,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     [TestCaseSource(nameof(s_imageSourceKindSource))]
     public async Task GenerateMultipleImageEditsWithMaskFileWithBytesResponseWorks(ImageSourceKind imageSourceKind)
     {
@@ -471,7 +470,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public void GenerateMultipleImageEditsWithMaskFileFromStreamCanParseServiceError()
     {
         ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));
@@ -486,7 +485,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
         Assert.That(ex.Status, Is.EqualTo(401));
     }
 
-    [Test]
+    [RecordedTest]
     public void GenerateMultipleImageEditsWithMaskFileFromPathCanParseServiceError()
     {
         ImageClient client = CreateProxyFromClient(new ImageClient("dall-e-2", new ApiKeyCredential("fake_key"), InstrumentClientOptions(new OpenAIClientOptions())));

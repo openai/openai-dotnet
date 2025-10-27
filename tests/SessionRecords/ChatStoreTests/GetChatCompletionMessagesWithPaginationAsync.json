@@ -1,0 +1,318 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "782",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Darwin 25.0.0 Darwin Kernel Version 25.0.0: Wed Sep 17 21:42:08 PDT 2025; root:xnu-12377.1.9~141/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": {
+        "metadata": {
+          "test_scenario": "pagination_messages"
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": "What's the weather like today? Use the weather tool."
+          },
+          {
+            "role": "user",
+            "content": "Name something I could do outside in this weather."
+          },
+          {
+            "role": "user",
+            "content": "Name something else I could do outside in this weather."
+          },
+          {
+            "role": "user",
+            "content": "Name something yet another thing I could do outside in this weather."
+          }
+        ],
+        "model": "gpt-4o-mini",
+        "store": true,
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "description": "Get current weather information",
+              "name": "get_weather",
+              "parameters": {
+                "type": "object",
+                "properties": {
+                  "location": {
+                    "type": "string",
+                    "description": "The city and state, e.g. San Francisco, CA"
+                  }
+                },
+                "required": [
+                  "location"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9955b7a228f2f078-DFW",
+        "Connection": "keep-alive",
+        "Content-Type": "application/json",
+        "Date": "Mon, 27 Oct 2025 22:44:19 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "518",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Set-Cookie": [
+          "Sanitized",
+          "Sanitized"
+        ],
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "534",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999937",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "chatcmpl-CVQEkicGrxKWA47zVcCEr354zhwvj",
+        "object": "chat.completion",
+        "created": 1761605058,
+        "model": "gpt-4o-mini-2024-07-18",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": null,
+              "tool_calls": [
+                {
+                  "id": "call_KVODqnsZQfTMRL8Nj6GcNsQj",
+                  "type": "function",
+                  "function": {
+                    "name": "get_weather",
+                    "arguments": "{\"location\":\"San Francisco, CA\"}"
+                  }
+                }
+              ],
+              "refusal": null,
+              "annotations": []
+            },
+            "logprobs": null,
+            "finish_reason": "tool_calls"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 113,
+          "completion_tokens": 17,
+          "total_tokens": 130,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "service_tier": "default",
+        "system_fingerprint": "Sanitized"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-CVQEkicGrxKWA47zVcCEr354zhwvj/messages?limit=2",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Darwin 25.0.0 Darwin Kernel Version 25.0.0: Wed Sep 17 21:42:08 PDT 2025; root:xnu-12377.1.9~141/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": null,
+      "StatusCode": 404,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9955b7a65f33f078-DFW",
+        "Connection": "keep-alive",
+        "Content-Length": "189",
+        "Content-Type": "application/json",
+        "Date": "Mon, 27 Oct 2025 22:44:19 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "350",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "351",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "error": {
+          "message": "Completion chatcmpl-CVQEkicGrxKWA47zVcCEr354zhwvj not found",
+          "type": "invalid_request_error",
+          "param": "completion_id",
+          "code": "not_found"
+        }
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-CVQEkicGrxKWA47zVcCEr354zhwvj/messages?limit=2",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Darwin 25.0.0 Darwin Kernel Version 25.0.0: Wed Sep 17 21:42:08 PDT 2025; root:xnu-12377.1.9~141/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9955b7ae2faef078-DFW",
+        "Connection": "keep-alive",
+        "Content-Length": "471",
+        "Content-Type": "application/json",
+        "Date": "Mon, 27 Oct 2025 22:44:21 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "201",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "202",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "chatcmpl-CVQEkicGrxKWA47zVcCEr354zhwvj-0",
+            "role": "user",
+            "content": "What's the weather like today? Use the weather tool.",
+            "content_parts": null,
+            "name": null
+          },
+          {
+            "id": "chatcmpl-CVQEkicGrxKWA47zVcCEr354zhwvj-1",
+            "role": "user",
+            "content": "Name something I could do outside in this weather.",
+            "content_parts": null,
+            "name": null
+          }
+        ],
+        "first_id": "chatcmpl-CVQEkicGrxKWA47zVcCEr354zhwvj-0",
+        "last_id": "chatcmpl-CVQEkicGrxKWA47zVcCEr354zhwvj-1",
+        "has_more": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-CVQEkicGrxKWA47zVcCEr354zhwvj/messages?after=chatcmpl-CVQEkicGrxKWA47zVcCEr354zhwvj-1&limit=2",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Darwin 25.0.0 Darwin Kernel Version 25.0.0: Wed Sep 17 21:42:08 PDT 2025; root:xnu-12377.1.9~141/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9955b7b07efaf078-DFW",
+        "Connection": "keep-alive",
+        "Content-Length": "493",
+        "Content-Type": "application/json",
+        "Date": "Mon, 27 Oct 2025 22:44:21 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "146",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "148",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "chatcmpl-CVQEkicGrxKWA47zVcCEr354zhwvj-2",
+            "role": "user",
+            "content": "Name something else I could do outside in this weather.",
+            "content_parts": null,
+            "name": null
+          },
+          {
+            "id": "chatcmpl-CVQEkicGrxKWA47zVcCEr354zhwvj-3",
+            "role": "user",
+            "content": "Name something yet another thing I could do outside in this weather.",
+            "content_parts": null,
+            "name": null
+          }
+        ],
+        "first_id": "chatcmpl-CVQEkicGrxKWA47zVcCEr354zhwvj-2",
+        "last_id": "chatcmpl-CVQEkicGrxKWA47zVcCEr354zhwvj-3",
+        "has_more": false
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-CVQEkicGrxKWA47zVcCEr354zhwvj",
+      "RequestMethod": "DELETE",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Darwin 25.0.0 Darwin Kernel Version 25.0.0: Wed Sep 17 21:42:08 PDT 2025; root:xnu-12377.1.9~141/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9955b7b1aaeff078-DFW",
+        "Connection": "keep-alive",
+        "Content-Length": "97",
+        "Content-Type": "application/json",
+        "Date": "Mon, 27 Oct 2025 22:44:21 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "398",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "399",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "chat.completion.deleted",
+        "id": "chatcmpl-CVQEkicGrxKWA47zVcCEr354zhwvj",
+        "deleted": true
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}
