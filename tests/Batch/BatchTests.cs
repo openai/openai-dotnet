@@ -1,4 +1,4 @@
-﻿using Microsoft.ClientModel.TestFramework;
+using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Batch;
 using OpenAI.Files;
@@ -23,7 +23,7 @@ public class BatchTests : OpenAIRecordedTestBase
         TestTimeoutInSeconds = 65;
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ListBatchesProtocol()
     {
         BatchClient client = GetTestClient();
@@ -53,7 +53,7 @@ public class BatchTests : OpenAIRecordedTestBase
         Assert.That(pageCount, Is.GreaterThanOrEqualTo(1));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CreateGetAndCancelBatchProtocol()
     {
         using MemoryStream testFileStream = new();
@@ -114,6 +114,7 @@ public class BatchTests : OpenAIRecordedTestBase
         Assert.That(status, Is.EqualTo("validating"));
     }
 
+    [RecordedTest]
     [TestCase(true)]
     [TestCase(false)]
     public async Task CanRehydrateBatchOperation(bool useBatchId)
