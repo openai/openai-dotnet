@@ -222,7 +222,6 @@ public partial class ChatClient
         => CompleteChat(messages, default(ChatCompletionOptions));
 
     [Experimental("OPENAI001")]
-    [OverloadResolutionPriority(2)]
     public virtual ClientResult<ChatCompletionResult> CompleteChat(CreateChatCompletionOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
@@ -232,7 +231,6 @@ public partial class ChatClient
     }
 
     [Experimental("OPENAI001")]
-    [OverloadResolutionPriority(2)]
     public virtual async Task<ClientResult<ChatCompletionResult>> CompleteChatAsync(CreateChatCompletionOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
@@ -240,22 +238,6 @@ public partial class ChatClient
         ClientResult result = await this.CompleteChatAsync(options, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
         // this doesn't work for streaming responses because it will not serialize correctly. We need a CompleteChatStreaming.
         return ClientResult.FromValue((ChatCompletionResult)result.GetRawResponse().Content, result.GetRawResponse());
-    }
-
-    [OverloadResolutionPriority(1)]
-    public virtual ClientResult CompleteChat(CreateChatCompletionOptions options, RequestOptions requestOptions = default)
-    {
-        Argument.AssertNotNull(options, nameof(options));
-
-        return CompleteChat((BinaryContent)options, requestOptions);
-    }
-
-    [OverloadResolutionPriority(1)]
-    public virtual async Task<ClientResult> CompleteChatAsync(CreateChatCompletionOptions options, RequestOptions requestOptions = default)
-    {
-        Argument.AssertNotNull(options, nameof(options));
-
-        return await CompleteChatAsync((BinaryContent)options, requestOptions).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -411,7 +393,7 @@ public partial class ChatClient
         return ClientResult.FromValue((ChatCompletion)result, result.GetRawResponse());
     }
 
-    [OverloadResolutionPriority(1)]
+    [Experimental("OPENAI001")]
     public virtual ClientResult<ChatCompletionResult> GetChatCompletion(GetChatCompletionOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(options.CompletionId, nameof(options.CompletionId));
@@ -420,33 +402,13 @@ public partial class ChatClient
         return ClientResult.FromValue((ChatCompletionResult)result, result.GetRawResponse());
     }
 
-    [OverloadResolutionPriority(1)]
+    [Experimental("OPENAI001")]
     public virtual async Task<ClientResult<ChatCompletionResult>> GetChatCompletionAsync(GetChatCompletionOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(options.CompletionId, nameof(options.CompletionId));
 
         ClientResult result = await GetChatCompletionAsync(options.CompletionId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
         return ClientResult.FromValue((ChatCompletionResult)result, result.GetRawResponse());
-    }
-
-    [Experimental("OPENAI001")]
-    [OverloadResolutionPriority(2)]
-    public virtual ClientResult GetChatCompletion(GetChatCompletionOptions options, RequestOptions requestOptions = null)
-    {
-        Argument.AssertNotNullOrEmpty(options.CompletionId, nameof(options.CompletionId));
-
-        using PipelineMessage message = CreateGetChatCompletionRequest(options.CompletionId, requestOptions);
-        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, requestOptions));
-    }
-
-    [Experimental("OPENAI001")]
-    [OverloadResolutionPriority(2)]
-    public virtual async Task<ClientResult> GetChatCompletionAsync(GetChatCompletionOptions options, RequestOptions requestOptions = null)
-    {
-        Argument.AssertNotNullOrEmpty(options.CompletionId, nameof(options.CompletionId));
-
-        using PipelineMessage message = CreateGetChatCompletionRequest(options.CompletionId, requestOptions);
-        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, requestOptions).ConfigureAwait(false));
     }
 
     [Experimental("OPENAI001")]
@@ -598,27 +560,6 @@ public partial class ChatClient
     }
 
     [Experimental("OPENAI001")]
-    [OverloadResolutionPriority(1)]
-    public virtual ClientResult UpdateChatCompletion(UpdateChatCompletionOptions options, RequestOptions requestOptions = null)
-    {
-        Argument.AssertNotNull(options, nameof(options));
-
-        using PipelineMessage message = CreateUpdateChatCompletionRequest(options.CompletionId, options, requestOptions);
-        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, requestOptions));
-    }
-
-    [Experimental("OPENAI001")]
-    [OverloadResolutionPriority(1)]
-    public async virtual Task<ClientResult> UpdateChatCompletionAsync(UpdateChatCompletionOptions options, RequestOptions requestOptions = null)
-    {
-        Argument.AssertNotNull(options, nameof(options));
-
-        using PipelineMessage message = CreateUpdateChatCompletionRequest(options.CompletionId, options, requestOptions);
-        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, requestOptions).ConfigureAwait(false));
-    }
-
-    [Experimental("OPENAI001")]
-    [OverloadResolutionPriority(2)]
     public virtual ClientResult<ChatCompletionResult> UpdateChatCompletion(UpdateChatCompletionOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
@@ -630,7 +571,6 @@ public partial class ChatClient
     }
 
     [Experimental("OPENAI001")]
-    [OverloadResolutionPriority(2)]
     public async virtual Task<ClientResult<ChatCompletionResult>> UpdateChatCompletionAsync(UpdateChatCompletionOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
