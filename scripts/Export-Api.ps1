@@ -272,6 +272,7 @@ function Invoke-GenAPI {
     $content = $content -creplace "Realtime\.", ""
     $content = $content -creplace "Responses\.", ""
     $content = $content -creplace "VectorStores\.", ""
+    $content = $content -creplace "Videos\.", ""
 
     # Remove Diagnostics.DebuggerStepThrough attribute.
     $content = $content -creplace ".*Diagnostics.DebuggerStepThrough.*\n", ""

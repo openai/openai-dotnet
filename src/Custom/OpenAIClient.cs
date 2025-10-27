@@ -14,6 +14,7 @@ using OpenAI.Moderations;
 using OpenAI.Realtime;
 using OpenAI.Responses;
 using OpenAI.VectorStores;
+using OpenAI.Videos;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
@@ -49,6 +50,7 @@ namespace OpenAI;
 [CodeGenSuppress("_cachedRealtimeClient")]
 [CodeGenSuppress("_cachedOpenAIResponseClient")]
 [CodeGenSuppress("_cachedVectorStoreClient")]
+[CodeGenSuppress("_cachedVideoClient")]
 [CodeGenSuppress("_cachedInternalAssistantMessageClient")]
 [CodeGenSuppress("_cachedInternalAssistantRunClient")]
 [CodeGenSuppress("_cachedInternalAssistantThreadClient")]
@@ -70,6 +72,7 @@ namespace OpenAI;
 [CodeGenSuppress("GetRealtimeClient")]
 [CodeGenSuppress("GetOpenAIResponseClient")]
 [CodeGenSuppress("GetVectorStoreClient")]
+[CodeGenSuppress("GetVideoClient")]
 [CodeGenSuppress("GetInternalAssistantMessageClient")]
 [CodeGenSuppress("GetInternalAssistantRunClient")]
 [CodeGenSuppress("GetInternalAssistantThreadClient")]
@@ -340,6 +343,14 @@ public partial class OpenAIClient
     /// <returns></returns>
     [Experimental("OPENAI001")]
     public virtual ContainerClient GetContainerClient() => new(Pipeline, _options);
+
+    /// <summary>
+    /// Gets a new instance of <see cref="VideoClient"/> that reuses the client configuration details provided to
+    /// the <see cref="OpenAIClient"/> instance.
+    /// </summary>
+    /// <returns></returns>
+    [Experimental("OPENAI001")]
+    public virtual VideoClient GetVideoClient() => new(Pipeline, _options);
 
     internal static AuthenticationPolicy CreateApiKeyAuthenticationPolicy(ApiKeyCredential credential)
     {
