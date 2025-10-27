@@ -867,6 +867,58 @@ public class ChatStoreToolTests : OpenAIRecordedTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
+    [RecordedTest]
+    public async Task GetChatCompletionMessagesWithBasicUsage_PM()
+    {
+        ChatClient client = GetTestClient();
+
+        // Create a completion with stored output enabled to have messages
+        ChatCompletionOptions createOptions = new()
+        {
+            StoredOutputEnabled = true,
+            Metadata = { ["test_scenario"] = "basic_messages" }
+        };
+
+        ChatCompletion completion = await client.CompleteChatAsync(
+            ["Basic messages test: Say 'Hello, this is a test message.'"],
+            createOptions);
+
+
+        GetChatCompletionMessageOptions messageOptions = new GetChatCompletionMessageOptions
+        {
+            CompletionId = completion.Id
+        };
+
+        ChatCompletionMessageList messageList = null;
+        int messageCount = 0;
+
+        do
+        {
+            await RetryWithExponentialBackoffAsync(async () =>
+            {
+                // Test basic enumeration of messages
+                messageList = await client.GetChatCompletionMessagesAsync(messageOptions);
+            });
+
+            foreach (var message in messageList.Data)
+            {
+                messageCount++;
+                Assert.That(message.Id, Is.Not.Null.And.Not.Empty);
+                Assert.That(message.Content, Is.EqualTo("Basic messages test: Say 'Hello, this is a test message.'"));
+
+                if (messageCount >= 5) break; // Prevent infinite loop
+            }
+        } while (messageList?.HasMore ?? false);
+        Assert.That(messageCount, Is.GreaterThan(0));
+
+        // Clean up
+        try
+        {
+            await client.DeleteChatCompletionAsync(completion.Id);
+        }
+        catch { /* Ignore cleanup errors */ }
+    }
+
     [Test]
     public async Task GetChatCompletionMessagesWithPagination()
     {

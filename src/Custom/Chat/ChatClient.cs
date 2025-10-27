@@ -448,26 +448,29 @@ public partial class ChatClient
     }
 
     [Experimental("OPENAI001")]
-    public virtual ClientResult<ChatCompletionList> GetChatCompletionMessages(GetChatCompletionMessageOptions options, CancellationToken cancellationToken = default)
+    [OverloadResolutionPriority(2)]
+    public virtual ClientResult<ChatCompletionMessageList> GetChatCompletionMessages(GetChatCompletionMessageOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(options.CompletionId, nameof(options.CompletionId));
 
         PipelineMessage message = CreateGetChatCompletionMessagesRequest(options.CompletionId, options.After, options.Limit, options.Order, cancellationToken.ToRequestOptions());
         ClientResult result = ClientResult.FromResponse(Pipeline.ProcessMessage(message, cancellationToken.ToRequestOptions()));
-        return ClientResult.FromValue((ChatCompletionList)result, result.GetRawResponse());
+        return ClientResult.FromValue((ChatCompletionMessageList)result, result.GetRawResponse());
     }
 
     [Experimental("OPENAI001")]
-    public virtual async Task<ClientResult<ChatCompletionList>> GetChatCompletionMessagesAsync(GetChatCompletionMessageOptions options, CancellationToken cancellationToken = default)
+    [OverloadResolutionPriority(2)]
+    public virtual async Task<ClientResult<ChatCompletionMessageList>> GetChatCompletionMessagesAsync(GetChatCompletionMessageOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(options.CompletionId, nameof(options.CompletionId));
 
         PipelineMessage message = CreateGetChatCompletionMessagesRequest(options.CompletionId, options.After, options.Limit, options.Order, cancellationToken.ToRequestOptions());
         ClientResult result = ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, cancellationToken.ToRequestOptions()).ConfigureAwait(false));
-        return ClientResult.FromValue((ChatCompletionList)result, result.GetRawResponse());
+        return ClientResult.FromValue((ChatCompletionMessageList)result, result.GetRawResponse());
     }
 
     [Experimental("OPENAI001")]
+    [OverloadResolutionPriority(1)]
     public virtual CollectionResult GetChatCompletionMessages(GetChatCompletionMessageOptions options, RequestOptions requestOptions = null)
     {
         Argument.AssertNotNullOrEmpty(options.CompletionId, nameof(options.CompletionId));
@@ -482,6 +485,7 @@ public partial class ChatClient
     }
 
     [Experimental("OPENAI001")]
+    [OverloadResolutionPriority(1)]
     public virtual AsyncCollectionResult GetChatCompletionMessagesAsync(GetChatCompletionMessageOptions options, RequestOptions requestOptions = null)
     {
         Argument.AssertNotNullOrEmpty(options.CompletionId, nameof(options.CompletionId));
