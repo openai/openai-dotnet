@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    public partial class FunctionToolDefinition : IJsonModel<FunctionToolDefinition>
+    public partial class FunctionToolDefinition : ToolDefinition, IJsonModel<FunctionToolDefinition>
     {
         void IJsonModel<FunctionToolDefinition>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -65,7 +65,7 @@ namespace OpenAI.Assistants
                 }
                 if (prop.NameEquals("function"u8))
                 {
-                    function = InternalFunctionDefinition.DeserializeInternalFunctionDefinition(prop.Value, options);
+                    function = InternalFunctionDefinition.DeserializeInternalFunctionDefinition(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

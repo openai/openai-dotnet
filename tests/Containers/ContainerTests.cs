@@ -1,10 +1,9 @@
+using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Containers;
 using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
-using System.Net.Http;
-using System.Reflection;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -12,14 +11,12 @@ using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Containers;
 
-[TestFixture(true)]
-[TestFixture(false)]
-[Parallelizable(ParallelScope.Fixtures)]
 [Category("Containers")]
-public class ContainerTests : SyncAsyncTestBase
+public class ContainerTests : OpenAIRecordedTestBase
 {
     private static string _testContainerId;
-    private static ContainerClient GetTestClient() => GetTestClient<ContainerClient>(TestScenario.Containers);
+
+    private ContainerClient GetTestClient() => GetProxiedOpenAIClient<ContainerClient>(TestScenario.Containers);
 
     public ContainerTests(bool isAsync) : base(isAsync)
     {
@@ -29,20 +26,32 @@ public class ContainerTests : SyncAsyncTestBase
     public async Task SetUp()
     {
         // Skip setup if there is no API key (e.g., if we are not running live tests).
-        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPENAI_API_KEY")))
+        if (Mode == RecordedTestMode.Playback || string.IsNullOrEmpty(Environment.GetEnvironmentVariable("OPENAI_API_KEY")))
         {
             return;
         }
 
-        ContainerClient client = GetTestClient();
+        ContainerClient client = GetTestClient<ContainerClient>(TestScenario.Containers);
 
         // Create a test container that will be used by all tests
-        string containerName = $"test-container-{Guid.NewGuid():N}";
-        ContainerResource result = await client.CreateContainerAsync(new CreateContainerBody(containerName));
+        ContainerResource result = await client.CreateContainerAsync(new CreateContainerBody($"test-container-{Guid.NewGuid():N}"));
         _testContainerId = result.Id;
 
         Console.WriteLine($"Created test container: {_testContainerId}");
         await Task.Delay(10000); // Wait for the containers to be available
+    }
+
+    [SetUp]
+    public void PerTestSetUp()
+    {
+        if (Mode == RecordedTestMode.Record)
+        {
+            Recording.SetVariable("TEST_CONTAINER_ID", _testContainerId);
+        }
+        if (Mode == RecordedTestMode.Playback)
+        {
+            _testContainerId = Recording.GetVariable("TEST_CONTAINER_ID", null);
+        }
     }
 
     [OneTimeTearDown]
@@ -79,7 +88,7 @@ public class ContainerTests : SyncAsyncTestBase
         return (CreateContainerBody)constructor.Invoke(new object[] { name });
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CanEnumerateContainers()
     {
         ContainerClient client = GetTestClient();
@@ -100,48 +109,23 @@ public class ContainerTests : SyncAsyncTestBase
         int count = 0;
         bool foundTestContainer = false;
 
-        if (IsAsync)
+        AsyncCollectionResult<ContainerResource> containers = client.GetContainersAsync(options);
+        await foreach (ContainerResource container in containers)
         {
-            AsyncCollectionResult<ContainerResource> containers = client.GetContainersAsync(options);
-            await foreach (ContainerResource container in containers)
+            count++;
+            Console.WriteLine($"[{count,3}] {container.Id} {container.CreatedAt:s} {container.Name ?? "(no name)"}");
+            Validate(container);
+
+            if (container.Id == _testContainerId)
             {
-                count++;
-                Console.WriteLine($"[{count,3}] {container.Id} {container.CreatedAt:s} {container.Name ?? "(no name)"}");
-                Validate(container);
-
-                if (container.Id == _testContainerId)
-                {
-                    foundTestContainer = true;
-                    break;
-                }
-
-                // Limit enumeration to avoid long test runs
-                if (count >= 20)
-                {
-                    break;
-                }
+                foundTestContainer = true;
+                break;
             }
-        }
-        else
-        {
-            CollectionResult<ContainerResource> containers = client.GetContainers(options);
-            foreach (ContainerResource container in containers)
+
+            // Limit enumeration to avoid long test runs
+            if (count >= 20)
             {
-                Console.WriteLine($"[{count,3}] {container.Id} {container.CreatedAt:s} {container.Name ?? "(no name)"}");
-                Validate(container);
-
-                if (container.Id == _testContainerId)
-                {
-                    foundTestContainer = true;
-                }
-
-                count++;
-
-                // Limit enumeration to avoid long test runs
-                if (count >= 20)
-                {
-                    break;
-                }
+                break;
             }
         }
 
@@ -150,7 +134,7 @@ public class ContainerTests : SyncAsyncTestBase
         Console.WriteLine($"Found {count} containers, including our test container");
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CanEnumerateContainerFiles()
     {
         ContainerClient client = GetTestClient();
@@ -170,38 +154,18 @@ public class ContainerTests : SyncAsyncTestBase
 
         int count = 0;
 
-        if (IsAsync)
+        AsyncCollectionResult<ContainerFileResource> files = client.GetContainerFilesAsync(_testContainerId, options);
+        await foreach (ContainerFileResource file in files)
         {
-            AsyncCollectionResult<ContainerFileResource> files = client.GetContainerFilesAsync(_testContainerId, options);
-            await foreach (ContainerFileResource file in files)
-            {
-                Console.WriteLine($"[{count,3}] {file.Id} {file.CreatedAt:s} {file.Path} ({file.Bytes} bytes)");
-                Validate(file);
-                Assert.That(file.ContainerId, Is.EqualTo(_testContainerId), "File should belong to the correct container");
-                count++;
+            Console.WriteLine($"[{count,3}] {file.Id} {file.CreatedAt:s} {file.Path} ({file.Bytes} bytes)");
+            Validate(file);
+            Assert.That(file.ContainerId, Is.EqualTo(_testContainerId), "File should belong to the correct container");
+            count++;
 
-                // Limit enumeration to avoid long test runs
-                if (count >= 20)
-                {
-                    break;
-                }
-            }
-        }
-        else
-        {
-            CollectionResult<ContainerFileResource> files = client.GetContainerFiles(_testContainerId, options);
-            foreach (ContainerFileResource file in files)
+            // Limit enumeration to avoid long test runs
+            if (count >= 20)
             {
-                Console.WriteLine($"[{count,3}] {file.Id} {file.CreatedAt:s} {file.Path} ({file.Bytes} bytes)");
-                Validate(file);
-                Assert.That(file.ContainerId, Is.EqualTo(_testContainerId), "File should belong to the correct container");
-                count++;
-
-                // Limit enumeration to avoid long test runs
-                if (count >= 20)
-                {
-                    break;
-                }
+                break;
             }
         }
 
@@ -209,7 +173,7 @@ public class ContainerTests : SyncAsyncTestBase
         // Note: A new container may have no files, so count could be 0 - this is expected
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CanEnumerateContainersWithDefaultOptions()
     {
         ContainerClient client = GetTestClient();
@@ -224,48 +188,23 @@ public class ContainerTests : SyncAsyncTestBase
         int count = 0;
         bool foundTestContainer = false;
 
-        if (IsAsync)
+        AsyncCollectionResult<ContainerResource> containers = client.GetContainersAsync();
+        await foreach (ContainerResource container in containers)
         {
-            AsyncCollectionResult<ContainerResource> containers = client.GetContainersAsync();
-            await foreach (ContainerResource container in containers)
+            Console.WriteLine($"[{count,3}] {container.Id} {container.CreatedAt:s} {container.Name ?? "(no name)"}");
+            Validate(container);
+
+            if (container.Id == _testContainerId)
             {
-                Console.WriteLine($"[{count,3}] {container.Id} {container.CreatedAt:s} {container.Name ?? "(no name)"}");
-                Validate(container);
-
-                if (container.Id == _testContainerId)
-                {
-                    foundTestContainer = true;
-                }
-
-                count++;
-
-                // Limit enumeration to avoid long test runs
-                if (count >= 10)
-                {
-                    break;
-                }
+                foundTestContainer = true;
             }
-        }
-        else
-        {
-            CollectionResult<ContainerResource> containers = client.GetContainers();
-            foreach (ContainerResource container in containers)
+
+            count++;
+
+            // Limit enumeration to avoid long test runs
+            if (count >= 10)
             {
-                Console.WriteLine($"[{count,3}] {container.Id} {container.CreatedAt:s} {container.Name ?? "(no name)"}");
-                Validate(container);
-
-                if (container.Id == _testContainerId)
-                {
-                    foundTestContainer = true;
-                }
-
-                count++;
-
-                // Limit enumeration to avoid long test runs
-                if (count >= 10)
-                {
-                    break;
-                }
+                break;
             }
         }
 
@@ -274,7 +213,7 @@ public class ContainerTests : SyncAsyncTestBase
         Console.WriteLine($"Found {count} containers with default options, including our test container");
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CanEnumerateContainerFilesWithDefaultOptions()
     {
         ContainerClient client = GetTestClient();
@@ -288,45 +227,25 @@ public class ContainerTests : SyncAsyncTestBase
         // Test with default options (null)
         int count = 0;
 
-        if (IsAsync)
+        AsyncCollectionResult<ContainerFileResource> files = client.GetContainerFilesAsync(_testContainerId);
+        await foreach (ContainerFileResource file in files)
         {
-            AsyncCollectionResult<ContainerFileResource> files = client.GetContainerFilesAsync(_testContainerId);
-            await foreach (ContainerFileResource file in files)
-            {
-                Console.WriteLine($"[{count,3}] {file.Id} {file.CreatedAt:s} {file.Path} ({file.Bytes} bytes)");
-                Validate(file);
-                Assert.That(file.ContainerId, Is.EqualTo(_testContainerId));
-                count++;
+            Console.WriteLine($"[{count,3}] {file.Id} {file.CreatedAt:s} {file.Path} ({file.Bytes} bytes)");
+            Validate(file);
+            Assert.That(file.ContainerId, Is.EqualTo(_testContainerId));
+            count++;
 
-                // Limit enumeration to avoid long test runs
-                if (count >= 10)
-                {
-                    break;
-                }
-            }
-        }
-        else
-        {
-            CollectionResult<ContainerFileResource> files = client.GetContainerFiles(_testContainerId);
-            foreach (ContainerFileResource file in files)
+            // Limit enumeration to avoid long test runs
+            if (count >= 10)
             {
-                Console.WriteLine($"[{count,3}] {file.Id} {file.CreatedAt:s} {file.Path} ({file.Bytes} bytes)");
-                Validate(file);
-                Assert.That(file.ContainerId, Is.EqualTo(_testContainerId));
-                count++;
-
-                // Limit enumeration to avoid long test runs
-                if (count >= 10)
-                {
-                    break;
-                }
+                break;
             }
         }
 
         Console.WriteLine($"Found {count} files in test container {_testContainerId} with default options");
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CanEnumerateContainersWithCancellation()
     {
         ContainerClient client = GetTestClient();
@@ -349,34 +268,16 @@ public class ContainerTests : SyncAsyncTestBase
 
         try
         {
-            if (IsAsync)
+            AsyncCollectionResult<ContainerResource> containers = client.GetContainersAsync(options, cancellationTokenSource.Token);
+            await foreach (ContainerResource container in containers.WithCancellation(cancellationTokenSource.Token))
             {
-                AsyncCollectionResult<ContainerResource> containers = client.GetContainersAsync(options, cancellationTokenSource.Token);
-                await foreach (ContainerResource container in containers.WithCancellation(cancellationTokenSource.Token))
-                {
-                    Validate(container);
-                    count++;
+                Validate(container);
+                count++;
 
-                    // Stop after a few items to test cancellation works
-                    if (count >= 3)
-                    {
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                CollectionResult<ContainerResource> containers = client.GetContainers(options, cancellationTokenSource.Token);
-                foreach (ContainerResource container in containers)
+                // Stop after a few items to test cancellation works
+                if (count >= 3)
                 {
-                    Validate(container);
-                    count++;
-
-                    // Stop after a few items
-                    if (count >= 3)
-                    {
-                        break;
-                    }
+                    break;
                 }
             }
         }
@@ -389,7 +290,7 @@ public class ContainerTests : SyncAsyncTestBase
         Console.WriteLine($"Enumerated {count} containers with cancellation");
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CanEnumerateContainerFilesWithCancellation()
     {
         ContainerClient client = GetTestClient();
@@ -412,36 +313,17 @@ public class ContainerTests : SyncAsyncTestBase
 
         try
         {
-            if (IsAsync)
+            AsyncCollectionResult<ContainerFileResource> files = client.GetContainerFilesAsync(_testContainerId, options, cancellationTokenSource.Token);
+            await foreach (ContainerFileResource file in files.WithCancellation(cancellationTokenSource.Token))
             {
-                AsyncCollectionResult<ContainerFileResource> files = client.GetContainerFilesAsync(_testContainerId, options, cancellationTokenSource.Token);
-                await foreach (ContainerFileResource file in files.WithCancellation(cancellationTokenSource.Token))
-                {
-                    Validate(file);
-                    Assert.That(file.ContainerId, Is.EqualTo(_testContainerId));
-                    count++;
+                Validate(file);
+                Assert.That(file.ContainerId, Is.EqualTo(_testContainerId));
+                count++;
 
-                    // Stop after a few items to test cancellation works
-                    if (count >= 3)
-                    {
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                CollectionResult<ContainerFileResource> files = client.GetContainerFiles(_testContainerId, options, cancellationTokenSource.Token);
-                foreach (ContainerFileResource file in files)
+                // Stop after a few items to test cancellation works
+                if (count >= 3)
                 {
-                    Validate(file);
-                    Assert.That(file.ContainerId, Is.EqualTo(_testContainerId));
-                    count++;
-
-                    // Stop after a few items
-                    if (count >= 3)
-                    {
-                        break;
-                    }
+                    break;
                 }
             }
         }
@@ -453,7 +335,7 @@ public class ContainerTests : SyncAsyncTestBase
         Console.WriteLine($"Enumerated {count} files with cancellation token");
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ContainerCollectionOptionsCanBeConfigured()
     {
         ContainerClient client = GetTestClient();
@@ -480,45 +362,22 @@ public class ContainerTests : SyncAsyncTestBase
         int ascendingCount = 0;
         int descendingCount = 0;
 
-        if (IsAsync)
+        // Test ascending order
+        AsyncCollectionResult<ContainerResource> ascendingContainers = client.GetContainersAsync(ascendingOptions);
+        await foreach (ContainerResource container in ascendingContainers)
         {
-            // Test ascending order
-            AsyncCollectionResult<ContainerResource> ascendingContainers = client.GetContainersAsync(ascendingOptions);
-            await foreach (ContainerResource container in ascendingContainers)
-            {
-                Validate(container);
-                ascendingCount++;
-                if (ascendingCount >= 3) break;
-            }
-
-            // Test descending order
-            AsyncCollectionResult<ContainerResource> descendingContainers = client.GetContainersAsync(descendingOptions);
-            await foreach (ContainerResource container in descendingContainers)
-            {
-                Validate(container);
-                descendingCount++;
-                if (descendingCount >= 3) break;
-            }
+            Validate(container);
+            ascendingCount++;
+            if (ascendingCount >= 3) break;
         }
-        else
-        {
-            // Test ascending order
-            CollectionResult<ContainerResource> ascendingContainers = client.GetContainers(ascendingOptions);
-            foreach (ContainerResource container in ascendingContainers)
-            {
-                Validate(container);
-                ascendingCount++;
-                if (ascendingCount >= 3) break;
-            }
 
-            // Test descending order
-            CollectionResult<ContainerResource> descendingContainers = client.GetContainers(descendingOptions);
-            foreach (ContainerResource container in descendingContainers)
-            {
-                Validate(container);
-                descendingCount++;
-                if (descendingCount >= 3) break;
-            }
+        // Test descending order
+        AsyncCollectionResult<ContainerResource> descendingContainers = client.GetContainersAsync(descendingOptions);
+        await foreach (ContainerResource container in descendingContainers)
+        {
+            Validate(container);
+            descendingCount++;
+            if (descendingCount >= 3) break;
         }
 
         // Both orderings should work (even if they return the same results)
@@ -527,7 +386,7 @@ public class ContainerTests : SyncAsyncTestBase
         Console.WriteLine($"Ascending: {ascendingCount}, Descending: {descendingCount}");
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ContainerFileCollectionOptionsCanBeConfigured()
     {
         ContainerClient client = GetTestClient();
@@ -554,49 +413,24 @@ public class ContainerTests : SyncAsyncTestBase
         int ascendingCount = 0;
         int descendingCount = 0;
 
-        if (IsAsync)
+        // Test ascending order
+        AsyncCollectionResult<ContainerFileResource> ascendingFiles = client.GetContainerFilesAsync(_testContainerId, ascendingOptions);
+        await foreach (ContainerFileResource file in ascendingFiles)
         {
-            // Test ascending order
-            AsyncCollectionResult<ContainerFileResource> ascendingFiles = client.GetContainerFilesAsync(_testContainerId, ascendingOptions);
-            await foreach (ContainerFileResource file in ascendingFiles)
-            {
-                Validate(file);
-                Assert.That(file.ContainerId, Is.EqualTo(_testContainerId));
-                ascendingCount++;
-                if (ascendingCount >= 3) break;
-            }
-
-            // Test descending order
-            AsyncCollectionResult<ContainerFileResource> descendingFiles = client.GetContainerFilesAsync(_testContainerId, descendingOptions);
-            await foreach (ContainerFileResource file in descendingFiles)
-            {
-                Validate(file);
-                Assert.That(file.ContainerId, Is.EqualTo(_testContainerId));
-                descendingCount++;
-                if (descendingCount >= 3) break;
-            }
+            Validate(file);
+            Assert.That(file.ContainerId, Is.EqualTo(_testContainerId));
+            ascendingCount++;
+            if (ascendingCount >= 3) break;
         }
-        else
-        {
-            // Test ascending order
-            CollectionResult<ContainerFileResource> ascendingFiles = client.GetContainerFiles(_testContainerId, ascendingOptions);
-            foreach (ContainerFileResource file in ascendingFiles)
-            {
-                Validate(file);
-                Assert.That(file.ContainerId, Is.EqualTo(_testContainerId));
-                ascendingCount++;
-                if (ascendingCount >= 3) break;
-            }
 
-            // Test descending order
-            CollectionResult<ContainerFileResource> descendingFiles = client.GetContainerFiles(_testContainerId, descendingOptions);
-            foreach (ContainerFileResource file in descendingFiles)
-            {
-                Validate(file);
-                Assert.That(file.ContainerId, Is.EqualTo(_testContainerId));
-                descendingCount++;
-                if (descendingCount >= 3) break;
-            }
+        // Test descending order
+        AsyncCollectionResult<ContainerFileResource> descendingFiles = client.GetContainerFilesAsync(_testContainerId, descendingOptions);
+        await foreach (ContainerFileResource file in descendingFiles)
+        {
+            Validate(file);
+            Assert.That(file.ContainerId, Is.EqualTo(_testContainerId));
+            descendingCount++;
+            if (descendingCount >= 3) break;
         }
 
         // Both orderings should work (even if they return the same results)
@@ -605,17 +439,7 @@ public class ContainerTests : SyncAsyncTestBase
         Console.WriteLine($"Files - Ascending: {ascendingCount}, Descending: {descendingCount}");
     }
 
-    private static void Validate(ContainerResource container)
-    {
-        Assert.That(container, Is.Not.Null);
-        Assert.That(container.Id, Is.Not.Null.And.Not.Empty);
-        Assert.That(container.Object, Is.Not.Null.And.Not.Empty);
-        Assert.That(container.CreatedAt, Is.GreaterThan(DateTimeOffset.MinValue));
-        Assert.That(container.Status, Is.Not.Null.And.Not.Empty);
-        // Name can be null/empty for some containers
-    }
-
-    [Test]
+    [RecordedTest]
     public async Task CanGetContainer()
     {
         ContainerClient client = GetTestClient();
@@ -626,25 +450,15 @@ public class ContainerTests : SyncAsyncTestBase
             return;
         }
 
-        ContainerResource container;
-
-        if (IsAsync)
-        {
-            ClientResult<ContainerResource> result = await client.GetContainerAsync(_testContainerId);
-            container = result.Value;
-        }
-        else
-        {
-            ClientResult<ContainerResource> result = client.GetContainer(_testContainerId);
-            container = result.Value;
-        }
+        ClientResult<ContainerResource> result = await client.GetContainerAsync(_testContainerId);
+        ContainerResource container = result.Value;
 
         Validate(container);
         Assert.That(container.Id, Is.EqualTo(_testContainerId), "Retrieved container should have the correct ID");
         Console.WriteLine($"Retrieved container: {container.Id} with status {container.Status}");
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CanGetContainerWithCancellation()
     {
         ContainerClient client = GetTestClient();
@@ -658,334 +472,238 @@ public class ContainerTests : SyncAsyncTestBase
         using var cancellationTokenSource = new CancellationTokenSource();
         cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(30));
 
-        ContainerResource container;
-
-        if (IsAsync)
-        {
-            ClientResult<ContainerResource> result = await client.GetContainerAsync(_testContainerId, cancellationTokenSource.Token);
-            container = result.Value;
-        }
-        else
-        {
-            ClientResult<ContainerResource> result = client.GetContainer(_testContainerId, cancellationTokenSource.Token);
-            container = result.Value;
-        }
+        ClientResult<ContainerResource> result = await client.GetContainerAsync(_testContainerId, cancellationTokenSource.Token);
+        ContainerResource container = result.Value;
 
         Validate(container);
         Assert.That(container.Id, Is.EqualTo(_testContainerId));
         Console.WriteLine($"Retrieved container with cancellation: {container.Id}");
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CanCreateAndDeleteContainerFile()
     {
-        ContainerClient client = GetTestClient();
-
-        if (string.IsNullOrEmpty(_testContainerId))
+        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            Assert.Ignore("No test container available - likely running without API key");
-            return;
-        }
+            ContainerClient client = GetTestClient();
 
-        // Create a test file using multipart form data
-        string testContent = "This is a test file content for container testing.";
-        byte[] contentBytes = System.Text.Encoding.UTF8.GetBytes(testContent);
-        
-        // Create multipart form data using the internal helper
-        var formData = new MultiPartFormDataBinaryContent();
-        formData.Add(contentBytes, "file", "test-file.txt", "text/plain");
-
-        ClientResult createResult;
-        if (IsAsync)
-        {
-            createResult = await client.CreateContainerFileAsync(_testContainerId, formData, formData.ContentType);
-        }
-        else
-        {
-            createResult = client.CreateContainerFile(_testContainerId, formData, formData.ContentType);
-        }
-
-        Assert.That(createResult, Is.Not.Null);
-        Assert.That(createResult.GetRawResponse().IsError, Is.False, "File creation should succeed");
-
-        // Extract the file ID from the response (this might need adjustment based on the actual response format)
-        string responseContent = createResult.GetRawResponse().Content.ToString();
-        Console.WriteLine($"Create file response: {responseContent}");
-
-        // Parse the response to get the file ID
-        var responseJson = JsonDocument.Parse(responseContent);
-        string fileId = responseJson.RootElement.GetProperty("id").GetString();
-        Assert.That(fileId, Is.Not.Null.And.Not.Empty, "File ID should be returned from creation");
-
-        Console.WriteLine($"Created file with ID: {fileId}");
-
-        try
-        {
-            // Now delete the file
-            ClientResult<DeleteContainerFileResponse> deleteResult;
-            if (IsAsync)
+            if (string.IsNullOrEmpty(_testContainerId))
             {
-                deleteResult = await client.DeleteContainerFileAsync(_testContainerId, fileId);
-            }
-            else
-            {
-                deleteResult = client.DeleteContainerFile(_testContainerId, fileId);
+                Assert.Ignore("No test container available - likely running without API key");
+                return;
             }
 
-            Assert.That(deleteResult, Is.Not.Null);
-            Assert.That(deleteResult.Value, Is.Not.Null);
-            Assert.That(deleteResult.Value.Id, Is.EqualTo(fileId), "Deleted file ID should match");
-            Assert.That(deleteResult.Value.Object, Is.Not.Null.And.Not.Empty);
-            Assert.That(deleteResult.Value.Deleted, Is.True, "File should be marked as deleted");
+            // Create a test file using multipart form data
+            string testContent = "This is a test file content for container testing.";
+            byte[] contentBytes = System.Text.Encoding.UTF8.GetBytes(testContent);
 
-            Console.WriteLine($"Successfully deleted file: {fileId}");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Failed to delete file {fileId}: {ex.Message}");
-            // Don't fail the test if cleanup fails
-        }
-    }
+            // Create multipart form data using the internal helper
+            var formData = new MultiPartFormDataBinaryContent();
+            formData.Add(contentBytes, "file", "test-file.txt", "text/plain");
 
-    [Test]
-    public async Task CanCreateGetAndDeleteContainerFile()
-    {
-        ContainerClient client = GetTestClient();
+            ClientResult createResult = await client.CreateContainerFileAsync(_testContainerId, formData, formData.ContentType);
 
-        if (string.IsNullOrEmpty(_testContainerId))
-        {
-            Assert.Ignore("No test container available - likely running without API key");
-            return;
-        }
+            Assert.That(createResult, Is.Not.Null);
+            Assert.That(createResult.GetRawResponse().IsError, Is.False, "File creation should succeed");
 
-        // Create a test file using multipart form data
-        string testContent = "Test file content for get/delete operations.";
-        byte[] contentBytes = System.Text.Encoding.UTF8.GetBytes(testContent);
-        
-        var formData = new MultiPartFormDataBinaryContent();
-        formData.Add(contentBytes, "file", "test-get-file.txt", "text/plain");
+            // Extract the file ID from the response (this might need adjustment based on the actual response format)
+            string responseContent = createResult.GetRawResponse().Content.ToString();
+            Console.WriteLine($"Create file response: {responseContent}");
 
-        ClientResult createResult;
-        if (IsAsync)
-        {
-            createResult = await client.CreateContainerFileAsync(_testContainerId, formData, formData.ContentType);
-        }
-        else
-        {
-            createResult = client.CreateContainerFile(_testContainerId, formData, formData.ContentType);
-        }
+            // Parse the response to get the file ID
+            var responseJson = JsonDocument.Parse(responseContent);
+            string fileId = responseJson.RootElement.GetProperty("id").GetString();
+            Assert.That(fileId, Is.Not.Null.And.Not.Empty, "File ID should be returned from creation");
 
-        string responseContent = createResult.GetRawResponse().Content.ToString();
-        var responseJson = JsonDocument.Parse(responseContent);
-        string fileId = responseJson.RootElement.GetProperty("id").GetString();
+            Console.WriteLine($"Created file with ID: {fileId}");
 
-        try
-        {
-            // Get the file metadata
-            ContainerFileResource fileResource;
-            if (IsAsync)
-            {
-                ClientResult<ContainerFileResource> getResult = await client.GetContainerFileAsync(_testContainerId, fileId);
-                fileResource = getResult.Value;
-            }
-            else
-            {
-                ClientResult<ContainerFileResource> getResult = client.GetContainerFile(_testContainerId, fileId);
-                fileResource = getResult.Value;
-            }
-
-            Validate(fileResource);
-            Assert.That(fileResource.Id, Is.EqualTo(fileId));
-            Assert.That(fileResource.ContainerId, Is.EqualTo(_testContainerId));
-            Assert.That(fileResource.Bytes, Is.GreaterThan(0), "File size should be greater than 0");
-
-            Console.WriteLine($"Retrieved file metadata: {fileResource.Id}, {fileResource.Bytes} bytes");
-
-            // Get the file content
-            BinaryData fileContent;
-            if (IsAsync)
-            {
-                ClientResult<BinaryData> contentResult = await client.GetContainerFileContentAsync(_testContainerId, fileId);
-                fileContent = contentResult.Value;
-            }
-            else
-            {
-                ClientResult<BinaryData> contentResult = client.GetContainerFileContent(_testContainerId, fileId);
-                fileContent = contentResult.Value;
-            }
-
-            Assert.That(fileContent, Is.Not.Null);
-            Assert.That(fileContent.ToArray().Length, Is.GreaterThan(0), "File content should not be empty");
-
-            Console.WriteLine($"Retrieved file content with {fileContent.ToArray().Length} bytes");
-        }
-        finally
-        {
-            // Clean up - delete the file
             try
             {
-                if (IsAsync)
-                {
-                    await client.DeleteContainerFileAsync(_testContainerId, fileId);
-                }
-                else
-                {
-                    client.DeleteContainerFile(_testContainerId, fileId);
-                }
-                Console.WriteLine($"Cleaned up file: {fileId}");
+                // Now delete the file
+                ClientResult<DeleteContainerFileResponse> deleteResult = await client.DeleteContainerFileAsync(_testContainerId, fileId);
+
+                Assert.That(deleteResult, Is.Not.Null);
+                Assert.That(deleteResult.Value, Is.Not.Null);
+                Assert.That(deleteResult.Value.Id, Is.EqualTo(fileId), "Deleted file ID should match");
+                Assert.That(deleteResult.Value.Object, Is.Not.Null.And.Not.Empty);
+                Assert.That(deleteResult.Value.Deleted, Is.True, "File should be marked as deleted");
+
+                Console.WriteLine($"Successfully deleted file: {fileId}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to clean up file {fileId}: {ex.Message}");
+                Console.WriteLine($"Failed to delete file {fileId}: {ex.Message}");
+                // Don't fail the test if cleanup fails
             }
         }
     }
 
-    [Test]
+    [RecordedTest]
+    public async Task CanCreateGetAndDeleteContainerFile()
+    {
+        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
+        {
+            ContainerClient client = GetTestClient();
+
+            if (string.IsNullOrEmpty(_testContainerId))
+            {
+                Assert.Ignore("No test container available - likely running without API key");
+                return;
+            }
+
+            // Create a test file using multipart form data
+            string testContent = "Test file content for get/delete operations.";
+            byte[] contentBytes = System.Text.Encoding.UTF8.GetBytes(testContent);
+
+            var formData = new MultiPartFormDataBinaryContent();
+            formData.Add(contentBytes, "file", "test-get-file.txt", "text/plain");
+
+            ClientResult createResult = await client.CreateContainerFileAsync(_testContainerId, formData, formData.ContentType);
+
+            string responseContent = createResult.GetRawResponse().Content.ToString();
+            var responseJson = JsonDocument.Parse(responseContent);
+            string fileId = responseJson.RootElement.GetProperty("id").GetString();
+
+            try
+            {
+                // Get the file metadata
+                ClientResult<ContainerFileResource> getResult = await client.GetContainerFileAsync(_testContainerId, fileId);
+                ContainerFileResource fileResource = getResult.Value;
+
+                Validate(fileResource);
+                Assert.That(fileResource.Id, Is.EqualTo(fileId));
+                Assert.That(fileResource.ContainerId, Is.EqualTo(_testContainerId));
+                Assert.That(fileResource.Bytes, Is.GreaterThan(0), "File size should be greater than 0");
+
+                Console.WriteLine($"Retrieved file metadata: {fileResource.Id}, {fileResource.Bytes} bytes");
+
+                // Get the file content
+                ClientResult<BinaryData> contentResult = await client.GetContainerFileContentAsync(_testContainerId, fileId);
+                BinaryData fileContent = contentResult.Value;
+
+                Assert.That(fileContent, Is.Not.Null);
+                Assert.That(fileContent.ToArray().Length, Is.GreaterThan(0), "File content should not be empty");
+
+                Console.WriteLine($"Retrieved file content with {fileContent.ToArray().Length} bytes");
+            }
+            finally
+            {
+                // Clean up - delete the file
+                try
+                {
+                    await client.DeleteContainerFileAsync(_testContainerId, fileId);
+                    Console.WriteLine($"Cleaned up file: {fileId}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to clean up file {fileId}: {ex.Message}");
+                }
+            }
+        }
+    }
+
+    [RecordedTest]
     public async Task CanGetContainerFileWithCancellation()
     {
-        ContainerClient client = GetTestClient();
-
-        if (string.IsNullOrEmpty(_testContainerId))
+        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            Assert.Ignore("No test container available - likely running without API key");
-            return;
+            ContainerClient client = GetTestClient();
+
+            if (string.IsNullOrEmpty(_testContainerId))
+            {
+                Assert.Ignore("No test container available - likely running without API key");
+                return;
+            }
+
+            // Create a test file first using multipart form data
+            string testContent = "Test content for cancellation test.";
+            byte[] contentBytes = System.Text.Encoding.UTF8.GetBytes(testContent);
+
+            var formData = new MultiPartFormDataBinaryContent();
+            formData.Add(contentBytes, "file", "test-cancel-file.txt", "text/plain");
+
+            ClientResult createResult = await client.CreateContainerFileAsync(_testContainerId, formData, formData.ContentType);
+
+            string responseContent = createResult.GetRawResponse().Content.ToString();
+            var responseJson = JsonDocument.Parse(responseContent);
+            string fileId = responseJson.RootElement.GetProperty("id").GetString();
+
+            try
+            {
+                using var cancellationTokenSource = new CancellationTokenSource();
+                cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(30));
+
+                // Test GetContainerFile with cancellation
+                ClientResult<ContainerFileResource> result = await client.GetContainerFileAsync(_testContainerId, fileId, cancellationTokenSource.Token);
+                ContainerFileResource fileResource = result.Value;
+
+                Validate(fileResource);
+                Assert.That(fileResource.Id, Is.EqualTo(fileId));
+
+                // Test GetContainerFileContent with cancellation
+                ClientResult<BinaryData> contentResult = await client.GetContainerFileContentAsync(_testContainerId, fileId, cancellationTokenSource.Token);
+                BinaryData fileContent = contentResult.Value;
+
+                Assert.That(fileContent, Is.Not.Null);
+                Console.WriteLine($"Successfully retrieved file with cancellation token");
+            }
+            finally
+            {
+                // Clean up
+                try
+                {
+                    await client.DeleteContainerFileAsync(_testContainerId, fileId);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Failed to clean up file {fileId}: {ex.Message}");
+                }
+            }
         }
+    }
 
-        // Create a test file first using multipart form data
-        string testContent = "Test content for cancellation test.";
-        byte[] contentBytes = System.Text.Encoding.UTF8.GetBytes(testContent);
-        
-        var formData = new MultiPartFormDataBinaryContent();
-        formData.Add(contentBytes, "file", "test-cancel-file.txt", "text/plain");
-
-        ClientResult createResult;
-        if (IsAsync)
+    [RecordedTest]
+    public async Task CanDeleteContainerFileWithCancellation()
+    {
+        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            createResult = await client.CreateContainerFileAsync(_testContainerId, formData, formData.ContentType);
-        }
-        else
-        {
-            createResult = client.CreateContainerFile(_testContainerId, formData, formData.ContentType);
-        }
+            ContainerClient client = GetTestClient();
 
-        string responseContent = createResult.GetRawResponse().Content.ToString();
-        var responseJson = JsonDocument.Parse(responseContent);
-        string fileId = responseJson.RootElement.GetProperty("id").GetString();
+            if (string.IsNullOrEmpty(_testContainerId))
+            {
+                Assert.Ignore("No test container available - likely running without API key");
+                return;
+            }
 
-        try
-        {
+            // Create a test file first using multipart form data
+            string testContent = "Test content for deletion with cancellation.";
+            byte[] contentBytes = System.Text.Encoding.UTF8.GetBytes(testContent);
+
+            var formData = new MultiPartFormDataBinaryContent();
+            formData.Add(contentBytes, "file", "test-delete-cancel-file.txt", "text/plain");
+
+            ClientResult createResult = await client.CreateContainerFileAsync(_testContainerId, formData, formData.ContentType);
+
+            string responseContent = createResult.GetRawResponse().Content.ToString();
+            var responseJson = JsonDocument.Parse(responseContent);
+            string fileId = responseJson.RootElement.GetProperty("id").GetString();
+
             using var cancellationTokenSource = new CancellationTokenSource();
             cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(30));
 
-            // Test GetContainerFile with cancellation
-            ContainerFileResource fileResource;
-            if (IsAsync)
-            {
-                ClientResult<ContainerFileResource> result = await client.GetContainerFileAsync(_testContainerId, fileId, cancellationTokenSource.Token);
-                fileResource = result.Value;
-            }
-            else
-            {
-                ClientResult<ContainerFileResource> result = client.GetContainerFile(_testContainerId, fileId, cancellationTokenSource.Token);
-                fileResource = result.Value;
-            }
+            // Delete the file with cancellation token
+            ClientResult<DeleteContainerFileResponse> deleteResult = await client.DeleteContainerFileAsync(_testContainerId, fileId, cancellationTokenSource.Token);
 
-            Validate(fileResource);
-            Assert.That(fileResource.Id, Is.EqualTo(fileId));
+            Assert.That(deleteResult, Is.Not.Null);
+            Assert.That(deleteResult.Value, Is.Not.Null);
+            Assert.That(deleteResult.Value.Id, Is.EqualTo(fileId));
+            Assert.That(deleteResult.Value.Deleted, Is.True);
 
-            // Test GetContainerFileContent with cancellation
-            BinaryData fileContent;
-            if (IsAsync)
-            {
-                ClientResult<BinaryData> contentResult = await client.GetContainerFileContentAsync(_testContainerId, fileId, cancellationTokenSource.Token);
-                fileContent = contentResult.Value;
-            }
-            else
-            {
-                ClientResult<BinaryData> contentResult = client.GetContainerFileContent(_testContainerId, fileId, cancellationTokenSource.Token);
-                fileContent = contentResult.Value;
-            }
-
-            Assert.That(fileContent, Is.Not.Null);
-            Console.WriteLine($"Successfully retrieved file with cancellation token");
-        }
-        finally
-        {
-            // Clean up
-            try
-            {
-                if (IsAsync)
-                {
-                    await client.DeleteContainerFileAsync(_testContainerId, fileId);
-                }
-                else
-                {
-                    client.DeleteContainerFile(_testContainerId, fileId);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Failed to clean up file {fileId}: {ex.Message}");
-            }
+            Console.WriteLine($"Successfully deleted file with cancellation token: {fileId}");
         }
     }
 
-    [Test]
-    public async Task CanDeleteContainerFileWithCancellation()
-    {
-        ContainerClient client = GetTestClient();
-
-        if (string.IsNullOrEmpty(_testContainerId))
-        {
-            Assert.Ignore("No test container available - likely running without API key");
-            return;
-        }
-
-        // Create a test file first using multipart form data
-        string testContent = "Test content for deletion with cancellation.";
-        byte[] contentBytes = System.Text.Encoding.UTF8.GetBytes(testContent);
-        
-        var formData = new MultiPartFormDataBinaryContent();
-        formData.Add(contentBytes, "file", "test-delete-cancel-file.txt", "text/plain");
-
-        ClientResult createResult;
-        if (IsAsync)
-        {
-            createResult = await client.CreateContainerFileAsync(_testContainerId, formData, formData.ContentType);
-        }
-        else
-        {
-            createResult = client.CreateContainerFile(_testContainerId, formData, formData.ContentType);
-        }
-
-        string responseContent = createResult.GetRawResponse().Content.ToString();
-        var responseJson = JsonDocument.Parse(responseContent);
-        string fileId = responseJson.RootElement.GetProperty("id").GetString();
-
-        using var cancellationTokenSource = new CancellationTokenSource();
-        cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(30));
-
-        // Delete the file with cancellation token
-        ClientResult<DeleteContainerFileResponse> deleteResult;
-        if (IsAsync)
-        {
-            deleteResult = await client.DeleteContainerFileAsync(_testContainerId, fileId, cancellationTokenSource.Token);
-        }
-        else
-        {
-            deleteResult = client.DeleteContainerFile(_testContainerId, fileId, cancellationTokenSource.Token);
-        }
-
-        Assert.That(deleteResult, Is.Not.Null);
-        Assert.That(deleteResult.Value, Is.Not.Null);
-        Assert.That(deleteResult.Value.Id, Is.EqualTo(fileId));
-        Assert.That(deleteResult.Value.Deleted, Is.True);
-
-        Console.WriteLine($"Successfully deleted file with cancellation token: {fileId}");
-    }
-
-    [Test]
+    [RecordedTest]
     public void CreateContainerFileValidatesParameters()
     {
         ContainerClient client = GetTestClient();
@@ -997,143 +715,88 @@ public class ContainerTests : SyncAsyncTestBase
         }
 
         // Test null content
-        if (IsAsync)
-        {
-            Assert.ThrowsAsync<ArgumentNullException>(async () => 
-                await client.CreateContainerFileAsync(_testContainerId, null, "multipart/form-data"));
-        }
-        else
-        {
-            Assert.Throws<ArgumentNullException>(() => 
-                client.CreateContainerFile(_testContainerId, null, "multipart/form-data"));
-        }
+        Assert.ThrowsAsync<ArgumentNullException>(async () =>
+            await client.CreateContainerFileAsync(_testContainerId, null, "multipart/form-data"));
 
         // Test null/empty container ID
         var testFormData = new MultiPartFormDataBinaryContent();
         testFormData.Add("test", "file", "test.txt", "text/plain");
         
-        if (IsAsync)
-        {
-            Assert.ThrowsAsync<ArgumentNullException>(async () => 
-                await client.CreateContainerFileAsync(null, testFormData, testFormData.ContentType));
-            Assert.ThrowsAsync<ArgumentException>(async () => 
-                await client.CreateContainerFileAsync("", testFormData, testFormData.ContentType));
-        }
-        else
-        {
-            Assert.Throws<ArgumentNullException>(() => 
-                client.CreateContainerFile(null, testFormData, testFormData.ContentType));
-            Assert.Throws<ArgumentException>(() => 
-                client.CreateContainerFile("", testFormData, testFormData.ContentType));
-        }
+        Assert.ThrowsAsync<ArgumentNullException>(async () => 
+            await client.CreateContainerFileAsync(null, testFormData, testFormData.ContentType));
+        Assert.ThrowsAsync<ArgumentException>(async () => 
+            await client.CreateContainerFileAsync("", testFormData, testFormData.ContentType));
 
         Console.WriteLine("Parameter validation tests passed");
     }
 
-    [Test]
+    [RecordedTest]
     public void GetContainerFileValidatesParameters()
     {
         ContainerClient client = GetTestClient();
 
         // Test null/empty container ID and file ID
-        if (IsAsync)
-        {
-            Assert.ThrowsAsync<ArgumentNullException>(async () => 
-                await client.GetContainerFileAsync(null, "file123"));
-            Assert.ThrowsAsync<ArgumentException>(async () => 
-                await client.GetContainerFileAsync("", "file123"));
-            Assert.ThrowsAsync<ArgumentNullException>(async () => 
-                await client.GetContainerFileAsync("container123", null));
-            Assert.ThrowsAsync<ArgumentException>(async () => 
-                await client.GetContainerFileAsync("container123", ""));
+        Assert.ThrowsAsync<ArgumentNullException>(async () => 
+            await client.GetContainerFileAsync(null, "file123"));
+        Assert.ThrowsAsync<ArgumentException>(async () => 
+            await client.GetContainerFileAsync("", "file123"));
+        Assert.ThrowsAsync<ArgumentNullException>(async () => 
+            await client.GetContainerFileAsync("container123", null));
+        Assert.ThrowsAsync<ArgumentException>(async () => 
+            await client.GetContainerFileAsync("container123", ""));
 
-            Assert.ThrowsAsync<ArgumentNullException>(async () => 
-                await client.GetContainerFileContentAsync(null, "file123"));
-            Assert.ThrowsAsync<ArgumentException>(async () => 
-                await client.GetContainerFileContentAsync("", "file123"));
-            Assert.ThrowsAsync<ArgumentNullException>(async () => 
-                await client.GetContainerFileContentAsync("container123", null));
-            Assert.ThrowsAsync<ArgumentException>(async () => 
-                await client.GetContainerFileContentAsync("container123", ""));
-        }
-        else
-        {
-            Assert.Throws<ArgumentNullException>(() => 
-                client.GetContainerFile(null, "file123"));
-            Assert.Throws<ArgumentException>(() => 
-                client.GetContainerFile("", "file123"));
-            Assert.Throws<ArgumentNullException>(() => 
-                client.GetContainerFile("container123", null));
-            Assert.Throws<ArgumentException>(() => 
-                client.GetContainerFile("container123", ""));
-
-            Assert.Throws<ArgumentNullException>(() => 
-                client.GetContainerFileContent(null, "file123"));
-            Assert.Throws<ArgumentException>(() => 
-                client.GetContainerFileContent("", "file123"));
-            Assert.Throws<ArgumentNullException>(() => 
-                client.GetContainerFileContent("container123", null));
-            Assert.Throws<ArgumentException>(() => 
-                client.GetContainerFileContent("container123", ""));
-        }
+        Assert.ThrowsAsync<ArgumentNullException>(async () => 
+            await client.GetContainerFileContentAsync(null, "file123"));
+        Assert.ThrowsAsync<ArgumentException>(async () => 
+            await client.GetContainerFileContentAsync("", "file123"));
+        Assert.ThrowsAsync<ArgumentNullException>(async () => 
+            await client.GetContainerFileContentAsync("container123", null));
+        Assert.ThrowsAsync<ArgumentException>(async () => 
+            await client.GetContainerFileContentAsync("container123", ""));
 
         Console.WriteLine("Parameter validation tests passed for GetContainerFile methods");
     }
 
-    [Test]
+    [RecordedTest]
     public void DeleteContainerFileValidatesParameters()
     {
         ContainerClient client = GetTestClient();
 
         // Test null/empty container ID and file ID
-        if (IsAsync)
-        {
-            Assert.ThrowsAsync<ArgumentNullException>(async () => 
-                await client.DeleteContainerFileAsync(null, "file123"));
-            Assert.ThrowsAsync<ArgumentException>(async () => 
-                await client.DeleteContainerFileAsync("", "file123"));
-            Assert.ThrowsAsync<ArgumentNullException>(async () => 
-                await client.DeleteContainerFileAsync("container123", null));
-            Assert.ThrowsAsync<ArgumentException>(async () => 
-                await client.DeleteContainerFileAsync("container123", ""));
-        }
-        else
-        {
-            Assert.Throws<ArgumentNullException>(() => 
-                client.DeleteContainerFile(null, "file123"));
-            Assert.Throws<ArgumentException>(() => 
-                client.DeleteContainerFile("", "file123"));
-            Assert.Throws<ArgumentNullException>(() => 
-                client.DeleteContainerFile("container123", null));
-            Assert.Throws<ArgumentException>(() => 
-                client.DeleteContainerFile("container123", ""));
-        }
+        Assert.ThrowsAsync<ArgumentNullException>(async () => 
+            await client.DeleteContainerFileAsync(null, "file123"));
+        Assert.ThrowsAsync<ArgumentException>(async () => 
+            await client.DeleteContainerFileAsync("", "file123"));
+        Assert.ThrowsAsync<ArgumentNullException>(async () => 
+            await client.DeleteContainerFileAsync("container123", null));
+        Assert.ThrowsAsync<ArgumentException>(async () => 
+            await client.DeleteContainerFileAsync("container123", ""));
 
         Console.WriteLine("Parameter validation tests passed for DeleteContainerFile methods");
     }
 
-    [Test]
+    [RecordedTest]
     public void GetContainerValidatesParameters()
     {
         ContainerClient client = GetTestClient();
 
         // Test null/empty container ID
-        if (IsAsync)
-        {
-            Assert.ThrowsAsync<ArgumentNullException>(async () => 
-                await client.GetContainerAsync(null));
-            Assert.ThrowsAsync<ArgumentException>(async () => 
-                await client.GetContainerAsync(""));
-        }
-        else
-        {
-            Assert.Throws<ArgumentNullException>(() => 
-                client.GetContainer(null));
-            Assert.Throws<ArgumentException>(() => 
-                client.GetContainer(""));
-        }
+        Assert.ThrowsAsync<ArgumentNullException>(async () => 
+            await client.GetContainerAsync(null));
+        Assert.ThrowsAsync<ArgumentException>(async () => 
+            await client.GetContainerAsync(""));
 
         Console.WriteLine("Parameter validation tests passed for GetContainer methods");
+    }
+
+    private static void Validate(ContainerResource container)
+    {
+        Assert.That(container, Is.Not.Null);
+        Assert.That(container.Id, Is.Not.Null.And.Not.Empty);
+        Assert.That(container.Object, Is.Not.Null.And.Not.Empty);
+        Assert.That(container.CreatedAt, Is.GreaterThan(DateTimeOffset.MinValue));
+        Assert.That(container.Status, Is.Not.Null.And.Not.Empty);
+        // Name can be null/empty for some containers
     }
 
     private static void Validate(ContainerFileResource file)

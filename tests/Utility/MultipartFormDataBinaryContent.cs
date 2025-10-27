@@ -34,7 +34,7 @@ namespace OpenAI
 
         internal HttpContent HttpContent => _multipartContent;
 
-        private static string CreateBoundary()
+        internal static string CreateBoundary()
         {
             Span<char> chars = new char[70];
             byte[] random = new byte[70];

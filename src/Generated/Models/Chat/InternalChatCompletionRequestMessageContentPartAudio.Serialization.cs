@@ -4,13 +4,13 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Chat
 {
-    internal partial class InternalChatCompletionRequestMessageContentPartAudio : IJsonModel<InternalChatCompletionRequestMessageContentPartAudio>
+    internal partial class InternalChatCompletionRequestMessageContentPartAudio : ChatMessageContentPart, IJsonModel<InternalChatCompletionRequestMessageContentPartAudio>
     {
         internal InternalChatCompletionRequestMessageContentPartAudio()
         {
@@ -18,6 +18,14 @@ namespace OpenAI.Chat
 
         void IJsonModel<InternalChatCompletionRequestMessageContentPartAudio>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -31,11 +39,15 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(InternalChatCompletionRequestMessageContentPartAudio)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("input_audio") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.input_audio"u8))
             {
                 writer.WritePropertyName("input_audio"u8);
                 writer.WriteObjectValue(InputAudio, options);
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalChatCompletionRequestMessageContentPartAudio IJsonModel<InternalChatCompletionRequestMessageContentPartAudio>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalChatCompletionRequestMessageContentPartAudio)JsonModelCreateCore(ref reader, options);
@@ -48,28 +60,29 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(InternalChatCompletionRequestMessageContentPartAudio)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalChatCompletionRequestMessageContentPartAudio(document.RootElement, options);
+            return DeserializeInternalChatCompletionRequestMessageContentPartAudio(document.RootElement, null, options);
         }
 
-        internal static InternalChatCompletionRequestMessageContentPartAudio DeserializeInternalChatCompletionRequestMessageContentPartAudio(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalChatCompletionRequestMessageContentPartAudio DeserializeInternalChatCompletionRequestMessageContentPartAudio(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             InternalChatCompletionRequestMessageContentPartAudioInputAudio inputAudio = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("input_audio"u8))
                 {
-                    inputAudio = InternalChatCompletionRequestMessageContentPartAudioInputAudio.DeserializeInternalChatCompletionRequestMessageContentPartAudioInputAudio(prop.Value, options);
+                    inputAudio = InternalChatCompletionRequestMessageContentPartAudioInputAudio.DeserializeInternalChatCompletionRequestMessageContentPartAudioInputAudio(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalChatCompletionRequestMessageContentPartAudio(additionalBinaryDataProperties, inputAudio);
+            return new InternalChatCompletionRequestMessageContentPartAudio(patch, inputAudio);
         }
 
         BinaryData IPersistableModel<InternalChatCompletionRequestMessageContentPartAudio>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -96,7 +109,7 @@ namespace OpenAI.Chat
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalChatCompletionRequestMessageContentPartAudio(document.RootElement, options);
+                        return DeserializeInternalChatCompletionRequestMessageContentPartAudio(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalChatCompletionRequestMessageContentPartAudio)} does not support reading '{options.Format}' format.");
@@ -104,5 +117,33 @@ namespace OpenAI.Chat
         }
 
         string IPersistableModel<InternalChatCompletionRequestMessageContentPartAudio>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("input_audio"u8))
+            {
+                return InputAudio.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("input_audio"u8.Length)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("input_audio"u8))
+            {
+                InputAudio.Patch.Set([.. "$"u8, .. local.Slice("input_audio"u8.Length)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

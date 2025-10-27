@@ -4,20 +4,28 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalFunctionToolCallOutputItemParam : IJsonModel<InternalFunctionToolCallOutputItemParam>
+    internal partial class InternalFunctionToolCallOutputItemParam : InternalItemParam, IJsonModel<InternalFunctionToolCallOutputItemParam>
     {
-        internal InternalFunctionToolCallOutputItemParam() : this(InternalItemType.FunctionCallOutput, null, null, null)
+        internal InternalFunctionToolCallOutputItemParam() : this(InternalItemType.FunctionCallOutput, default, null, null)
         {
         }
 
         void IJsonModel<InternalFunctionToolCallOutputItemParam>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -31,16 +39,20 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalFunctionToolCallOutputItemParam)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("call_id") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.call_id"u8))
             {
                 writer.WritePropertyName("call_id"u8);
                 writer.WriteStringValue(CallId);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("output") != true)
+            if (!Patch.Contains("$.output"u8))
             {
                 writer.WritePropertyName("output"u8);
                 writer.WriteStringValue(Output);
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalFunctionToolCallOutputItemParam IJsonModel<InternalFunctionToolCallOutputItemParam>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalFunctionToolCallOutputItemParam)JsonModelCreateCore(ref reader, options);
@@ -53,17 +65,19 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalFunctionToolCallOutputItemParam)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalFunctionToolCallOutputItemParam(document.RootElement, options);
+            return DeserializeInternalFunctionToolCallOutputItemParam(document.RootElement, null, options);
         }
 
-        internal static InternalFunctionToolCallOutputItemParam DeserializeInternalFunctionToolCallOutputItemParam(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalFunctionToolCallOutputItemParam DeserializeInternalFunctionToolCallOutputItemParam(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalItemType kind = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string callId = default;
             string output = default;
             foreach (var prop in element.EnumerateObject())
@@ -83,10 +97,9 @@ namespace OpenAI.Responses
                     output = prop.Value.GetString();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalFunctionToolCallOutputItemParam(kind, additionalBinaryDataProperties, callId, output);
+            return new InternalFunctionToolCallOutputItemParam(kind, patch, callId, output);
         }
 
         BinaryData IPersistableModel<InternalFunctionToolCallOutputItemParam>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -113,7 +126,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalFunctionToolCallOutputItemParam(document.RootElement, options);
+                        return DeserializeInternalFunctionToolCallOutputItemParam(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalFunctionToolCallOutputItemParam)} does not support reading '{options.Format}' format.");

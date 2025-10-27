@@ -30,8 +30,40 @@ union ResponseItemCollectionOrder {
 @access(Access.public)
 @usage(Usage.input)
 model ResponseItemCollectionOptions {
-  ...CollectionAfterQueryParameter,
-  ...CollectionBeforeQueryParameter,
-  ...CollectionLimitQueryParameter,
-  ...ResponseItemCollectionOrderQueryParameter,
+  ...CollectionAfterQueryParameter;
+  ...CollectionBeforeQueryParameter;
+  ...CollectionLimitQueryParameter;
+  ...ResponseItemCollectionOrderQueryParameter;
+}
+
+@access(Access.public)
+@usage(Usage.input | Usage.output)
+union DotNetGlobalToolCallApprovalPolicy {
+  string,
+  AlwaysRequireApproval: "always",
+  NeverRequireApproval: "never",
+}
+
+@access(Access.public)
+@usage(Usage.input | Usage.output)
+model DotNetCustomToolCallApprovalPolicy {
+  /** A list of tools that always require approval. */
+  always?: MCPToolFilter;
+
+  /** A list of tools that never require approval. */
+  `never`?: MCPToolFilter;
+}
+
+@access(Access.public)
+@usage(Usage.input | Usage.output)
+model DotNetToolCallApprovalPolicy {
+  global_policy?: DotNetGlobalToolCallApprovalPolicy;
+  custom_policy?: DotNetCustomToolCallApprovalPolicy;
+}
+
+@access(Access.public)
+@usage(Usage.input | Usage.output)
+model DotNetCodeInterpreterToolContainer {
+  container_id?: string;
+  container?: CodeInterpreterContainerConfiguration;
 }

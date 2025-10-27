@@ -4,20 +4,28 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalResponsesTextFormatJsonSchema : IJsonModel<InternalResponsesTextFormatJsonSchema>
+    internal partial class InternalResponsesTextFormatJsonSchema : ResponseTextFormat, IJsonModel<InternalResponsesTextFormatJsonSchema>
     {
-        internal InternalResponsesTextFormatJsonSchema() : this(InternalResponsesTextFormatType.JsonSchema, null, null, null, null, default)
+        internal InternalResponsesTextFormatJsonSchema() : this(InternalResponsesTextFormatType.JsonSchema, default, null, null, null, default)
         {
         }
 
         void IJsonModel<InternalResponsesTextFormatJsonSchema>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -31,17 +39,18 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalResponsesTextFormatJsonSchema)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (Optional.IsDefined(Description) && _additionalBinaryDataProperties?.ContainsKey("description") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Optional.IsDefined(Description) && !Patch.Contains("$.description"u8))
             {
                 writer.WritePropertyName("description"u8);
                 writer.WriteStringValue(Description);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
+            if (!Patch.Contains("$.name"u8))
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(Name);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("schema") != true)
+            if (!Patch.Contains("$.schema"u8))
             {
                 writer.WritePropertyName("schema"u8);
 #if NET6_0_OR_GREATER
@@ -53,11 +62,14 @@ namespace OpenAI.Responses
                 }
 #endif
             }
-            if (Optional.IsDefined(Strict) && _additionalBinaryDataProperties?.ContainsKey("strict") != true)
+            if (Optional.IsDefined(Strict) && !Patch.Contains("$.strict"u8))
             {
                 writer.WritePropertyName("strict"u8);
                 writer.WriteBooleanValue(Strict.Value);
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalResponsesTextFormatJsonSchema IJsonModel<InternalResponsesTextFormatJsonSchema>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalResponsesTextFormatJsonSchema)JsonModelCreateCore(ref reader, options);
@@ -70,17 +82,19 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalResponsesTextFormatJsonSchema)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalResponsesTextFormatJsonSchema(document.RootElement, options);
+            return DeserializeInternalResponsesTextFormatJsonSchema(document.RootElement, null, options);
         }
 
-        internal static InternalResponsesTextFormatJsonSchema DeserializeInternalResponsesTextFormatJsonSchema(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalResponsesTextFormatJsonSchema DeserializeInternalResponsesTextFormatJsonSchema(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalResponsesTextFormatType internalType = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string description = default;
             string name = default;
             BinaryData schema = default;
@@ -117,12 +131,11 @@ namespace OpenAI.Responses
                     strict = prop.Value.GetBoolean();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new InternalResponsesTextFormatJsonSchema(
                 internalType,
-                additionalBinaryDataProperties,
+                patch,
                 description,
                 name,
                 schema,
@@ -153,7 +166,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalResponsesTextFormatJsonSchema(document.RootElement, options);
+                        return DeserializeInternalResponsesTextFormatJsonSchema(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalResponsesTextFormatJsonSchema)} does not support reading '{options.Format}' format.");

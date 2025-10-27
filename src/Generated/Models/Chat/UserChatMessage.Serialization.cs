@@ -4,14 +4,14 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Chat
 {
-    public partial class UserChatMessage : IJsonModel<UserChatMessage>
+    public partial class UserChatMessage : ChatMessage, IJsonModel<UserChatMessage>
     {
         [Experimental("OPENAI001")]
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
@@ -22,11 +22,15 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(UserChatMessage)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (Optional.IsDefined(ParticipantName) && _additionalBinaryDataProperties?.ContainsKey("name") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Optional.IsDefined(ParticipantName) && !Patch.Contains("$.name"u8))
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(ParticipantName);
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         UserChatMessage IJsonModel<UserChatMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (UserChatMessage)JsonModelCreateCore(ref reader, options);
@@ -40,10 +44,10 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(UserChatMessage)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeUserChatMessage(document.RootElement, options);
+            return DeserializeUserChatMessage(document.RootElement, null, options);
         }
 
-        internal static UserChatMessage DeserializeUserChatMessage(JsonElement element, ModelReaderWriterOptions options)
+        internal static UserChatMessage DeserializeUserChatMessage(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -51,7 +55,9 @@ namespace OpenAI.Chat
             }
             ChatMessageRole role = default;
             ChatMessageContent content = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string participantName = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -70,10 +76,9 @@ namespace OpenAI.Chat
                     participantName = prop.Value.GetString();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new UserChatMessage(role, content, additionalBinaryDataProperties, participantName);
+            return new UserChatMessage(role, content, patch, participantName);
         }
 
         BinaryData IPersistableModel<UserChatMessage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -102,7 +107,7 @@ namespace OpenAI.Chat
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeUserChatMessage(document.RootElement, options);
+                        return DeserializeUserChatMessage(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(UserChatMessage)} does not support reading '{options.Format}' format.");

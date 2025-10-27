@@ -3,14 +3,17 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
 namespace OpenAI.Chat
 {
     internal partial class InternalDotNetChatResponseFormatJsonSchemaJsonSchema
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
         public InternalDotNetChatResponseFormatJsonSchemaJsonSchema(string name)
         {
@@ -19,14 +22,20 @@ namespace OpenAI.Chat
             Name = name;
         }
 
-        internal InternalDotNetChatResponseFormatJsonSchemaJsonSchema(string description, string name, BinaryData schema, bool? strict, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalDotNetChatResponseFormatJsonSchemaJsonSchema(string description, string name, BinaryData schema, bool? strict, in JsonPatch patch)
         {
             Description = description;
             Name = name;
             Schema = schema;
             Strict = strict;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         public string Description { get; set; }
 
@@ -35,11 +44,5 @@ namespace OpenAI.Chat
         public BinaryData Schema { get; set; }
 
         public bool? Strict { get; set; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
     }
 }

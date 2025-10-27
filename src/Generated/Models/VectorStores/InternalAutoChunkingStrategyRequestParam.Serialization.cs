@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.VectorStores
 {
-    internal partial class InternalAutoChunkingStrategyRequestParam : IJsonModel<InternalAutoChunkingStrategyRequestParam>
+    internal partial class InternalAutoChunkingStrategyRequestParam : InternalChunkingStrategyRequestParam, IJsonModel<InternalAutoChunkingStrategyRequestParam>
     {
         void IJsonModel<InternalAutoChunkingStrategyRequestParam>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

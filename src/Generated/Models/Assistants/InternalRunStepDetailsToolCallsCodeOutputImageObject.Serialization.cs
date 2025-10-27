@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalRunStepDetailsToolCallsCodeOutputImageObject : IJsonModel<InternalRunStepDetailsToolCallsCodeOutputImageObject>
+    internal partial class InternalRunStepDetailsToolCallsCodeOutputImageObject : RunStepCodeInterpreterOutput, IJsonModel<InternalRunStepDetailsToolCallsCodeOutputImageObject>
     {
         internal InternalRunStepDetailsToolCallsCodeOutputImageObject() : this(InternalRunStepDetailsCodeInterpreterOutputType.Image, null, null)
         {

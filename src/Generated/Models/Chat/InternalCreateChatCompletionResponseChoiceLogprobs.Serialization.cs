@@ -5,6 +5,7 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -14,6 +15,14 @@ namespace OpenAI.Chat
     {
         void IJsonModel<InternalCreateChatCompletionResponseChoiceLogprobs>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -26,48 +35,56 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(InternalCreateChatCompletionResponseChoiceLogprobs)} does not support writing '{format}' format.");
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties?.ContainsKey("content") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$.content"u8))
+            {
+                if (!Patch.IsRemoved("$.content"u8))
+                {
+                    writer.WritePropertyName("content"u8);
+                    writer.WriteRawValue(Patch.GetJson("$.content"u8));
+                }
+            }
+            else if (options.Format != "W" && !Patch.Contains("$.content"u8))
             {
                 writer.WritePropertyName("content"u8);
                 writer.WriteStartArray();
-                foreach (ChatTokenLogProbabilityDetails item in Content)
+                for (int i = 0; i < Content.Count; i++)
                 {
-                    writer.WriteObjectValue(item, options);
-                }
-                writer.WriteEndArray();
-            }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties?.ContainsKey("refusal") != true)
-            {
-                writer.WritePropertyName("refusal"u8);
-                writer.WriteStartArray();
-                foreach (ChatTokenLogProbabilityDetails item in Refusal)
-                {
-                    writer.WriteObjectValue(item, options);
-                }
-                writer.WriteEndArray();
-            }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    if (Content[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
+                    writer.WriteObjectValue(Content[i], options);
+                }
+                Patch.WriteTo(writer, "$.content"u8);
+                writer.WriteEndArray();
+            }
+            if (Patch.Contains("$.refusal"u8))
+            {
+                if (!Patch.IsRemoved("$.refusal"u8))
+                {
+                    writer.WritePropertyName("refusal"u8);
+                    writer.WriteRawValue(Patch.GetJson("$.refusal"u8));
                 }
             }
+            else if (options.Format != "W" && !Patch.Contains("$.refusal"u8))
+            {
+                writer.WritePropertyName("refusal"u8);
+                writer.WriteStartArray();
+                for (int i = 0; i < Refusal.Count; i++)
+                {
+                    if (Refusal[i].Patch.IsRemoved("$"u8))
+                    {
+                        continue;
+                    }
+                    writer.WriteObjectValue(Refusal[i], options);
+                }
+                Patch.WriteTo(writer, "$.refusal"u8);
+                writer.WriteEndArray();
+            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalCreateChatCompletionResponseChoiceLogprobs IJsonModel<InternalCreateChatCompletionResponseChoiceLogprobs>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -80,10 +97,10 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(InternalCreateChatCompletionResponseChoiceLogprobs)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalCreateChatCompletionResponseChoiceLogprobs(document.RootElement, options);
+            return DeserializeInternalCreateChatCompletionResponseChoiceLogprobs(document.RootElement, null, options);
         }
 
-        internal static InternalCreateChatCompletionResponseChoiceLogprobs DeserializeInternalCreateChatCompletionResponseChoiceLogprobs(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalCreateChatCompletionResponseChoiceLogprobs DeserializeInternalCreateChatCompletionResponseChoiceLogprobs(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -91,7 +108,9 @@ namespace OpenAI.Chat
             }
             IReadOnlyList<ChatTokenLogProbabilityDetails> content = default;
             IReadOnlyList<ChatTokenLogProbabilityDetails> refusal = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("content"u8))
@@ -104,7 +123,7 @@ namespace OpenAI.Chat
                     List<ChatTokenLogProbabilityDetails> array = new List<ChatTokenLogProbabilityDetails>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ChatTokenLogProbabilityDetails.DeserializeChatTokenLogProbabilityDetails(item, options));
+                        array.Add(ChatTokenLogProbabilityDetails.DeserializeChatTokenLogProbabilityDetails(item, item.GetUtf8Bytes(), options));
                     }
                     content = array;
                     continue;
@@ -119,15 +138,14 @@ namespace OpenAI.Chat
                     List<ChatTokenLogProbabilityDetails> array = new List<ChatTokenLogProbabilityDetails>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ChatTokenLogProbabilityDetails.DeserializeChatTokenLogProbabilityDetails(item, options));
+                        array.Add(ChatTokenLogProbabilityDetails.DeserializeChatTokenLogProbabilityDetails(item, item.GetUtf8Bytes(), options));
                     }
                     refusal = array;
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalCreateChatCompletionResponseChoiceLogprobs(content, refusal, additionalBinaryDataProperties);
+            return new InternalCreateChatCompletionResponseChoiceLogprobs(content, refusal, patch);
         }
 
         BinaryData IPersistableModel<InternalCreateChatCompletionResponseChoiceLogprobs>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -154,7 +172,7 @@ namespace OpenAI.Chat
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalCreateChatCompletionResponseChoiceLogprobs(document.RootElement, options);
+                        return DeserializeInternalCreateChatCompletionResponseChoiceLogprobs(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalCreateChatCompletionResponseChoiceLogprobs)} does not support reading '{options.Format}' format.");
@@ -162,5 +180,66 @@ namespace OpenAI.Chat
         }
 
         string IPersistableModel<InternalCreateChatCompletionResponseChoiceLogprobs>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("content"u8))
+            {
+                int propertyLength = "content"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                return Content[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+            }
+            if (local.StartsWith("refusal"u8))
+            {
+                int propertyLength = "refusal"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                return Refusal[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("content"u8))
+            {
+                int propertyLength = "content"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                Content[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                return true;
+            }
+            if (local.StartsWith("refusal"u8))
+            {
+                int propertyLength = "refusal"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                Refusal[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

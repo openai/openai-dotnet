@@ -32,7 +32,7 @@ public static partial class OpenAIResponsesModelFactory
         float? topP = null,
         ResponseServiceTier? serviceTier = null,
         string previousResponseId = null,
-        bool? background = null,
+        bool? backgroundModeEnabled = null,
         string instructions = null,
         IEnumerable<ResponseTool> tools = null)
     {
@@ -46,7 +46,7 @@ public static partial class OpenAIResponsesModelFactory
            topP: topP,
            serviceTier: serviceTier,
            previousResponseId: previousResponseId,
-           background: background,
+           backgroundModeEnabled: backgroundModeEnabled,
            instructions: instructions,
            tools: tools.ToList(),
            id: id,
@@ -65,7 +65,7 @@ public static partial class OpenAIResponsesModelFactory
            toolChoice: toolChoice,
            model: model,
            @object: "response",
-           additionalBinaryDataProperties: null);
+           patch: default);
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Responses.MessageResponseItem"/>. </summary>
@@ -78,7 +78,7 @@ public static partial class OpenAIResponsesModelFactory
         MessageResponseItem item = new(
             kind: InternalItemType.Message,
             id: id,
-            additionalBinaryDataProperties: null,
+            patch: default,
             status: status,
             internalRole: role.ToString());
 
@@ -102,7 +102,7 @@ public static partial class OpenAIResponsesModelFactory
         var item = new ReasoningResponseItem(
             kind: InternalItemType.Reasoning,
             id: id,
-            additionalBinaryDataProperties: null,
+            patch: default,
             encryptedContent: encryptedContent,
             status: status,
             summaryParts: summaryParts.ToList());
@@ -129,7 +129,7 @@ public static partial class OpenAIResponsesModelFactory
         var item = new ReasoningResponseItem(
             kind: InternalItemType.Reasoning,
             id: id,
-            additionalBinaryDataProperties: null,
+            patch: default,
             encryptedContent: encryptedContent,
             status: status,
             summaryParts: summaryParts);
@@ -145,6 +145,6 @@ public static partial class OpenAIResponsesModelFactory
         return new ReferenceResponseItem(
             kind: InternalItemType.ItemReference,
             id: id,
-            additionalBinaryDataProperties: null);
+            patch: default);
     }
 }

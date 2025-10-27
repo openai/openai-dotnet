@@ -43,12 +43,12 @@ namespace OpenAI.Audio
             if (_additionalBinaryDataProperties?.ContainsKey("start") != true)
             {
                 writer.WritePropertyName("start"u8);
-                writer.WriteNumberValue(Convert.ToDouble(StartTime.ToString("s\\.FFF")));
+                writer.WriteNumberValue(StartTime.TotalSeconds);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("end") != true)
             {
                 writer.WritePropertyName("end"u8);
-                writer.WriteNumberValue(Convert.ToDouble(EndTime.ToString("s\\.FFF")));
+                writer.WriteNumberValue(EndTime.TotalSeconds);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
             {

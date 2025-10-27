@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -23,13 +23,15 @@ namespace OpenAI.Responses
             Title = title;
         }
 
-        internal UriCitationMessageAnnotation(ResponseMessageAnnotationKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, Uri uri, int startIndex, int endIndex, string title) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal UriCitationMessageAnnotation(ResponseMessageAnnotationKind kind, in JsonPatch patch, Uri uri, int startIndex, int endIndex, string title) : base(kind, patch)
         {
             Uri = uri;
             StartIndex = startIndex;
             EndIndex = endIndex;
             Title = title;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public int StartIndex { get; set; }
 

@@ -4,20 +4,28 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class StreamingResponseRefusalDoneUpdate : IJsonModel<StreamingResponseRefusalDoneUpdate>
+    public partial class StreamingResponseRefusalDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseRefusalDoneUpdate>
     {
-        internal StreamingResponseRefusalDoneUpdate() : this(InternalResponseStreamEventType.ResponseRefusalDone, default, null, null, default, default, null)
+        internal StreamingResponseRefusalDoneUpdate() : this(InternalResponseStreamEventType.ResponseRefusalDone, default, default, null, default, default, null)
         {
         }
 
         void IJsonModel<StreamingResponseRefusalDoneUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -31,26 +39,30 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(StreamingResponseRefusalDoneUpdate)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("item_id") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.item_id"u8))
             {
                 writer.WritePropertyName("item_id"u8);
                 writer.WriteStringValue(ItemId);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("output_index") != true)
+            if (!Patch.Contains("$.output_index"u8))
             {
                 writer.WritePropertyName("output_index"u8);
                 writer.WriteNumberValue(OutputIndex);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("content_index") != true)
+            if (!Patch.Contains("$.content_index"u8))
             {
                 writer.WritePropertyName("content_index"u8);
                 writer.WriteNumberValue(ContentIndex);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("refusal") != true)
+            if (!Patch.Contains("$.refusal"u8))
             {
                 writer.WritePropertyName("refusal"u8);
                 writer.WriteStringValue(Refusal);
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         StreamingResponseRefusalDoneUpdate IJsonModel<StreamingResponseRefusalDoneUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StreamingResponseRefusalDoneUpdate)JsonModelCreateCore(ref reader, options);
@@ -63,10 +75,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(StreamingResponseRefusalDoneUpdate)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeStreamingResponseRefusalDoneUpdate(document.RootElement, options);
+            return DeserializeStreamingResponseRefusalDoneUpdate(document.RootElement, null, options);
         }
 
-        internal static StreamingResponseRefusalDoneUpdate DeserializeStreamingResponseRefusalDoneUpdate(JsonElement element, ModelReaderWriterOptions options)
+        internal static StreamingResponseRefusalDoneUpdate DeserializeStreamingResponseRefusalDoneUpdate(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -74,7 +86,9 @@ namespace OpenAI.Responses
             }
             InternalResponseStreamEventType kind = default;
             int sequenceNumber = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string itemId = default;
             int outputIndex = default;
             int contentIndex = default;
@@ -111,13 +125,12 @@ namespace OpenAI.Responses
                     refusal = prop.Value.GetString();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new StreamingResponseRefusalDoneUpdate(
                 kind,
                 sequenceNumber,
-                additionalBinaryDataProperties,
+                patch,
                 itemId,
                 outputIndex,
                 contentIndex,
@@ -148,7 +161,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeStreamingResponseRefusalDoneUpdate(document.RootElement, options);
+                        return DeserializeStreamingResponseRefusalDoneUpdate(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(StreamingResponseRefusalDoneUpdate)} does not support reading '{options.Format}' format.");

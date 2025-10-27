@@ -4,20 +4,28 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class StreamingResponseFunctionCallArgumentsDoneUpdate : IJsonModel<StreamingResponseFunctionCallArgumentsDoneUpdate>
+    public partial class StreamingResponseFunctionCallArgumentsDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseFunctionCallArgumentsDoneUpdate>
     {
-        internal StreamingResponseFunctionCallArgumentsDoneUpdate() : this(InternalResponseStreamEventType.ResponseFunctionCallArgumentsDone, default, null, null, default, null)
+        internal StreamingResponseFunctionCallArgumentsDoneUpdate() : this(InternalResponseStreamEventType.ResponseFunctionCallArgumentsDone, default, default, null, default, null)
         {
         }
 
         void IJsonModel<StreamingResponseFunctionCallArgumentsDoneUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -31,21 +39,25 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(StreamingResponseFunctionCallArgumentsDoneUpdate)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("item_id") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.item_id"u8))
             {
                 writer.WritePropertyName("item_id"u8);
                 writer.WriteStringValue(ItemId);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("output_index") != true)
+            if (!Patch.Contains("$.output_index"u8))
             {
                 writer.WritePropertyName("output_index"u8);
                 writer.WriteNumberValue(OutputIndex);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("arguments") != true)
+            if (!Patch.Contains("$.arguments"u8))
             {
                 writer.WritePropertyName("arguments"u8);
-                writer.WriteStringValue(Arguments);
+                SerializeFunctionArgumentsValue(writer, options);
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         StreamingResponseFunctionCallArgumentsDoneUpdate IJsonModel<StreamingResponseFunctionCallArgumentsDoneUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StreamingResponseFunctionCallArgumentsDoneUpdate)JsonModelCreateCore(ref reader, options);
@@ -58,10 +70,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(StreamingResponseFunctionCallArgumentsDoneUpdate)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeStreamingResponseFunctionCallArgumentsDoneUpdate(document.RootElement, options);
+            return DeserializeStreamingResponseFunctionCallArgumentsDoneUpdate(document.RootElement, null, options);
         }
 
-        internal static StreamingResponseFunctionCallArgumentsDoneUpdate DeserializeStreamingResponseFunctionCallArgumentsDoneUpdate(JsonElement element, ModelReaderWriterOptions options)
+        internal static StreamingResponseFunctionCallArgumentsDoneUpdate DeserializeStreamingResponseFunctionCallArgumentsDoneUpdate(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -69,10 +81,12 @@ namespace OpenAI.Responses
             }
             InternalResponseStreamEventType kind = default;
             int sequenceNumber = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string itemId = default;
             int outputIndex = default;
-            string arguments = default;
+            BinaryData functionArguments = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -97,19 +111,18 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("arguments"u8))
                 {
-                    arguments = prop.Value.GetString();
+                    DeserializeFunctionArgumentsValue(prop, ref functionArguments);
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new StreamingResponseFunctionCallArgumentsDoneUpdate(
                 kind,
                 sequenceNumber,
-                additionalBinaryDataProperties,
+                patch,
                 itemId,
                 outputIndex,
-                arguments);
+                functionArguments);
         }
 
         BinaryData IPersistableModel<StreamingResponseFunctionCallArgumentsDoneUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -136,7 +149,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeStreamingResponseFunctionCallArgumentsDoneUpdate(document.RootElement, options);
+                        return DeserializeStreamingResponseFunctionCallArgumentsDoneUpdate(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(StreamingResponseFunctionCallArgumentsDoneUpdate)} does not support reading '{options.Format}' format.");

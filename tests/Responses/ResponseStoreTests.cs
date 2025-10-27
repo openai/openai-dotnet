@@ -1,5 +1,5 @@
-﻿using NUnit.Framework;
-using OpenAI.Chat;
+﻿using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using OpenAI.Responses;
 using OpenAI.Tests.Utility;
 using System;
@@ -12,19 +12,14 @@ namespace OpenAI.Tests.Responses;
 
 #pragma warning disable OPENAICUA001
 
-[TestFixture(true)]
-[TestFixture(false)]
-[Parallelizable(ParallelScope.Fixtures)]
 [Category("Responses")]
-public partial class ResponseStoreTests : SyncAsyncTestBase
+public partial class ResponseStoreTests : OpenAIRecordedTestBase
 {
     public ResponseStoreTests(bool isAsync) : base(isAsync)
     {
     }
 
-    private static OpenAIResponseClient GetTestClient(string overrideModel = null) => GetTestClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel);
-
-    [Test]
+    [RecordedTest]
     public async Task GetInputItemsWithPagination()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -49,7 +44,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         int totalCount = 0;
         string lastId = null;
 
-        await foreach (ResponseItem item in client.GetInputItemsAsync(response.Id, options))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id, options))
         {
             totalCount++;
             lastId = item.Id;
@@ -61,7 +56,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         Assert.That(lastId, Is.Not.Null);
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetInputItemsWithMultiPartPagination()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -94,7 +89,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         string lastId = null;
         bool hasMultipleContentParts = false;
 
-        await foreach (ResponseItem item in client.GetInputItemsAsync(response.Id, options))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id, options))
         {
             totalCount++;
             lastId = item.Id;
@@ -110,10 +105,10 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
 
         Assert.That(totalCount, Is.GreaterThanOrEqualTo(2));
         Assert.That(lastId, Is.Not.Null);
-        Assert.IsTrue(hasMultipleContentParts, "Expected at least one message with multiple content parts.");
+        Assert.That(hasMultipleContentParts, "Expected at least one message with multiple content parts.");
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetInputItemsWithAfterIdPagination()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -129,7 +124,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         OpenAIResponse response = await client.CreateResponseAsync(inputItems);
 
         string afterId = null;
-        await foreach (ResponseItem first in client.GetInputItemsAsync(response.Id))
+        await foreach (ResponseItem first in client.GetResponseInputItemsAsync(response.Id))
         {
             afterId = first.Id;
             break;
@@ -144,7 +139,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
             PageSizeLimit = 2
         };
 
-        await foreach (ResponseItem item in client.GetInputItemsAsync(response.Id, options))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id, options))
         {
             count++;
             Assert.That(item.Id, Is.Not.EqualTo(afterId));
@@ -154,7 +149,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         Assert.That(count, Is.GreaterThanOrEqualTo(0));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetInputItemsWithOrderFiltering()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -176,7 +171,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         };
 
         var asc = new List<ResponseItem>();
-        await foreach (ResponseItem item in client.GetInputItemsAsync(response.Id, ascOptions))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id, ascOptions))
         {
             asc.Add(item);
             if (asc.Count >= 2) break;
@@ -190,7 +185,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         };
 
         var desc = new List<ResponseItem>();
-        await foreach (ResponseItem item in client.GetInputItemsAsync(response.Id, descOptions))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id, descOptions))
         {
             desc.Add(item);
             if (desc.Count >= 2) break;
@@ -200,10 +195,10 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         Assert.That(desc, Has.Count.GreaterThan(0));
         Assert.That(asc[0].Id, Is.Not.Null.And.Not.Empty);
         Assert.That(desc[0].Id, Is.Not.Null.And.Not.Empty);
-        Assert.AreNotEqual(asc[0].Id, desc[0].Id);
+        Assert.That(asc[0].Id, Is.Not.EqualTo(desc[0].Id));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetInputItemsHandlesLargeLimits()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -218,7 +213,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         var options = new ResponseItemCollectionOptions() { PageSizeLimit = 100 };
 
         int count = 0;
-        await foreach (ResponseItem item in client.GetInputItemsAsync(response.Id, options))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id, options))
         {
             count++;
             Assert.That(item.Id, Is.Not.Null.And.Not.Empty);
@@ -228,7 +223,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         Assert.That(count, Is.GreaterThan(0));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetInputItemsWithMinimalLimits()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -243,7 +238,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         var options = new ResponseItemCollectionOptions() { PageSizeLimit = 1 };
 
         int count = 0;
-        await foreach (ResponseItem item in client.GetInputItemsAsync(response.Id, options))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id, options))
         {
             count++;
             Assert.That(item.Id, Is.Not.Null.And.Not.Empty);
@@ -253,7 +248,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         Assert.That(count, Is.GreaterThan(0));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetInputItemsWithCancellationToken()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -270,7 +265,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         try
         {
             int count = 0;
-            await foreach (ResponseItem item in client.GetInputItemsAsync(response.Id, cancellationToken: cts.Token))
+            await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id, cancellationToken: cts.Token))
             {
                 count++;
                 Assert.That(item.Id, Is.Not.Null.And.Not.Empty);
@@ -289,7 +284,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetInputItemsWithCombinedOptions()
     {
         OpenAIResponseClient client = GetTestClient();
@@ -310,7 +305,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         };
 
         var items = new List<ResponseItem>();
-        await foreach (ResponseItem item in client.GetInputItemsAsync(response.Id, options, cts.Token))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id, options, cts.Token))
         {
             items.Add(item);
             Assert.That(item.Id, Is.Not.Null.And.Not.Empty);
@@ -319,4 +314,6 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
 
         Assert.That(items, Has.Count.GreaterThan(0));
     }
+
+    private OpenAIResponseClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel);
 }

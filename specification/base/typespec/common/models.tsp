@@ -224,11 +224,12 @@ model ChatCompletionStreamOptions {
   
   Constrains effort on reasoning for
   [reasoning models](https://platform.openai.com/docs/guides/reasoning).
-  Currently supported values are `low`, `medium`, and `high`. Reducing
+  Currently supported values are `minimal`, `low`, `medium`, and `high`. Reducing
   reasoning effort can result in faster responses and fewer tokens used
   on reasoning in a response.
   """)
 union ReasoningEffort {
+  "minimal",
   "low",
   "medium",
   "high",
@@ -466,4 +467,13 @@ union ServiceTier {
   "default",
   "flex",
   "scale",
+}
+
+#suppress "@azure-tools/typespec-azure-core/no-enum" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+enum OrderEnum {
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  asc,
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  desc,
 }

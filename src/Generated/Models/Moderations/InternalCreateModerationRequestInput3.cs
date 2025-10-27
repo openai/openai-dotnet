@@ -26,7 +26,7 @@ namespace OpenAI.Moderations
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string Kind { get; } = "text";
+        internal string Kind { get; } = "text";
 
         public string Text { get; }
 

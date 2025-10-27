@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Audio
 {
-    internal partial class InternalUnknownCreateTranscriptionResponseStreamEvent : IJsonModel<StreamingAudioTranscriptionUpdate>
+    internal partial class InternalUnknownCreateTranscriptionResponseStreamEvent : StreamingAudioTranscriptionUpdate, IJsonModel<StreamingAudioTranscriptionUpdate>
     {
         internal InternalUnknownCreateTranscriptionResponseStreamEvent() : this(default, null)
         {

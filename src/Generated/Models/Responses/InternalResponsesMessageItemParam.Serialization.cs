@@ -9,14 +9,22 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalResponsesMessageItemParam : IJsonModel<InternalResponsesMessageItemParam>
+    internal partial class InternalResponsesMessageItemParam : InternalItemParam, IJsonModel<InternalResponsesMessageItemParam>
     {
-        internal InternalResponsesMessageItemParam() : this(InternalItemType.Message, null, default)
+        internal InternalResponsesMessageItemParam() : this(InternalItemType.Message, default, default)
         {
         }
 
         void IJsonModel<InternalResponsesMessageItemParam>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -30,11 +38,13 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalResponsesMessageItemParam)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("role") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.role"u8))
             {
                 writer.WritePropertyName("role"u8);
                 writer.WriteStringValue(Role.ToString());
             }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalResponsesMessageItemParam IJsonModel<InternalResponsesMessageItemParam>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalResponsesMessageItemParam)JsonModelCreateCore(ref reader, options);
@@ -47,10 +57,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalResponsesMessageItemParam)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalResponsesMessageItemParam(document.RootElement, options);
+            return DeserializeInternalResponsesMessageItemParam(document.RootElement, null, options);
         }
 
-        internal static InternalResponsesMessageItemParam DeserializeInternalResponsesMessageItemParam(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalResponsesMessageItemParam DeserializeInternalResponsesMessageItemParam(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -61,16 +71,16 @@ namespace OpenAI.Responses
                 switch (discriminator.GetString())
                 {
                     case "user":
-                        return InternalResponsesUserMessageItemParam.DeserializeInternalResponsesUserMessageItemParam(element, options);
+                        return InternalResponsesUserMessageItemParam.DeserializeInternalResponsesUserMessageItemParam(element, data, options);
                     case "system":
-                        return InternalResponsesSystemMessageItemParam.DeserializeInternalResponsesSystemMessageItemParam(element, options);
+                        return InternalResponsesSystemMessageItemParam.DeserializeInternalResponsesSystemMessageItemParam(element, data, options);
                     case "developer":
-                        return InternalResponsesDeveloperMessageItemParam.DeserializeInternalResponsesDeveloperMessageItemParam(element, options);
+                        return InternalResponsesDeveloperMessageItemParam.DeserializeInternalResponsesDeveloperMessageItemParam(element, data, options);
                     case "assistant":
-                        return InternalResponsesAssistantMessageItemParam.DeserializeInternalResponsesAssistantMessageItemParam(element, options);
+                        return InternalResponsesAssistantMessageItemParam.DeserializeInternalResponsesAssistantMessageItemParam(element, data, options);
                 }
             }
-            return InternalUnknownResponsesMessageItemResourceItemParam.DeserializeInternalUnknownResponsesMessageItemResourceItemParam(element, options);
+            return InternalUnknownResponsesMessageItemResourceItemParam.DeserializeInternalUnknownResponsesMessageItemResourceItemParam(element, data, options);
         }
 
         BinaryData IPersistableModel<InternalResponsesMessageItemParam>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -97,7 +107,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalResponsesMessageItemParam(document.RootElement, options);
+                        return DeserializeInternalResponsesMessageItemParam(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalResponsesMessageItemParam)} does not support reading '{options.Format}' format.");

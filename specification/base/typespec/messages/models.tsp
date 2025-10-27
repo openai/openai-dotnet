@@ -55,9 +55,9 @@ model ListMessagesResponse {
   // Tool customization: add a clear enum enforcement of constrained 'object' label
   object: "list";
 
-  data: MessageObject[];
+  @pageItems data: MessageObject[];
   first_id: string;
-  last_id: string;
+  @continuationToken last_id: string;
   has_more: boolean;
 }
 

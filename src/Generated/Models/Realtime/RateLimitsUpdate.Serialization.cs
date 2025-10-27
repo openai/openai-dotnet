@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    public partial class RateLimitsUpdate : IJsonModel<RateLimitsUpdate>
+    public partial class RateLimitsUpdate : RealtimeUpdate, IJsonModel<RateLimitsUpdate>
     {
         internal RateLimitsUpdate() : this(RealtimeUpdateKind.RateLimitsUpdated, null, null, null)
         {

@@ -1,42 +1,33 @@
-﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
+﻿using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
-using OpenAI.Chat;
 using OpenAI.Realtime;
-using OpenAI.Tests.Telemetry;
-using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
-using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Data;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Threading;
 using System.Threading.Tasks;
-using static OpenAI.Tests.Telemetry.TestMeterListener;
-using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Realtime;
 
 #pragma warning disable OPENAI002
 
-[TestFixture(true)]
-[TestFixture(false)]
 public class RealtimeProtocolTests : RealtimeTestFixtureBase
 {
     public RealtimeProtocolTests(bool isAsync) : base(isAsync)
-    { }
+    {
+    }
 
-    [Test]
+    [LiveOnly]
+    [RecordedTest]
     public async Task ProtocolCanConfigureSession()
     {
         RealtimeClient client = GetTestClient();
-        using RealtimeSession session = await client.StartConversationSessionAsync(GetTestModel(), CancellationToken);
+        using RealtimeSession session = await client.StartConversationSessionAsync(
+            model: GetTestModel(),
+            cancellationToken: CancellationToken);
 
         BinaryData configureSessionCommand = BinaryData.FromString("""
             {
@@ -97,7 +88,7 @@ public class RealtimeProtocolTests : RealtimeTestFixtureBase
         Assert.That(NodesOfType("response.output_item.done"), Has.Count.EqualTo(1));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CreateEphemeralToken()
     {
         RealtimeClient client = GetTestClient(excludeDumpPolicy: true);
@@ -121,7 +112,7 @@ public class RealtimeProtocolTests : RealtimeTestFixtureBase
         Assert.That(objectKind, Is.EqualTo("realtime.session"));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CreateEphemeralTranscriptionToken()
     {
         RealtimeClient client = GetTestClient(excludeDumpPolicy: true);

@@ -5,19 +5,28 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalComputerUsePreviewToolCallItemParam : IJsonModel<InternalComputerUsePreviewToolCallItemParam>
+    internal partial class InternalComputerUsePreviewToolCallItemParam : InternalItemParam, IJsonModel<InternalComputerUsePreviewToolCallItemParam>
     {
-        internal InternalComputerUsePreviewToolCallItemParam() : this(InternalItemType.ComputerCall, null, null, null, null)
+        internal InternalComputerUsePreviewToolCallItemParam() : this(InternalItemType.ComputerCall, default, null, null, null)
         {
         }
 
         void IJsonModel<InternalComputerUsePreviewToolCallItemParam>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -31,26 +40,43 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalComputerUsePreviewToolCallItemParam)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("call_id") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.call_id"u8))
             {
                 writer.WritePropertyName("call_id"u8);
                 writer.WriteStringValue(CallId);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("action") != true)
+            if (!Patch.Contains("$.action"u8))
             {
                 writer.WritePropertyName("action"u8);
                 writer.WriteObjectValue(Action, options);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("pending_safety_checks") != true)
+            if (Patch.Contains("$.pending_safety_checks"u8))
+            {
+                if (!Patch.IsRemoved("$.pending_safety_checks"u8))
+                {
+                    writer.WritePropertyName("pending_safety_checks"u8);
+                    writer.WriteRawValue(Patch.GetJson("$.pending_safety_checks"u8));
+                }
+            }
+            else
             {
                 writer.WritePropertyName("pending_safety_checks"u8);
                 writer.WriteStartArray();
-                foreach (ComputerCallSafetyCheck item in PendingSafetyChecks)
+                for (int i = 0; i < PendingSafetyChecks.Count; i++)
                 {
-                    writer.WriteObjectValue(item, options);
+                    if (PendingSafetyChecks[i].Patch.IsRemoved("$"u8))
+                    {
+                        continue;
+                    }
+                    writer.WriteObjectValue(PendingSafetyChecks[i], options);
                 }
+                Patch.WriteTo(writer, "$.pending_safety_checks"u8);
                 writer.WriteEndArray();
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalComputerUsePreviewToolCallItemParam IJsonModel<InternalComputerUsePreviewToolCallItemParam>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalComputerUsePreviewToolCallItemParam)JsonModelCreateCore(ref reader, options);
@@ -63,17 +89,19 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalComputerUsePreviewToolCallItemParam)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalComputerUsePreviewToolCallItemParam(document.RootElement, options);
+            return DeserializeInternalComputerUsePreviewToolCallItemParam(document.RootElement, null, options);
         }
 
-        internal static InternalComputerUsePreviewToolCallItemParam DeserializeInternalComputerUsePreviewToolCallItemParam(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalComputerUsePreviewToolCallItemParam DeserializeInternalComputerUsePreviewToolCallItemParam(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalItemType kind = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string callId = default;
             ComputerCallAction action = default;
             IList<ComputerCallSafetyCheck> pendingSafetyChecks = default;
@@ -91,7 +119,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("action"u8))
                 {
-                    action = ComputerCallAction.DeserializeComputerCallAction(prop.Value, options);
+                    action = ComputerCallAction.DeserializeComputerCallAction(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("pending_safety_checks"u8))
@@ -99,15 +127,14 @@ namespace OpenAI.Responses
                     List<ComputerCallSafetyCheck> array = new List<ComputerCallSafetyCheck>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ComputerCallSafetyCheck.DeserializeComputerCallSafetyCheck(item, options));
+                        array.Add(ComputerCallSafetyCheck.DeserializeComputerCallSafetyCheck(item, item.GetUtf8Bytes(), options));
                     }
                     pendingSafetyChecks = array;
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalComputerUsePreviewToolCallItemParam(kind, additionalBinaryDataProperties, callId, action, pendingSafetyChecks);
+            return new InternalComputerUsePreviewToolCallItemParam(kind, patch, callId, action, pendingSafetyChecks);
         }
 
         BinaryData IPersistableModel<InternalComputerUsePreviewToolCallItemParam>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -134,7 +161,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalComputerUsePreviewToolCallItemParam(document.RootElement, options);
+                        return DeserializeInternalComputerUsePreviewToolCallItemParam(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalComputerUsePreviewToolCallItemParam)} does not support reading '{options.Format}' format.");
@@ -142,5 +169,54 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<InternalComputerUsePreviewToolCallItemParam>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("action"u8))
+            {
+                return Action.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("action"u8.Length)], out value);
+            }
+            if (local.StartsWith("pending_safety_checks"u8))
+            {
+                int propertyLength = "pending_safety_checks"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                return PendingSafetyChecks[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("action"u8))
+            {
+                Action.Patch.Set([.. "$"u8, .. local.Slice("action"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("pending_safety_checks"u8))
+            {
+                int propertyLength = "pending_safety_checks"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                PendingSafetyChecks[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

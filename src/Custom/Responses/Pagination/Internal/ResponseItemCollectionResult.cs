@@ -91,7 +91,7 @@ internal class ResponseItemCollectionResult : CollectionResult<ResponseItem>
 
     internal virtual ClientResult GetResponseInputItems(string responseId, int? limit, string? order, string? after, string? before, RequestOptions? options)
     {
-        using PipelineMessage message = _parentClient.CreateGetInputItemsRequest(responseId, limit, order, after, before, options);
+        using PipelineMessage message = _parentClient.CreateGetResponseInputItemsRequest(responseId, limit, order, after, before, options);
         return ClientResult.FromResponse(_parentClient.Pipeline.ProcessMessage(message, options));
     }
 }

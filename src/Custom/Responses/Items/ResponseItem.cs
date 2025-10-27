@@ -115,4 +115,25 @@ public partial class ResponseItem
     {
         return new ReferenceResponseItem(id);
     }
+
+    public static McpToolCallApprovalRequestItem CreateMcpApprovalRequestItem(string id, string serverLabel, string name, BinaryData arguments)
+    {
+        return new McpToolCallApprovalRequestItem(id, serverLabel, name, arguments);
+    }
+
+    public static McpToolCallApprovalResponseItem CreateMcpApprovalResponseItem(string approvalRequestId, bool approved)
+    {
+        return new McpToolCallApprovalResponseItem(approvalRequestId, approved);
+    }
+
+    public static McpToolCallItem CreateMcpToolCallItem(string serverLabel, string name, BinaryData arguments)
+    {
+        return new McpToolCallItem(serverLabel, name, arguments);
+    }
+
+    public static McpToolDefinitionListItem CreateMcpToolDefinitionListItem(string serverLabel, IEnumerable<McpToolDefinition> toolDefinitions)
+    {
+        return new McpToolDefinitionListItem(serverLabel, toolDefinitions);
+    }
+
 }

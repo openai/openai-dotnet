@@ -4,16 +4,24 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class WebSearchCallResponseItem : IJsonModel<WebSearchCallResponseItem>
+    public partial class WebSearchCallResponseItem : ResponseItem, IJsonModel<WebSearchCallResponseItem>
     {
         void IJsonModel<WebSearchCallResponseItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -27,13 +35,17 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(WebSearchCallResponseItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             // Plugin customization: remove options.Format != "W" check
             // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
-            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
+            if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
             {
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.Value.ToSerialString());
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         WebSearchCallResponseItem IJsonModel<WebSearchCallResponseItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (WebSearchCallResponseItem)JsonModelCreateCore(ref reader, options);
@@ -46,10 +58,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(WebSearchCallResponseItem)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeWebSearchCallResponseItem(document.RootElement, options);
+            return DeserializeWebSearchCallResponseItem(document.RootElement, null, options);
         }
 
-        internal static WebSearchCallResponseItem DeserializeWebSearchCallResponseItem(JsonElement element, ModelReaderWriterOptions options)
+        internal static WebSearchCallResponseItem DeserializeWebSearchCallResponseItem(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -57,7 +69,9 @@ namespace OpenAI.Responses
             }
             InternalItemType kind = default;
             string id = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             WebSearchCallStatus? status = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -76,10 +90,9 @@ namespace OpenAI.Responses
                     status = prop.Value.GetString().ToWebSearchCallStatus();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new WebSearchCallResponseItem(kind, id, additionalBinaryDataProperties, status);
+            return new WebSearchCallResponseItem(kind, id, patch, status);
         }
 
         BinaryData IPersistableModel<WebSearchCallResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -106,7 +119,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeWebSearchCallResponseItem(document.RootElement, options);
+                        return DeserializeWebSearchCallResponseItem(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(WebSearchCallResponseItem)} does not support reading '{options.Format}' format.");

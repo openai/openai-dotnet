@@ -618,6 +618,12 @@ namespace OpenAILibraryPlugin.Visitors
 
         protected override PropertyProvider? VisitProperty(PropertyProvider property)
         {
+            // Skip properties that are already marked as experimental
+            if (property.Attributes.Any(attr => attr.Type.Equals(typeof(ExperimentalAttribute))))
+            {
+                return base.VisitProperty(property);
+            }
+
             // Skip properties that are not public or are in non-stable classes
             if ((!property.Modifiers.HasFlag(MethodSignatureModifiers.Public) &&
                     !property.Modifiers.HasFlag(MethodSignatureModifiers.Protected)) ||
@@ -664,8 +670,8 @@ namespace OpenAILibraryPlugin.Visitors
 
             if (!_stableMethods.Contains(lookupName))
             {
-                methodProvider.Update(
-                    attributes: [.. methodProvider.Attributes,
+                methodProvider.Signature.Update(
+                    attributes: [.. methodProvider.Signature.Attributes,
                         methodProvider.EnclosingType.Type.Namespace.StartsWith(_realtimeNamespace) || (methodProvider.Signature.ReturnType?.Namespace.StartsWith(_realtimeNamespace) ?? false) ?
                             _experimental002Attribute :
                             _experimental001Attribute]);

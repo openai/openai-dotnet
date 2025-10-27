@@ -4,20 +4,28 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalImageGenToolCallItemParam : IJsonModel<InternalImageGenToolCallItemParam>
+    internal partial class InternalImageGenToolCallItemParam : InternalItemParam, IJsonModel<InternalImageGenToolCallItemParam>
     {
-        internal InternalImageGenToolCallItemParam() : this(InternalItemType.ImageGenerationCall, null, null)
+        internal InternalImageGenToolCallItemParam() : this(InternalItemType.ImageGenerationCall, default, null)
         {
         }
 
         void IJsonModel<InternalImageGenToolCallItemParam>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -31,18 +39,19 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalImageGenToolCallItemParam)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("result") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Optional.IsDefined(Result) && !Patch.Contains("$.result"u8))
             {
-                if (Optional.IsDefined(Result))
-                {
-                    writer.WritePropertyName("result"u8);
-                    writer.WriteStringValue(Result);
-                }
-                else
-                {
-                    writer.WriteNull("result"u8);
-                }
+                writer.WritePropertyName("result"u8);
+                writer.WriteBase64StringValue(Result.ToArray(), "D");
             }
+            else
+            {
+                writer.WriteNull("result"u8);
+            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalImageGenToolCallItemParam IJsonModel<InternalImageGenToolCallItemParam>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalImageGenToolCallItemParam)JsonModelCreateCore(ref reader, options);
@@ -55,18 +64,20 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalImageGenToolCallItemParam)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalImageGenToolCallItemParam(document.RootElement, options);
+            return DeserializeInternalImageGenToolCallItemParam(document.RootElement, null, options);
         }
 
-        internal static InternalImageGenToolCallItemParam DeserializeInternalImageGenToolCallItemParam(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalImageGenToolCallItemParam DeserializeInternalImageGenToolCallItemParam(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalItemType kind = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            string result = default;
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            BinaryData result = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -81,13 +92,12 @@ namespace OpenAI.Responses
                         result = null;
                         continue;
                     }
-                    result = prop.Value.GetString();
+                    result = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalImageGenToolCallItemParam(kind, additionalBinaryDataProperties, result);
+            return new InternalImageGenToolCallItemParam(kind, patch, result);
         }
 
         BinaryData IPersistableModel<InternalImageGenToolCallItemParam>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -114,7 +124,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalImageGenToolCallItemParam(document.RootElement, options);
+                        return DeserializeInternalImageGenToolCallItemParam(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalImageGenToolCallItemParam)} does not support reading '{options.Format}' format.");

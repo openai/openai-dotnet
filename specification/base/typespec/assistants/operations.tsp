@@ -15,6 +15,7 @@ interface Assistants {
   @get
   @operationId("listAssistants")
   @summary("Returns a list of assistants.")
+  @list
   listAssistants(
     ...AcceptJsonHeader,
     ...AssistantsBetaHeader,

@@ -41,7 +41,7 @@ namespace OpenAI.VectorStores
             {
                 writer.WritePropertyName("data"u8);
                 writer.WriteStartArray();
-                foreach (VectorStoreFileAssociation item in Data)
+                foreach (VectorStoreFile item in Data)
                 {
                     writer.WriteObjectValue(item, options);
                 }
@@ -104,7 +104,7 @@ namespace OpenAI.VectorStores
                 return null;
             }
             string @object = default;
-            IReadOnlyList<VectorStoreFileAssociation> data = default;
+            IReadOnlyList<VectorStoreFile> data = default;
             string firstId = default;
             string lastId = default;
             bool hasMore = default;
@@ -118,10 +118,10 @@ namespace OpenAI.VectorStores
                 }
                 if (prop.NameEquals("data"u8))
                 {
-                    List<VectorStoreFileAssociation> array = new List<VectorStoreFileAssociation>();
+                    List<VectorStoreFile> array = new List<VectorStoreFile>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(VectorStoreFileAssociation.DeserializeVectorStoreFileAssociation(item, options));
+                        array.Add(VectorStoreFile.DeserializeVectorStoreFile(item, options));
                     }
                     data = array;
                     continue;

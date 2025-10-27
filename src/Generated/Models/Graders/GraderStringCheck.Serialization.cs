@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Graders
 {
-    public partial class GraderStringCheck : IJsonModel<GraderStringCheck>
+    public partial class GraderStringCheck : Grader, IJsonModel<GraderStringCheck>
     {
         internal GraderStringCheck() : this(GraderType.StringCheck, null, null, null, null, default)
         {

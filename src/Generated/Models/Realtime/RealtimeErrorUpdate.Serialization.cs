@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    public partial class RealtimeErrorUpdate : IJsonModel<RealtimeErrorUpdate>
+    public partial class RealtimeErrorUpdate : RealtimeUpdate, IJsonModel<RealtimeErrorUpdate>
     {
         internal RealtimeErrorUpdate() : this(RealtimeUpdateKind.Error, null, null, null)
         {

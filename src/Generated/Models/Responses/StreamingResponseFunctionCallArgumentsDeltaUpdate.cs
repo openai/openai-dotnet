@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -11,24 +11,26 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseFunctionCallArgumentsDeltaUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseFunctionCallArgumentsDeltaUpdate(int sequenceNumber, string itemId, int outputIndex, string delta) : base(InternalResponseStreamEventType.ResponseFunctionCallArgumentsDelta, sequenceNumber)
+        internal StreamingResponseFunctionCallArgumentsDeltaUpdate(int sequenceNumber, string itemId, int outputIndex, BinaryData delta) : base(InternalResponseStreamEventType.ResponseFunctionCallArgumentsDelta, sequenceNumber)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;
             Delta = delta;
         }
 
-        internal StreamingResponseFunctionCallArgumentsDeltaUpdate(InternalResponseStreamEventType kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, string itemId, int outputIndex, string delta) : base(kind, sequenceNumber, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal StreamingResponseFunctionCallArgumentsDeltaUpdate(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch, string itemId, int outputIndex, BinaryData delta) : base(kind, sequenceNumber, patch)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;
             Delta = delta;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ItemId { get; }
 
         public int OutputIndex { get; }
 
-        public string Delta { get; }
+        public BinaryData Delta { get; }
     }
 }

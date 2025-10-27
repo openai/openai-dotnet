@@ -4,20 +4,28 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalResponseReasoningSummaryPartAddedEvent : IJsonModel<InternalResponseReasoningSummaryPartAddedEvent>
+    internal partial class InternalResponseReasoningSummaryPartAddedEvent : StreamingResponseUpdate, IJsonModel<InternalResponseReasoningSummaryPartAddedEvent>
     {
-        internal InternalResponseReasoningSummaryPartAddedEvent() : this(InternalResponseStreamEventType.ResponseReasoningSummaryPartAdded, default, null, null, default, default, null)
+        internal InternalResponseReasoningSummaryPartAddedEvent() : this(InternalResponseStreamEventType.ResponseReasoningSummaryPartAdded, default, default, null, default, default, null)
         {
         }
 
         void IJsonModel<InternalResponseReasoningSummaryPartAddedEvent>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -31,26 +39,30 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalResponseReasoningSummaryPartAddedEvent)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("item_id") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.item_id"u8))
             {
                 writer.WritePropertyName("item_id"u8);
                 writer.WriteStringValue(ItemId);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("output_index") != true)
+            if (!Patch.Contains("$.output_index"u8))
             {
                 writer.WritePropertyName("output_index"u8);
                 writer.WriteNumberValue(OutputIndex);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("summary_index") != true)
+            if (!Patch.Contains("$.summary_index"u8))
             {
                 writer.WritePropertyName("summary_index"u8);
                 writer.WriteNumberValue(SummaryIndex);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("part") != true)
+            if (!Patch.Contains("$.part"u8))
             {
                 writer.WritePropertyName("part"u8);
                 writer.WriteObjectValue(Part, options);
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalResponseReasoningSummaryPartAddedEvent IJsonModel<InternalResponseReasoningSummaryPartAddedEvent>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalResponseReasoningSummaryPartAddedEvent)JsonModelCreateCore(ref reader, options);
@@ -63,10 +75,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalResponseReasoningSummaryPartAddedEvent)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalResponseReasoningSummaryPartAddedEvent(document.RootElement, options);
+            return DeserializeInternalResponseReasoningSummaryPartAddedEvent(document.RootElement, null, options);
         }
 
-        internal static InternalResponseReasoningSummaryPartAddedEvent DeserializeInternalResponseReasoningSummaryPartAddedEvent(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalResponseReasoningSummaryPartAddedEvent DeserializeInternalResponseReasoningSummaryPartAddedEvent(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -74,7 +86,9 @@ namespace OpenAI.Responses
             }
             InternalResponseStreamEventType kind = default;
             int sequenceNumber = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string itemId = default;
             int outputIndex = default;
             int summaryIndex = default;
@@ -108,16 +122,15 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("part"u8))
                 {
-                    part = ReasoningSummaryPart.DeserializeReasoningSummaryPart(prop.Value, options);
+                    part = ReasoningSummaryPart.DeserializeReasoningSummaryPart(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new InternalResponseReasoningSummaryPartAddedEvent(
                 kind,
                 sequenceNumber,
-                additionalBinaryDataProperties,
+                patch,
                 itemId,
                 outputIndex,
                 summaryIndex,
@@ -148,7 +161,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalResponseReasoningSummaryPartAddedEvent(document.RootElement, options);
+                        return DeserializeInternalResponseReasoningSummaryPartAddedEvent(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalResponseReasoningSummaryPartAddedEvent)} does not support reading '{options.Format}' format.");
@@ -156,5 +169,33 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<InternalResponseReasoningSummaryPartAddedEvent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("part"u8))
+            {
+                return Part.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("part"u8.Length)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("part"u8))
+            {
+                Part.Patch.Set([.. "$"u8, .. local.Slice("part"u8.Length)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

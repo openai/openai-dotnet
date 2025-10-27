@@ -1,29 +1,24 @@
+using Microsoft.ClientModel.TestFramework;
+using Microsoft.ClientModel.TestFramework.Mocks;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
 using OpenAI.Chat;
-using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Reflection;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace OpenAI.Tests.Chat;
 
-[TestFixture(true)]
-[TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("Chat")]
 [Category("Smoke")]
-public class ChatSmokeTests : SyncAsyncTestBase
+public class ChatSmokeTests : ClientTestBase
 {
     public ChatSmokeTests(bool isAsync) : base(isAsync)
     {
@@ -35,14 +30,6 @@ public class ChatSmokeTests : SyncAsyncTestBase
         string mockResponseId = Guid.NewGuid().ToString();
         long mockCreated = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
-        BinaryData mockRequest = BinaryData.FromString($$"""
-        {
-            "model": "gpt-4o-mini",
-            "messages": [
-            { "role": "user", "content": "Hello, assistant!" }
-            ]
-        }
-        """);
         BinaryData mockResponse = BinaryData.FromString($$"""
         {
             "id": "{{mockResponseId}}",
@@ -56,17 +43,18 @@ public class ChatSmokeTests : SyncAsyncTestBase
             "additional_property": "hello, additional world!"
         }
         """);
-        MockPipelineTransport mockTransport = new(mockRequest, mockResponse);
+        MockPipelineTransport mockTransport = new(_ => new MockPipelineResponse(200).WithContent(BinaryContent.Create(mockResponse)))
+        {
+            ExpectSyncPipeline = !IsAsync,
+        };
 
         OpenAIClientOptions options = new()
         {
             Transport = mockTransport
         };
-        ChatClient client = new("model_name_replaced", new ApiKeyCredential("sk-not-a-real-key"), options);
+        ChatClient client = CreateProxyFromClient(new ChatClient("model_name_replaced", new ApiKeyCredential("sk-not-a-real-key"), options));
 
-        ClientResult<ChatCompletion> completionResult = IsAsync
-            ? await client.CompleteChatAsync([new UserChatMessage("Mock me!")])
-            : client.CompleteChat([new UserChatMessage("Mock me!")]);
+        ClientResult<ChatCompletion> completionResult = await client.CompleteChatAsync([new UserChatMessage("Mock me!")]);
         Assert.That(completionResult?.GetRawResponse(), Is.Not.Null);
         Assert.That(completionResult.GetRawResponse().Content?.ToString(), Does.Contain("additional world"));
 
@@ -113,14 +101,14 @@ public class ChatSmokeTests : SyncAsyncTestBase
     }
 
     [Test]
-    public void AuthFailureStreaming()
+    public async Task AuthFailureStreaming()
     {
         string fakeApiKey = "not-a-real-key-but-should-be-sanitized";
-        ChatClient client = new("gpt-4o-mini", new ApiKeyCredential(fakeApiKey));
+        ChatClient client = CreateProxyFromClient(new ChatClient("gpt-4o-mini", new ApiKeyCredential(fakeApiKey)));
         Exception caughtException = null;
         try
         {
-            foreach (var _ in client.CompleteChatStreaming(
+            await foreach (var _ in client.CompleteChatStreamingAsync(
                 [new UserChatMessage("Uh oh, this isn't going to work with that key")]))
             { }
         }
@@ -494,6 +482,36 @@ public class ChatSmokeTests : SyncAsyncTestBase
         string serializedMessage = ModelReaderWriter.Write(message).ToString();
         Assert.That(serializedMessage, Does.Contain("this image"));
         Assert.That(serializedMessage, Does.Contain("openai.com/test"));
+    }
+
+    [Test]
+    public void CanSerializeChatMessage()
+    {
+        var text = "Hello, world!";
+        ChatMessage message = new UserChatMessage(text);
+        message.Patch.Set("$.custom_property"u8, "custom_property");
+
+        BinaryData serialized = ModelReaderWriter.Write(message);
+        using JsonDocument doc = JsonDocument.Parse(serialized.ToString());
+        JsonElement root = doc.RootElement;
+
+        Assert.That(root, Is.Not.Null);
+        Assert.That(root.ValueKind, Is.EqualTo(JsonValueKind.Object));
+
+        Assert.That(root.TryGetProperty("content", out JsonElement contentProperty), Is.True);
+        Assert.That(contentProperty, Is.Not.Null);
+        Assert.That(contentProperty.ValueKind, Is.EqualTo(JsonValueKind.String));
+        Assert.That(contentProperty.ToString(), Is.EqualTo(text));
+
+        Assert.That(root.TryGetProperty("role", out JsonElement roleProperty), Is.True);
+        Assert.That(roleProperty, Is.Not.Null);
+        Assert.That(roleProperty.ValueKind, Is.EqualTo(JsonValueKind.String));
+        Assert.That(roleProperty.ToString(), Is.EqualTo("user"));
+
+        Assert.That(root.TryGetProperty("custom_property", out JsonElement customProperty), Is.True);
+        Assert.That(customProperty, Is.Not.Null);
+        Assert.That(customProperty.ValueKind, Is.EqualTo(JsonValueKind.String));
+        Assert.That(customProperty.ToString(), Is.EqualTo("custom_property"));
     }
 
     [Test]
@@ -901,9 +919,12 @@ public class ChatSmokeTests : SyncAsyncTestBase
 #pragma warning restore CS0618
 
     [Test]
-    public void TopLevelClientOptionsPersistence()
+    public async Task TopLevelClientOptionsPersistence()
     {
-        MockPipelineTransport mockTransport = new(BinaryData.FromString("{}"), BinaryData.FromString("{}"));
+        MockPipelineTransport mockTransport = new(_ => new MockPipelineResponse(200).WithContent(BinaryContent.Create(BinaryData.FromString("{}"))))
+        {
+            ExpectSyncPipeline = !IsAsync
+        };
         OpenAIClientOptions options = new()
         {
             Transport = mockTransport,
@@ -916,9 +937,9 @@ public class ChatSmokeTests : SyncAsyncTestBase
         }),
         PipelinePosition.PerCall);
 
-        OpenAIClient topLevelClient = new(new ApiKeyCredential("mock-credential"), options);
-        ChatClient firstClient = topLevelClient.GetChatClient("mock-model");
-        ClientResult first = firstClient.CompleteChat(new UserChatMessage("Hello, world"));
+        OpenAIClient topLevelClient = CreateProxyFromClient(new OpenAIClient(new ApiKeyCredential("mock-credential"), options));
+        ChatClient firstClient = CreateProxyFromClient(topLevelClient.GetChatClient("mock-model"));
+        ClientResult first = await firstClient.CompleteChatAsync(new UserChatMessage("Hello, world"));
 
         Assert.That(observedEndpoint, Is.Not.Null);
         Assert.That(observedEndpoint.AbsoluteUri, Does.Contain("my.custom.com/expected/test/endpoint"));

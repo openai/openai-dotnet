@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeSemanticVadTurnDetection : IJsonModel<InternalRealtimeSemanticVadTurnDetection>
+    internal partial class InternalRealtimeSemanticVadTurnDetection : TurnDetectionOptions, IJsonModel<InternalRealtimeSemanticVadTurnDetection>
     {
         void IJsonModel<InternalRealtimeSemanticVadTurnDetection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {

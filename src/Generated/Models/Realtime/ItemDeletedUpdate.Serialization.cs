@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    public partial class ItemDeletedUpdate : IJsonModel<ItemDeletedUpdate>
+    public partial class ItemDeletedUpdate : RealtimeUpdate, IJsonModel<ItemDeletedUpdate>
     {
         internal ItemDeletedUpdate() : this(RealtimeUpdateKind.ItemDeleted, null, null, null)
         {

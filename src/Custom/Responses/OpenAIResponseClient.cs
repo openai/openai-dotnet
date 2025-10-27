@@ -119,12 +119,28 @@ public partial class OpenAIResponseClient
     [Experimental("OPENAI001")]
     public Uri Endpoint => _endpoint;
 
-    public virtual async Task<ClientResult<OpenAIResponse>> CreateResponseAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
+    /// <summary>
+    /// Gets the name of the model used in requests sent to the service.
+    /// </summary>
+    [Experimental("OPENAI001")]
+    public string Model => _model;
+
+    public virtual Task<ClientResult<OpenAIResponse>> CreateResponseAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
+    {
+        return CreateResponseAsync(inputItems, options, cancellationToken.ToRequestOptions() ?? new RequestOptions());
+    }
+
+    internal async Task<ClientResult<OpenAIResponse>> CreateResponseAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options, RequestOptions requestOptions)
     {
         Argument.AssertNotNullOrEmpty(inputItems, nameof(inputItems));
+        Argument.AssertNotNull(requestOptions, nameof(requestOptions));
+        if (requestOptions.BufferResponse is false)
+        {
+            throw new InvalidOperationException("'requestOptions.BufferResponse' must be 'true' when calling 'CreateResponseAsync'.");
+        }
 
         using BinaryContent content = CreatePerCallOptions(options, inputItems, stream: false).ToBinaryContent();
-        ClientResult protocolResult = await CreateResponseAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        ClientResult protocolResult = await CreateResponseAsync(content, requestOptions).ConfigureAwait(false);
         OpenAIResponse convenienceValue = (OpenAIResponse)protocolResult;
         return ClientResult.FromValue(convenienceValue, protocolResult.GetRawResponse());
     }
@@ -162,13 +178,23 @@ public partial class OpenAIResponseClient
 
     public virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
     {
+        return CreateResponseStreamingAsync(inputItems, options, cancellationToken.ToRequestOptions(streaming: true));
+    }
+
+    internal AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options, RequestOptions requestOptions)
+    {
         Argument.AssertNotNullOrEmpty(inputItems, nameof(inputItems));
+        Argument.AssertNotNull(requestOptions, nameof(requestOptions));
+        if (requestOptions.BufferResponse is true)
+        {
+            throw new InvalidOperationException("'requestOptions.BufferResponse' must be 'false' when calling 'CreateResponseStreamingAsync'.");
+        }
 
         using BinaryContent content = CreatePerCallOptions(options, inputItems, stream: true).ToBinaryContent();
         return new AsyncSseUpdateCollection<StreamingResponseUpdate>(
-            async () => await CreateResponseAsync(content, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
+            async () => await CreateResponseAsync(content, requestOptions).ConfigureAwait(false),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
-            cancellationToken);
+            requestOptions.CancellationToken);
     }
 
     public virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
@@ -202,11 +228,21 @@ public partial class OpenAIResponseClient
             cancellationToken);
     }
 
-    public virtual async Task<ClientResult<OpenAIResponse>> GetResponseAsync(string responseId, CancellationToken cancellationToken = default)
+    public virtual Task<ClientResult<OpenAIResponse>> GetResponseAsync(string responseId, CancellationToken cancellationToken = default)
+    {
+        return GetResponseAsync(responseId, cancellationToken.ToRequestOptions() ?? new RequestOptions());
+    }
+
+    internal async Task<ClientResult<OpenAIResponse>> GetResponseAsync(string responseId, RequestOptions requestOptions)
     {
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
+        Argument.AssertNotNull(requestOptions, nameof(requestOptions));
+        if (requestOptions.BufferResponse is false)
+        {
+            throw new InvalidOperationException("'requestOptions.BufferResponse' must be 'true' when calling 'GetResponseAsync'.");
+        }
 
-        ClientResult protocolResult = await GetResponseAsync(responseId, stream: null, startingAfter: null, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        ClientResult protocolResult = await GetResponseAsync(responseId, stream: null, startingAfter: null, requestOptions).ConfigureAwait(false);
         OpenAIResponse convenienceResult = (OpenAIResponse)protocolResult;
         return ClientResult.FromValue(convenienceResult, protocolResult.GetRawResponse());
     }
@@ -222,12 +258,22 @@ public partial class OpenAIResponseClient
 
     public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, int? startingAfter = null, CancellationToken cancellationToken = default)
     {
+        return GetResponseStreamingAsync(responseId, cancellationToken.ToRequestOptions(streaming: true), startingAfter);
+    }
+
+    internal AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, RequestOptions requestOptions, int? startingAfter = null)
+    {
         Argument.AssertNotNull(responseId, nameof(responseId));
+        Argument.AssertNotNull(requestOptions, nameof(requestOptions));
+        if (requestOptions.BufferResponse is true)
+        {
+            throw new InvalidOperationException("'requestOptions.BufferResponse' must be 'false' when calling 'GetResponseStreamingAsync'.");
+        }
 
         return new AsyncSseUpdateCollection<StreamingResponseUpdate>(
-            async () => await GetResponseAsync(responseId, stream: true, startingAfter, cancellationToken.ToRequestOptions(streaming: true)).ConfigureAwait(false),
+            async () => await GetResponseAsync(responseId, stream: true, startingAfter, requestOptions).ConfigureAwait(false),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
-            cancellationToken);
+            requestOptions.CancellationToken);
     }
 
     public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, int? startingAfter = null, CancellationToken cancellationToken = default)
@@ -238,34 +284,6 @@ public partial class OpenAIResponseClient
             () => GetResponse(responseId, stream: true, startingAfter, cancellationToken.ToRequestOptions(streaming: true)),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
             cancellationToken);
-    }
-
-    public virtual AsyncCollectionResult<ResponseItem> GetResponseInputItemsAsync(string responseId, ResponseItemCollectionOptions options = default, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
-
-        AsyncCollectionResult result = GetResponseInputItemsAsync(responseId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions());
-
-        if (result is not AsyncCollectionResult<ResponseItem> responsesItemCollection)
-        {
-            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'AsyncCollectionResult<ResponsesItem>'.");
-        }
-
-        return responsesItemCollection;
-    }
-
-    public virtual CollectionResult<ResponseItem> GetResponseInputItems(string responseId, ResponseItemCollectionOptions options = default, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
-
-        CollectionResult result = GetResponseInputItems(responseId, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, options?.BeforeId, cancellationToken.ToRequestOptions());
-
-        if (result is not CollectionResult<ResponseItem> responsesItemCollection)
-        {
-            throw new InvalidOperationException("Failed to cast protocol return type to expected collection type 'CollectionResult<ResponsesItem>'.");
-        }
-
-        return responsesItemCollection;
     }
 
     public virtual async Task<ClientResult<ResponseDeletionResult>> DeleteResponseAsync(string responseId, CancellationToken cancellationToken = default)

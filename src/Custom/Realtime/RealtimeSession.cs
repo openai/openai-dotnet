@@ -19,22 +19,23 @@ public partial class RealtimeSession : IDisposable
 
     private readonly RealtimeClient _parentClient;
     private readonly Uri _endpoint;
+    private readonly string _model;
+    private readonly string _intent;
     private readonly ApiKeyCredential _credential;
     private readonly SemaphoreSlim _audioSendSemaphore = new(1, 1);
     private bool _isSendingAudioStream = false;
 
     internal bool ShouldBufferTurnResponseData { get; set; }
 
-    protected internal RealtimeSession(
-        RealtimeClient parentClient,
-        Uri endpoint,
-        ApiKeyCredential credential)
+    protected internal RealtimeSession(ApiKeyCredential credential, RealtimeClient parentClient, Uri endpoint, string model, string intent)
     {
         Argument.AssertNotNull(endpoint, nameof(endpoint));
         Argument.AssertNotNull(credential, nameof(credential));
 
         _parentClient = parentClient;
         _endpoint = endpoint;
+        _model = model;
+        _intent = intent;
         _credential = credential;
     }
 

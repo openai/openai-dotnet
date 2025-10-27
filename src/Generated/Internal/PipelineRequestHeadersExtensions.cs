@@ -16,7 +16,7 @@ namespace OpenAI
             headers.Set(name, string.Join(delimiter, stringValues));
         }
 
-        public static void SetDelimited<T>(this PipelineRequestHeaders headers, string name, IEnumerable<T> value, string delimiter, string format)
+        public static void SetDelimited<T>(this PipelineRequestHeaders headers, string name, IEnumerable<T> value, string delimiter, SerializationFormat format)
         {
             IEnumerable<string> stringValues = value.Select(v => TypeFormatters.ConvertToString(v, format));
             headers.Set(name, string.Join(delimiter, stringValues));

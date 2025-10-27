@@ -170,7 +170,12 @@ public partial class EmbeddingClient
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="inputs"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="inputs"/> is an empty collection, and was expected to be non-empty. </exception>
-    public virtual async Task<ClientResult<OpenAIEmbeddingCollection>> GenerateEmbeddingsAsync(IEnumerable<string> inputs, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default)
+    public virtual Task<ClientResult<OpenAIEmbeddingCollection>> GenerateEmbeddingsAsync(IEnumerable<string> inputs, EmbeddingGenerationOptions options = null, CancellationToken cancellationToken = default)
+    {
+        return GenerateEmbeddingsAsync(inputs, options, cancellationToken.ToRequestOptions());
+    }
+
+    internal async Task<ClientResult<OpenAIEmbeddingCollection>> GenerateEmbeddingsAsync(IEnumerable<string> inputs, EmbeddingGenerationOptions options, RequestOptions requestOptions)
     {
         Argument.AssertNotNullOrEmpty(inputs, nameof(inputs));
 
@@ -178,7 +183,7 @@ public partial class EmbeddingClient
         CreateEmbeddingGenerationOptions(inputs, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = await GenerateEmbeddingsAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        ClientResult result = await GenerateEmbeddingsAsync(content, requestOptions).ConfigureAwait(false);
         return ClientResult.FromValue((OpenAIEmbeddingCollection)result, result.GetRawResponse());
 
     }

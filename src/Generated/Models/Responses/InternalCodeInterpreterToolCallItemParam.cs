@@ -2,36 +2,36 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Linq;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
     internal partial class InternalCodeInterpreterToolCallItemParam : InternalItemParam
     {
-        public InternalCodeInterpreterToolCallItemParam(string code, IEnumerable<BinaryData> results) : base(InternalItemType.CodeInterpreterCall)
+        public InternalCodeInterpreterToolCallItemParam(string code) : base(InternalItemType.CodeInterpreterCall)
         {
             Argument.AssertNotNull(code, nameof(code));
-            Argument.AssertNotNull(results, nameof(results));
 
             Code = code;
-            Results = results.ToList();
+            Outputs = new ChangeTrackingList<CodeInterpreterCallOutput>();
         }
 
-        internal InternalCodeInterpreterToolCallItemParam(InternalItemType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string containerId, string code, IList<BinaryData> results) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalCodeInterpreterToolCallItemParam(InternalItemType kind, in JsonPatch patch, string containerId, string code, IList<CodeInterpreterCallOutput> outputs) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             ContainerId = containerId;
             Code = code;
-            Results = results ?? new ChangeTrackingList<BinaryData>();
+            Outputs = outputs ?? new ChangeTrackingList<CodeInterpreterCallOutput>();
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ContainerId { get; set; }
 
         public string Code { get; }
 
-        public IList<BinaryData> Results { get; }
+        public IList<CodeInterpreterCallOutput> Outputs { get; }
     }
 }

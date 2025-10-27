@@ -1101,4 +1101,4 @@ By default, the client classes will automatically retry the following errors up 
 
 ### Observability
 
-OpenAI .NET library supports experimental distributed tracing and metrics with OpenTelemetry. Check out [Observability with OpenTelemetry](./docs/observability.md) for more details.
+OpenAI .NET library supports experimental distributed tracing and metrics with OpenTelemetry. Check out [Observability with OpenTelemetry](./docs/Observability.md) for more details.

@@ -3,14 +3,17 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
 namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionRequestMessageContentPartAudioInputAudio
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
         public InternalChatCompletionRequestMessageContentPartAudioInputAudio(BinaryData data, ChatInputAudioFormat format)
         {
@@ -20,21 +23,21 @@ namespace OpenAI.Chat
             Format = format;
         }
 
-        internal InternalChatCompletionRequestMessageContentPartAudioInputAudio(BinaryData data, ChatInputAudioFormat format, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalChatCompletionRequestMessageContentPartAudioInputAudio(BinaryData data, ChatInputAudioFormat format, in JsonPatch patch)
         {
             Data = data;
             Format = format;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public BinaryData Data { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
-        public ChatInputAudioFormat Format { get; }
+        public BinaryData Data { get; set; }
 
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
+        public ChatInputAudioFormat Format { get; set; }
     }
 }

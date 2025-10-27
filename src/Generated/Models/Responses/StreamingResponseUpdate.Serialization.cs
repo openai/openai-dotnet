@@ -18,6 +18,14 @@ namespace OpenAI.Responses
 
         void IJsonModel<StreamingResponseUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -30,36 +38,18 @@ namespace OpenAI.Responses
             {
                 throw new FormatException($"The model {nameof(StreamingResponseUpdate)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.type"u8))
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToString());
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("sequence_number") != true)
+            if (!Patch.Contains("$.sequence_number"u8))
             {
                 writer.WritePropertyName("sequence_number"u8);
                 writer.WriteNumberValue(SequenceNumber);
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         StreamingResponseUpdate IJsonModel<StreamingResponseUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -72,10 +62,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(StreamingResponseUpdate)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeStreamingResponseUpdate(document.RootElement, options);
+            return DeserializeStreamingResponseUpdate(document.RootElement, null, options);
         }
 
-        internal static StreamingResponseUpdate DeserializeStreamingResponseUpdate(JsonElement element, ModelReaderWriterOptions options)
+        internal static StreamingResponseUpdate DeserializeStreamingResponseUpdate(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -86,106 +76,106 @@ namespace OpenAI.Responses
                 switch (discriminator.GetString())
                 {
                     case "response.completed":
-                        return StreamingResponseCompletedUpdate.DeserializeStreamingResponseCompletedUpdate(element, options);
+                        return StreamingResponseCompletedUpdate.DeserializeStreamingResponseCompletedUpdate(element, data, options);
                     case "response.content_part.added":
-                        return StreamingResponseContentPartAddedUpdate.DeserializeStreamingResponseContentPartAddedUpdate(element, options);
+                        return StreamingResponseContentPartAddedUpdate.DeserializeStreamingResponseContentPartAddedUpdate(element, data, options);
                     case "response.content_part.done":
-                        return StreamingResponseContentPartDoneUpdate.DeserializeStreamingResponseContentPartDoneUpdate(element, options);
+                        return StreamingResponseContentPartDoneUpdate.DeserializeStreamingResponseContentPartDoneUpdate(element, data, options);
                     case "response.created":
-                        return StreamingResponseCreatedUpdate.DeserializeStreamingResponseCreatedUpdate(element, options);
+                        return StreamingResponseCreatedUpdate.DeserializeStreamingResponseCreatedUpdate(element, data, options);
                     case "error":
-                        return StreamingResponseErrorUpdate.DeserializeStreamingResponseErrorUpdate(element, options);
+                        return StreamingResponseErrorUpdate.DeserializeStreamingResponseErrorUpdate(element, data, options);
                     case "response.file_search_call.completed":
-                        return StreamingResponseFileSearchCallCompletedUpdate.DeserializeStreamingResponseFileSearchCallCompletedUpdate(element, options);
+                        return StreamingResponseFileSearchCallCompletedUpdate.DeserializeStreamingResponseFileSearchCallCompletedUpdate(element, data, options);
                     case "response.file_search_call.in_progress":
-                        return StreamingResponseFileSearchCallInProgressUpdate.DeserializeStreamingResponseFileSearchCallInProgressUpdate(element, options);
+                        return StreamingResponseFileSearchCallInProgressUpdate.DeserializeStreamingResponseFileSearchCallInProgressUpdate(element, data, options);
                     case "response.file_search_call.searching":
-                        return StreamingResponseFileSearchCallSearchingUpdate.DeserializeStreamingResponseFileSearchCallSearchingUpdate(element, options);
+                        return StreamingResponseFileSearchCallSearchingUpdate.DeserializeStreamingResponseFileSearchCallSearchingUpdate(element, data, options);
                     case "response.function_call_arguments.delta":
-                        return StreamingResponseFunctionCallArgumentsDeltaUpdate.DeserializeStreamingResponseFunctionCallArgumentsDeltaUpdate(element, options);
+                        return StreamingResponseFunctionCallArgumentsDeltaUpdate.DeserializeStreamingResponseFunctionCallArgumentsDeltaUpdate(element, data, options);
                     case "response.function_call_arguments.done":
-                        return StreamingResponseFunctionCallArgumentsDoneUpdate.DeserializeStreamingResponseFunctionCallArgumentsDoneUpdate(element, options);
+                        return StreamingResponseFunctionCallArgumentsDoneUpdate.DeserializeStreamingResponseFunctionCallArgumentsDoneUpdate(element, data, options);
                     case "response.in_progress":
-                        return StreamingResponseInProgressUpdate.DeserializeStreamingResponseInProgressUpdate(element, options);
+                        return StreamingResponseInProgressUpdate.DeserializeStreamingResponseInProgressUpdate(element, data, options);
                     case "response.failed":
-                        return StreamingResponseFailedUpdate.DeserializeStreamingResponseFailedUpdate(element, options);
+                        return StreamingResponseFailedUpdate.DeserializeStreamingResponseFailedUpdate(element, data, options);
                     case "response.incomplete":
-                        return StreamingResponseIncompleteUpdate.DeserializeStreamingResponseIncompleteUpdate(element, options);
+                        return StreamingResponseIncompleteUpdate.DeserializeStreamingResponseIncompleteUpdate(element, data, options);
                     case "response.output_item.added":
-                        return StreamingResponseOutputItemAddedUpdate.DeserializeStreamingResponseOutputItemAddedUpdate(element, options);
+                        return StreamingResponseOutputItemAddedUpdate.DeserializeStreamingResponseOutputItemAddedUpdate(element, data, options);
                     case "response.output_item.done":
-                        return StreamingResponseOutputItemDoneUpdate.DeserializeStreamingResponseOutputItemDoneUpdate(element, options);
+                        return StreamingResponseOutputItemDoneUpdate.DeserializeStreamingResponseOutputItemDoneUpdate(element, data, options);
                     case "response.refusal.delta":
-                        return StreamingResponseRefusalDeltaUpdate.DeserializeStreamingResponseRefusalDeltaUpdate(element, options);
+                        return StreamingResponseRefusalDeltaUpdate.DeserializeStreamingResponseRefusalDeltaUpdate(element, data, options);
                     case "response.refusal.done":
-                        return StreamingResponseRefusalDoneUpdate.DeserializeStreamingResponseRefusalDoneUpdate(element, options);
+                        return StreamingResponseRefusalDoneUpdate.DeserializeStreamingResponseRefusalDoneUpdate(element, data, options);
                     case "response.output_text.delta":
-                        return StreamingResponseOutputTextDeltaUpdate.DeserializeStreamingResponseOutputTextDeltaUpdate(element, options);
+                        return StreamingResponseOutputTextDeltaUpdate.DeserializeStreamingResponseOutputTextDeltaUpdate(element, data, options);
                     case "response.output_text.done":
-                        return StreamingResponseOutputTextDoneUpdate.DeserializeStreamingResponseOutputTextDoneUpdate(element, options);
+                        return StreamingResponseOutputTextDoneUpdate.DeserializeStreamingResponseOutputTextDoneUpdate(element, data, options);
                     case "response.reasoning_summary_part.added":
-                        return InternalResponseReasoningSummaryPartAddedEvent.DeserializeInternalResponseReasoningSummaryPartAddedEvent(element, options);
+                        return InternalResponseReasoningSummaryPartAddedEvent.DeserializeInternalResponseReasoningSummaryPartAddedEvent(element, data, options);
                     case "response.reasoning_summary_part.done":
-                        return InternalResponseReasoningSummaryPartDoneEvent.DeserializeInternalResponseReasoningSummaryPartDoneEvent(element, options);
+                        return InternalResponseReasoningSummaryPartDoneEvent.DeserializeInternalResponseReasoningSummaryPartDoneEvent(element, data, options);
                     case "response.reasoning_summary_text.delta":
-                        return InternalResponseReasoningSummaryTextDeltaEvent.DeserializeInternalResponseReasoningSummaryTextDeltaEvent(element, options);
+                        return InternalResponseReasoningSummaryTextDeltaEvent.DeserializeInternalResponseReasoningSummaryTextDeltaEvent(element, data, options);
                     case "response.reasoning_summary_text.done":
-                        return InternalResponseReasoningSummaryTextDoneEvent.DeserializeInternalResponseReasoningSummaryTextDoneEvent(element, options);
+                        return InternalResponseReasoningSummaryTextDoneEvent.DeserializeInternalResponseReasoningSummaryTextDoneEvent(element, data, options);
                     case "response.web_search_call.completed":
-                        return StreamingResponseWebSearchCallCompletedUpdate.DeserializeStreamingResponseWebSearchCallCompletedUpdate(element, options);
+                        return StreamingResponseWebSearchCallCompletedUpdate.DeserializeStreamingResponseWebSearchCallCompletedUpdate(element, data, options);
                     case "response.web_search_call.in_progress":
-                        return StreamingResponseWebSearchCallInProgressUpdate.DeserializeStreamingResponseWebSearchCallInProgressUpdate(element, options);
+                        return StreamingResponseWebSearchCallInProgressUpdate.DeserializeStreamingResponseWebSearchCallInProgressUpdate(element, data, options);
                     case "response.web_search_call.searching":
-                        return StreamingResponseWebSearchCallSearchingUpdate.DeserializeStreamingResponseWebSearchCallSearchingUpdate(element, options);
+                        return StreamingResponseWebSearchCallSearchingUpdate.DeserializeStreamingResponseWebSearchCallSearchingUpdate(element, data, options);
                     case "response.image_generation_call.completed":
-                        return InternalResponseImageGenCallCompletedEvent.DeserializeInternalResponseImageGenCallCompletedEvent(element, options);
+                        return StreamingResponseImageGenerationCallCompletedUpdate.DeserializeStreamingResponseImageGenerationCallCompletedUpdate(element, data, options);
                     case "response.image_generation_call.generating":
-                        return InternalResponseImageGenCallGeneratingEvent.DeserializeInternalResponseImageGenCallGeneratingEvent(element, options);
+                        return StreamingResponseImageGenerationCallGeneratingUpdate.DeserializeStreamingResponseImageGenerationCallGeneratingUpdate(element, data, options);
                     case "response.image_generation_call.in_progress":
-                        return InternalResponseImageGenCallInProgressEvent.DeserializeInternalResponseImageGenCallInProgressEvent(element, options);
+                        return StreamingResponseImageGenerationCallInProgressUpdate.DeserializeStreamingResponseImageGenerationCallInProgressUpdate(element, data, options);
                     case "response.image_generation_call.partial_image":
-                        return InternalResponseImageGenCallPartialImageEvent.DeserializeInternalResponseImageGenCallPartialImageEvent(element, options);
-                    case "response.mcp_call.arguments_delta":
-                        return InternalResponseMCPCallArgumentsDeltaEvent.DeserializeInternalResponseMCPCallArgumentsDeltaEvent(element, options);
-                    case "response.mcp_call.arguments_done":
-                        return InternalResponseMCPCallArgumentsDoneEvent.DeserializeInternalResponseMCPCallArgumentsDoneEvent(element, options);
+                        return StreamingResponseImageGenerationCallPartialImageUpdate.DeserializeStreamingResponseImageGenerationCallPartialImageUpdate(element, data, options);
+                    case "response.mcp_call_arguments.delta":
+                        return StreamingResponseMcpCallArgumentsDeltaUpdate.DeserializeStreamingResponseMcpCallArgumentsDeltaUpdate(element, data, options);
+                    case "response.mcp_call_arguments.done":
+                        return StreamingResponseMcpCallArgumentsDoneUpdate.DeserializeStreamingResponseMcpCallArgumentsDoneUpdate(element, data, options);
                     case "response.mcp_call.completed":
-                        return InternalResponseMCPCallCompletedEvent.DeserializeInternalResponseMCPCallCompletedEvent(element, options);
+                        return StreamingResponseMcpCallCompletedUpdate.DeserializeStreamingResponseMcpCallCompletedUpdate(element, data, options);
                     case "response.mcp_call.failed":
-                        return InternalResponseMCPCallFailedEvent.DeserializeInternalResponseMCPCallFailedEvent(element, options);
+                        return StreamingResponseMcpCallFailedUpdate.DeserializeStreamingResponseMcpCallFailedUpdate(element, data, options);
                     case "response.mcp_call.in_progress":
-                        return InternalResponseMCPCallInProgressEvent.DeserializeInternalResponseMCPCallInProgressEvent(element, options);
+                        return StreamingResponseMcpCallInProgressUpdate.DeserializeStreamingResponseMcpCallInProgressUpdate(element, data, options);
                     case "response.mcp_list_tools.completed":
-                        return InternalResponseMCPListToolsCompletedEvent.DeserializeInternalResponseMCPListToolsCompletedEvent(element, options);
+                        return StreamingResponseMcpListToolsCompletedUpdate.DeserializeStreamingResponseMcpListToolsCompletedUpdate(element, data, options);
                     case "response.mcp_list_tools.failed":
-                        return InternalResponseMCPListToolsFailedEvent.DeserializeInternalResponseMCPListToolsFailedEvent(element, options);
+                        return StreamingResponseMcpListToolsFailedUpdate.DeserializeStreamingResponseMcpListToolsFailedUpdate(element, data, options);
                     case "response.mcp_list_tools.in_progress":
-                        return InternalResponseMCPListToolsInProgressEvent.DeserializeInternalResponseMCPListToolsInProgressEvent(element, options);
+                        return StreamingResponseMcpListToolsInProgressUpdate.DeserializeStreamingResponseMcpListToolsInProgressUpdate(element, data, options);
                     case "response.output_text.annotation.added":
-                        return StreamingResponseTextAnnotationAddedUpdate.DeserializeStreamingResponseTextAnnotationAddedUpdate(element, options);
+                        return StreamingResponseTextAnnotationAddedUpdate.DeserializeStreamingResponseTextAnnotationAddedUpdate(element, data, options);
                     case "response.queued":
-                        return StreamingResponseQueuedUpdate.DeserializeStreamingResponseQueuedUpdate(element, options);
+                        return StreamingResponseQueuedUpdate.DeserializeStreamingResponseQueuedUpdate(element, data, options);
                     case "response.reasoning.delta":
-                        return InternalResponseReasoningDeltaEvent.DeserializeInternalResponseReasoningDeltaEvent(element, options);
+                        return InternalResponseReasoningDeltaEvent.DeserializeInternalResponseReasoningDeltaEvent(element, data, options);
                     case "response.reasoning.done":
-                        return InternalResponseReasoningDoneEvent.DeserializeInternalResponseReasoningDoneEvent(element, options);
+                        return InternalResponseReasoningDoneEvent.DeserializeInternalResponseReasoningDoneEvent(element, data, options);
                     case "response.reasoning_summary.delta":
-                        return InternalResponseReasoningSummaryDeltaEvent.DeserializeInternalResponseReasoningSummaryDeltaEvent(element, options);
+                        return InternalResponseReasoningSummaryDeltaEvent.DeserializeInternalResponseReasoningSummaryDeltaEvent(element, data, options);
                     case "response.reasoning_summary.done":
-                        return InternalResponseReasoningSummaryDoneEvent.DeserializeInternalResponseReasoningSummaryDoneEvent(element, options);
+                        return InternalResponseReasoningSummaryDoneEvent.DeserializeInternalResponseReasoningSummaryDoneEvent(element, data, options);
                     case "response.code_interpreter_call_code.delta":
-                        return InternalResponseCodeInterpreterCallCodeDeltaEvent.DeserializeInternalResponseCodeInterpreterCallCodeDeltaEvent(element, options);
+                        return StreamingResponseCodeInterpreterCallCodeDeltaUpdate.DeserializeStreamingResponseCodeInterpreterCallCodeDeltaUpdate(element, data, options);
                     case "response.code_interpreter_call_code.done":
-                        return InternalResponseCodeInterpreterCallCodeDoneEvent.DeserializeInternalResponseCodeInterpreterCallCodeDoneEvent(element, options);
+                        return StreamingResponseCodeInterpreterCallCodeDoneUpdate.DeserializeStreamingResponseCodeInterpreterCallCodeDoneUpdate(element, data, options);
                     case "response.code_interpreter_call.completed":
-                        return InternalResponseCodeInterpreterCallCompletedEvent.DeserializeInternalResponseCodeInterpreterCallCompletedEvent(element, options);
+                        return StreamingResponseCodeInterpreterCallCompletedUpdate.DeserializeStreamingResponseCodeInterpreterCallCompletedUpdate(element, data, options);
                     case "response.code_interpreter_call.in_progress":
-                        return InternalResponseCodeInterpreterCallInProgressEvent.DeserializeInternalResponseCodeInterpreterCallInProgressEvent(element, options);
+                        return StreamingResponseCodeInterpreterCallInProgressUpdate.DeserializeStreamingResponseCodeInterpreterCallInProgressUpdate(element, data, options);
                     case "response.code_interpreter_call.interpreting":
-                        return InternalResponseCodeInterpreterCallInterpretingEvent.DeserializeInternalResponseCodeInterpreterCallInterpretingEvent(element, options);
+                        return StreamingResponseCodeInterpreterCallInterpretingUpdate.DeserializeStreamingResponseCodeInterpreterCallInterpretingUpdate(element, data, options);
                 }
             }
-            return UnknownResponseStreamEvent.DeserializeUnknownResponseStreamEvent(element, options);
+            return UnknownResponseStreamEvent.DeserializeUnknownResponseStreamEvent(element, data, options);
         }
 
         BinaryData IPersistableModel<StreamingResponseUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -212,7 +202,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeStreamingResponseUpdate(document.RootElement, options);
+                        return DeserializeStreamingResponseUpdate(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(StreamingResponseUpdate)} does not support reading '{options.Format}' format.");
