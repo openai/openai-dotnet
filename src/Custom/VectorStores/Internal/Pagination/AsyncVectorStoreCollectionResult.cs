@@ -52,7 +52,7 @@ internal class AsyncVectorStoreCollectionResult : AsyncCollectionResult<VectorSt
     protected override IAsyncEnumerable<VectorStore> GetValuesFromPageAsync(ClientResult page)
     {
         PipelineResponse response = page.GetRawResponse();
-        InternalListVectorStoresResponse list = ModelReaderWriter.Read<InternalListVectorStoresResponse>(response.Content)!;
+        InternalListVectorStoresResponse list = ModelReaderWriter.Read<InternalListVectorStoresResponse>(response.Content, ModelReaderWriterOptions.Json, OpenAIContext.Default)!;
         return list.Data.ToAsyncEnumerable(_cancellationToken);
     }
 

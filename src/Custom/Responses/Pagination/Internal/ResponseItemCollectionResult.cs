@@ -51,7 +51,7 @@ internal class ResponseItemCollectionResult : CollectionResult<ResponseItem>
         Argument.AssertNotNull(page, nameof(page));
 
         PipelineResponse response = page.GetRawResponse();
-        InternalResponseItemList list = ModelReaderWriter.Read<InternalResponseItemList>(response.Content)!;
+        InternalResponseItemList list = ModelReaderWriter.Read<InternalResponseItemList>(response.Content, ModelReaderWriterOptions.Json, OpenAIContext.Default)!;
         return list.Data;
     }
 

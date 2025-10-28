@@ -72,7 +72,7 @@ public partial class RealtimeSession : IDisposable
                 ReadOnlyMemory<byte> audioMemory = buffer.AsMemory(0, bytesRead);
                 BinaryData audioData = BinaryData.FromBytes(audioMemory);
                 InternalRealtimeClientEventInputAudioBufferAppend internalCommand = new(audioData);
-                BinaryData requestData = ModelReaderWriter.Write(internalCommand);
+                BinaryData requestData = ModelReaderWriter.Write(internalCommand, ModelReaderWriterOptions.Json, OpenAIContext.Default);
                 await SendCommandAsync(requestData, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
             }
         }
@@ -116,7 +116,7 @@ public partial class RealtimeSession : IDisposable
                 ReadOnlyMemory<byte> audioMemory = buffer.AsMemory(0, bytesRead);
                 BinaryData audioData = BinaryData.FromBytes(audioMemory);
                 InternalRealtimeClientEventInputAudioBufferAppend internalCommand = new(audioData);
-                BinaryData requestData = ModelReaderWriter.Write(internalCommand);
+                BinaryData requestData = ModelReaderWriter.Write(internalCommand, ModelReaderWriterOptions.Json, OpenAIContext.Default);
                 SendCommand(requestData, cancellationToken.ToRequestOptions());
             }
         }
@@ -151,7 +151,7 @@ public partial class RealtimeSession : IDisposable
             }
             // TODO: consider automatically limiting/breaking size of chunk (as with streaming)
             InternalRealtimeClientEventInputAudioBufferAppend internalCommand = new(audio);
-            BinaryData requestData = ModelReaderWriter.Write(internalCommand);
+            BinaryData requestData = ModelReaderWriter.Write(internalCommand, ModelReaderWriterOptions.Json, OpenAIContext.Default);
             await SendCommandAsync(requestData, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         }
     }
@@ -174,7 +174,7 @@ public partial class RealtimeSession : IDisposable
             }
             // TODO: consider automatically limiting/breaking size of chunk (as with streaming)
             InternalRealtimeClientEventInputAudioBufferAppend internalCommand = new(audio);
-            BinaryData requestData = ModelReaderWriter.Write(internalCommand);
+            BinaryData requestData = ModelReaderWriter.Write(internalCommand, ModelReaderWriterOptions.Json, OpenAIContext.Default);
             SendCommand(requestData, cancellationToken.ToRequestOptions());
         }
     }
@@ -363,7 +363,7 @@ public partial class RealtimeSession : IDisposable
         await foreach (ClientResult protocolEvent in ReceiveUpdatesAsync(cancellationToken.ToRequestOptions()))
         {
             using PipelineResponse response = protocolEvent.GetRawResponse();
-            RealtimeUpdate nextUpdate = ModelReaderWriter.Read<RealtimeUpdate>(response.Content);
+            RealtimeUpdate nextUpdate = ModelReaderWriter.Read<RealtimeUpdate>(response.Content, ModelReaderWriterOptions.Json, OpenAIContext.Default);
             yield return nextUpdate;
         }
     }
@@ -375,14 +375,14 @@ public partial class RealtimeSession : IDisposable
 
     internal virtual async Task SendCommandAsync(InternalRealtimeClientEvent command, CancellationToken cancellationToken = default)
     {
-        BinaryData requestData = ModelReaderWriter.Write(command);
+        BinaryData requestData = ModelReaderWriter.Write(command, ModelReaderWriterOptions.Json, OpenAIContext.Default);
         RequestOptions cancellationOptions = cancellationToken.ToRequestOptions();
         await SendCommandAsync(requestData, cancellationOptions).ConfigureAwait(false);
     }
 
     internal virtual void SendCommand(InternalRealtimeClientEvent command, CancellationToken cancellationToken = default)
     {
-        BinaryData requestData = ModelReaderWriter.Write(command);
+        BinaryData requestData = ModelReaderWriter.Write(command, ModelReaderWriterOptions.Json, OpenAIContext.Default);
         RequestOptions cancellationOptions = cancellationToken.ToRequestOptions();
         SendCommand(requestData, cancellationOptions);
     }
