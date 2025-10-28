@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using OpenAI.Assistants;
 using OpenAI.Audio;
+using OpenAI.Batch;
 using OpenAI.Chat;
 using OpenAI.Containers;
 using OpenAI.Embeddings;
@@ -1286,6 +1287,11 @@ namespace OpenAI
                 segments.ToList(),
                 transcriptionTokenLogProbabilities.ToList(),
                 additionalBinaryDataProperties: null);
+        }
+
+        public static BatchCollectionOptions BatchCollectionOptions(string afterId = default, int? pageSizeLimit = default)
+        {
+            return new BatchCollectionOptions(afterId, pageSizeLimit, additionalBinaryDataProperties: null);
         }
 
         public static ChatCompletionCollectionOptions ChatCompletionCollectionOptions(string afterId = default, int? pageSizeLimit = default, ChatCompletionCollectionOrder? order = default, IDictionary<string, string> metadata = default, string model = default)
