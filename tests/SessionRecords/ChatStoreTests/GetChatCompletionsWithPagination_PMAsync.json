@@ -1,0 +1,497 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "152",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Darwin 25.0.0 Darwin Kernel Version 25.0.0: Wed Sep 17 21:42:08 PDT 2025; root:xnu-12377.1.9~141/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": {
+        "metadata": {
+          "test_key": "test_value_0"
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": "Test message 0: Say 'Hello World 0'"
+          }
+        ],
+        "model": "gpt-4o-mini",
+        "store": true
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "995c7ae6d90d4743-DFW",
+        "Connection": "keep-alive",
+        "Content-Type": "application/json",
+        "Date": "Tue, 28 Oct 2025 18:26:12 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "322",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Set-Cookie": [
+          "Sanitized",
+          "Sanitized"
+        ],
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "340",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999987",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "chatcmpl-CVigVbOdBimqSGpsJbrlN2JdAvqAg",
+        "object": "chat.completion",
+        "created": 1761675971,
+        "model": "gpt-4o-mini-2024-07-18",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "Hello World 0",
+              "refusal": null,
+              "annotations": []
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 19,
+          "completion_tokens": 4,
+          "total_tokens": 23,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "service_tier": "default",
+        "system_fingerprint": "Sanitized"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "152",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Darwin 25.0.0 Darwin Kernel Version 25.0.0: Wed Sep 17 21:42:08 PDT 2025; root:xnu-12377.1.9~141/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": {
+        "metadata": {
+          "test_key": "test_value_1"
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": "Test message 1: Say 'Hello World 1'"
+          }
+        ],
+        "model": "gpt-4o-mini",
+        "store": true
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "995c7ae99bd74743-DFW",
+        "Connection": "keep-alive",
+        "Content-Type": "application/json",
+        "Date": "Tue, 28 Oct 2025 18:26:12 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "306",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "452",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999987",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "chatcmpl-CVigWGgO4H1FIy6EtMUVqiom5oFYs",
+        "object": "chat.completion",
+        "created": 1761675972,
+        "model": "gpt-4o-mini-2024-07-18",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "Hello World 1",
+              "refusal": null,
+              "annotations": []
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 19,
+          "completion_tokens": 4,
+          "total_tokens": 23,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "service_tier": "default",
+        "system_fingerprint": "Sanitized"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "152",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Darwin 25.0.0 Darwin Kernel Version 25.0.0: Wed Sep 17 21:42:08 PDT 2025; root:xnu-12377.1.9~141/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": {
+        "metadata": {
+          "test_key": "test_value_2"
+        },
+        "messages": [
+          {
+            "role": "user",
+            "content": "Test message 2: Say 'Hello World 2'"
+          }
+        ],
+        "model": "gpt-4o-mini",
+        "store": true
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "995c7aed5fa74743-DFW",
+        "Connection": "keep-alive",
+        "Content-Type": "application/json",
+        "Date": "Tue, 28 Oct 2025 18:26:13 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "317",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "337",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999990",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "chatcmpl-CVigWxmmDrhtUcuN3YgicH8C5Tugd",
+        "object": "chat.completion",
+        "created": 1761675972,
+        "model": "gpt-4o-mini-2024-07-18",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "Hello World 2!",
+              "refusal": null,
+              "annotations": []
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 19,
+          "completion_tokens": 5,
+          "total_tokens": 24,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "service_tier": "default",
+        "system_fingerprint": "Sanitized"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions?limit=2&model=gpt-4o-mini-2024-07-18",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Darwin 25.0.0 Darwin Kernel Version 25.0.0: Wed Sep 17 21:42:08 PDT 2025; root:xnu-12377.1.9~141/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "995c7b0f385f4743-DFW",
+        "Connection": "keep-alive",
+        "Content-Type": "application/json",
+        "Date": "Tue, 28 Oct 2025 18:26:18 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "101",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "Vary": "Accept-Encoding",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "102",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "object": "chat.completion",
+            "id": "chatcmpl-CVigWxmmDrhtUcuN3YgicH8C5Tugd",
+            "model": "gpt-4o-mini-2024-07-18",
+            "created": 1761675972,
+            "request_id": "req_9eff7f5b7ba344c2b40a810d43dc6e30",
+            "tool_choice": null,
+            "usage": {
+              "total_tokens": 24,
+              "completion_tokens": 5,
+              "prompt_tokens": 19
+            },
+            "seed": 8078039802315977745,
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "presence_penalty": 0.0,
+            "frequency_penalty": 0.0,
+            "system_fingerprint": "fp_51db84afab",
+            "input_user": null,
+            "service_tier": "default",
+            "tools": null,
+            "metadata": {
+              "test_key": "test_value_2"
+            },
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "content": "Hello World 2!",
+                  "role": "assistant",
+                  "tool_calls": null,
+                  "function_call": null
+                },
+                "finish_reason": "stop",
+                "logprobs": null
+              }
+            ],
+            "response_format": null
+          },
+          {
+            "object": "chat.completion",
+            "id": "chatcmpl-CVigVbOdBimqSGpsJbrlN2JdAvqAg",
+            "model": "gpt-4o-mini-2024-07-18",
+            "created": 1761675971,
+            "request_id": "req_ab224e5b85ea454e8e8aae270fa12197",
+            "tool_choice": null,
+            "usage": {
+              "total_tokens": 23,
+              "completion_tokens": 4,
+              "prompt_tokens": 19
+            },
+            "seed": 3523536218981235203,
+            "top_p": 1.0,
+            "temperature": 1.0,
+            "presence_penalty": 0.0,
+            "frequency_penalty": 0.0,
+            "system_fingerprint": "fp_51db84afab",
+            "input_user": null,
+            "service_tier": "default",
+            "tools": null,
+            "metadata": {
+              "test_key": "test_value_0"
+            },
+            "choices": [
+              {
+                "index": 0,
+                "message": {
+                  "content": "Hello World 0",
+                  "role": "assistant",
+                  "tool_calls": null,
+                  "function_call": null
+                },
+                "finish_reason": "stop",
+                "logprobs": null
+              }
+            ],
+            "response_format": null
+          }
+        ],
+        "first_id": "chatcmpl-CVigWxmmDrhtUcuN3YgicH8C5Tugd",
+        "last_id": "chatcmpl-CVigVbOdBimqSGpsJbrlN2JdAvqAg",
+        "has_more": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-CVigVbOdBimqSGpsJbrlN2JdAvqAg",
+      "RequestMethod": "DELETE",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Darwin 25.0.0 Darwin Kernel Version 25.0.0: Wed Sep 17 21:42:08 PDT 2025; root:xnu-12377.1.9~141/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "995c7b10ba674743-DFW",
+        "Connection": "keep-alive",
+        "Content-Length": "97",
+        "Content-Type": "application/json",
+        "Date": "Tue, 28 Oct 2025 18:26:18 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "285",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "287",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "chat.completion.deleted",
+        "id": "chatcmpl-CVigVbOdBimqSGpsJbrlN2JdAvqAg",
+        "deleted": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-CVigWGgO4H1FIy6EtMUVqiom5oFYs",
+      "RequestMethod": "DELETE",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Darwin 25.0.0 Darwin Kernel Version 25.0.0: Wed Sep 17 21:42:08 PDT 2025; root:xnu-12377.1.9~141/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": null,
+      "StatusCode": 404,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "995c7b13ce164743-DFW",
+        "Connection": "keep-alive",
+        "Content-Length": "189",
+        "Content-Type": "application/json",
+        "Date": "Tue, 28 Oct 2025 18:26:19 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "126",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "127",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "error": {
+          "message": "Completion chatcmpl-CVigWGgO4H1FIy6EtMUVqiom5oFYs not found",
+          "type": "invalid_request_error",
+          "param": "completion_id",
+          "code": "not_found"
+        }
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions/chatcmpl-CVigWxmmDrhtUcuN3YgicH8C5Tugd",
+      "RequestMethod": "DELETE",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Darwin 25.0.0 Darwin Kernel Version 25.0.0: Wed Sep 17 21:42:08 PDT 2025; root:xnu-12377.1.9~141/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "995c7b14ff8f4743-DFW",
+        "Connection": "keep-alive",
+        "Content-Length": "97",
+        "Content-Type": "application/json",
+        "Date": "Tue, 28 Oct 2025 18:26:19 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "174",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "175",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "chat.completion.deleted",
+        "id": "chatcmpl-CVigWxmmDrhtUcuN3YgicH8C5Tugd",
+        "deleted": true
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

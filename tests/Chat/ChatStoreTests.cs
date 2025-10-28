@@ -68,7 +68,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             completionIds.Add(completion.Id);
         }
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be stored
 
         // Test pagination with limit
         ChatCompletionCollectionOptions paginationOptions = new()
@@ -125,20 +125,20 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             completionIds.Add(completion.Id);
         }
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be stored
 
         // Test pagination with limit
         ChatCompletionCollectionOptions paginationOptions = new()
         {
-            PageSizeLimit = 2
+            PageSizeLimit = 2,
         };
 
         int totalCount = 0;
         string lastId = null;
 
-        // await foreach (var fetchedCompletion in client.GetChatCompletionsAsync(after: null, limit: 2, order: null, metadata: null))
         var getOptions = GetChatCompletionsOptions.Create(client);
         getOptions.Limit = 2;
+        getOptions.Model = "gpt-4o-mini-2024-07-18";
         ChatCompletionList result;
         do
         {
@@ -150,11 +150,9 @@ public class ChatStoreTests : OpenAIRecordedTestBase
                 lastId = fetchedCompletion.Id;
                 Assert.That(fetchedCompletion.Id, Is.Not.Null.And.Not.Empty);
                 Assert.That(fetchedCompletion.Choices[0].Message.Content, Is.Not.Null);
-
-                if (totalCount >= 2) break; // Stop after getting 2 items
             }
 
-        } while (result.HasMore);
+        } while (result.HasMore && totalCount < 2);
 
 
         Assert.That(totalCount, Is.EqualTo(2));
@@ -193,7 +191,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             completionIds.Add(completion.Id);
         }
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be stored
 
         // Test pagination with limit
         ChatCompletionCollectionOptions paginationOptions = new()
@@ -205,6 +203,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
         string lastId = null;
         var getOptions = GetChatCompletionsOptions.Create(client);
         getOptions.Limit = 2;
+        getOptions.Model = "gpt-4o-mini-2024-07-18";
 
         AsyncCollectionResult foo = client.GetChatCompletionsAsync(getOptions, requestOptions: new RequestOptions());
 
@@ -258,7 +257,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             completionIds.Add(completion.Id);
         }
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be stored
 
         // Get first completion to use as afterId
         string afterId = null;
@@ -317,10 +316,10 @@ public class ChatStoreTests : OpenAIRecordedTestBase
                 createOptions);
 
             completionIds.Add(completion.Id);
-            await Task.Delay(1000); // Ensure different timestamps
+            await DelayIfNotInPlaybackAsync(1000); // Ensure different timestamps
         }
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be stored
 
         // Test ascending order
         ChatCompletionCollectionOptions ascOptions = new()
@@ -403,7 +402,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             options2);
         completionIds.Add(otherCompletion.Id);
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be stored
 
         // Filter by specific metadata
         ChatCompletionCollectionOptions filterOptions = new()
@@ -451,7 +450,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             ["Model filter test: Say 'Hello'"],
             createOptions);
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be stored
 
         // Filter by the model used by the test client
         ChatCompletionCollectionOptions filterOptions = new()
@@ -494,7 +493,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             ["Empty options test: Say 'Hello'"],
             createOptions);
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be stored
 
         // Test with default/empty options
         int count = 0;
@@ -538,7 +537,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             ["Combined filters test: Say 'Combined test'"],
             createOptions);
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be stored
 
         // Test with combined filters
         ChatCompletionCollectionOptions combinedOptions = new()
@@ -595,7 +594,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             Assert.That(deletionResult.Deleted, Is.True);
         });
 
-        await Task.Delay(s_delayInMilliseconds);
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds);
 
         Assert.ThrowsAsync<ClientResultException>(async () =>
         {
@@ -661,7 +660,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             [new UserChatMessage("Say `this is a test`.")],
             initialOptions);
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be stored
 
         var updateOptions = new UpdateChatCompletionOptions()
         {
@@ -672,7 +671,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
 
         ChatCompletionResult updated = await client.UpdateChatCompletionAsync(updateOptions);
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be updated
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be updated
 
         Assert.That(updated, Is.Not.Null);
         Assert.That(updated.Id, Is.EqualTo(chatCompletion.Id));
@@ -680,7 +679,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
         ChatCompletionDeletionResult deletionResult = await client.DeleteChatCompletionAsync(chatCompletion.Id);
         Assert.That(deletionResult.Deleted, Is.True);
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be deleted
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be deleted
 
         Assert.ThrowsAsync<ClientResultException>(async () =>
         {
@@ -704,7 +703,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             ["Enumeration test: Say 'Test enumeration'"],
             createOptions);
 
-        await Task.Delay(5000); // Wait for completion to be stored
+        await DelayIfNotInPlaybackAsync(5000); // Wait for completion to be stored
 
         // Test that we can enumerate multiple times
         ChatCompletionCollectionOptions collectionOptions = new()
@@ -758,7 +757,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             ["Large limit test: Say 'Testing large limits'"],
             createOptions);
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be stored
 
         // Test with a large page size limit
         ChatCompletionCollectionOptions largeOptions = new()
@@ -799,7 +798,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             ["Minimal limit test: Say 'Testing minimal limits'"],
             createOptions);
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be stored
 
         // Test with minimal page size
         ChatCompletionCollectionOptions minimalOptions = new()

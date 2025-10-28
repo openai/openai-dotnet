@@ -2,32 +2,35 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using System.Text.Json;
 
 namespace OpenAI.Chat;
 
 public class UpdateChatCompletionOptions : JsonModel<UpdateChatCompletionOptions>
 {
-    private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+    [Experimental("SCME0001")]
+    private JsonPatch _patch;
 
-    public UpdateChatCompletionOptions() { }
+    public UpdateChatCompletionOptions() : this(null, default) { }
 
-    internal UpdateChatCompletionOptions(IDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+    internal UpdateChatCompletionOptions(IDictionary<string, string> metadata, in JsonPatch patch)
     {
         // Plugin customization: ensure initialization of collections
         Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
-        _additionalBinaryDataProperties = additionalBinaryDataProperties;
+        _patch = patch;
     }
 
     public string CompletionId { get; set; }
 
     public IDictionary<string, string> Metadata { get; }
 
-    internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-    {
-        get => _additionalBinaryDataProperties;
-        set => _additionalBinaryDataProperties = value;
-    }
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    [Experimental("SCME0001")]
+    public ref JsonPatch Patch => ref _patch;
 
     protected override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
@@ -36,7 +39,8 @@ public class UpdateChatCompletionOptions : JsonModel<UpdateChatCompletionOptions
         {
             throw new FormatException($"The model {nameof(UpdateChatCompletionOptions)} does not support writing '{format}' format.");
         }
-        if (_additionalBinaryDataProperties?.ContainsKey("metadata") != true)
+        writer.WriteStartObject();
+        if (Optional.IsCollectionDefined(Metadata) && !Patch.Contains("$.metadata"u8))
         {
             writer.WritePropertyName("metadata"u8);
             writer.WriteStartObject();
@@ -52,26 +56,9 @@ public class UpdateChatCompletionOptions : JsonModel<UpdateChatCompletionOptions
             }
             writer.WriteEndObject();
         }
-        // Plugin customization: remove options.Format != "W" check
-        if (_additionalBinaryDataProperties != null)
-        {
-            foreach (var item in _additionalBinaryDataProperties)
-            {
-                if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                {
-                    continue;
-                }
-                writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                using (JsonDocument document = JsonDocument.Parse(item.Value))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
-            }
-        }
+        Patch.WriteTo(writer);
+        writer.WriteEndObject();
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 
     protected override UpdateChatCompletionOptions CreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
@@ -85,17 +72,19 @@ public class UpdateChatCompletionOptions : JsonModel<UpdateChatCompletionOptions
             throw new FormatException($"The model {nameof(UpdateChatCompletionOptions)} does not support reading '{format}' format.");
         }
         using JsonDocument document = JsonDocument.ParseValue(ref reader);
-        return DeserializeUpdateChatCompletionOptions(document.RootElement, options);
+        return DeserializeUpdateChatCompletionOptions(document.RootElement, null, options);
     }
 
-    internal static UpdateChatCompletionOptions DeserializeUpdateChatCompletionOptions(JsonElement element, ModelReaderWriterOptions options)
+    internal static UpdateChatCompletionOptions DeserializeUpdateChatCompletionOptions(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
     {
         if (element.ValueKind == JsonValueKind.Null)
         {
             return null;
         }
         IDictionary<string, string> metadata = default;
-        IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         foreach (var prop in element.EnumerateObject())
         {
             if (prop.NameEquals("metadata"u8))
@@ -115,10 +104,9 @@ public class UpdateChatCompletionOptions : JsonModel<UpdateChatCompletionOptions
                 metadata = dictionary;
                 continue;
             }
-            // Plugin customization: remove options.Format != "W" check
-            additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+            patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
         }
-        return new UpdateChatCompletionOptions(metadata, additionalBinaryDataProperties);
+        return new UpdateChatCompletionOptions(metadata, patch);
     }
 
     public static implicit operator BinaryContent(UpdateChatCompletionOptions options)
