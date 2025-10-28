@@ -6,7 +6,7 @@ using OpenAI;
 using Azure.ClientGenerator.Core;
 using TypeSpec.HttpClient.CSharp;
 
-// Move operations to Videos interface
+// Move operations into their corresponding interface
 @@clientLocation(ListVideos, "Videos");
 @@clientLocation(createVideo, "Videos");
 @@clientLocation(DeleteVideo, "Videos");
