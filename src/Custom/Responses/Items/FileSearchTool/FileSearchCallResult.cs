@@ -1,7 +1,7 @@
 namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
-[CodeGenType("FileSearchToolCallItemParamResult")]
+[CodeGenType("FileSearchToolCallItemResourceResult")]
 public partial class FileSearchCallResult
 {
 }

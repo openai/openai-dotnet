@@ -261,6 +261,7 @@ function Invoke-GenAPI {
     $content = $content -creplace "Chat\.", ""
     $content = $content -creplace "Common\.", ""
     $content = $content -creplace "Containers\.", ""
+    $content = $content -creplace "Conversations\.", ""
     $content = $content -creplace "Embeddings\.", ""
     $content = $content -creplace "Evals\.", ""
     $content = $content -creplace "Files\.", ""
