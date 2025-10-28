@@ -5,7 +5,6 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,32 +21,6 @@ namespace OpenAI.Chat
         }
 
         public ClientPipeline Pipeline { get; }
-
-        [Experimental("OPENAI001")]
-        public virtual CollectionResult GetChatCompletions(string after, int? limit, string order, IDictionary<string, string> metadata, string model, RequestOptions options)
-        {
-            return new ChatClientGetChatCompletionsCollectionResult(
-                this,
-                after,
-                limit,
-                order,
-                metadata,
-                model,
-                options);
-        }
-
-        [Experimental("OPENAI001")]
-        public virtual AsyncCollectionResult GetChatCompletionsAsync(string after, int? limit, string order, IDictionary<string, string> metadata, string model, RequestOptions options)
-        {
-            return new ChatClientGetChatCompletionsAsyncCollectionResult(
-                this,
-                after,
-                limit,
-                order,
-                metadata,
-                model,
-                options);
-        }
 
         [Experimental("OPENAI001")]
         public virtual CollectionResult<ChatCompletion> GetChatCompletions(ChatCompletionCollectionOptions options = default, CancellationToken cancellationToken = default)
@@ -145,34 +118,6 @@ namespace OpenAI.Chat
 
             using PipelineMessage message = CreateDeleteChatCompletionRequest(completionId, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
-        }
-
-        [Experimental("OPENAI001")]
-        public virtual CollectionResult GetChatCompletionMessages(string completionId, string after, int? limit, string order, RequestOptions options)
-        {
-            Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
-
-            return new ChatClientGetChatCompletionMessagesCollectionResult(
-                this,
-                completionId,
-                after,
-                limit,
-                order,
-                options);
-        }
-
-        [Experimental("OPENAI001")]
-        public virtual AsyncCollectionResult GetChatCompletionMessagesAsync(string completionId, string after, int? limit, string order, RequestOptions options)
-        {
-            Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
-
-            return new ChatClientGetChatCompletionMessagesAsyncCollectionResult(
-                this,
-                completionId,
-                after,
-                limit,
-                order,
-                options);
         }
 
         [Experimental("OPENAI001")]
