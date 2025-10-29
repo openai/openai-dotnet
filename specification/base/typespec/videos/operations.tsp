@@ -38,6 +38,7 @@ namespace OpenAI;
   }
 )
 @tag("Videos")
+@list
 op ListVideos(
   /** Number of items to retrieve */
   #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."

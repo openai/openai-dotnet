@@ -22,6 +22,7 @@ using OpenAI.Moderations;
 using OpenAI.Realtime;
 using OpenAI.Responses;
 using OpenAI.VectorStores;
+using OpenAI.Videos;
 
 namespace OpenAI
 {
@@ -621,6 +622,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalVectorStoreSearchResultsPage))]
     [ModelReaderWriterBuildable(typeof(InternalWebSearchLocation))]
     [ModelReaderWriterBuildable(typeof(InternalWebSearchToolCallItemParam))]
+    [ModelReaderWriterBuildable(typeof(InternaVideoItemCollectionOptions))]
     [ModelReaderWriterBuildable(typeof(ItemCreatedUpdate))]
     [ModelReaderWriterBuildable(typeof(ItemDeletedUpdate))]
     [ModelReaderWriterBuildable(typeof(ItemRetrievedUpdate))]
