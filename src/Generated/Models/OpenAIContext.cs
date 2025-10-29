@@ -622,7 +622,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalVectorStoreSearchResultsPage))]
     [ModelReaderWriterBuildable(typeof(InternalWebSearchLocation))]
     [ModelReaderWriterBuildable(typeof(InternalWebSearchToolCallItemParam))]
-    [ModelReaderWriterBuildable(typeof(InternaVideoItemCollectionOptions))]
+    [ModelReaderWriterBuildable(typeof(InternaVideoCollectionOptions))]
     [ModelReaderWriterBuildable(typeof(ItemCreatedUpdate))]
     [ModelReaderWriterBuildable(typeof(ItemDeletedUpdate))]
     [ModelReaderWriterBuildable(typeof(ItemRetrievedUpdate))]

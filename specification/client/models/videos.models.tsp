@@ -7,15 +7,15 @@ using TypeSpec.Http;
 
 namespace OpenAI;
 
-alias VideoItemCollectionOrderQueryParameter = {
+alias VideoCollectionOrderQueryParameter = {
    /**
     * Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
     * for descending order.
     */
-   @query order?: VideoItemCollectionOrder;
+   @query order?: VideoCollectionOrder;
 };
 
-union VideoItemCollectionOrder {
+union VideoCollectionOrder {
    string,
    Ascending: "asc",
    Descending: "desc",
@@ -23,8 +23,8 @@ union VideoItemCollectionOrder {
 
 @access(Access.public)
 @usage(Usage.input)
-model VideoItemCollectionOptions {
+model VideoCollectionOptions {
   ...DotNetCollectionAfterQueryParameter,
   ...DotNetCollectionLimitQueryParameter,
-  ...VideoItemCollectionOrderQueryParameter,
+  ...VideoCollectionOrderQueryParameter,
 }
