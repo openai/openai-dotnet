@@ -53,7 +53,7 @@ using TypeSpec.HttpClient.CSharp;
 @@clientName(MCPListToolsItemResource.tools, "ToolDefinitions");
 
 @@visibility(ImageGenToolCallItemResource.status, Lifecycle.Read);
-@@clientName(ImageGenToolCallItemResource.result, "GeneratedImageBytes");
+@@clientName(ImageGenToolCallItemResource.result, "ImageResultBytes");
 
 // ------------ Tools ------------
 

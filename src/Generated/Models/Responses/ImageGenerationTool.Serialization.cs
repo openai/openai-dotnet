@@ -71,10 +71,10 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("background"u8);
                 writer.WriteStringValue(Background.Value.ToString());
             }
-            if (Optional.IsDefined(InputFidelityLevel) && !Patch.Contains("$.input_fidelity"u8))
+            if (Optional.IsDefined(InputFidelity) && !Patch.Contains("$.input_fidelity"u8))
             {
                 writer.WritePropertyName("input_fidelity"u8);
-                writer.WriteStringValue(InputFidelityLevel.Value.ToString());
+                writer.WriteStringValue(InputFidelity.Value.ToString());
             }
             if (Optional.IsDefined(InputImageMask) && !Patch.Contains("$.input_image_mask"u8))
             {
@@ -121,7 +121,7 @@ namespace OpenAI.Responses
             int? outputCompressionFactor = default;
             ImageGenerationToolModerationLevel? moderationLevel = default;
             ImageGenerationToolBackground? background = default;
-            ImageGenerationToolInputFidelityLevel? inputFidelityLevel = default;
+            ImageGenerationToolInputFidelity? inputFidelity = default;
             ImageGenerationToolInputImageMask inputImageMask = default;
             int? partialImageCount = default;
             foreach (var prop in element.EnumerateObject())
@@ -196,7 +196,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    inputFidelityLevel = new ImageGenerationToolInputFidelityLevel(prop.Value.GetString());
+                    inputFidelity = new ImageGenerationToolInputFidelity(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("input_image_mask"u8))
@@ -229,7 +229,7 @@ namespace OpenAI.Responses
                 outputCompressionFactor,
                 moderationLevel,
                 background,
-                inputFidelityLevel,
+                inputFidelity,
                 inputImageMask,
                 partialImageCount);
         }
