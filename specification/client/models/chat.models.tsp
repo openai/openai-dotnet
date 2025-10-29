@@ -1,11 +1,11 @@
 import "../../base/typespec/chat/main.tsp";
+import "./common.models.tsp";
 import "@azure-tools/typespec-client-generator-core";
 
 using Azure.ClientGenerator.Core;
 using TypeSpec.Http;
 
 namespace OpenAI;
-
 
 alias ChatCompletionCollectionOrderQueryParameter = {
   /**
@@ -24,8 +24,8 @@ union ChatCompletionCollectionOrder {
 @access(Access.public)
 @usage(Usage.input)
 model ChatCompletionCollectionOptions {
-  ...CollectionAfterQueryParameter,
-  ...CollectionLimitQueryParameter,
+  ...DotNetCollectionAfterQueryParameter,
+  ...DotNetCollectionLimitQueryParameter,
   ...ChatCompletionCollectionOrderQueryParameter,
   @query metadata?: Record<string>,
   @query `model`?: string,
@@ -48,8 +48,8 @@ union ChatCompletionMessageCollectionOrder {
 @access(Access.public)
 @usage(Usage.input)
 model ChatCompletionMessageCollectionOptions {
-  ...CollectionAfterQueryParameter,
-  ...CollectionLimitQueryParameter,
+  ...DotNetCollectionAfterQueryParameter,
+  ...DotNetCollectionLimitQueryParameter,
   ...ChatCompletionMessageCollectionOrderQueryParameter,
 }
 

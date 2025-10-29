@@ -1,4 +1,4 @@
-﻿using Microsoft.ClientModel.TestFramework;
+using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Embeddings;
 using OpenAI.Tests.Utility;
@@ -14,8 +14,6 @@ namespace OpenAI.Tests.Embeddings;
 [Category("Embeddings")]
 public class EmbeddingsTests : OpenAIRecordedTestBase
 {
-    private EmbeddingClient GetTestClient() => GetProxiedOpenAIClient<EmbeddingClient>(TestScenario.Embeddings);
-
     public EmbeddingsTests(bool isAsync) : base(isAsync)
     {
     }
@@ -26,7 +24,7 @@ public class EmbeddingsTests : OpenAIRecordedTestBase
         UsingIntegers,
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GenerateSingleEmbedding()
     {
         EmbeddingClient client = CreateProxyFromClient(new EmbeddingClient("text-embedding-3-small", new ApiKeyCredential(TestEnvironment.OpenApiKey), InstrumentClientOptions(new OpenAIClientOptions())));
@@ -45,7 +43,7 @@ public class EmbeddingsTests : OpenAIRecordedTestBase
         Assert.That(array.Length, Is.EqualTo(1536));
     }
 
-    [Test]
+    [RecordedTest]
     [TestCase(EmbeddingsInputKind.UsingStrings)]
     [TestCase(EmbeddingsInputKind.UsingIntegers)]
     public async Task GenerateMultipleEmbeddings(EmbeddingsInputKind embeddingsInputKind)
@@ -103,7 +101,7 @@ public class EmbeddingsTests : OpenAIRecordedTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task BadOptions()
     {
         EmbeddingClient client = GetTestClient();
@@ -128,7 +126,7 @@ public class EmbeddingsTests : OpenAIRecordedTestBase
         Assert.That(caughtException.Message, Contains.Substring("dimensions"));
     }
 
-    [Test]
+    [RecordedTest]
     [TestCase(EmbeddingsInputKind.UsingStrings)]
     [TestCase(EmbeddingsInputKind.UsingIntegers)]
     public async Task GenerateMultipleEmbeddingsWithBadOptions(EmbeddingsInputKind embeddingsInputKind)
@@ -162,7 +160,7 @@ public class EmbeddingsTests : OpenAIRecordedTestBase
         Assert.That(caughtException.Message, Contains.Substring("dimensions"));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task EmbeddingFromStringAndEmbeddingFromTokenIdsAreEqual()
     {
         EmbeddingClient client = GetTestClient();
@@ -182,4 +180,6 @@ public class EmbeddingsTests : OpenAIRecordedTestBase
             Assert.That(vector1.Span[i], Is.EqualTo(vector2.Span[i]).Within(0.0005));
         }
     }
+
+    private EmbeddingClient GetTestClient() => GetProxiedOpenAIClient<EmbeddingClient>(TestScenario.Embeddings);
 }

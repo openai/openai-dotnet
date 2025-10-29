@@ -47,6 +47,7 @@ interface Batches {
   @operationId("listBatches")
   @tag("Batch")
   @summary("List your organization's batches.")
+  @list
   listBatches(
     @header accept: "application/json",
 
@@ -55,7 +56,7 @@ interface Batches {
      * For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
      * subsequent call can include after=obj_foo in order to fetch the next page of the list.
      */
-    @query after?: string,
+    @continuationToken @query after?: string,
 
     /**
      * A limit on the number of objects to be returned. Limit can range between 1 and 100, and the

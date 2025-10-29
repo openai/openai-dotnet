@@ -103,7 +103,7 @@ public partial class AssistantResponseFormat : IEquatable<AssistantResponseForma
         }
         else
         {
-            return ModelReaderWriter.Write(this).ToString();
+            return ModelReaderWriter.Write(this, ModelReaderWriterOptions.Json, OpenAIContext.Default).ToString();
         }
     }
 }

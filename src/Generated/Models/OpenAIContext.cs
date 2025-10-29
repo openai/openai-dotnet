@@ -8,6 +8,7 @@ using OpenAI.Audio;
 using OpenAI.Batch;
 using OpenAI.Chat;
 using OpenAI.Containers;
+using OpenAI.Conversations;
 using OpenAI.Embeddings;
 using OpenAI.Evals;
 using OpenAI.Files;
@@ -38,6 +39,8 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(AudioTranslation))]
     [ModelReaderWriterBuildable(typeof(AudioTranslationOptions))]
     [ModelReaderWriterBuildable(typeof(AutomaticCodeInterpreterToolContainerConfiguration))]
+    [ModelReaderWriterBuildable(typeof(BatchCollectionOptions))]
+    [ModelReaderWriterBuildable(typeof(BatchJob))]
     [ModelReaderWriterBuildable(typeof(ChatAudioOptions))]
     [ModelReaderWriterBuildable(typeof(ChatCompletion))]
     [ModelReaderWriterBuildable(typeof(ChatCompletionCollectionOptions))]
@@ -168,7 +171,6 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalAutoChunkingStrategyRequestParam))]
     [ModelReaderWriterBuildable(typeof(InternalBatchError))]
     [ModelReaderWriterBuildable(typeof(InternalBatchErrors))]
-    [ModelReaderWriterBuildable(typeof(InternalBatchJob))]
     [ModelReaderWriterBuildable(typeof(InternalBatchRequestCounts))]
     [ModelReaderWriterBuildable(typeof(InternalBatchRequestInput))]
     [ModelReaderWriterBuildable(typeof(InternalBatchRequestOutput))]
@@ -223,6 +225,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalComputerUsePreviewToolCallOutputItemParam))]
     [ModelReaderWriterBuildable(typeof(InternalContainerFileListResource))]
     [ModelReaderWriterBuildable(typeof(InternalContainerListResource))]
+    [ModelReaderWriterBuildable(typeof(InternalConversationItemCollectionOptions))]
     [ModelReaderWriterBuildable(typeof(InternalCoordinate))]
     [ModelReaderWriterBuildable(typeof(InternalCreateAssistantRequestToolResources))]
     [ModelReaderWriterBuildable(typeof(InternalCreateAssistantRequestToolResourcesCodeInterpreter))]
