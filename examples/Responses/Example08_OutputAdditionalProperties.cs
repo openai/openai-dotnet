@@ -30,7 +30,7 @@ public partial class ResponseExamples
 
         OpenAIResponse response = client.CreateResponse("Generate an image of gray tabby cat hugging an otter with an orange scarf", options);
         ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[1];
-        BinaryData bytes = imageGenResponse.ResultBytes;
+        BinaryData bytes = imageGenResponse.ImageResultBytes;
 
         using FileStream stream = File.OpenWrite($"{Guid.NewGuid()}.png");
         bytes.ToStream().CopyTo(stream);
