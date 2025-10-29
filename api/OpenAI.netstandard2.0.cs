@@ -2257,8 +2257,8 @@ namespace OpenAI.Conversations {
         public virtual Task<ClientResult> GetConversationAsync(string conversationId, RequestOptions options = null);
         public virtual ClientResult GetConversationItem(string conversationId, string itemId, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
         public virtual Task<ClientResult> GetConversationItemAsync(string conversationId, string itemId, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
-        public virtual ClientResult GetConversationItems(string conversationId, long? limit = null, string order = null, string after = null, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
-        public virtual Task<ClientResult> GetConversationItemsAsync(string conversationId, long? limit = null, string order = null, string after = null, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
+        public virtual CollectionResult GetConversationItems(string conversationId, long? limit = null, string order = null, string after = null, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
+        public virtual AsyncCollectionResult GetConversationItemsAsync(string conversationId, long? limit = null, string order = null, string after = null, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
         public virtual ClientResult UpdateConversation(string conversationId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult> UpdateConversationAsync(string conversationId, BinaryContent content, RequestOptions options = null);
     }

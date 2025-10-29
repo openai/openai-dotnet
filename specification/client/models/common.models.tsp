@@ -119,7 +119,7 @@ union DotNetRealtimeVoiceIds {
 
 // CollectionQueryParameters
 
-alias CollectionLimitQueryParameter = {
+alias DotNetCollectionLimitQueryParameter = {
   /**
    * A limit on the number of objects to be returned. Limit can range between 1 and 100, and the
    * default is 20.
@@ -127,7 +127,7 @@ alias CollectionLimitQueryParameter = {
   @query pageSizeLimit?: int32 = 20;
 };
 
-alias CollectionAfterQueryParameter = {
+alias DotNetCollectionAfterQueryParameter = {
   /**
    * A cursor for use in pagination. `after` is an object ID that defines your place in the list.
    * For instance, if you make a list request and receive 100 objects, ending with obj_foo, your
@@ -136,7 +136,7 @@ alias CollectionAfterQueryParameter = {
   @query @continuationToken afterId?: string;
 };
 
-alias CollectionBeforeQueryParameter = {
+alias DotNetCollectionBeforeQueryParameter = {
   /**
    * A cursor for use in pagination. `before` is an object ID that defines your place in the list.
    * For instance, if you make a list request and receive 100 objects, starting with obj_foo, your

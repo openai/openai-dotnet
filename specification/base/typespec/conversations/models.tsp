@@ -46,7 +46,7 @@ model ConversationItemList {
   object: "list";
 
   /** A list of conversation items. */
-  data: ItemResource[];
+  @pageItems data: ItemResource[];
 
   /** Whether there are more items available. */
   #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
@@ -58,7 +58,7 @@ model ConversationItemList {
 
   /** The ID of the last item in the list. */
   #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
-  last_id: string;
+  @continuationToken last_id: string;
 }
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
