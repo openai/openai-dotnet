@@ -8,6 +8,7 @@ using OpenAI.Audio;
 using OpenAI.Batch;
 using OpenAI.Chat;
 using OpenAI.Containers;
+using OpenAI.Conversations;
 using OpenAI.Embeddings;
 using OpenAI.Evals;
 using OpenAI.Files;
@@ -224,6 +225,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalComputerUsePreviewToolCallOutputItemParam))]
     [ModelReaderWriterBuildable(typeof(InternalContainerFileListResource))]
     [ModelReaderWriterBuildable(typeof(InternalContainerListResource))]
+    [ModelReaderWriterBuildable(typeof(InternalConversationItemCollectionOptions))]
     [ModelReaderWriterBuildable(typeof(InternalCoordinate))]
     [ModelReaderWriterBuildable(typeof(InternalCreateAssistantRequestToolResources))]
     [ModelReaderWriterBuildable(typeof(InternalCreateAssistantRequestToolResourcesCodeInterpreter))]

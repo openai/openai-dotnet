@@ -23,20 +23,32 @@ namespace OpenAI.Conversations
 
         public ClientPipeline Pipeline { get; }
 
-        public virtual ClientResult GetConversationItems(string conversationId, long? limit = default, string order = default, string after = default, IEnumerable<IncludedConversationItemProperty> include = default, RequestOptions options = null)
+        public virtual CollectionResult GetConversationItems(string conversationId, long? limit = default, string order = default, string after = default, IEnumerable<IncludedConversationItemProperty> include = default, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(conversationId, nameof(conversationId));
 
-            using PipelineMessage message = CreateGetConversationItemsRequest(conversationId, limit, order, after, include, options);
-            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+            return new ConversationClientGetConversationItemsCollectionResult(
+                this,
+                conversationId,
+                limit,
+                order,
+                after,
+                include,
+                options);
         }
 
-        public virtual async Task<ClientResult> GetConversationItemsAsync(string conversationId, long? limit = default, string order = default, string after = default, IEnumerable<IncludedConversationItemProperty> include = default, RequestOptions options = null)
+        public virtual AsyncCollectionResult GetConversationItemsAsync(string conversationId, long? limit = default, string order = default, string after = default, IEnumerable<IncludedConversationItemProperty> include = default, RequestOptions options = null)
         {
             Argument.AssertNotNullOrEmpty(conversationId, nameof(conversationId));
 
-            using PipelineMessage message = CreateGetConversationItemsRequest(conversationId, limit, order, after, include, options);
-            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+            return new ConversationClientGetConversationItemsAsyncCollectionResult(
+                this,
+                conversationId,
+                limit,
+                order,
+                after,
+                include,
+                options);
         }
 
         public virtual ClientResult CreateConversationItems(string conversationId, BinaryContent content, IEnumerable<IncludedConversationItemProperty> include = default, RequestOptions options = null)

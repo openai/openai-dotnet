@@ -1,4 +1,5 @@
 import "../../base/typespec/assistants/main.tsp";
+import "./common.models.tsp";
 import "@azure-tools/typespec-client-generator-core";
 
 using Azure.ClientGenerator.Core;
@@ -23,9 +24,9 @@ union AssistantCollectionOrder {
 @access(Access.public)
 @usage(Usage.input)
 model AssistantCollectionOptions {
-  ...CollectionAfterQueryParameter,
-  ...CollectionBeforeQueryParameter,
-  ...CollectionLimitQueryParameter,
+  ...DotNetCollectionAfterQueryParameter,
+  ...DotNetCollectionBeforeQueryParameter,
+  ...DotNetCollectionLimitQueryParameter,
   ...AssistantCollectionOrderQueryParameter,
 }
 
@@ -46,18 +47,18 @@ union MessageCollectionOrder {
 @access(Access.public)
 @usage(Usage.input)
 model MessageCollectionOptions {
-  ...CollectionAfterQueryParameter,
-  ...CollectionBeforeQueryParameter,
-  ...CollectionLimitQueryParameter,
+  ...DotNetCollectionAfterQueryParameter,
+  ...DotNetCollectionBeforeQueryParameter,
+  ...DotNetCollectionLimitQueryParameter,
   ...MessageCollectionOrderQueryParameter,
 }
 
 @access(Access.public)
 @usage(Usage.input)
 model RunCollectionOptions {
-  ...CollectionAfterQueryParameter,
-  ...CollectionBeforeQueryParameter,
-  ...CollectionLimitQueryParameter,
+  ...DotNetCollectionAfterQueryParameter,
+  ...DotNetCollectionBeforeQueryParameter,
+  ...DotNetCollectionLimitQueryParameter,
   ...RunCollectionOrderQueryParameter,
 }
 
@@ -78,9 +79,9 @@ union RunCollectionOrder {
 @access(Access.public)
 @usage(Usage.input)
 model RunStepCollectionOptions {
-  ...CollectionAfterQueryParameter,
-  ...CollectionBeforeQueryParameter,
-  ...CollectionLimitQueryParameter,
+  ...DotNetCollectionAfterQueryParameter,
+  ...DotNetCollectionBeforeQueryParameter,
+  ...DotNetCollectionLimitQueryParameter,
   ...RunStepCollectionOrderQueryParameter,
 }
 

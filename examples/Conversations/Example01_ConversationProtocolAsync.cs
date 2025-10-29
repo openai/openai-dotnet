@@ -2,6 +2,7 @@
 using OpenAI.Conversations;
 using System;
 using System.ClientModel;
+using System.ClientModel.Primitives;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -26,6 +27,11 @@ public partial class ConversationExamples
                        "type": "message",
                        "role": "user",
                        "content": "Say 'this is a test.'"
+                   },
+                   {
+                       "type": "message",
+                       "role": "assistant",
+                       "content": "This is a test."
                    }
                ]
             }
@@ -38,18 +44,23 @@ public partial class ConversationExamples
             .GetProperty("id"u8)
             .GetString();
 
-        Console.WriteLine($"Conversation created. Conversation ID: {conversationId}");
+        Console.WriteLine($"Conversation created.");
+        Console.WriteLine($"    Conversation ID: {conversationId}");
         Console.WriteLine();
 
-        ClientResult getConversationItemsResult = await client.GetConversationItemsAsync(conversationId);
-        using JsonDocument getConversationItemsResultAsJson = JsonDocument.Parse(getConversationItemsResult.GetRawResponse().Content.ToString());
-        string messageId = getConversationItemsResultAsJson.RootElement
-            .GetProperty("data"u8)[0]
-            .GetProperty("id"u8)
-            .ToString();
+        AsyncCollectionResult getConversationItemsResults = client.GetConversationItemsAsync(conversationId);
+        await foreach(ClientResult result in getConversationItemsResults.GetRawPagesAsync())
+        {
+            using JsonDocument getConversationItemsResultAsJson = JsonDocument.Parse(result.GetRawResponse().Content.ToString());
+            foreach (JsonElement element in getConversationItemsResultAsJson.RootElement.GetProperty("data").EnumerateArray())
+            {
+                string messageId = element.GetProperty("id"u8).ToString();
 
-        Console.WriteLine($"Message retrieved. Message ID: {messageId}");
-        Console.WriteLine();
+                Console.WriteLine($"Message retrieved.");
+                Console.WriteLine($"    Message ID: {messageId}");
+                Console.WriteLine();
+            }
+        }
 
         ClientResult deleteConversationResult = await client.DeleteConversationAsync(conversationId);
         using JsonDocument deleteConversationResultAsJson = JsonDocument.Parse(deleteConversationResult.GetRawResponse().Content.ToString());
@@ -57,7 +68,8 @@ public partial class ConversationExamples
             .GetProperty("deleted"u8)
             .GetBoolean();
 
-        Console.WriteLine($"Conversation deleted: {deleted}");
+        Console.WriteLine($"Conversation deleted.");
+        Console.WriteLine($"    Deleted: {deleted}");
         Console.WriteLine();
     }
 }
