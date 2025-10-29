@@ -1,25 +1,25 @@
 using System;
 
-namespace OpenAI
+namespace OpenAI.Chat
 {
     internal static partial class CreateChatCompletionRequestModalityExtensions
     {
-        public static string ToSerialString(this CreateChatCompletionRequestModality value) => value switch
+        public static string ToSerialString(this ChatCompletionRequestModality value) => value switch
         {
-            CreateChatCompletionRequestModality.Text => "text",
-            CreateChatCompletionRequestModality.Audio => "audio",
+            ChatCompletionRequestModality.Text => "text",
+            ChatCompletionRequestModality.Audio => "audio",
             _ => throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown CreateChatCompletionRequestModality value.")
         };
 
-        public static CreateChatCompletionRequestModality ToCreateChatCompletionRequestModality(this string value)
+        public static ChatCompletionRequestModality ToCreateChatCompletionRequestModality(this string value)
         {
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "text"))
             {
-                return CreateChatCompletionRequestModality.Text;
+                return ChatCompletionRequestModality.Text;
             }
             if (StringComparer.OrdinalIgnoreCase.Equals(value, "audio"))
             {
-                return CreateChatCompletionRequestModality.Audio;
+                return ChatCompletionRequestModality.Audio;
             }
             throw new ArgumentOutOfRangeException(nameof(value), value, "Unknown CreateChatCompletionRequestModality value.");
         }

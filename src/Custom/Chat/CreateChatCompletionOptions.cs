@@ -24,7 +24,7 @@ namespace OpenAI.Chat
         }
 
 #pragma warning disable  SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CreateChatCompletionOptions(IDictionary<string, string> metadata, float? temperature, float? topP, string user, ChatServiceTier? serviceTier, IList<ChatMessage> messages, string model, IList<CreateChatCompletionRequestModality> modalities, ChatReasoningEffortLevel? reasoningEffort, int? maxCompletionTokens, float? frequencyPenalty, float? presencePenalty, ChatWebSearchOptions webSearchOptions, int? topLogprobs, ResponseFormat responseFormat, ChatAudioOptions audio, bool? store, bool? stream, IList<string> stop, IDictionary<int, int> logitBias, bool? logprobs, int? maxTokens, int? n, ChatOutputPrediction prediction, long? seed, ChatCompletionStreamOptions streamOptions, IList<ChatTool> tools, BinaryData toolChoice, bool? parallelToolCalls, BinaryData functionCall, IList<ChatFunction> functions, in JsonPatch patch)
+        internal CreateChatCompletionOptions(IDictionary<string, string> metadata, float? temperature, float? topP, string user, ChatServiceTier? serviceTier, IList<ChatMessage> messages, string model, IList<ChatCompletionRequestModality> modalities, ChatReasoningEffortLevel? reasoningEffort, int? maxCompletionTokens, float? frequencyPenalty, float? presencePenalty, ChatWebSearchOptions webSearchOptions, int? topLogprobs, ResponseFormat responseFormat, ChatAudioOptions audio, bool? store, bool? stream, IList<string> stop, IDictionary<int, int> logitBias, bool? logprobs, int? maxTokens, int? n, ChatOutputPrediction prediction, long? seed, ChatCompletionStreamOptions streamOptions, IList<ChatTool> tools, BinaryData toolChoice, bool? parallelToolCalls, BinaryData functionCall, IList<ChatFunction> functions, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -34,7 +34,7 @@ namespace OpenAI.Chat
             ServiceTier = serviceTier;
             Messages = messages ?? new ChangeTrackingList<ChatMessage>();
             Model = model;
-            Modalities = modalities ?? new ChangeTrackingList<CreateChatCompletionRequestModality>();
+            Modalities = modalities ?? new ChangeTrackingList<ChatCompletionRequestModality>();
             ReasoningEffort = reasoningEffort;
             MaxCompletionTokens = maxCompletionTokens;
             FrequencyPenalty = frequencyPenalty;
@@ -77,7 +77,7 @@ namespace OpenAI.Chat
 
         public string Model { get; set; }
 
-        public IList<CreateChatCompletionRequestModality> Modalities { get; set; }
+        public IList<ChatCompletionRequestModality> Modalities { get; set; }
 
         public ChatReasoningEffortLevel? ReasoningEffort { get; set; }
 
@@ -215,11 +215,11 @@ namespace OpenAI.Chat
 
             if (options.ResponseModalities.HasFlag(ChatResponseModalities.Audio))
             {
-                request.Modalities.Add(CreateChatCompletionRequestModality.Audio);
+                request.Modalities.Add(ChatCompletionRequestModality.Audio);
             }
             if (options.ResponseModalities.HasFlag(ChatResponseModalities.Text))
             {
-                request.Modalities.Add(CreateChatCompletionRequestModality.Text);
+                request.Modalities.Add(ChatCompletionRequestModality.Text);
             }
             if (options.StreamOptions != null)
             {
@@ -274,7 +274,7 @@ namespace OpenAI.Chat
             ChatServiceTier? serviceTier = default;
             IList<ChatMessage> messages = default;
             string model = default;
-            IList<CreateChatCompletionRequestModality> modalities = default;
+            IList<ChatCompletionRequestModality> modalities = default;
             ChatReasoningEffortLevel? reasoningEffort = default;
             int? maxCompletionTokens = default;
             float? frequencyPenalty = default;
@@ -379,7 +379,7 @@ namespace OpenAI.Chat
                     {
                         continue;
                     }
-                    List<CreateChatCompletionRequestModality> array = new List<CreateChatCompletionRequestModality>();
+                    List<ChatCompletionRequestModality> array = new List<ChatCompletionRequestModality>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
                         array.Add(item.GetString().ToCreateChatCompletionRequestModality());
@@ -620,7 +620,7 @@ namespace OpenAI.Chat
                 serviceTier,
                 messages,
                 model,
-                modalities ?? new ChangeTrackingList<CreateChatCompletionRequestModality>(),
+                modalities ?? new ChangeTrackingList<ChatCompletionRequestModality>(),
                 reasoningEffort,
                 maxCompletionTokens,
                 frequencyPenalty,

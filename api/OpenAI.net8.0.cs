@@ -1,9 +1,4 @@
 namespace OpenAI {
-    [Experimental("OPENAI001")]
-    public enum CreateChatCompletionRequestModality {
-        Text = 0,
-        Audio = 1
-    }
     public class OpenAIClient {
         protected OpenAIClient();
         public OpenAIClient(ApiKeyCredential credential, OpenAIClientOptions options);
@@ -1772,6 +1767,11 @@ namespace OpenAI.Chat {
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
+    public enum ChatCompletionRequestModality {
+        Text = 0,
+        Audio = 1
+    }
+    [Experimental("OPENAI001")]
     public class ChatCompletionRequestUserMessage : ChatMessage, IJsonModel<ChatCompletionRequestUserMessage>, IPersistableModel<ChatCompletionRequestUserMessage> {
         public ChatCompletionRequestUserMessage();
         public string Name { get; set; }
@@ -2353,7 +2353,7 @@ namespace OpenAI.Chat {
         public int? MaxTokens { get; set; }
         public IList<ChatMessage> Messages { get; }
         public IDictionary<string, string> Metadata { get; }
-        public IList<CreateChatCompletionRequestModality> Modalities { get; set; }
+        public IList<ChatCompletionRequestModality> Modalities { get; set; }
         public string Model { get; set; }
         public int? N { get; set; }
         public bool? ParallelToolCalls { get; set; }

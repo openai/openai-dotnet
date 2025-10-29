@@ -1,9 +1,9 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace OpenAI
+namespace OpenAI.Chat
 {
     [Experimental("OPENAI001")]
-    public enum CreateChatCompletionRequestModality
+    public enum ChatCompletionRequestModality
     {
         Text,
         Audio
