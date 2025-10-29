@@ -2449,6 +2449,10 @@ namespace OpenAI.Containers {
         public virtual ClientResult<DeleteContainerFileResponse> DeleteContainerFile(string containerId, string fileId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> DeleteContainerFileAsync(string containerId, string fileId, RequestOptions options);
         public virtual Task<ClientResult<DeleteContainerFileResponse>> DeleteContainerFileAsync(string containerId, string fileId, CancellationToken cancellationToken = default);
+        public virtual ClientResult DownloadContainerFile(string containerId, string fileId, RequestOptions options);
+        public virtual ClientResult<BinaryData> DownloadContainerFile(string containerId, string fileId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> DownloadContainerFileAsync(string containerId, string fileId, RequestOptions options);
+        public virtual Task<ClientResult<BinaryData>> DownloadContainerFileAsync(string containerId, string fileId, CancellationToken cancellationToken = default);
         public virtual ClientResult GetContainer(string containerId, RequestOptions options);
         public virtual ClientResult<ContainerResource> GetContainer(string containerId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GetContainerAsync(string containerId, RequestOptions options);
@@ -2457,10 +2461,6 @@ namespace OpenAI.Containers {
         public virtual ClientResult<ContainerFileResource> GetContainerFile(string containerId, string fileId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GetContainerFileAsync(string containerId, string fileId, RequestOptions options);
         public virtual Task<ClientResult<ContainerFileResource>> GetContainerFileAsync(string containerId, string fileId, CancellationToken cancellationToken = default);
-        public virtual ClientResult GetContainerFileContent(string containerId, string fileId, RequestOptions options);
-        public virtual ClientResult<BinaryData> GetContainerFileContent(string containerId, string fileId, CancellationToken cancellationToken = default);
-        public virtual Task<ClientResult> GetContainerFileContentAsync(string containerId, string fileId, RequestOptions options);
-        public virtual Task<ClientResult<BinaryData>> GetContainerFileContentAsync(string containerId, string fileId, CancellationToken cancellationToken = default);
         public virtual CollectionResult<ContainerFileResource> GetContainerFiles(string containerId, ContainerFileCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual CollectionResult GetContainerFiles(string containerId, int? limit, string order, string after, RequestOptions options);
         public virtual AsyncCollectionResult<ContainerFileResource> GetContainerFilesAsync(string containerId, ContainerFileCollectionOptions options = null, CancellationToken cancellationToken = default);
