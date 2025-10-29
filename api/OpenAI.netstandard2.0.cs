@@ -6116,7 +6116,7 @@ namespace OpenAI.Videos {
         public virtual Task<ClientResult> DownloadVideoAsync(string videoId, string variant = null, RequestOptions options = null);
         public virtual ClientResult GetVideo(string videoId, RequestOptions options = null);
         public virtual Task<ClientResult> GetVideoAsync(string videoId, RequestOptions options = null);
-        public virtual ClientResult GetVideos(long? limit = null, string order = null, string after = null, RequestOptions options = null);
-        public virtual Task<ClientResult> GetVideosAsync(long? limit = null, string order = null, string after = null, RequestOptions options = null);
+        public virtual CollectionResult GetVideos(long? limit = null, string order = null, string after = null, RequestOptions options = null);
+        public virtual AsyncCollectionResult GetVideosAsync(long? limit = null, string order = null, string after = null, RequestOptions options = null);
     }
 }

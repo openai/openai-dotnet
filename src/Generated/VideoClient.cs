@@ -22,16 +22,14 @@ namespace OpenAI.Videos
 
         public ClientPipeline Pipeline { get; }
 
-        public virtual ClientResult GetVideos(long? limit = default, string order = default, string after = default, RequestOptions options = null)
+        public virtual CollectionResult GetVideos(long? limit = default, string order = default, string after = default, RequestOptions options = null)
         {
-            using PipelineMessage message = CreateGetVideosRequest(limit, order, after, options);
-            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+            return new VideoClientGetVideosCollectionResult(this, limit, order, after, options);
         }
 
-        public virtual async Task<ClientResult> GetVideosAsync(long? limit = default, string order = default, string after = default, RequestOptions options = null)
+        public virtual AsyncCollectionResult GetVideosAsync(long? limit = default, string order = default, string after = default, RequestOptions options = null)
         {
-            using PipelineMessage message = CreateGetVideosRequest(limit, order, after, options);
-            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+            return new VideoClientGetVideosAsyncCollectionResult(this, limit, order, after, options);
         }
 
         public virtual ClientResult CreateVideo(BinaryContent content, string contentType, RequestOptions options = null)
