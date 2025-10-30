@@ -22,7 +22,6 @@ public partial class ResponseExamples
 
         CodeInterpreterToolContainer container = new(CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration());
         CodeInterpreterTool codeInterpreterTool = new(container);
-
         ResponseCreationOptions options = new()
         {
             Tools = { codeInterpreterTool }
@@ -30,7 +29,7 @@ public partial class ResponseExamples
 
         List<ResponseItem> inputItems =
         [
-            ResponseItem.CreateUserMessageItem("Create a Excel spreadsheet that contains the mathematical times tables from 1-12."),
+            ResponseItem.CreateUserMessageItem("Create an Excel spreadsheet that contains the mathematical times tables from 1-12."),
         ];
 
         OpenAIResponse response = await client.CreateResponseAsync(inputItems, options);
@@ -47,6 +46,7 @@ public partial class ResponseExamples
             .OfType<ContainerFileCitationMessageAnnotation>()
             .FirstOrDefault();
 
+        // Download the file from the container and save it.
         ContainerClient containerClient = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
         BinaryData fileBytes = await containerClient.DownloadContainerFileAsync(containerFileCitation.ContainerId, containerFileCitation.FileId);
         using FileStream stream = File.OpenWrite($"{Guid.NewGuid()}.xlsx");
