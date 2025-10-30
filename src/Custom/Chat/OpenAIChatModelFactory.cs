@@ -376,6 +376,7 @@ public static partial class OpenAIChatModelFactory
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.ChatCompletionMessageListDatum"/>. </summary>
     /// <returns> A new <see cref="OpenAI.Chat.ChatCompletionMessageListDatum"/> instance for mocking.</returns>
+    [Experimental("OPENAI001")]
     public static ChatCompletionMessageListDatum ChatCompletionMessageListDatum(
         string id,
         string content,
