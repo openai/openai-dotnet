@@ -28,7 +28,7 @@ public partial class ResponseExamples
 
         List<ResponseItem> inputItems =
         [
-            ResponseItem.CreateUserMessageItem("Create an Excel spreadsheet that contains the mathematical times tables from 1-12."),
+            ResponseItem.CreateUserMessageItem("Create an Excel spreadsheet that contains the mathematical times tables from 1-12 and make it available for download."),
         ];
 
         OpenAIResponse response = client.CreateResponse(inputItems, options);
@@ -48,7 +48,7 @@ public partial class ResponseExamples
         // Download the file from the container and save it.
         ContainerClient containerClient = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
         BinaryData fileBytes = containerClient.DownloadContainerFile(containerFileCitation.ContainerId, containerFileCitation.FileId);
-        using FileStream stream = File.OpenWrite($"{Guid.NewGuid()}.xlsx");
+        using FileStream stream = File.OpenWrite(containerFileCitation.Filename);
         fileBytes.ToStream().CopyTo(stream);
     }
 }
