@@ -213,6 +213,26 @@ public partial class OpenAIResponseClient
             requestOptions.CancellationToken);
     }
 
+    public virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(CreateResponseOptions options, CancellationToken cancellationToken = default)
+    {
+        return CreateResponseStreamingAsync(options, cancellationToken.ToRequestOptions(streaming: true));
+    }
+
+    internal AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(CreateResponseOptions options, RequestOptions requestOptions)
+    {
+        Argument.AssertNotNull(options, nameof(options));
+        Argument.AssertNotNull(requestOptions, nameof(requestOptions));
+        if (requestOptions.BufferResponse is true)
+        {
+            throw new InvalidOperationException("'requestOptions.BufferResponse' must be 'false' when calling 'CreateResponseStreamingAsync'.");
+        }
+
+        return new AsyncSseUpdateCollection<StreamingResponseUpdate>(
+            async () => await CreateResponseAsync(options, requestOptions).ConfigureAwait(false),
+            StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
+            requestOptions.CancellationToken);
+    }
+
     public virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(inputItems, nameof(inputItems));
@@ -220,6 +240,16 @@ public partial class OpenAIResponseClient
         using BinaryContent content = CreatePerCallOptions(options, inputItems, stream: true).ToBinaryContent();
         return new SseUpdateCollection<StreamingResponseUpdate>(
             () => CreateResponse(content, cancellationToken.ToRequestOptions(streaming: true)),
+            StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
+            cancellationToken);
+    }
+
+    public virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(CreateResponseOptions options, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(options, nameof(options));
+
+        return new SseUpdateCollection<StreamingResponseUpdate>(
+            () => CreateResponse(options, cancellationToken.ToRequestOptions(streaming: true)),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
             cancellationToken);
     }
