@@ -600,6 +600,18 @@ namespace OpenAI
                 title);
         }
 
+        public static ContainerFileCitationMessageAnnotation ContainerFileCitationMessageAnnotation(string containerId = default, string fileId = default, int startIndex = default, int endIndex = default, string filename = default)
+        {
+            return new ContainerFileCitationMessageAnnotation(
+                ResponseMessageAnnotationKind.ContainerFileCitation,
+                default,
+                containerId,
+                fileId,
+                startIndex,
+                endIndex,
+                filename);
+        }
+
         public static FilePathMessageAnnotation FilePathMessageAnnotation(string fileId = default, int index = default)
         {
             return new FilePathMessageAnnotation(ResponseMessageAnnotationKind.FilePath, default, fileId, index);

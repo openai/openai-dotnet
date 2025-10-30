@@ -84,6 +84,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(ComputerCallSafetyCheck))]
     [ModelReaderWriterBuildable(typeof(ComputerTool))]
     [ModelReaderWriterBuildable(typeof(ContainerCollectionOptions))]
+    [ModelReaderWriterBuildable(typeof(ContainerFileCitationMessageAnnotation))]
     [ModelReaderWriterBuildable(typeof(ContainerFileCollectionOptions))]
     [ModelReaderWriterBuildable(typeof(ContainerFileResource))]
     [ModelReaderWriterBuildable(typeof(ContainerResource))]

@@ -578,7 +578,7 @@ public class ContainerTests : OpenAIRecordedTestBase
                 Console.WriteLine($"Retrieved file metadata: {fileResource.Id}, {fileResource.Bytes} bytes");
 
                 // Get the file content
-                ClientResult<BinaryData> contentResult = await client.GetContainerFileContentAsync(_testContainerId, fileId);
+                ClientResult<BinaryData> contentResult = await client.DownloadContainerFileAsync(_testContainerId, fileId);
                 BinaryData fileContent = contentResult.Value;
 
                 Assert.That(fileContent, Is.Not.Null);
@@ -640,8 +640,8 @@ public class ContainerTests : OpenAIRecordedTestBase
                 Validate(fileResource);
                 Assert.That(fileResource.Id, Is.EqualTo(fileId));
 
-                // Test GetContainerFileContent with cancellation
-                ClientResult<BinaryData> contentResult = await client.GetContainerFileContentAsync(_testContainerId, fileId, cancellationTokenSource.Token);
+                // Test DownloadContainerFile with cancellation
+                ClientResult<BinaryData> contentResult = await client.DownloadContainerFileAsync(_testContainerId, fileId, cancellationTokenSource.Token);
                 BinaryData fileContent = contentResult.Value;
 
                 Assert.That(fileContent, Is.Not.Null);
@@ -746,13 +746,13 @@ public class ContainerTests : OpenAIRecordedTestBase
             await client.GetContainerFileAsync("container123", ""));
 
         Assert.ThrowsAsync<ArgumentNullException>(async () => 
-            await client.GetContainerFileContentAsync(null, "file123"));
+            await client.DownloadContainerFileAsync(null, "file123"));
         Assert.ThrowsAsync<ArgumentException>(async () => 
-            await client.GetContainerFileContentAsync("", "file123"));
+            await client.DownloadContainerFileAsync("", "file123"));
         Assert.ThrowsAsync<ArgumentNullException>(async () => 
-            await client.GetContainerFileContentAsync("container123", null));
+            await client.DownloadContainerFileAsync("container123", null));
         Assert.ThrowsAsync<ArgumentException>(async () => 
-            await client.GetContainerFileContentAsync("container123", ""));
+            await client.DownloadContainerFileAsync("container123", ""));
 
         Console.WriteLine("Parameter validation tests passed for GetContainerFile methods");
     }

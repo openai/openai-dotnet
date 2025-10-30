@@ -281,39 +281,39 @@ namespace OpenAI.Containers
             return ClientResult.FromValue((DeleteContainerFileResponse)result, result.GetRawResponse());
         }
 
-        public virtual ClientResult GetContainerFileContent(string containerId, string fileId, RequestOptions options)
+        public virtual ClientResult DownloadContainerFile(string containerId, string fileId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
             Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
-            using PipelineMessage message = CreateGetContainerFileContentRequest(containerId, fileId, options);
+            using PipelineMessage message = CreateDownloadContainerFileRequest(containerId, fileId, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> GetContainerFileContentAsync(string containerId, string fileId, RequestOptions options)
+        public virtual async Task<ClientResult> DownloadContainerFileAsync(string containerId, string fileId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
             Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
-            using PipelineMessage message = CreateGetContainerFileContentRequest(containerId, fileId, options);
+            using PipelineMessage message = CreateDownloadContainerFileRequest(containerId, fileId, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult<BinaryData> GetContainerFileContent(string containerId, string fileId, CancellationToken cancellationToken = default)
+        public virtual ClientResult<BinaryData> DownloadContainerFile(string containerId, string fileId, CancellationToken cancellationToken = default)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
             Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
-            ClientResult result = GetContainerFileContent(containerId, fileId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+            ClientResult result = DownloadContainerFile(containerId, fileId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
             return ClientResult.FromValue(result.GetRawResponse().Content, result.GetRawResponse());
         }
 
-        public virtual async Task<ClientResult<BinaryData>> GetContainerFileContentAsync(string containerId, string fileId, CancellationToken cancellationToken = default)
+        public virtual async Task<ClientResult<BinaryData>> DownloadContainerFileAsync(string containerId, string fileId, CancellationToken cancellationToken = default)
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
             Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
-            ClientResult result = await GetContainerFileContentAsync(containerId, fileId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
+            ClientResult result = await DownloadContainerFileAsync(containerId, fileId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
             return ClientResult.FromValue(result.GetRawResponse().Content, result.GetRawResponse());
         }
     }
