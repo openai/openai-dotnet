@@ -4,7 +4,6 @@
 
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using OpenAI;
 
 namespace OpenAI.Responses
@@ -25,34 +24,6 @@ namespace OpenAI.Responses
             request.Headers.Set("Accept", "application/json, text/event-stream");
             request.Headers.Set("Content-Type", "application/json");
             request.Content = content;
-            message.Apply(options);
-            return message;
-        }
-
-        internal virtual PipelineMessage CreateGetResponseRequest(string responseId, IEnumerable<InternalIncludable> includables, bool? stream, int? startingAfter, RequestOptions options)
-        {
-            ClientUriBuilder uri = new ClientUriBuilder();
-            uri.Reset(_endpoint);
-            uri.AppendPath("/responses/", false);
-            uri.AppendPath(responseId, true);
-            if (includables != null && !(includables is ChangeTrackingList<InternalIncludable> changeTrackingList && changeTrackingList.IsUndefined))
-            {
-                foreach (var @param in includables)
-                {
-                    uri.AppendQuery("include[]", @param.ToString(), true);
-                }
-            }
-            if (stream != null)
-            {
-                uri.AppendQuery("stream", TypeFormatters.ConvertToString(stream), true);
-            }
-            if (startingAfter != null)
-            {
-                uri.AppendQuery("starting_after", TypeFormatters.ConvertToString(startingAfter), true);
-            }
-            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
-            PipelineRequest request = message.Request;
-            request.Headers.Set("Accept", "application/json, text/event-stream");
             message.Apply(options);
             return message;
         }

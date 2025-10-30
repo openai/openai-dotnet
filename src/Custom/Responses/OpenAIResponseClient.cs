@@ -176,6 +176,22 @@ public partial class OpenAIResponseClient
             cancellationToken);
     }
 
+    public virtual ClientResult<ResponseResult> CreateResponse(CreateResponseOptions requestBody, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(requestBody, nameof(requestBody));
+
+        ClientResult result = this.CreateResponse(requestBody, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        return ClientResult.FromValue((ResponseResult)result.GetRawResponse().Content, result.GetRawResponse());
+    }
+
+    public virtual async Task<ClientResult<ResponseResult>> CreateResponseAsync(CreateResponseOptions requestBody, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(requestBody, nameof(requestBody));
+
+        ClientResult result = await this.CreateResponseAsync(requestBody, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
+        return ClientResult.FromValue((ResponseResult)result.GetRawResponse().Content, result.GetRawResponse());
+    }
+
     public virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
     {
         return CreateResponseStreamingAsync(inputItems, options, cancellationToken.ToRequestOptions(streaming: true));

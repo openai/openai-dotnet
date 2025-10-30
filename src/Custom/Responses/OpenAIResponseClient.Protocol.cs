@@ -32,4 +32,32 @@ public partial class OpenAIResponseClient
         PipelineResponse protocolResponse = Pipeline.ProcessMessage(message, options);
         return ClientResult.FromResponse(protocolResponse);
     }
+
+    internal virtual PipelineMessage CreateGetResponseRequest(string responseId, IEnumerable<Includable> includables, bool? stream, int? startingAfter, RequestOptions options)
+    {
+        ClientUriBuilder uri = new ClientUriBuilder();
+        uri.Reset(_endpoint);
+        uri.AppendPath("/responses/", false);
+        uri.AppendPath(responseId, true);
+        if (includables != null && !(includables is ChangeTrackingList<Includable> changeTrackingList && changeTrackingList.IsUndefined))
+        {
+            foreach (var @param in includables)
+            {
+                uri.AppendQuery("include[]", @param.ToSerialString(), true);
+            }
+        }
+        if (stream != null)
+        {
+            uri.AppendQuery("stream", TypeFormatters.ConvertToString(stream), true);
+        }
+        if (startingAfter != null)
+        {
+            uri.AppendQuery("starting_after", TypeFormatters.ConvertToString(startingAfter), true);
+        }
+        PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
+        PipelineRequest request = message.Request;
+        request.Headers.Set("Accept", "application/json, text/event-stream");
+        message.Apply(options);
+        return message;
+    }
 }
