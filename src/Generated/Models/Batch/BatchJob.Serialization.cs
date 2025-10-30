@@ -11,13 +11,13 @@ using OpenAI;
 
 namespace OpenAI.Batch
 {
-    internal partial class InternalBatchJob : IJsonModel<InternalBatchJob>
+    public partial class BatchJob : IJsonModel<BatchJob>
     {
-        internal InternalBatchJob() : this(null, null, null, null, null, null, default, null, null, default, default, default, default, default, default, default, default, default, null, null, null)
+        internal BatchJob() : this(null, null, null, null, null, null, default, null, null, default, default, default, default, default, default, default, default, default, null, null, null)
         {
         }
 
-        void IJsonModel<InternalBatchJob>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<BatchJob>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
@@ -26,10 +26,10 @@ namespace OpenAI.Batch
 
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalBatchJob>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<BatchJob>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalBatchJob)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(BatchJob)} does not support writing '{format}' format.");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
@@ -171,20 +171,20 @@ namespace OpenAI.Batch
             }
         }
 
-        InternalBatchJob IJsonModel<InternalBatchJob>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        BatchJob IJsonModel<BatchJob>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected virtual InternalBatchJob JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual BatchJob JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalBatchJob>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<BatchJob>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalBatchJob)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(BatchJob)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalBatchJob(document.RootElement, options);
+            return DeserializeBatchJob(document.RootElement, options);
         }
 
-        internal static InternalBatchJob DeserializeInternalBatchJob(JsonElement element, ModelReaderWriterOptions options)
+        internal static BatchJob DeserializeBatchJob(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -373,7 +373,7 @@ namespace OpenAI.Batch
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalBatchJob(
+            return new BatchJob(
                 id,
                 @object,
                 endpoint,
@@ -397,44 +397,44 @@ namespace OpenAI.Batch
                 additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<InternalBatchJob>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<BatchJob>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalBatchJob>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<BatchJob>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(InternalBatchJob)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(BatchJob)} does not support writing '{options.Format}' format.");
             }
         }
 
-        InternalBatchJob IPersistableModel<InternalBatchJob>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        BatchJob IPersistableModel<BatchJob>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        protected virtual InternalBatchJob PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual BatchJob PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalBatchJob>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<BatchJob>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalBatchJob(document.RootElement, options);
+                        return DeserializeBatchJob(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalBatchJob)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(BatchJob)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<InternalBatchJob>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<BatchJob>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        public static explicit operator InternalBatchJob(ClientResult result)
+        public static explicit operator BatchJob(ClientResult result)
         {
             using PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalBatchJob(document.RootElement, ModelSerializationExtensions.WireOptions);
+            return DeserializeBatchJob(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

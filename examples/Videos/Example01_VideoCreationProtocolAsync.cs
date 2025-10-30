@@ -17,7 +17,7 @@ namespace OpenAI.Examples;
 public partial class VideoExamples
 {
     [Test]
-    public async Task Example01_VideoCreationAsync()
+    public async Task Example01_VideoCreationProtocolAsync()
     {
         // 1) Create the client
         VideoClient client = new(new ApiKeyCredential(Environment.GetEnvironmentVariable("OPENAI_API_KEY")));

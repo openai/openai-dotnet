@@ -176,9 +176,9 @@ model BatchRequestOutput {
 }
 
 model ListBatchesResponse {
-  data: Batch[];
+  @pageItems data: Batch[];
   first_id?: string;
-  last_id?: string;
+  @continuationToken last_id?: string;
   has_more: boolean;
   object: "list";
 }

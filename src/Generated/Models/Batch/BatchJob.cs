@@ -4,15 +4,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
 namespace OpenAI.Batch
 {
-    internal partial class InternalBatchJob
+    [Experimental("OPENAI001")]
+    public partial class BatchJob
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalBatchJob(string id, string endpoint, string inputFileId, string completionWindow, InternalBatchStatus status, DateTimeOffset createdAt, IDictionary<string, string> metadata)
+        internal BatchJob(string id, string endpoint, string inputFileId, string completionWindow, InternalBatchStatus status, DateTimeOffset createdAt, IDictionary<string, string> metadata)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
@@ -24,7 +26,7 @@ namespace OpenAI.Batch
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
         }
 
-        internal InternalBatchJob(string id, string @object, string endpoint, InternalBatchErrors errors, string inputFileId, string completionWindow, InternalBatchStatus status, string outputFileId, string errorFileId, DateTimeOffset createdAt, DateTimeOffset? inProgressAt, DateTimeOffset? expiresAt, DateTimeOffset? finalizingAt, DateTimeOffset? completedAt, DateTimeOffset? failedAt, DateTimeOffset? expiredAt, DateTimeOffset? cancellingAt, DateTimeOffset? cancelledAt, InternalBatchRequestCounts requestCounts, IDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal BatchJob(string id, string @object, string endpoint, InternalBatchErrors errors, string inputFileId, string completionWindow, InternalBatchStatus status, string outputFileId, string errorFileId, DateTimeOffset createdAt, DateTimeOffset? inProgressAt, DateTimeOffset? expiresAt, DateTimeOffset? finalizingAt, DateTimeOffset? completedAt, DateTimeOffset? failedAt, DateTimeOffset? expiredAt, DateTimeOffset? cancellingAt, DateTimeOffset? cancelledAt, InternalBatchRequestCounts requestCounts, IDictionary<string, string> metadata, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;

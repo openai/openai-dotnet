@@ -5,6 +5,7 @@ import "./batch";
 import "./chat";
 import "./completions";
 import "./containers";
+import "./conversations";
 import "./embeddings";
 import "./evals";
 import "./files";

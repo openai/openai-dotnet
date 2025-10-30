@@ -81,7 +81,7 @@ internal class AsyncFineTuningCheckpointCollectionResult : AsyncCollectionResult
         Argument.AssertNotNull(page, nameof(page));
 
         PipelineResponse response = page.GetRawResponse();
-        InternalListFineTuningJobCheckpointsResponse list = ModelReaderWriter.Read<InternalListFineTuningJobCheckpointsResponse>(response.Content)!;
+        InternalListFineTuningJobCheckpointsResponse list = ModelReaderWriter.Read<InternalListFineTuningJobCheckpointsResponse>(response.Content, ModelReaderWriterOptions.Json, OpenAIContext.Default)!;
         return list.Data.ToAsyncEnumerable(_cancellationToken);
     }
 }

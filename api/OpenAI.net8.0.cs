@@ -20,6 +20,8 @@ namespace OpenAI {
         public virtual ChatClient GetChatClient(string model);
         [Experimental("OPENAI001")]
         public virtual ContainerClient GetContainerClient();
+        [Experimental("OPENAI001")]
+        public virtual ConversationClient GetConversationClient();
         public virtual EmbeddingClient GetEmbeddingClient(string model);
         [Experimental("OPENAI001")]
         public virtual EvaluationClient GetEvaluationClient();
@@ -1403,8 +1405,44 @@ namespace OpenAI.Batch {
         public virtual Task<CreateBatchOperation> CreateBatchAsync(BinaryContent content, bool waitUntilCompleted, RequestOptions options = null);
         public virtual ClientResult GetBatch(string batchId, RequestOptions options);
         public virtual Task<ClientResult> GetBatchAsync(string batchId, RequestOptions options);
+        public virtual CollectionResult<BatchJob> GetBatches(BatchCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual CollectionResult GetBatches(string after, int? limit, RequestOptions options);
+        public virtual AsyncCollectionResult<BatchJob> GetBatchesAsync(BatchCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult GetBatchesAsync(string after, int? limit, RequestOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class BatchCollectionOptions : IJsonModel<BatchCollectionOptions>, IPersistableModel<BatchCollectionOptions> {
+        public string AfterId { get; set; }
+        public int? PageSizeLimit { get; set; }
+        protected virtual BatchCollectionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual BatchCollectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class BatchJob : IJsonModel<BatchJob>, IPersistableModel<BatchJob> {
+        public DateTimeOffset? CancelledAt { get; }
+        public DateTimeOffset? CancellingAt { get; }
+        public DateTimeOffset? CompletedAt { get; }
+        public string CompletionWindow { get; }
+        public DateTimeOffset CreatedAt { get; }
+        public string Endpoint { get; }
+        public string ErrorFileId { get; }
+        public DateTimeOffset? ExpiredAt { get; }
+        public DateTimeOffset? ExpiresAt { get; }
+        public DateTimeOffset? FailedAt { get; }
+        public DateTimeOffset? FinalizingAt { get; }
+        public string Id { get; }
+        public DateTimeOffset? InProgressAt { get; }
+        public string InputFileId { get; }
+        public IDictionary<string, string> Metadata { get; }
+        public string Object { get; }
+        public string OutputFileId { get; }
+        protected virtual BatchJob JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public static explicit operator BatchJob(ClientResult result);
+        protected virtual BatchJob PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
     public class CreateBatchOperation : OperationResult {
@@ -2859,6 +2897,59 @@ namespace OpenAI.Containers {
         public static explicit operator DeleteContainerResponse(ClientResult result);
         protected virtual DeleteContainerResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+}
+namespace OpenAI.Conversations {
+    [Experimental("OPENAI001")]
+    public class ConversationClient {
+        protected ConversationClient();
+        public ConversationClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public ConversationClient(ApiKeyCredential credential);
+        public ConversationClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public ConversationClient(AuthenticationPolicy authenticationPolicy);
+        protected internal ConversationClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        public ConversationClient(string apiKey);
+        [Experimental("OPENAI001")]
+        public Uri Endpoint { get; }
+        public ClientPipeline Pipeline { get; }
+        public virtual ClientResult CreateConversation(BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult> CreateConversationAsync(BinaryContent content, RequestOptions options = null);
+        public virtual ClientResult CreateConversationItems(string conversationId, BinaryContent content, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
+        public virtual Task<ClientResult> CreateConversationItemsAsync(string conversationId, BinaryContent content, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
+        public virtual ClientResult DeleteConversation(string conversationId, RequestOptions options = null);
+        public virtual Task<ClientResult> DeleteConversationAsync(string conversationId, RequestOptions options = null);
+        public virtual ClientResult DeleteConversationItem(string conversationId, string itemId, RequestOptions options = null);
+        public virtual Task<ClientResult> DeleteConversationItemAsync(string conversationId, string itemId, RequestOptions options = null);
+        public virtual ClientResult GetConversation(string conversationId, RequestOptions options = null);
+        public virtual Task<ClientResult> GetConversationAsync(string conversationId, RequestOptions options = null);
+        public virtual ClientResult GetConversationItem(string conversationId, string itemId, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
+        public virtual Task<ClientResult> GetConversationItemAsync(string conversationId, string itemId, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
+        public virtual ClientResult GetConversationItems(string conversationId, long? limit = null, string order = null, string after = null, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
+        public virtual Task<ClientResult> GetConversationItemsAsync(string conversationId, long? limit = null, string order = null, string after = null, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
+        public virtual ClientResult UpdateConversation(string conversationId, BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult> UpdateConversationAsync(string conversationId, BinaryContent content, RequestOptions options = null);
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct IncludedConversationItemProperty : IEquatable<IncludedConversationItemProperty> {
+        public IncludedConversationItemProperty(string value);
+        public static IncludedConversationItemProperty CodeInterpreterCallOutputs { get; }
+        public static IncludedConversationItemProperty ComputerCallOutputImageUri { get; }
+        public static IncludedConversationItemProperty FileSearchCallResults { get; }
+        public static IncludedConversationItemProperty MessageInputImageUri { get; }
+        public static IncludedConversationItemProperty MessageOutputTextLogprobs { get; }
+        public static IncludedConversationItemProperty ReasoningEncryptedContent { get; }
+        public static IncludedConversationItemProperty WebSearchCallActionSources { get; }
+        public static IncludedConversationItemProperty WebSearchCallResults { get; }
+        public readonly bool Equals(IncludedConversationItemProperty other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(IncludedConversationItemProperty left, IncludedConversationItemProperty right);
+        public static implicit operator IncludedConversationItemProperty(string value);
+        public static implicit operator IncludedConversationItemProperty?(string value);
+        public static bool operator !=(IncludedConversationItemProperty left, IncludedConversationItemProperty right);
+        public override readonly string ToString();
     }
 }
 namespace OpenAI.Embeddings {
@@ -6057,6 +6148,7 @@ namespace OpenAI.Responses {
         public static WebSearchCallResponseItem CreateWebSearchCallItem();
         protected virtual ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public static explicit operator ResponseItem(ClientResult result);
         protected virtual ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }

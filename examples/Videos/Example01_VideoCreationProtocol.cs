@@ -16,7 +16,7 @@ namespace OpenAI.Examples;
 public partial class VideoExamples
 {
     [Test]
-    public void Example01_VideoCreation()
+    public void Example01_VideoCreationProtocol()
     {
         // 1) Create the client
         VideoClient client = new(new ApiKeyCredential(Environment.GetEnvironmentVariable("OPENAI_API_KEY")));

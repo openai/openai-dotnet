@@ -3,6 +3,7 @@ import "./client/audio.client.tsp";
 import "./client/batch.client.tsp";
 import "./client/chat.client.tsp";
 import "./client/containers.client.tsp";
+import "./client/conversations.client.tsp";
 import "./client/embeddings.client.tsp";
 import "./client/files.client.tsp";
 import "./client/fine-tuning.client.tsp";
@@ -18,6 +19,7 @@ import "./client/videos.client.tsp";
 
 import "./client/models/assistants.models.tsp";
 import "./client/models/audio.models.tsp";
+import "./client/models/batch.models.tsp";
 import "./client/models/chat.models.tsp";
 import "./client/models/container.models.tsp";
 import "./client/models/common.models.tsp";

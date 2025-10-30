@@ -53,7 +53,7 @@ internal class AsyncResponseItemCollectionResult : AsyncCollectionResult<Respons
         Argument.AssertNotNull(page, nameof(page));
 
         PipelineResponse response = page.GetRawResponse();
-        InternalResponseItemList list = ModelReaderWriter.Read<InternalResponseItemList>(response.Content)!;
+        InternalResponseItemList list = ModelReaderWriter.Read<InternalResponseItemList>(response.Content, ModelReaderWriterOptions.Json, OpenAIContext.Default)!;
         return list.Data.ToAsyncEnumerable(_options?.CancellationToken ?? default);
     }
 

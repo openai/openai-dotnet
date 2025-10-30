@@ -10,5 +10,5 @@ namespace OpenAI.Realtime;
 [CodeGenVisibility(nameof(Kind), CodeGenVisibility.Public)]
 public partial class RealtimeUpdate
 {
-    public BinaryData GetRawContent() => ModelReaderWriter.Write(this);
+    public BinaryData GetRawContent() => ModelReaderWriter.Write(this, ModelReaderWriterOptions.Json, OpenAIContext.Default);
 }
