@@ -244,7 +244,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
                     outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
                     moderationLevel: ImageGenerationToolModerationLevel.Auto,
                     background: ImageGenerationToolBackground.Transparent,
-                    inputFidelityLevel: ImageGenerationToolInputFidelityLevel.High)
+                    inputFidelity: ImageGenerationToolInputFidelity.High)
             }
         };
 
@@ -264,7 +264,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
         Assert.That(imageGenResponse.Status, Is.EqualTo(ImageGenerationCallStatus.Completed));
-        Assert.That(imageGenResponse.GeneratedImageBytes.ToArray(), Is.Not.Null.And.Not.Empty);
+        Assert.That(imageGenResponse.ImageResultBytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
 
     [RecordedTest]
@@ -384,7 +384,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
         Assert.That(imageGenResponse.Status, Is.EqualTo(ImageGenerationCallStatus.Completed));
-        Assert.That(imageGenResponse.GeneratedImageBytes.ToArray(), Is.Not.Null.And.Not.Empty);
+        Assert.That(imageGenResponse.ImageResultBytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
 
     [RecordedTest]
@@ -419,7 +419,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
         Assert.That(imageGenResponse.Status, Is.EqualTo(ImageGenerationCallStatus.Completed));
-        Assert.That(imageGenResponse.GeneratedImageBytes.ToArray(), Is.Not.Null.And.Not.Empty);
+        Assert.That(imageGenResponse.ImageResultBytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
 
     [RecordedTest]
@@ -471,7 +471,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
         Assert.That(imageGenResponse.Status, Is.EqualTo(ImageGenerationCallStatus.Completed));
-        Assert.That(imageGenResponse.GeneratedImageBytes.ToArray(), Is.Not.Null.And.Not.Empty);
+        Assert.That(imageGenResponse.ImageResultBytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
 
     [RecordedTest]

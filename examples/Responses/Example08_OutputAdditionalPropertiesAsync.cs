@@ -25,13 +25,13 @@ public partial class ResponseExamples
                 ResponseTool.CreateImageGenerationTool(
                     model: "gpt-image-1",
                     outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
-                    inputFidelityLevel: ImageGenerationToolInputFidelityLevel.High)
+                    inputFidelity: ImageGenerationToolInputFidelity.High)
             }
         };
 
         OpenAIResponse response = await client.CreateResponseAsync("Generate an image of gray tabby cat hugging an otter with an orange scarf", options);
         ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[1];
-        BinaryData bytes = imageGenResponse.GeneratedImageBytes;
+        BinaryData bytes = imageGenResponse.ImageResultBytes;
 
         using FileStream stream = File.OpenWrite($"{Guid.NewGuid()}.png");
         bytes.ToStream().CopyTo(stream);

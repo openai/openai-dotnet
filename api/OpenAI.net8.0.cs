@@ -5210,8 +5210,8 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ImageGenerationCallResponseItem : ResponseItem, IJsonModel<ImageGenerationCallResponseItem>, IPersistableModel<ImageGenerationCallResponseItem> {
-        public ImageGenerationCallResponseItem(BinaryData generatedImageBytes);
-        public BinaryData GeneratedImageBytes { get; set; }
+        public ImageGenerationCallResponseItem(BinaryData imageResultBytes);
+        public BinaryData ImageResultBytes { get; set; }
         public ImageGenerationCallStatus? Status { get; }
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -5229,7 +5229,7 @@ namespace OpenAI.Responses {
     public class ImageGenerationTool : ResponseTool, IJsonModel<ImageGenerationTool>, IPersistableModel<ImageGenerationTool> {
         public ImageGenerationTool();
         public ImageGenerationToolBackground? Background { get; set; }
-        public ImageGenerationToolInputFidelityLevel? InputFidelityLevel { get; set; }
+        public ImageGenerationToolInputFidelity? InputFidelity { get; set; }
         public ImageGenerationToolInputImageMask InputImageMask { get; set; }
         public string Model { get; set; }
         public ImageGenerationToolModerationLevel? ModerationLevel { get; set; }
@@ -5261,19 +5261,19 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
-    public readonly partial struct ImageGenerationToolInputFidelityLevel : IEquatable<ImageGenerationToolInputFidelityLevel> {
-        public ImageGenerationToolInputFidelityLevel(string value);
-        public static ImageGenerationToolInputFidelityLevel High { get; }
-        public static ImageGenerationToolInputFidelityLevel Low { get; }
-        public readonly bool Equals(ImageGenerationToolInputFidelityLevel other);
+    public readonly partial struct ImageGenerationToolInputFidelity : IEquatable<ImageGenerationToolInputFidelity> {
+        public ImageGenerationToolInputFidelity(string value);
+        public static ImageGenerationToolInputFidelity High { get; }
+        public static ImageGenerationToolInputFidelity Low { get; }
+        public readonly bool Equals(ImageGenerationToolInputFidelity other);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly bool Equals(object obj);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly int GetHashCode();
-        public static bool operator ==(ImageGenerationToolInputFidelityLevel left, ImageGenerationToolInputFidelityLevel right);
-        public static implicit operator ImageGenerationToolInputFidelityLevel(string value);
-        public static implicit operator ImageGenerationToolInputFidelityLevel?(string value);
-        public static bool operator !=(ImageGenerationToolInputFidelityLevel left, ImageGenerationToolInputFidelityLevel right);
+        public static bool operator ==(ImageGenerationToolInputFidelity left, ImageGenerationToolInputFidelity right);
+        public static implicit operator ImageGenerationToolInputFidelity(string value);
+        public static implicit operator ImageGenerationToolInputFidelity?(string value);
+        public static bool operator !=(ImageGenerationToolInputFidelity left, ImageGenerationToolInputFidelity right);
         public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
@@ -6041,7 +6041,7 @@ namespace OpenAI.Responses {
         public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight);
         public static FileSearchTool CreateFileSearchTool(IEnumerable<string> vectorStoreIds, int? maxResultCount = null, FileSearchToolRankingOptions rankingOptions = null, BinaryData filters = null);
         public static FunctionTool CreateFunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled, string functionDescription = null);
-        public static ImageGenerationTool CreateImageGenerationTool(string model, ImageGenerationToolQuality? quality = null, ImageGenerationToolSize? size = null, ImageGenerationToolOutputFileFormat? outputFileFormat = null, int? outputCompressionFactor = null, ImageGenerationToolModerationLevel? moderationLevel = null, ImageGenerationToolBackground? background = null, ImageGenerationToolInputFidelityLevel? inputFidelityLevel = null, ImageGenerationToolInputImageMask inputImageMask = null, int? partialImageCount = null);
+        public static ImageGenerationTool CreateImageGenerationTool(string model, ImageGenerationToolQuality? quality = null, ImageGenerationToolSize? size = null, ImageGenerationToolOutputFileFormat? outputFileFormat = null, int? outputCompressionFactor = null, ImageGenerationToolModerationLevel? moderationLevel = null, ImageGenerationToolBackground? background = null, ImageGenerationToolInputFidelity? inputFidelity = null, ImageGenerationToolInputImageMask inputImageMask = null, int? partialImageCount = null);
         public static McpTool CreateMcpTool(string serverLabel, McpToolConnectorId connectorId, string authorizationToken = null, string serverDescription = null, IDictionary<string, string> headers = null, McpToolFilter allowedTools = null, McpToolCallApprovalPolicy toolCallApprovalPolicy = null);
         public static McpTool CreateMcpTool(string serverLabel, Uri serverUri, string authorizationToken = null, string serverDescription = null, IDictionary<string, string> headers = null, McpToolFilter allowedTools = null, McpToolCallApprovalPolicy toolCallApprovalPolicy = null);
         public static WebSearchTool CreateWebSearchTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null);
