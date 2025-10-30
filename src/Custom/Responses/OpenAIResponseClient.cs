@@ -176,19 +176,19 @@ public partial class OpenAIResponseClient
             cancellationToken);
     }
 
-    public virtual ClientResult<ResponseResult> CreateResponse(CreateResponseOptions requestBody, CancellationToken cancellationToken = default)
+    public virtual ClientResult<ResponseResult> CreateResponse(CreateResponseOptions options, CancellationToken cancellationToken = default)
     {
-        Argument.AssertNotNull(requestBody, nameof(requestBody));
+        Argument.AssertNotNull(options, nameof(options));
 
-        ClientResult result = this.CreateResponse(requestBody, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        ClientResult result = this.CreateResponse(options, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
         return ClientResult.FromValue((ResponseResult)result.GetRawResponse().Content, result.GetRawResponse());
     }
 
-    public virtual async Task<ClientResult<ResponseResult>> CreateResponseAsync(CreateResponseOptions requestBody, CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<ResponseResult>> CreateResponseAsync(CreateResponseOptions options, CancellationToken cancellationToken = default)
     {
-        Argument.AssertNotNull(requestBody, nameof(requestBody));
+        Argument.AssertNotNull(options, nameof(options));
 
-        ClientResult result = await this.CreateResponseAsync(requestBody, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
+        ClientResult result = await this.CreateResponseAsync(options, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
         return ClientResult.FromValue((ResponseResult)result.GetRawResponse().Content, result.GetRawResponse());
     }
 
@@ -302,6 +302,24 @@ public partial class OpenAIResponseClient
         return ClientResult.FromValue(convenienceResult, protocolResult.GetRawResponse());
     }
 
+    public async Task<ClientResult<ResponseResult>> GetResponseAsync(GetResponseOptions options, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(options, nameof(options));
+        Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
+
+        ClientResult protocolResult = await GetResponseAsync(options.ResponseId, stream: options.Stream, startingAfter: options.StartingAfter, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return ClientResult.FromValue((ResponseResult)protocolResult, protocolResult.GetRawResponse());
+    }
+
+    public virtual ClientResult<ResponseResult> GetResponse(GetResponseOptions options, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(options, nameof(options));
+        Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
+
+        ClientResult protocolResult = GetResponse(options.ResponseId, stream: options.Stream, startingAfter: options.StartingAfter, cancellationToken.ToRequestOptions());
+        return ClientResult.FromValue((ResponseResult)protocolResult, protocolResult.GetRawResponse());
+    }
+
     public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, int? startingAfter = null, CancellationToken cancellationToken = default)
     {
         return GetResponseStreamingAsync(responseId, cancellationToken.ToRequestOptions(streaming: true), startingAfter);
@@ -320,6 +338,33 @@ public partial class OpenAIResponseClient
             async () => await GetResponseAsync(responseId, stream: true, startingAfter, requestOptions).ConfigureAwait(false),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
             requestOptions.CancellationToken);
+    }
+
+    public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(GetResponseOptions options, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(options, nameof(options));
+        Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
+
+        return new SseUpdateCollection<StreamingResponseUpdate>(
+            () => GetResponse(options.ResponseId, stream: true, startingAfter: options.StartingAfter, cancellationToken.ToRequestOptions(streaming: true)),
+            StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
+            cancellationToken);
+    }
+
+    public AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(GetResponseOptions options, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(options, nameof(options));
+        Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
+
+        if (options.Stream is true)
+        {
+            throw new InvalidOperationException("'options.Stream' must be 'true' when calling 'GetResponseStreamingAsync'.");
+        }
+
+        return new AsyncSseUpdateCollection<StreamingResponseUpdate>(
+            async () => await GetResponseAsync(options.ResponseId, options.Stream, startingAfter: options.StartingAfter, cancellationToken.ToRequestOptions()).ConfigureAwait(false),
+            StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
+            cancellationToken);
     }
 
     public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, int? startingAfter = null, CancellationToken cancellationToken = default)
