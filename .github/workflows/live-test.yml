@@ -29,6 +29,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Restore tools
+        run: dotnet tool restore --configfile nuget.config
+
       - name: Run live tests
         run: dotnet test ./tests/OpenAI.Tests.csproj
           --configuration Release

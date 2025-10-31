@@ -36,6 +36,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Restore tools
+        run: dotnet tool restore --configfile nuget.config
+
       # Pack the client NuGet package and include URL back to the repository and release tag
       - name: Build and Pack
         run: dotnet pack
