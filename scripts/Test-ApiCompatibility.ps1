@@ -177,5 +177,5 @@ $experimentalNamespaces = @(
 Invoke-APICompat -ProjectPath $projectPath `
     -ReleasePath $releasePath `
     -PackageName "OpenAI" `
-    -BaselineVersion "2.4.0" `
+    -BaselineVersion "2.5.0" `
     -IgnoredNamespaces $experimentalNamespaces
