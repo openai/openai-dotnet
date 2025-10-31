@@ -7,7 +7,6 @@
 Thank you to our developer community members who helped to make the OpenAI client library better with their contributions to this release:
 
 - Maksim Kurnakov _([GitHub](https://github.com/kurnakovv))_
-- Benjamin Pinter _([GitHub](https://github.com/BenjaminDavidPinter))_
 
 ### Features Added
 
@@ -32,7 +31,6 @@ Thank you to our developer community members who helped to make the OpenAI clien
     - Go to the OpenAI.Chat and OpenAI.Responses section in this changelog for examples that can be extrapolated to Embeddings.
 - OpenAI.Responses:
   - Added the `Minimal` property to `ResponseReasoningEffortLevel`. _(A community contribution, courtesy of [kurnakovv](https://github.com/kurnakovv))_
-  - Added the `Model` property to `OpenAIResponseClient`. _(A community contribution, courtesy of [BenjaminDavidPinter](https://github.com/BenjaminDavidPinter))_
   - Added the `ContainerFileCitationMessageAnnotation` class which is derived from `ResponseMessageAnnotation` and is used to cite files in the container of the Code Interpreter tool.
   - Enabled support for the Image Generation tool, which can be used to generate images using models like `gpt-image-1`.
     - Users can add the new `ImageGenerationTool` to the `Tools` property of their `ResponseCreationOptions` and configure it using properties such as `Background`, `Quality`, `Size`, and more.
@@ -70,10 +68,16 @@ Thank you to our developer community members who helped to make the OpenAI clien
 
 ## 2.5.0 (2025-09-23)
 
+### Acknowledgments
+
+Thank you to our developer community members who helped to make the OpenAI client library better with their contributions to this release:
+
+- Benjamin Pinter _([GitHub](https://github.com/BenjaminDavidPinter))_
+
 ### Features Added
 
 - OpenAI.Responses:
-  - Added the `Model` property to `OpenAIResponseClient`.
+  - Added the `Model` property to `OpenAIResponseClient`. _(A community contribution, courtesy of [BenjaminDavidPinter](https://github.com/BenjaminDavidPinter))_
   - Added the `ServiceDescription` property to `McpTool`.
   - Enabled support for connectors, which are OpenAI-maintained MCP wrappers for popular services like Microsoft Outlook or Dropbox.
     - Added the `ConnectorId` property to `McpTool`.
