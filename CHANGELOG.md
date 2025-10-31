@@ -13,7 +13,7 @@ Thank you to our developer community members who helped to make the OpenAI clien
 
 - OpenAI.Chat:
   - Added the `Minimal` property to `ChatReasoningEffortLevel`. _(A community contribution, courtesy of [kurnakovv](https://github.com/kurnakovv))_
-  - Added support for System.Client.Model's `JsonPatch`, which enables users to get and set additional properties in response and request payloads.
+  - Added support for System.Client.Model's `JsonPatch`, which enables users to get and set additional JSON properties in response and request payloads.
     - See the following examples for more information:
       - [AdditionalProperties](https://github.com/openai/openai-dotnet/blob/main/examples/Chat/Example10_AdditionalProperties.cs)
       - [AdditionalPropertiesAsync](https://github.com/openai/openai-dotnet/blob/main/examples/Chat/Example10_AdditionalPropertiesAsync.cs)
@@ -21,14 +21,14 @@ Thank you to our developer community members who helped to make the OpenAI clien
 - OpenAI.Conversations:
   - Introduced the new `ConversationClient` to support the Conversations API with protocol methods for the following operations:
     - `CreateConversation` and `CreateConversationAsync`
-    - `CreateConversationItems` and `CreateConversationItemsAsync`
-    - `DeleteConversation` and `DeleteConversationAsync`
-    - `DeleteConversationItem` and `DeleteConversationItemAsync`
     - `GetConversation` and `GetConversationAsync`
-    - `GetConversationItems` and `GetConversationItemsAsync`
     - `UpdateConversation` and `UpdateConversationAsync`
+    - `DeleteConversation` and `DeleteConversationAsync`
+    - `CreateConversationItems` and `CreateConversationItemsAsync`
+    - `GetConversationItems` and `GetConversationItemsAsync`
+    - `DeleteConversationItem` and `DeleteConversationItemAsync`
 - OpenAI.Embeddings:
-  - Added support for System.Client.Model's `JsonPatch`, which enables users to get and set additional properties in response and request payloads.
+  - Added support for System.Client.Model's `JsonPatch`, which enables users to get and set additional JSON properties in response and request payloads.
     - Go to the OpenAI.Chat and OpenAI.Responses section in this changelog for examples that can be extrapolated to Embeddings.
 - OpenAI.Responses:
   - Added the `Minimal` property to `ResponseReasoningEffortLevel`. _(A community contribution, courtesy of [kurnakovv](https://github.com/kurnakovv))_
@@ -36,7 +36,7 @@ Thank you to our developer community members who helped to make the OpenAI clien
   - Added the `ContainerFileCitationMessageAnnotation` class which is derived from `ResponseMessageAnnotation` and is used to cite files in the container of the Code Interpreter tool.
   - Enabled support for the Image Generation tool, which can be used to generate images using models like `gpt-image-1`.
     - Users can add the new `ImageGenerationTool` to the `Tools` property of their `ResponseCreationOptions` and configure it using properties such as `Background`, `Quality`, `Size`, and more.
-  - Added support for System.Client.Model's `JsonPatch`, which enables users to get and set additional properties in response and request payloads.
+  - Added support for System.Client.Model's `JsonPatch`, which enables users to get and set additional JSON properties in response and request payloads.
     - See the following examples for more information:
       - [InputAdditionalProperties](https://github.com/openai/openai-dotnet/blob/main/examples/Responses/Example07_InputAdditionalProperties.cs)
       - [InputAdditionalPropertiesAsync](https://github.com/openai/openai-dotnet/blob/main/examples/Responses/Example07_InputAdditionalPropertiesAsync.cs)
@@ -48,11 +48,11 @@ Thank you to our developer community members who helped to make the OpenAI clien
 - OpenAI.Videos:
   - Introduced the new `VideoClient` to support the Videos API with protocol methods for the following operations:
     - `CreateVideo` and `CreateVideoAsync`
-    - `CreateVideoRemix` and `GetVideoRemixAsync`
+    - `GetVideo` and `GetVideoAsync`
     - `DeleteVideo` and `DeleteVideoAsync`
     - `DownloadVideo` and `DownloadVideoAsync`
-    - `GetVideo` and `GetVideoAsync`
     - `GetVideos` and `GetVideosAsync`
+    - `CreateVideoRemix` and `GetVideoRemixAsync`
 
 ### Bugs Fixed
 
