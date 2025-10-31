@@ -14,6 +14,7 @@ using static OpenAI.Tests.TestHelpers;
 namespace OpenAI.Tests.Chat;
 
 [Category("Chat")]
+[Category("ChatTools")]
 public class ChatToolTests : OpenAIRecordedTestBase
 {
     public enum SchemaPresence { WithSchema, WithoutSchema }
