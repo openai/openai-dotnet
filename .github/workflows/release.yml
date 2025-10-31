@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Restore tools
-        run: dotnet tool restore --configfile nuget.config
+        run: dotnet tool restore --add-source https://pkgs.dev.azure.com/azure-sdk/public/_packaging/azure-sdk-for-net/nuget/v3/index.json
 
       # Pack the client NuGet package and include URL back to the repository and release tag
       - name: Build and Pack
