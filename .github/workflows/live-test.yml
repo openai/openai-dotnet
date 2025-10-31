@@ -37,8 +37,8 @@ jobs:
           --configuration Release
           --filter="(TestCategory=Chat|TestCategory=Embeddings|TestCategory=Responses)&TestCategory!=MPFD"
           --logger "trx;LogFilePrefix=live"
-          --results-directory ${{github.workspace}}/artifacts/test-results
-          ${{ env.version_suffix_args}}
+          --results-directory ${{ github.workspace }}/artifacts/test-results
+          ${{ env.version_suffix_args }}
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
