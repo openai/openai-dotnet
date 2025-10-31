@@ -32,10 +32,10 @@ jobs:
       - name: Restore tools
         run: dotnet tool restore --add-source https://pkgs.dev.azure.com/azure-sdk/public/_packaging/azure-sdk-for-net/nuget/v3/index.json
 
-      - name: Run live tests
+      - name: Run recorded tests
         run: dotnet test ./tests/OpenAI.Tests.csproj
           --configuration Release
-          --filter="TestCategory=Chat"
+          --filter="(TestCategory=Chat|TestCategory=Embeddings|TestCategory=Responses)&TestCategory!=MPFD"
           --logger "trx;LogFilePrefix=live"
           --results-directory ${{github.workspace}}/artifacts/test-results
           ${{ env.version_suffix_args}}

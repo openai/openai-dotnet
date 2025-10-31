@@ -40,7 +40,7 @@ jobs:
         run: dotnet tool restore --add-source https://pkgs.dev.azure.com/azure-sdk/public/_packaging/azure-sdk-for-net/nuget/v3/index.json
 
       # Pack the client NuGet package and include URL back to the repository and release tag
-      - name: Build and Pack
+      - name: Build and pack
         run: dotnet pack
           --configuration Release
           --output "${{ github.workspace }}/artifacts/packages"
@@ -48,17 +48,17 @@ jobs:
           /p:PackageReleaseNotes="${{ github.server_url }}/${{ github.repository }}/blob/${{ github.event.release.tag_name }}/CHANGELOG.md"
           ${{ env.version_suffix_args }}
 
-      - name: Unit Test
+      - name: Run unit tests
         run: dotnet test
           --configuration Release
           --filter="TestCategory=Smoke&TestCategory!=Manual"
           --logger "trx;LogFileName=${{ github.workspace }}/artifacts/test-results/smoke.trx"
           ${{ env.version_suffix_args }}
 
-      - name: Run Live Tests
+      - name: Run recorded tests
         run: dotnet test ./tests/OpenAI.Tests.csproj
           --configuration Release
-          --filter="TestCategory!=Smoke&TestCategory!=Assistants&TestCategory!=StoredChat&TestCategory!=Images&TestCategory!=Uploads&TestCategory!=Moderations&TestCategory!=FineTuning&TestCategory!=Containers&TestCategory!=Conversation&TestCategory!=MCP&TestCategory!=Manual"
+          --filter="(TestCategory=Chat|TestCategory=Embeddings|TestCategory=Responses)&TestCategory!=MPFD"
           --logger "trx;LogFilePrefix=live"
           --results-directory ${{ github.workspace }}/artifacts/test-results
           ${{ env.version_suffix_args }}
@@ -121,7 +121,7 @@ jobs:
         path: ${{ github.workspace }}/build-artifacts
         
   deploy:
-    name: Publish Package
+    name: Publish package
     needs: sign
     runs-on: ubuntu-latest
     steps:

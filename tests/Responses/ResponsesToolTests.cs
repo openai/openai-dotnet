@@ -18,7 +18,7 @@ using static OpenAI.Tests.TestHelpers;
 namespace OpenAI.Tests.Responses;
 
 [Category("Responses")]
-[Category("MCP")]
+[Category("ResponsesTools")]
 public partial class ResponsesToolTests : OpenAIRecordedTestBase
 {
     public ResponsesToolTests(bool isAsync) : base(isAsync)
