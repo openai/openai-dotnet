@@ -35,12 +35,12 @@ namespace OpenAI.Containers
 
         public virtual CollectionResult<ContainerResource> GetContainers(ContainerCollectionOptions options = default, CancellationToken cancellationToken = default)
         {
-            return new ContainerClientGetContainersCollectionResultOfT(this, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+            return new ContainerClientGetContainersCollectionResultOfT(this, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, cancellationToken.ToRequestOptions());
         }
 
         public virtual AsyncCollectionResult<ContainerResource> GetContainersAsync(ContainerCollectionOptions options = default, CancellationToken cancellationToken = default)
         {
-            return new ContainerClientGetContainersAsyncCollectionResultOfT(this, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+            return new ContainerClientGetContainersAsyncCollectionResultOfT(this, options?.PageSizeLimit, options?.Order?.ToString(), options?.AfterId, cancellationToken.ToRequestOptions());
         }
 
         public virtual ClientResult CreateContainer(BinaryContent content, RequestOptions options = null)
@@ -63,7 +63,7 @@ namespace OpenAI.Containers
         {
             Argument.AssertNotNull(body, nameof(body));
 
-            ClientResult result = CreateContainer(body, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+            ClientResult result = CreateContainer(body, cancellationToken.ToRequestOptions());
             return ClientResult.FromValue((ContainerResource)result, result.GetRawResponse());
         }
 
@@ -71,7 +71,7 @@ namespace OpenAI.Containers
         {
             Argument.AssertNotNull(body, nameof(body));
 
-            ClientResult result = await CreateContainerAsync(body, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
+            ClientResult result = await CreateContainerAsync(body, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
             return ClientResult.FromValue((ContainerResource)result, result.GetRawResponse());
         }
 
@@ -95,7 +95,7 @@ namespace OpenAI.Containers
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
 
-            ClientResult result = GetContainer(containerId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+            ClientResult result = GetContainer(containerId, cancellationToken.ToRequestOptions());
             return ClientResult.FromValue((ContainerResource)result, result.GetRawResponse());
         }
 
@@ -103,7 +103,7 @@ namespace OpenAI.Containers
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
 
-            ClientResult result = await GetContainerAsync(containerId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
+            ClientResult result = await GetContainerAsync(containerId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
             return ClientResult.FromValue((ContainerResource)result, result.GetRawResponse());
         }
 
@@ -127,7 +127,7 @@ namespace OpenAI.Containers
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
 
-            ClientResult result = DeleteContainer(containerId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+            ClientResult result = DeleteContainer(containerId, cancellationToken.ToRequestOptions());
             return ClientResult.FromValue((DeleteContainerResponse)result, result.GetRawResponse());
         }
 
@@ -135,7 +135,7 @@ namespace OpenAI.Containers
         {
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
 
-            ClientResult result = await DeleteContainerAsync(containerId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
+            ClientResult result = await DeleteContainerAsync(containerId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
             return ClientResult.FromValue((DeleteContainerResponse)result, result.GetRawResponse());
         }
 
@@ -193,7 +193,7 @@ namespace OpenAI.Containers
                 options?.PageSizeLimit,
                 options?.Order?.ToString(),
                 options?.AfterId,
-                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+                cancellationToken.ToRequestOptions());
         }
 
         public virtual AsyncCollectionResult<ContainerFileResource> GetContainerFilesAsync(string containerId, ContainerFileCollectionOptions options = default, CancellationToken cancellationToken = default)
@@ -206,7 +206,7 @@ namespace OpenAI.Containers
                 options?.PageSizeLimit,
                 options?.Order?.ToString(),
                 options?.AfterId,
-                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+                cancellationToken.ToRequestOptions());
         }
 
         public virtual ClientResult GetContainerFile(string containerId, string fileId, RequestOptions options)
@@ -232,7 +232,7 @@ namespace OpenAI.Containers
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
             Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
-            ClientResult result = GetContainerFile(containerId, fileId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+            ClientResult result = GetContainerFile(containerId, fileId, cancellationToken.ToRequestOptions());
             return ClientResult.FromValue((ContainerFileResource)result, result.GetRawResponse());
         }
 
@@ -241,7 +241,7 @@ namespace OpenAI.Containers
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
             Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
-            ClientResult result = await GetContainerFileAsync(containerId, fileId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
+            ClientResult result = await GetContainerFileAsync(containerId, fileId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
             return ClientResult.FromValue((ContainerFileResource)result, result.GetRawResponse());
         }
 
@@ -268,7 +268,7 @@ namespace OpenAI.Containers
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
             Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
-            ClientResult result = DeleteContainerFile(containerId, fileId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+            ClientResult result = DeleteContainerFile(containerId, fileId, cancellationToken.ToRequestOptions());
             return ClientResult.FromValue((DeleteContainerFileResponse)result, result.GetRawResponse());
         }
 
@@ -277,7 +277,7 @@ namespace OpenAI.Containers
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
             Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
-            ClientResult result = await DeleteContainerFileAsync(containerId, fileId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
+            ClientResult result = await DeleteContainerFileAsync(containerId, fileId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
             return ClientResult.FromValue((DeleteContainerFileResponse)result, result.GetRawResponse());
         }
 
@@ -304,7 +304,7 @@ namespace OpenAI.Containers
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
             Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
-            ClientResult result = DownloadContainerFile(containerId, fileId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+            ClientResult result = DownloadContainerFile(containerId, fileId, cancellationToken.ToRequestOptions());
             return ClientResult.FromValue(result.GetRawResponse().Content, result.GetRawResponse());
         }
 
@@ -313,7 +313,7 @@ namespace OpenAI.Containers
             Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
             Argument.AssertNotNullOrEmpty(fileId, nameof(fileId));
 
-            ClientResult result = await DownloadContainerFileAsync(containerId, fileId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
+            ClientResult result = await DownloadContainerFileAsync(containerId, fileId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
             return ClientResult.FromValue(result.GetRawResponse().Content, result.GetRawResponse());
         }
     }

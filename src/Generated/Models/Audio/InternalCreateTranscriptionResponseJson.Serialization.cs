@@ -152,7 +152,7 @@ namespace OpenAI.Audio
 
         public static explicit operator InternalCreateTranscriptionResponseJson(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
+            PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeInternalCreateTranscriptionResponseJson(document.RootElement, ModelSerializationExtensions.WireOptions);
         }

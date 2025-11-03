@@ -101,7 +101,7 @@ namespace OpenAI.Models
         [Experimental("OPENAI001")]
         public static explicit operator OpenAIModelCollection(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
+            PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeOpenAIModelCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
