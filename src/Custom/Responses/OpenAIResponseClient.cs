@@ -411,6 +411,26 @@ public partial class OpenAIResponseClient
         return ClientResult.FromValue(convenienceResult, protocolResult.GetRawResponse());
     }
 
+    public virtual ClientResult<ResponseItemList> GetResponseInputItems(GetResponseInputItemsOptions options = default, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(options, nameof(options));
+        Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
+
+        PipelineMessage message = CreateGetResponseInputItemsRequest(options.ResponseId, options.Limit, options.After, options.Order, options.Before, cancellationToken.ToRequestOptions());
+        ClientResult result = ClientResult.FromResponse(Pipeline.ProcessMessage(message, cancellationToken.ToRequestOptions()));
+        return ClientResult.FromValue((ResponseItemList)result, result.GetRawResponse());
+    }
+
+    public virtual async Task<ClientResult> GetResponseInputItemsAsync(GetResponseInputItemsOptions options = default, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(options, nameof(options));
+        Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
+
+        PipelineMessage message = CreateGetResponseInputItemsRequest(options.ResponseId, options.Limit, options.After, options.Order, options.Before, cancellationToken.ToRequestOptions());
+        ClientResult result = ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, cancellationToken.ToRequestOptions()).ConfigureAwait(false));
+        return ClientResult.FromValue((ResponseItemList)result, result.GetRawResponse());
+    }
+
     internal virtual ResponseCreationOptions CreatePerCallOptions(ResponseCreationOptions userOptions, IEnumerable<ResponseItem> inputItems, bool stream = false)
     {
         ResponseCreationOptions copiedOptions = userOptions is null
