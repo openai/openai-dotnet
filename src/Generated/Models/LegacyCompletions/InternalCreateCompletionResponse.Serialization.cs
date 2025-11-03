@@ -216,7 +216,7 @@ namespace OpenAI.LegacyCompletions
 
         public static explicit operator InternalCreateCompletionResponse(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
+            PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeInternalCreateCompletionResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
         }

@@ -149,7 +149,7 @@ namespace OpenAI.Assistants
 
         public static explicit operator AssistantDeletionResult(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
+            PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeAssistantDeletionResult(document.RootElement, ModelSerializationExtensions.WireOptions);
         }

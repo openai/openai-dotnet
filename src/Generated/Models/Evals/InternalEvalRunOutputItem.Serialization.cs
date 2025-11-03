@@ -319,7 +319,7 @@ namespace OpenAI.Evals
 
         public static explicit operator InternalEvalRunOutputItem(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
+            PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeInternalEvalRunOutputItem(document.RootElement, ModelSerializationExtensions.WireOptions);
         }

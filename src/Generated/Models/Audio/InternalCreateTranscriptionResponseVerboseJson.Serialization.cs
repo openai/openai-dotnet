@@ -219,7 +219,7 @@ namespace OpenAI.Audio
 
         public static explicit operator InternalCreateTranscriptionResponseVerboseJson(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
+            PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeInternalCreateTranscriptionResponseVerboseJson(document.RootElement, ModelSerializationExtensions.WireOptions);
         }

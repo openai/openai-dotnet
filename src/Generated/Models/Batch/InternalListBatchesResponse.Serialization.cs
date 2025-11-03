@@ -187,7 +187,7 @@ namespace OpenAI.Batch
 
         public static explicit operator InternalListBatchesResponse(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
+            PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeInternalListBatchesResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
         }

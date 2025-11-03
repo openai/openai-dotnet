@@ -59,7 +59,7 @@ namespace OpenAI.Chat
                 options?.Order?.ToString(),
                 options?.Metadata,
                 options?.Model,
-                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+                cancellationToken.ToRequestOptions());
         }
 
         [Experimental("OPENAI001")]
@@ -72,7 +72,7 @@ namespace OpenAI.Chat
                 options?.Order?.ToString(),
                 options?.Metadata,
                 options?.Model,
-                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+                cancellationToken.ToRequestOptions());
         }
 
         public virtual ClientResult CompleteChat(BinaryContent content, RequestOptions options = null)
@@ -186,7 +186,7 @@ namespace OpenAI.Chat
                 options?.AfterId,
                 options?.PageSizeLimit,
                 options?.Order?.ToString(),
-                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+                cancellationToken.ToRequestOptions());
         }
 
         [Experimental("OPENAI001")]
@@ -200,7 +200,7 @@ namespace OpenAI.Chat
                 options?.AfterId,
                 options?.PageSizeLimit,
                 options?.Order?.ToString(),
-                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+                cancellationToken.ToRequestOptions());
         }
     }
 }
