@@ -74,7 +74,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-    <PackageReference Include="System.ClientModel" Version="1.7.0" />
+    <PackageReference Include="System.ClientModel" Version="1.8.0" />
     <PackageReference Include="System.Net.ServerSentEvents" Version="9.0.9" />
   </ItemGroup>
 
