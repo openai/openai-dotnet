@@ -4,17 +4,16 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
-using OpenAI;
 
 namespace OpenAI.Chat
 {
-    public partial class ChatCompletionMessageList : IJsonModel<ChatCompletionMessageList>
+    public partial class ChatCompletionMessageCollection : IJsonModel<ChatCompletionMessageCollection>
     {
-        internal ChatCompletionMessageList() : this(null, null, null, null, default, default)
+        internal ChatCompletionMessageCollection() : this(null, null, null, null, default, default)
         {
         }
 
-        void IJsonModel<ChatCompletionMessageList>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<ChatCompletionMessageCollection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -31,10 +30,10 @@ namespace OpenAI.Chat
 
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionMessageList>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionMessageCollection>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(ChatCompletionMessageList)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(ChatCompletionMessageCollection)} does not support writing '{format}' format.");
             }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (!Patch.Contains("$.object"u8))
@@ -85,20 +84,20 @@ namespace OpenAI.Chat
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        ChatCompletionMessageList IJsonModel<ChatCompletionMessageList>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        ChatCompletionMessageCollection IJsonModel<ChatCompletionMessageCollection>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected virtual ChatCompletionMessageList JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual ChatCompletionMessageCollection JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionMessageList>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionMessageCollection>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(ChatCompletionMessageList)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(ChatCompletionMessageCollection)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeChatCompletionMessageList(document.RootElement, null, options);
         }
 
-        internal static ChatCompletionMessageList DeserializeChatCompletionMessageList(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static ChatCompletionMessageCollection DeserializeChatCompletionMessageList(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -146,7 +145,7 @@ namespace OpenAI.Chat
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ChatCompletionMessageList(
+            return new ChatCompletionMessageCollection(
                 @object,
                 data0,
                 firstId,
@@ -155,25 +154,25 @@ namespace OpenAI.Chat
                 patch);
         }
 
-        BinaryData IPersistableModel<ChatCompletionMessageList>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<ChatCompletionMessageCollection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionMessageList>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionMessageCollection>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(ChatCompletionMessageList)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ChatCompletionMessageCollection)} does not support writing '{options.Format}' format.");
             }
         }
 
-        ChatCompletionMessageList IPersistableModel<ChatCompletionMessageList>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        ChatCompletionMessageCollection IPersistableModel<ChatCompletionMessageCollection>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        protected virtual ChatCompletionMessageList PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual ChatCompletionMessageCollection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionMessageList>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionMessageCollection>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -182,13 +181,13 @@ namespace OpenAI.Chat
                         return DeserializeChatCompletionMessageList(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(ChatCompletionMessageList)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ChatCompletionMessageCollection)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<ChatCompletionMessageList>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<ChatCompletionMessageCollection>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        public static explicit operator ChatCompletionMessageList(ClientResult result)
+        public static explicit operator ChatCompletionMessageCollection(ClientResult result)
         {
             using PipelineResponse response = result.GetRawResponse();
             BinaryData data = response.Content;

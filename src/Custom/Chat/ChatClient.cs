@@ -413,24 +413,24 @@ public partial class ChatClient
 
     [Experimental("OPENAI001")]
     [OverloadResolutionPriority(2)]
-    public virtual ClientResult<ChatCompletionMessageList> GetChatCompletionMessages(GetChatCompletionMessageOptions options, CancellationToken cancellationToken = default)
+    public virtual ClientResult<ChatCompletionMessageCollection> GetChatCompletionMessages(GetChatCompletionMessageOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(options.CompletionId, nameof(options.CompletionId));
 
         PipelineMessage message = CreateGetChatCompletionMessagesRequest(options.CompletionId, options.After, options.Limit, options.Order, cancellationToken.ToRequestOptions());
         ClientResult result = ClientResult.FromResponse(Pipeline.ProcessMessage(message, cancellationToken.ToRequestOptions()));
-        return ClientResult.FromValue((ChatCompletionMessageList)result, result.GetRawResponse());
+        return ClientResult.FromValue((ChatCompletionMessageCollection)result, result.GetRawResponse());
     }
 
     [Experimental("OPENAI001")]
     [OverloadResolutionPriority(2)]
-    public virtual async Task<ClientResult<ChatCompletionMessageList>> GetChatCompletionMessagesAsync(GetChatCompletionMessageOptions options, CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<ChatCompletionMessageCollection>> GetChatCompletionMessagesAsync(GetChatCompletionMessageOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(options.CompletionId, nameof(options.CompletionId));
 
         PipelineMessage message = CreateGetChatCompletionMessagesRequest(options.CompletionId, options.After, options.Limit, options.Order, cancellationToken.ToRequestOptions());
         ClientResult result = ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, cancellationToken.ToRequestOptions()).ConfigureAwait(false));
-        return ClientResult.FromValue((ChatCompletionMessageList)result, result.GetRawResponse());
+        return ClientResult.FromValue((ChatCompletionMessageCollection)result, result.GetRawResponse());
     }
 
     [Experimental("OPENAI001")]

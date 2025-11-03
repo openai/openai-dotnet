@@ -887,7 +887,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             CompletionId = completion.Id
         };
 
-        ChatCompletionMessageList messageList = null;
+        ChatCompletionMessageCollection messageList = null;
         int messageCount = 0;
 
         do

@@ -5,6 +5,7 @@ namespace System.ClientModel.Primitives;
 
 // TOOD: we should validate that we can just implement the interfaces on a struct to get additional properties support; this mean IJsonModel would have to be public
 // TODO: maybe we should merge JsonModel<T> and ExtensibleModel<T> into one class
+// Put this in SCM!!
 public abstract class JsonModel<T> : IJsonModel<T>, IPersistableModel<T>
 {
     protected abstract void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
