@@ -38,6 +38,7 @@ namespace OpenAI;
   }
 )
 @tag("Conversations")
+@list
 op listConversationItems(
   /** The ID of the conversation to list items for. */
   #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."

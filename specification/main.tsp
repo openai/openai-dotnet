@@ -21,9 +21,11 @@ import "./client/models/assistants.models.tsp";
 import "./client/models/audio.models.tsp";
 import "./client/models/batch.models.tsp";
 import "./client/models/chat.models.tsp";
-import "./client/models/container.models.tsp";
 import "./client/models/common.models.tsp";
+import "./client/models/containers.models.tsp";
+import "./client/models/conversations.models.tsp";
 import "./client/models/responses.models.tsp";
 import "./client/models/vector-stores.models.tsp";
+import "./client/models/videos.models.tsp";
 
 import "./base/entrypoints/sdk.dotnet";

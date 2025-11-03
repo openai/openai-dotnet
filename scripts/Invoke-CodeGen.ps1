@@ -32,7 +32,12 @@ function Invoke-ScriptWithLogging {
     $scriptString = $Script | Out-String
     Write-Host "--------------------------------------------------------------------------------`n> $scriptString"
     & $Script
+    $exitCode = $LASTEXITCODE
     Write-Host ""
+
+    if ($exitCode -ne 0) {
+        throw "Command failed with exit code $exitCode"
+    }
 }
 
 

@@ -46,10 +46,10 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.Value.ToSerialString());
             }
-            if (Optional.IsDefined(GeneratedImageBytes) && !Patch.Contains("$.result"u8))
+            if (Optional.IsDefined(ImageResultBytes) && !Patch.Contains("$.result"u8))
             {
                 writer.WritePropertyName("result"u8);
-                writer.WriteBase64StringValue(GeneratedImageBytes.ToArray(), "D");
+                writer.WriteBase64StringValue(ImageResultBytes.ToArray(), "D");
             }
             else
             {
@@ -85,7 +85,7 @@ namespace OpenAI.Responses
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             ImageGenerationCallStatus? status = default;
-            BinaryData generatedImageBytes = default;
+            BinaryData imageResultBytes = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -107,15 +107,15 @@ namespace OpenAI.Responses
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        generatedImageBytes = null;
+                        imageResultBytes = null;
                         continue;
                     }
-                    generatedImageBytes = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
+                    imageResultBytes = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ImageGenerationCallResponseItem(kind, id, patch, status, generatedImageBytes);
+            return new ImageGenerationCallResponseItem(kind, id, patch, status, imageResultBytes);
         }
 
         BinaryData IPersistableModel<ImageGenerationCallResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

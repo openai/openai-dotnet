@@ -150,7 +150,7 @@ namespace OpenAI.Containers
             return message;
         }
 
-        internal virtual PipelineMessage CreateGetContainerFileContentRequest(string containerId, string fileId, RequestOptions options)
+        internal virtual PipelineMessage CreateDownloadContainerFileRequest(string containerId, string fileId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);

@@ -2,6 +2,6 @@
 
 // CUSTOM: Renamed.
 [CodeGenType("ImageGenToolInputFidelity")]
-public readonly partial struct ImageGenerationToolInputFidelityLevel
+public readonly partial struct ImageGenerationToolInputFidelity
 {
 }

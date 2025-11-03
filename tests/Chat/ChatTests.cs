@@ -904,6 +904,7 @@ public class ChatTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [Category("MPFD")]
     public async Task FileIdContentWorks()
     {
         OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);

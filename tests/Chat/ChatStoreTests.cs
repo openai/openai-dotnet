@@ -12,7 +12,8 @@ using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Chat;
 
-[Category("StoredChat")]
+[Category("Chat")]
+[Category("ChatStore")]
 public class ChatStoreTests : OpenAIRecordedTestBase
 {
     public ChatStoreTests(bool isAsync) : base(isAsync)

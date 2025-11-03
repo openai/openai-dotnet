@@ -1,7 +1,6 @@
 ﻿namespace OpenAI.Responses;
 
-// CUSTOM:
-// - Renamed.
+// CUSTOM: Renamed.
 [CodeGenType("AnnotationFileCitation")]
 public partial class FileCitationMessageAnnotation
 {

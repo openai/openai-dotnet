@@ -7,6 +7,10 @@ on:
     paths:
       - 'codegen/**'
       - 'specification/**'
+      - 'src/**'
+      - 'package.json'
+      - 'global.json'
+      - 'package-lock.json'
       - '.github/workflows/codegen-validation.yml'
       - 'scripts/Invoke-CodeGen.ps1'
     types: [opened, reopened, synchronize]

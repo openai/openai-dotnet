@@ -1211,7 +1211,6 @@ namespace OpenAI.Audio {
     public class StreamingAudioTranscriptionUpdate : IJsonModel<StreamingAudioTranscriptionUpdate>, IPersistableModel<StreamingAudioTranscriptionUpdate> {
         protected virtual StreamingAudioTranscriptionUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        public static explicit operator StreamingAudioTranscriptionUpdate(ClientResult result);
         protected virtual StreamingAudioTranscriptionUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
@@ -2361,6 +2360,10 @@ namespace OpenAI.Containers {
         public virtual ClientResult<DeleteContainerFileResponse> DeleteContainerFile(string containerId, string fileId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> DeleteContainerFileAsync(string containerId, string fileId, RequestOptions options);
         public virtual Task<ClientResult<DeleteContainerFileResponse>> DeleteContainerFileAsync(string containerId, string fileId, CancellationToken cancellationToken = default);
+        public virtual ClientResult DownloadContainerFile(string containerId, string fileId, RequestOptions options);
+        public virtual ClientResult<BinaryData> DownloadContainerFile(string containerId, string fileId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> DownloadContainerFileAsync(string containerId, string fileId, RequestOptions options);
+        public virtual Task<ClientResult<BinaryData>> DownloadContainerFileAsync(string containerId, string fileId, CancellationToken cancellationToken = default);
         public virtual ClientResult GetContainer(string containerId, RequestOptions options);
         public virtual ClientResult<ContainerResource> GetContainer(string containerId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GetContainerAsync(string containerId, RequestOptions options);
@@ -2369,10 +2372,6 @@ namespace OpenAI.Containers {
         public virtual ClientResult<ContainerFileResource> GetContainerFile(string containerId, string fileId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GetContainerFileAsync(string containerId, string fileId, RequestOptions options);
         public virtual Task<ClientResult<ContainerFileResource>> GetContainerFileAsync(string containerId, string fileId, CancellationToken cancellationToken = default);
-        public virtual ClientResult GetContainerFileContent(string containerId, string fileId, RequestOptions options);
-        public virtual ClientResult<BinaryData> GetContainerFileContent(string containerId, string fileId, CancellationToken cancellationToken = default);
-        public virtual Task<ClientResult> GetContainerFileContentAsync(string containerId, string fileId, RequestOptions options);
-        public virtual Task<ClientResult<BinaryData>> GetContainerFileContentAsync(string containerId, string fileId, CancellationToken cancellationToken = default);
         public virtual CollectionResult<ContainerFileResource> GetContainerFiles(string containerId, ContainerFileCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual CollectionResult GetContainerFiles(string containerId, int? limit, string order, string after, RequestOptions options);
         public virtual AsyncCollectionResult<ContainerFileResource> GetContainerFilesAsync(string containerId, ContainerFileCollectionOptions options = null, CancellationToken cancellationToken = default);
@@ -2522,8 +2521,8 @@ namespace OpenAI.Conversations {
         public virtual Task<ClientResult> GetConversationAsync(string conversationId, RequestOptions options = null);
         public virtual ClientResult GetConversationItem(string conversationId, string itemId, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
         public virtual Task<ClientResult> GetConversationItemAsync(string conversationId, string itemId, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
-        public virtual ClientResult GetConversationItems(string conversationId, long? limit = null, string order = null, string after = null, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
-        public virtual Task<ClientResult> GetConversationItemsAsync(string conversationId, long? limit = null, string order = null, string after = null, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
+        public virtual CollectionResult GetConversationItems(string conversationId, long? limit = null, string order = null, string after = null, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
+        public virtual AsyncCollectionResult GetConversationItemsAsync(string conversationId, long? limit = null, string order = null, string after = null, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
         public virtual ClientResult UpdateConversation(string conversationId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult> UpdateConversationAsync(string conversationId, BinaryContent content, RequestOptions options = null);
     }
@@ -4668,6 +4667,18 @@ namespace OpenAI.Responses {
         public static bool operator !=(ComputerToolEnvironment left, ComputerToolEnvironment right);
         public override readonly string ToString();
     }
+    public class ContainerFileCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<ContainerFileCitationMessageAnnotation>, IPersistableModel<ContainerFileCitationMessageAnnotation> {
+        public ContainerFileCitationMessageAnnotation(string containerId, string fileId, int startIndex, int endIndex, string filename);
+        public string ContainerId { get; set; }
+        public int EndIndex { get; set; }
+        public string FileId { get; set; }
+        public string Filename { get; set; }
+        public int StartIndex { get; set; }
+        protected override ResponseMessageAnnotation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
     public class CustomMcpToolCallApprovalPolicy : IJsonModel<CustomMcpToolCallApprovalPolicy>, IPersistableModel<CustomMcpToolCallApprovalPolicy> {
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
@@ -4820,8 +4831,8 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class ImageGenerationCallResponseItem : ResponseItem, IJsonModel<ImageGenerationCallResponseItem>, IPersistableModel<ImageGenerationCallResponseItem> {
-        public ImageGenerationCallResponseItem(BinaryData generatedImageBytes);
-        public BinaryData GeneratedImageBytes { get; set; }
+        public ImageGenerationCallResponseItem(BinaryData imageResultBytes);
+        public BinaryData ImageResultBytes { get; set; }
         public ImageGenerationCallStatus? Status { get; }
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -4837,7 +4848,7 @@ namespace OpenAI.Responses {
     public class ImageGenerationTool : ResponseTool, IJsonModel<ImageGenerationTool>, IPersistableModel<ImageGenerationTool> {
         public ImageGenerationTool();
         public ImageGenerationToolBackground? Background { get; set; }
-        public ImageGenerationToolInputFidelityLevel? InputFidelityLevel { get; set; }
+        public ImageGenerationToolInputFidelity? InputFidelity { get; set; }
         public ImageGenerationToolInputImageMask InputImageMask { get; set; }
         public string Model { get; set; }
         public ImageGenerationToolModerationLevel? ModerationLevel { get; set; }
@@ -4867,19 +4878,19 @@ namespace OpenAI.Responses {
         public static bool operator !=(ImageGenerationToolBackground left, ImageGenerationToolBackground right);
         public override readonly string ToString();
     }
-    public readonly partial struct ImageGenerationToolInputFidelityLevel : IEquatable<ImageGenerationToolInputFidelityLevel> {
-        public ImageGenerationToolInputFidelityLevel(string value);
-        public static ImageGenerationToolInputFidelityLevel High { get; }
-        public static ImageGenerationToolInputFidelityLevel Low { get; }
-        public readonly bool Equals(ImageGenerationToolInputFidelityLevel other);
+    public readonly partial struct ImageGenerationToolInputFidelity : IEquatable<ImageGenerationToolInputFidelity> {
+        public ImageGenerationToolInputFidelity(string value);
+        public static ImageGenerationToolInputFidelity High { get; }
+        public static ImageGenerationToolInputFidelity Low { get; }
+        public readonly bool Equals(ImageGenerationToolInputFidelity other);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly bool Equals(object obj);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly int GetHashCode();
-        public static bool operator ==(ImageGenerationToolInputFidelityLevel left, ImageGenerationToolInputFidelityLevel right);
-        public static implicit operator ImageGenerationToolInputFidelityLevel(string value);
-        public static implicit operator ImageGenerationToolInputFidelityLevel?(string value);
-        public static bool operator !=(ImageGenerationToolInputFidelityLevel left, ImageGenerationToolInputFidelityLevel right);
+        public static bool operator ==(ImageGenerationToolInputFidelity left, ImageGenerationToolInputFidelity right);
+        public static implicit operator ImageGenerationToolInputFidelity(string value);
+        public static implicit operator ImageGenerationToolInputFidelity?(string value);
+        public static bool operator !=(ImageGenerationToolInputFidelity left, ImageGenerationToolInputFidelity right);
         public override readonly string ToString();
     }
     public class ImageGenerationToolInputImageMask : IJsonModel<ImageGenerationToolInputImageMask>, IPersistableModel<ImageGenerationToolInputImageMask> {
@@ -5570,7 +5581,7 @@ namespace OpenAI.Responses {
         public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight);
         public static FileSearchTool CreateFileSearchTool(IEnumerable<string> vectorStoreIds, int? maxResultCount = null, FileSearchToolRankingOptions rankingOptions = null, BinaryData filters = null);
         public static FunctionTool CreateFunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled, string functionDescription = null);
-        public static ImageGenerationTool CreateImageGenerationTool(string model, ImageGenerationToolQuality? quality = null, ImageGenerationToolSize? size = null, ImageGenerationToolOutputFileFormat? outputFileFormat = null, int? outputCompressionFactor = null, ImageGenerationToolModerationLevel? moderationLevel = null, ImageGenerationToolBackground? background = null, ImageGenerationToolInputFidelityLevel? inputFidelityLevel = null, ImageGenerationToolInputImageMask inputImageMask = null, int? partialImageCount = null);
+        public static ImageGenerationTool CreateImageGenerationTool(string model, ImageGenerationToolQuality? quality = null, ImageGenerationToolSize? size = null, ImageGenerationToolOutputFileFormat? outputFileFormat = null, int? outputCompressionFactor = null, ImageGenerationToolModerationLevel? moderationLevel = null, ImageGenerationToolBackground? background = null, ImageGenerationToolInputFidelity? inputFidelity = null, ImageGenerationToolInputImageMask inputImageMask = null, int? partialImageCount = null);
         public static McpTool CreateMcpTool(string serverLabel, McpToolConnectorId connectorId, string authorizationToken = null, string serverDescription = null, IDictionary<string, string> headers = null, McpToolFilter allowedTools = null, McpToolCallApprovalPolicy toolCallApprovalPolicy = null);
         public static McpTool CreateMcpTool(string serverLabel, Uri serverUri, string authorizationToken = null, string serverDescription = null, IDictionary<string, string> headers = null, McpToolFilter allowedTools = null, McpToolCallApprovalPolicy toolCallApprovalPolicy = null);
         public static WebSearchTool CreateWebSearchTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null);
@@ -6381,8 +6392,8 @@ namespace OpenAI.Videos {
         public virtual Task<ClientResult> DownloadVideoAsync(string videoId, string variant = null, RequestOptions options = null);
         public virtual ClientResult GetVideo(string videoId, RequestOptions options = null);
         public virtual Task<ClientResult> GetVideoAsync(string videoId, RequestOptions options = null);
-        public virtual ClientResult GetVideos(long? limit = null, string order = null, string after = null, RequestOptions options = null);
-        public virtual Task<ClientResult> GetVideosAsync(long? limit = null, string order = null, string after = null, RequestOptions options = null);
+        public virtual CollectionResult GetVideos(long? limit = null, string order = null, string after = null, RequestOptions options = null);
+        public virtual AsyncCollectionResult GetVideosAsync(long? limit = null, string order = null, string after = null, RequestOptions options = null);
     }
 }
 namespace Primitives {

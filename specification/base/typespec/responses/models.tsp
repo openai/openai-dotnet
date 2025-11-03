@@ -1089,11 +1089,11 @@ model AnnotationUrlCitation extends Annotation {
 }
 
 /** A citation for a container file used to generate a model response. */
-model ContainerFileCitationBody {
+model ContainerFileCitationBody extends Annotation {
   @doc("""
     The type of the container file citation. Always `container_file_citation`.
     """)
-  type: "container_file_citation" = "container_file_citation";
+  type: AnnotationType.container_file_citation;
 
   /** The ID of the container file. */
   container_id: string;
@@ -1106,6 +1106,9 @@ model ContainerFileCitationBody {
 
   /** The index of the last character of the container file citation in the message. */
   end_index: int32;
+
+  /** The filename of the container file cited. */
+  filename: string;
 }
 
 // Tool customization (apply_discriminator): Apply discriminated base type, rename for consistency and clarity

@@ -174,7 +174,7 @@ namespace OpenAI.Graders
 
         public static explicit operator RunGraderResponse(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
+            PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeRunGraderResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
         }

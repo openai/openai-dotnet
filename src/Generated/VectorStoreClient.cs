@@ -53,7 +53,7 @@ namespace OpenAI.VectorStores
                 options?.Order?.ToString(),
                 options?.AfterId,
                 options?.BeforeId,
-                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+                cancellationToken.ToRequestOptions());
         }
 
         public virtual AsyncCollectionResult<VectorStore> GetVectorStoresAsync(VectorStoreCollectionOptions options = default, CancellationToken cancellationToken = default)
@@ -64,7 +64,7 @@ namespace OpenAI.VectorStores
                 options?.Order?.ToString(),
                 options?.AfterId,
                 options?.BeforeId,
-                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+                cancellationToken.ToRequestOptions());
         }
 
         public virtual ClientResult CreateVectorStore(BinaryContent content, RequestOptions options = null)
@@ -235,7 +235,7 @@ namespace OpenAI.VectorStores
                 options?.AfterId,
                 options?.BeforeId,
                 options?.Filter?.ToString(),
-                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+                cancellationToken.ToRequestOptions());
         }
 
         public virtual AsyncCollectionResult<VectorStoreFile> GetVectorStoreFilesInBatchAsync(string vectorStoreId, string batchId, VectorStoreFileCollectionOptions options = default, CancellationToken cancellationToken = default)
@@ -252,7 +252,7 @@ namespace OpenAI.VectorStores
                 options?.AfterId,
                 options?.BeforeId,
                 options?.Filter?.ToString(),
-                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+                cancellationToken.ToRequestOptions());
         }
 
         public virtual CollectionResult GetVectorStoreFiles(string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options)
@@ -297,7 +297,7 @@ namespace OpenAI.VectorStores
                 options?.AfterId,
                 options?.BeforeId,
                 options?.Filter?.ToString(),
-                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+                cancellationToken.ToRequestOptions());
         }
 
         public virtual AsyncCollectionResult<VectorStoreFile> GetVectorStoreFilesAsync(string vectorStoreId, VectorStoreFileCollectionOptions options = default, CancellationToken cancellationToken = default)
@@ -312,7 +312,7 @@ namespace OpenAI.VectorStores
                 options?.AfterId,
                 options?.BeforeId,
                 options?.Filter?.ToString(),
-                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+                cancellationToken.ToRequestOptions());
         }
 
         public virtual ClientResult AddFileToVectorStore(string vectorStoreId, BinaryContent content, RequestOptions options = null)

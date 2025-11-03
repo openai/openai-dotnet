@@ -15,7 +15,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ImageGenerationTool(InternalToolType kind, in JsonPatch patch, string model, ImageGenerationToolQuality? quality, ImageGenerationToolSize? size, ImageGenerationToolOutputFileFormat? outputFileFormat, int? outputCompressionFactor, ImageGenerationToolModerationLevel? moderationLevel, ImageGenerationToolBackground? background, ImageGenerationToolInputFidelityLevel? inputFidelityLevel, ImageGenerationToolInputImageMask inputImageMask, int? partialImageCount) : base(kind, patch)
+        internal ImageGenerationTool(InternalToolType kind, in JsonPatch patch, string model, ImageGenerationToolQuality? quality, ImageGenerationToolSize? size, ImageGenerationToolOutputFileFormat? outputFileFormat, int? outputCompressionFactor, ImageGenerationToolModerationLevel? moderationLevel, ImageGenerationToolBackground? background, ImageGenerationToolInputFidelity? inputFidelity, ImageGenerationToolInputImageMask inputImageMask, int? partialImageCount) : base(kind, patch)
         {
             Model = model;
             Quality = quality;
@@ -24,7 +24,7 @@ namespace OpenAI.Responses
             OutputCompressionFactor = outputCompressionFactor;
             ModerationLevel = moderationLevel;
             Background = background;
-            InputFidelityLevel = inputFidelityLevel;
+            InputFidelity = inputFidelity;
             InputImageMask = inputImageMask;
             PartialImageCount = partialImageCount;
         }
@@ -35,6 +35,8 @@ namespace OpenAI.Responses
         public ImageGenerationToolSize? Size { get; set; }
 
         public ImageGenerationToolBackground? Background { get; set; }
+
+        public ImageGenerationToolInputFidelity? InputFidelity { get; set; }
 
         public ImageGenerationToolInputImageMask InputImageMask { get; set; }
     }

@@ -187,7 +187,7 @@ namespace OpenAI.Evals
 
         public static explicit operator InternalEvalList(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
+            PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeInternalEvalList(document.RootElement, ModelSerializationExtensions.WireOptions);
         }

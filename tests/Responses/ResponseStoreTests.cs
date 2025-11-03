@@ -13,6 +13,7 @@ namespace OpenAI.Tests.Responses;
 #pragma warning disable OPENAICUA001
 
 [Category("Responses")]
+[Category("ResponsesStore")]
 public partial class ResponseStoreTests : OpenAIRecordedTestBase
 {
     public ResponseStoreTests(bool isAsync) : base(isAsync)

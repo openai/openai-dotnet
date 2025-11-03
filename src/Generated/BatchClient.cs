@@ -35,12 +35,12 @@ namespace OpenAI.Batch
 
         public virtual CollectionResult<BatchJob> GetBatches(BatchCollectionOptions options = default, CancellationToken cancellationToken = default)
         {
-            return new BatchClientGetBatchesCollectionResultOfT(this, options?.AfterId, options?.PageSizeLimit, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+            return new BatchClientGetBatchesCollectionResultOfT(this, options?.AfterId, options?.PageSizeLimit, cancellationToken.ToRequestOptions());
         }
 
         public virtual AsyncCollectionResult<BatchJob> GetBatchesAsync(BatchCollectionOptions options = default, CancellationToken cancellationToken = default)
         {
-            return new BatchClientGetBatchesAsyncCollectionResultOfT(this, options?.AfterId, options?.PageSizeLimit, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+            return new BatchClientGetBatchesAsyncCollectionResultOfT(this, options?.AfterId, options?.PageSizeLimit, cancellationToken.ToRequestOptions());
         }
 
         public virtual ClientResult GetBatch(string batchId, RequestOptions options)

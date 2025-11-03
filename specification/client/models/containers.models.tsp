@@ -1,4 +1,5 @@
 import "../../base/typespec/containers/main.tsp";
+import "./common.models.tsp";
 import "@azure-tools/typespec-client-generator-core";
 
 using Azure.ClientGenerator.Core;
@@ -23,8 +24,8 @@ union ContainerCollectionOrder {
 @access(Access.public)
 @usage(Usage.input)
 model ContainerCollectionOptions {
-  ...CollectionAfterQueryParameter,
-  ...CollectionLimitQueryParameter,
+  ...DotNetCollectionAfterQueryParameter,
+  ...DotNetCollectionLimitQueryParameter,
   ...ContainerCollectionOrderQueryParameter,
 }
 
@@ -45,7 +46,7 @@ union ContainerFileCollectionOrder {
 @access(Access.public)
 @usage(Usage.input)
 model ContainerFileCollectionOptions {
-  ...CollectionAfterQueryParameter,
-  ...CollectionLimitQueryParameter,
+  ...DotNetCollectionAfterQueryParameter,
+  ...DotNetCollectionLimitQueryParameter,
   ...ContainerFileCollectionOrderQueryParameter,
 }

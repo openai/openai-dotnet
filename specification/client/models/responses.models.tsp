@@ -1,4 +1,5 @@
 import "../../base/typespec/responses/main.tsp";
+import "./common.models.tsp";
 import "@azure-tools/typespec-client-generator-core";
 
 using Azure.ClientGenerator.Core;
@@ -30,9 +31,9 @@ union ResponseItemCollectionOrder {
 @access(Access.public)
 @usage(Usage.input)
 model ResponseItemCollectionOptions {
-  ...CollectionAfterQueryParameter;
-  ...CollectionBeforeQueryParameter;
-  ...CollectionLimitQueryParameter;
+  ...DotNetCollectionAfterQueryParameter;
+  ...DotNetCollectionBeforeQueryParameter;
+  ...DotNetCollectionLimitQueryParameter;
   ...ResponseItemCollectionOrderQueryParameter;
 }
 
