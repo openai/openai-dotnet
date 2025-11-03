@@ -8,12 +8,12 @@ using System.Linq;
 namespace OpenAI.Chat
 {
     [Experimental("OPENAI001")]
-    public partial class ChatCompletionList
+    public partial class ChatCompletionCollection
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal ChatCompletionList(IEnumerable<ChatCompletionResult> data, string firstId, string lastId, bool hasMore)
+        internal ChatCompletionCollection(IEnumerable<ChatCompletionResult> data, string firstId, string lastId, bool hasMore)
         {
             Data = data.ToList();
             FirstId = firstId;
@@ -21,7 +21,7 @@ namespace OpenAI.Chat
             HasMore = hasMore;
         }
 
-        internal ChatCompletionList(string @object, IList<ChatCompletionResult> data, string firstId, string lastId, bool hasMore, in JsonPatch patch)
+        internal ChatCompletionCollection(string @object, IList<ChatCompletionResult> data, string firstId, string lastId, bool hasMore, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Object = @object;

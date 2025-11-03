@@ -156,7 +156,7 @@ public class ChatTests : OpenAIRecordedTestBase
         ];
         ChatCompletionOptions options = new() { MaxOutputTokenCount = 2048 };
 
-        CreateChatCompletionOptions request = CreateChatCompletionOptions.Create(messages, client, options);
+        CompleteChatOptions request = CompleteChatOptions.Create(messages, client, options);
         ClientResult<ChatCompletionResult> result = await client.CompleteChatAsync(request);
         ChatCompletionResult completion = result.Value;
         Console.WriteLine(completion.Choices[0].Message.Content);
@@ -327,7 +327,7 @@ public class ChatTests : OpenAIRecordedTestBase
             AudioOptions = new(ChatOutputAudioVoice.Alloy, ChatOutputAudioFormat.Pcm16)
         };
 
-        CreateChatCompletionOptions requestBody = CreateChatCompletionOptions.Create(messages, client, options);
+        CompleteChatOptions requestBody = CompleteChatOptions.Create(messages, client, options);
         ChatCompletionResult response = (ChatCompletionResult)await client.CompleteChatAsync(requestBody);
         ChatCompletionResponseMessage message = response.Choices[0].Message;
         Assert.That(response, Is.Not.Null);
@@ -359,7 +359,7 @@ public class ChatTests : OpenAIRecordedTestBase
         ChatTokenUsage streamedUsage = null;
         using MemoryStream outputAudioStream = new();
 
-        var requestOptions = CreateChatCompletionOptions.Create(messages, client, options, true);
+        var requestOptions = CompleteChatOptions.Create(messages, client, options, true);
         await foreach (StreamingChatCompletionUpdate update in client.CompleteChatStreamingAsync(requestOptions))
         {
             Assert.That(update.ContentUpdate, Has.Count.EqualTo(0));

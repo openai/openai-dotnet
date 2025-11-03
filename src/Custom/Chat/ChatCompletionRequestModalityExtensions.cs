@@ -2,7 +2,7 @@ using System;
 
 namespace OpenAI.Chat
 {
-    internal static partial class CreateChatCompletionRequestModalityExtensions
+    internal static partial class ChatCompletionRequestModalityExtensions
     {
         public static string ToSerialString(this ChatCompletionRequestModality value) => value switch
         {

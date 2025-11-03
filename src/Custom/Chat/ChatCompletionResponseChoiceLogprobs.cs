@@ -6,16 +6,16 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Chat
 {
     [Experimental("OPENAI001")]
-    public partial class CreateChatCompletionResponseChoiceLogprobs
+    public partial class ChatCompletionResponseChoiceLogprobs
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal CreateChatCompletionResponseChoiceLogprobs() : this(null, null, default)
+        internal ChatCompletionResponseChoiceLogprobs() : this(null, null, default)
         {
         }
 
-        internal CreateChatCompletionResponseChoiceLogprobs(IReadOnlyList<ChatTokenLogProbabilityDetails> content, IReadOnlyList<ChatTokenLogProbabilityDetails> refusal, in JsonPatch patch)
+        internal ChatCompletionResponseChoiceLogprobs(IReadOnlyList<ChatTokenLogProbabilityDetails> content, IReadOnlyList<ChatTokenLogProbabilityDetails> refusal, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Content = content ?? new ChangeTrackingList<ChatTokenLogProbabilityDetails>();

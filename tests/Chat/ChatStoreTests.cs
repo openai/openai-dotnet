@@ -139,7 +139,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
         var getOptions = GetChatCompletionsOptions.Create(client);
         getOptions.Limit = 2;
         getOptions.Model = "gpt-4o-mini-2024-07-18";
-        ChatCompletionList result;
+        ChatCompletionCollection result;
         do
         {
             result = await client.GetChatCompletionsAsync(getOptions).ConfigureAwait(false);
@@ -207,7 +207,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
 
         AsyncCollectionResult foo = client.GetChatCompletionsAsync(getOptions, requestOptions: new RequestOptions());
 
-        await foreach (ChatCompletionList fetchedCompletion in foo.GetRawPagesAsync())
+        await foreach (ChatCompletionCollection fetchedCompletion in foo.GetRawPagesAsync())
         {
             foreach (ChatCompletionResult item in fetchedCompletion.Data)
             {

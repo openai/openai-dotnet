@@ -38,8 +38,8 @@ namespace OpenAI.Chat
                 yield return result;
 
                 // Plugin customization: add hasMore assignment
-                bool hasMore = ((ChatCompletionList)result).HasMore;
-                nextToken = ((ChatCompletionList)result).LastId;
+                bool hasMore = ((ChatCompletionCollection)result).HasMore;
+                nextToken = ((ChatCompletionCollection)result).LastId;
                 // Plugin customization: add hasMore == false check to pagination condition
                 if (nextToken == null || !hasMore)
                 {
@@ -51,7 +51,7 @@ namespace OpenAI.Chat
 
         public override ContinuationToken GetContinuationToken(ClientResult page)
         {
-            string nextPage = ((ChatCompletionList)page).LastId;
+            string nextPage = ((ChatCompletionCollection)page).LastId;
             if (nextPage != null)
             {
                 return ContinuationToken.FromBytes(BinaryData.FromString(nextPage));
@@ -64,7 +64,7 @@ namespace OpenAI.Chat
 
         protected override async IAsyncEnumerable<ChatCompletionResult> GetValuesFromPageAsync(ClientResult page)
         {
-            foreach (ChatCompletionResult item in ((ChatCompletionList)page).Data)
+            foreach (ChatCompletionResult item in ((ChatCompletionCollection)page).Data)
             {
                 yield return item;
                 await Task.Yield();

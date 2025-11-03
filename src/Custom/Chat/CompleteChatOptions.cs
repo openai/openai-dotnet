@@ -12,19 +12,19 @@ using System.Text.Json;
 
 namespace OpenAI.Chat
 {
-    public partial class CreateChatCompletionOptions : JsonModel<CreateChatCompletionOptions>
+    public partial class CompleteChatOptions : JsonModel<CompleteChatOptions>
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public CreateChatCompletionOptions(IEnumerable<ChatMessage> messages, string model) :
+        public CompleteChatOptions(IEnumerable<ChatMessage> messages, string model) :
             this(default, default, default, default, default, messages?.ToList(), model, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default, default)
         {
             Argument.AssertNotNull(messages, nameof(messages));
         }
 
 #pragma warning disable  SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CreateChatCompletionOptions(IDictionary<string, string> metadata, float? temperature, float? topP, string user, ChatServiceTier? serviceTier, IList<ChatMessage> messages, string model, IList<ChatCompletionRequestModality> modalities, ChatReasoningEffortLevel? reasoningEffort, int? maxCompletionTokens, float? frequencyPenalty, float? presencePenalty, ChatWebSearchOptions webSearchOptions, int? topLogprobs, ResponseFormat responseFormat, ChatAudioOptions audio, bool? store, bool? stream, IList<string> stop, IDictionary<int, int> logitBias, bool? logprobs, int? maxTokens, int? n, ChatOutputPrediction prediction, long? seed, ChatCompletionStreamOptions streamOptions, IList<ChatTool> tools, BinaryData toolChoice, bool? parallelToolCalls, BinaryData functionCall, IList<ChatFunction> functions, in JsonPatch patch)
+        internal CompleteChatOptions(IDictionary<string, string> metadata, float? temperature, float? topP, string user, ChatServiceTier? serviceTier, IList<ChatMessage> messages, string model, IList<ChatCompletionRequestModality> modalities, ChatReasoningEffortLevel? reasoningEffort, int? maxCompletionTokens, float? frequencyPenalty, float? presencePenalty, ChatWebSearchOptions webSearchOptions, int? topLogprobs, ResponseFormat responseFormat, ChatAudioOptions audio, bool? store, bool? stream, IList<string> stop, IDictionary<int, int> logitBias, bool? logprobs, int? maxTokens, int? n, ChatOutputPrediction prediction, long? seed, ChatCompletionStreamOptions streamOptions, IList<ChatTool> tools, BinaryData toolChoice, bool? parallelToolCalls, BinaryData functionCall, IList<ChatFunction> functions, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -129,13 +129,13 @@ namespace OpenAI.Chat
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public static CreateChatCompletionOptions Create(IEnumerable<ChatMessage> messages, ChatClient client, ChatCompletionOptions options = null, bool isStreaming = false)
+        public static CompleteChatOptions Create(IEnumerable<ChatMessage> messages, ChatClient client, ChatCompletionOptions options = null, bool isStreaming = false)
         {
             Argument.AssertNotNull(messages, nameof(messages));
             options ??= new();
             client.CreateChatCompletionOptions(messages, ref options, isStreaming);
 
-            var request = new CreateChatCompletionOptions(messages, options.Model);
+            var request = new CompleteChatOptions(messages, options.Model);
 
             // Populate request properties from options
             request.Audio = options.AudioOptions;
@@ -247,21 +247,21 @@ namespace OpenAI.Chat
 
         public BinaryContent Body { get; set; }
 
-        protected override CreateChatCompletionOptions CreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        protected override CompleteChatOptions CreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
         [Experimental("OPENAI001")]
-        protected virtual CreateChatCompletionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual CompleteChatOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<CreateChatCompletionOptions>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<CompleteChatOptions>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(CreateChatCompletionOptions)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(CompleteChatOptions)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeCreateChatCompletionRequest(document.RootElement, null, options);
         }
 
-        internal static CreateChatCompletionOptions DeserializeCreateChatCompletionRequest(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static CompleteChatOptions DeserializeCreateChatCompletionRequest(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -612,7 +612,7 @@ namespace OpenAI.Chat
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new CreateChatCompletionOptions(
+            return new CompleteChatOptions(
                 metadata ?? new ChangeTrackingDictionary<string, string>(),
                 temperature,
                 topP,
@@ -650,7 +650,7 @@ namespace OpenAI.Chat
         protected override void WriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
-            string format = options.Format == "W" ? ((IPersistableModel<CreateChatCompletionOptions>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<CompleteChatOptions>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(ChatCompletionOptions)} does not support writing '{format}' format.");
@@ -998,7 +998,7 @@ namespace OpenAI.Chat
             }
         }
 
-        public static implicit operator BinaryContent(CreateChatCompletionOptions createCompletionRequest)
+        public static implicit operator BinaryContent(CompleteChatOptions createCompletionRequest)
         {
             if (createCompletionRequest == null)
             {

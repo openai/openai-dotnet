@@ -222,7 +222,7 @@ public partial class ChatClient
         => CompleteChat(messages, default(ChatCompletionOptions));
 
     [Experimental("OPENAI001")]
-    public virtual ClientResult<ChatCompletionResult> CompleteChat(CreateChatCompletionOptions options, CancellationToken cancellationToken = default)
+    public virtual ClientResult<ChatCompletionResult> CompleteChat(CompleteChatOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
 
@@ -231,7 +231,7 @@ public partial class ChatClient
     }
 
     [Experimental("OPENAI001")]
-    public virtual async Task<ClientResult<ChatCompletionResult>> CompleteChatAsync(CreateChatCompletionOptions options, CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<ChatCompletionResult>> CompleteChatAsync(CompleteChatOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
 
@@ -251,7 +251,7 @@ public partial class ChatClient
     /// <param name="options"> The request containing the messages comprising the chat so far in addition to other options. </param>
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="options"/> is null. </exception>
-    public virtual CollectionResult<StreamingChatCompletionUpdate> CompleteChatStreaming(CreateChatCompletionOptions options, CancellationToken cancellationToken = default)
+    public virtual CollectionResult<StreamingChatCompletionUpdate> CompleteChatStreaming(CompleteChatOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
 
@@ -264,7 +264,7 @@ public partial class ChatClient
             cancellationToken);
     }
 
-    public virtual AsyncCollectionResult<StreamingChatCompletionUpdate> CompleteChatStreamingAsync(CreateChatCompletionOptions options, CancellationToken cancellationToken = default)
+    public virtual AsyncCollectionResult<StreamingChatCompletionUpdate> CompleteChatStreamingAsync(CompleteChatOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
 
@@ -515,20 +515,20 @@ public partial class ChatClient
 
     [Experimental("OPENAI001")]
     [OverloadResolutionPriority(2)]
-    public virtual ClientResult<ChatCompletionList> GetChatCompletions(GetChatCompletionsOptions options, CancellationToken cancellationToken = default)
+    public virtual ClientResult<ChatCompletionCollection> GetChatCompletions(GetChatCompletionsOptions options, CancellationToken cancellationToken = default)
     {
         PipelineMessage message = CreateGetChatCompletionsRequest(options.After, options.Limit, options.Order, options.Metadata, options.Model, cancellationToken.ToRequestOptions());
         ClientResult result = ClientResult.FromResponse(Pipeline.ProcessMessage(message, cancellationToken.ToRequestOptions()));
-        return ClientResult.FromValue((ChatCompletionList)result, result.GetRawResponse());
+        return ClientResult.FromValue((ChatCompletionCollection)result, result.GetRawResponse());
     }
 
     [Experimental("OPENAI001")]
     [OverloadResolutionPriority(2)]
-    public virtual async Task<ClientResult<ChatCompletionList>> GetChatCompletionsAsync(GetChatCompletionsOptions options, CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<ChatCompletionCollection>> GetChatCompletionsAsync(GetChatCompletionsOptions options, CancellationToken cancellationToken = default)
     {
         PipelineMessage message = CreateGetChatCompletionsRequest(options.After, options.Limit, options.Order, options.Metadata, options.Model, cancellationToken.ToRequestOptions());
         ClientResult result = ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, cancellationToken.ToRequestOptions()));
-        return ClientResult.FromValue((ChatCompletionList)result, result.GetRawResponse());
+        return ClientResult.FromValue((ChatCompletionCollection)result, result.GetRawResponse());
     }
 
     [Experimental("OPENAI001")]
