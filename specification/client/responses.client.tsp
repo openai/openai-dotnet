@@ -85,8 +85,6 @@ using TypeSpec.HttpClient.CSharp;
 
 @@alternateType(ResponseMCPCallArgumentsDeltaEvent.delta, unknown);
 
-@@clientName(ResponseImageGenCallPartialImageEvent.partial_image_b64, "PartialImageBytes");
-
 // ------------ JsonPatch ------------
 
 // models.tsp
