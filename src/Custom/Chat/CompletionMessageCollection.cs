@@ -6,12 +6,12 @@ using System.Linq;
 
 namespace OpenAI.Chat
 {
-    public partial class ChatCompletionMessageCollection
+    public partial class CompletionMessageCollection
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal ChatCompletionMessageCollection(IEnumerable<ChatCompletionMessageListDatum> data, string firstId, string lastId, bool hasMore)
+        internal CompletionMessageCollection(IEnumerable<ChatCompletionMessageListDatum> data, string firstId, string lastId, bool hasMore)
         {
             Data = data.ToList();
             FirstId = firstId;
@@ -20,7 +20,7 @@ namespace OpenAI.Chat
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ChatCompletionMessageCollection(string @object, IList<ChatCompletionMessageListDatum> data, string firstId, string lastId, bool hasMore, in JsonPatch patch)
+        internal CompletionMessageCollection(string @object, IList<ChatCompletionMessageListDatum> data, string firstId, string lastId, bool hasMore, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Object = @object;

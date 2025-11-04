@@ -1,8 +1,8 @@
 namespace OpenAI.Chat;
 
-public struct GetChatCompletionMessageOptions
+public struct GetCompletionMessageOptions
 {
-    public GetChatCompletionMessageOptions(string completionId)
+    public GetCompletionMessageOptions(string completionId)
     {
         CompletionId = completionId;
     }

@@ -112,7 +112,7 @@ public partial class ChatMessage
     /// <inheritdoc cref="AssistantChatMessage(string)"/>
     public static AssistantChatMessage CreateAssistantMessage(string content) => new(content);
 
-    public static ChatCompletionRequestAssistantMessage CreateAssistantMessage(ChatCompletionResponseMessage message) => new(message);
+    public static AssistantChatMessage CreateAssistantMessage(ChatCompletionResponseMessage message) => new(message.Content);
 
     /// <inheritdoc cref="AssistantChatMessage(IEnumerable{ChatMessageContentPart})"/>
     public static AssistantChatMessage CreateAssistantMessage(IEnumerable<ChatMessageContentPart> contentParts) => new(contentParts);

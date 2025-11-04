@@ -137,10 +137,10 @@ public class ChatStoreTests : OpenAIRecordedTestBase
         int totalCount = 0;
         string lastId = null;
 
-        var getOptions = GetChatCompletionsOptions.Create(client);
+        var getOptions = ChatCompletionsOptions.Create(client);
         getOptions.Limit = 2;
         getOptions.Model = "gpt-4o-mini-2024-07-18";
-        ChatCompletionCollection result;
+        CompletionCollection result;
         do
         {
             result = await client.GetChatCompletionsAsync(getOptions).ConfigureAwait(false);
@@ -202,13 +202,13 @@ public class ChatStoreTests : OpenAIRecordedTestBase
 
         int totalCount = 0;
         string lastId = null;
-        var getOptions = GetChatCompletionsOptions.Create(client);
+        var getOptions = ChatCompletionsOptions.Create(client);
         getOptions.Limit = 2;
         getOptions.Model = "gpt-4o-mini-2024-07-18";
 
         AsyncCollectionResult foo = client.GetChatCompletionsAsync(getOptions, requestOptions: new RequestOptions());
 
-        await foreach (ChatCompletionCollection fetchedCompletion in foo.GetRawPagesAsync())
+        await foreach (CompletionCollection fetchedCompletion in foo.GetRawPagesAsync())
         {
             foreach (ChatCompletionResult item in fetchedCompletion.Data)
             {
@@ -882,12 +882,12 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             createOptions);
 
 
-        GetChatCompletionMessageOptions messageOptions = new GetChatCompletionMessageOptions
+        GetCompletionMessageOptions messageOptions = new GetCompletionMessageOptions
         {
             CompletionId = completion.Id
         };
 
-        ChatCompletionMessageCollection messageList = null;
+        CompletionMessageCollection messageList = null;
         int messageCount = 0;
 
         do

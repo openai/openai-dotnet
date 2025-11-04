@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 namespace OpenAI.Chat;
 
-public class GetChatCompletionsOptions
+public class ChatCompletionsOptions
 {
-    public GetChatCompletionsOptions(string model)
+    public ChatCompletionsOptions(string model)
     {
         Model = model;
     }
@@ -22,8 +22,8 @@ public class GetChatCompletionsOptions
 
     public string Model { get; set; }
 
-    public static GetChatCompletionsOptions Create(ChatClient client)
+    public static ChatCompletionsOptions Create(ChatClient client)
     {
-        return new GetChatCompletionsOptions(client.Model);
+        return new ChatCompletionsOptions(client.Model);
     }
 }

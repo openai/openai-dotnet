@@ -111,7 +111,7 @@ namespace OpenAI.Chat
                 return null;
             }
             string id = default;
-            IList<ChatCompletionResponseChoice> choices = default;
+            IList<ChatCompletionChoice> choices = default;
             DateTimeOffset created = default;
             string model = default;
             ChatServiceTier? serviceTier = default;
@@ -130,10 +130,10 @@ namespace OpenAI.Chat
                 }
                 if (prop.NameEquals("choices"u8))
                 {
-                    List<ChatCompletionResponseChoice> array = new List<ChatCompletionResponseChoice>();
+                    List<ChatCompletionChoice> array = new List<ChatCompletionChoice>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ChatCompletionResponseChoice.DeserializeCreateChatCompletionResponseChoice(item, item.GetUtf8Bytes(), options));
+                        array.Add(ChatCompletionChoice.DeserializeCreateChatCompletionResponseChoice(item, item.GetUtf8Bytes(), options));
                     }
                     choices = array;
                     continue;

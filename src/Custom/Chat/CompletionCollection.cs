@@ -1,4 +1,3 @@
-using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,12 +7,12 @@ using System.Linq;
 namespace OpenAI.Chat
 {
     [Experimental("OPENAI001")]
-    public partial class ChatCompletionCollection
+    public partial class CompletionCollection
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal ChatCompletionCollection(IEnumerable<ChatCompletionResult> data, string firstId, string lastId, bool hasMore)
+        internal CompletionCollection(IEnumerable<ChatCompletionResult> data, string firstId, string lastId, bool hasMore)
         {
             Data = data.ToList();
             FirstId = firstId;
@@ -21,7 +20,7 @@ namespace OpenAI.Chat
             HasMore = hasMore;
         }
 
-        internal ChatCompletionCollection(string @object, IList<ChatCompletionResult> data, string firstId, string lastId, bool hasMore, in JsonPatch patch)
+        internal CompletionCollection(string @object, IList<ChatCompletionResult> data, string firstId, string lastId, bool hasMore, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Object = @object;
