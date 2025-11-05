@@ -1762,10 +1762,10 @@ model ResponseReasoningTextDeltaEvent extends ResponseStreamEvent {
   item_id: string;
 
   /** The index of the output item this reasoning text delta is associated with. */
-  output_index: integer;
+  output_index: int32;
 
   /** The index of the reasoning content part this delta is associated with. */
-  content_index: integer;
+  content_index: int32;
 
   /** The text delta that was added to the reasoning content. */
   delta: string;
@@ -1781,10 +1781,10 @@ model ResponseReasoningTextDoneEvent extends ResponseStreamEvent {
   item_id: string;
 
   /** The index of the output item this reasoning text is associated with. */
-  output_index: integer;
+  output_index: int32;
 
   /** The index of the reasoning content part. */
-  content_index: integer;
+  content_index: int32;
 
   /** The full text of the completed reasoning content. */
   text: string;

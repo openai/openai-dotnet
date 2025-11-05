@@ -90,8 +90,8 @@ namespace OpenAI.Responses
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string itemId = default;
-            long outputIndex = default;
-            long contentIndex = default;
+            int outputIndex = default;
+            int contentIndex = default;
             string text = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -112,12 +112,12 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("output_index"u8))
                 {
-                    outputIndex = prop.Value.GetInt64();
+                    outputIndex = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("content_index"u8))
                 {
-                    contentIndex = prop.Value.GetInt64();
+                    contentIndex = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("text"u8))
