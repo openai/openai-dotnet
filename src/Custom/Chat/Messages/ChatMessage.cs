@@ -128,6 +128,7 @@ public partial class ChatMessage
 
     /// <inheritdoc cref="AssistantChatMessage(ChatCompletion)"/>
     public static AssistantChatMessage CreateAssistantMessage(ChatCompletion chatCompletion) => new(chatCompletion);
+    public static AssistantChatMessage CreateAssistantMessage(ChatCompletionResult chatCompletionResult) => new(chatCompletionResult);
 
     /// <inheritdoc cref="AssistantChatMessage(ChatOutputAudioReference)"/>
     [Experimental("OPENAI001")]

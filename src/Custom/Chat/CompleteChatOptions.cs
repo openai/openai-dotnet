@@ -152,8 +152,8 @@ namespace OpenAI.Chat
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             request.ResponseFormat = options.ResponseFormat switch
             {
-                InternalDotNetChatResponseFormatText => new ResponseFormatText(),
-                InternalDotNetChatResponseFormatJsonObject => new ResponseFormatJsonObject(),
+                InternalDotNetChatResponseFormatText => new ResponseFormat(ResponseFormatType.Text),
+                InternalDotNetChatResponseFormatJsonObject => new ResponseFormat(ResponseFormatType.JsonObject),
                 InternalDotNetChatResponseFormatJsonSchema js => new ResponseFormatJsonSchema(new ResponseFormatJsonSchemaJsonSchema(js.JsonSchema.Name)),
                 _ => null,
             };

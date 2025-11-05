@@ -339,7 +339,7 @@ public class ChatTests : OpenAIRecordedTestBase
         Assert.That(outputAudio.AudioBytes, Is.Not.Null);
         Assert.That(outputAudio.Transcript, Is.Not.Null.And.Not.Empty);
 
-        AssistantChatMessage audioHistoryMessage = ChatMessage.CreateAssistantMessage(message);
+        AssistantChatMessage audioHistoryMessage = ChatMessage.CreateAssistantMessage(response);
         Assert.That(audioHistoryMessage, Is.InstanceOf<AssistantChatMessage>());
         Assert.That(audioHistoryMessage.Content, Has.Count.EqualTo(0));
 

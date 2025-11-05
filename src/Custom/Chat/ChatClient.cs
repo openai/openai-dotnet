@@ -226,7 +226,7 @@ public partial class ChatClient
     {
         Argument.AssertNotNull(options, nameof(options));
 
-        ClientResult result = this.CompleteChat(options.Body, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        ClientResult result = this.CompleteChat(options, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
         return ClientResult.FromValue((ChatCompletionResult)result.GetRawResponse().Content, result.GetRawResponse());
     }
 

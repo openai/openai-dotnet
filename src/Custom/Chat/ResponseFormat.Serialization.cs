@@ -6,7 +6,7 @@ using OpenAI;
 
 namespace OpenAI.Chat
 {
-    [PersistableModelProxy(typeof(UnknownResponseFormat))]
+    [PersistableModelProxy(typeof(ResponseFormat))]
     public partial class ResponseFormat : IJsonModel<ResponseFormat>
     {
         internal ResponseFormat()
@@ -52,17 +52,16 @@ namespace OpenAI.Chat
             }
             if (element.TryGetProperty("type"u8, out JsonElement discriminator))
             {
-                switch (discriminator.GetString())
+                var kind = discriminator.GetString();
+                switch (kind)
                 {
-                    case "text":
-                        return ResponseFormatText.DeserializeResponseFormatText(element, data, options);
-                    case "json_object":
-                        return ResponseFormatJsonObject.DeserializeResponseFormatJsonObject(element, data, options);
                     case "json_schema":
                         return ResponseFormatJsonSchema.DeserializeResponseFormatJsonSchema(element, data, options);
+                    default:
+                        return new ResponseFormat((ResponseFormatType)Enum.Parse(typeof(ResponseFormatType), kind));
                 }
             }
-            return UnknownResponseFormat.DeserializeUnknownResponseFormat(element, data, options);
+            return new ResponseFormat((ResponseFormatType)Enum.Parse(typeof(ResponseFormatType), "unknown"));
         }
 
         BinaryData IPersistableModel<ResponseFormat>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

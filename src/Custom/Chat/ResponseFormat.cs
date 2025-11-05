@@ -5,12 +5,12 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Chat
 {
     [Experimental("OPENAI001")]
-    public abstract partial class ResponseFormat
+    public partial class ResponseFormat
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        private protected ResponseFormat(ResponseFormatType kind)
+        internal protected ResponseFormat(ResponseFormatType kind)
         {
             Kind = kind;
         }
