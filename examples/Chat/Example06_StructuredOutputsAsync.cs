@@ -21,7 +21,7 @@ public partial class ChatExamples
 
         ChatCompletionOptions options = new()
         {
-            ResponseFormat = ChatResponseFormat.CreateJsonSchemaFormat(
+            ResponseFormat = Chat.ChatResponseFormat.CreateJsonSchemaFormat(
                 jsonSchemaFormatName: "math_reasoning",
                 jsonSchema: BinaryData.FromBytes("""
                     {

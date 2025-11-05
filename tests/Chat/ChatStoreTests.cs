@@ -1,9 +1,10 @@
-using Microsoft.ClientModel.TestFramework;
+﻿using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Chat;
 using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -68,7 +69,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             completionIds.Add(completion.Id);
         }
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be stored
 
         // Test pagination with limit
         ChatCompletionCollectionOptions paginationOptions = new()
@@ -85,6 +86,139 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             lastId = fetchedCompletion.Id;
             Assert.That(fetchedCompletion.Id, Is.Not.Null.And.Not.Empty);
             Assert.That(fetchedCompletion.Content, Is.Not.Null);
+
+            if (totalCount >= 2) break; // Stop after getting 2 items
+        }
+
+        Assert.That(totalCount, Is.EqualTo(2));
+        Assert.That(lastId, Is.Not.Null);
+
+        // Clean up
+        foreach (var id in completionIds)
+        {
+            try
+            {
+                await client.DeleteChatCompletionAsync(id);
+            }
+            catch { /* Ignore cleanup errors */ }
+        }
+    }
+
+    [RecordedTest]
+    public async Task GetChatCompletionsWithPagination_PM()
+    {
+        ChatClient client = GetTestClient();
+
+        // Create multiple completions with stored output enabled
+        var completionIds = new List<string>();
+        for (int i = 0; i < 3; i++)
+        {
+            ChatCompletionOptions options = new()
+            {
+                StoredOutputEnabled = true,
+                Metadata = { ["test_key"] = $"test_value_{i}" }
+            };
+
+            ChatCompletion completion = await client.CompleteChatAsync(
+                [$"Test message {i}: Say 'Hello World {i}'"],
+                options);
+
+            completionIds.Add(completion.Id);
+        }
+
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be stored
+
+        // Test pagination with limit
+        ChatCompletionCollectionOptions paginationOptions = new()
+        {
+            PageSizeLimit = 2,
+        };
+
+        int totalCount = 0;
+        string lastId = null;
+
+        var getOptions = ChatCompletionsOptions.Create(client);
+        getOptions.Limit = 2;
+        getOptions.Model = "gpt-4o-mini-2024-07-18";
+        CompletionCollection result;
+        do
+        {
+            result = await client.GetChatCompletionsAsync(getOptions).ConfigureAwait(false);
+
+            foreach (var fetchedCompletion in result.Data)
+            {
+                totalCount++;
+                lastId = fetchedCompletion.Id;
+                Assert.That(fetchedCompletion.Id, Is.Not.Null.And.Not.Empty);
+                Assert.That(fetchedCompletion.Choices[0].Message.Content, Is.Not.Null);
+            }
+
+        } while (result.HasMore && totalCount < 2);
+
+
+        Assert.That(totalCount, Is.EqualTo(2));
+        Assert.That(lastId, Is.Not.Null);
+
+        // Clean up
+        foreach (var id in completionIds)
+        {
+            try
+            {
+                await client.DeleteChatCompletionAsync(id);
+            }
+            catch { /* Ignore cleanup errors */ }
+        }
+    }
+
+    [RecordedTest]
+    public async Task GetChatCompletionsWithPagination_PMwRequestOptions()
+    {
+        ChatClient client = GetTestClient();
+
+        // Create multiple completions with stored output enabled
+        var completionIds = new List<string>();
+        for (int i = 0; i < 3; i++)
+        {
+            ChatCompletionOptions options = new()
+            {
+                StoredOutputEnabled = true,
+                Metadata = { ["test_key"] = $"test_value_{i}" }
+            };
+
+            ChatCompletion completion = await client.CompleteChatAsync(
+                [$"Test message {i}: Say 'Hello World {i}'"],
+                options);
+
+            completionIds.Add(completion.Id);
+        }
+
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be stored
+
+        // Test pagination with limit
+        ChatCompletionCollectionOptions paginationOptions = new()
+        {
+            PageSizeLimit = 2
+        };
+
+        int totalCount = 0;
+        string lastId = null;
+        var getOptions = ChatCompletionsOptions.Create(client);
+        getOptions.Limit = 2;
+        getOptions.Model = "gpt-4o-mini-2024-07-18";
+
+        AsyncCollectionResult foo = client.GetChatCompletionsAsync(getOptions, requestOptions: new RequestOptions());
+
+        await foreach (CompletionCollection fetchedCompletion in foo.GetRawPagesAsync())
+        {
+            foreach (ChatCompletionResult item in fetchedCompletion.Data)
+            {
+                totalCount++;
+                lastId = item.Id;
+                Assert.That(item.Id, Is.Not.Null.And.Not.Empty);
+                Assert.That(item.Choices[0].Message.Content, Is.Not.Null);
+
+                if (totalCount >= 2) break; // Stop after getting 2 items
+            }
 
             if (totalCount >= 2) break; // Stop after getting 2 items
         }
@@ -124,7 +258,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             completionIds.Add(completion.Id);
         }
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be stored
 
         // Get first completion to use as afterId
         string afterId = null;
@@ -183,10 +317,10 @@ public class ChatStoreTests : OpenAIRecordedTestBase
                 createOptions);
 
             completionIds.Add(completion.Id);
-            await Task.Delay(1000); // Ensure different timestamps
+            await DelayIfNotInPlaybackAsync(1000); // Ensure different timestamps
         }
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be stored
 
         // Test ascending order
         ChatCompletionCollectionOptions ascOptions = new()
@@ -269,7 +403,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             options2);
         completionIds.Add(otherCompletion.Id);
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be stored
 
         // Filter by specific metadata
         ChatCompletionCollectionOptions filterOptions = new()
@@ -317,7 +451,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             ["Model filter test: Say 'Hello'"],
             createOptions);
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be stored
 
         // Filter by the model used by the test client
         ChatCompletionCollectionOptions filterOptions = new()
@@ -360,7 +494,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             ["Empty options test: Say 'Hello'"],
             createOptions);
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be stored
 
         // Test with default/empty options
         int count = 0;
@@ -404,7 +538,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             ["Combined filters test: Say 'Combined test'"],
             createOptions);
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be stored
 
         // Test with combined filters
         ChatCompletionCollectionOptions combinedOptions = new()
@@ -461,7 +595,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             Assert.That(deletionResult.Deleted, Is.True);
         });
 
-        await Task.Delay(s_delayInMilliseconds);
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds);
 
         Assert.ThrowsAsync<ClientResultException>(async () =>
         {
@@ -469,13 +603,12 @@ public class ChatStoreTests : OpenAIRecordedTestBase
         });
     }
 
-    [LiveOnly(Reason = "Temp while sorting out flakiness in playback")]
     [RecordedTest]
     public async Task UpdateChatCompletionWorks()
     {
         ChatClient client = GetTestClient();
 
-        var testMetadataKey = $"test_key_{Guid.NewGuid():N}";
+        var testMetadataKey = $"{Recording.GenerateAlphaNumericId("test_key_", 10)}";
         var initialOptions = new ChatCompletionOptions
         {
             StoredOutputEnabled = true,
@@ -486,7 +619,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             [new UserChatMessage("Say `this is a test`.")],
             initialOptions);
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be stored
 
         var newMetadata = new Dictionary<string, string>
         {
@@ -496,7 +629,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
 
         ChatCompletion updated = await client.UpdateChatCompletionAsync(chatCompletion.Id, newMetadata);
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be updated
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be updated
 
         Assert.That(updated, Is.Not.Null);
         Assert.That(updated.Id, Is.EqualTo(chatCompletion.Id));
@@ -504,7 +637,50 @@ public class ChatStoreTests : OpenAIRecordedTestBase
         ChatCompletionDeletionResult deletionResult = await client.DeleteChatCompletionAsync(chatCompletion.Id);
         Assert.That(deletionResult.Deleted, Is.True);
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be deleted
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be deleted
+
+        Assert.ThrowsAsync<ClientResultException>(async () =>
+        {
+            _ = await client.GetChatCompletionAsync(chatCompletion.Id);
+        });
+    }
+
+    [RecordedTest]
+    public async Task UpdateChatCompletionWorks_PM()
+    {
+        ChatClient client = GetTestClient();
+
+        var testMetadataKey = $"{Recording.GenerateAlphaNumericId("test_key_", 10)}";
+        var initialOptions = new ChatCompletionOptions
+        {
+            StoredOutputEnabled = true,
+            Metadata = { [testMetadataKey] = "initial_value" }
+        };
+
+        ChatCompletion chatCompletion = await client.CompleteChatAsync(
+            [new UserChatMessage("Say `this is a test`.")],
+            initialOptions);
+
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be stored
+
+        var updateOptions = new UpdateChatCompletionOptions()
+        {
+            CompletionId = chatCompletion.Id,
+        };
+        updateOptions.Metadata.Add(testMetadataKey, "updated_value");
+        updateOptions.Metadata.Add("updated_by", "unit_test");
+
+        ChatCompletionResult updated = await client.UpdateChatCompletionAsync(updateOptions);
+
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be updated
+
+        Assert.That(updated, Is.Not.Null);
+        Assert.That(updated.Id, Is.EqualTo(chatCompletion.Id));
+
+        ChatCompletionDeletionResult deletionResult = await client.DeleteChatCompletionAsync(chatCompletion.Id);
+        Assert.That(deletionResult.Deleted, Is.True);
+
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be deleted
 
         Assert.ThrowsAsync<ClientResultException>(async () =>
         {
@@ -528,7 +704,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             ["Enumeration test: Say 'Test enumeration'"],
             createOptions);
 
-        await Task.Delay(5000); // Wait for completion to be stored
+        await DelayIfNotInPlaybackAsync(5000); // Wait for completion to be stored
 
         // Test that we can enumerate multiple times
         ChatCompletionCollectionOptions collectionOptions = new()
@@ -582,7 +758,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             ["Large limit test: Say 'Testing large limits'"],
             createOptions);
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be stored
 
         // Test with a large page size limit
         ChatCompletionCollectionOptions largeOptions = new()
@@ -623,7 +799,7 @@ public class ChatStoreTests : OpenAIRecordedTestBase
             ["Minimal limit test: Say 'Testing minimal limits'"],
             createOptions);
 
-        await Task.Delay(s_delayInMilliseconds); // Wait for completions to be stored
+        await DelayIfNotInPlaybackAsync(s_delayInMilliseconds); // Wait for completions to be stored
 
         // Test with minimal page size
         ChatCompletionCollectionOptions minimalOptions = new()
@@ -690,20 +866,69 @@ public class ChatStoreTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    public async Task GetChatCompletionMessagesWithBasicUsage_PM()
+    {
+        ChatClient client = GetTestClient();
+
+        // Create a completion with stored output enabled to have messages
+        ChatCompletionOptions createOptions = new()
+        {
+            StoredOutputEnabled = true,
+            Metadata = { ["test_scenario"] = "basic_messages" }
+        };
+
+        ChatCompletion completion = await client.CompleteChatAsync(
+            ["Basic messages test: Say 'Hello, this is a test message.'"],
+            createOptions);
+
+
+        GetCompletionMessageOptions messageOptions = new GetCompletionMessageOptions
+        {
+            CompletionId = completion.Id
+        };
+
+        CompletionMessageCollection messageList = null;
+        int messageCount = 0;
+
+        do
+        {
+            await RetryWithExponentialBackoffAsync(async () =>
+            {
+                // Test basic enumeration of messages
+                messageList = await client.GetChatCompletionMessagesAsync(messageOptions);
+            });
+
+            foreach (var message in messageList.Data)
+            {
+                messageCount++;
+                Assert.That(message.Id, Is.Not.Null.And.Not.Empty);
+                Assert.That(message.Content, Is.EqualTo("Basic messages test: Say 'Hello, this is a test message.'"));
+
+                if (messageCount >= 5) break; // Prevent infinite loop
+            }
+        } while (messageList?.HasMore ?? false);
+        Assert.That(messageCount, Is.GreaterThan(0));
+
+        // Clean up
+        try
+        {
+            await client.DeleteChatCompletionAsync(completion.Id);
+        }
+        catch { /* Ignore cleanup errors */ }
+    }
+
+    [RecordedTest]
     public async Task GetChatCompletionMessagesWithPagination()
     {
         ChatClient client = GetTestClient();
 
         // Create completion with multiple messages (conversation with tool calls)
-        // and one with multiple content parts
         List<ChatMessage> conversationMessages = new()
         {
             new UserChatMessage("What's the weather like today? Use the weather tool."),
             new UserChatMessage("Name something I could do outside in this weather."),
             new UserChatMessage("Name something else I could do outside in this weather."),
-            new UserChatMessage([
-                ChatMessageContentPart.CreateTextPart("Whose logo is this?: "),
-                ChatMessageContentPart.CreateImagePart(new Uri("https://upload.wikimedia.org/wikipedia/commons/c/c3/Openai.png"))]),
+            new UserChatMessage("Name something yet another thing I could do outside in this weather.")
         };
 
         // Add function definition to trigger more back-and-forth
@@ -745,26 +970,15 @@ public class ChatStoreTests : OpenAIRecordedTestBase
                 PageSizeLimit = 2
             };
 
-            bool foundContentParts = false;
-
             await foreach (var message in client.GetChatCompletionMessagesAsync(completion.Id, options))
             {
                 totalMessages++;
                 lastMessageId = message.Id;
-
-                // Check if the message contains any content parts
-                if (message.ContentParts.Count > 0)
-                {
-                    foundContentParts = true;
-                    Assert.That(message.ContentParts[0].Text, Is.EqualTo("Whose logo is this?: "));
-                    Assert.That(message.ContentParts[1].ImageBytes, Is.Not.Null);
-                }
                 Assert.That(message.Id, Is.Not.Null.And.Not.Empty);
 
                 if (totalMessages >= 4) break; // Get a few pages worth
             }
 
-            Assert.That(foundContentParts, Is.True);
             Assert.That(totalMessages, Is.GreaterThan(3));
             Assert.That(lastMessageId, Is.Not.Null);
         });

@@ -1,7 +1,22 @@
+using System;
+using OpenAI.Chat;
+
 namespace OpenAI.Internal;
 
 [CodeGenType("ResponseFormat")] internal partial class InternalResponseFormat { }
-[CodeGenType("ResponseFormatType")] internal readonly partial struct InternalResponseFormatType {}
+[CodeGenType("ResponseFormatType")] internal readonly partial struct InternalResponseFormatType
+{
+    public static implicit operator InternalResponseFormatType(ResponseFormatType kind)
+    {
+        return kind switch
+        {
+            ResponseFormatType.Text => Text,
+            ResponseFormatType.JsonObject => JsonObject,
+            ResponseFormatType.JsonSchema => JsonSchema,
+            _ => throw new InvalidOperationException("Unknown response format type")
+        };
+    }
+}
 [CodeGenType("ResponseFormatJsonObject")] internal partial class InternalResponseFormatJsonObject { }
 [CodeGenType("ResponseFormatJsonSchema")] internal partial class InternalResponseFormatJsonSchema { }
 [CodeGenType("ResponseFormatJsonSchemaSchema")] internal partial class InternalResponseFormatJsonSchemaSchema { }

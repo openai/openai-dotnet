@@ -178,6 +178,50 @@ public partial class AssistantChatMessage : ChatMessage
         }
     }
 
+    /// <summary>
+    /// Creates a new instance of <see cref="AssistantChatMessage"/> from a <see cref="ChatCompletion"/> with
+    /// an <c>assistant</c> role response.
+    /// </summary>
+    /// <remarks>
+    ///     This constructor will copy the <c>content</c>, <c>tool_calls</c>, and <c>function_call</c> from a chat
+    ///     completion response into a new <c>assistant</c> role request message.
+    /// </remarks>
+    /// <param name="chatCompletionResult">
+    ///     The <see cref="ChatCompletion"/> from which the conversation history request message should be created.
+    /// </param>
+    /// <exception cref="ArgumentException">
+    ///     The <c>role</c> of the provided chat completion response was not <see cref="ChatMessageRole.Assistant"/>.
+    /// </exception>
+    public AssistantChatMessage(ChatCompletionResult chatCompletionResult)
+        : this(
+              content: chatCompletionResult.Choices[0].Message.Content is null
+                ? new()
+                : new(chatCompletionResult.Choices[0].Message.Content),
+              role: ChatMessageRole.Assistant,
+              patch: default,
+              refusal: chatCompletionResult.Choices[0].Message.Refusal,
+              participantName: null,
+              toolCalls: null,
+              functionCall: chatCompletionResult.Choices[0].Message.FunctionCall is null
+                ? null
+                : new(chatCompletionResult.Choices[0].Message.FunctionCall.Name, new(chatCompletionResult.Choices[0].Message.FunctionCall.Arguments)),
+              outputAudioReference: chatCompletionResult.Choices[0].Message.Audio is not null
+                ? new(chatCompletionResult.Choices[0].Message.Audio.Id)
+                : null)
+    {
+        Argument.AssertNotNull(chatCompletionResult, nameof(chatCompletionResult));
+
+        if (chatCompletionResult.Choices[0].Message.Role != ChatMessageRole.Assistant)
+        {
+            throw new NotSupportedException($"Cannot instantiate an {nameof(AssistantChatMessage)} from a {nameof(ChatCompletion)} with role: {chatCompletionResult.Choices[0].Message.Role}.");
+        }
+
+        foreach (ChatToolCall toolCall in chatCompletionResult.Choices[0].Message.ToolCalls ?? [])
+        {
+            ToolCalls.Add(toolCall);
+        }
+    }
+
     // CUSTOM: Renamed.
     /// <summary>
     /// An optional <c>name</c> associated with the assistant message. This is typically defined with a <c>system</c>

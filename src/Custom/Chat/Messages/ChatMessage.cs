@@ -112,6 +112,8 @@ public partial class ChatMessage
     /// <inheritdoc cref="AssistantChatMessage(string)"/>
     public static AssistantChatMessage CreateAssistantMessage(string content) => new(content);
 
+    public static AssistantChatMessage CreateAssistantMessage(ChatCompletionResponseMessage message) => new(message.Content);
+
     /// <inheritdoc cref="AssistantChatMessage(IEnumerable{ChatMessageContentPart})"/>
     public static AssistantChatMessage CreateAssistantMessage(IEnumerable<ChatMessageContentPart> contentParts) => new(contentParts);
 
@@ -126,6 +128,7 @@ public partial class ChatMessage
 
     /// <inheritdoc cref="AssistantChatMessage(ChatCompletion)"/>
     public static AssistantChatMessage CreateAssistantMessage(ChatCompletion chatCompletion) => new(chatCompletion);
+    public static AssistantChatMessage CreateAssistantMessage(ChatCompletionResult chatCompletionResult) => new(chatCompletionResult);
 
     /// <inheritdoc cref="AssistantChatMessage(ChatOutputAudioReference)"/>
     [Experimental("OPENAI001")]
