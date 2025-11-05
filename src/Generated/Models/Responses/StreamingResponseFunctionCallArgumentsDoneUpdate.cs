@@ -30,5 +30,7 @@ namespace OpenAI.Responses
         public string ItemId { get; }
 
         public int OutputIndex { get; }
+
+        public BinaryData FunctionArguments { get; }
     }
 }

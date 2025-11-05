@@ -34,5 +34,7 @@ namespace OpenAI.Responses
         public string ItemId { get; }
 
         public int PartialImageIndex { get; }
+
+        public BinaryData PartialImageBytes { get; }
     }
 }

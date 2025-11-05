@@ -75,15 +75,19 @@ using TypeSpec.HttpClient.CSharp;
 
 // ------------ Streaming ------------
 
+@@usage(ResponseStreamEvent, Usage.json);
+
 @@alternateType(ResponseFunctionCallArgumentsDoneEvent.arguments, unknown);
-// @@clientName(ResponseFunctionCallArgumentsDoneEvent.arguments, "FunctionArguments");
+@@clientName(ResponseFunctionCallArgumentsDoneEvent.arguments, "FunctionArguments");
 
 @@alternateType(ResponseFunctionCallArgumentsDeltaEvent.delta, unknown);
 
 @@alternateType(ResponseMCPCallArgumentsDoneEvent.arguments, unknown);
-// @@clientName(ResponseMCPCallArgumentsDoneEvent.arguments, "ToolArguments");
+@@clientName(ResponseMCPCallArgumentsDoneEvent.arguments, "ToolArguments");
 
 @@alternateType(ResponseMCPCallArgumentsDeltaEvent.delta, unknown);
+
+@@clientName(ResponseImageGenCallPartialImageEvent.partial_image_b64, "PartialImageBytes");
 
 // ------------ JsonPatch ------------
 
