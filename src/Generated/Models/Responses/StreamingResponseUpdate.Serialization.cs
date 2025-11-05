@@ -114,13 +114,17 @@ namespace OpenAI.Responses
                     case "response.output_text.done":
                         return StreamingResponseOutputTextDoneUpdate.DeserializeStreamingResponseOutputTextDoneUpdate(element, data, options);
                     case "response.reasoning_summary_part.added":
-                        return InternalResponseReasoningSummaryPartAddedEvent.DeserializeInternalResponseReasoningSummaryPartAddedEvent(element, data, options);
+                        return StreamingResponseReasoningSummaryPartAddedUpdate.DeserializeStreamingResponseReasoningSummaryPartAddedUpdate(element, data, options);
                     case "response.reasoning_summary_part.done":
-                        return InternalResponseReasoningSummaryPartDoneEvent.DeserializeInternalResponseReasoningSummaryPartDoneEvent(element, data, options);
+                        return StreamingResponseReasoningSummaryPartDoneUpdate.DeserializeStreamingResponseReasoningSummaryPartDoneUpdate(element, data, options);
                     case "response.reasoning_summary_text.delta":
-                        return InternalResponseReasoningSummaryTextDeltaEvent.DeserializeInternalResponseReasoningSummaryTextDeltaEvent(element, data, options);
+                        return StreamingResponseReasoningSummaryTextDeltaUpdate.DeserializeStreamingResponseReasoningSummaryTextDeltaUpdate(element, data, options);
                     case "response.reasoning_summary_text.done":
-                        return InternalResponseReasoningSummaryTextDoneEvent.DeserializeInternalResponseReasoningSummaryTextDoneEvent(element, data, options);
+                        return StreamingResponseReasoningSummaryTextDoneUpdate.DeserializeStreamingResponseReasoningSummaryTextDoneUpdate(element, data, options);
+                    case "response.reasoning_text.delta":
+                        return StreamingResponseReasoningTextDeltaUpdate.DeserializeStreamingResponseReasoningTextDeltaUpdate(element, data, options);
+                    case "response.reasoning_text.done":
+                        return StreamingResponseReasoningTextDoneUpdate.DeserializeStreamingResponseReasoningTextDoneUpdate(element, data, options);
                     case "response.web_search_call.completed":
                         return StreamingResponseWebSearchCallCompletedUpdate.DeserializeStreamingResponseWebSearchCallCompletedUpdate(element, data, options);
                     case "response.web_search_call.in_progress":

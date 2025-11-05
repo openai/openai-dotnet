@@ -255,6 +255,66 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    public async Task StreamingResponsesWithReasoningSummary()
+    {
+        OpenAIResponseClient client = GetTestClient("o3-mini");
+
+        ResponseCreationOptions options = new()
+        {
+            ReasoningOptions = new()
+            {
+                ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Auto,
+                ReasoningEffortLevel = ResponseReasoningEffortLevel.High,
+            },
+            Instructions = "Perform reasoning over any questions asked by the user.",
+        };
+
+        List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("I’m visiting New York for 3 days and love food and art. What’s the best way to plan my trip?")];
+
+        var partsAdded = 0;
+        var partsDone = 0;
+        var inPart = false;
+
+        var receivedTextDelta = false;
+        var receivedTextDone = false;
+
+        List<string> reasoningTexts = [];
+        string finalOutput = null;
+
+        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(inputItems, options))
+        {
+            if (update is StreamingResponseReasoningSummaryPartAddedUpdate partAdded)
+            {
+                partsAdded++;
+                inPart = true;
+            }
+            else if (update is StreamingResponseReasoningSummaryPartDoneUpdate partDone)
+            {
+                partsDone++;
+                inPart = false;
+            }
+            else if (update is StreamingResponseReasoningSummaryTextDeltaUpdate textDelta)
+            {
+                receivedTextDelta = true;
+                reasoningTexts.Add(textDelta.Delta);
+            }
+            else if (update is StreamingResponseReasoningSummaryTextDoneUpdate textDone)
+            {
+                receivedTextDone = true;
+                finalOutput = textDone.Text;
+            }
+        }
+
+        Assert.That(partsAdded, Is.GreaterThanOrEqualTo(1), "No reasoning summary parts were added.");
+        Assert.That(partsDone, Is.EqualTo(partsAdded), "Parts added/done mismatch.");
+        Assert.That(receivedTextDelta, Is.True, "No reasoning summary text delta event received.");
+        Assert.That(receivedTextDone, Is.True, "No reasoning summary text done event received.");
+        Assert.That(reasoningTexts.Count, Is.GreaterThan(0), "No reasoning summary text accumulated.");
+        Assert.That(string.IsNullOrWhiteSpace(finalOutput), Is.False, "Final output text is empty.");
+        Assert.That(inPart, Is.False, "Ended while still inside a reasoning summary part.");
+    }
+
+    [RecordedTest]
     [TestCase("gpt-4o-mini")]
     [TestCase("computer-use-preview")]
     public async Task ResponsesHelloWorldWithTool(string model)
