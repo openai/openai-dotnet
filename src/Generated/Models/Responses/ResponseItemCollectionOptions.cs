@@ -2,8 +2,8 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -11,20 +11,27 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ResponseItemCollectionOptions
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
         public ResponseItemCollectionOptions()
         {
         }
 
-        internal ResponseItemCollectionOptions(string afterId, string beforeId, int? pageSizeLimit, ResponseItemCollectionOrder? order, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal ResponseItemCollectionOptions(string afterId, string beforeId, int? pageSizeLimit, ResponseItemCollectionOrder? order, in JsonPatch patch)
         {
             AfterId = afterId;
             BeforeId = beforeId;
             PageSizeLimit = pageSizeLimit;
             Order = order;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         public string AfterId { get; set; }
 
@@ -33,11 +40,5 @@ namespace OpenAI.Responses
         public int? PageSizeLimit { get; set; }
 
         public ResponseItemCollectionOrder? Order { get; set; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
     }
 }

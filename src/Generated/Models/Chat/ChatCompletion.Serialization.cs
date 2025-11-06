@@ -7,6 +7,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -14,12 +15,20 @@ namespace OpenAI.Chat
 {
     public partial class ChatCompletion : IJsonModel<ChatCompletion>
     {
-        internal ChatCompletion() : this(null, null, default, null, default, null, null, null, null)
+        internal ChatCompletion() : this(null, null, default, null, default, null, null, null, default)
         {
         }
 
         void IJsonModel<ChatCompletion>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -33,71 +42,68 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(ChatCompletion)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.id"u8))
             {
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("choices") != true)
+            if (Patch.Contains("$.choices"u8))
+            {
+                if (!Patch.IsRemoved("$.choices"u8))
+                {
+                    writer.WritePropertyName("choices"u8);
+                    writer.WriteRawValue(Patch.GetJson("$.choices"u8));
+                }
+            }
+            else
             {
                 writer.WritePropertyName("choices"u8);
                 writer.WriteStartArray();
-                foreach (InternalCreateChatCompletionResponseChoice item in Choices)
+                for (int i = 0; i < Choices.Count; i++)
                 {
-                    writer.WriteObjectValue(item, options);
+                    if (Choices[i].Patch.IsRemoved("$"u8))
+                    {
+                        continue;
+                    }
+                    writer.WriteObjectValue(Choices[i], options);
                 }
+                Patch.WriteTo(writer, "$.choices"u8);
                 writer.WriteEndArray();
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("created") != true)
+            if (!Patch.Contains("$.created"u8))
             {
                 writer.WritePropertyName("created"u8);
                 writer.WriteNumberValue(CreatedAt, "U");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("model") != true)
+            if (!Patch.Contains("$.model"u8))
             {
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(Model);
             }
-            if (Optional.IsDefined(ServiceTier) && _additionalBinaryDataProperties?.ContainsKey("service_tier") != true)
+            if (Optional.IsDefined(ServiceTier) && !Patch.Contains("$.service_tier"u8))
             {
                 writer.WritePropertyName("service_tier"u8);
                 writer.WriteStringValue(ServiceTier.Value.ToString());
             }
-            if (Optional.IsDefined(SystemFingerprint) && _additionalBinaryDataProperties?.ContainsKey("system_fingerprint") != true)
+            if (Optional.IsDefined(SystemFingerprint) && !Patch.Contains("$.system_fingerprint"u8))
             {
                 writer.WritePropertyName("system_fingerprint"u8);
                 writer.WriteStringValue(SystemFingerprint);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            if (!Patch.Contains("$.object"u8))
             {
                 writer.WritePropertyName("object"u8);
                 writer.WriteStringValue(Object);
             }
-            if (Optional.IsDefined(Usage) && _additionalBinaryDataProperties?.ContainsKey("usage") != true)
+            if (Optional.IsDefined(Usage) && !Patch.Contains("$.usage"u8))
             {
                 writer.WritePropertyName("usage"u8);
                 writer.WriteObjectValue(Usage, options);
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         ChatCompletion IJsonModel<ChatCompletion>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -111,10 +117,10 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(ChatCompletion)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeChatCompletion(document.RootElement, options);
+            return DeserializeChatCompletion(document.RootElement, null, options);
         }
 
-        internal static ChatCompletion DeserializeChatCompletion(JsonElement element, ModelReaderWriterOptions options)
+        internal static ChatCompletion DeserializeChatCompletion(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -128,7 +134,9 @@ namespace OpenAI.Chat
             string systemFingerprint = default;
             string @object = default;
             ChatTokenUsage usage = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("id"u8))
@@ -141,7 +149,7 @@ namespace OpenAI.Chat
                     List<InternalCreateChatCompletionResponseChoice> array = new List<InternalCreateChatCompletionResponseChoice>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(InternalCreateChatCompletionResponseChoice.DeserializeInternalCreateChatCompletionResponseChoice(item, options));
+                        array.Add(InternalCreateChatCompletionResponseChoice.DeserializeInternalCreateChatCompletionResponseChoice(item, item.GetUtf8Bytes(), options));
                     }
                     choices = array;
                     continue;
@@ -181,11 +189,10 @@ namespace OpenAI.Chat
                     {
                         continue;
                     }
-                    usage = ChatTokenUsage.DeserializeChatTokenUsage(prop.Value, options);
+                    usage = ChatTokenUsage.DeserializeChatTokenUsage(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new ChatCompletion(
                 id,
@@ -196,7 +203,7 @@ namespace OpenAI.Chat
                 systemFingerprint,
                 @object,
                 usage,
-                additionalBinaryDataProperties);
+                patch);
         }
 
         BinaryData IPersistableModel<ChatCompletion>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -225,7 +232,7 @@ namespace OpenAI.Chat
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeChatCompletion(document.RootElement, options);
+                        return DeserializeChatCompletion(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ChatCompletion)} does not support reading '{options.Format}' format.");
@@ -237,9 +244,38 @@ namespace OpenAI.Chat
         [Experimental("OPENAI001")]
         public static explicit operator ChatCompletion(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeChatCompletion(document.RootElement, ModelSerializationExtensions.WireOptions);
+            PipelineResponse response = result.GetRawResponse();
+            BinaryData data = response.Content;
+            using JsonDocument document = JsonDocument.Parse(data);
+            return DeserializeChatCompletion(document.RootElement, data, ModelSerializationExtensions.WireOptions);
         }
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("usage"u8))
+            {
+                return Usage.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("usage"u8.Length)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("usage"u8))
+            {
+                Usage.Patch.Set([.. "$"u8, .. local.Slice("usage"u8.Length)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

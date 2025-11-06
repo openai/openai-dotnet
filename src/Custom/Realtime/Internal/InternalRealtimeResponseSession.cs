@@ -22,7 +22,7 @@ public partial class InternalRealtimeResponseSession
         get => ConversationMaxTokensChoice.FromBinaryData(_maxResponseOutputTokens);
         set
         {
-            _maxResponseOutputTokens = value == null ? null : ModelReaderWriter.Write(value);
+            _maxResponseOutputTokens = value == null ? null : ModelReaderWriter.Write(value, ModelReaderWriterOptions.Json, OpenAIContext.Default);
         }
     }
 }

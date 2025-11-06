@@ -188,7 +188,7 @@ namespace OpenAI.Assistants
 
         public static explicit operator InternalListRunsResponse(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
+            PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeInternalListRunsResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
         }

@@ -20,7 +20,7 @@ namespace OpenAI.Evals
             Content = content;
         }
 
-        internal InternalEvalItem(InternalEvalItemRole role, BinaryData content, string kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalEvalItem(InternalEvalItemRole role, BinaryData content, InternalEvalItemType? kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Role = role;
             Content = content;
@@ -32,7 +32,7 @@ namespace OpenAI.Evals
 
         public BinaryData Content { get; set; }
 
-        public string Kind { get; set; }
+        internal InternalEvalItemType? Kind { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

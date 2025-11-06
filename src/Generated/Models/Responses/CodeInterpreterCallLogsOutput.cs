@@ -2,8 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -19,10 +18,12 @@ namespace OpenAI.Responses
             Logs = logs;
         }
 
-        internal CodeInterpreterCallLogsOutput(InternalCodeInterpreterToolOutputType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string logs) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal CodeInterpreterCallLogsOutput(InternalCodeInterpreterToolOutputType kind, in JsonPatch patch, string logs) : base(kind, patch)
         {
             Logs = logs;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Logs { get; set; }
     }

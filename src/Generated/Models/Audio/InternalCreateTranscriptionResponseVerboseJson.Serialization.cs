@@ -44,7 +44,7 @@ namespace OpenAI.Audio
             if (_additionalBinaryDataProperties?.ContainsKey("duration") != true)
             {
                 writer.WritePropertyName("duration"u8);
-                writer.WriteNumberValue(Convert.ToDouble(Duration.ToString("s\\.FFF")));
+                writer.WriteNumberValue(Duration.TotalSeconds);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
             {
@@ -219,7 +219,7 @@ namespace OpenAI.Audio
 
         public static explicit operator InternalCreateTranscriptionResponseVerboseJson(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
+            PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeInternalCreateTranscriptionResponseVerboseJson(document.RootElement, ModelSerializationExtensions.WireOptions);
         }

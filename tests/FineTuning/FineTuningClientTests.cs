@@ -91,9 +91,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
         fileClient.DeleteFile(validationFile.Id);
     }
 
-
-
-    [Test]
+    [RecordedTest]
     public async Task MinimalRequiredParams()
     {
         FineTuningClient client = GetTestClient();
@@ -110,9 +108,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
         Assert.That(ft.HasCompleted);
     }
 
-
-
-    [Test]
+    [RecordedTest]
     public async Task AllParameters()
     {
         // This test does not check for Integrations because it requires a valid API key
@@ -155,7 +151,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
         Assert.That(ft.ValidationFileId, Is.EqualTo(validationFile.Id));
     }
 
-    [Test]
+    [RecordedTest]
     [Explicit("This test requires wandb.ai account and api key integration.")]
     public void WandBIntegrations()
     {
@@ -171,7 +167,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
         job.CancelAndUpdate();
     }
 
-    [Test]
+    [RecordedTest]
     public void ExceptionThrownOnInvalidFileName()
     {
         FineTuningClient client = GetTestClient();
@@ -180,7 +176,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
         );
     }
 
-    [Test]
+    [RecordedTest]
     public void ExceptionThrownOnInvalidModelName()
     {
         FineTuningClient client = GetTestClient();
@@ -189,7 +185,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
         );
     }
 
-    [Test]
+    [RecordedTest]
     public void ExceptionThrownOnInvalidValidationIdAsync()
     {
         FineTuningClient client = GetTestClient();
@@ -203,8 +199,8 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
         });
     }
 
-    [Test]
-    public async Task GetJobs()
+    [RecordedTest]
+    public void GetJobs()
     {
         FineTuningClient client = GetTestClient();
 
@@ -230,7 +226,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
         Assert.That(counter, Is.LessThanOrEqualTo(10));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetJobsWithAfter()
     {
         FineTuningClient client = GetTestClient();
@@ -251,7 +247,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
     /// First one is that the job is created
     /// Second one is "validating training file"
     /// If this test starts failing because of the wrong count, please first check if the above is still true
-    [Test]
+    [RecordedTest]
     public async Task GetJobEvents()
     {
         FineTuningClient client = GetTestClient();
@@ -278,7 +274,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetCheckpoints()
     {
         FineTuningClient client = GetTestClient();

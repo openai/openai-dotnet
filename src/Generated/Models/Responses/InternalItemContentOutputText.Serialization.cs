@@ -5,6 +5,7 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,12 +13,20 @@ namespace OpenAI.Responses
 {
     public partial class InternalItemContentOutputText : ResponseContentPart, IJsonModel<InternalItemContentOutputText>
     {
-        internal InternalItemContentOutputText() : this(InternalItemContentType.OutputText, null, null, null, null)
+        internal InternalItemContentOutputText() : this(InternalItemContentType.OutputText, default, null, null, null)
         {
         }
 
         void IJsonModel<InternalItemContentOutputText>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -31,31 +40,61 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalItemContentOutputText)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.text"u8))
             {
                 writer.WritePropertyName("text"u8);
                 writer.WriteStringValue(InternalText);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("annotations") != true)
+            if (Patch.Contains("$.annotations"u8))
+            {
+                if (!Patch.IsRemoved("$.annotations"u8))
+                {
+                    writer.WritePropertyName("annotations"u8);
+                    writer.WriteRawValue(Patch.GetJson("$.annotations"u8));
+                }
+            }
+            else
             {
                 writer.WritePropertyName("annotations"u8);
                 writer.WriteStartArray();
-                foreach (ResponseMessageAnnotation item in Annotations)
+                for (int i = 0; i < Annotations.Count; i++)
                 {
-                    writer.WriteObjectValue(item, options);
+                    if (Annotations[i].Patch.IsRemoved("$"u8))
+                    {
+                        continue;
+                    }
+                    writer.WriteObjectValue(Annotations[i], options);
                 }
+                Patch.WriteTo(writer, "$.annotations"u8);
                 writer.WriteEndArray();
             }
-            if (Optional.IsCollectionDefined(Logprobs) && _additionalBinaryDataProperties?.ContainsKey("logprobs") != true)
+            if (Patch.Contains("$.logprobs"u8))
+            {
+                if (!Patch.IsRemoved("$.logprobs"u8))
+                {
+                    writer.WritePropertyName("logprobs"u8);
+                    writer.WriteRawValue(Patch.GetJson("$.logprobs"u8));
+                }
+            }
+            else if (Optional.IsCollectionDefined(Logprobs))
             {
                 writer.WritePropertyName("logprobs"u8);
                 writer.WriteStartArray();
-                foreach (InternalLogProb item in Logprobs)
+                for (int i = 0; i < Logprobs.Count; i++)
                 {
-                    writer.WriteObjectValue(item, options);
+                    if (Logprobs[i].Patch.IsRemoved("$"u8))
+                    {
+                        continue;
+                    }
+                    writer.WriteObjectValue(Logprobs[i], options);
                 }
+                Patch.WriteTo(writer, "$.logprobs"u8);
                 writer.WriteEndArray();
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalItemContentOutputText IJsonModel<InternalItemContentOutputText>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalItemContentOutputText)JsonModelCreateCore(ref reader, options);
@@ -68,17 +107,19 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalItemContentOutputText)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalItemContentOutputText(document.RootElement, options);
+            return DeserializeInternalItemContentOutputText(document.RootElement, null, options);
         }
 
-        internal static InternalItemContentOutputText DeserializeInternalItemContentOutputText(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalItemContentOutputText DeserializeInternalItemContentOutputText(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalItemContentType internalType = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string internalText = default;
             IList<ResponseMessageAnnotation> annotations = default;
             IList<InternalLogProb> logprobs = default;
@@ -99,7 +140,7 @@ namespace OpenAI.Responses
                     List<ResponseMessageAnnotation> array = new List<ResponseMessageAnnotation>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ResponseMessageAnnotation.DeserializeResponseMessageAnnotation(item, options));
+                        array.Add(ResponseMessageAnnotation.DeserializeResponseMessageAnnotation(item, item.GetUtf8Bytes(), options));
                     }
                     annotations = array;
                     continue;
@@ -113,15 +154,14 @@ namespace OpenAI.Responses
                     List<InternalLogProb> array = new List<InternalLogProb>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(InternalLogProb.DeserializeInternalLogProb(item, options));
+                        array.Add(InternalLogProb.DeserializeInternalLogProb(item, item.GetUtf8Bytes(), options));
                     }
                     logprobs = array;
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalItemContentOutputText(internalType, additionalBinaryDataProperties, internalText, annotations, logprobs ?? new ChangeTrackingList<InternalLogProb>());
+            return new InternalItemContentOutputText(internalType, patch, internalText, annotations, logprobs ?? new ChangeTrackingList<InternalLogProb>());
         }
 
         BinaryData IPersistableModel<InternalItemContentOutputText>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -148,7 +188,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalItemContentOutputText(document.RootElement, options);
+                        return DeserializeInternalItemContentOutputText(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalItemContentOutputText)} does not support reading '{options.Format}' format.");
@@ -156,5 +196,66 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<InternalItemContentOutputText>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("annotations"u8))
+            {
+                int propertyLength = "annotations"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                return Annotations[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+            }
+            if (local.StartsWith("logprobs"u8))
+            {
+                int propertyLength = "logprobs"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                return Logprobs[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("annotations"u8))
+            {
+                int propertyLength = "annotations"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                Annotations[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                return true;
+            }
+            if (local.StartsWith("logprobs"u8))
+            {
+                int propertyLength = "logprobs"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                Logprobs[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

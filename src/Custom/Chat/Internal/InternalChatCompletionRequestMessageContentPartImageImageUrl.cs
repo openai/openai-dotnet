@@ -33,7 +33,7 @@ public partial class InternalChatCompletionRequestMessageContentPartImageImageUr
     /// <param name="uri"> Either a URL of the image or the base64 encoded image data. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="uri"/> is null. </exception>
     public InternalChatCompletionRequestMessageContentPartImageImageUrl(Uri uri, ChatImageDetailLevel? detailLevel = default)
-        : this(null, detailLevel, null)
+        : this(null, detailLevel, default)
     {
         Argument.AssertNotNull(uri, nameof(uri));
         _imageUri = uri;
@@ -41,7 +41,7 @@ public partial class InternalChatCompletionRequestMessageContentPartImageImageUr
     }
 
     public InternalChatCompletionRequestMessageContentPartImageImageUrl(BinaryData imageBytes, string imageBytesMediaType, ChatImageDetailLevel? detailLevel = default)
-        : this(null, detailLevel, null)
+        : this(null, detailLevel, default)
     {
         Argument.AssertNotNull(imageBytes, nameof(imageBytes));
         Argument.AssertNotNull(imageBytesMediaType, nameof(imageBytesMediaType));

@@ -2,8 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 
 namespace OpenAI.Responses
 {
@@ -16,12 +15,14 @@ namespace OpenAI.Responses
             Y = y;
         }
 
-        internal InternalComputerActionClick(ComputerCallActionKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, ComputerCallActionMouseButton button, int x, int y) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalComputerActionClick(ComputerCallActionKind kind, in JsonPatch patch, ComputerCallActionMouseButton button, int x, int y) : base(kind, patch)
         {
             Button = button;
             X = x;
             Y = y;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public ComputerCallActionMouseButton Button { get; set; }
 

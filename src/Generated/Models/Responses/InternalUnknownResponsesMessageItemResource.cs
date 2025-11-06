@@ -2,15 +2,16 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 
 namespace OpenAI.Responses
 {
 	public partial class InternalUnknownResponsesMessageItemResource : MessageResponseItem
     {
-        internal InternalUnknownResponsesMessageItemResource(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, MessageStatus? status, InternalResponsesMessageRole internalRole) : base(kind != default ? kind : "unknown", id, additionalBinaryDataProperties, status, internalRole != default ? internalRole : "unknown")
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalUnknownResponsesMessageItemResource(InternalItemType kind, string id, in JsonPatch patch, MessageStatus? status, InternalResponsesMessageRole internalRole) : base(kind != default ? kind : "unknown", id, patch, status, internalRole != default ? internalRole : "unknown")
         {
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

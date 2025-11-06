@@ -2,8 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using OpenAI;
 
 namespace OpenAI.Responses
@@ -19,11 +18,13 @@ namespace OpenAI.Responses
             Output = output;
         }
 
-        internal InternalFunctionToolCallOutputItemParam(InternalItemType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, string output) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalFunctionToolCallOutputItemParam(InternalItemType kind, in JsonPatch patch, string callId, string output) : base(kind, patch)
         {
             CallId = callId;
             Output = output;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string CallId { get; }
 

@@ -2,36 +2,40 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
 namespace OpenAI.Chat
 {
     public partial class InternalCreateChatCompletionResponseChoiceLogprobs
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
-        internal InternalCreateChatCompletionResponseChoiceLogprobs() : this(null, null, null)
+        internal InternalCreateChatCompletionResponseChoiceLogprobs() : this(null, null, default)
         {
         }
 
-        internal InternalCreateChatCompletionResponseChoiceLogprobs(IReadOnlyList<ChatTokenLogProbabilityDetails> content, IReadOnlyList<ChatTokenLogProbabilityDetails> refusal, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalCreateChatCompletionResponseChoiceLogprobs(IReadOnlyList<ChatTokenLogProbabilityDetails> content, IReadOnlyList<ChatTokenLogProbabilityDetails> refusal, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Content = content ?? new ChangeTrackingList<ChatTokenLogProbabilityDetails>();
             Refusal = refusal ?? new ChangeTrackingList<ChatTokenLogProbabilityDetails>();
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         public IReadOnlyList<ChatTokenLogProbabilityDetails> Content { get; }
 
         public IReadOnlyList<ChatTokenLogProbabilityDetails> Refusal { get; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
     }
 }

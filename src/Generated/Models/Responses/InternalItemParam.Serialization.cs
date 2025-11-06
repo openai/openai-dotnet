@@ -18,6 +18,14 @@ namespace OpenAI.Responses
 
         void IJsonModel<InternalItemParam>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -30,31 +38,13 @@ namespace OpenAI.Responses
             {
                 throw new FormatException($"The model {nameof(InternalItemParam)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.type"u8))
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToString());
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalItemParam IJsonModel<InternalItemParam>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -67,10 +57,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalItemParam)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalItemParam(document.RootElement, options);
+            return DeserializeInternalItemParam(document.RootElement, null, options);
         }
 
-        internal static InternalItemParam DeserializeInternalItemParam(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalItemParam DeserializeInternalItemParam(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -80,43 +70,43 @@ namespace OpenAI.Responses
             {
                 switch (discriminator.GetString())
                 {
-                    case "file_search_call":
-                        return InternalFileSearchToolCallItemParam.DeserializeInternalFileSearchToolCallItemParam(element, options);
-                    case "computer_call":
-                        return InternalComputerUsePreviewToolCallItemParam.DeserializeInternalComputerUsePreviewToolCallItemParam(element, options);
-                    case "computer_call_output":
-                        return InternalComputerUsePreviewToolCallOutputItemParam.DeserializeInternalComputerUsePreviewToolCallOutputItemParam(element, options);
-                    case "web_search_call":
-                        return InternalWebSearchToolCallItemParam.DeserializeInternalWebSearchToolCallItemParam(element, options);
-                    case "function_call":
-                        return InternalFunctionToolCallItemParam.DeserializeInternalFunctionToolCallItemParam(element, options);
-                    case "function_call_output":
-                        return InternalFunctionToolCallOutputItemParam.DeserializeInternalFunctionToolCallOutputItemParam(element, options);
-                    case "reasoning":
-                        return InternalReasoningItemParam.DeserializeInternalReasoningItemParam(element, options);
-                    case "item_reference":
-                        return InternalItemReferenceItemParam.DeserializeInternalItemReferenceItemParam(element, options);
-                    case "image_generation_call":
-                        return InternalImageGenToolCallItemParam.DeserializeInternalImageGenToolCallItemParam(element, options);
-                    case "code_interpreter_call":
-                        return InternalCodeInterpreterToolCallItemParam.DeserializeInternalCodeInterpreterToolCallItemParam(element, options);
-                    case "local_shell_call":
-                        return InternalLocalShellToolCallItemParam.DeserializeInternalLocalShellToolCallItemParam(element, options);
-                    case "local_shell_call_output":
-                        return InternalLocalShellToolCallOutputItemParam.DeserializeInternalLocalShellToolCallOutputItemParam(element, options);
-                    case "mcp_list_tools":
-                        return InternalMCPListToolsItemParam.DeserializeInternalMCPListToolsItemParam(element, options);
-                    case "mcp_approval_request":
-                        return InternalMCPApprovalRequestItemParam.DeserializeInternalMCPApprovalRequestItemParam(element, options);
-                    case "mcp_approval_response":
-                        return InternalMCPApprovalResponseItemParam.DeserializeInternalMCPApprovalResponseItemParam(element, options);
-                    case "mcp_call":
-                        return InternalMCPCallItemParam.DeserializeInternalMCPCallItemParam(element, options);
                     case "message":
-                        return InternalResponsesMessageItemParam.DeserializeInternalResponsesMessageItemParam(element, options);
+                        return InternalResponsesMessageItemParam.DeserializeInternalResponsesMessageItemParam(element, data, options);
+                    case "function_call_output":
+                        return InternalFunctionToolCallOutputItemParam.DeserializeInternalFunctionToolCallOutputItemParam(element, data, options);
+                    case "file_search_call":
+                        return InternalFileSearchToolCallItemParam.DeserializeInternalFileSearchToolCallItemParam(element, data, options);
+                    case "computer_call":
+                        return InternalComputerUsePreviewToolCallItemParam.DeserializeInternalComputerUsePreviewToolCallItemParam(element, data, options);
+                    case "computer_call_output":
+                        return InternalComputerUsePreviewToolCallOutputItemParam.DeserializeInternalComputerUsePreviewToolCallOutputItemParam(element, data, options);
+                    case "web_search_call":
+                        return InternalWebSearchToolCallItemParam.DeserializeInternalWebSearchToolCallItemParam(element, data, options);
+                    case "function_call":
+                        return InternalFunctionToolCallItemParam.DeserializeInternalFunctionToolCallItemParam(element, data, options);
+                    case "reasoning":
+                        return InternalReasoningItemParam.DeserializeInternalReasoningItemParam(element, data, options);
+                    case "item_reference":
+                        return InternalItemReferenceItemParam.DeserializeInternalItemReferenceItemParam(element, data, options);
+                    case "image_generation_call":
+                        return InternalImageGenToolCallItemParam.DeserializeInternalImageGenToolCallItemParam(element, data, options);
+                    case "code_interpreter_call":
+                        return InternalCodeInterpreterToolCallItemParam.DeserializeInternalCodeInterpreterToolCallItemParam(element, data, options);
+                    case "local_shell_call":
+                        return InternalLocalShellToolCallItemParam.DeserializeInternalLocalShellToolCallItemParam(element, data, options);
+                    case "local_shell_call_output":
+                        return InternalLocalShellToolCallOutputItemParam.DeserializeInternalLocalShellToolCallOutputItemParam(element, data, options);
+                    case "mcp_list_tools":
+                        return InternalMCPListToolsItemParam.DeserializeInternalMCPListToolsItemParam(element, data, options);
+                    case "mcp_approval_request":
+                        return InternalMCPApprovalRequestItemParam.DeserializeInternalMCPApprovalRequestItemParam(element, data, options);
+                    case "mcp_approval_response":
+                        return InternalMCPApprovalResponseItemParam.DeserializeInternalMCPApprovalResponseItemParam(element, data, options);
+                    case "mcp_call":
+                        return InternalMCPCallItemParam.DeserializeInternalMCPCallItemParam(element, data, options);
                 }
             }
-            return InternalUnknownItemParam.DeserializeInternalUnknownItemParam(element, options);
+            return InternalUnknownItemParam.DeserializeInternalUnknownItemParam(element, data, options);
         }
 
         BinaryData IPersistableModel<InternalItemParam>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -143,7 +133,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalItemParam(document.RootElement, options);
+                        return DeserializeInternalItemParam(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalItemParam)} does not support reading '{options.Format}' format.");

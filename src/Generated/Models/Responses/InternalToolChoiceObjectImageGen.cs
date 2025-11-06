@@ -2,19 +2,20 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 
 namespace OpenAI.Responses
 {
     public partial class InternalToolChoiceObjectImageGen : InternalToolChoiceObject
     {
-        public InternalToolChoiceObjectImageGen() : this(InternalToolChoiceObjectType.ImageGeneration, null)
+        public InternalToolChoiceObjectImageGen() : this(InternalToolChoiceObjectType.ImageGeneration, default)
         {
         }
 
-        internal InternalToolChoiceObjectImageGen(InternalToolChoiceObjectType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalToolChoiceObjectImageGen(InternalToolChoiceObjectType kind, in JsonPatch patch) : base(kind, patch)
         {
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

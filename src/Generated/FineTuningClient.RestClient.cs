@@ -27,7 +27,7 @@ namespace OpenAI.FineTuning
             }
             if (limit != null)
             {
-                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit, null), true);
+                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
             }
             if (order != null)
             {
@@ -100,7 +100,7 @@ namespace OpenAI.FineTuning
             }
             if (limit != null)
             {
-                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit, null), true);
+                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
             }
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;
@@ -149,7 +149,7 @@ namespace OpenAI.FineTuning
             }
             if (limit != null)
             {
-                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit, null), true);
+                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
             }
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;
@@ -171,7 +171,7 @@ namespace OpenAI.FineTuning
             }
             if (limit != null)
             {
-                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit, null), true);
+                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
             }
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;

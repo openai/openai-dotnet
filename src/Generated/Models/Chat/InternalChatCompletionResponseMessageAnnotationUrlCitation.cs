@@ -3,13 +3,16 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Chat
 {
     public partial class InternalChatCompletionResponseMessageAnnotationUrlCitation
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
         internal InternalChatCompletionResponseMessageAnnotationUrlCitation(int endIndex, int startIndex, Uri url, string title)
         {
@@ -19,14 +22,20 @@ namespace OpenAI.Chat
             Title = title;
         }
 
-        internal InternalChatCompletionResponseMessageAnnotationUrlCitation(int endIndex, int startIndex, Uri url, string title, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalChatCompletionResponseMessageAnnotationUrlCitation(int endIndex, int startIndex, Uri url, string title, in JsonPatch patch)
         {
             EndIndex = endIndex;
             StartIndex = startIndex;
             Url = url;
             Title = title;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         public int EndIndex { get; }
 
@@ -35,11 +44,5 @@ namespace OpenAI.Chat
         public Uri Url { get; }
 
         public string Title { get; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
     }
 }

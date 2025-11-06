@@ -2,8 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 
 namespace OpenAI.Responses
 {
@@ -17,13 +16,15 @@ namespace OpenAI.Responses
             ScrollY = scrollY;
         }
 
-        internal InternalComputerActionScroll(ComputerCallActionKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, int x, int y, int scrollX, int scrollY) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalComputerActionScroll(ComputerCallActionKind kind, in JsonPatch patch, int x, int y, int scrollX, int scrollY) : base(kind, patch)
         {
             X = x;
             Y = y;
             ScrollX = scrollX;
             ScrollY = scrollY;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public int X { get; set; }
 

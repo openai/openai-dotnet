@@ -181,7 +181,7 @@ namespace OpenAI
         public override async Task WriteToAsync(Stream stream, CancellationToken cancellationToken = default)
         {
 #if NET6_0_OR_GREATER
-            await _multipartContent.CopyToAsync(stream).ConfigureAwait(false);
+            await _multipartContent.CopyToAsync(stream, cancellationToken).ConfigureAwait(false);
 #else
             await _multipartContent.CopyToAsync(stream).ConfigureAwait(false);
 #endif

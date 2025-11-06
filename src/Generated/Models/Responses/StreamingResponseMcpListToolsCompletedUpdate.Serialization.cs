@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,12 +12,20 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseMcpListToolsCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpListToolsCompletedUpdate>
     {
-        internal StreamingResponseMcpListToolsCompletedUpdate() : this(InternalResponseStreamEventType.ResponseMcpListToolsCompleted, default, null, null, default)
+        internal StreamingResponseMcpListToolsCompletedUpdate() : this(InternalResponseStreamEventType.ResponseMcpListToolsCompleted, default, default, null, default)
         {
         }
 
         void IJsonModel<StreamingResponseMcpListToolsCompletedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -31,16 +39,20 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(StreamingResponseMcpListToolsCompletedUpdate)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("item_id") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.item_id"u8))
             {
                 writer.WritePropertyName("item_id"u8);
                 writer.WriteStringValue(ItemId);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("output_index") != true)
+            if (!Patch.Contains("$.output_index"u8))
             {
                 writer.WritePropertyName("output_index"u8);
                 writer.WriteNumberValue(OutputIndex);
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         StreamingResponseMcpListToolsCompletedUpdate IJsonModel<StreamingResponseMcpListToolsCompletedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StreamingResponseMcpListToolsCompletedUpdate)JsonModelCreateCore(ref reader, options);
@@ -53,10 +65,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(StreamingResponseMcpListToolsCompletedUpdate)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeStreamingResponseMcpListToolsCompletedUpdate(document.RootElement, options);
+            return DeserializeStreamingResponseMcpListToolsCompletedUpdate(document.RootElement, null, options);
         }
 
-        internal static StreamingResponseMcpListToolsCompletedUpdate DeserializeStreamingResponseMcpListToolsCompletedUpdate(JsonElement element, ModelReaderWriterOptions options)
+        internal static StreamingResponseMcpListToolsCompletedUpdate DeserializeStreamingResponseMcpListToolsCompletedUpdate(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -64,7 +76,9 @@ namespace OpenAI.Responses
             }
             InternalResponseStreamEventType kind = default;
             int sequenceNumber = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string itemId = default;
             int outputIndex = default;
             foreach (var prop in element.EnumerateObject())
@@ -89,10 +103,9 @@ namespace OpenAI.Responses
                     outputIndex = prop.Value.GetInt32();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new StreamingResponseMcpListToolsCompletedUpdate(kind, sequenceNumber, additionalBinaryDataProperties, itemId, outputIndex);
+            return new StreamingResponseMcpListToolsCompletedUpdate(kind, sequenceNumber, patch, itemId, outputIndex);
         }
 
         BinaryData IPersistableModel<StreamingResponseMcpListToolsCompletedUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -119,7 +132,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeStreamingResponseMcpListToolsCompletedUpdate(document.RootElement, options);
+                        return DeserializeStreamingResponseMcpListToolsCompletedUpdate(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(StreamingResponseMcpListToolsCompletedUpdate)} does not support reading '{options.Format}' format.");

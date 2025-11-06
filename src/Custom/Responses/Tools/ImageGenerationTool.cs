@@ -18,11 +18,10 @@ public partial class ImageGenerationTool
     [CodeGenMember("Moderation")]
     public ImageGenerationToolModerationLevel? ModerationLevel { get; set; }
 
-    // CUSTOM: Renamed.
-    [CodeGenMember("InputFidelity")]
-    public ImageGenerationToolInputFidelityLevel? InputFidelityLevel { get; set; }
-
     // CUSTOM:Renamed.
     [CodeGenMember("PartialImages")]
     public int? PartialImageCount { get; set; }
+
+    // CUSTOM: Convert to string to ensure backwards compatibility.
+    public string Model { get; set; }
 }

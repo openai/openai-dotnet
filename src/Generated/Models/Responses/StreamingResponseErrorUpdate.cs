@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -11,21 +12,23 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseErrorUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseErrorUpdate(int sequenceNumber, string errorType, string code, string message, string @param) : base(InternalResponseStreamEventType.Error, sequenceNumber)
-        {
-            ErrorType = errorType;
-            Code = code;
-            Message = message;
-            Param = @param;
-        }
-
-        internal StreamingResponseErrorUpdate(InternalResponseStreamEventType kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, string errorType, string code, string message, string @param) : base(kind, sequenceNumber, additionalBinaryDataProperties)
-        {
-            ErrorType = errorType;
+		internal StreamingResponseErrorUpdate(int sequenceNumber, string errorType, string code, string message, string @param) : base(InternalResponseStreamEventType.Error, sequenceNumber)
+		{
+			ErrorType = errorType;
 			Code = code;
-            Message = message;
-            Param = @param;
-        }
+			Message = message;
+			Param = @param;
+		}
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+		internal StreamingResponseErrorUpdate(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch, string errorType, string code, string message, string @param) : base(kind, sequenceNumber)
+		{
+			ErrorType = errorType;
+			Code = code;
+			Message = message;
+			Param = @param;
+		}
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
 		public string ErrorType { get; }
 

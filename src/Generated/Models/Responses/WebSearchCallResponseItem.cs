@@ -2,8 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -11,17 +10,15 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class WebSearchCallResponseItem : ResponseItem
     {
-        public WebSearchCallResponseItem() : this(InternalItemType.WebSearchCall, null, null, default, null)
+        public WebSearchCallResponseItem() : this(InternalItemType.WebSearchCall, null, default, default)
         {
         }
 
-        internal WebSearchCallResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, WebSearchCallStatus? status, object action) : base(kind, id, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal WebSearchCallResponseItem(InternalItemType kind, string id, in JsonPatch patch, WebSearchCallStatus? status) : base(kind, id, patch)
         {
             Status = status;
-
-            // <GP>
-            Action = action;
-			// </GP>
-		}
-	}
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+    }
 }

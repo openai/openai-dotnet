@@ -1,4 +1,5 @@
 using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 
 namespace OpenAI.Chat;
@@ -43,14 +44,16 @@ public partial class ChatToolChoice
     }
 
     // CUSTOM: Added to support deserialization.
-    internal ChatToolChoice(bool predefined, string predefinedValue, string type, InternalChatCompletionNamedToolChoiceFunction function, IDictionary<string, BinaryData> serializedAdditionalRawData)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+    internal ChatToolChoice(bool predefined, string predefinedValue, string type, InternalChatCompletionNamedToolChoiceFunction function, in JsonPatch patch)
     {
         _predefined = predefined;
         _predefinedValue = predefinedValue;
         _type = type;
         _function = function;
-        _additionalBinaryDataProperties = serializedAdditionalRawData;
+        _patch = patch;
     }
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
     /// <summary>
     ///     Creates a new <see cref="ChatToolChoice"/> indicating that the model can freely pick between generating a
@@ -63,7 +66,7 @@ public partial class ChatToolChoice
             predefinedValue: AutoValue,
             type: null,
             function: null,
-            serializedAdditionalRawData: null);
+            patch: default);
     }
 
     /// <summary>
@@ -77,7 +80,7 @@ public partial class ChatToolChoice
             predefinedValue: NoneValue,
             type: null,
             function: null,
-            serializedAdditionalRawData: null);
+            patch: default);
     }
 
     /// <summary>
@@ -90,7 +93,7 @@ public partial class ChatToolChoice
             predefinedValue: RequiredValue,
             type: null,
             function: null,
-            serializedAdditionalRawData: null);
+            patch: default);
     }
 
     /// <summary>
@@ -107,6 +110,6 @@ public partial class ChatToolChoice
             predefinedValue: null,
             type: FunctionType,
             function: new InternalChatCompletionNamedToolChoiceFunction(functionName),
-            serializedAdditionalRawData: null);
+            patch: default);
     }
 }

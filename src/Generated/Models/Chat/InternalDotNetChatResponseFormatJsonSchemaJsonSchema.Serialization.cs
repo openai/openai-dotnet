@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -18,6 +18,14 @@ namespace OpenAI.Chat
 
         void IJsonModel<InternalDotNetChatResponseFormatJsonSchemaJsonSchema>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -30,17 +38,18 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(InternalDotNetChatResponseFormatJsonSchemaJsonSchema)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Description) && _additionalBinaryDataProperties?.ContainsKey("description") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Optional.IsDefined(Description) && !Patch.Contains("$.description"u8))
             {
                 writer.WritePropertyName("description"u8);
                 writer.WriteStringValue(Description);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
+            if (!Patch.Contains("$.name"u8))
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(Name);
             }
-            if (Optional.IsDefined(Schema) && _additionalBinaryDataProperties?.ContainsKey("schema") != true)
+            if (Optional.IsDefined(Schema) && !Patch.Contains("$.schema"u8))
             {
                 writer.WritePropertyName("schema"u8);
 #if NET6_0_OR_GREATER
@@ -52,31 +61,14 @@ namespace OpenAI.Chat
                 }
 #endif
             }
-            if (Optional.IsDefined(Strict) && _additionalBinaryDataProperties?.ContainsKey("strict") != true)
+            if (Optional.IsDefined(Strict) && !Patch.Contains("$.strict"u8))
             {
                 writer.WritePropertyName("strict"u8);
                 writer.WriteBooleanValue(Strict.Value);
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalDotNetChatResponseFormatJsonSchemaJsonSchema IJsonModel<InternalDotNetChatResponseFormatJsonSchemaJsonSchema>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -89,10 +81,10 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(InternalDotNetChatResponseFormatJsonSchemaJsonSchema)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalDotNetChatResponseFormatJsonSchemaJsonSchema(document.RootElement, options);
+            return DeserializeInternalDotNetChatResponseFormatJsonSchemaJsonSchema(document.RootElement, null, options);
         }
 
-        internal static InternalDotNetChatResponseFormatJsonSchemaJsonSchema DeserializeInternalDotNetChatResponseFormatJsonSchemaJsonSchema(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalDotNetChatResponseFormatJsonSchemaJsonSchema DeserializeInternalDotNetChatResponseFormatJsonSchemaJsonSchema(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -102,7 +94,9 @@ namespace OpenAI.Chat
             string name = default;
             BinaryData schema = default;
             bool? strict = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("description"u8))
@@ -134,10 +128,9 @@ namespace OpenAI.Chat
                     strict = prop.Value.GetBoolean();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalDotNetChatResponseFormatJsonSchemaJsonSchema(description, name, schema, strict, additionalBinaryDataProperties);
+            return new InternalDotNetChatResponseFormatJsonSchemaJsonSchema(description, name, schema, strict, patch);
         }
 
         BinaryData IPersistableModel<InternalDotNetChatResponseFormatJsonSchemaJsonSchema>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -164,7 +157,7 @@ namespace OpenAI.Chat
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalDotNetChatResponseFormatJsonSchemaJsonSchema(document.RootElement, options);
+                        return DeserializeInternalDotNetChatResponseFormatJsonSchemaJsonSchema(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalDotNetChatResponseFormatJsonSchemaJsonSchema)} does not support reading '{options.Format}' format.");

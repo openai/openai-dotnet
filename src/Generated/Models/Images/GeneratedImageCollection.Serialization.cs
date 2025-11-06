@@ -170,7 +170,7 @@ namespace OpenAI.Images
         [Experimental("OPENAI001")]
         public static explicit operator GeneratedImageCollection(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
+            PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeGeneratedImageCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
         }

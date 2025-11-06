@@ -4,8 +4,8 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -19,6 +19,14 @@ namespace OpenAI.Chat
 
         void IJsonModel<ChatTokenUsage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -32,51 +40,35 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(ChatTokenUsage)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("completion_tokens") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.completion_tokens"u8))
             {
                 writer.WritePropertyName("completion_tokens"u8);
                 writer.WriteNumberValue(OutputTokenCount);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("prompt_tokens") != true)
+            if (!Patch.Contains("$.prompt_tokens"u8))
             {
                 writer.WritePropertyName("prompt_tokens"u8);
                 writer.WriteNumberValue(InputTokenCount);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("total_tokens") != true)
+            if (!Patch.Contains("$.total_tokens"u8))
             {
                 writer.WritePropertyName("total_tokens"u8);
                 writer.WriteNumberValue(TotalTokenCount);
             }
-            if (Optional.IsDefined(OutputTokenDetails) && _additionalBinaryDataProperties?.ContainsKey("completion_tokens_details") != true)
+            if (Optional.IsDefined(OutputTokenDetails) && !Patch.Contains("$.completion_tokens_details"u8))
             {
                 writer.WritePropertyName("completion_tokens_details"u8);
                 writer.WriteObjectValue(OutputTokenDetails, options);
             }
-            if (Optional.IsDefined(InputTokenDetails) && _additionalBinaryDataProperties?.ContainsKey("prompt_tokens_details") != true)
+            if (Optional.IsDefined(InputTokenDetails) && !Patch.Contains("$.prompt_tokens_details"u8))
             {
                 writer.WritePropertyName("prompt_tokens_details"u8);
                 writer.WriteObjectValue(InputTokenDetails, options);
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         ChatTokenUsage IJsonModel<ChatTokenUsage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -90,10 +82,10 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(ChatTokenUsage)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeChatTokenUsage(document.RootElement, options);
+            return DeserializeChatTokenUsage(document.RootElement, null, options);
         }
 
-        internal static ChatTokenUsage DeserializeChatTokenUsage(JsonElement element, ModelReaderWriterOptions options)
+        internal static ChatTokenUsage DeserializeChatTokenUsage(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -104,7 +96,9 @@ namespace OpenAI.Chat
             int totalTokenCount = default;
             ChatOutputTokenUsageDetails outputTokenDetails = default;
             ChatInputTokenUsageDetails inputTokenDetails = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("completion_tokens"u8))
@@ -128,7 +122,7 @@ namespace OpenAI.Chat
                     {
                         continue;
                     }
-                    outputTokenDetails = ChatOutputTokenUsageDetails.DeserializeChatOutputTokenUsageDetails(prop.Value, options);
+                    outputTokenDetails = ChatOutputTokenUsageDetails.DeserializeChatOutputTokenUsageDetails(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("prompt_tokens_details"u8))
@@ -137,11 +131,10 @@ namespace OpenAI.Chat
                     {
                         continue;
                     }
-                    inputTokenDetails = ChatInputTokenUsageDetails.DeserializeChatInputTokenUsageDetails(prop.Value, options);
+                    inputTokenDetails = ChatInputTokenUsageDetails.DeserializeChatInputTokenUsageDetails(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new ChatTokenUsage(
                 outputTokenCount,
@@ -149,7 +142,7 @@ namespace OpenAI.Chat
                 totalTokenCount,
                 outputTokenDetails,
                 inputTokenDetails,
-                additionalBinaryDataProperties);
+                patch);
         }
 
         BinaryData IPersistableModel<ChatTokenUsage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -178,7 +171,7 @@ namespace OpenAI.Chat
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeChatTokenUsage(document.RootElement, options);
+                        return DeserializeChatTokenUsage(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ChatTokenUsage)} does not support reading '{options.Format}' format.");

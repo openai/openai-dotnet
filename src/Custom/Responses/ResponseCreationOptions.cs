@@ -78,15 +78,7 @@ public partial class ResponseCreationOptions
     internal ResponseCreationOptions GetClone()
     {
         ResponseCreationOptions copiedOptions = (ResponseCreationOptions)this.MemberwiseClone();
-
-        if (SerializedAdditionalRawData is not null)
-        {
-            copiedOptions.SerializedAdditionalRawData = new ChangeTrackingDictionary<string, BinaryData>();
-            foreach (KeyValuePair<string, BinaryData> sourcePair in SerializedAdditionalRawData)
-            {
-                copiedOptions.SerializedAdditionalRawData[sourcePair.Key] = sourcePair.Value;
-            }
-        }
+        copiedOptions.Patch = _patch;
 
         return copiedOptions;
     }

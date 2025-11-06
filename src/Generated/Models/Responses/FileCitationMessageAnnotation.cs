@@ -2,43 +2,42 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
-    public partial class FileCitationMessageAnnotation : ResponseMessageAnnotation
+	// <GP> Adding missing constructor with filename
+	public partial class FileCitationMessageAnnotation : ResponseMessageAnnotation
     {
-		// <GP> Adding missing constructor with filename
-		public FileCitationMessageAnnotation(string filename, string fileId, int index) : base(ResponseMessageAnnotationKind.FileCitation)
-		{
-			Argument.AssertNotNull(filename, nameof(filename));
-			Argument.AssertNotNull(fileId, nameof(fileId));
+        public FileCitationMessageAnnotation(string filename, string fileId, int index) : base(ResponseMessageAnnotationKind.FileCitation)
+        {
+            Argument.AssertNotNull(fileId, nameof(fileId));
 
             Filename = filename;
 			FileId = fileId;
-			Index = index;
-		}
-
-		// </GP> Adding missing filename
-		internal FileCitationMessageAnnotation(ResponseMessageAnnotationKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string fileName, string fileId, int index) : base(kind, additionalBinaryDataProperties)
-        {
-            Filename = fileName;
-            FileId = fileId;
             Index = index;
         }
-        // </GP>
+		// </GP>
 
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+		// </GP> Adding missing filename
+		internal FileCitationMessageAnnotation(ResponseMessageAnnotationKind kind, in JsonPatch patch, string filename, string fileId, int index) : base(kind, patch)
+        {
+			Filename = filename;
+			FileId = fileId;
+            Index = index;
+        }
+		// </GP>
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        // <GP> Adding missing filename
+		// <GP> Adding missing filename
 		public string Filename { get; set; }
 		// </GP> Adding missing filename
+        public string FileId { get; set; }
 
-		public string FileId { get; set; }
-
-        public int Index { get; set; }
+		public int Index { get; set; }
     }
 }

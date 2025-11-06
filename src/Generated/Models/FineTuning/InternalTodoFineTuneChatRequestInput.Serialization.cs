@@ -152,7 +152,7 @@ namespace OpenAI.FineTuning
                     List<ChatTool> array = new List<ChatTool>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ChatTool.DeserializeChatTool(item, options));
+                        array.Add(ChatTool.DeserializeChatTool(item, item.GetUtf8Bytes(), options));
                     }
                     tools = array;
                     continue;
@@ -175,7 +175,7 @@ namespace OpenAI.FineTuning
                     List<ChatFunction> array = new List<ChatFunction>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ChatFunction.DeserializeChatFunction(item, options));
+                        array.Add(ChatFunction.DeserializeChatFunction(item, item.GetUtf8Bytes(), options));
                     }
                     functions = array;
                     continue;

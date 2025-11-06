@@ -58,7 +58,7 @@ public readonly partial struct InternalListFineTuningJobEventsResponseObject { }
 public readonly partial struct InternalCreateFineTuningJobRequestModel { }
 
 [CodeGenType("FineTuningJobEventLevel")]
-internal enum FineTuningJobEventLevel
+public enum FineTuningJobEventLevel
 {
     Info,
     Warn,

@@ -5,6 +5,7 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,12 +13,20 @@ namespace OpenAI.Responses
 {
     public partial class InternalComputerActionDrag : ComputerCallAction, IJsonModel<InternalComputerActionDrag>
     {
-        internal InternalComputerActionDrag() : this(ComputerCallActionKind.Drag, null, null)
+        internal InternalComputerActionDrag() : this(ComputerCallActionKind.Drag, default, null)
         {
         }
 
         void IJsonModel<InternalComputerActionDrag>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -31,16 +40,33 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalComputerActionDrag)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("path") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$.path"u8))
+            {
+                if (!Patch.IsRemoved("$.path"u8))
+                {
+                    writer.WritePropertyName("path"u8);
+                    writer.WriteRawValue(Patch.GetJson("$.path"u8));
+                }
+            }
+            else
             {
                 writer.WritePropertyName("path"u8);
                 writer.WriteStartArray();
-                foreach (InternalCoordinate item in Path)
+                for (int i = 0; i < Path.Count; i++)
                 {
-                    writer.WriteObjectValue(item, options);
+                    if (Path[i].Patch.IsRemoved("$"u8))
+                    {
+                        continue;
+                    }
+                    writer.WriteObjectValue(Path[i], options);
                 }
+                Patch.WriteTo(writer, "$.path"u8);
                 writer.WriteEndArray();
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalComputerActionDrag IJsonModel<InternalComputerActionDrag>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalComputerActionDrag)JsonModelCreateCore(ref reader, options);
@@ -53,17 +79,19 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalComputerActionDrag)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalComputerActionDrag(document.RootElement, options);
+            return DeserializeInternalComputerActionDrag(document.RootElement, null, options);
         }
 
-        internal static InternalComputerActionDrag DeserializeInternalComputerActionDrag(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalComputerActionDrag DeserializeInternalComputerActionDrag(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             ComputerCallActionKind kind = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             IList<InternalCoordinate> path = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -77,15 +105,14 @@ namespace OpenAI.Responses
                     List<InternalCoordinate> array = new List<InternalCoordinate>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(InternalCoordinate.DeserializeInternalCoordinate(item, options));
+                        array.Add(InternalCoordinate.DeserializeInternalCoordinate(item, item.GetUtf8Bytes(), options));
                     }
                     path = array;
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalComputerActionDrag(kind, additionalBinaryDataProperties, path);
+            return new InternalComputerActionDrag(kind, patch, path);
         }
 
         BinaryData IPersistableModel<InternalComputerActionDrag>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -112,7 +139,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalComputerActionDrag(document.RootElement, options);
+                        return DeserializeInternalComputerActionDrag(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalComputerActionDrag)} does not support reading '{options.Format}' format.");
@@ -120,5 +147,45 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<InternalComputerActionDrag>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("path"u8))
+            {
+                int propertyLength = "path"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                return Path[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("path"u8))
+            {
+                int propertyLength = "path"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                Path[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

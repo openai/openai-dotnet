@@ -346,7 +346,7 @@ namespace OpenAI.LegacyCompletions
                         streamOptions = null;
                         continue;
                     }
-                    streamOptions = InternalChatCompletionStreamOptions.DeserializeInternalChatCompletionStreamOptions(prop.Value, options);
+                    streamOptions = InternalChatCompletionStreamOptions.DeserializeInternalChatCompletionStreamOptions(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("suffix"u8))

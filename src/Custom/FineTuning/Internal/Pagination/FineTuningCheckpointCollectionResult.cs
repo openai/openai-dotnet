@@ -86,7 +86,7 @@ internal class FineTuningCheckpointCollectionResult : CollectionResult<FineTunin
         Argument.AssertNotNull(page, nameof(page));
 
         PipelineResponse response = page.GetRawResponse();
-        InternalListFineTuningJobCheckpointsResponse points = ModelReaderWriter.Read<InternalListFineTuningJobCheckpointsResponse>(response.Content)!;
+        InternalListFineTuningJobCheckpointsResponse points = ModelReaderWriter.Read<InternalListFineTuningJobCheckpointsResponse>(response.Content, ModelReaderWriterOptions.Json, OpenAIContext.Default)!;
         return points.Data;
     }
 }

@@ -2,8 +2,8 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -11,29 +11,30 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ResponseDeletionResult
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
         internal ResponseDeletionResult(string id)
         {
             Id = id;
         }
 
-        internal ResponseDeletionResult(string id, string @object, bool deleted, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal ResponseDeletionResult(string id, string @object, bool deleted, in JsonPatch patch)
         {
             Id = id;
             Object = @object;
             Deleted = deleted;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         public string Id { get; }
 
         public bool Deleted { get; } = true;
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
     }
 }

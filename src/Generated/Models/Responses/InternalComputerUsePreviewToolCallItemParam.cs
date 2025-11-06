@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Linq;
 using OpenAI;
@@ -22,13 +22,15 @@ namespace OpenAI.Responses
             PendingSafetyChecks = pendingSafetyChecks.ToList();
         }
 
-        internal InternalComputerUsePreviewToolCallItemParam(InternalItemType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, ComputerCallAction action, IList<ComputerCallSafetyCheck> pendingSafetyChecks) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalComputerUsePreviewToolCallItemParam(InternalItemType kind, in JsonPatch patch, string callId, ComputerCallAction action, IList<ComputerCallSafetyCheck> pendingSafetyChecks) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             CallId = callId;
             Action = action;
             PendingSafetyChecks = pendingSafetyChecks ?? new ChangeTrackingList<ComputerCallSafetyCheck>();
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string CallId { get; }
 

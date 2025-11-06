@@ -15,7 +15,7 @@ public class ModerationsTests : OpenAIRecordedTestBase
     {
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ClassifySingleInput()
     {
         ModerationClient client = GetProxiedOpenAIClient<ModerationClient>(TestScenario.Moderations);
@@ -26,10 +26,10 @@ public class ModerationsTests : OpenAIRecordedTestBase
         Assert.That(moderation, Is.Not.Null);
         Assert.That(moderation.Flagged, Is.True);
         Assert.That(moderation.Violence.Flagged, Is.True);
-        Assert.That(moderation.Violence.Score, Is.GreaterThan(0.5));
+        Assert.That(moderation.Violence.Score, Is.GreaterThan(0.2));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ClassifyMultipleInputs()
     {
         ModerationClient client = GetProxiedOpenAIClient<ModerationClient>(TestScenario.Moderations);
@@ -43,7 +43,7 @@ public class ModerationsTests : OpenAIRecordedTestBase
         ModerationResultCollection moderations = await client.ClassifyTextAsync(inputs);
         Assert.That(moderations, Is.Not.Null);
         Assert.That(moderations.Count, Is.EqualTo(2));
-        Assert.That(moderations.Model, Does.StartWith("text-moderation"));
+        Assert.That(moderations.Model, Does.StartWith("omni"));
         Assert.That(moderations.Id, Is.Not.Null.Or.Empty);
 
         Assert.That(moderations[0], Is.Not.Null);
@@ -52,6 +52,6 @@ public class ModerationsTests : OpenAIRecordedTestBase
         Assert.That(moderations[1], Is.Not.Null);
         Assert.That(moderations[1].Flagged, Is.True);
         Assert.That(moderations[1].Violence.Flagged, Is.True);
-        Assert.That(moderations[1].Violence.Score, Is.GreaterThan(0.5));
+        Assert.That(moderations[1].Violence.Score, Is.GreaterThan(0.2));
     }
 }

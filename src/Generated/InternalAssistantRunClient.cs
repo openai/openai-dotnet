@@ -67,7 +67,7 @@ namespace OpenAI.Assistants
                 options?.Order?.ToString(),
                 options?.AfterId,
                 options?.BeforeId,
-                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+                cancellationToken.ToRequestOptions());
         }
 
         public virtual AsyncCollectionResult<ThreadRun> GetRunsAsync(string threadId, RunCollectionOptions options = default, CancellationToken cancellationToken = default)
@@ -81,7 +81,7 @@ namespace OpenAI.Assistants
                 options?.Order?.ToString(),
                 options?.AfterId,
                 options?.BeforeId,
-                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+                cancellationToken.ToRequestOptions());
         }
 
         public virtual ClientResult GetRun(string threadId, string runId, RequestOptions options)
@@ -107,7 +107,7 @@ namespace OpenAI.Assistants
             Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
             Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-            ClientResult result = GetRun(threadId, runId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+            ClientResult result = GetRun(threadId, runId, cancellationToken.ToRequestOptions());
             return ClientResult.FromValue((ThreadRun)result, result.GetRawResponse());
         }
 
@@ -116,7 +116,7 @@ namespace OpenAI.Assistants
             Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
             Argument.AssertNotNullOrEmpty(runId, nameof(runId));
 
-            ClientResult result = await GetRunAsync(threadId, runId, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
+            ClientResult result = await GetRunAsync(threadId, runId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
             return ClientResult.FromValue((ThreadRun)result, result.GetRawResponse());
         }
 
@@ -168,7 +168,7 @@ namespace OpenAI.Assistants
                 options?.AfterId,
                 options?.BeforeId,
                 include,
-                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+                cancellationToken.ToRequestOptions());
         }
 
         public virtual AsyncCollectionResult<RunStep> GetRunStepsAsync(string threadId, string runId, RunStepCollectionOptions options = default, IEnumerable<InternalIncludedRunStepProperty> include = default, CancellationToken cancellationToken = default)
@@ -185,7 +185,7 @@ namespace OpenAI.Assistants
                 options?.AfterId,
                 options?.BeforeId,
                 include,
-                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+                cancellationToken.ToRequestOptions());
         }
 
         public virtual ClientResult GetRunStep(string threadId, string runId, string stepId, IEnumerable<InternalIncludedRunStepProperty> include, RequestOptions options)
@@ -214,7 +214,7 @@ namespace OpenAI.Assistants
             Argument.AssertNotNullOrEmpty(runId, nameof(runId));
             Argument.AssertNotNullOrEmpty(stepId, nameof(stepId));
 
-            ClientResult result = GetRunStep(threadId, runId, stepId, include, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+            ClientResult result = GetRunStep(threadId, runId, stepId, include, cancellationToken.ToRequestOptions());
             return ClientResult.FromValue((RunStep)result, result.GetRawResponse());
         }
 
@@ -224,7 +224,7 @@ namespace OpenAI.Assistants
             Argument.AssertNotNullOrEmpty(runId, nameof(runId));
             Argument.AssertNotNullOrEmpty(stepId, nameof(stepId));
 
-            ClientResult result = await GetRunStepAsync(threadId, runId, stepId, include, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
+            ClientResult result = await GetRunStepAsync(threadId, runId, stepId, include, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
             return ClientResult.FromValue((RunStep)result, result.GetRawResponse());
         }
     }

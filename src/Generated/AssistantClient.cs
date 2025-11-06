@@ -53,7 +53,7 @@ namespace OpenAI.Assistants
                 options?.Order?.ToString(),
                 options?.AfterId,
                 options?.BeforeId,
-                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+                cancellationToken.ToRequestOptions());
         }
 
         public virtual AsyncCollectionResult<Assistant> GetAssistantsAsync(AssistantCollectionOptions options = default, CancellationToken cancellationToken = default)
@@ -64,7 +64,7 @@ namespace OpenAI.Assistants
                 options?.Order?.ToString(),
                 options?.AfterId,
                 options?.BeforeId,
-                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+                cancellationToken.ToRequestOptions());
         }
 
         public virtual ClientResult CreateAssistant(BinaryContent content, RequestOptions options = null)

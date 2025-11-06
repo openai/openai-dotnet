@@ -39,7 +39,7 @@ namespace OpenAI.Assistants
             uri.AppendPath("/runs", false);
             if (include != null && !(include is ChangeTrackingList<InternalIncludedRunStepProperty> changeTrackingList && changeTrackingList.IsUndefined))
             {
-                uri.AppendQueryDelimited("include[]", include, ",", null, true);
+                uri.AppendQueryDelimited("include[]", include, ",", escape: true);
             }
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;
@@ -60,7 +60,7 @@ namespace OpenAI.Assistants
             uri.AppendPath("/runs", false);
             if (limit != null)
             {
-                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit, null), true);
+                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
             }
             if (order != null)
             {
@@ -163,7 +163,7 @@ namespace OpenAI.Assistants
             uri.AppendPath("/steps", false);
             if (limit != null)
             {
-                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit, null), true);
+                uri.AppendQuery("limit", TypeFormatters.ConvertToString(limit), true);
             }
             if (order != null)
             {
@@ -179,7 +179,7 @@ namespace OpenAI.Assistants
             }
             if (include != null && !(include is ChangeTrackingList<InternalIncludedRunStepProperty> changeTrackingList && changeTrackingList.IsUndefined))
             {
-                uri.AppendQueryDelimited("include[]", include, ",", null, true);
+                uri.AppendQueryDelimited("include[]", include, ",", escape: true);
             }
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;
@@ -201,7 +201,7 @@ namespace OpenAI.Assistants
             uri.AppendPath(stepId, true);
             if (include != null && !(include is ChangeTrackingList<InternalIncludedRunStepProperty> changeTrackingList && changeTrackingList.IsUndefined))
             {
-                uri.AppendQueryDelimited("include[]", include, ",", null, true);
+                uri.AppendQueryDelimited("include[]", include, ",", escape: true);
             }
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;

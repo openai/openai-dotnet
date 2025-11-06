@@ -188,7 +188,7 @@ namespace OpenAI.VectorStores
 
         public static explicit operator InternalListVectorStoreFilesResponse(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
+            PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeInternalListVectorStoreFilesResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
         }

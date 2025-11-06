@@ -49,6 +49,30 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
 
     public AsyncSseUpdateCollection(
         Func<Task<ClientResult>> sendRequestAsync,
+        Func<JsonElement, BinaryData, ModelReaderWriterOptions, IEnumerable<T>> jsonMultiDeserializerFunc,
+        CancellationToken cancellationToken)
+            : this(
+                  sendRequestAsync,
+                  DeserializeSseToMultipleViaJson(jsonMultiDeserializerFunc),
+                  cancellationToken)
+    {
+        Argument.AssertNotNull(jsonMultiDeserializerFunc, nameof(jsonMultiDeserializerFunc));
+    }
+
+    public AsyncSseUpdateCollection(
+        Func<Task<ClientResult>> sendRequestAsync,
+        Func<JsonElement, BinaryData, ModelReaderWriterOptions, T> jsonSingleDeserializerFunc,
+        CancellationToken cancellationToken)
+            : this(
+                  sendRequestAsync,
+                  DeserializeSseToSingleViaJson(jsonSingleDeserializerFunc),
+                  cancellationToken)
+    {
+        Argument.AssertNotNull(jsonSingleDeserializerFunc, nameof(jsonSingleDeserializerFunc));
+    }
+
+    public AsyncSseUpdateCollection(
+        Func<Task<ClientResult>> sendRequestAsync,
         Func<SseItem<byte[]>, IEnumerable<T>> eventDeserializerFunc,
         CancellationToken cancellationToken)
     {
@@ -97,6 +121,22 @@ internal class AsyncSseUpdateCollection<T> : AsyncCollectionResult<T>
         Func<JsonElement, ModelReaderWriterOptions, U> jsonSingleDeserializationFunc)
             => DeserializeSseToMultipleViaJson<U>((e, o) => [jsonSingleDeserializationFunc.Invoke(e, o)]);
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static Func<SseItem<byte[]>, IEnumerable<U>> DeserializeSseToMultipleViaJson<U>(
+    Func<JsonElement, BinaryData, ModelReaderWriterOptions, IEnumerable<U>> jsonDeserializationFunc)
+    {
+        return (item) =>
+        {
+            using JsonDocument document = JsonDocument.Parse(item.Data);
+            return jsonDeserializationFunc.Invoke(document.RootElement, BinaryData.FromBytes(item.Data), ModelSerializationExtensions.WireOptions);
+        };
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    internal static Func<SseItem<byte[]>, IEnumerable<U>> DeserializeSseToSingleViaJson<U>(
+        Func<JsonElement, BinaryData, ModelReaderWriterOptions, U> jsonSingleDeserializationFunc)
+            => DeserializeSseToMultipleViaJson<U>((e, d, o) => [jsonSingleDeserializationFunc.Invoke(e, d, o)]);
+    
     private sealed class AsyncSseUpdateEnumerator<U> : IAsyncEnumerator<U>
     {
         private static ReadOnlySpan<byte> TerminalData => "[DONE]"u8;

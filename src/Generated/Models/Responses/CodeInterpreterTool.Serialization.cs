@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,12 +12,20 @@ namespace OpenAI.Responses
 {
     public partial class CodeInterpreterTool : ResponseTool, IJsonModel<CodeInterpreterTool>
     {
-        internal CodeInterpreterTool() : this(InternalToolType.CodeInterpreter, null, null)
+        internal CodeInterpreterTool() : this(InternalToolType.CodeInterpreter, default, null)
         {
         }
 
         void IJsonModel<CodeInterpreterTool>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -31,11 +39,15 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(CodeInterpreterTool)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("container") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.container"u8))
             {
                 writer.WritePropertyName("container"u8);
                 writer.WriteObjectValue(Container, options);
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         CodeInterpreterTool IJsonModel<CodeInterpreterTool>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (CodeInterpreterTool)JsonModelCreateCore(ref reader, options);
@@ -48,17 +60,19 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(CodeInterpreterTool)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeCodeInterpreterTool(document.RootElement, options);
+            return DeserializeCodeInterpreterTool(document.RootElement, null, options);
         }
 
-        internal static CodeInterpreterTool DeserializeCodeInterpreterTool(JsonElement element, ModelReaderWriterOptions options)
+        internal static CodeInterpreterTool DeserializeCodeInterpreterTool(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalToolType kind = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             CodeInterpreterToolContainer container = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -69,13 +83,12 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("container"u8))
                 {
-                    container = CodeInterpreterToolContainer.DeserializeCodeInterpreterToolContainer(prop.Value, options);
+                    container = CodeInterpreterToolContainer.DeserializeCodeInterpreterToolContainer(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new CodeInterpreterTool(kind, additionalBinaryDataProperties, container);
+            return new CodeInterpreterTool(kind, patch, container);
         }
 
         BinaryData IPersistableModel<CodeInterpreterTool>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -102,7 +115,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeCodeInterpreterTool(document.RootElement, options);
+                        return DeserializeCodeInterpreterTool(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(CodeInterpreterTool)} does not support reading '{options.Format}' format.");

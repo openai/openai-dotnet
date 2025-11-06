@@ -3,14 +3,16 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 
 namespace OpenAI.Responses
 {
     public partial class InternalUnknownComparisonFilter : InternalComparisonFilter
     {
-        internal InternalUnknownComparisonFilter(InternalComparisonFilterType kind, string key, BinaryData value, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", key, value, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalUnknownComparisonFilter(InternalComparisonFilterType kind, string key, BinaryData value, in JsonPatch patch) : base(kind != default ? kind : "unknown", key, value, patch)
         {
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

@@ -64,7 +64,7 @@ internal static class TestHelpers
         TestScenario.FineTuning => null,
         TestScenario.Images => "gpt-image-1",
         TestScenario.Models => null,
-        TestScenario.Moderations => "text-moderation-stable",
+        TestScenario.Moderations => "omni-moderation-latest",
         TestScenario.VectorStores => null,
         TestScenario.TopLevel => null,
         TestScenario.Realtime => "gpt-4o-realtime-preview-2024-10-01",

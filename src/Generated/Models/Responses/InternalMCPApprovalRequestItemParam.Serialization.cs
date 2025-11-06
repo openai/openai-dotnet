@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,12 +12,20 @@ namespace OpenAI.Responses
 {
     public partial class InternalMCPApprovalRequestItemParam : InternalItemParam, IJsonModel<InternalMCPApprovalRequestItemParam>
     {
-        internal InternalMCPApprovalRequestItemParam() : this(InternalItemType.McpApprovalRequest, null, null, null, null)
+        internal InternalMCPApprovalRequestItemParam() : this(InternalItemType.McpApprovalRequest, default, null, null, null)
         {
         }
 
         void IJsonModel<InternalMCPApprovalRequestItemParam>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -31,21 +39,25 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalMCPApprovalRequestItemParam)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("server_label") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.server_label"u8))
             {
                 writer.WritePropertyName("server_label"u8);
                 writer.WriteStringValue(ServerLabel);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
+            if (!Patch.Contains("$.name"u8))
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(Name);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("arguments") != true)
+            if (!Patch.Contains("$.arguments"u8))
             {
                 writer.WritePropertyName("arguments"u8);
                 writer.WriteStringValue(Arguments);
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalMCPApprovalRequestItemParam IJsonModel<InternalMCPApprovalRequestItemParam>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalMCPApprovalRequestItemParam)JsonModelCreateCore(ref reader, options);
@@ -58,17 +70,19 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalMCPApprovalRequestItemParam)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalMCPApprovalRequestItemParam(document.RootElement, options);
+            return DeserializeInternalMCPApprovalRequestItemParam(document.RootElement, null, options);
         }
 
-        internal static InternalMCPApprovalRequestItemParam DeserializeInternalMCPApprovalRequestItemParam(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalMCPApprovalRequestItemParam DeserializeInternalMCPApprovalRequestItemParam(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalItemType kind = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string serverLabel = default;
             string name = default;
             string arguments = default;
@@ -94,10 +108,9 @@ namespace OpenAI.Responses
                     arguments = prop.Value.GetString();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalMCPApprovalRequestItemParam(kind, additionalBinaryDataProperties, serverLabel, name, arguments);
+            return new InternalMCPApprovalRequestItemParam(kind, patch, serverLabel, name, arguments);
         }
 
         BinaryData IPersistableModel<InternalMCPApprovalRequestItemParam>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -124,7 +137,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalMCPApprovalRequestItemParam(document.RootElement, options);
+                        return DeserializeInternalMCPApprovalRequestItemParam(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalMCPApprovalRequestItemParam)} does not support reading '{options.Format}' format.");

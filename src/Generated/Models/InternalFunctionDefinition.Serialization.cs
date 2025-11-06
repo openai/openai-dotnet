@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 
 namespace OpenAI
@@ -17,6 +17,14 @@ namespace OpenAI
 
         void IJsonModel<InternalFunctionDefinition>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -29,17 +37,18 @@ namespace OpenAI
             {
                 throw new FormatException($"The model {nameof(InternalFunctionDefinition)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Description) && _additionalBinaryDataProperties?.ContainsKey("description") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Optional.IsDefined(Description) && !Patch.Contains("$.description"u8))
             {
                 writer.WritePropertyName("description"u8);
                 writer.WriteStringValue(Description);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
+            if (!Patch.Contains("$.name"u8))
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(Name);
             }
-            if (Optional.IsDefined(Parameters) && _additionalBinaryDataProperties?.ContainsKey("parameters") != true)
+            if (Optional.IsDefined(Parameters) && !Patch.Contains("$.parameters"u8))
             {
                 writer.WritePropertyName("parameters"u8);
 #if NET6_0_OR_GREATER
@@ -51,31 +60,14 @@ namespace OpenAI
                 }
 #endif
             }
-            if (Optional.IsDefined(Strict) && _additionalBinaryDataProperties?.ContainsKey("strict") != true)
+            if (Optional.IsDefined(Strict) && !Patch.Contains("$.strict"u8))
             {
                 writer.WritePropertyName("strict"u8);
                 writer.WriteBooleanValue(Strict.Value);
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalFunctionDefinition IJsonModel<InternalFunctionDefinition>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -88,10 +80,10 @@ namespace OpenAI
                 throw new FormatException($"The model {nameof(InternalFunctionDefinition)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalFunctionDefinition(document.RootElement, options);
+            return DeserializeInternalFunctionDefinition(document.RootElement, null, options);
         }
 
-        internal static InternalFunctionDefinition DeserializeInternalFunctionDefinition(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalFunctionDefinition DeserializeInternalFunctionDefinition(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -101,7 +93,9 @@ namespace OpenAI
             string name = default;
             BinaryData parameters = default;
             bool? strict = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("description"u8))
@@ -133,10 +127,9 @@ namespace OpenAI
                     strict = prop.Value.GetBoolean();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalFunctionDefinition(description, name, parameters, strict, additionalBinaryDataProperties);
+            return new InternalFunctionDefinition(description, name, parameters, strict, patch);
         }
 
         BinaryData IPersistableModel<InternalFunctionDefinition>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -163,7 +156,7 @@ namespace OpenAI
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeInternalFunctionDefinition(document.RootElement, options);
+                        return DeserializeInternalFunctionDefinition(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalFunctionDefinition)} does not support reading '{options.Format}' format.");

@@ -197,7 +197,7 @@ namespace OpenAI.FineTuning
 
         public static explicit operator InternalListFineTuningJobCheckpointsResponse(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
+            PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeInternalListFineTuningJobCheckpointsResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
         }

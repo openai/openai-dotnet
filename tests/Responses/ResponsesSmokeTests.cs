@@ -60,7 +60,7 @@ public partial class ResponsesSmokeTests
             @"{""type"":""item_reference"",""id"":""msg_1234""}",
             referenceItem => Assert.That(referenceItem.Id, Is.EqualTo("msg_1234")));
         AssertSerializationRoundTrip<MessageResponseItem>(
-            @"{""type"":""message"",""potato_details"":{""cultivar"":""russet""},""role"":""potato""}",
+            @"{""type"":""message"",""role"":""potato"",""potato_details"":{""cultivar"":""russet""}}",
             potatoMessage =>
             {
                 Assert.That(potatoMessage.Role, Is.EqualTo(MessageRole.Unknown));
@@ -381,5 +381,35 @@ public partial class ResponsesSmokeTests
             Assert.That(additionalPropertyProperty, Is.Not.Null);
             Assert.That(additionalPropertyProperty.ValueKind, Is.EqualTo(JsonValueKind.True));
         }
+    }
+
+    [Test]
+    public void CanSerializeCodeInterpreterCallLogsOutput()
+    {
+        var customLogs = "Custom logs!";
+        CodeInterpreterCallLogsOutput logOutput = new CodeInterpreterCallLogsOutput(customLogs);
+        logOutput.Patch.Set("$.custom_property"u8, "custom_property");
+
+        BinaryData serialized = ModelReaderWriter.Write(logOutput);
+        using JsonDocument doc = JsonDocument.Parse(serialized.ToString());
+        JsonElement root = doc.RootElement;
+
+        Assert.That(root, Is.Not.Null);
+        Assert.That(root.ValueKind, Is.EqualTo(JsonValueKind.Object));
+
+        Assert.That(root.TryGetProperty("type", out JsonElement typeProperty), Is.True);
+        Assert.That(typeProperty, Is.Not.Null);
+        Assert.That(typeProperty.ValueKind, Is.EqualTo(JsonValueKind.String));
+        Assert.That(typeProperty.ToString(), Is.EqualTo("logs"));
+
+        Assert.That(root.TryGetProperty("logs", out JsonElement logsProperty), Is.True);
+        Assert.That(logsProperty, Is.Not.Null);
+        Assert.That(logsProperty.ValueKind, Is.EqualTo(JsonValueKind.String));
+        Assert.That(logsProperty.ToString(), Is.EqualTo(customLogs));
+
+        Assert.That(root.TryGetProperty("custom_property", out JsonElement customProperty), Is.True);
+        Assert.That(customProperty, Is.Not.Null);
+        Assert.That(customProperty.ValueKind, Is.EqualTo(JsonValueKind.String));
+        Assert.That(customProperty.ToString(), Is.EqualTo("custom_property"));
     }
 }

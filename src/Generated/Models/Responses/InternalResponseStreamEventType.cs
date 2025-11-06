@@ -64,6 +64,8 @@ namespace OpenAI.Responses
         private const string ResponseReasoningDoneValue = "response.reasoning.done";
         private const string ResponseReasoningSummaryDeltaValue = "response.reasoning_summary.delta";
         private const string ResponseReasoningSummaryDoneValue = "response.reasoning_summary.done";
+        private const string ResponseReasoningTextDeltaValue = "response.reasoning_text.delta";
+        private const string ResponseReasoningTextDoneValue = "response.reasoning_text.done";
 
         public InternalResponseStreamEventType(string value)
         {
@@ -177,6 +179,10 @@ namespace OpenAI.Responses
         internal static InternalResponseStreamEventType ResponseReasoningSummaryDelta { get; } = new InternalResponseStreamEventType(ResponseReasoningSummaryDeltaValue);
 
         internal static InternalResponseStreamEventType ResponseReasoningSummaryDone { get; } = new InternalResponseStreamEventType(ResponseReasoningSummaryDoneValue);
+
+        internal static InternalResponseStreamEventType ResponseReasoningTextDelta { get; } = new InternalResponseStreamEventType(ResponseReasoningTextDeltaValue);
+
+        internal static InternalResponseStreamEventType ResponseReasoningTextDone { get; } = new InternalResponseStreamEventType(ResponseReasoningTextDoneValue);
 
         public static bool operator ==(InternalResponseStreamEventType left, InternalResponseStreamEventType right) => left.Equals(right);
 

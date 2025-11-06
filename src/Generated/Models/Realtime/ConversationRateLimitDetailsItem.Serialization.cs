@@ -48,7 +48,7 @@ namespace OpenAI.Realtime
             if (_additionalBinaryDataProperties?.ContainsKey("reset_seconds") != true)
             {
                 writer.WritePropertyName("reset_seconds"u8);
-                writer.WriteNumberValue(Convert.ToDouble(TimeUntilReset.ToString("s\\.FFF")));
+                writer.WriteNumberValue(TimeUntilReset.TotalSeconds);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)

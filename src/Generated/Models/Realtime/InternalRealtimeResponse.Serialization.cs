@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     public partial class InternalRealtimeResponse : IJsonModel<InternalRealtimeResponse>
     {
-        internal InternalRealtimeResponse() : this(null, null, default, null, null, null, null, null, default, null, default, default, null, null)
+        internal InternalRealtimeResponse() : this(null, default, default, null, null, null, null, null, default, null, default, default, null, null)
         {
         }
 
@@ -38,7 +38,7 @@ namespace OpenAI.Realtime
             if (Optional.IsDefined(Object) && _additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object);
+                writer.WriteStringValue(Object.Value.ToString());
             }
             if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
             {
@@ -172,7 +172,7 @@ namespace OpenAI.Realtime
                 return null;
             }
             string id = default;
-            string @object = default;
+            InternalRealtimeResponseObject? @object = default;
             ConversationStatus? status = default;
             ConversationStatusDetails statusDetails = default;
             IReadOnlyList<RealtimeItem> output = default;
@@ -194,7 +194,11 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("object"u8))
                 {
-                    @object = prop.Value.GetString();
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    @object = new InternalRealtimeResponseObject(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("status"u8))

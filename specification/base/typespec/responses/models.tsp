@@ -1089,11 +1089,11 @@ model AnnotationUrlCitation extends Annotation {
 }
 
 /** A citation for a container file used to generate a model response. */
-model ContainerFileCitationBody {
+model ContainerFileCitationBody extends Annotation {
   @doc("""
     The type of the container file citation. Always `container_file_citation`.
     """)
-  type: "container_file_citation" = "container_file_citation";
+  type: AnnotationType.container_file_citation;
 
   /** The ID of the container file. */
   container_id: string;
@@ -1106,6 +1106,9 @@ model ContainerFileCitationBody {
 
   /** The index of the last character of the container file citation in the message. */
   end_index: int32;
+
+  /** The filename of the container file cited. */
+  filename: string;
 }
 
 // Tool customization (apply_discriminator): Apply discriminated base type, rename for consistency and clarity
@@ -1340,6 +1343,8 @@ union ResponseStreamEventType {
   response_reasoning_done: "response.reasoning.done",
   response_reasoning_summary_delta: "response.reasoning_summary.delta",
   response_reasoning_summary_done: "response.reasoning_summary.done",
+  response_reasoning_text_delta: "response.reasoning_text.delta",
+  response_reasoning_text_done: "response.reasoning_text.done",
 }
 @discriminator("type")
 model ResponseStreamEvent {
@@ -1744,6 +1749,44 @@ model ResponseReasoningSummaryTextDoneEvent extends ResponseStreamEvent {
   summary_index: int32;
 
   /** The full text of the completed reasoning summary. */
+  text: string;
+}
+
+// Tool customization: Remove shared sequence_number property that was moved to the common parent
+/** Emitted when a delta is added to a reasoning text. */
+model ResponseReasoningTextDeltaEvent extends ResponseStreamEvent {
+  /** The type of the event. Always `response.reasoning_text.delta`. */
+  type: ResponseStreamEventType.response_reasoning_text_delta;
+
+  /** The ID of the item this reasoning text delta is associated with. */
+  item_id: string;
+
+  /** The index of the output item this reasoning text delta is associated with. */
+  output_index: int32;
+
+  /** The index of the reasoning content part this delta is associated with. */
+  content_index: int32;
+
+  /** The text delta that was added to the reasoning content. */
+  delta: string;
+}
+
+// Tool customization: Remove shared sequence_number property that was moved to the common parent
+/** Emitted when a reasoning text is completed. */
+model ResponseReasoningTextDoneEvent extends ResponseStreamEvent {
+  /** The type of the event. Always `response.reasoning_text.done`. */
+  type: ResponseStreamEventType.response_reasoning_text_done;
+
+  /** The ID of the item this reasoning text is associated with. */
+  item_id: string;
+
+  /** The index of the output item this reasoning text is associated with. */
+  output_index: int32;
+
+  /** The index of the reasoning content part. */
+  content_index: int32;
+
+  /** The full text of the completed reasoning content. */
   text: string;
 }
 

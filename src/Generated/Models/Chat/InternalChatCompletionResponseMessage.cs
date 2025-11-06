@@ -2,27 +2,30 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
 namespace OpenAI.Chat
 {
     public partial class InternalChatCompletionResponseMessage
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
-        internal InternalChatCompletionResponseMessage(ChatMessageContent content, string refusal, ChatMessageRole role)
+        internal InternalChatCompletionResponseMessage(ChatMessageContent content, string refusal)
         {
             // Plugin customization: ensure initialization of collections
             Content = content ?? new ChatMessageContent();
             Refusal = refusal;
             ToolCalls = new ChangeTrackingList<ChatToolCall>();
             Annotations = new ChangeTrackingList<ChatMessageAnnotation>();
-            Role = role;
         }
 
-        internal InternalChatCompletionResponseMessage(ChatMessageContent content, string refusal, IReadOnlyList<ChatToolCall> toolCalls, IReadOnlyList<ChatMessageAnnotation> annotations, ChatMessageRole role, ChatFunctionCall functionCall, ChatOutputAudio audio, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalChatCompletionResponseMessage(ChatMessageContent content, string refusal, IReadOnlyList<ChatToolCall> toolCalls, IReadOnlyList<ChatMessageAnnotation> annotations, ChatMessageRole role, ChatFunctionCall functionCall, ChatOutputAudio audio, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Content = content ?? new ChatMessageContent();
@@ -32,8 +35,14 @@ namespace OpenAI.Chat
             Role = role;
             FunctionCall = functionCall;
             Audio = audio;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         public string Refusal { get; }
 
@@ -42,11 +51,5 @@ namespace OpenAI.Chat
         public IReadOnlyList<ChatMessageAnnotation> Annotations { get; }
 
         public ChatOutputAudio Audio { get; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
     }
 }

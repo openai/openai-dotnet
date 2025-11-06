@@ -1,4 +1,4 @@
-﻿using Microsoft.ClientModel.TestFramework;
+using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 using OpenAI.Assistants;
@@ -84,11 +84,11 @@ public class AssistantsTests : OpenAIRecordedTestBase
         _vectorStoreIdsToDelete.Clear();
     }
 
-    [Test]
+    [RecordedTest]
     public async Task BasicAssistantOperationsWork()
     {
         AssistantClient client = GetTestClient();
-        Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini");
+        Assistant assistant = await client.CreateAssistantAsync("gpt-4o");
         Validate(assistant);
         Assert.That(assistant.Name, Is.Null.Or.Empty);
         AssistantModificationOptions modificationOptions = new()
@@ -108,7 +108,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
                 [s_cleanupMetadataKey] = "hello!"
             },
         };
-        assistant = await client.CreateAssistantAsync("gpt-4o-mini", creationOptions);
+        assistant = await client.CreateAssistantAsync("gpt-4o", creationOptions);
         Validate(assistant);
         Assistant retrievedAssistant = await client.GetAssistantAsync(assistant.Id);
         Assert.That(retrievedAssistant.Id, Is.EqualTo(assistant.Id));
@@ -139,7 +139,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Assert.That(listedAssistant.Metadata.TryGetValue(s_cleanupMetadataKey, out string newMetadataValue) && newMetadataValue == "goodbye!");
     }
 
-    [Test]
+    [RecordedTest]
     public async Task BasicThreadOperationsWork()
     {
         AssistantClient client = GetTestClient();
@@ -174,7 +174,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Assert.That(thread.Metadata.TryGetValue("threadMetadata", out threadMetadataValue) && threadMetadataValue == "newThreadMetadataValue");
     }
 
-    [Test]
+    [RecordedTest]
     public async Task BasicMessageOperationsWork()
     {
         AssistantClient client = GetTestClient();
@@ -222,7 +222,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Assert.That(messages[0].Metadata.TryGetValue("messageMetadata", out metadataValue) && metadataValue == "newValue");
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ThreadWithInitialMessagesWorks()
     {
         AssistantClient client = GetTestClient();
@@ -260,7 +260,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Assert.That(messages[1].Content[1].ImageUri.AbsoluteUri, Is.EqualTo("https://test.openai.com/image.png"));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ThreadWithImageDetailWorks()
     {
         AssistantClient client = GetTestClient();
@@ -295,11 +295,11 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Assert.That(messages[0].Content[1].ImageUri.AbsoluteUri, Is.EqualTo("https://test.openai.com/image.png"));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task BasicRunOperationsWork()
     {
         AssistantClient client = GetTestClient();
-        Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini");
+        Assistant assistant = await client.CreateAssistantAsync("gpt-4o");
         Validate(assistant);
         AssistantThread thread = await client.CreateThreadAsync();
         Validate(thread);
@@ -342,11 +342,11 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Assert.That(messages[1].Id, Is.EqualTo(message.Id));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task BasicRunStepFunctionalityWorks()
     {
         AssistantClient client = GetTestClient();
-        Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini", new AssistantCreationOptions()
+        Assistant assistant = await client.CreateAssistantAsync("gpt-4o", new AssistantCreationOptions()
         {
             Tools = { new CodeInterpreterToolDefinition() },
             Instructions = "You help the user with mathematical descriptions and visualizations.",
@@ -429,7 +429,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         });
     }
 
-    [Test]
+    [RecordedTest]
     public async Task SettingResponseFormatWorks()
     {
         AssistantClient client = GetTestClient();
@@ -437,7 +437,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         {
             ResponseFormat = AssistantResponseFormat.CreateAutoFormat(),
         };
-        Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini", creationOptions);
+        Assistant assistant = await client.CreateAssistantAsync("gpt-4o", creationOptions);
         Validate(assistant);
         Assert.That(assistant.ResponseFormat == "auto");
         AssistantModificationOptions modificationOptions = new AssistantModificationOptions()
@@ -458,7 +458,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Assert.That(run.ResponseFormat == AssistantResponseFormat.CreateJsonObjectFormat());
     }
 
-    [Test]
+    [RecordedTest]
     public async Task FunctionToolsWork()
     {
         AssistantClient client = GetTestClient();
@@ -484,7 +484,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
                 },
             },
         };
-        Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini", creationOptions);
+        Assistant assistant = await client.CreateAssistantAsync("gpt-4o", creationOptions);
         Validate(assistant);
         Assert.That(assistant.Tools?.Count, Is.EqualTo(1));
 
@@ -537,11 +537,11 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Assert.That(messages[0].Content[0].Text.ToLowerInvariant(), Does.Contain("tacos"));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task StreamingRunWorks()
     {
         AssistantClient client = GetTestClient();
-        Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini");
+        Assistant assistant = await client.CreateAssistantAsync("gpt-4o");
         Validate(assistant);
 
         AssistantThread thread = await client.CreateThreadAsync(new ThreadCreationOptions()
@@ -593,7 +593,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         {
             Description = "Gets the user's current weather",
         };
-        Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini", new()
+        Assistant assistant = await client.CreateAssistantAsync("gpt-4o", new()
         {
             Tools = { getWeatherTool }
         });
@@ -646,7 +646,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         } while (run?.Status.IsTerminal == false);
     }
 
-    [Test]
+    [RecordedTest]
     public async Task FileSearchWorks()
     {
         // First, we need to upload a simple test file.
@@ -697,7 +697,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         };
 
         // Create an assistant, using the creation helper to make a new vector store
-        Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini", creationOptions);
+        Assistant assistant = await client.CreateAssistantAsync("gpt-4o", creationOptions);
         Validate(assistant);
         Assert.That(assistant.ToolResources?.FileSearch?.VectorStoreIds, Has.Count.EqualTo(1));
         string createdVectorStoreId = assistant.ToolResources.FileSearch.VectorStoreIds[0];
@@ -847,7 +847,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         });
     }
 
-    [Test]
+    [RecordedTest]
     public async Task FileSearchStreamingWorks()
     {
         const string fileContent = """
@@ -882,7 +882,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
                 }
             }
         };
-        Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini", assistantCreationOptions);
+        Assistant assistant = await client.CreateAssistantAsync("gpt-4o", assistantCreationOptions);
         Validate(assistant);
 
         Assert.That(assistant.ToolResources?.FileSearch?.VectorStoreIds, Has.Count.EqualTo(1));
@@ -942,7 +942,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Assert.That(message, Does.Contain("cake"));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task Pagination_CanEnumerateAssistantsAsync()
     {
         const int TestAssistantCount = 10;
@@ -952,7 +952,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         // Create assistant collection
         for (int i = 0; i < 10; i++)
         {
-            Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini", new AssistantCreationOptions()
+            Assistant assistant = await client.CreateAssistantAsync("gpt-4o", new AssistantCreationOptions()
             {
                 Name = $"Test Assistant {i}",
             });
@@ -985,7 +985,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Assert.That(count, Is.GreaterThanOrEqualTo(TestAssistantCount));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task Pagination_CanPageThroughAssistantCollection()
     {
         const int TestAssistantCount = 10;
@@ -996,7 +996,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         // Create assistant collection
         for (int i = 0; i < TestAssistantCount; i++)
         {
-            Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini", new AssistantCreationOptions()
+            Assistant assistant = await client.CreateAssistantAsync("gpt-4o", new AssistantCreationOptions()
             {
                 Name = $"Test Assistant {i}"
             });
@@ -1050,7 +1050,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         return els.Select(el => ModelReaderWriter.Read<Assistant>(BinaryData.FromString(el.GetRawText())));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task Pagination_CanRehydrateAssistantPageCollectionFromBytes()
     {
         const int TestAssistantCount = 10;
@@ -1061,7 +1061,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         // Create assistant collection
         for (int i = 0; i < TestAssistantCount; i++)
         {
-            Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini", new AssistantCreationOptions()
+            Assistant assistant = await client.CreateAssistantAsync("gpt-4o", new AssistantCreationOptions()
             {
                 Name = $"Test Assistant {i}"
             });
@@ -1122,7 +1122,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Assert.That(pageCount, Is.GreaterThanOrEqualTo(TestAssistantCount / TestPageSizeLimit));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task Pagination_CanRehydrateAssistantPageCollectionFromPageToken()
     {
         const int TestAssistantCount = 10;
@@ -1134,7 +1134,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         List<Assistant> createdAssistants = [];
         for (int i = 0; i < TestAssistantCount; i++)
         {
-            Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini", new AssistantCreationOptions()
+            Assistant assistant = await client.CreateAssistantAsync("gpt-4o", new AssistantCreationOptions()
             {
                 Name = $"Test Assistant {i}"
             });
@@ -1204,7 +1204,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Assert.That(pageCount, Is.GreaterThanOrEqualTo(TestAssistantCount / TestPageSizeLimit));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task Pagination_CanRehydrateRunStepPageCollectionFromBytes()
     {
         AssistantClient client = GetTestClient();
@@ -1293,7 +1293,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Assert.That(rehydratedRunSteps, Is.EqualTo(runSteps).AsCollection);
     }
 
-    [Test]
+    [RecordedTest]
     public async Task MessagesWithRoles()
     {
         AssistantClient client = GetTestClient();

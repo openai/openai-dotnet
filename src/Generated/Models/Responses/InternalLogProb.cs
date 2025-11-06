@@ -2,8 +2,10 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using OpenAI;
 
@@ -11,7 +13,8 @@ namespace OpenAI.Responses
 {
     public partial class InternalLogProb
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
         internal InternalLogProb(string token, float logprob, IEnumerable<int> bytes, IEnumerable<InternalTopLogProb> topLogprobs)
         {
@@ -25,15 +28,22 @@ namespace OpenAI.Responses
             TopLogprobs = topLogprobs.ToList();
         }
 
-        internal InternalLogProb(string token, float logprob, IList<int> bytes, IList<InternalTopLogProb> topLogprobs, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalLogProb(string token, float logprob, IList<int> bytes, IList<InternalTopLogProb> topLogprobs, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Token = token;
             Logprob = logprob;
             Bytes = bytes ?? new ChangeTrackingList<int>();
             TopLogprobs = topLogprobs ?? new ChangeTrackingList<InternalTopLogProb>();
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         public string Token { get; set; }
 
@@ -42,11 +52,5 @@ namespace OpenAI.Responses
         public IList<int> Bytes { get; }
 
         internal IList<InternalTopLogProb> TopLogprobs { get; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
     }
 }

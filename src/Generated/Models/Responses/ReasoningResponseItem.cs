@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -26,18 +26,20 @@ namespace OpenAI.Responses
 			Argument.AssertNotNull(summaryParts, nameof(summaryParts));
 
 			SummaryParts = summaryParts.ToList();
-            EncryptedContent = encryptedContent;
-            Id = id;
+			EncryptedContent = encryptedContent;
+			Id = id;
 		}
 		// </GP>
 
-		internal ReasoningResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, ReasoningStatus? status, string encryptedContent, IList<ReasoningSummaryPart> summaryParts) : base(kind, id, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+		internal ReasoningResponseItem(InternalItemType kind, string id, in JsonPatch patch, ReasoningStatus? status, string encryptedContent, IList<ReasoningSummaryPart> summaryParts) : base(kind, id, patch)
         {
             // Plugin customization: ensure initialization of collections
             Status = status;
             EncryptedContent = encryptedContent;
             SummaryParts = summaryParts ?? new ChangeTrackingList<ReasoningSummaryPart>();
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string EncryptedContent { get; set; }
 

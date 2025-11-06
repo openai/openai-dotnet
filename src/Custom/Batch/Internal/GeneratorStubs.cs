@@ -14,9 +14,6 @@ public partial class InternalBatchErrors { }
 [CodeGenType("BatchErrorsObject")]
 public readonly partial struct InternalBatchErrorsObject { }
 
-[CodeGenType("Batch")]
-public partial class InternalBatchJob { }
-
 [CodeGenType("BatchObject")]
 public readonly partial struct InternalBatchObject { }
 

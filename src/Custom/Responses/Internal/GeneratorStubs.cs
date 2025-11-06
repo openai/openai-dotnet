@@ -52,10 +52,6 @@ namespace OpenAI.Responses;
 [CodeGenType("ResponseItemList")] public partial class InternalResponseItemList {}
 [CodeGenType("ResponseItemListObject")] public readonly partial struct InternalResponseItemListObject {}
 [CodeGenType("ResponseObject")] public readonly partial struct InternalCreateResponsesResponseObject {}
-[CodeGenType("ResponseReasoningSummaryPartAddedEvent")] public partial class InternalResponseReasoningSummaryPartAddedEvent {}
-[CodeGenType("ResponseReasoningSummaryPartDoneEvent")] public partial class InternalResponseReasoningSummaryPartDoneEvent {}
-[CodeGenType("ResponseReasoningSummaryTextDeltaEvent")] public partial class InternalResponseReasoningSummaryTextDeltaEvent {}
-[CodeGenType("ResponseReasoningSummaryTextDoneEvent")] public partial class InternalResponseReasoningSummaryTextDoneEvent {}
 [CodeGenType("ResponsesAssistantMessageItemParam")] public partial class InternalResponsesAssistantMessageItemParam {}
 [CodeGenType("ResponsesDeveloperMessageItemParam")] public partial class InternalResponsesDeveloperMessageItemParam {}
 [CodeGenType("ResponsesMessageItemParam")] public partial class InternalResponsesMessageItemParam {}
@@ -107,6 +103,7 @@ namespace OpenAI.Responses;
 [CodeGenType("LogProb")] public partial class InternalLogProb {}
 [CodeGenType("TopLogProb")] public partial class InternalTopLogProb {}
 [CodeGenType("ImageGenToolCallItemParam")] public partial class InternalImageGenToolCallItemParam {}
+[CodeGenType("ImageGenToolModel")] public partial struct InternalImageGenToolModel { }
 [CodeGenType("CodeInterpreterToolCallItemParam")] public partial class InternalCodeInterpreterToolCallItemParam {}
 [CodeGenType("LocalShellToolCallItemParam")] public partial class InternalLocalShellToolCallItemParam {}
 [CodeGenType("LocalShellExecAction")] public partial class InternalLocalShellExecAction {}

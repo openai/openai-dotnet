@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 
 namespace OpenAI.Responses
 {
@@ -14,10 +14,12 @@ namespace OpenAI.Responses
             Result = result;
         }
 
-        internal InternalImageGenToolCallItemParam(InternalItemType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, BinaryData result) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalImageGenToolCallItemParam(InternalItemType kind, in JsonPatch patch, BinaryData result) : base(kind, patch)
         {
             Result = result;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public BinaryData Result { get; }
     }

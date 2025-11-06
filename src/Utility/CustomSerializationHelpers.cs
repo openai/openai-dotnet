@@ -76,7 +76,7 @@ internal static partial class CustomSerializationHelpers
     {
         options ??= new("W");
         AssertSupportedPersistableWriteFormat<TOutput, UInstanceInput>(instance, options);
-        return ModelReaderWriter.Write(instance, options);
+        return ModelReaderWriter.Write(instance, options, OpenAIContext.Default);
     }
 
     internal static BinaryData SerializeInstance<T>(T instance, ModelReaderWriterOptions options)

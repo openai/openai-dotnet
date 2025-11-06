@@ -2,8 +2,10 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using OpenAI;
 
@@ -11,7 +13,8 @@ namespace OpenAI.Responses
 {
     public partial class InternalResponseItemList
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
         internal InternalResponseItemList(IEnumerable<ResponseItem> data, bool hasMore, string firstId, string lastId)
         {
@@ -21,7 +24,8 @@ namespace OpenAI.Responses
             LastId = lastId;
         }
 
-        internal InternalResponseItemList(string @object, IList<ResponseItem> data, bool hasMore, string firstId, string lastId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalResponseItemList(string @object, IList<ResponseItem> data, bool hasMore, string firstId, string lastId, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Object = @object;
@@ -29,8 +33,14 @@ namespace OpenAI.Responses
             HasMore = hasMore;
             FirstId = firstId;
             LastId = lastId;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         public string Object { get; } = "list";
 
@@ -41,11 +51,5 @@ namespace OpenAI.Responses
         public string FirstId { get; }
 
         public string LastId { get; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
     }
 }

@@ -50,7 +50,7 @@ namespace OpenAI.Evals
             if (Optional.IsDefined(Kind) && _additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind);
+                writer.WriteStringValue(Kind.Value.ToString());
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -95,7 +95,7 @@ namespace OpenAI.Evals
             }
             InternalEvalItemRole role = default;
             BinaryData content = default;
-            string kind = default;
+            InternalEvalItemType? kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -111,7 +111,11 @@ namespace OpenAI.Evals
                 }
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = prop.Value.GetString();
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    kind = new InternalEvalItemType(prop.Value.GetString());
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

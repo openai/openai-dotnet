@@ -32,30 +32,4 @@ public partial class OpenAIResponseClient
         PipelineResponse protocolResponse = Pipeline.ProcessMessage(message, options);
         return ClientResult.FromResponse(protocolResponse);
     }
-
-    public virtual AsyncCollectionResult GetResponseInputItemsAsync(
-        string responseId,
-        int? limit,
-        string order,
-        string after,
-        string before,
-        RequestOptions options = null)
-    {
-        Argument.AssertNotNull(responseId, nameof(responseId));
-
-        return new AsyncResponseItemCollectionResult(this, responseId, limit, order, after, before, options);
-    }
-
-    public virtual CollectionResult GetResponseInputItems(
-        string responseId,
-        int? limit,
-        string order,
-        string after,
-        string before,
-        RequestOptions options = null)
-    {
-        Argument.AssertNotNull(responseId, nameof(responseId));
-
-        return new ResponseItemCollectionResult(this, responseId, limit, order, after, before, options);
-    }
 }

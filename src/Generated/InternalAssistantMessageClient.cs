@@ -65,7 +65,7 @@ namespace OpenAI.Assistants
                 options?.Order?.ToString(),
                 options?.AfterId,
                 options?.BeforeId,
-                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+                cancellationToken.ToRequestOptions());
         }
 
         public virtual AsyncCollectionResult<ThreadMessage> GetMessagesAsync(string threadId, MessageCollectionOptions options = default, CancellationToken cancellationToken = default)
@@ -79,7 +79,7 @@ namespace OpenAI.Assistants
                 options?.Order?.ToString(),
                 options?.AfterId,
                 options?.BeforeId,
-                cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+                cancellationToken.ToRequestOptions());
         }
     }
 }

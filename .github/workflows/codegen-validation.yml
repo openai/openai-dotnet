@@ -6,6 +6,11 @@ on:
   pull_request:
     paths:
       - 'codegen/**'
+      - 'specification/**'
+      - 'src/**'
+      - 'package.json'
+      - 'global.json'
+      - 'package-lock.json'
       - '.github/workflows/codegen-validation.yml'
       - 'scripts/Invoke-CodeGen.ps1'
     types: [opened, reopened, synchronize]
@@ -35,7 +40,7 @@ jobs:
         shell: pwsh
         run: |
           Write-Host "Running code generation validation..."
-          ./scripts/Invoke-CodeGen.ps1
+          ./scripts/Invoke-CodeGen.ps1 -Clean
           
           if ($LASTEXITCODE -ne 0) {
             Write-Error "Code generation failed with exit code: $LASTEXITCODE"
@@ -65,3 +70,17 @@ jobs:
           fi
           
           echo "No uncommitted changes detected - code generation is up to date!"
+      
+      - name: Run codegen visitor tests
+        run: dotnet test codegen/generator/test/
+          --configuration Release
+          --logger "trx;LogFilePrefix=codegen"
+          --results-directory ${{github.workspace}}/artifacts/test-results
+          ${{ env.version_suffix_args}}
+      
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: build-artifacts
+          path: ${{github.workspace}}/artifacts
