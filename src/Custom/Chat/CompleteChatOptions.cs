@@ -189,7 +189,7 @@ namespace OpenAI.Chat
 
             if (options.ToolChoice != null)
             {
-                request.ToolChoice = ModelReaderWriter.Write(options.ToolChoice, ModelSerializationExtensions.WireOptions);
+                request.ToolChoice = ModelReaderWriter.Write(options.ToolChoice, ModelSerializationExtensions.WireOptions, OpenAIContext.Default);
             }
 
             if (options.Functions != null && options.Functions.Count > 0)
@@ -202,7 +202,7 @@ namespace OpenAI.Chat
 
             if (options.FunctionChoice != null)
             {
-                request.FunctionCall = ModelReaderWriter.Write(options.FunctionChoice, ModelSerializationExtensions.WireOptions);
+                request.FunctionCall = ModelReaderWriter.Write(options.FunctionChoice, ModelSerializationExtensions.WireOptions, OpenAIContext.Default);
             }
 
             if (options.Metadata != null && options.Metadata.Count > 0)
