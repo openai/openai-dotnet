@@ -11,24 +11,29 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class FileCitationMessageAnnotation : ResponseMessageAnnotation
     {
-        public FileCitationMessageAnnotation(string fileId, int index) : base(ResponseMessageAnnotationKind.FileCitation)
+        public FileCitationMessageAnnotation(string fileId, int index, string filename) : base(ResponseMessageAnnotationKind.FileCitation)
         {
             Argument.AssertNotNull(fileId, nameof(fileId));
+            Argument.AssertNotNull(filename, nameof(filename));
 
             FileId = fileId;
             Index = index;
+            Filename = filename;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal FileCitationMessageAnnotation(ResponseMessageAnnotationKind kind, in JsonPatch patch, string fileId, int index) : base(kind, patch)
+        internal FileCitationMessageAnnotation(ResponseMessageAnnotationKind kind, in JsonPatch patch, string fileId, int index, string filename) : base(kind, patch)
         {
             FileId = fileId;
             Index = index;
+            Filename = filename;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string FileId { get; set; }
 
         public int Index { get; set; }
+
+        public string Filename { get; set; }
     }
 }
