@@ -1,0 +1,159 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "236",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.6.0 (.NET 9.0.10; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "tools": [
+          {
+            "type": "web_search_preview"
+          }
+        ],
+        "tool_choice": {
+          "type": "web_search_preview"
+        },
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "What was a positive news story from today?"
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "99a7d205dd41d44d-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "3273",
+        "Content-Type": "application/json",
+        "Date": "Thu, 06 Nov 2025 21:52:55 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "3074",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "3081",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_04cd7457dc7a33b200690d18b435f88193a2071dde0e8c4de6",
+        "object": "response",
+        "created_at": 1762465972,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4o-mini-2024-07-18",
+        "output": [
+          {
+            "id": "ws_04cd7457dc7a33b200690d18b44bf08193bb31be559f38efb0",
+            "type": "web_search_call",
+            "status": "completed",
+            "action": {
+              "type": "search",
+              "query": "What was a positive news story from today?"
+            }
+          },
+          {
+            "id": "msg_04cd7457dc7a33b200690d18b523dc8193ac7e816d55411211",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [
+                  {
+                    "type": "url_citation",
+                    "end_index": 1008,
+                    "start_index": 923,
+                    "title": "Earthshot Prize",
+                    "url": "https://en.wikipedia.org/wiki/Earthshot_Prize?utm_source=openai"
+                  }
+                ],
+                "logprobs": [],
+                "text": "On November 5, 2025, the Earthshot Prize 2025 awards ceremony took place at the Museum of Tomorrow in Rio de Janeiro, Brazil. The event celebrated innovative solutions to environmental challenges across five categories:\n\n- **Protect and Restore Nature**: *re.green* from Brazil was recognized for using AI and satellite data to restore the Atlantic Forest, planting millions of trees and creating jobs while protecting biodiversity.\n\n- **Build a Waste-Free World**: *Lagos Fashion Week* from Nigeria was honored for promoting sustainable fashion, training designers, and reviving local craftsmanship across Africa.\n\n- **Fix our Climate**: *Friendship* from Bangladesh received the award for providing healthcare, education, and climate resilience, restoring mangroves, and reaching millions of people.\n\nThese initiatives exemplify global efforts to address environmental issues through innovation and community engagement. ([en.wikipedia.org](https://en.wikipedia.org/wiki/Earthshot_Prize?utm_source=openai)) "
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "prompt_cache_retention": null,
+        "reasoning": {
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "auto",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": {
+          "type": "web_search_preview"
+        },
+        "tools": [
+          {
+            "type": "web_search_preview",
+            "search_context_size": "medium",
+            "user_location": {
+              "type": "approximate",
+              "city": null,
+              "country": "US",
+              "region": null,
+              "timezone": null
+            }
+          }
+        ],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 312,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 194,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 506
+        },
+        "user": null,
+        "metadata": {}
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

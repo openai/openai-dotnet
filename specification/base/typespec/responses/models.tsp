@@ -459,6 +459,7 @@ union ToolType {
   file_search: "file_search",
   function: "function",
   computer_use_preview: "computer_use_preview",
+  web_search: "web_search",
   web_search_preview: "web_search_preview",
   mcp: "mcp",
   code_interpreter: "code_interpreter",

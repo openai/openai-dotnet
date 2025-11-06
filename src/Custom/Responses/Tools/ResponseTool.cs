@@ -50,10 +50,14 @@ public partial class ResponseTool
     }
 
     // CUSTOM: Added factory method as a convenience.
-    public static WebSearchTool CreateWebSearchTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null)
+    public static WebSearchTool CreateWebSearchTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null, bool usePreview = false)
     {
+        var kind = usePreview
+            ? InternalToolType.WebSearchPreview
+            : InternalToolType.WebSearch;
+
         return new WebSearchTool(
-            kind: InternalToolType.WebSearchPreview,
+            kind: kind,
             patch: default,
             userLocation: userLocation,
             searchContextSize: searchContextSize);
