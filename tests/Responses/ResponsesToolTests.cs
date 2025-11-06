@@ -761,6 +761,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                 imageGenItemId ??= imageGenCallInPartialUpdate.ItemId;
                 Assert.That(imageGenItemId, Is.EqualTo(imageGenCallInPartialUpdate.ItemId));
                 Assert.That(imageGenCallInPartialUpdate.OutputIndex, Is.EqualTo(0));
+                Assert.That(imageGenCallInPartialUpdate.PartialImageBytes, Is.Not.Null);
                 partialCount++;
             }
             else if (update is StreamingResponseImageGenerationCallInProgressUpdate imageGenCallInProgressUpdate)
