@@ -1065,6 +1065,9 @@ model AnnotationFileCitation extends Annotation {
 
   /** The index of the file in the list of files. */
   index: int32;
+
+  /** The filename of the file cited. */
+  filename: string;
 }
 
 // Tool customization (apply_discriminator): Apply discriminated base type, rename for consistency and clarity

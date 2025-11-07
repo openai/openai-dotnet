@@ -394,6 +394,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(messageContentPart.OutputTextAnnotations, Is.Not.Null.And.Not.Empty);
         FileCitationMessageAnnotation annotation = messageContentPart.OutputTextAnnotations[0] as FileCitationMessageAnnotation;
         Assert.That(annotation.FileId, Is.EqualTo(testFile.Id));
+        Assert.That(annotation.Filename, Is.EqualTo(testFile.Filename));
         Assert.That(annotation.Index, Is.GreaterThan(0));
 
         await foreach (ResponseItem inputItem in client.GetResponseInputItemsAsync(response.Id))

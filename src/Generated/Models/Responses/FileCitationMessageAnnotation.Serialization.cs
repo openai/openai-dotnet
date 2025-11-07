@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class FileCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<FileCitationMessageAnnotation>
     {
-        internal FileCitationMessageAnnotation() : this(ResponseMessageAnnotationKind.FileCitation, default, null, default)
+        internal FileCitationMessageAnnotation() : this(ResponseMessageAnnotationKind.FileCitation, default, null, default, null)
         {
         }
 
@@ -50,6 +50,11 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("index"u8);
                 writer.WriteNumberValue(Index);
             }
+            if (!Patch.Contains("$.filename"u8))
+            {
+                writer.WritePropertyName("filename"u8);
+                writer.WriteStringValue(Filename);
+            }
 
             Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -80,6 +85,7 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string fileId = default;
             int index = default;
+            string filename = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -97,9 +103,14 @@ namespace OpenAI.Responses
                     index = prop.Value.GetInt32();
                     continue;
                 }
+                if (prop.NameEquals("filename"u8))
+                {
+                    filename = prop.Value.GetString();
+                    continue;
+                }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new FileCitationMessageAnnotation(kind, patch, fileId, index);
+            return new FileCitationMessageAnnotation(kind, patch, fileId, index, filename);
         }
 
         BinaryData IPersistableModel<FileCitationMessageAnnotation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
