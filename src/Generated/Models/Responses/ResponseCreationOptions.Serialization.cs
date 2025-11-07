@@ -189,17 +189,17 @@ namespace OpenAI.Responses
                     writer.WriteRawValue(Patch.GetJson("$.include"u8));
                 }
             }
-            else if (Optional.IsCollectionDefined(Include))
+            else if (Optional.IsCollectionDefined(IncludedProperties))
             {
                 writer.WritePropertyName("include"u8);
                 writer.WriteStartArray();
-                for (int i = 0; i < Include.Count; i++)
+                for (int i = 0; i < IncludedProperties.Count; i++)
                 {
                     if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.include[{i}]")))
                     {
                         continue;
                     }
-                    writer.WriteStringValue(Include[i].ToString());
+                    writer.WriteStringValue(IncludedProperties[i].ToString());
                 }
                 Patch.WriteTo(writer, "$.include"u8);
                 writer.WriteEndArray();
@@ -259,7 +259,7 @@ namespace OpenAI.Responses
             ResponseToolChoice toolChoice = default;
             ResponseTruncationMode? truncationMode = default;
             IList<ResponseItem> input = default;
-            IList<InternalIncludable> include = default;
+            IList<IncludedResponseProperty> includedProperties = default;
             bool? parallelToolCallsEnabled = default;
             bool? storedOutputEnabled = default;
             bool? stream = default;
@@ -436,12 +436,12 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    List<InternalIncludable> array = new List<InternalIncludable>();
+                    List<IncludedResponseProperty> array = new List<IncludedResponseProperty>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(new InternalIncludable(item.GetString()));
+                        array.Add(new IncludedResponseProperty(item.GetString()));
                     }
-                    include = array;
+                    includedProperties = array;
                     continue;
                 }
                 if (prop.NameEquals("parallel_tool_calls"u8))
@@ -493,7 +493,7 @@ namespace OpenAI.Responses
                 toolChoice,
                 truncationMode,
                 input,
-                include ?? new ChangeTrackingList<InternalIncludable>(),
+                includedProperties ?? new ChangeTrackingList<IncludedResponseProperty>(),
                 parallelToolCallsEnabled,
                 storedOutputEnabled,
                 stream,

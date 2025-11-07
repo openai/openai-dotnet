@@ -1,0 +1,299 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "178",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.6.0 (.NET 9.0.10; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "model": "gpt-5-mini",
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Hello, world!"
+              }
+            ]
+          }
+        ],
+        "include": [
+          "reasoning.encrypted_content"
+        ],
+        "store": false
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "99b04b227cbfdeea-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "3903",
+        "Content-Type": "application/json",
+        "Date": "Fri, 07 Nov 2025 22:33:43 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "3966",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Set-Cookie": [
+          "Sanitized",
+          "Sanitized"
+        ],
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "3973",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "180000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "179999982",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_0db947136a1ec83f01690e73c309e88196a8ea71ae9c7b8fc0",
+        "object": "response",
+        "created_at": 1762554819,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-5-mini-2025-08-07",
+        "output": [
+          {
+            "id": "rs_0db947136a1ec83f01690e73c38a2c8196ab914e083aacd509",
+            "type": "reasoning",
+            "encrypted_content": "gAAAAABpDnPGRfmz64tKPHug5BHba1B5kFpdXVgfOhJRjHZZetqqFShinbi9vwTI7uGsXErpSSiNlajYLtYZkkv_KXrDcIJVf9Hrfp_JVCjjHXOHRxTxngnWEd8Tca-_vH4GI3ON34W2M1Rr0oMv54-QzkoTCXlkBXC2ZiI21-5qfSIe2jzT5H44eI-DnkZrCeTKCqDoReoyNSqwxsly5JS_rrBqg-SYpU0SJhFgaM-RB8OxcPN7eeiRU0iUABnWBnzW4PE-RnTJqd9mg2fmkNBW7aWhf7vyZ2KW2LQLq0pG7oiLK1b3OZ9BMAsazja77M7f8jzYjNDJw-iice3NlP0-QbjRkWKa2lLuGySkFDL3ZhC3YF5E45zbOx-rwEDBwQwTxG8qEX5FSX5VmyRd0LuqOQqF0VcKRhhubJ3H1rUpH67IlZStymp0lCOBMqOQ8QW03ThEb389Ksl5DA_o5UkFm5VQoG9EcxIjB0WLdAQhSObplCIm5YbTMKhzt5NLIX9MY3Rr2ypFmfvcjJ5FW9h_F7gjyQjqGedjpFPCCmd15UEpLxmHWMBgCxcKx82e6w4MThqwPy1gbA_exboCh3ND3o1tvhB4JvyLOoxQ2VZNeCIig-Rs_nksOV-9CAuAhxp4I0YwDKHyF8BD__VshkNDA-RryrZKeevcJ-2ytDDflfZ_AYsV1KaVfw6FPEYxOJn3RjqF9OVEEcFfYBwhZimOttAhbZHPmGrb1NNZWQTM-BJlufDCEGADG_djXmPP4PH60gozkiKY8CEyzEgHUL6bmR4fshcatLzPnP4e3vET8Wh3BnkRMuFK_Kk9s1autyUL4ctqDCauGhqQV3Khc9xVkaYb7FUIr5BLKroJpKkWKRBbJ76bUvVtWxpQmkh__JhwB2rjkqVKFY3pvqKVPdRIRGO2vSgauywZ7r-jLobPGNsJR-d2l8A5MYT48fCkQUVTjMgt8Dql5PbvGZCtXNGF95MQR1oaV_PrPxMcs5K0E2TwbgK6U03_TF89AHo3tpJEd8gCG2LjIjtINwdmwrYuvovGUpIGukCr7Nnp6e5R_tTPhIF5yW-qqv71buX9w5T2o8Aj-x7dzXxFQZ1_2-eIDhwlm1Z_MRi3m1GLeRCyZuSU4LD9-sqJSQSS37OOz6DHa8m4PloqArR51nUeWudiD7dheKEfK8Uo6Hwyob_jFcxqOEWecq628RVj14kzBd60SOtUqT3xhmtbWNJwRrfQxR3eG9XAMymrxVI3Aqo2LPCR_iGp1-JtTfyOrhamGYqifeFzns1dVzX0WQnR20DnsGNyS14xX8mv1BYpMh5QfADvub35WsaajXk4wLnne9bfyna7rScpWOdZ9XO38bs7JzpfVgqFkuthhQydwqAQpR6lBipKVnWxSMddxL3szoNhOcy65P7w1chMeQFiW9H6YlfttPmMoLCewYV0i-EkLkZJoA2IgHfQKH7CHU2v-m2IRE6w1cF-439riIYtP7yRSrLDbscXHYQq9vvddsZbCGFztkjzJr47eqp-nC1pAfTGec4MhEMGYLLPvLqSBUTOwzWfYpQU675Hjk0AnwKS6iQrHJqOt1fHC8KtEYlLFWSsha1TGHEGYPr53C5p2v6Hi2LO-6tM9QTh3kJvVqxY2dejAt2BSarEWRIDLuqjNlTuZ4G5dHepL2bohXT0lVWUu8wFNBCZzMhi0Xgo2xnkupWjwIw6FHzIH_-JyJkSWfV0lOiGjYpmesXeo8u-JYKAKFBLmf0MHoSUhWrND_bhr3zTv_278MBqoVUJdz_e9nlSsl15SNYWkb8EEhjJyr_gXTvfllFcM74w8T9cOZgJl9PKPSWBBXkgQbqIH3H0qKXNf9W5eH18dxlJdZsHcX8gPw9fmgtTGgwRTpKuklzoWhzX-GKNjQR_eN5WofLQv_L0fQrkmcnEJp0hmeMCJ7Rsl2ky6_DHElUr9yQ8Fq3OaClc9ouCTV8tUbFUe3LnMxjLnnEcC1gz_RndDCWzshYLrbIu0SaSuw5Irt_mKIO8OdKIXCXFYla7uSPAREDR2Pn9MuKs6dth0j7x4fjVgeXRHF9gqj0iKvrwTqA1i66qTkxydhMKXpka4ECV8F5EiBgdSUs6f1cb",
+            "summary": []
+          },
+          {
+            "id": "msg_0db947136a1ec83f01690e73c637648196b4146eb1a943c137",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "Hello! How can I help you today? If you were testing or want a \"Hello, world!\" example in a specific programming language, tell me which one and I’ll provide it."
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "prompt_cache_retention": null,
+        "reasoning": {
+          "effort": "medium",
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": false,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 10,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 236,
+          "output_tokens_details": {
+            "reasoning_tokens": 192
+          },
+          "total_tokens": 246
+        },
+        "user": null,
+        "metadata": {}
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "2891",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.6.0 (.NET 9.0.10; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "model": "gpt-5-mini",
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Hello, world!"
+              }
+            ]
+          },
+          {
+            "type": "reasoning",
+            "id": "rs_0db947136a1ec83f01690e73c38a2c8196ab914e083aacd509",
+            "encrypted_content": "gAAAAABpDnPGRfmz64tKPHug5BHba1B5kFpdXVgfOhJRjHZZetqqFShinbi9vwTI7uGsXErpSSiNlajYLtYZkkv_KXrDcIJVf9Hrfp_JVCjjHXOHRxTxngnWEd8Tca-_vH4GI3ON34W2M1Rr0oMv54-QzkoTCXlkBXC2ZiI21-5qfSIe2jzT5H44eI-DnkZrCeTKCqDoReoyNSqwxsly5JS_rrBqg-SYpU0SJhFgaM-RB8OxcPN7eeiRU0iUABnWBnzW4PE-RnTJqd9mg2fmkNBW7aWhf7vyZ2KW2LQLq0pG7oiLK1b3OZ9BMAsazja77M7f8jzYjNDJw-iice3NlP0-QbjRkWKa2lLuGySkFDL3ZhC3YF5E45zbOx-rwEDBwQwTxG8qEX5FSX5VmyRd0LuqOQqF0VcKRhhubJ3H1rUpH67IlZStymp0lCOBMqOQ8QW03ThEb389Ksl5DA_o5UkFm5VQoG9EcxIjB0WLdAQhSObplCIm5YbTMKhzt5NLIX9MY3Rr2ypFmfvcjJ5FW9h_F7gjyQjqGedjpFPCCmd15UEpLxmHWMBgCxcKx82e6w4MThqwPy1gbA_exboCh3ND3o1tvhB4JvyLOoxQ2VZNeCIig-Rs_nksOV-9CAuAhxp4I0YwDKHyF8BD__VshkNDA-RryrZKeevcJ-2ytDDflfZ_AYsV1KaVfw6FPEYxOJn3RjqF9OVEEcFfYBwhZimOttAhbZHPmGrb1NNZWQTM-BJlufDCEGADG_djXmPP4PH60gozkiKY8CEyzEgHUL6bmR4fshcatLzPnP4e3vET8Wh3BnkRMuFK_Kk9s1autyUL4ctqDCauGhqQV3Khc9xVkaYb7FUIr5BLKroJpKkWKRBbJ76bUvVtWxpQmkh__JhwB2rjkqVKFY3pvqKVPdRIRGO2vSgauywZ7r-jLobPGNsJR-d2l8A5MYT48fCkQUVTjMgt8Dql5PbvGZCtXNGF95MQR1oaV_PrPxMcs5K0E2TwbgK6U03_TF89AHo3tpJEd8gCG2LjIjtINwdmwrYuvovGUpIGukCr7Nnp6e5R_tTPhIF5yW-qqv71buX9w5T2o8Aj-x7dzXxFQZ1_2-eIDhwlm1Z_MRi3m1GLeRCyZuSU4LD9-sqJSQSS37OOz6DHa8m4PloqArR51nUeWudiD7dheKEfK8Uo6Hwyob_jFcxqOEWecq628RVj14kzBd60SOtUqT3xhmtbWNJwRrfQxR3eG9XAMymrxVI3Aqo2LPCR_iGp1-JtTfyOrhamGYqifeFzns1dVzX0WQnR20DnsGNyS14xX8mv1BYpMh5QfADvub35WsaajXk4wLnne9bfyna7rScpWOdZ9XO38bs7JzpfVgqFkuthhQydwqAQpR6lBipKVnWxSMddxL3szoNhOcy65P7w1chMeQFiW9H6YlfttPmMoLCewYV0i-EkLkZJoA2IgHfQKH7CHU2v-m2IRE6w1cF-439riIYtP7yRSrLDbscXHYQq9vvddsZbCGFztkjzJr47eqp-nC1pAfTGec4MhEMGYLLPvLqSBUTOwzWfYpQU675Hjk0AnwKS6iQrHJqOt1fHC8KtEYlLFWSsha1TGHEGYPr53C5p2v6Hi2LO-6tM9QTh3kJvVqxY2dejAt2BSarEWRIDLuqjNlTuZ4G5dHepL2bohXT0lVWUu8wFNBCZzMhi0Xgo2xnkupWjwIw6FHzIH_-JyJkSWfV0lOiGjYpmesXeo8u-JYKAKFBLmf0MHoSUhWrND_bhr3zTv_278MBqoVUJdz_e9nlSsl15SNYWkb8EEhjJyr_gXTvfllFcM74w8T9cOZgJl9PKPSWBBXkgQbqIH3H0qKXNf9W5eH18dxlJdZsHcX8gPw9fmgtTGgwRTpKuklzoWhzX-GKNjQR_eN5WofLQv_L0fQrkmcnEJp0hmeMCJ7Rsl2ky6_DHElUr9yQ8Fq3OaClc9ouCTV8tUbFUe3LnMxjLnnEcC1gz_RndDCWzshYLrbIu0SaSuw5Irt_mKIO8OdKIXCXFYla7uSPAREDR2Pn9MuKs6dth0j7x4fjVgeXRHF9gqj0iKvrwTqA1i66qTkxydhMKXpka4ECV8F5EiBgdSUs6f1cb",
+            "summary": []
+          },
+          {
+            "type": "message",
+            "id": "msg_0db947136a1ec83f01690e73c637648196b4146eb1a943c137",
+            "status": "completed",
+            "role": "assistant",
+            "content": [
+              {
+                "type": "output_text",
+                "text": "Hello! How can I help you today? If you were testing or want a \"Hello, world!\" example in a specific programming language, tell me which one and I’ll provide it.",
+                "annotations": [],
+                "logprobs": []
+              }
+            ]
+          },
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Say that again, but dramatically"
+              }
+            ]
+          }
+        ],
+        "include": [
+          "reasoning.encrypted_content"
+        ],
+        "store": false
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "99b04b3ccf7adeea-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "4063",
+        "Content-Type": "application/json",
+        "Date": "Fri, 07 Nov 2025 22:33:50 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "6693",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "6709",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "180000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "179999967",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_0db947136a1ec83f01690e73c7ca008196b1241a90358ce176",
+        "object": "response",
+        "created_at": 1762554824,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-5-mini-2025-08-07",
+        "output": [
+          {
+            "id": "rs_0db947136a1ec83f01690e73c8ad1c8196991daa323d82863d",
+            "type": "reasoning",
+            "encrypted_content": "gAAAAABpDnPO_q1FkFYqNFVIzpirrwWzc27fmJ2lPdpEOfwizucKYgoFapFtFoTYgEqP_gYdsfrYftopMZg6OzoK0Uj1-e4cheUW26zss8MkZ8Vy8kM9-L0m6cYAmpxKUsG8NtWe-VuCZeTHlgJmd3rXc8dEoIwD5kSIcIJ1zutDtTwyoBtoxF2linfAGHuLg26FsxPy0v6-xI8yJV3ovOzUtt1ZPxagYjIKYrL-Le7qNawzGLzqadwTXdgxUZpw7ao5_QgHDPrRecXjb7hUdXTi5hg9E76E_-OAAdmExtoRjWR5wSCFuDQW4wN3eqgfWasgwuhvgH-rcDASR_c-zPjiBCzc5fmX7mviu6fQ6sTMdCjjT5MiGqhLb-G61EH8sUVUUC0wUjxkwCugH41R1XODqgmPdJwv6b2hya2Mu-C1bUEKXQP_iEqs_Z9cPnvJvzr0DfErvI_YlyLqxZGhlZ_m4AsR7FEEb4MYCzo_9BtR30jcdztviEDlHadBFiMOkA6pEx70EK-X1ZIIvyTB9OJxjQ2av5lN73lylD_dAQoI_OcwPCqcd5Rbg8uoAA_diT2rmjvWIQt-sH6vgGMar1S33HhdhE8e4TDlMs4IZymDq_w7Cd4ZBqtJU8fnuiLwKtI_c_BCqNlCPrHtzwTGQ3i9J-nfHFqsfolYeeGKDd8dK19vufpQL58100tnQtLrCwAC0h87qYqw1ipd0RGXVPjUqDJMgOi_F4Ik3bKoo4O9h6IZE_5zmE1xtJbGSDz-apKEAe4-Iv__oqsE3ecqOWGaEy57dRNLDC6wTs_9c7uhH6t2HzQtH3GyVzMmGGmxroRqdBScI3hbWLizj7hAWOn9CeWUPc-Iws3NoFFS_SyiEa-qAjpoVufQx0tuR9uYfe-mdsXvTQEreEr8PA6b9vz_sQmMWg1bQ2QDn6Q_IgrlcXwLXTEbRaRvwC6Ik3Vi-8b5fJ8W3txWkZ8fmvDJ4SDlWOwQN2wjm053jmx22ZIlAmi0l3LEucntOO2yjOV8IVp6y-lZ6zO0A3bxXpKGOlZydOlajVx1UzX9s0Ua5dgerPJr_iho1kJlTsY7fxxjx1wdb9wEfT0_sem6a8N25NHkp131TI42Q2hS4_Rc1kF7Vo6-ZE3NA37xySNANzcm6-YJqwbWyC0pvKNNv2ztl1CXlIDt63V7mUCD_PKZXORfM-sYuiGWb5-Hn3PHmdY7Yt3qwhc5imE5n3598va3mNrfsHjKOCvrVWHm0p3iXMdx9bU0KSamlhJWmnQxpPPeLh8xEVLfbPt_V1SFwVRvzto3KiTDBmZ4mUr9HzBPYRMEfusB3ZTCBv36GBPEs-xGUgatg4QdYR7b-2JN613H19NxNKVfTcvVZZ8OQw1Xg-bie5dVfIBpkZjBtH4pyO07g1NJ7kMYvFOj_Z9pjY_6we5GgTI_PH3rlacd230lpwgSodY0O_x34IzbYmTY4g2LsYv5RMotekvbuzKLhHeC8VyGZAVNM29a_CX5JVrwR1dZW6n4LlJK1jXpdBx2XchDEhc6NXFqpJRtjSGRYuk1G864sf_SqW3yRnJx2jf3MRcejkkooELW0IYLqFpz3U1UI2lbg7kNYMwFGsKb0iy-w-098VJdEKpt3x2ResdP6PzPsPQ4hDrrrq_jG5McklKwJ9iQpb5tHa8q0cYa6Kn6DO4AJjMN1x1AE4ku1PyiD-jRTvOPvIExzBrayBy_cbcmBMuHmFjeNNH3siAp4MkMH5c9WEYujqH-JGf1UfnHEEpuOvA0I4EiQ4lQbOZcuAqpEwoc07l_L-G3X2RJ4LCpkZlmYIYl04WPjba2kZUdB_yvK2kGH23o5c1SdZcV0NHDqQUhGTix452tgU-m7YE5xBbfLx4aj2mr07XueY3ORlLCMexYYqB0sduSMSyERIhpk4YRfVBJM4LrnZUkfIf1stDwX7H8bindY_Q4VPybqtewXyFABW9xaimaZ8AjrKxC1mq9Fl5scur2kS1CwdZeb-esCAv4_YGFoDHDKydLywm8zIZ-BMOAwjdyIIf-QyqWo8W8LFYC7CzCFo2tBEmUbgZioEYQGru-Q99MGSlxRDxmN587voCY1OdPXZ-sVtANnoOMHgV6qw-KrYlxFgtFL2xQ76LgOdK_eGxMyqQewiJ-mkA93jSxxEODIILbYA-Vl_lzBMWkZ6SfR9M1COnBBX31RGy9XqHXccaciqWXhaNffyREpPWbnas=",
+            "summary": []
+          },
+          {
+            "id": "msg_0db947136a1ec83f01690e73cccd68819698c71a9af7fa37ac",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "(A hush falls. A single spotlight pierces the dark. From the silence a voice rises, clear and resonant.)\n\n\"Hello!\"  \n(Beat. The voice softens, leaning closer as if sharing a secret.)  \n\"How can I help you today?\""
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "prompt_cache_retention": null,
+        "reasoning": {
+          "effort": "medium",
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": false,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 64,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 251,
+          "output_tokens_details": {
+            "reasoning_tokens": 192
+          },
+          "total_tokens": 315
+        },
+        "user": null,
+        "metadata": {}
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

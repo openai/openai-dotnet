@@ -29,15 +29,15 @@ namespace OpenAI.Responses
             return message;
         }
 
-        internal virtual PipelineMessage CreateGetResponseRequest(string responseId, IEnumerable<InternalIncludable> includables, bool? stream, int? startingAfter, RequestOptions options)
+        internal virtual PipelineMessage CreateGetResponseRequest(string responseId, IEnumerable<IncludedResponseProperty> include, bool? stream, int? startingAfter, bool? includeObfuscation, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
             uri.AppendPath("/responses/", false);
             uri.AppendPath(responseId, true);
-            if (includables != null && !(includables is ChangeTrackingList<InternalIncludable> changeTrackingList && changeTrackingList.IsUndefined))
+            if (include != null && !(include is ChangeTrackingList<IncludedResponseProperty> changeTrackingList && changeTrackingList.IsUndefined))
             {
-                foreach (var @param in includables)
+                foreach (var @param in include)
                 {
                     uri.AppendQuery("include[]", @param.ToString(), true);
                 }
@@ -49,6 +49,10 @@ namespace OpenAI.Responses
             if (startingAfter != null)
             {
                 uri.AppendQuery("starting_after", TypeFormatters.ConvertToString(startingAfter), true);
+            }
+            if (includeObfuscation != null)
+            {
+                uri.AppendQuery("include_obfuscation", TypeFormatters.ConvertToString(includeObfuscation), true);
             }
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "GET", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;
