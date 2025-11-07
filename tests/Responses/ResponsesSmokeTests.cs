@@ -44,7 +44,7 @@ public partial class ResponsesSmokeTests
             ResponseItem.CreateFunctionCallOutputItem("call_abcd", "functionOutput"),
             ResponseItem.CreateReasoningItem("summary goes here"),
             ResponseItem.CreateReferenceItem("msg_1234"),
-            ResponseItem.CreateAssistantMessageItem("Goodbye!", []),
+            ResponseItem.CreateAssistantMessageItem("Goodbye!"),
             ResponseItem.CreateDeveloperMessageItem("Talk like a pirate"),
             ResponseItem.CreateSystemMessageItem("Talk like a ninja"),
             ResponseItem.CreateUserMessageItem("Hello, world"),
@@ -64,7 +64,7 @@ public partial class ResponsesSmokeTests
             potatoMessage =>
             {
                 Assert.That(potatoMessage.Role, Is.EqualTo(MessageRole.Unknown));
-                Assert.That(potatoMessage.Content, Has.Count.EqualTo(0));
+                Assert.That(potatoMessage.Content, Is.Null);
             });
     }
 

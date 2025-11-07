@@ -49,7 +49,7 @@ namespace OpenAI.Responses
             if (!Patch.Contains("$.role"u8))
             {
                 writer.WritePropertyName("role"u8);
-                writer.WriteStringValue(InternalRole.ToString());
+                writer.WriteStringValue(InternalRoleEx.ToString());
             }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
@@ -78,13 +78,13 @@ namespace OpenAI.Responses
                 switch (discriminator.GetString())
                 {
                     case "user":
-                        return InternalResponsesUserMessage.DeserializeInternalResponsesUserMessage(element, data, options);
+                        return UserMessageResponseItem.DeserializeUserMessageResponseItem(element, data, options);
                     case "system":
-                        return InternalResponsesSystemMessage.DeserializeInternalResponsesSystemMessage(element, data, options);
+                        return SystemMessageResponseItem.DeserializeSystemMessageResponseItem(element, data, options);
                     case "developer":
-                        return InternalResponsesDeveloperMessage.DeserializeInternalResponsesDeveloperMessage(element, data, options);
+                        return DeveloperMessageResponseItem.DeserializeDeveloperMessageResponseItem(element, data, options);
                     case "assistant":
-                        return InternalResponsesAssistantMessage.DeserializeInternalResponsesAssistantMessage(element, data, options);
+                        return AssistantMessageResponseItem.DeserializeAssistantMessageResponseItem(element, data, options);
                 }
             }
             return InternalUnknownResponsesMessageItemResource.DeserializeInternalUnknownResponsesMessageItemResource(element, data, options);

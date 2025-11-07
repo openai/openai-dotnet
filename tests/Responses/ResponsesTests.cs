@@ -427,7 +427,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response.OutputItems, Has.Count.EqualTo(2));
         ReasoningResponseItem reasoningItem = response.OutputItems[0] as ReasoningResponseItem;
         MessageResponseItem messageItem = response.OutputItems[1] as MessageResponseItem;
-        Assert.That(reasoningItem.SummaryParts, Has.Count.GreaterThan(0));
+        Assert.That(reasoningItem.Summary, Has.Count.GreaterThan(0));
         Assert.That(reasoningItem.GetSummaryText(), Is.Not.Null.And.Not.Empty);
         Assert.That(reasoningItem.Id, Is.Not.Null.And.Not.Empty);
         Assert.That(messageItem.Content?.FirstOrDefault().Text, Has.Length.GreaterThan(0));

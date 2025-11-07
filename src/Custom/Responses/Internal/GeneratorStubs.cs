@@ -55,7 +55,6 @@ namespace OpenAI.Responses;
 [CodeGenType("ResponsesAssistantMessageItemParam")] internal partial class InternalResponsesAssistantMessageItemParam {}
 [CodeGenType("ResponsesDeveloperMessageItemParam")] internal partial class InternalResponsesDeveloperMessageItemParam {}
 [CodeGenType("ResponsesMessageItemParam")] internal partial class InternalResponsesMessageItemParam {}
-[CodeGenType("ResponsesMessageRole")] internal readonly partial struct InternalResponsesMessageRole {}
 [CodeGenType("ResponsesSystemMessageItemParam")] internal partial class InternalResponsesSystemMessageItemParam {}
 [CodeGenType("ResponseStreamEventType")] internal readonly partial struct InternalResponseStreamEventType {}
 [CodeGenType("ResponsesUserMessageItemParam")] internal partial class InternalResponsesUserMessageItemParam {}

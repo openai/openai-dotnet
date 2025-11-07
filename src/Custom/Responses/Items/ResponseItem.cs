@@ -14,59 +14,44 @@ public partial class ResponseItem
     [CodeGenMember("Id")]
     public string Id { get; internal set; }
 
-    public static MessageResponseItem CreateUserMessageItem(IEnumerable<ResponseContentPart> contentParts)
+    public static UserMessageResponseItem CreateUserMessageItem(IEnumerable<ResponseContentPart> content)
     {
-        Argument.AssertNotNullOrEmpty(contentParts, nameof(contentParts));
-        return new InternalResponsesUserMessage(contentParts);
+        return new UserMessageResponseItem(content);
     }
 
-    public static MessageResponseItem CreateUserMessageItem(string inputTextContent)
+    public static UserMessageResponseItem CreateUserMessageItem(string inputTextContent)
     {
-        Argument.AssertNotNull(inputTextContent, nameof(inputTextContent));
-        return new InternalResponsesUserMessage(
-            internalContent: [ResponseContentPart.CreateInputTextPart(inputTextContent)]);
+        return new UserMessageResponseItem(inputTextContent);
     }
 
-    public static MessageResponseItem CreateDeveloperMessageItem(IEnumerable<ResponseContentPart> contentParts)
+    public static DeveloperMessageResponseItem CreateDeveloperMessageItem(IEnumerable<ResponseContentPart> content)
     {
-        Argument.AssertNotNull(contentParts, nameof(contentParts));
-        return new InternalResponsesDeveloperMessage(contentParts);
+        return new DeveloperMessageResponseItem(content);
     }
 
-    public static MessageResponseItem CreateDeveloperMessageItem(string inputTextContent)
-    {
-        Argument.AssertNotNull(inputTextContent, nameof(inputTextContent));
-        return new InternalResponsesDeveloperMessage(
-            internalContent: [ResponseContentPart.CreateInputTextPart(inputTextContent)]);
+    public static DeveloperMessageResponseItem CreateDeveloperMessageItem(string inputTextContent)
+    {;
+        return new DeveloperMessageResponseItem(inputTextContent);
     }
 
-    public static MessageResponseItem CreateSystemMessageItem(IEnumerable<ResponseContentPart> contentParts)
+    public static SystemMessageResponseItem CreateSystemMessageItem(IEnumerable<ResponseContentPart> content)
     {
-        Argument.AssertNotNull(contentParts, nameof(contentParts));
-        return new InternalResponsesSystemMessage(contentParts);
+        return new SystemMessageResponseItem(content);
     }
 
-    public static MessageResponseItem CreateSystemMessageItem(string inputTextContent)
+    public static SystemMessageResponseItem CreateSystemMessageItem(string inputTextContent)
     {
-        Argument.AssertNotNull(inputTextContent, nameof(inputTextContent));
-        return new InternalResponsesSystemMessage(
-            internalContent: [ResponseContentPart.CreateInputTextPart(inputTextContent)]);
+        return new SystemMessageResponseItem(inputTextContent);
     }
 
-    public static MessageResponseItem CreateAssistantMessageItem(IEnumerable<ResponseContentPart> contentParts)
+    public static AssistantMessageResponseItem CreateAssistantMessageItem(IEnumerable<ResponseContentPart> content)
     {
-        Argument.AssertNotNull(contentParts, nameof(contentParts));
-        return new InternalResponsesAssistantMessage(contentParts);
+        return new AssistantMessageResponseItem(content);
     }
 
-    public static MessageResponseItem CreateAssistantMessageItem(string outputTextContent, IEnumerable<ResponseMessageAnnotation> annotations = null)
+    public static AssistantMessageResponseItem CreateAssistantMessageItem(string outputTextContent)
     {
-        Argument.AssertNotNull(outputTextContent, nameof(outputTextContent));
-        return new InternalResponsesAssistantMessage(
-            internalContent:
-            [
-                new InternalItemContentOutputText(outputTextContent, annotations ?? []),
-            ]);
+        return new AssistantMessageResponseItem(outputTextContent);
     }
 
     [Experimental("OPENAICUA001")]
@@ -101,9 +86,9 @@ public partial class ResponseItem
         return new FunctionCallOutputResponseItem(callId, functionOutput);
     }
 
-    public static ReasoningResponseItem CreateReasoningItem(IEnumerable<ReasoningSummaryPart> summaryParts)
+    public static ReasoningResponseItem CreateReasoningItem(IEnumerable<ReasoningSummaryPart> summary)
     {
-        return new ReasoningResponseItem(summaryParts);
+        return new ReasoningResponseItem(summary);
     }
 
     public static ReasoningResponseItem CreateReasoningItem(string summaryText)

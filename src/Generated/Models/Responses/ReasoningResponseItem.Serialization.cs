@@ -65,13 +65,13 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("summary"u8);
                 writer.WriteStartArray();
-                for (int i = 0; i < SummaryParts.Count; i++)
+                for (int i = 0; i < Summary.Count; i++)
                 {
-                    if (SummaryParts[i].Patch.IsRemoved("$"u8))
+                    if (Summary[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
-                    writer.WriteObjectValue(SummaryParts[i], options);
+                    writer.WriteObjectValue(Summary[i], options);
                 }
                 Patch.WriteTo(writer, "$.summary"u8);
                 writer.WriteEndArray();
@@ -107,7 +107,7 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             ReasoningStatus? status = default;
             string encryptedContent = default;
-            IList<ReasoningSummaryPart> summaryParts = default;
+            IList<ReasoningSummaryPart> summary = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -142,7 +142,7 @@ namespace OpenAI.Responses
                     {
                         array.Add(ReasoningSummaryPart.DeserializeReasoningSummaryPart(item, item.GetUtf8Bytes(), options));
                     }
-                    summaryParts = array;
+                    summary = array;
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
@@ -153,7 +153,7 @@ namespace OpenAI.Responses
                 patch,
                 status,
                 encryptedContent,
-                summaryParts);
+                summary);
         }
 
         BinaryData IPersistableModel<ReasoningResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -203,7 +203,7 @@ namespace OpenAI.Responses
                 {
                     return false;
                 }
-                return SummaryParts[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+                return Summary[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
             }
             return false;
         }
@@ -222,7 +222,7 @@ namespace OpenAI.Responses
                 {
                     return false;
                 }
-                SummaryParts[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                Summary[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
                 return true;
             }
             return false;

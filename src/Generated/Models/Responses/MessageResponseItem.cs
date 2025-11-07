@@ -10,16 +10,16 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class MessageResponseItem : ResponseItem
     {
-        internal MessageResponseItem(InternalResponsesMessageRole internalRole) : base(InternalItemType.Message)
+        internal MessageResponseItem(InternalMessageRoleEx internalRoleEx) : base(InternalItemType.Message)
         {
-            InternalRole = internalRole;
+            InternalRoleEx = internalRoleEx;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal MessageResponseItem(InternalItemType kind, string id, in JsonPatch patch, MessageStatus? status, InternalResponsesMessageRole internalRole) : base(kind, id, patch)
+        internal MessageResponseItem(InternalItemType kind, string id, in JsonPatch patch, MessageStatus? status, InternalMessageRoleEx internalRoleEx) : base(kind, id, patch)
         {
             Status = status;
-            InternalRole = internalRole;
+            InternalRoleEx = internalRoleEx;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }

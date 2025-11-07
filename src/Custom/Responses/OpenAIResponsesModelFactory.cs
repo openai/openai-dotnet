@@ -68,36 +68,19 @@ public static partial class OpenAIResponsesModelFactory
            patch: default);
     }
 
-    /// <summary> Initializes a new instance of <see cref="OpenAI.Responses.MessageResponseItem"/>. </summary>
-    /// <returns> A new <see cref="OpenAI.Responses.MessageResponseItem"/> instance for mocking. </returns>
-    public static MessageResponseItem MessageResponseItem(
-        string id = null,
-        MessageRole role = MessageRole.Assistant,
-        MessageStatus? status = null)
-    {
-        MessageResponseItem item = new(
-            kind: InternalItemType.Message,
-            id: id,
-            patch: default,
-            status: status,
-            internalRole: role.ToString());
-
-        return item;
-    }
-
     /// <summary> Initializes a new instance of <see cref="OpenAI.Responses.ReasoningResponseItem"/>. </summary>
     /// <param name="id">The ID of the reasoning response item.</param>
     /// <param name="encryptedContent">The encrypted reasoning content.</param>
     /// <param name="status">The status of the reasoning response item.</param>
-    /// <param name="summaryParts">The collection of summary parts.</param>
+    /// <param name="summary">The collection of summary parts.</param>
     /// <returns> A new <see cref="OpenAI.Responses.ReasoningResponseItem"/> instance for mocking. </returns>
     public static ReasoningResponseItem ReasoningResponseItem(
         string id = null,
         string encryptedContent = null,
         ReasoningStatus? status = null,
-        IEnumerable<ReasoningSummaryPart> summaryParts = null)
+        IEnumerable<ReasoningSummaryPart> summary = null)
     {
-        summaryParts ??= new List<ReasoningSummaryPart>();
+        summary ??= new List<ReasoningSummaryPart>();
         
         var item = new ReasoningResponseItem(
             kind: InternalItemType.Reasoning,
@@ -105,34 +88,7 @@ public static partial class OpenAIResponsesModelFactory
             patch: default,
             encryptedContent: encryptedContent,
             status: status,
-            summaryParts: summaryParts.ToList());
-        
-        return item;
-    }
-
-    /// <summary> Initializes a new instance of <see cref="OpenAI.Responses.ReasoningResponseItem"/> with summary text. </summary>
-    /// <param name="id">The ID of the reasoning response item.</param>
-    /// <param name="encryptedContent">The encrypted reasoning content.</param>
-    /// <param name="status">The status of the reasoning response item.</param>
-    /// <param name="summaryText">The summary text to create a ReasoningSummaryTextPart from.</param>
-    /// <returns> A new <see cref="OpenAI.Responses.ReasoningResponseItem"/> instance for mocking. </returns>
-    public static ReasoningResponseItem ReasoningResponseItem(
-        string id = null,
-        string encryptedContent = null,
-        ReasoningStatus? status = null,
-        string summaryText = null)
-    {
-        var summaryParts = !string.IsNullOrEmpty(summaryText) 
-            ? new List<ReasoningSummaryPart> { new ReasoningSummaryTextPart(summaryText) }
-            : new List<ReasoningSummaryPart>();
-        
-        var item = new ReasoningResponseItem(
-            kind: InternalItemType.Reasoning,
-            id: id,
-            patch: default,
-            encryptedContent: encryptedContent,
-            status: status,
-            summaryParts: summaryParts);
+            summary: summary.ToList());
         
         return item;
     }

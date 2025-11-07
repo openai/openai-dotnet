@@ -4228,6 +4228,14 @@ namespace OpenAI.Realtime {
     }
 }
 namespace OpenAI.Responses {
+    public class AssistantMessageResponseItem : MessageResponseItem, IJsonModel<AssistantMessageResponseItem>, IPersistableModel<AssistantMessageResponseItem> {
+        public AssistantMessageResponseItem(IEnumerable<ResponseContentPart> content);
+        public AssistantMessageResponseItem(string outputTextContent);
+        protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
     public class AutomaticCodeInterpreterToolContainerConfiguration : CodeInterpreterToolContainerConfiguration, IJsonModel<AutomaticCodeInterpreterToolContainerConfiguration>, IPersistableModel<AutomaticCodeInterpreterToolContainerConfiguration> {
         public AutomaticCodeInterpreterToolContainerConfiguration();
         public IList<string> FileIds { get; }
@@ -4464,6 +4472,14 @@ namespace OpenAI.Responses {
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual CustomMcpToolCallApprovalPolicy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class DeveloperMessageResponseItem : MessageResponseItem, IJsonModel<DeveloperMessageResponseItem>, IPersistableModel<DeveloperMessageResponseItem> {
+        public DeveloperMessageResponseItem(IEnumerable<ResponseContentPart> content);
+        public DeveloperMessageResponseItem(string inputTextContent);
+        protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class FileCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<FileCitationMessageAnnotation>, IPersistableModel<FileCitationMessageAnnotation> {
         public FileCitationMessageAnnotation(string fileId, int index, string filename);
@@ -4980,18 +4996,16 @@ namespace OpenAI.Responses {
         public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, IEnumerable<IncludedResponseProperty> include = null, int? startingAfter = null, bool? includeObfuscation = null, CancellationToken cancellationToken = default);
     }
     public static class OpenAIResponsesModelFactory {
-        public static MessageResponseItem MessageResponseItem(string id = null, MessageRole role = MessageRole.Assistant, MessageStatus? status = null);
         public static OpenAIResponse OpenAIResponse(string id = null, DateTimeOffset createdAt = default, ResponseStatus? status = null, ResponseError error = null, ResponseTokenUsage usage = null, string endUserId = null, ResponseReasoningOptions reasoningOptions = null, int? maxOutputTokenCount = null, ResponseTextOptions textOptions = null, ResponseTruncationMode? truncationMode = null, ResponseIncompleteStatusDetails incompleteStatusDetails = null, IEnumerable<ResponseItem> outputItems = null, bool parallelToolCallsEnabled = false, ResponseToolChoice toolChoice = null, string model = null, IDictionary<string, string> metadata = null, float? temperature = null, float? topP = null, ResponseServiceTier? serviceTier = null, string previousResponseId = null, bool? backgroundModeEnabled = null, string instructions = null, IEnumerable<ResponseTool> tools = null);
-        public static ReasoningResponseItem ReasoningResponseItem(string id = null, string encryptedContent = null, ReasoningStatus? status = null, IEnumerable<ReasoningSummaryPart> summaryParts = null);
-        public static ReasoningResponseItem ReasoningResponseItem(string id = null, string encryptedContent = null, ReasoningStatus? status = null, string summaryText = null);
+        public static ReasoningResponseItem ReasoningResponseItem(string id = null, string encryptedContent = null, ReasoningStatus? status = null, IEnumerable<ReasoningSummaryPart> summary = null);
         public static ReferenceResponseItem ReferenceResponseItem(string id = null);
     }
     public class ReasoningResponseItem : ResponseItem, IJsonModel<ReasoningResponseItem>, IPersistableModel<ReasoningResponseItem> {
-        public ReasoningResponseItem(IEnumerable<ReasoningSummaryPart> summaryParts);
+        public ReasoningResponseItem(IEnumerable<ReasoningSummaryPart> summary);
         public ReasoningResponseItem(string summaryText);
         public string EncryptedContent { get; set; }
         public ReasoningStatus? Status { get; }
-        public IList<ReasoningSummaryPart> SummaryParts { get; }
+        public IList<ReasoningSummaryPart> Summary { get; }
         public string GetSummaryText();
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -5199,12 +5213,12 @@ namespace OpenAI.Responses {
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
-        public static MessageResponseItem CreateAssistantMessageItem(IEnumerable<ResponseContentPart> contentParts);
-        public static MessageResponseItem CreateAssistantMessageItem(string outputTextContent, IEnumerable<ResponseMessageAnnotation> annotations = null);
+        public static AssistantMessageResponseItem CreateAssistantMessageItem(IEnumerable<ResponseContentPart> content);
+        public static AssistantMessageResponseItem CreateAssistantMessageItem(string outputTextContent);
         public static ComputerCallResponseItem CreateComputerCallItem(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks);
         public static ComputerCallOutputResponseItem CreateComputerCallOutputItem(string callId, ComputerCallOutput output);
-        public static MessageResponseItem CreateDeveloperMessageItem(IEnumerable<ResponseContentPart> contentParts);
-        public static MessageResponseItem CreateDeveloperMessageItem(string inputTextContent);
+        public static DeveloperMessageResponseItem CreateDeveloperMessageItem(IEnumerable<ResponseContentPart> content);
+        public static DeveloperMessageResponseItem CreateDeveloperMessageItem(string inputTextContent);
         public static FileSearchCallResponseItem CreateFileSearchCallItem(IEnumerable<string> queries);
         public static FunctionCallResponseItem CreateFunctionCallItem(string callId, string functionName, BinaryData functionArguments);
         public static FunctionCallOutputResponseItem CreateFunctionCallOutputItem(string callId, string functionOutput);
@@ -5212,13 +5226,13 @@ namespace OpenAI.Responses {
         public static McpToolCallApprovalResponseItem CreateMcpApprovalResponseItem(string approvalRequestId, bool approved);
         public static McpToolCallItem CreateMcpToolCallItem(string serverLabel, string name, BinaryData arguments);
         public static McpToolDefinitionListItem CreateMcpToolDefinitionListItem(string serverLabel, IEnumerable<McpToolDefinition> toolDefinitions);
-        public static ReasoningResponseItem CreateReasoningItem(IEnumerable<ReasoningSummaryPart> summaryParts);
+        public static ReasoningResponseItem CreateReasoningItem(IEnumerable<ReasoningSummaryPart> summary);
         public static ReasoningResponseItem CreateReasoningItem(string summaryText);
         public static ReferenceResponseItem CreateReferenceItem(string id);
-        public static MessageResponseItem CreateSystemMessageItem(IEnumerable<ResponseContentPart> contentParts);
-        public static MessageResponseItem CreateSystemMessageItem(string inputTextContent);
-        public static MessageResponseItem CreateUserMessageItem(IEnumerable<ResponseContentPart> contentParts);
-        public static MessageResponseItem CreateUserMessageItem(string inputTextContent);
+        public static SystemMessageResponseItem CreateSystemMessageItem(IEnumerable<ResponseContentPart> content);
+        public static SystemMessageResponseItem CreateSystemMessageItem(string inputTextContent);
+        public static UserMessageResponseItem CreateUserMessageItem(IEnumerable<ResponseContentPart> content);
+        public static UserMessageResponseItem CreateUserMessageItem(string inputTextContent);
         public static WebSearchCallResponseItem CreateWebSearchCallItem();
         protected virtual ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -5862,6 +5876,14 @@ namespace OpenAI.Responses {
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
+    public class SystemMessageResponseItem : MessageResponseItem, IJsonModel<SystemMessageResponseItem>, IPersistableModel<SystemMessageResponseItem> {
+        public SystemMessageResponseItem(IEnumerable<ResponseContentPart> content);
+        public SystemMessageResponseItem(string inputTextContent);
+        protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
     public class UriCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<UriCitationMessageAnnotation>, IPersistableModel<UriCitationMessageAnnotation> {
         public UriCitationMessageAnnotation(Uri uri, int startIndex, int endIndex, string title);
         public int EndIndex { get; set; }
@@ -5871,6 +5893,14 @@ namespace OpenAI.Responses {
         protected override ResponseMessageAnnotation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override ResponseMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class UserMessageResponseItem : MessageResponseItem, IJsonModel<UserMessageResponseItem>, IPersistableModel<UserMessageResponseItem> {
+        public UserMessageResponseItem(IEnumerable<ResponseContentPart> content);
+        public UserMessageResponseItem(string inputTextContent);
+        protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class WebSearchCallResponseItem : ResponseItem, IJsonModel<WebSearchCallResponseItem>, IPersistableModel<WebSearchCallResponseItem> {

@@ -13,26 +13,26 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class ReasoningResponseItem : ResponseItem
     {
-        public ReasoningResponseItem(IEnumerable<ReasoningSummaryPart> summaryParts) : base(InternalItemType.Reasoning)
+        public ReasoningResponseItem(IEnumerable<ReasoningSummaryPart> summary) : base(InternalItemType.Reasoning)
         {
-            Argument.AssertNotNull(summaryParts, nameof(summaryParts));
+            Argument.AssertNotNull(summary, nameof(summary));
 
-            SummaryParts = summaryParts.ToList();
+            Summary = summary.ToList();
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ReasoningResponseItem(InternalItemType kind, string id, in JsonPatch patch, ReasoningStatus? status, string encryptedContent, IList<ReasoningSummaryPart> summaryParts) : base(kind, id, patch)
+        internal ReasoningResponseItem(InternalItemType kind, string id, in JsonPatch patch, ReasoningStatus? status, string encryptedContent, IList<ReasoningSummaryPart> summary) : base(kind, id, patch)
         {
             // Plugin customization: ensure initialization of collections
             Status = status;
             EncryptedContent = encryptedContent;
-            SummaryParts = summaryParts ?? new ChangeTrackingList<ReasoningSummaryPart>();
+            Summary = summary ?? new ChangeTrackingList<ReasoningSummaryPart>();
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string EncryptedContent { get; set; }
 
-        public IList<ReasoningSummaryPart> SummaryParts { get; }
+        public IList<ReasoningSummaryPart> Summary { get; }
     }
 }

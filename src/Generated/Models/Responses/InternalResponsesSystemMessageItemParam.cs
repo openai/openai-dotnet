@@ -11,7 +11,7 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponsesSystemMessageItemParam : InternalResponsesMessageItemParam
     {
-        public InternalResponsesSystemMessageItemParam(IEnumerable<ResponseContentPart> content) : base(InternalResponsesMessageRole.System)
+        public InternalResponsesSystemMessageItemParam(IEnumerable<ResponseContentPart> content) : base(InternalMessageRoleEx.System)
         {
             Argument.AssertNotNull(content, nameof(content));
 
@@ -19,7 +19,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalResponsesSystemMessageItemParam(InternalItemType kind, in JsonPatch patch, InternalResponsesMessageRole role, IList<ResponseContentPart> content) : base(kind, patch, role)
+        internal InternalResponsesSystemMessageItemParam(InternalItemType kind, in JsonPatch patch, InternalMessageRoleEx role, IList<ResponseContentPart> content) : base(kind, patch, role)
         {
             // Plugin customization: ensure initialization of collections
             Content = content ?? new ChangeTrackingList<ResponseContentPart>();
