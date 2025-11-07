@@ -434,6 +434,35 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    public async Task ReasoningWithStoreDisabled()
+    {
+        OpenAIResponseClient client = GetTestClient("gpt-5-mini");
+
+        ResponseCreationOptions options = new()
+        {
+            StoredOutputEnabled = false,
+            IncludedProperties = { IncludedResponseProperty.ReasoningEncryptedContent }
+        };
+
+        // First turn.
+        List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("Hello, world!")];
+        OpenAIResponse response1 = await client.CreateResponseAsync(inputItems, options);
+        Assert.That(response1, Is.Not.Null);
+        Assert.That(response1.OutputItems.OfType<ReasoningResponseItem>().Any(), Is.True);
+
+        // Propagate the output items into the next turn.
+        inputItems.AddRange(response1.OutputItems);
+
+        // Add the next user input.
+        inputItems.Add(ResponseItem.CreateUserMessageItem("Say that again, but dramatically"));
+
+        // Second turn.
+        OpenAIResponse response2 = await client.CreateResponseAsync(inputItems, options);
+        Assert.That(response2, Is.Not.Null);
+        Assert.That(response2.GetOutputText(), Is.Not.Null.Or.Empty);
+    }
+
+    [RecordedTest]
     [TestCase("computer-use-preview-2025-03-11")]
     [TestCase("gpt-4o-mini")]
     public async Task HelloWorldStreaming(string model)

@@ -581,6 +581,37 @@ namespace OpenAI
             return new McpToolFilter(toolNames.ToList(), isReadOnly, default);
         }
 
+        public static ResponseCreationOptions ResponseCreationOptions(IDictionary<string, string> metadata = default, float? temperature = default, float? topP = default, string endUserId = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? backgroundModeEnabled = default, int? maxOutputTokenCount = default, string instructions = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, IEnumerable<ResponseItem> input = default, IEnumerable<IncludedResponseProperty> includedProperties = default, bool? parallelToolCallsEnabled = default, bool? storedOutputEnabled = default, bool? stream = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+            tools ??= new ChangeTrackingList<ResponseTool>();
+            input ??= new ChangeTrackingList<ResponseItem>();
+            includedProperties ??= new ChangeTrackingList<IncludedResponseProperty>();
+
+            return new ResponseCreationOptions(
+                metadata,
+                temperature,
+                topP,
+                endUserId,
+                serviceTier,
+                previousResponseId,
+                model,
+                reasoningOptions,
+                backgroundModeEnabled,
+                maxOutputTokenCount,
+                instructions,
+                textOptions,
+                tools.ToList(),
+                toolChoice,
+                truncationMode,
+                input.ToList(),
+                includedProperties.ToList(),
+                parallelToolCallsEnabled,
+                storedOutputEnabled,
+                stream,
+                default);
+        }
+
         public static ResponseTextOptions ResponseTextOptions(ResponseTextFormat textFormat = default)
         {
             return new ResponseTextOptions(textFormat, default);
