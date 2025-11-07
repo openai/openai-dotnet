@@ -158,6 +158,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
         Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
         Assert.That(message.Content[0].OutputTextAnnotations, Has.Count.GreaterThan(0));
+
+        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<WebSearchTool>());
     }
 
     [RecordedTest]
@@ -170,7 +172,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             {
                 Tools =
                 {
-                    ResponseTool.CreateWebSearchTool(usePreview: true)
+                    ResponseTool.CreateWebSearchPreviewTool()
                 },
                 ToolChoice = ResponseToolChoice.CreateWebSearchChoice()
             });
@@ -184,6 +186,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
         Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
         Assert.That(message.Content[0].OutputTextAnnotations, Has.Count.GreaterThan(0));
+
+        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<WebSearchPreviewTool>());
     }
 
     [RecordedTest]

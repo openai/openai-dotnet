@@ -50,14 +50,21 @@ public partial class ResponseTool
     }
 
     // CUSTOM: Added factory method as a convenience.
-    public static WebSearchTool CreateWebSearchTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null, bool usePreview = false)
+    public static WebSearchTool CreateWebSearchTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null, WebSearchToolFilters filters = null)
     {
-        var kind = usePreview
-            ? InternalToolType.WebSearchPreview
-            : InternalToolType.WebSearch;
-
         return new WebSearchTool(
-            kind: kind,
+            kind: InternalToolType.WebSearch,
+            patch: default,
+            userLocation: userLocation,
+            searchContextSize: searchContextSize,
+            filters: filters);
+    }
+
+    // CUSTOM: Added factory method as a convenience.
+    public static WebSearchPreviewTool CreateWebSearchPreviewTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null)
+    {
+        return new WebSearchPreviewTool(
+            kind: InternalToolType.WebSearchPreview,
             patch: default,
             userLocation: userLocation,
             searchContextSize: searchContextSize);
