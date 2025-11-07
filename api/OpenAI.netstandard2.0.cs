@@ -5851,6 +5851,8 @@ namespace OpenAI.Responses {
     }
     public class WebSearchToolFilters : IJsonModel<WebSearchToolFilters>, IPersistableModel<WebSearchToolFilters> {
         public IList<string> AllowedDomains { get; set; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
         protected virtual WebSearchToolFilters JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual WebSearchToolFilters PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);

@@ -96,7 +96,7 @@ namespace OpenAI.Responses
                         filters = null;
                         continue;
                     }
-                    filters = WebSearchToolFilters.DeserializeWebSearchToolFilters(prop.Value, options);
+                    filters = WebSearchToolFilters.DeserializeWebSearchToolFilters(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("user_location"u8))

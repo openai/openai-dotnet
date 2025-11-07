@@ -566,7 +566,7 @@ namespace OpenAI
         {
             allowedDomains ??= new ChangeTrackingList<string>();
 
-            return new WebSearchToolFilters(allowedDomains.ToList(), additionalBinaryDataProperties: null);
+            return new WebSearchToolFilters(allowedDomains.ToList(), default);
         }
 
         public static ImageGenerationToolInputImageMask ImageGenerationToolInputImageMask(string imageUrl = default, string fileId = default)
