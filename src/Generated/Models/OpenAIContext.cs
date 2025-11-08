@@ -817,8 +817,10 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(VectorStoreFileError))]
     [ModelReaderWriterBuildable(typeof(VectorStoreModificationOptions))]
     [ModelReaderWriterBuildable(typeof(WebSearchCallResponseItem))]
+    [ModelReaderWriterBuildable(typeof(WebSearchPreviewTool))]
     [ModelReaderWriterBuildable(typeof(WebSearchTool))]
     [ModelReaderWriterBuildable(typeof(WebSearchToolApproximateLocation))]
+    [ModelReaderWriterBuildable(typeof(WebSearchToolFilters))]
     [ModelReaderWriterBuildable(typeof(WebSearchToolLocation))]
     [ModelReaderWriterBuildable(typeof(WeightsAndBiasesIntegration))]
     public partial class OpenAIContext : ModelReaderWriterContext

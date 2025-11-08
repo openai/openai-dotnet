@@ -562,6 +562,13 @@ namespace OpenAI
             return new FileSearchToolRankingOptions(ranker, scoreThreshold, default);
         }
 
+        public static WebSearchToolFilters WebSearchToolFilters(IEnumerable<string> allowedDomains = default)
+        {
+            allowedDomains ??= new ChangeTrackingList<string>();
+
+            return new WebSearchToolFilters(allowedDomains.ToList(), default);
+        }
+
         public static ImageGenerationToolInputImageMask ImageGenerationToolInputImageMask(string imageUrl = default, string fileId = default)
         {
             return new ImageGenerationToolInputImageMask(imageUrl, fileId, default);

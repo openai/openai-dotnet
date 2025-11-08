@@ -158,6 +158,36 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
         Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
         Assert.That(message.Content[0].OutputTextAnnotations, Has.Count.GreaterThan(0));
+
+        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<WebSearchTool>());
+    }
+
+    [RecordedTest]
+    public async Task WebSearchCallPreview()
+    {
+        OpenAIResponseClient client = GetTestClient();
+        OpenAIResponse response = await client.CreateResponseAsync(
+            "What was a positive news story from today?",
+            new ResponseCreationOptions()
+            {
+                Tools =
+                {
+                    ResponseTool.CreateWebSearchPreviewTool()
+                },
+                ToolChoice = ResponseToolChoice.CreateWebSearchChoice()
+            });
+
+        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+        Assert.That(response.OutputItems[0], Is.InstanceOf<WebSearchCallResponseItem>());
+        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
+
+        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
+        Assert.That(message.Content, Has.Count.GreaterThan(0));
+        Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
+        Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
+        Assert.That(message.Content[0].OutputTextAnnotations, Has.Count.GreaterThan(0));
+
+        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<WebSearchPreviewTool>());
     }
 
     [RecordedTest]
