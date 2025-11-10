@@ -118,5 +118,14 @@ namespace OpenAI.Responses
         public ResponseTokenUsage Usage { get; }
 
         public bool ParallelToolCalls { get; }
+
+        public string GetOutputText()
+        {
+            IEnumerable<string> outputTextSegments = Output.Where(item => item is InternalResponsesAssistantMessage)
+                .Select(item => item as InternalResponsesAssistantMessage)
+                .SelectMany(message => message.Content.Where(contentPart => contentPart.Kind == ResponseContentPartKind.OutputText)
+                    .Select(outputTextPart => outputTextPart.Text));
+            return outputTextSegments.Any() ? string.Concat(outputTextSegments) : null;
+        }
     }
 }

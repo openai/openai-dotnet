@@ -6,9 +6,9 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "236",
+        "Content-Length": "253",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Darwin 25.0.0 Darwin Kernel Version 25.0.0: Wed Sep 17 21:42:08 PDT 2025; root:xnu-12377.1.9~141/RELEASE_ARM64_T8132)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini",
@@ -27,7 +27,7 @@
             "content": [
               {
                 "type": "input_text",
-                "text": "What was a positive news story from today?"
+                "text": "Searching the internet, what's the weather like in Seattle?"
               }
             ]
           }
@@ -37,27 +37,30 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "980411430b9eba46-SEA",
+        "CF-RAY": "99c8411c99072c9d-DFW",
         "Connection": "keep-alive",
-        "Content-Length": "4732",
+        "Content-Length": "4743",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 23:15:46 GMT",
+        "Date": "Mon, 10 Nov 2025 20:21:09 GMT",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "3158",
+        "openai-processing-ms": "3206",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "3163",
+        "x-envoy-upstream-service-time": "3212",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_0371fa63edfcc1ef0068c9ef9f47cc8193966cbe9073775d43",
+        "id": "resp_00dd7135ab0a74ed0069124932b61c81a09e0f07f727ada951",
         "object": "response",
-        "created_at": 1758064543,
+        "created_at": 1762806066,
         "status": "completed",
         "background": false,
+        "billing": {
+          "payer": "developer"
+        },
         "error": null,
         "incomplete_details": null,
         "instructions": null,
@@ -66,16 +69,16 @@
         "model": "gpt-4o-mini-2024-07-18",
         "output": [
           {
-            "id": "ws_0371fa63edfcc1ef0068c9ef9f5a888193974c26f9a550a83d",
+            "id": "ws_00dd7135ab0a74ed0069124932c74c81a09aa5d264888f6b3f",
             "type": "web_search_call",
             "status": "completed",
             "action": {
               "type": "search",
-              "query": "What was a positive news story from today?"
+              "query": "Searching the internet, what's the weather like in Seattle?"
             }
           },
           {
-            "id": "msg_0371fa63edfcc1ef0068c9ef9ff7ec81939c7464b3909d564a",
+            "id": "msg_00dd7135ab0a74ed0069124934380c81a09241c6ba316550bb",
             "type": "message",
             "status": "completed",
             "content": [
@@ -84,28 +87,21 @@
                 "annotations": [
                   {
                     "type": "url_citation",
-                    "end_index": 595,
-                    "start_index": 482,
-                    "title": "Good News This Week: September 13, 2025 - LEGO, Koalas, & Scientists",
-                    "url": "https://www.goodgoodgood.co/articles/good-news-this-week-september-13-2025?utm_source=openai"
+                    "end_index": 1390,
+                    "start_index": 1271,
+                    "title": "Seattle Weather in November 2025 | United States Averages | Weather-2-Visit",
+                    "url": "https://www.weather2visit.com/north-america/united-states/seattle-november.htm?utm_source=openai"
                   },
                   {
                     "type": "url_citation",
-                    "end_index": 1069,
-                    "start_index": 926,
-                    "title": "GNR for Tuesday, September 16, 2025 — More and more good news!",
-                    "url": "https://www.dailykos.com/story/2025/9/16/2342576/-GNR-for-Tuesday-September-16-2025-More-and-more-good-news?utm_source=openai"
-                  },
-                  {
-                    "type": "url_citation",
-                    "end_index": 1608,
-                    "start_index": 1526,
-                    "title": "The Christian Science Monitor Daily for September 16, 2025",
-                    "url": "https://www.csmonitor.com/Daily/2025/20250916?utm_source=openai"
+                    "end_index": 1711,
+                    "start_index": 1580,
+                    "title": "West Coast watches for La Niña",
+                    "url": "https://www.axios.com/local/seattle/2025/09/04/la-nina-west-coast-winter-weather-seattle-san-diego?utm_source=openai"
                   }
                 ],
                 "logprobs": [],
-                "text": "On September 16, 2025, several positive news stories emerged:\n\n**Environmental Conservation in Australia**\n\nThe New South Wales government in Australia announced the creation of a significant national park to protect over 12,000 koalas. This initiative adds 176,000 hectares of forest to existing reserves, making it one of the state's largest national parks. The park will also impose an immediate ban on logging within its boundaries, safeguarding critical biodiversity hotspots. ([goodgoodgood.co](https://www.goodgoodgood.co/articles/good-news-this-week-september-13-2025?utm_source=openai))\n\n**Advancements in Renewable Energy**\n\nSingapore is set to begin constructing an 86-megawatt floating solar farm on the Pandan Reservoir, its largest reservoir. This project aims to generate 296 megawatts of clean energy, contributing significantly to the country's efforts to decarbonize and meet its energy demands sustainably. ([dailykos.com](https://www.dailykos.com/story/2025/9/16/2342576/-GNR-for-Tuesday-September-16-2025-More-and-more-good-news?utm_source=openai))\n\n**Global Efforts to Combat Overfishing**\n\nA global agreement to curb overfishing took effect, requiring governments to cut subsidies to fishing fleets to help protect dwindling stocks. The World Trade Organization deal entered into force after Brazil, Kenya, Tonga, and Vietnam signed on, bringing the total to 112 countries. The organization touts the deal as its first environmental pact and the first binding multilateral deal on ocean sustainability. ([csmonitor.com](https://www.csmonitor.com/Daily/2025/20250916?utm_source=openai))\n\nThese stories highlight significant strides in environmental conservation and sustainable energy, reflecting a global commitment to addressing ecological challenges. "
+                "text": "As of Monday, November 10, 2025, in Seattle, Washington, the weather is mostly cloudy with a temperature of 58°F (14°C).\n\n## Weather for Seattle, WA:\nCurrent Conditions: Mostly cloudy, 58°F (14°C)\n\nDaily Forecast:\n* Monday, November 10: Low: 45°F (7°C), High: 58°F (15°C), Description: Mostly cloudy\n* Tuesday, November 11: Low: 46°F (8°C), High: 54°F (12°C), Description: Times of clouds and sun\n* Wednesday, November 12: Low: 49°F (9°C), High: 55°F (13°C), Description: Cloudy with a couple of showers\n* Thursday, November 13: Low: 44°F (6°C), High: 55°F (13°C), Description: Cloudy with a bit of rain; winds gusting to 65 kph in the afternoon\n* Friday, November 14: Low: 45°F (7°C), High: 50°F (10°C), Description: Breezy in the morning; cloudy with a couple of showers\n* Saturday, November 15: Low: 47°F (9°C), High: 56°F (14°C), Description: Cloudy and not as cool; an afternoon shower in the area\n* Sunday, November 16: Low: 43°F (6°C), High: 53°F (12°C), Description: Rain\n\n\nIn November, Seattle typically experiences cooler temperatures and increased rainfall. The average high temperature is around 50°F (10°C), with lows near 40°F (4°C). The city averages about 17 days of rain during the month, accumulating approximately 5.9 inches (150 mm) of precipitation. ([weather2visit.com](https://www.weather2visit.com/north-america/united-states/seattle-november.htm?utm_source=openai))\n\nAdditionally, Seattle is currently monitoring a developing La Niña event, which could influence winter weather patterns, potentially leading to colder and wetter conditions in the region. ([axios.com](https://www.axios.com/local/seattle/2025/09/04/la-nina-west-coast-winter-weather-seattle-san-diego?utm_source=openai))\n\nPlease note that weather conditions can change rapidly; for the most current information, consult local weather services. "
               }
             ],
             "role": "assistant"
@@ -114,6 +110,7 @@
         "parallel_tool_calls": true,
         "previous_response_id": null,
         "prompt_cache_key": null,
+        "prompt_cache_retention": null,
         "reasoning": {
           "effort": null,
           "summary": null
@@ -148,15 +145,15 @@
         "top_p": 1.0,
         "truncation": "disabled",
         "usage": {
-          "input_tokens": 312,
+          "input_tokens": 316,
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 368,
+          "output_tokens": 498,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 680
+          "total_tokens": 814
         },
         "user": null,
         "metadata": {}

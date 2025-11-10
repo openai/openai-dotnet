@@ -488,7 +488,9 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             }
             else if (update is StreamingResponseCompletedUpdate responseCompletedUpdate)
             {
-                finalResponseText = responseCompletedUpdate.Response.OutputText;
+                finalResponseText = responseCompletedUpdate.Response.Output[0] is MessageResponseItem messageItem
+                    ? messageItem.Content[0].Text
+                    : null;
             }
         }
         Assert.That(deltaTextSegments, Has.Count.GreaterThan(0));
@@ -664,12 +666,13 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     {
         OpenAIResponseClient client = GetTestClient();
         ResponseResult response = await client.CreateResponseAsync(
-            new ([ResponseItem.CreateUserMessageItem("Respond with only the word hello.")]));
-        Assert.That(response?.OutputText?.Length, Is.GreaterThan(0).And.LessThan(7));
-        Assert.That(response?.OutputText?.ToLower(), Does.Contain("hello"));
+            new([ResponseItem.CreateUserMessageItem("Respond with only the word hello.")]));
+        var outputText = response.GetOutputText();
+        Assert.That(outputText.Length, Is.GreaterThan(0).And.LessThan(7));
+        Assert.That(outputText.ToLower(), Does.Contain("hello"));
 
         response.Output.Add(ResponseItem.CreateAssistantMessageItem("More text!"));
-        Assert.That(response?.OutputText?.ToLower(), Does.EndWith("more text!"));
+        Assert.That(response.GetOutputText().ToLower(), Does.EndWith("more text!"));
 
         response = await client.CreateResponseAsync(
             new ([ResponseItem.CreateUserMessageItem("How's the weather?")])
@@ -751,7 +754,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         ResponseResult response = await client.CreateResponseAsync(new([messageItem]));
 
-        Assert.That(response?.OutputText?.ToLower(), Does.Contain("pizza"));
+        Assert.That(response?.GetOutputText().ToLower(), Does.Contain("pizza"));
     }
 
     [RecordedTest]
@@ -771,7 +774,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         ResponseResult response = await client.CreateResponseAsync(new([messageItem]));
 
-        Assert.That(response?.OutputText?.ToLower(), Does.Contain("pizza"));
+        Assert.That(response?.GetOutputText(), Does.Contain("pizza"));
     }
 
     [RecordedTest]

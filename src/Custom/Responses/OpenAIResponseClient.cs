@@ -117,13 +117,13 @@ public partial class OpenAIResponseClient
     /// Gets the endpoint URI for the service.
     /// </summary>
     [Experimental("OPENAI001")]
-    public Uri Endpoint => _endpoint;
+    public virtual Uri Endpoint => _endpoint;
 
     /// <summary>
     /// Gets the name of the model used in requests sent to the service.
     /// </summary>
     [Experimental("OPENAI001")]
-    public string Model => _model;
+    public virtual string Model => _model;
 
     internal virtual Task<ClientResult<OpenAIResponse>> CreateResponseAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
     {
@@ -180,7 +180,7 @@ public partial class OpenAIResponseClient
     {
         Argument.AssertNotNull(options, nameof(options));
 
-        ClientResult result = this.CreateResponse(options, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        ClientResult result = this.CreateResponse(CreatePerCallOptions(options), cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
         return ClientResult.FromValue((ResponseResult)result.GetRawResponse().Content, result.GetRawResponse());
     }
 
@@ -188,7 +188,7 @@ public partial class OpenAIResponseClient
     {
         Argument.AssertNotNull(options, nameof(options));
 
-        ClientResult result = await this.CreateResponseAsync(options, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
+        ClientResult result = await this.CreateResponseAsync(CreatePerCallOptions(options), cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null).ConfigureAwait(false);
         return ClientResult.FromValue((ResponseResult)result.GetRawResponse().Content, result.GetRawResponse());
     }
 
@@ -215,7 +215,7 @@ public partial class OpenAIResponseClient
 
     public virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(CreateResponseOptions options, CancellationToken cancellationToken = default)
     {
-        return CreateResponseStreamingAsync(options, cancellationToken.ToRequestOptions(streaming: true));
+        return CreateResponseStreamingAsync(CreatePerCallOptions(options, true), cancellationToken.ToRequestOptions(streaming: true));
     }
 
     internal AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(CreateResponseOptions options, RequestOptions requestOptions)
@@ -249,7 +249,7 @@ public partial class OpenAIResponseClient
         Argument.AssertNotNull(options, nameof(options));
 
         return new SseUpdateCollection<StreamingResponseUpdate>(
-            () => CreateResponse(options, cancellationToken.ToRequestOptions(streaming: true)),
+            () => CreateResponse(CreatePerCallOptions(options, true), cancellationToken.ToRequestOptions(streaming: true)),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
             cancellationToken);
     }
@@ -438,7 +438,26 @@ public partial class OpenAIResponseClient
             : userOptions.GetClone();
 
         copiedOptions.Input = inputItems.ToList();
-        copiedOptions.Model = _model;
+        copiedOptions.Model = Model;
+
+        if (stream)
+        {
+            copiedOptions.Stream = true;
+        }
+
+        return copiedOptions;
+    }
+
+    internal virtual CreateResponseOptions CreatePerCallOptions(CreateResponseOptions userOptions, bool stream = false)
+    {
+        CreateResponseOptions copiedOptions = userOptions is null
+            ? new()
+            : userOptions.GetClone();
+
+        if (copiedOptions.Model is null)
+        {
+            copiedOptions.Model = Model;
+        }
 
         if (stream)
         {

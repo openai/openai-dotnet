@@ -86,7 +86,7 @@ namespace OpenAI.Responses
 
         public ResponseTruncationMode? Truncation { get; set; }
 
-        public IList<ResponseItem> Input { get; }
+        public IList<ResponseItem> Input { get; internal set; }
 
         public IList<Includable> Include { get; set; }
 
@@ -124,6 +124,14 @@ namespace OpenAI.Responses
                 responseCreationOptions.StoredOutputEnabled,
                 responseCreationOptions.Stream,
                 new JsonPatch());
+        }
+
+        internal CreateResponseOptions GetClone()
+        {
+            CreateResponseOptions copiedOptions = (CreateResponseOptions)this.MemberwiseClone();
+            copiedOptions.Patch = _patch;
+
+            return copiedOptions;
         }
     }
 }
