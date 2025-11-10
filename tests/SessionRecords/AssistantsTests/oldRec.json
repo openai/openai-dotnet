@@ -1,0 +1,192 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/threads",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "0",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Darwin 25.0.0 Darwin Kernel Version 25.0.0: Wed Sep 17 21:42:08 PDT 2025; root:xnu-12377.1.9~141/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "99c6aca838f32e7e-DFW",
+        "Connection": "keep-alive",
+        "Content-Length": "137",
+        "Content-Type": "application/json",
+        "Date": "Mon, 10 Nov 2025 15:45:00 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "148",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Set-Cookie": [
+          "Sanitized",
+          "Sanitized"
+        ],
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "152",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "thread_mlsy3q65fEzDnKL36aB4Tpnt",
+        "object": "thread",
+        "created_at": 1762789500,
+        "metadata": {},
+        "tool_resources": {}
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/assistants",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "23",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Darwin 25.0.0 Darwin Kernel Version 25.0.0: Wed Sep 17 21:42:08 PDT 2025; root:xnu-12377.1.9~141/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini"
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "99c6aca98a942e7e-DFW",
+        "Connection": "keep-alive",
+        "Content-Length": "337",
+        "Content-Type": "application/json",
+        "Date": "Mon, 10 Nov 2025 15:45:00 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "334",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "340",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "asst_iQg1VLcm2mQGzgsWskfieYAr",
+        "object": "assistant",
+        "created_at": 1762789500,
+        "name": null,
+        "description": null,
+        "model": "gpt-4o-mini",
+        "instructions": null,
+        "tools": [],
+        "top_p": 1.0,
+        "temperature": 1.0,
+        "reasoning_effort": null,
+        "tool_resources": {},
+        "metadata": {},
+        "response_format": "auto"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_mlsy3q65fEzDnKL36aB4Tpnt/messages",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "217",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Darwin 25.0.0 Darwin Kernel Version 25.0.0: Wed Sep 17 21:42:08 PDT 2025; root:xnu-12377.1.9~141/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": {
+        "role": "user",
+        "content": "What is this file?",
+        "attachments": [
+          {
+            "file_id": "file-2UNNQbG4wyuwcLNCy8cHXR",
+            "tools": [
+              {
+                "type": "file_search"
+              }
+            ]
+          },
+          {
+            "file_id": "file-2UNNQbG4wyuwcLNCy8cHXR",
+            "tools": [
+              {
+                "type": "code_interpreter"
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "99c6acacce8d2e7e-DFW",
+        "Connection": "keep-alive",
+        "Content-Length": "675",
+        "Content-Type": "application/json",
+        "Date": "Mon, 10 Nov 2025 15:45:03 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "2701",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "2708",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "msg_KyUysRKwOtwl7yHi2LXBQFOk",
+        "object": "thread.message",
+        "created_at": 1762789503,
+        "assistant_id": null,
+        "thread_id": "thread_mlsy3q65fEzDnKL36aB4Tpnt",
+        "run_id": null,
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": {
+              "value": "What is this file?",
+              "annotations": []
+            }
+          }
+        ],
+        "attachments": [
+          {
+            "file_id": "file-2UNNQbG4wyuwcLNCy8cHXR",
+            "tools": [
+              {
+                "type": "file_search"
+              }
+            ]
+          },
+          {
+            "file_id": "file-2UNNQbG4wyuwcLNCy8cHXR",
+            "tools": [
+              {
+                "type": "code_interpreter"
+              }
+            ]
+          }
+        ],
+        "metadata": {}
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

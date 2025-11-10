@@ -1,4 +1,5 @@
 ﻿using Microsoft.ClientModel.TestFramework;
+using Microsoft.ClientModel.TestFramework.TestProxy.Admin;
 using NUnit.Framework;
 using System.ClientModel;
 using static OpenAI.Tests.TestHelpers;
@@ -13,6 +14,8 @@ namespace OpenAI.Tests.Utility
             SanitizedHeaders.Add("openai-organization");
             SanitizedHeaders.Add("openai-project");
             SanitizedHeaders.Add("X-Request-ID");
+            SanitizedHeaders.Add("openai-processing-ms");
+            SanitizedHeaders.Add("Date");
             JsonPathSanitizers.Add("$.system_fingerprint");
         }
 

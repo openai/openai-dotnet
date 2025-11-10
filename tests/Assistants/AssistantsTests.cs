@@ -1,10 +1,3 @@
-using Microsoft.ClientModel.TestFramework;
-using NUnit.Framework;
-using NUnit.Framework.Internal;
-using OpenAI.Assistants;
-using OpenAI.Files;
-using OpenAI.Tests.Utility;
-using OpenAI.VectorStores;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
@@ -14,6 +7,12 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
+using OpenAI.Assistants;
+using OpenAI.Files;
+using OpenAI.Tests.Utility;
+using OpenAI.VectorStores;
 using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Assistants;
@@ -30,7 +29,6 @@ public class AssistantsTests : OpenAIRecordedTestBase
     private readonly List<string> _vectorStoreIdsToDelete = [];
 
     private static readonly DateTimeOffset s_2024 = new(2024, 1, 1, 0, 0, 0, TimeSpan.Zero);
-    private static readonly string s_testAssistantName = $".NET SDK Test Assistant - Please Delete Me";
     private static readonly string s_cleanupMetadataKey = $"test_metadata_cleanup_eligible";
 
     private AssistantClient GetTestClient() => GetProxiedOpenAIClient<AssistantClient>(TestScenario.Assistants);
@@ -845,6 +843,51 @@ public class AssistantsTests : OpenAIRecordedTestBase
             // Confirm that we always get the Content property, since we are always passing the `include[]` query parameter.
             Assert.That(runStep.Details.ToolCalls[0].FileSearchResults[0].Content, Has.Count.GreaterThan(0));
         });
+    }
+
+    [RecordedTest]
+    [LiveOnly]
+    public async Task FileOnMessageWorks()
+    {
+        // First, we need to upload a simple test file.
+        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
+        OpenAIFile testFile = await fileClient.UploadFileAsync(
+            BinaryData.FromString("""
+            This file describes the favorite foods of several people.
+
+            Summanus Ferdinand: tacos
+            Tekakwitha Effie: pizza
+            Filip Carola: cake
+            """).ToStream(),
+            "favorite_foods.txt",
+            FileUploadPurpose.Assistants);
+        Validate(testFile);
+
+        AssistantClient client = GetTestClient();
+
+        AssistantThread thread = await client.CreateThreadAsync();
+        Validate(thread);
+
+        Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini");
+        Validate(assistant);
+
+        ThreadMessage message = await client.CreateMessageAsync(
+            thread.Id,
+            MessageRole.User,
+            new[] {
+                MessageContent.FromText("What is this file?"),
+            },
+            new MessageCreationOptions()
+            {
+                Attachments = [
+                    new MessageCreationAttachment(testFile.Id, new List<ToolDefinition>() { ToolDefinition.CreateFileSearch() }),
+                    new MessageCreationAttachment(testFile.Id, new List<ToolDefinition>() { ToolDefinition.CreateCodeInterpreter() })
+                    ]
+            }
+            );
+        Validate(message);
+
+        var result = client.CreateRunStreamingAsync(thread.Id, assistant.Id);
     }
 
     [RecordedTest]

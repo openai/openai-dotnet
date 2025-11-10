@@ -26,7 +26,47 @@ public partial class MessageCreationAttachment
     public IReadOnlyList<ToolDefinition> Tools { get; }
 
     private void SerializeTools(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        => writer.WriteObjectValue(Tools, options);
+    {
+        if (Tools is null)
+        {
+            writer.WriteNullValue();
+            return;
+        }
+
+        writer.WriteStartArray();
+        foreach (ToolDefinition tool in Tools)
+        {
+            using var ms = new System.IO.MemoryStream();
+            using (var tempWriter = new Utf8JsonWriter(ms))
+            {
+                tempWriter.WriteObjectValue(tool, options);
+                tempWriter.Flush();
+            }
+
+            using (JsonDocument doc = JsonDocument.Parse(ms.ToArray()))
+            {
+                JsonElement root = doc.RootElement;
+                if (root.ValueKind == JsonValueKind.Object)
+                {
+                    writer.WriteStartObject();
+                    foreach (var prop in root.EnumerateObject())
+                    {
+                        if (prop.NameEquals("file_search"u8))
+                        {
+                            continue;
+                        }
+                        prop.WriteTo(writer);
+                    }
+                    writer.WriteEndObject();
+                }
+                else
+                {
+                    root.WriteTo(writer);
+                }
+            }
+        }
+        writer.WriteEndArray();
+    }
 
     private static void DeserializeTools(JsonProperty property, ref IReadOnlyList<ToolDefinition> tools)
     {
