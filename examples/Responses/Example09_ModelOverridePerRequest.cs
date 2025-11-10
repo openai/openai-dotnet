@@ -17,15 +17,17 @@ public partial class ResponseExamples
         OpenAIResponseClient client = new(model: "gpt-4o", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         // Add extra request fields using Patch.
-        // Patch lets you set fields like `model` that aren't exposed on ResponseCreationOptions.
+        // Patch lets you set fields like `model` that aren't exposed on CreateResponseOptions.
         // This overrides the model set on the client just for the request where this options instance is used.
         // See the API docs https://platform.openai.com/docs/api-reference/responses/create for supported additional fields.
-        ResponseCreationOptions options = new();
+        CreateResponseOptions options = new([
+            ResponseItem.CreateUserMessageItem("Say 'this is a test.")
+        ]);
         options.Patch.Set("$.model"u8, "gpt-5");
 
-        OpenAIResponse response = client.CreateResponse("Say 'this is a test.", options);
+        ResponseResult response = client.CreateResponse(options);
 
-        Console.WriteLine($"[ASSISTANT]: {response.GetOutputText()}, [Mode]: {response.Model}");
+        Console.WriteLine($"[ASSISTANT]: {response.OutputText}, [Mode]: {response.Model}");
     }
 }
 

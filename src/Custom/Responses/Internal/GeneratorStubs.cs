@@ -42,7 +42,7 @@ namespace OpenAI.Responses;
 [CodeGenType("ItemReferenceItemParam")] internal partial class InternalItemReferenceItemParam {}
 [CodeGenType("ItemType")] internal readonly partial struct InternalItemType {}
 [CodeGenType("LocationType")] internal readonly partial struct InternalWebSearchUserLocationKind {}
-[CodeGenType("ModelIdsResponses")] internal readonly partial struct InternalModelIdsResponses {}
+// [CodeGenType("ModelIdsResponses")] internal readonly partial struct InternalModelIdsResponses {}
 [CodeGenType("RankingOptionsRanker1")] internal readonly partial struct InternalRankingOptionsRanker1 {}
 [CodeGenType("ReasoningGenerateSummary")] internal readonly partial struct InternalReasoningGenerateSummary {}
 [CodeGenType("ReasoningItemParam")] internal partial class InternalReasoningItemParam {}

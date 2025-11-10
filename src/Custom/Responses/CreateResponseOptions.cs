@@ -96,7 +96,7 @@ namespace OpenAI.Responses
 
         public bool? Stream { get; set; }
 
-        public static CreateResponseOptions Create(IEnumerable<ResponseItem> inputItems, OpenAIResponseClient client, ResponseCreationOptions options = null, bool isStreaming = false)
+        internal static CreateResponseOptions Create(IEnumerable<ResponseItem> inputItems, OpenAIResponseClient client, ResponseCreationOptions options = null, bool isStreaming = false)
         {
             Argument.AssertNotNull(inputItems, nameof(inputItems));
             options ??= new();

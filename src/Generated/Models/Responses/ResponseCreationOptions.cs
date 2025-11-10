@@ -11,7 +11,7 @@ using OpenAI;
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
-    public partial class ResponseCreationOptions
+    internal partial class ResponseCreationOptions
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;

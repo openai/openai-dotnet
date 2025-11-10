@@ -13,7 +13,8 @@ public partial class ResponseExamples
     [Test]
     public void Example06_RemoteMcpAuthentication()
     {
-        ResponseCreationOptions options = new()
+        CreateResponseOptions options = new([
+            ResponseItem.CreateUserMessageItem("Create a payment link for $20")])
         {
             Tools = {
                 new McpTool(serverLabel: "stripe", serverUri: new Uri("https://mcp.stripe.com"))
@@ -25,9 +26,9 @@ public partial class ResponseExamples
 
         OpenAIResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        OpenAIResponse response = client.CreateResponse("Create a payment link for $20", options);
+        ResponseResult response = client.CreateResponse(options);
 
-        Console.WriteLine($"[ASSISTANT]: {response.GetOutputText()}");
+        Console.WriteLine($"[ASSISTANT]: {response.OutputText}");
     }
 }
 

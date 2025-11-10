@@ -33,7 +33,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
             ResponseItem.CreateUserMessageItem("Item 4")
         };
 
-        OpenAIResponse response = await client.CreateResponseAsync(inputItems);
+        ResponseResult response = await client.CreateResponseAsync(new(inputItems));
 
         // Paginate through input items with a small page size
         var options = new ResponseItemCollectionOptions()
@@ -76,7 +76,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
             ResponseItem.CreateUserMessageItem("Item 4")
         };
 
-        OpenAIResponse response = await client.CreateResponseAsync(inputItems);
+        ResponseResult response = await client.CreateResponseAsync(new(inputItems));
 
         // Paginate through input items with a small page size
         var options = new ResponseItemCollectionOptions()
@@ -121,7 +121,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
             ResponseItem.CreateUserMessageItem("C")
         };
 
-        OpenAIResponse response = await client.CreateResponseAsync(inputItems);
+        ResponseResult response = await client.CreateResponseAsync(new(inputItems));
 
         string afterId = null;
         await foreach (ResponseItem first in client.GetResponseInputItemsAsync(response.Id))
@@ -161,7 +161,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
             ResponseItem.CreateUserMessageItem("Second")
         };
 
-        OpenAIResponse response = await client.CreateResponseAsync(inputItems);
+        ResponseResult response = await client.CreateResponseAsync(new(inputItems));
 
         // Ascending
         var ascOptions = new ResponseItemCollectionOptions()
@@ -203,12 +203,12 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     {
         OpenAIResponseClient client = GetTestClient();
 
-        OpenAIResponse response = await client.CreateResponseAsync(
+        ResponseResult response = await client.CreateResponseAsync(new(
             [
                 ResponseItem.CreateUserMessageItem("alpha"),
                 ResponseItem.CreateUserMessageItem("beta"),
                 ResponseItem.CreateUserMessageItem("gamma"),
-            ]);
+            ]));
 
         var options = new ResponseItemCollectionOptions() { PageSizeLimit = 100 };
 
@@ -228,12 +228,12 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     {
         OpenAIResponseClient client = GetTestClient();
 
-        OpenAIResponse response = await client.CreateResponseAsync(
+        ResponseResult response = await client.CreateResponseAsync(new(
             [
                 ResponseItem.CreateUserMessageItem("x"),
                 ResponseItem.CreateUserMessageItem("y"),
                 ResponseItem.CreateUserMessageItem("z"),
-            ]);
+            ]));
 
         var options = new ResponseItemCollectionOptions() { PageSizeLimit = 1 };
 
@@ -253,12 +253,12 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     {
         OpenAIResponseClient client = GetTestClient();
 
-        OpenAIResponse response = await client.CreateResponseAsync(
+        ResponseResult response = await client.CreateResponseAsync(new(
             [
                 ResponseItem.CreateUserMessageItem("ct1"),
                 ResponseItem.CreateUserMessageItem("ct2"),
                 ResponseItem.CreateUserMessageItem("ct3"),
-            ]);
+            ]));
 
         using var cts = new System.Threading.CancellationTokenSource();
 
@@ -289,12 +289,12 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     {
         OpenAIResponseClient client = GetTestClient();
 
-        OpenAIResponse response = await client.CreateResponseAsync(
+        ResponseResult response = await client.CreateResponseAsync(new(
             [
                 ResponseItem.CreateUserMessageItem("co1"),
                 ResponseItem.CreateUserMessageItem("co2"),
                 ResponseItem.CreateUserMessageItem("co3"),
-            ]);
+            ]));
 
         using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(30));
 

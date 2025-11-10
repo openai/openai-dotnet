@@ -26,7 +26,7 @@ public partial class ResponseExamples
             ResponseItem.CreateUserMessageItem("What's the weather like today for my current location?"),
         ];
 
-        ResponseCreationOptions options = new()
+        CreateResponseOptions options = new(inputItems)
         {
             Tools = { getCurrentLocationTool, getCurrentWeatherTool },
         };
@@ -38,11 +38,11 @@ public partial class ResponseExamples
         do
         {
             requiresAction = false;
-            OpenAIResponse response = await client.CreateResponseAsync(inputItems, options);
+            ResponseResult response = await client.CreateResponseAsync(options);
 
-            inputItems.AddRange(response.OutputItems);
+            inputItems.AddRange(response.Output);
 
-            foreach (ResponseItem outputItem in response.OutputItems)
+            foreach (ResponseItem outputItem in response.Output)
             {
                 if (outputItem is FunctionCallResponseItem functionCall)
                 {
@@ -89,7 +89,7 @@ public partial class ResponseExamples
                 }
             }
 
-            PrintMessageItems(response.OutputItems.OfType<MessageResponseItem>());
+            PrintMessageItems(response.Output.OfType<MessageResponseItem>());
 
         } while (requiresAction);
     }

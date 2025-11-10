@@ -27,7 +27,7 @@ public partial class ResponseExamples
             ResponseItem.CreateUserMessageItem("What's the weather like today for my current location?"),
         ];
 
-        ResponseCreationOptions options = new()
+        CreateResponseOptions options = new(inputItems)
         {
             Tools = { getCurrentLocationTool, getCurrentWeatherTool },
         };
@@ -39,7 +39,7 @@ public partial class ResponseExamples
         do
         {
             requiresAction = false;
-            AsyncCollectionResult<StreamingResponseUpdate> responseUpdates = client.CreateResponseStreamingAsync(inputItems, options);
+            AsyncCollectionResult<StreamingResponseUpdate> responseUpdates = client.CreateResponseStreamingAsync(options);
 
             await foreach (StreamingResponseUpdate update in responseUpdates)
             {

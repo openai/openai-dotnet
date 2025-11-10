@@ -107,10 +107,10 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("previous_response_id"u8);
                 writer.WriteStringValue(PreviousResponseId);
             }
-            if (Optional.IsDefined(Model) && !Patch.Contains("$.model"u8))
+            if (Optional.IsDefined(InternalModel) && !Patch.Contains("$.model"u8))
             {
                 writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(Model.Value.ToString());
+                writer.WriteStringValue(InternalModel.Value.ToString());
             }
             if (Optional.IsDefined(Reasoning) && !Patch.Contains("$.reasoning"u8))
             {
@@ -163,14 +163,7 @@ namespace OpenAI.Responses
             if (Optional.IsDefined(ToolChoice) && !Patch.Contains("$.tool_choice"u8))
             {
                 writer.WritePropertyName("tool_choice"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(ToolChoice);
-#else
-                using (JsonDocument document = JsonDocument.Parse(ToolChoice))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
+                writer.WriteObjectValue(ToolChoice, options);
             }
             if (Optional.IsDefined(Truncation) && !Patch.Contains("$.truncation"u8))
             {
@@ -290,7 +283,7 @@ namespace OpenAI.Responses
             string instructions = default;
             ResponseTextOptions text = default;
             IList<ResponseTool> tools = default;
-            BinaryData toolChoice = default;
+            ResponseToolChoice toolChoice = default;
             ResponseTruncationMode? truncation = default;
             string id = default;
             string @object = default;
@@ -456,7 +449,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    toolChoice = BinaryData.FromString(prop.Value.GetRawText());
+                    toolChoice = ResponseToolChoice.DeserializeResponseToolChoice(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("truncation"u8))

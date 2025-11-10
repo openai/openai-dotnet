@@ -18,7 +18,9 @@ public partial class ResponseExamples
     {
         OpenAIResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        ResponseCreationOptions options = new()
+        CreateResponseOptions options = new([
+            ResponseItem.CreateUserMessageItem("Generate an image of gray tabby cat hugging an otter with an orange scarf")
+        ])
         {
             Tools =
             {
@@ -29,8 +31,8 @@ public partial class ResponseExamples
             }
         };
 
-        OpenAIResponse response = await client.CreateResponseAsync("Generate an image of gray tabby cat hugging an otter with an orange scarf", options);
-        ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[1];
+        ResponseResult response = await client.CreateResponseAsync(options);
+        ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.Output[1];
         BinaryData bytes = imageGenResponse.ImageResultBytes;
 
         using FileStream stream = File.OpenWrite($"{Guid.NewGuid()}.png");

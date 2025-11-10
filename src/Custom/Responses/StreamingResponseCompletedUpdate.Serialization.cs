@@ -10,13 +10,13 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class StreamingResponseIncompleteUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseIncompleteUpdate>
+    public partial class StreamingResponseCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCompletedUpdate>
     {
-        internal StreamingResponseIncompleteUpdate() : this(InternalResponseStreamEventType.ResponseIncomplete, default, default, null)
+        internal StreamingResponseCompletedUpdate() : this(InternalResponseStreamEventType.ResponseCompleted, default, default, null)
         {
         }
 
-        void IJsonModel<StreamingResponseIncompleteUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<StreamingResponseCompletedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -33,10 +33,10 @@ namespace OpenAI.Responses
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseIncompleteUpdate>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseCompletedUpdate>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(StreamingResponseIncompleteUpdate)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(StreamingResponseCompletedUpdate)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -50,20 +50,20 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        StreamingResponseIncompleteUpdate IJsonModel<StreamingResponseIncompleteUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StreamingResponseIncompleteUpdate)JsonModelCreateCore(ref reader, options);
+        StreamingResponseCompletedUpdate IJsonModel<StreamingResponseCompletedUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StreamingResponseCompletedUpdate)JsonModelCreateCore(ref reader, options);
 
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseIncompleteUpdate>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseCompletedUpdate>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(StreamingResponseIncompleteUpdate)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(StreamingResponseCompletedUpdate)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeStreamingResponseIncompleteUpdate(document.RootElement, null, options);
+            return DeserializeStreamingResponseCompletedUpdate(document.RootElement, null, options);
         }
 
-        internal static StreamingResponseIncompleteUpdate DeserializeStreamingResponseIncompleteUpdate(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static StreamingResponseCompletedUpdate DeserializeStreamingResponseCompletedUpdate(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -74,7 +74,7 @@ namespace OpenAI.Responses
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            OpenAIResponse response = default;
+            ResponseResult response = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -89,46 +89,46 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("response"u8))
                 {
-                    response = OpenAIResponse.DeserializeOpenAIResponse(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    response = ResponseResult.DeserializeResponseResult(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new StreamingResponseIncompleteUpdate(kind, sequenceNumber, patch, response);
+            return new StreamingResponseCompletedUpdate(kind, sequenceNumber, patch, response);
         }
 
-        BinaryData IPersistableModel<StreamingResponseIncompleteUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<StreamingResponseCompletedUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseIncompleteUpdate>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseCompletedUpdate>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(StreamingResponseIncompleteUpdate)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(StreamingResponseCompletedUpdate)} does not support writing '{options.Format}' format.");
             }
         }
 
-        StreamingResponseIncompleteUpdate IPersistableModel<StreamingResponseIncompleteUpdate>.Create(BinaryData data, ModelReaderWriterOptions options) => (StreamingResponseIncompleteUpdate)PersistableModelCreateCore(data, options);
+        StreamingResponseCompletedUpdate IPersistableModel<StreamingResponseCompletedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options) => (StreamingResponseCompletedUpdate)PersistableModelCreateCore(data, options);
 
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseIncompleteUpdate>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseCompletedUpdate>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeStreamingResponseIncompleteUpdate(document.RootElement, data, options);
+                        return DeserializeStreamingResponseCompletedUpdate(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(StreamingResponseIncompleteUpdate)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(StreamingResponseCompletedUpdate)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<StreamingResponseIncompleteUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<StreamingResponseCompletedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)

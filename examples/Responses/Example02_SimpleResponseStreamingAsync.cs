@@ -18,7 +18,7 @@ public partial class ResponseExamples
     {
         OpenAIResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        AsyncCollectionResult<StreamingResponseUpdate> responseUpdates = client.CreateResponseStreamingAsync("Say 'this is a test.'");
+        AsyncCollectionResult<StreamingResponseUpdate> responseUpdates = client.CreateResponseStreamingAsync(new ([ResponseItem.CreateUserMessageItem("Say 'this is a test.'")]));
 
         Console.Write($"[ASSISTANT]: ");
         await foreach (StreamingResponseUpdate update in responseUpdates)

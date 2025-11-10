@@ -1,7 +1,5 @@
-using System;
 using System.ClientModel;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses;
 
@@ -12,7 +10,7 @@ namespace OpenAI.Responses;
 [CodeGenType("CreateResponse")]
 [CodeGenVisibility(nameof(ResponseCreationOptions), CodeGenVisibility.Public)]
 [CodeGenSuppress(nameof(ResponseCreationOptions), typeof(IEnumerable<ResponseItem>))]
-public partial class ResponseCreationOptions
+internal partial class ResponseCreationOptions
 {
     // CUSTOM: Temporarily made internal.
     [CodeGenMember("Include")]

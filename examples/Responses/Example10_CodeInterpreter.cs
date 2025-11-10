@@ -21,19 +21,20 @@ public partial class ResponseExamples
 
         CodeInterpreterToolContainer container = new(CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration());
         CodeInterpreterTool codeInterpreterTool = new(container);
-        ResponseCreationOptions options = new()
-        {
-            Tools = { codeInterpreterTool }
-        };
-
         List<ResponseItem> inputItems =
         [
             ResponseItem.CreateUserMessageItem("Create an Excel spreadsheet that contains the mathematical times tables from 1-12 and make it available for download."),
         ];
+        CreateResponseOptions options = new(inputItems)
+        {
+            Tools = { codeInterpreterTool }
+        };
 
-        OpenAIResponse response = client.CreateResponse(inputItems, options);
+        
 
-        MessageResponseItem message = response.OutputItems
+        ResponseResult response = client.CreateResponse(options);
+
+        MessageResponseItem message = response.Output
             .OfType<MessageResponseItem>()
             .FirstOrDefault();
 

@@ -14,7 +14,9 @@ public partial class ResponseExamples
     [Test]
     public async Task Example05_RemoteMcpAsync()
     {
-        ResponseCreationOptions options = new()
+        CreateResponseOptions options = new([
+            ResponseItem.CreateUserMessageItem("Roll 2d4+1")
+        ])
         {
             Tools = {
                 new McpTool(serverLabel: "dmcp", serverUri: new Uri("https://dmcp-server.deno.dev/sse"))
@@ -27,9 +29,9 @@ public partial class ResponseExamples
 
         OpenAIResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        OpenAIResponse response = await client.CreateResponseAsync("Roll 2d4+1", options);
+        ResponseResult response = await client.CreateResponseAsync(options);
 
-        Console.WriteLine($"[ASSISTANT]: {response.GetOutputText()}");
+        Console.WriteLine($"[ASSISTANT]: {response.OutputText}");
     }
 }
 

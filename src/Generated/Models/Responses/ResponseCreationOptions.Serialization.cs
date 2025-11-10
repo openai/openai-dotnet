@@ -11,7 +11,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class ResponseCreationOptions : IJsonModel<ResponseCreationOptions>
+    internal partial class ResponseCreationOptions : IJsonModel<ResponseCreationOptions>
     {
         public ResponseCreationOptions() : this(null, default, default, null, default, null, null, null, default, default, null, null, null, null, default, null, null, default, default, default, default)
         {

@@ -34,7 +34,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
 
-        ResponseCreationOptions options = new()
+        CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
@@ -47,11 +47,11 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         OpenAIResponseClient client = GetTestClient(overrideModel: "gpt-5");
 
-        OpenAIResponse response = await client.CreateResponseAsync("Roll 2d4+1", options);
-        Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
+        ResponseResult response = await client.CreateResponseAsync(options);
+        Assert.That(response.Output, Has.Count.GreaterThan(0));
 
         // Check tool list.
-        List<McpToolDefinitionListItem> toolDefinitionListItems = response.OutputItems.OfType<McpToolDefinitionListItem>().ToList();
+        List<McpToolDefinitionListItem> toolDefinitionListItems = response.Output.OfType<McpToolDefinitionListItem>().ToList();
         Assert.That(toolDefinitionListItems, Has.Count.EqualTo(1));
 
         McpToolDefinitionListItem listItem = toolDefinitionListItems[0];
@@ -63,7 +63,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(rollToolDefinition.Annotations, Is.Not.Null);
 
         // Check tool call.
-        List<McpToolCallItem> toolCallItems = response.OutputItems.OfType<McpToolCallItem>().ToList();
+        List<McpToolCallItem> toolCallItems = response.Output.OfType<McpToolCallItem>().ToList();
         Assert.That(toolCallItems, Has.Count.EqualTo(1));
 
         McpToolCallItem toolCallItem = toolCallItems[0];
@@ -74,7 +74,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(toolCallItem.Error, Is.Null);
 
         // Check assistant message.
-        MessageResponseItem assistantMessageItem = response.OutputItems.Last() as MessageResponseItem;
+        MessageResponseItem assistantMessageItem = response.Output.Last() as MessageResponseItem;
         Assert.That(assistantMessageItem, Is.Not.Null);
     }
 
@@ -86,7 +86,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
 
-        ResponseCreationOptions options = new()
+        CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
@@ -99,7 +99,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         OpenAIResponseClient client = GetTestClient(overrideModel: "gpt-5");
 
-        AsyncCollectionResult<StreamingResponseUpdate> responseUpdates = client.CreateResponseStreamingAsync("Roll 2d4+1", options);
+        AsyncCollectionResult<StreamingResponseUpdate> responseUpdates = client.CreateResponseStreamingAsync(options);
 
         int mcpCallArgumentsDeltaUpdateCount = 0;
         int mcpCallArgumentsDoneUpdateCount = 0;
@@ -200,7 +200,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                     }
                 });
 
-        ResponseCreationOptions options = new()
+        CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
@@ -213,13 +213,13 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         OpenAIResponseClient client = GetTestClient(overrideModel: "gpt-5");
 
-        OpenAIResponse response = await client.CreateResponseAsync("Roll 2d4+1", options);
-        Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
-        Assert.That(response.OutputItems.OfType<McpToolDefinitionListItem>().ToList(), Has.Count.EqualTo(1));
+        ResponseResult response = await client.CreateResponseAsync(options);
+        Assert.That(response.Output, Has.Count.GreaterThan(0));
+        Assert.That(response.Output.OfType<McpToolDefinitionListItem>().ToList(), Has.Count.EqualTo(1));
 
         // Confirm there are no approval requests and that the tool was called.
-        Assert.That(response.OutputItems.OfType<McpToolCallApprovalRequestItem>().ToList(), Has.Count.EqualTo(0));
-        Assert.That(response.OutputItems.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(1));
+        Assert.That(response.Output.OfType<McpToolCallApprovalRequestItem>().ToList(), Has.Count.EqualTo(0));
+        Assert.That(response.Output.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(1));
     }
 
     [RecordedTest]
@@ -241,7 +241,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                     }
                 });
 
-        ResponseCreationOptions options = new()
+        CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
@@ -254,22 +254,24 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         OpenAIResponseClient client = GetTestClient(overrideModel: "gpt-5");
 
-        OpenAIResponse response1 = await client.CreateResponseAsync("Roll 2d4+1", options);
-        Assert.That(response1.OutputItems, Has.Count.GreaterThan(0));
-        Assert.That(response1.OutputItems.OfType<McpToolDefinitionListItem>().ToList(), Has.Count.EqualTo(1));
-        Assert.That(response1.OutputItems.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(0));
+        ResponseResult response1 = await client.CreateResponseAsync(options);
+        Assert.That(response1.Output, Has.Count.GreaterThan(0));
+        Assert.That(response1.Output.OfType<McpToolDefinitionListItem>().ToList(), Has.Count.EqualTo(1));
+        Assert.That(response1.Output.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(0));
 
         // Check that it stopped at the approval request.
-        McpToolCallApprovalRequestItem approvalRequestItem = response1.OutputItems.Last() as McpToolCallApprovalRequestItem;
+        McpToolCallApprovalRequestItem approvalRequestItem = response1.Output.Last() as McpToolCallApprovalRequestItem;
         Assert.That(approvalRequestItem, Is.Not.Null);
 
         // Prepare the response.
         McpToolCallApprovalResponseItem approvalResponseItem = new(approvalRequestItem.Id, true);
         options.PreviousResponseId = response1.Id;
+        options.Input.Clear();
+        options.Input.Add(approvalResponseItem);
 
-        OpenAIResponse response2 = await client.CreateResponseAsync([approvalResponseItem], options);
-        Assert.That(response2.OutputItems, Has.Count.GreaterThan(0));
-        Assert.That(response2.OutputItems.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(1));
+        ResponseResult response2 = await client.CreateResponseAsync(options);
+        Assert.That(response2.Output, Has.Count.GreaterThan(0));
+        Assert.That(response2.Output.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(1));
     }
 
     [RecordedTest]
@@ -280,7 +282,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
 
-        ResponseCreationOptions options = new()
+        CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
@@ -297,12 +299,12 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         OpenAIResponseClient client = GetTestClient(overrideModel: "gpt-5");
 
-        OpenAIResponse response = await client.CreateResponseAsync("Roll 2d4+1", options);
-        Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
-        Assert.That(response.OutputItems.OfType<McpToolDefinitionListItem>().ToList(), Has.Count.EqualTo(1));
-        Assert.That(response.OutputItems.OfType<McpToolCallApprovalRequestItem>().ToList(), Has.Count.EqualTo(0));
+        ResponseResult response = await client.CreateResponseAsync(options);
+        Assert.That(response.Output, Has.Count.GreaterThan(0));
+        Assert.That(response.Output.OfType<McpToolDefinitionListItem>().ToList(), Has.Count.EqualTo(1));
+        Assert.That(response.Output.OfType<McpToolCallApprovalRequestItem>().ToList(), Has.Count.EqualTo(0));
 
-        List<McpToolCallItem> toolCallItems = response.OutputItems.OfType<McpToolCallItem>().ToList();
+        List<McpToolCallItem> toolCallItems = response.Output.OfType<McpToolCallItem>().ToList();
         Assert.That(toolCallItems, Has.Count.EqualTo(1));
 
         McpToolCallItem toolCallItem = toolCallItems[0];
@@ -321,7 +323,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
 
-        ResponseCreationOptions options = new()
+        CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
@@ -338,11 +340,11 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         OpenAIResponseClient client = GetTestClient(overrideModel: "gpt-5");
 
-        OpenAIResponse response = await client.CreateResponseAsync("Roll 2d4+1", options);
-        Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
-        Assert.That(response.OutputItems.OfType<McpToolDefinitionListItem>().ToList(), Has.Count.EqualTo(1));
-        Assert.That(response.OutputItems.OfType<McpToolCallApprovalRequestItem>().ToList(), Has.Count.EqualTo(0));
-        Assert.That(response.OutputItems.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(0));
+        ResponseResult response = await client.CreateResponseAsync(options);
+        Assert.That(response.Output, Has.Count.GreaterThan(0));
+        Assert.That(response.Output.OfType<McpToolDefinitionListItem>().ToList(), Has.Count.EqualTo(1));
+        Assert.That(response.Output.OfType<McpToolCallApprovalRequestItem>().ToList(), Has.Count.EqualTo(0));
+        Assert.That(response.Output.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(0));
     }
 
     [RecordedTest]
@@ -367,21 +369,20 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         OpenAIResponseClient client = GetTestClient();
 
-        OpenAIResponse response = await client.CreateResponseAsync(
-            "Using the file search tool, what's Travis's favorite food?",
-            new ResponseCreationOptions()
+        ResponseResult response = await client.CreateResponseAsync(
+            new([ResponseItem.CreateUserMessageItem("Using the file search tool, what's Travis's favorite food?")])
             {
                 Tools =
                 {
                     ResponseTool.CreateFileSearchTool(vectorStoreIds: [vectorStore.Id]),
                 }
             });
-        Assert.That(response.OutputItems?.Count, Is.EqualTo(2));
-        FileSearchCallResponseItem fileSearchCall = response.OutputItems[0] as FileSearchCallResponseItem;
+        Assert.That(response.Output?.Count, Is.EqualTo(2));
+        FileSearchCallResponseItem fileSearchCall = response.Output[0] as FileSearchCallResponseItem;
         Assert.That(fileSearchCall, Is.Not.Null);
         Assert.That(fileSearchCall?.Status, Is.EqualTo(FileSearchCallStatus.Completed));
         Assert.That(fileSearchCall?.Queries, Has.Count.GreaterThan(0));
-        MessageResponseItem message = response.OutputItems[1] as MessageResponseItem;
+        MessageResponseItem message = response.Output[1] as MessageResponseItem;
         Assert.That(message, Is.Not.Null);
         ResponseContentPart messageContentPart = message.Content?.FirstOrDefault();
         Assert.That(messageContentPart, Is.Not.Null);
@@ -403,21 +404,20 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         OpenAIResponseClient client = GetTestClient();
 
         ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new CodeInterpreterToolContainer(CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration()));
-        ResponseCreationOptions responseOptions = new()
+        CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem("Calculate the factorial of 5 using Python code.")])
         {
             Tools = { codeInterpreterTool },
         };
 
-        OpenAIResponse response = await client.CreateResponseAsync(
-            "Calculate the factorial of 5 using Python code.",
+        ResponseResult response = await client.CreateResponseAsync(
             responseOptions);
 
         Assert.That(response, Is.Not.Null);
-        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
-        Assert.That(response.OutputItems[0], Is.InstanceOf<CodeInterpreterCallResponseItem>());
-        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
+        Assert.That(response.Output, Has.Count.EqualTo(2));
+        Assert.That(response.Output[0], Is.InstanceOf<CodeInterpreterCallResponseItem>());
+        Assert.That(response.Output[1], Is.InstanceOf<MessageResponseItem>());
 
-        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
+        MessageResponseItem message = (MessageResponseItem)response.Output[1];
         Assert.That(message.Content, Has.Count.GreaterThan(0));
         Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
         Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
@@ -434,22 +434,21 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         OpenAIResponseClient client = GetTestClient();
 
         ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new(new AutomaticCodeInterpreterToolContainerConfiguration()));
-        ResponseCreationOptions responseOptions = new()
+        CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem("Generate a simple chart using matplotlib. Ensure you emit debug logging and include any resulting log file output.")])
         {
             Tools = { codeInterpreterTool },
         };
 
-        OpenAIResponse response = await client.CreateResponseAsync(
-            "Generate a simple chart using matplotlib. Ensure you emit debug logging and include any resulting log file output.",
+        ResponseResult response = await client.CreateResponseAsync(
             responseOptions);
 
         Assert.That(response, Is.Not.Null);
         Assert.That(response, Is.Not.Null);
-        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
-        Assert.That(response.OutputItems[0], Is.InstanceOf<CodeInterpreterCallResponseItem>());
-        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
+        Assert.That(response.Output, Has.Count.EqualTo(2));
+        Assert.That(response.Output[0], Is.InstanceOf<CodeInterpreterCallResponseItem>());
+        Assert.That(response.Output[1], Is.InstanceOf<MessageResponseItem>());
 
-        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
+        MessageResponseItem message = (MessageResponseItem)response.Output[1];
         Assert.That(message.Content, Has.Count.GreaterThan(0));
         Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
         Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
@@ -478,21 +477,20 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         {
             // Create CodeInterpreter tool with the container ID
             ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new(containerId));
-            ResponseCreationOptions responseOptions = new()
+            CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem("Calculate the factorial of 5 using Python code.")])
             {
                 Tools = { codeInterpreterTool },
             };
 
-            OpenAIResponse response = await client.CreateResponseAsync(
-                "Calculate the factorial of 5 using Python code.",
+            ResponseResult response = await client.CreateResponseAsync(
                 responseOptions);
 
             Assert.That(response, Is.Not.Null);
-            Assert.That(response.OutputItems, Has.Count.EqualTo(2));
-            Assert.That(response.OutputItems[0], Is.InstanceOf<CodeInterpreterCallResponseItem>());
-            Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
+            Assert.That(response.Output, Has.Count.EqualTo(2));
+            Assert.That(response.Output[0], Is.InstanceOf<CodeInterpreterCallResponseItem>());
+            Assert.That(response.Output[1], Is.InstanceOf<MessageResponseItem>());
 
-            MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
+            MessageResponseItem message = (MessageResponseItem)response.Output[1];
             Assert.That(message.Content, Has.Count.GreaterThan(0));
             Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
             Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
@@ -544,17 +542,16 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
             // Create CodeInterpreter tool with uploaded file IDs
             ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new(CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration(fileIds)));
-            ResponseCreationOptions responseOptions = new()
+            CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem("Analyze the CSV data in the uploaded file and create a simple visualization. Also run the Python script that was uploaded.")])
             {
                 Tools = { codeInterpreterTool },
             };
 
-            OpenAIResponse response = await client.CreateResponseAsync(
-                "Analyze the CSV data in the uploaded file and create a simple visualization. Also run the Python script that was uploaded.",
+            ResponseResult response = await client.CreateResponseAsync(
                 responseOptions);
 
             Assert.That(response, Is.Not.Null);
-            Assert.That(response.OutputItems, Is.Not.Null.And.Not.Empty);
+            Assert.That(response.Output, Is.Not.Null.And.Not.Empty);
 
             // Basic validation that the response was created successfully
             Assert.That(response.Id, Is.Not.Null.And.Not.Empty);
@@ -585,12 +582,10 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         OpenAIResponseClient client = GetTestClient();
 
         ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new CodeInterpreterToolContainer(new AutomaticCodeInterpreterToolContainerConfiguration()));
-        ResponseCreationOptions responseOptions = new()
+        CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem("Calculate the factorial of 5 using Python code and show me the code step by step.")])
         {
             Tools = { codeInterpreterTool },
         };
-
-        const string message = "Calculate the factorial of 5 using Python code and show me the code step by step.";
 
         int inProgressCount = 0;
         int interpretingCount = 0;
@@ -601,7 +596,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         StringBuilder codeBuilder = new StringBuilder();
 
         await foreach (StreamingResponseUpdate update
-            in client.CreateResponseStreamingAsync(message, responseOptions))
+            in client.CreateResponseStreamingAsync(responseOptions))
         {
             ValidateCodeInterpreterEvent(ref inProgressCount, ref interpretingCount, ref codeDeltaCount, ref codeDoneCount, ref completedCount, ref gotFinishedCodeInterpreterItem, codeBuilder, update);
         }
@@ -634,12 +629,10 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
             // Create CodeInterpreter tool with uploaded file IDs
             ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new CodeInterpreterToolContainer(CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration(fileIds)));
-            ResponseCreationOptions responseOptions = new()
+            CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem("Load the CSV file and create a simple plot visualization showing the relationship between x and y values.")])
             {
                 Tools = { codeInterpreterTool },
             };
-
-            const string message = "Load the CSV file and create a simple plot visualization showing the relationship between x and y values.";
 
             int inProgressCount = 0;
             int interpretingCount = 0;
@@ -650,7 +643,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             StringBuilder codeBuilder = new StringBuilder();
 
             await foreach (StreamingResponseUpdate update
-                in client.CreateResponseStreamingAsync(message, responseOptions))
+                in client.CreateResponseStreamingAsync(responseOptions))
             {
                 ValidateCodeInterpreterEvent(ref inProgressCount, ref interpretingCount, ref codeDeltaCount, ref codeDoneCount, ref completedCount, ref gotFinishedCodeInterpreterItem, codeBuilder, update);
             }

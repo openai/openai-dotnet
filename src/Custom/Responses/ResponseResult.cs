@@ -30,7 +30,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseResult(IDictionary<string, string> metadata, float? temperature, float? topP, string user, ResponseServiceTier? serviceTier, string previousResponseId, InternalModelIdsResponses? model, ResponseReasoningOptions reasoning, bool? background, int? maxOutputTokens, string instructions, ResponseTextOptions text, IList<ResponseTool> tools, BinaryData toolChoice, ResponseTruncationMode? truncation, string id, string @object, ResponseStatus? status, DateTimeOffset createdAt, ResponseError error, ResponseIncompleteStatusDetails incompleteDetails, IList<ResponseItem> output, string outputText, ResponseTokenUsage usage, bool parallelToolCalls, in JsonPatch patch)
+        internal ResponseResult(IDictionary<string, string> metadata, float? temperature, float? topP, string user, ResponseServiceTier? serviceTier, string previousResponseId, InternalModelIdsResponses? model, ResponseReasoningOptions reasoning, bool? background, int? maxOutputTokens, string instructions, ResponseTextOptions text, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncation, string id, string @object, ResponseStatus? status, DateTimeOffset createdAt, ResponseError error, ResponseIncompleteStatusDetails incompleteDetails, IList<ResponseItem> output, string outputText, ResponseTokenUsage usage, bool parallelToolCalls, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -39,7 +39,7 @@ namespace OpenAI.Responses
             User = user;
             ServiceTier = serviceTier;
             PreviousResponseId = previousResponseId;
-            Model = model;
+            InternalModel = model;
             Reasoning = reasoning;
             Background = background;
             MaxOutputTokens = maxOutputTokens;
@@ -79,7 +79,9 @@ namespace OpenAI.Responses
 
         public string PreviousResponseId { get; }
 
-        internal InternalModelIdsResponses? Model { get; }
+        internal InternalModelIdsResponses? InternalModel { get; }
+
+        public string Model => InternalModel?.ToString();
 
         public ResponseReasoningOptions Reasoning { get; }
 
@@ -93,7 +95,7 @@ namespace OpenAI.Responses
 
         public IList<ResponseTool> Tools { get; }
 
-        public BinaryData ToolChoice { get; }
+        public ResponseToolChoice ToolChoice { get; }
 
         public ResponseTruncationMode? Truncation { get; }
 
