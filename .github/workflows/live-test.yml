@@ -29,13 +29,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Run live tests
+      - name: Restore tools
+        run: dotnet tool restore --add-source https://pkgs.dev.azure.com/azure-sdk/public/_packaging/azure-sdk-for-net/nuget/v3/index.json
+
+      - name: Run recorded tests
         run: dotnet test ./tests/OpenAI.Tests.csproj
           --configuration Release
-          --filter="TestCategory!=Smoke&TestCategory!=Assistants&TestCategory!=StoredChat&TestCategory!=Images&TestCategory!=Uploads&TestCategory!=Moderations&TestCategory!=FineTuning&TestCategory!=Containers&TestCategory!=Conversation&TestCategory!=MCP&TestCategory!=Manual"
+          --filter="(TestCategory=Chat|TestCategory=Embeddings|TestCategory=Responses)&TestCategory!=MPFD"
           --logger "trx;LogFilePrefix=live"
-          --results-directory ${{github.workspace}}/artifacts/test-results
-          ${{ env.version_suffix_args}}
+          --results-directory ${{ github.workspace }}/artifacts/test-results
+          ${{ env.version_suffix_args }}
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 

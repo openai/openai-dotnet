@@ -198,7 +198,7 @@ namespace OpenAI.Audio
         [Experimental("OPENAI001")]
         public static explicit operator AudioTranslation(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
+            PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeAudioTranslation(document.RootElement, ModelSerializationExtensions.WireOptions);
         }

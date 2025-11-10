@@ -562,6 +562,13 @@ namespace OpenAI
             return new FileSearchToolRankingOptions(ranker, scoreThreshold, default);
         }
 
+        public static WebSearchToolFilters WebSearchToolFilters(IEnumerable<string> allowedDomains = default)
+        {
+            allowedDomains ??= new ChangeTrackingList<string>();
+
+            return new WebSearchToolFilters(allowedDomains.ToList(), default);
+        }
+
         public static ImageGenerationToolInputImageMask ImageGenerationToolInputImageMask(string imageUrl = default, string fileId = default)
         {
             return new ImageGenerationToolInputImageMask(imageUrl, fileId, default);
@@ -584,9 +591,9 @@ namespace OpenAI
             return new InternalUnknownAnnotation(kind.ToResponseMessageAnnotationKind(), default);
         }
 
-        public static FileCitationMessageAnnotation FileCitationMessageAnnotation(string fileId = default, int index = default)
+        public static FileCitationMessageAnnotation FileCitationMessageAnnotation(string fileId = default, int index = default, string filename = default)
         {
-            return new FileCitationMessageAnnotation(ResponseMessageAnnotationKind.FileCitation, default, fileId, index);
+            return new FileCitationMessageAnnotation(ResponseMessageAnnotationKind.FileCitation, default, fileId, index, filename);
         }
 
         public static UriCitationMessageAnnotation UriCitationMessageAnnotation(Uri uri = default, int startIndex = default, int endIndex = default, string title = default)

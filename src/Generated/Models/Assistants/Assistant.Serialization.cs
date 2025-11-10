@@ -369,7 +369,7 @@ namespace OpenAI.Assistants
 
         public static explicit operator Assistant(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
+            PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeAssistant(document.RootElement, ModelSerializationExtensions.WireOptions);
         }

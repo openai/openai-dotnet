@@ -1,7 +1,7 @@
 namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
-[CodeGenType("WebSearchPreviewToolSearchContextSize")]
+[CodeGenType("SearchContextSize")]
 public readonly partial struct WebSearchToolContextSize
 {
 }

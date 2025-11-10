@@ -52,10 +52,6 @@ namespace OpenAI.Responses;
 [CodeGenType("ResponseItemList")] internal partial class InternalResponseItemList {}
 [CodeGenType("ResponseItemListObject")] internal readonly partial struct InternalResponseItemListObject {}
 [CodeGenType("ResponseObject")] internal readonly partial struct InternalCreateResponsesResponseObject {}
-[CodeGenType("ResponseReasoningSummaryPartAddedEvent")] internal partial class InternalResponseReasoningSummaryPartAddedEvent {}
-[CodeGenType("ResponseReasoningSummaryPartDoneEvent")] internal partial class InternalResponseReasoningSummaryPartDoneEvent {}
-[CodeGenType("ResponseReasoningSummaryTextDeltaEvent")] internal partial class InternalResponseReasoningSummaryTextDeltaEvent {}
-[CodeGenType("ResponseReasoningSummaryTextDoneEvent")] internal partial class InternalResponseReasoningSummaryTextDoneEvent {}
 [CodeGenType("ResponsesAssistantMessageItemParam")] internal partial class InternalResponsesAssistantMessageItemParam {}
 [CodeGenType("ResponsesDeveloperMessageItemParam")] internal partial class InternalResponsesDeveloperMessageItemParam {}
 [CodeGenType("ResponsesMessageItemParam")] internal partial class InternalResponsesMessageItemParam {}

@@ -6,15 +6,15 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "236",
+        "Content-Length": "228",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.6.0 (.NET 9.0.10; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini",
         "tools": [
           {
-            "type": "web_search_preview"
+            "type": "web_search"
           }
         ],
         "tool_choice": {
@@ -37,27 +37,34 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "98040fceddbcba46-SEA",
+        "CF-RAY": "99ab6fe7eb84a32e-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "4945",
+        "Content-Length": "5449",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 23:14:48 GMT",
+        "Date": "Fri, 07 Nov 2025 08:25:01 GMT",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "4434",
+        "openai-processing-ms": "4391",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
+        "Set-Cookie": [
+          "Sanitized",
+          "Sanitized"
+        ],
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "4438",
+        "x-envoy-upstream-service-time": "4398",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_08daec5da3ea01920068c9ef63b59881939f16cb89ba475b15",
+        "id": "resp_067cacb5b60efb0c00690dacd8eca88196a3b37dfcfa945aaa",
         "object": "response",
-        "created_at": 1758064483,
+        "created_at": 1762503896,
         "status": "completed",
         "background": false,
+        "billing": {
+          "payer": "developer"
+        },
         "error": null,
         "incomplete_details": null,
         "instructions": null,
@@ -66,7 +73,7 @@
         "model": "gpt-4o-mini-2024-07-18",
         "output": [
           {
-            "id": "ws_08daec5da3ea01920068c9ef63cef48193b088fe2431d5c527",
+            "id": "ws_067cacb5b60efb0c00690dacd903188196b73a2a55a1527bb8",
             "type": "web_search_call",
             "status": "completed",
             "action": {
@@ -75,7 +82,7 @@
             }
           },
           {
-            "id": "msg_08daec5da3ea01920068c9ef64aebc8193bde7c1b30f0dd5ac",
+            "id": "msg_067cacb5b60efb0c00690dacdab0f0819681e663b03fd451ff",
             "type": "message",
             "status": "completed",
             "content": [
@@ -84,28 +91,35 @@
                 "annotations": [
                   {
                     "type": "url_citation",
-                    "end_index": 761,
-                    "start_index": 648,
-                    "title": "Good News This Week: September 13, 2025 - LEGO, Koalas, & Scientists",
-                    "url": "https://www.goodgoodgood.co/articles/good-news-this-week-september-13-2025?utm_source=openai"
+                    "end_index": 466,
+                    "start_index": 334,
+                    "title": "School Assembly News Headlines – 7 November 2025 | Today’s Top Updates » Uniapply Blog",
+                    "url": "https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai"
                   },
                   {
                     "type": "url_citation",
-                    "end_index": 1334,
-                    "start_index": 1191,
-                    "title": "GNR for Tuesday, September 16, 2025 — More and more good news!",
-                    "url": "https://www.dailykos.com/story/2025/9/16/2342576/-GNR-for-Tuesday-September-16-2025-More-and-more-good-news?utm_source=openai"
+                    "end_index": 899,
+                    "start_index": 767,
+                    "title": "School Assembly News Headlines – 7 November 2025 | Today’s Top Updates » Uniapply Blog",
+                    "url": "https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai"
                   },
                   {
                     "type": "url_citation",
-                    "end_index": 1873,
-                    "start_index": 1791,
-                    "title": "The Christian Science Monitor Daily for September 16, 2025",
-                    "url": "https://www.csmonitor.com/Daily/2025/20250916?utm_source=openai"
+                    "end_index": 1259,
+                    "start_index": 1127,
+                    "title": "School Assembly News Headlines – 7 November 2025 | Today’s Top Updates » Uniapply Blog",
+                    "url": "https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai"
+                  },
+                  {
+                    "type": "url_citation",
+                    "end_index": 1690,
+                    "start_index": 1558,
+                    "title": "School Assembly News Headlines – 7 November 2025 | Today’s Top Updates » Uniapply Blog",
+                    "url": "https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai"
                   }
                 ],
                 "logprobs": [],
-                "text": "On September 16, 2025, several positive news stories emerged:\n\n**Environmental Conservation in Australia**\n\nThe New South Wales government in Australia announced the creation of a significant national park to protect thousands of koalas and halt logging activities. This initiative adds 176,000 hectares of forest to existing reserves, forming one of the state's largest national parks. The park aims to safeguard over 12,000 koalas and includes an immediate moratorium on logging within its boundaries. This decision follows months of advocacy from local environmental groups concerned about ongoing logging and the need for conservation efforts. ([goodgoodgood.co](https://www.goodgoodgood.co/articles/good-news-this-week-september-13-2025?utm_source=openai))\n\n**Advancements in Renewable Energy**\n\nSingapore is set to begin constructing an 86-megawatt floating solar farm on the country's largest reservoir. This project will be the third such floating solar farm in Singapore, joining two others already operational on different reservoirs. The initiative is part of Singapore's efforts to decarbonize the city-state and generate clean energy in an urban environment with limited space. ([dailykos.com](https://www.dailykos.com/story/2025/9/16/2342576/-GNR-for-Tuesday-September-16-2025-More-and-more-good-news?utm_source=openai))\n\n**Global Agreement to Curb Overfishing**\n\nA global agreement to curb overfishing took effect, requiring governments to cut subsidies to fishing fleets to help protect dwindling stocks. The World Trade Organization deal entered into force after Brazil, Kenya, Tonga, and Vietnam signed on, bringing the total to 112 countries. The organization touts the deal as its first environmental pact and the first binding multilateral deal on ocean sustainability. ([csmonitor.com](https://www.csmonitor.com/Daily/2025/20250916?utm_source=openai))\n\nThese stories highlight significant strides in environmental conservation and sustainable development worldwide. "
+                "text": "On November 7, 2025, several positive news stories emerged:\n\n**India's Environmental Initiatives**\n\nIn a significant environmental effort, citizens across 10 states in India planted over 5 million saplings as part of the \"Clean Air, Green Future\" campaign. This initiative aims to combat air pollution and promote sustainable living. ([uniapply.com](https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai))\n\n**Advancements in Space Exploration**\n\nThe Indian Space Research Organisation (ISRO) successfully tested a prototype of its reusable rocket, marking a major milestone in cost-effective space missions. This achievement is expected to reduce the cost of launching satellites and other space missions. ([uniapply.com](https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai))\n\n**Technological Innovations**\n\nApple launched the iPhone 17 Pro, featuring a new AI-driven camera system and a titanium frame. Pre-orders began in India today, reflecting the country's growing interest in advanced technology. ([uniapply.com](https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai))\n\n**Community Engagement**\n\nIn Mumbai, over 2,000 students participated in a beach cleanup drive at Juhu Beach, collecting nearly 10 tonnes of plastic waste in one day. This event set a record for community-led cleanliness efforts and highlights the city's commitment to environmental conservation. ([uniapply.com](https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai))\n\nThese stories reflect positive developments in environmental conservation, technological innovation, and community engagement. "
               }
             ],
             "role": "assistant"
@@ -114,6 +128,7 @@
         "parallel_tool_calls": true,
         "previous_response_id": null,
         "prompt_cache_key": null,
+        "prompt_cache_retention": null,
         "reasoning": {
           "effort": null,
           "summary": null
@@ -133,7 +148,8 @@
         },
         "tools": [
           {
-            "type": "web_search_preview",
+            "type": "web_search",
+            "filters": null,
             "search_context_size": "medium",
             "user_location": {
               "type": "approximate",
@@ -148,15 +164,15 @@
         "top_p": 1.0,
         "truncation": "disabled",
         "usage": {
-          "input_tokens": 312,
+          "input_tokens": 8504,
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 400,
+          "output_tokens": 388,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 712
+          "total_tokens": 8892
         },
         "user": null,
         "metadata": {}

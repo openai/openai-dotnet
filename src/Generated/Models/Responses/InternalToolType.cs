@@ -14,6 +14,7 @@ namespace OpenAI.Responses
         private const string FileSearchValue = "file_search";
         private const string FunctionValue = "function";
         private const string ComputerUsePreviewValue = "computer_use_preview";
+        private const string WebSearchValue = "web_search";
         private const string WebSearchPreviewValue = "web_search_preview";
         private const string McpValue = "mcp";
         private const string CodeInterpreterValue = "code_interpreter";
@@ -32,6 +33,8 @@ namespace OpenAI.Responses
         internal static InternalToolType Function { get; } = new InternalToolType(FunctionValue);
 
         internal static InternalToolType ComputerUsePreview { get; } = new InternalToolType(ComputerUsePreviewValue);
+
+        internal static InternalToolType WebSearch { get; } = new InternalToolType(WebSearchValue);
 
         internal static InternalToolType WebSearchPreview { get; } = new InternalToolType(WebSearchPreviewValue);
 
