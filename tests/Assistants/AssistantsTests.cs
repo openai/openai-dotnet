@@ -9,16 +9,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
-using NUnit.Framework;
-using NUnit.Framework.Internal;
 using NUnit.Framework.Internal;
 using OpenAI.Assistants;
-using OpenAI.Assistants;
-using OpenAI.Files;
 using OpenAI.Files;
 using OpenAI.Tests.Utility;
-using OpenAI.Tests.Utility;
-using OpenAI.VectorStores;
 using OpenAI.VectorStores;
 using static OpenAI.Tests.TestHelpers;
 
@@ -89,7 +83,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         _vectorStoreIdsToDelete.Clear();
     }
 
-    [Test]
+    [RecordedTest]
     public async Task BasicAssistantOperationsWork()
     {
         AssistantClient client = GetTestClient();
@@ -144,7 +138,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Assert.That(listedAssistant.Metadata.TryGetValue(s_cleanupMetadataKey, out string newMetadataValue) && newMetadataValue == "goodbye!");
     }
 
-    [Test]
+    [RecordedTest]
     public async Task BasicThreadOperationsWork()
     {
         AssistantClient client = GetTestClient();
@@ -179,7 +173,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Assert.That(thread.Metadata.TryGetValue("threadMetadata", out threadMetadataValue) && threadMetadataValue == "newThreadMetadataValue");
     }
 
-    [Test]
+    [RecordedTest]
     public async Task BasicMessageOperationsWork()
     {
         AssistantClient client = GetTestClient();
@@ -227,7 +221,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Assert.That(messages[0].Metadata.TryGetValue("messageMetadata", out metadataValue) && metadataValue == "newValue");
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ThreadWithInitialMessagesWorks()
     {
         AssistantClient client = GetTestClient();
@@ -265,7 +259,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Assert.That(messages[1].Content[1].ImageUri.AbsoluteUri, Is.EqualTo("https://test.openai.com/image.png"));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ThreadWithImageDetailWorks()
     {
         AssistantClient client = GetTestClient();
@@ -300,7 +294,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Assert.That(messages[0].Content[1].ImageUri.AbsoluteUri, Is.EqualTo("https://test.openai.com/image.png"));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task BasicRunOperationsWork()
     {
         AssistantClient client = GetTestClient();
@@ -347,7 +341,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Assert.That(messages[1].Id, Is.EqualTo(message.Id));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task BasicRunStepFunctionalityWorks()
     {
         AssistantClient client = GetTestClient();
@@ -434,7 +428,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         });
     }
 
-    [Test]
+    [RecordedTest]
     public async Task SettingResponseFormatWorks()
     {
         AssistantClient client = GetTestClient();
@@ -463,7 +457,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Assert.That(run.ResponseFormat == AssistantResponseFormat.CreateJsonObjectFormat());
     }
 
-    [Test]
+    [RecordedTest]
     public async Task FunctionToolsWork()
     {
         AssistantClient client = GetTestClient();
@@ -542,7 +536,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Assert.That(messages[0].Content[0].Text.ToLowerInvariant(), Does.Contain("tacos"));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task StreamingRunWorks()
     {
         AssistantClient client = GetTestClient();
@@ -651,7 +645,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         } while (run?.Status.IsTerminal == false);
     }
 
-    [Test]
+    [RecordedTest]
     public async Task FileSearchWorks()
     {
         // First, we need to upload a simple test file.
@@ -852,12 +846,13 @@ public class AssistantsTests : OpenAIRecordedTestBase
         });
     }
 
-    [Test]
+    [RecordedTest]
+    [LiveOnly]
     public async Task FileOnMessageWorks()
     {
         // First, we need to upload a simple test file.
         OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
-        OpenAIFile testFile = fileClient.UploadFile(
+        OpenAIFile testFile = await fileClient.UploadFileAsync(
             BinaryData.FromString("""
             This file describes the favorite foods of several people.
 
@@ -871,27 +866,32 @@ public class AssistantsTests : OpenAIRecordedTestBase
 
         AssistantClient client = GetTestClient();
 
-        var thread = client.CreateThread();
-        var assistant = client.CreateAssistant("gpt-4o-mini");
+        AssistantThread thread = await client.CreateThreadAsync();
+        Validate(thread);
 
-        var message = await client.CreateMessageAsync(
-        thread.Value.Id,
-        MessageRole.User,
-        new[] {
-            MessageContent.FromText("What is this file?"),
-        },
-        new MessageCreationOptions()
-        {
-            Attachments = [
-                new MessageCreationAttachment(testFile.Id, new List<ToolDefinition>() { ToolDefinition.CreateFileSearch() }),
-                new MessageCreationAttachment(testFile.Id, new List<ToolDefinition>() { ToolDefinition.CreateCodeInterpreter() })
-                ]
-        });
+        Assistant assistant = await client.CreateAssistantAsync("gpt-4o-mini");
+        Validate(assistant);
 
-        var result = client.CreateRunStreamingAsync(thread.Value.Id, assistant.Value.Id);
+        ThreadMessage message = await client.CreateMessageAsync(
+            thread.Id,
+            MessageRole.User,
+            new[] {
+                MessageContent.FromText("What is this file?"),
+            },
+            new MessageCreationOptions()
+            {
+                Attachments = [
+                    new MessageCreationAttachment(testFile.Id, new List<ToolDefinition>() { ToolDefinition.CreateFileSearch() }),
+                    new MessageCreationAttachment(testFile.Id, new List<ToolDefinition>() { ToolDefinition.CreateCodeInterpreter() })
+                    ]
+            }
+            );
+        Validate(message);
+
+        var result = client.CreateRunStreamingAsync(thread.Id, assistant.Id);
     }
 
-    [Test]
+    [RecordedTest]
     public async Task FileSearchStreamingWorks()
     {
         const string fileContent = """
@@ -986,7 +986,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Assert.That(message, Does.Contain("cake"));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task Pagination_CanEnumerateAssistantsAsync()
     {
         const int TestAssistantCount = 10;
@@ -1029,7 +1029,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Assert.That(count, Is.GreaterThanOrEqualTo(TestAssistantCount));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task Pagination_CanPageThroughAssistantCollection()
     {
         const int TestAssistantCount = 10;
@@ -1094,7 +1094,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         return els.Select(el => ModelReaderWriter.Read<Assistant>(BinaryData.FromString(el.GetRawText())));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task Pagination_CanRehydrateAssistantPageCollectionFromBytes()
     {
         const int TestAssistantCount = 10;
@@ -1166,7 +1166,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Assert.That(pageCount, Is.GreaterThanOrEqualTo(TestAssistantCount / TestPageSizeLimit));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task Pagination_CanRehydrateAssistantPageCollectionFromPageToken()
     {
         const int TestAssistantCount = 10;
@@ -1248,7 +1248,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Assert.That(pageCount, Is.GreaterThanOrEqualTo(TestAssistantCount / TestPageSizeLimit));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task Pagination_CanRehydrateRunStepPageCollectionFromBytes()
     {
         AssistantClient client = GetTestClient();
@@ -1337,7 +1337,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Assert.That(rehydratedRunSteps, Is.EqualTo(runSteps).AsCollection);
     }
 
-    [Test]
+    [RecordedTest]
     public async Task MessagesWithRoles()
     {
         AssistantClient client = GetTestClient();
