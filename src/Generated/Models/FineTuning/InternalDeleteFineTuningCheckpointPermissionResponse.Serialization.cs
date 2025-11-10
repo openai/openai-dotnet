@@ -149,7 +149,7 @@ namespace OpenAI.FineTuning
 
         public static explicit operator InternalDeleteFineTuningCheckpointPermissionResponse(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
+            PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeInternalDeleteFineTuningCheckpointPermissionResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
         }

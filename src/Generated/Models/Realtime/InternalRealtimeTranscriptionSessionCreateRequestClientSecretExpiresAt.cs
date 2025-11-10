@@ -15,14 +15,14 @@ namespace OpenAI.Realtime
         {
         }
 
-        internal InternalRealtimeTranscriptionSessionCreateRequestClientSecretExpiresAt(string anchor, int? seconds, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalRealtimeTranscriptionSessionCreateRequestClientSecretExpiresAt(InternalRealtimeTranscriptionSessionCreateRequestClientSecretExpiresAtAnchor? anchor, int? seconds, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Anchor = anchor;
             Seconds = seconds;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string Anchor { get; set; }
+        internal InternalRealtimeTranscriptionSessionCreateRequestClientSecretExpiresAtAnchor? Anchor { get; set; }
 
         public int? Seconds { get; set; }
 

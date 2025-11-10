@@ -27,6 +27,17 @@ internal static class VisitorHelpers
                 foreachStatement.Body.Clear();
                 foreachStatement.Body.Add(new MethodBodyStatements(foreachBodyStatements));
             }
+            else if (statements[i] is SuppressionStatement suppressionStatement
+                && suppressionStatement.Inner != null)
+            {
+                List<MethodBodyStatement> suppressionInnerStatement = [.. suppressionStatement.Inner.SelectMany(bodyStatement => bodyStatement)];
+                VisitExplodedMethodBodyStatements(suppressionInnerStatement!, visitorFunc);
+                var updatedSuppressionStatement = new SuppressionStatement(
+                    suppressionInnerStatement,
+                    suppressionStatement.Code,
+                    suppressionStatement.Justification);
+                statements[i] = updatedSuppressionStatement;
+            }
             else if (statements[i] is IfStatement ifStatement)
             {
                 List<MethodBodyStatement> ifBodyStatements

@@ -2,19 +2,20 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 
 namespace OpenAI.Responses
 {
     internal partial class InternalComputerActionScreenshot : ComputerCallAction
     {
-        public InternalComputerActionScreenshot() : this(ComputerCallActionKind.Screenshot, null)
+        public InternalComputerActionScreenshot() : this(ComputerCallActionKind.Screenshot, default)
         {
         }
 
-        internal InternalComputerActionScreenshot(ComputerCallActionKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalComputerActionScreenshot(ComputerCallActionKind kind, in JsonPatch patch) : base(kind, patch)
         {
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

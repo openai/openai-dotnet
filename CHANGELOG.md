@@ -1,21 +1,83 @@
 # Release History
 
-## 2.6.0-beta.1 (Unreleased)
+## 2.6.0 (2025-10-31)
+
+### Acknowledgments
+
+Thank you to our developer community members who helped to make the OpenAI client library better with their contributions to this release:
+
+- Maksim Kurnakov _([GitHub](https://github.com/kurnakovv))_
 
 ### Features Added
 
 - OpenAI.Chat:
-  - Added the `Minimal` property to `ChatReasoningEffortLevel`
-
+  - Added the `Minimal` property to `ChatReasoningEffortLevel`. _(A community contribution, courtesy of [kurnakovv](https://github.com/kurnakovv))_
+  - Added support for System.Client.Model's `JsonPatch`, which enables users to get and set additional JSON properties in response and request payloads.
+    - See the following examples for more information:
+      - [AdditionalProperties](https://github.com/openai/openai-dotnet/blob/main/examples/Chat/Example10_AdditionalProperties.cs)
+      - [AdditionalPropertiesAsync](https://github.com/openai/openai-dotnet/blob/main/examples/Chat/Example10_AdditionalPropertiesAsync.cs)
+      - Go to the OpenAI.Responses section in this changelog for more examples that can be extrapolated to Chat.
+- OpenAI.Conversations:
+  - Introduced the new `ConversationClient` to support the Conversations API with protocol methods for the following operations:
+    - `CreateConversation` and `CreateConversationAsync`
+    - `GetConversation` and `GetConversationAsync`
+    - `UpdateConversation` and `UpdateConversationAsync`
+    - `DeleteConversation` and `DeleteConversationAsync`
+    - `CreateConversationItems` and `CreateConversationItemsAsync`
+    - `GetConversationItems` and `GetConversationItemsAsync`
+    - `DeleteConversationItem` and `DeleteConversationItemAsync`
+- OpenAI.Embeddings:
+  - Added support for System.Client.Model's `JsonPatch`, which enables users to get and set additional JSON properties in response and request payloads.
+    - Go to the OpenAI.Chat and OpenAI.Responses section in this changelog for examples that can be extrapolated to Embeddings.
 - OpenAI.Responses:
-  - Added the `Minimal` property to `ResponseReasoningEffortLevel`
+  - Added the `Minimal` property to `ResponseReasoningEffortLevel`. _(A community contribution, courtesy of [kurnakovv](https://github.com/kurnakovv))_
+  - Added the `ContainerFileCitationMessageAnnotation` class which is derived from `ResponseMessageAnnotation` and is used to cite files in the container of the Code Interpreter tool.
+  - Enabled support for the Image Generation tool, which can be used to generate images using models like `gpt-image-1`.
+    - Users can add the new `ImageGenerationTool` to the `Tools` property of their `ResponseCreationOptions` and configure it using properties such as `Background`, `Quality`, `Size`, and more.
+  - Added support for System.Client.Model's `JsonPatch`, which enables users to get and set additional JSON properties in response and request payloads.
+    - See the following examples for more information:
+      - [InputAdditionalProperties](https://github.com/openai/openai-dotnet/blob/main/examples/Responses/Example07_InputAdditionalProperties.cs)
+      - [InputAdditionalPropertiesAsync](https://github.com/openai/openai-dotnet/blob/main/examples/Responses/Example07_InputAdditionalPropertiesAsync.cs)
+      - [OutputAdditionalProperties](https://github.com/openai/openai-dotnet/blob/main/examples/Responses/Example08_OutputAdditionalProperties.cs)
+      - [OutputAdditionalPropertiesAsync](https://github.com/openai/openai-dotnet/blob/main/examples/Responses/Example08_OutputAdditionalPropertiesAsync.cs)
+      - [ModelOverridePerRequest](https://github.com/openai/openai-dotnet/blob/main/examples/Responses/Example09_ModelOverridePerRequest.cs)
+      - [ModelOverridePerRequestAsync](https://github.com/openai/openai-dotnet/blob/main/examples/Responses/Example09_ModelOverridePerRequestAsync.cs)
+      - Go to the OpenAI.Chat section for more examples that can be extrapolated to Responses.
+- OpenAI.Videos:
+  - Introduced the new `VideoClient` to support the Videos API with protocol methods for the following operations:
+    - `CreateVideo` and `CreateVideoAsync`
+    - `GetVideo` and `GetVideoAsync`
+    - `DeleteVideo` and `DeleteVideoAsync`
+    - `DownloadVideo` and `DownloadVideoAsync`
+    - `GetVideos` and `GetVideosAsync`
+    - `CreateVideoRemix` and `GetVideoRemixAsync`
+
+### Bugs Fixed
+
+- OpenAI.Audio:
+  - Added the explicit conversion operators from `ClientResult` that were missing in the `AudioTranscription` and `AudioTranslation` classes.
+- OpenAI.Chat:
+  - Added the `ContentParts` property that was missing in the `ChatCompletionMessageListDatum` class.
+
+### Breaking Changes in Preview APIs
+
+- OpenAI.Containers:
+  - Renamed the `GetContainerFileContent` and `GetContainerFileContentAsync` methods of `ContainerClient` to `DownloadContainerFile` and `DownloadContainerFileAsync`.
+- OpenAI.Responses:
+  - Removed the duplicated `GetInputItems` and `GetInputItemsAsync` methods of the `OpenAIResponseClient` in favor of the existing `GetResponseInputItems` and `GetResponseInputItemsAsync` methods.
 
 ## 2.5.0 (2025-09-23)
+
+### Acknowledgments
+
+Thank you to our developer community members who helped to make the OpenAI client library better with their contributions to this release:
+
+- Benjamin Pinter _([GitHub](https://github.com/BenjaminDavidPinter))_
 
 ### Features Added
 
 - OpenAI.Responses:
-  - Added the `Model` property to `OpenAIResponseClient`.
+  - Added the `Model` property to `OpenAIResponseClient`. _(A community contribution, courtesy of [BenjaminDavidPinter](https://github.com/BenjaminDavidPinter))_
   - Added the `ServiceDescription` property to `McpTool`.
   - Enabled support for connectors, which are OpenAI-maintained MCP wrappers for popular services like Microsoft Outlook or Dropbox.
     - Added the `ConnectorId` property to `McpTool`.

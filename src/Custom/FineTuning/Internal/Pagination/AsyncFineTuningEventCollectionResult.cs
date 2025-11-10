@@ -81,7 +81,7 @@ internal class AsyncFineTuningEventCollectionResult : AsyncCollectionResult<Fine
         Argument.AssertNotNull(page, nameof(page));
 
         PipelineResponse response = page.GetRawResponse();
-        InternalListFineTuningJobEventsResponse list = ModelReaderWriter.Read<InternalListFineTuningJobEventsResponse>(response.Content)!;
+        InternalListFineTuningJobEventsResponse list = ModelReaderWriter.Read<InternalListFineTuningJobEventsResponse>(response.Content, ModelReaderWriterOptions.Json, OpenAIContext.Default)!;
         return list.Data.ToAsyncEnumerable(_cancellationToken);
     }
 }

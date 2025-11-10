@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,12 +12,20 @@ namespace OpenAI.Responses
 {
     public partial class FunctionCallResponseItem : ResponseItem, IJsonModel<FunctionCallResponseItem>
     {
-        internal FunctionCallResponseItem() : this(InternalItemType.FunctionCall, null, null, default, null, null, null)
+        internal FunctionCallResponseItem() : this(InternalItemType.FunctionCall, null, default, default, null, null, null)
         {
         }
 
         void IJsonModel<FunctionCallResponseItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -31,28 +39,32 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(FunctionCallResponseItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             // Plugin customization: remove options.Format != "W" check
             // Plugin customization: apply Optional.Is*Defined() check based on type name dictionary lookup
-            if (Optional.IsDefined(Status) && _additionalBinaryDataProperties?.ContainsKey("status") != true)
+            if (Optional.IsDefined(Status) && !Patch.Contains("$.status"u8))
             {
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.Value.ToSerialString());
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("call_id") != true)
+            if (!Patch.Contains("$.call_id"u8))
             {
                 writer.WritePropertyName("call_id"u8);
                 writer.WriteStringValue(CallId);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
+            if (!Patch.Contains("$.name"u8))
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(FunctionName);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("arguments") != true)
+            if (!Patch.Contains("$.arguments"u8))
             {
                 writer.WritePropertyName("arguments"u8);
                 SerializeFunctionArgumentsValue(writer, options);
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         FunctionCallResponseItem IJsonModel<FunctionCallResponseItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (FunctionCallResponseItem)JsonModelCreateCore(ref reader, options);
@@ -65,10 +77,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(FunctionCallResponseItem)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeFunctionCallResponseItem(document.RootElement, options);
+            return DeserializeFunctionCallResponseItem(document.RootElement, null, options);
         }
 
-        internal static FunctionCallResponseItem DeserializeFunctionCallResponseItem(JsonElement element, ModelReaderWriterOptions options)
+        internal static FunctionCallResponseItem DeserializeFunctionCallResponseItem(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -76,7 +88,9 @@ namespace OpenAI.Responses
             }
             InternalItemType kind = default;
             string id = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             FunctionCallStatus? status = default;
             string callId = default;
             string functionName = default;
@@ -113,13 +127,12 @@ namespace OpenAI.Responses
                     DeserializeFunctionArgumentsValue(prop, ref functionArguments);
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new FunctionCallResponseItem(
                 kind,
                 id,
-                additionalBinaryDataProperties,
+                patch,
                 status,
                 callId,
                 functionName,
@@ -150,7 +163,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeFunctionCallResponseItem(document.RootElement, options);
+                        return DeserializeFunctionCallResponseItem(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(FunctionCallResponseItem)} does not support reading '{options.Format}' format.");

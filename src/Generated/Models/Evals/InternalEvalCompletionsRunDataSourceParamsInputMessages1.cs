@@ -28,7 +28,7 @@ namespace OpenAI.Evals
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string Kind { get; } = "template";
+        internal string Kind { get; } = "template";
 
         public IList<BinaryData> Template { get; }
 

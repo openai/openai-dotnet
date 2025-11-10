@@ -17,7 +17,7 @@ using HttpClient http = new();
 // Download an image as stream
 using var stream = await http.GetStreamAsync(imageUrl);
 
-OpenAIResponse response1 = (OpenAIResponse)client.CreateResponse([
+OpenAIResponse response1 = client.CreateResponse([
     ResponseItem.CreateUserMessageItem([
         ResponseContentPart.CreateInputTextPart("What is in this image?"),
         ResponseContentPart.CreateInputImagePart(BinaryData.FromStream(stream), "image/png")
@@ -29,7 +29,7 @@ Console.WriteLine($"From image stream: {response1.GetOutputText()}");
 // Download an image as byte array
 byte[] bytes = await http.GetByteArrayAsync(imageUrl);
 
-OpenAIResponse response2 = (OpenAIResponse)client.CreateResponse([
+OpenAIResponse response2 = client.CreateResponse([
     ResponseItem.CreateUserMessageItem([
         ResponseContentPart.CreateInputTextPart("What is in this image?"),
         ResponseContentPart.CreateInputImagePart(BinaryData.FromBytes(bytes), "image/png")

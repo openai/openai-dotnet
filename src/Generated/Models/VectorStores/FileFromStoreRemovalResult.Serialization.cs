@@ -149,7 +149,7 @@ namespace OpenAI.VectorStores
 
         public static explicit operator FileFromStoreRemovalResult(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
+            PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeFileFromStoreRemovalResult(document.RootElement, ModelSerializationExtensions.WireOptions);
         }

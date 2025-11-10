@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using OpenAI.Responses;
 
 namespace OpenAI.Chat;
 
@@ -29,7 +30,7 @@ public static partial class OpenAIChatModelFactory
         ChatCompletion(
             id: id,
             finishReason: finishReason,
-            content:content,
+            content: content,
             refusal: refusal,
             toolCalls: toolCalls,
             role: role,
@@ -70,19 +71,19 @@ public static partial class OpenAIChatModelFactory
         messageAnnotations ??= new List<ChatMessageAnnotation>();
 
         InternalChatCompletionResponseMessage message = new(
+            content: content,
             refusal: refusal,
             toolCalls: toolCalls.ToList(),
             annotations: messageAnnotations.ToList(),
-            audio: outputAudio,
             role: role,
-            content: content,
             functionCall: functionCall,
-            additionalBinaryDataProperties: null);
+            audio: outputAudio,
+            patch: default);
 
         InternalCreateChatCompletionResponseChoiceLogprobs logprobs = new InternalCreateChatCompletionResponseChoiceLogprobs(
             contentTokenLogProbabilities.ToList(),
             refusalTokenLogProbabilities.ToList(),
-            additionalBinaryDataProperties: null);
+            patch: default);
 
         IReadOnlyList<InternalCreateChatCompletionResponseChoice> choices = [
             new InternalCreateChatCompletionResponseChoice(
@@ -90,7 +91,7 @@ public static partial class OpenAIChatModelFactory
                 index: 0,
                 message,
                 logprobs,
-                additionalBinaryDataProperties: null)
+                patch: default)
         ];
 
         return new ChatCompletion(
@@ -102,7 +103,7 @@ public static partial class OpenAIChatModelFactory
             @object: "chat.completion",
             choices: choices,
             createdAt: createdAt,
-            additionalBinaryDataProperties: null);
+            patch: default);
     }
 
     /// <summary>
@@ -139,7 +140,7 @@ public static partial class OpenAIChatModelFactory
             logProbability,
             utf8Bytes,
             topLogProbabilities.ToList(),
-            additionalBinaryDataProperties: null);
+            patch: default);
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.ChatTokenTopLogProbabilityDetails"/>. </summary>
@@ -150,7 +151,7 @@ public static partial class OpenAIChatModelFactory
             token,
             logProbability,
             utf8Bytes,
-            additionalBinaryDataProperties: null);
+            patch: default);
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.ChatTokenUsage"/>. </summary>
@@ -174,7 +175,7 @@ public static partial class OpenAIChatModelFactory
             totalTokenCount: totalTokenCount,
             outputTokenDetails: outputTokenDetails,
             inputTokenDetails: inputTokenDetails,
-            additionalBinaryDataProperties: null);
+            patch: default);
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.ChatInputTokenUsageDetails"/>. </summary>
@@ -184,7 +185,7 @@ public static partial class OpenAIChatModelFactory
         return new ChatInputTokenUsageDetails(
             audioTokenCount: audioTokenCount,
             cachedTokenCount: cachedTokenCount,
-            additionalBinaryDataProperties: null);
+            patch: default);
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.ChatOutputTokenUsageDetails"/>. </summary>
@@ -215,7 +216,7 @@ public static partial class OpenAIChatModelFactory
             reasoningTokenCount: reasoningTokenCount,
             acceptedPredictionTokenCount: acceptedPredictionTokenCount,
             rejectedPredictionTokenCount: rejectedPredictionTokenCount,
-            additionalBinaryDataProperties: null);
+            patch: default);
     }
 
     [Experimental("OPENAI001")]
@@ -226,7 +227,7 @@ public static partial class OpenAIChatModelFactory
             expiresAt: expiresAt,
             transcript: transcript,
             audioBytes: audioBytes,
-            additionalBinaryDataProperties: null);
+            patch: default);
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.StreamingChatCompletionUpdate"/>. </summary>
@@ -294,12 +295,12 @@ public static partial class OpenAIChatModelFactory
             refusal: refusalUpdate,
             role: role,
             content: contentUpdate,
-            additionalBinaryDataProperties: null);
+            patch: default);
 
         InternalCreateChatCompletionStreamResponseChoiceLogprobs logprobs = new InternalCreateChatCompletionStreamResponseChoiceLogprobs(
             contentTokenLogProbabilities.ToList(),
             refusalTokenLogProbabilities.ToList(),
-            additionalBinaryDataProperties: null);
+            patch: default);
 
         IReadOnlyList<InternalCreateChatCompletionStreamResponseChoice> choices = [
             new InternalCreateChatCompletionStreamResponseChoice(
@@ -307,7 +308,7 @@ public static partial class OpenAIChatModelFactory
                 logprobs: logprobs,
                 index: 0,
                 finishReason: finishReason,
-                additionalBinaryDataProperties: null)
+                patch: default)
         ];
 
         return new StreamingChatCompletionUpdate(
@@ -319,7 +320,7 @@ public static partial class OpenAIChatModelFactory
             choices: choices,
             createdAt: createdAt,
             usage: usage,
-            additionalBinaryDataProperties: null);
+            patch: default);
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.StreamingChatFunctionCallUpdate"/>. </summary>
@@ -330,7 +331,7 @@ public static partial class OpenAIChatModelFactory
         return new StreamingChatFunctionCallUpdate(
             functionName,
             functionArgumentsUpdate,
-            additionalBinaryDataProperties: null);
+            patch: default);
     }
 
     /// <summary>
@@ -353,7 +354,7 @@ public static partial class OpenAIChatModelFactory
             expiresAt: expiresAt,
             transcriptUpdate: transcriptUpdate,
             audioBytesUpdate: audioBytesUpdate,
-            additionalBinaryDataProperties: null);
+            patch: default);
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.StreamingChatToolCallUpdate"/>. </summary>
@@ -363,13 +364,50 @@ public static partial class OpenAIChatModelFactory
         InternalChatCompletionMessageToolCallChunkFunction function = new InternalChatCompletionMessageToolCallChunkFunction(
             functionName,
             functionArgumentsUpdate,
-            additionalBinaryDataProperties: null);
+            patch: default);
 
         return new StreamingChatToolCallUpdate(
             index: index,
             function: function,
             kind: kind,
             toolCallId: toolCallId,
-            additionalBinaryDataProperties: null);
+            patch: default);
+    }
+
+    /// <summary> Initializes a new instance of <see cref="OpenAI.Chat.ChatCompletionMessageListDatum"/>. </summary>
+    /// <returns> A new <see cref="OpenAI.Chat.ChatCompletionMessageListDatum"/> instance for mocking.</returns>
+    [Experimental("OPENAI001")]
+    public static ChatCompletionMessageListDatum ChatCompletionMessageListDatum(
+        string id,
+        string content,
+        string refusal,
+        ChatMessageRole role,
+        IList<ChatMessageContentPart> contentParts = null,
+        IList<ChatToolCall> toolCalls = null,
+        IList<ChatMessageAnnotation> annotations = null,
+        string functionName = null,
+        string functionArguments = null,
+        ChatOutputAudio outputAudio = null)
+    {
+        InternalChatCompletionResponseMessageFunctionCall functionCall = null;
+        if (functionName != null && functionArguments != null)
+        {
+            functionCall = new(
+                name: functionName,
+                arguments: functionArguments,
+                patch: default);
+        }
+
+        return new ChatCompletionMessageListDatum(
+                content: content,
+                contentParts: contentParts,
+                refusal: refusal,
+                toolCalls: toolCalls.ToList().AsReadOnly(),
+                annotations: annotations.ToList().AsReadOnly(),
+                role: role,
+                functionCall: functionCall,
+                outputAudio: outputAudio,
+                id: id,
+                patch: default);
     }
 }

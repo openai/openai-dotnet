@@ -189,7 +189,7 @@ namespace OpenAI.VectorStores
 
         public static explicit operator VectorStoreFileBatch(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
+            PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeVectorStoreFileBatch(document.RootElement, ModelSerializationExtensions.WireOptions);
         }

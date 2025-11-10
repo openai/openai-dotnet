@@ -5,6 +5,7 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -14,6 +15,14 @@ namespace OpenAI.Responses
     {
         void IJsonModel<AutomaticCodeInterpreterToolContainerConfiguration>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -27,21 +36,38 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(AutomaticCodeInterpreterToolContainerConfiguration)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (Optional.IsCollectionDefined(FileIds) && _additionalBinaryDataProperties?.ContainsKey("file_ids") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$.file_ids"u8))
+            {
+                if (!Patch.IsRemoved("$.file_ids"u8))
+                {
+                    writer.WritePropertyName("file_ids"u8);
+                    writer.WriteRawValue(Patch.GetJson("$.file_ids"u8));
+                }
+            }
+            else if (Optional.IsCollectionDefined(FileIds))
             {
                 writer.WritePropertyName("file_ids"u8);
                 writer.WriteStartArray();
-                foreach (string item in FileIds)
+                for (int i = 0; i < FileIds.Count; i++)
                 {
-                    if (item == null)
+                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.file_ids[{i}]")))
+                    {
+                        continue;
+                    }
+                    if (FileIds[i] == null)
                     {
                         writer.WriteNullValue();
                         continue;
                     }
-                    writer.WriteStringValue(item);
+                    writer.WriteStringValue(FileIds[i]);
                 }
+                Patch.WriteTo(writer, "$.file_ids"u8);
                 writer.WriteEndArray();
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         AutomaticCodeInterpreterToolContainerConfiguration IJsonModel<AutomaticCodeInterpreterToolContainerConfiguration>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (AutomaticCodeInterpreterToolContainerConfiguration)JsonModelCreateCore(ref reader, options);
@@ -54,17 +80,19 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(AutomaticCodeInterpreterToolContainerConfiguration)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeAutomaticCodeInterpreterToolContainerConfiguration(document.RootElement, options);
+            return DeserializeAutomaticCodeInterpreterToolContainerConfiguration(document.RootElement, null, options);
         }
 
-        internal static AutomaticCodeInterpreterToolContainerConfiguration DeserializeAutomaticCodeInterpreterToolContainerConfiguration(JsonElement element, ModelReaderWriterOptions options)
+        internal static AutomaticCodeInterpreterToolContainerConfiguration DeserializeAutomaticCodeInterpreterToolContainerConfiguration(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalCodeInterpreterContainerConfigurationType kind = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             IList<string> fileIds = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -94,10 +122,9 @@ namespace OpenAI.Responses
                     fileIds = array;
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new AutomaticCodeInterpreterToolContainerConfiguration(kind, additionalBinaryDataProperties, fileIds ?? new ChangeTrackingList<string>());
+            return new AutomaticCodeInterpreterToolContainerConfiguration(kind, patch, fileIds ?? new ChangeTrackingList<string>());
         }
 
         BinaryData IPersistableModel<AutomaticCodeInterpreterToolContainerConfiguration>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -124,7 +151,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeAutomaticCodeInterpreterToolContainerConfiguration(document.RootElement, options);
+                        return DeserializeAutomaticCodeInterpreterToolContainerConfiguration(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(AutomaticCodeInterpreterToolContainerConfiguration)} does not support reading '{options.Format}' format.");

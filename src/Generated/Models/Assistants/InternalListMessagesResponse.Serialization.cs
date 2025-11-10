@@ -188,7 +188,7 @@ namespace OpenAI.Assistants
 
         public static explicit operator InternalListMessagesResponse(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
+            PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeInternalListMessagesResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
         }

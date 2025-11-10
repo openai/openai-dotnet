@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -14,6 +14,14 @@ namespace OpenAI.Responses
     {
         void IJsonModel<WebSearchTool>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -27,16 +35,25 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(WebSearchTool)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (Optional.IsDefined(UserLocation) && _additionalBinaryDataProperties?.ContainsKey("user_location") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Optional.IsDefined(Filters) && !Patch.Contains("$.filters"u8))
+            {
+                writer.WritePropertyName("filters"u8);
+                writer.WriteObjectValue(Filters, options);
+            }
+            if (Optional.IsDefined(UserLocation) && !Patch.Contains("$.user_location"u8))
             {
                 writer.WritePropertyName("user_location"u8);
                 writer.WriteObjectValue(UserLocation, options);
             }
-            if (Optional.IsDefined(SearchContextSize) && _additionalBinaryDataProperties?.ContainsKey("search_context_size") != true)
+            if (Optional.IsDefined(SearchContextSize) && !Patch.Contains("$.search_context_size"u8))
             {
                 writer.WritePropertyName("search_context_size"u8);
                 writer.WriteStringValue(SearchContextSize.Value.ToString());
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         WebSearchTool IJsonModel<WebSearchTool>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (WebSearchTool)JsonModelCreateCore(ref reader, options);
@@ -49,17 +66,20 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(WebSearchTool)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeWebSearchTool(document.RootElement, options);
+            return DeserializeWebSearchTool(document.RootElement, null, options);
         }
 
-        internal static WebSearchTool DeserializeWebSearchTool(JsonElement element, ModelReaderWriterOptions options)
+        internal static WebSearchTool DeserializeWebSearchTool(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalToolType kind = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            WebSearchToolFilters filters = default;
             WebSearchToolLocation userLocation = default;
             WebSearchToolContextSize? searchContextSize = default;
             foreach (var prop in element.EnumerateObject())
@@ -69,6 +89,16 @@ namespace OpenAI.Responses
                     kind = new InternalToolType(prop.Value.GetString());
                     continue;
                 }
+                if (prop.NameEquals("filters"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        filters = null;
+                        continue;
+                    }
+                    filters = WebSearchToolFilters.DeserializeWebSearchToolFilters(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    continue;
+                }
                 if (prop.NameEquals("user_location"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -76,7 +106,7 @@ namespace OpenAI.Responses
                         userLocation = null;
                         continue;
                     }
-                    userLocation = WebSearchToolLocation.DeserializeWebSearchToolLocation(prop.Value, options);
+                    userLocation = WebSearchToolLocation.DeserializeWebSearchToolLocation(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("search_context_size"u8))
@@ -88,10 +118,9 @@ namespace OpenAI.Responses
                     searchContextSize = new WebSearchToolContextSize(prop.Value.GetString());
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new WebSearchTool(kind, additionalBinaryDataProperties, userLocation, searchContextSize);
+            return new WebSearchTool(kind, patch, filters, userLocation, searchContextSize);
         }
 
         BinaryData IPersistableModel<WebSearchTool>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -118,7 +147,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeWebSearchTool(document.RootElement, options);
+                        return DeserializeWebSearchTool(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(WebSearchTool)} does not support reading '{options.Format}' format.");

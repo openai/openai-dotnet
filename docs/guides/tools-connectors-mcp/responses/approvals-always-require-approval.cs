@@ -19,7 +19,7 @@ options.Tools.Add(ResponseTool.CreateMcpTool(
 ));
 
 // STEP 1: Create response that requests tool call approval
-OpenAIResponse response1 = (OpenAIResponse)client.CreateResponse([
+OpenAIResponse response1 = client.CreateResponse([
     ResponseItem.CreateUserMessageItem([
         ResponseContentPart.CreateInputTextPart("Roll 2d4+1")
     ])
@@ -29,7 +29,7 @@ McpToolCallApprovalRequestItem? approvalRequestItem = response1.OutputItems.Last
 
 // STEP 2: Approve the tool call request and get final response
 options.PreviousResponseId = response1.Id;
-OpenAIResponse response2 = (OpenAIResponse)client.CreateResponse([
+OpenAIResponse response2 = client.CreateResponse([
     ResponseItem.CreateMcpApprovalResponseItem(approvalRequestItem!.Id, approved: true),
 ], options);
 

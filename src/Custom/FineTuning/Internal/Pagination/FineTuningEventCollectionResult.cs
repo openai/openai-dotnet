@@ -86,7 +86,7 @@ internal class FineTuningEventCollectionResult : CollectionResult<FineTuningEven
         Argument.AssertNotNull(page, nameof(page));
 
         PipelineResponse response = page.GetRawResponse();
-        InternalListFineTuningJobEventsResponse events = ModelReaderWriter.Read<InternalListFineTuningJobEventsResponse>(response.Content)!;
+        InternalListFineTuningJobEventsResponse events = ModelReaderWriter.Read<InternalListFineTuningJobEventsResponse>(response.Content, ModelReaderWriterOptions.Json, OpenAIContext.Default)!;
         return events.Data;
     }
 }

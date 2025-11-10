@@ -6,4 +6,4 @@ using Azure.ClientGenerator.Core;
 
 @@clientName(Containers.retrieveContainer, "GetContainer");
 @@clientName(Containers.retrieveContainerFile, "GetContainerFile");
-@@clientName(Containers.retrieveContainerFileContent, "GetContainerFileContent");
+@@clientName(Containers.retrieveContainerFileContent, "DownloadContainerFile");

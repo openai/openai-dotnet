@@ -16,7 +16,7 @@ public partial class ResponseTool
 
         return new FunctionTool(
             kind: InternalToolType.Function,
-            additionalBinaryDataProperties: null,
+            patch: default,
             functionName: functionName,
             functionDescription: functionDescription,
             functionParameters: functionParameters,
@@ -29,7 +29,7 @@ public partial class ResponseTool
     {
         return new ComputerTool(
             kind: InternalToolType.ComputerUsePreview,
-            additionalBinaryDataProperties: null,
+            patch: default,
             environment: environment,
             displayWidth: displayWidth,
             displayHeight: displayHeight);
@@ -42,7 +42,7 @@ public partial class ResponseTool
 
         return new FileSearchTool(
             kind: InternalToolType.FileSearch,
-            additionalBinaryDataProperties: null,
+            patch: default,
             vectorStoreIds: vectorStoreIds.ToList(),
             maxResultCount: maxResultCount,
             rankingOptions: rankingOptions,
@@ -50,11 +50,22 @@ public partial class ResponseTool
     }
 
     // CUSTOM: Added factory method as a convenience.
-    public static WebSearchTool CreateWebSearchTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null)
+    public static WebSearchTool CreateWebSearchTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null, WebSearchToolFilters filters = null)
     {
         return new WebSearchTool(
+            kind: InternalToolType.WebSearch,
+            patch: default,
+            userLocation: userLocation,
+            searchContextSize: searchContextSize,
+            filters: filters);
+    }
+
+    // CUSTOM: Added factory method as a convenience.
+    public static WebSearchPreviewTool CreateWebSearchPreviewTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null)
+    {
+        return new WebSearchPreviewTool(
             kind: InternalToolType.WebSearchPreview,
-            additionalBinaryDataProperties: null,
+            patch: default,
             userLocation: userLocation,
             searchContextSize: searchContextSize);
     }
@@ -67,7 +78,7 @@ public partial class ResponseTool
 
         return new McpTool(
             kind: InternalToolType.Mcp,
-            additionalBinaryDataProperties: null,
+            patch: default,
             serverLabel: serverLabel,
             serverUri: serverUri,
             connectorId: null,
@@ -85,7 +96,7 @@ public partial class ResponseTool
 
         return new McpTool(
             kind: InternalToolType.Mcp,
-            additionalBinaryDataProperties: null,
+            patch: default,
             serverLabel: serverLabel,
             serverUri: null,
             connectorId: connectorId,
@@ -107,7 +118,7 @@ public partial class ResponseTool
 
         return new CodeInterpreterTool(
             kind: InternalToolType.CodeInterpreter,
-            additionalBinaryDataProperties: null,
+            patch: default,
             container: container);
     }
 
@@ -115,11 +126,11 @@ public partial class ResponseTool
     /// <summary>
     /// Creates a new instance of the <see cref="ImageGenerationTool"/> class.
     /// </summary>
-    public static ImageGenerationTool CreateImageGenerationTool(string model, ImageGenerationToolQuality? quality = null, ImageGenerationToolSize? size = null, ImageGenerationToolOutputFileFormat? outputFileFormat = null, int? outputCompressionFactor = null, ImageGenerationToolModerationLevel? moderationLevel = null, ImageGenerationToolBackground? background = null, ImageGenerationToolInputFidelityLevel? inputFidelityLevel = null, ImageGenerationToolInputImageMask inputImageMask = null, int? partialImageCount = null)
+    public static ImageGenerationTool CreateImageGenerationTool(string model, ImageGenerationToolQuality? quality = null, ImageGenerationToolSize? size = null, ImageGenerationToolOutputFileFormat? outputFileFormat = null, int? outputCompressionFactor = null, ImageGenerationToolModerationLevel? moderationLevel = null, ImageGenerationToolBackground? background = null, ImageGenerationToolInputFidelity? inputFidelity = null, ImageGenerationToolInputImageMask inputImageMask = null, int? partialImageCount = null)
     {
         return new ImageGenerationTool(
             kind: InternalToolType.ImageGeneration,
-            additionalBinaryDataProperties: null,
+            patch: default,
             model: model,
             quality: quality,
             size: size,
@@ -127,7 +138,7 @@ public partial class ResponseTool
             outputCompressionFactor: outputCompressionFactor,
             moderationLevel: moderationLevel,
             background: background,
-            inputFidelityLevel: inputFidelityLevel,
+            inputFidelity: inputFidelity,
             inputImageMask: inputImageMask,
             partialImageCount: partialImageCount);
     }

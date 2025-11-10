@@ -217,7 +217,7 @@ public partial class FineTuningClient
 
     internal virtual IEnumerable<FineTuningJob> CreateJobsFromPageResponse(PipelineResponse response)
     {
-        InternalListPaginatedFineTuningJobsResponse jobs = ModelReaderWriter.Read<InternalListPaginatedFineTuningJobsResponse>(response.Content)!;
+        InternalListPaginatedFineTuningJobsResponse jobs = ModelReaderWriter.Read<InternalListPaginatedFineTuningJobsResponse>(response.Content, ModelReaderWriterOptions.Json, OpenAIContext.Default)!;
         return jobs.Data.Select(job => new FineTuningJob(Pipeline, _endpoint, job, response));
     }
 }

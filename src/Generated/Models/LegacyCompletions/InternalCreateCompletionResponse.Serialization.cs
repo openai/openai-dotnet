@@ -164,7 +164,7 @@ namespace OpenAI.LegacyCompletions
                     {
                         continue;
                     }
-                    usage = ChatTokenUsage.DeserializeChatTokenUsage(prop.Value, options);
+                    usage = ChatTokenUsage.DeserializeChatTokenUsage(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
@@ -216,7 +216,7 @@ namespace OpenAI.LegacyCompletions
 
         public static explicit operator InternalCreateCompletionResponse(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
+            PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeInternalCreateCompletionResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
         }

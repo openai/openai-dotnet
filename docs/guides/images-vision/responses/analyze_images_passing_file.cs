@@ -22,7 +22,7 @@ using var stream = await http.GetStreamAsync(imageUrl);
 OpenAIFileClient files = new(key);
 OpenAIFile file = await files.UploadFileAsync(BinaryData.FromStream(stream), filename, FileUploadPurpose.Vision);
 
-OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
+OpenAIResponse response = client.CreateResponse([
     ResponseItem.CreateUserMessageItem([
         ResponseContentPart.CreateInputTextPart("what's in this image?"),
         ResponseContentPart.CreateInputImagePart(file.Id)

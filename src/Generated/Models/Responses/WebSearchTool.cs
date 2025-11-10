@@ -2,8 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -11,15 +10,20 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class WebSearchTool : ResponseTool
     {
-        public WebSearchTool() : this(InternalToolType.WebSearchPreview, null, null, default)
+        public WebSearchTool() : this(InternalToolType.WebSearch, default, null, null, default)
         {
         }
 
-        internal WebSearchTool(InternalToolType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, WebSearchToolLocation userLocation, WebSearchToolContextSize? searchContextSize) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal WebSearchTool(InternalToolType kind, in JsonPatch patch, WebSearchToolFilters filters, WebSearchToolLocation userLocation, WebSearchToolContextSize? searchContextSize) : base(kind, patch)
         {
+            Filters = filters;
             UserLocation = userLocation;
             SearchContextSize = searchContextSize;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        public WebSearchToolFilters Filters { get; set; }
 
         public WebSearchToolLocation UserLocation { get; set; }
 

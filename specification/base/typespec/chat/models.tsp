@@ -124,6 +124,8 @@ alias CreateChatCompletionStreamResponseChoice = {
 alias ChatCompletionMessageListData = {
   ...ChatCompletionResponseMessage;
 
+  content_parts?: ChatCompletionRequestMessageContentPart[] | null;
+
   /** The identifier of the chat message. */
   id: string;
 };

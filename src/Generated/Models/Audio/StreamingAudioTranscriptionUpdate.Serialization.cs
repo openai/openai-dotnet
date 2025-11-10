@@ -3,7 +3,6 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Text.Json;
 using OpenAI;
@@ -122,12 +121,5 @@ namespace OpenAI.Audio
         }
 
         string IPersistableModel<StreamingAudioTranscriptionUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static explicit operator StreamingAudioTranscriptionUpdate(ClientResult result)
-        {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeStreamingAudioTranscriptionUpdate(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

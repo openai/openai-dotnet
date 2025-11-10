@@ -149,7 +149,7 @@ namespace OpenAI.Evals
 
         public static explicit operator InternalDeleteEvalRunResponse(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
+            PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeInternalDeleteEvalRunResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
         }

@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,12 +12,20 @@ namespace OpenAI.Responses
 {
     public partial class ImageGenerationCallResponseItem : ResponseItem, IJsonModel<ImageGenerationCallResponseItem>
     {
-        internal ImageGenerationCallResponseItem() : this(InternalItemType.ImageGenerationCall, null, null, default, null)
+        internal ImageGenerationCallResponseItem() : this(InternalItemType.ImageGenerationCall, null, default, default, null)
         {
         }
 
         void IJsonModel<ImageGenerationCallResponseItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -31,24 +39,25 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(ImageGenerationCallResponseItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties?.ContainsKey("status") != true)
+            if (!Patch.Contains("$.status"u8))
             {
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.Value.ToSerialString());
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("result") != true)
+            if (Optional.IsDefined(ImageResultBytes) && !Patch.Contains("$.result"u8))
             {
-                if (Optional.IsDefined(GeneratedImageBytes))
-                {
-                    writer.WritePropertyName("result"u8);
-                    writer.WriteBase64StringValue(GeneratedImageBytes.ToArray(), "D");
-                }
-                else
-                {
-                    writer.WriteNull("result"u8);
-                }
+                writer.WritePropertyName("result"u8);
+                writer.WriteBase64StringValue(ImageResultBytes.ToArray(), "D");
             }
+            else
+            {
+                writer.WriteNull("result"u8);
+            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         ImageGenerationCallResponseItem IJsonModel<ImageGenerationCallResponseItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (ImageGenerationCallResponseItem)JsonModelCreateCore(ref reader, options);
@@ -61,10 +70,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(ImageGenerationCallResponseItem)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeImageGenerationCallResponseItem(document.RootElement, options);
+            return DeserializeImageGenerationCallResponseItem(document.RootElement, null, options);
         }
 
-        internal static ImageGenerationCallResponseItem DeserializeImageGenerationCallResponseItem(JsonElement element, ModelReaderWriterOptions options)
+        internal static ImageGenerationCallResponseItem DeserializeImageGenerationCallResponseItem(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -72,9 +81,11 @@ namespace OpenAI.Responses
             }
             InternalItemType kind = default;
             string id = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             ImageGenerationCallStatus? status = default;
-            BinaryData generatedImageBytes = default;
+            BinaryData imageResultBytes = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -96,16 +107,15 @@ namespace OpenAI.Responses
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        generatedImageBytes = null;
+                        imageResultBytes = null;
                         continue;
                     }
-                    generatedImageBytes = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
+                    imageResultBytes = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ImageGenerationCallResponseItem(kind, id, additionalBinaryDataProperties, status, generatedImageBytes);
+            return new ImageGenerationCallResponseItem(kind, id, patch, status, imageResultBytes);
         }
 
         BinaryData IPersistableModel<ImageGenerationCallResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -132,7 +142,7 @@ namespace OpenAI.Responses
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data))
                     {
-                        return DeserializeImageGenerationCallResponseItem(document.RootElement, options);
+                        return DeserializeImageGenerationCallResponseItem(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ImageGenerationCallResponseItem)} does not support reading '{options.Format}' format.");

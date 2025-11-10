@@ -88,7 +88,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         return (CreateContainerBody)constructor.Invoke(new object[] { name });
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CanEnumerateContainers()
     {
         ContainerClient client = GetTestClient();
@@ -134,7 +134,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Console.WriteLine($"Found {count} containers, including our test container");
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CanEnumerateContainerFiles()
     {
         ContainerClient client = GetTestClient();
@@ -173,7 +173,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         // Note: A new container may have no files, so count could be 0 - this is expected
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CanEnumerateContainersWithDefaultOptions()
     {
         ContainerClient client = GetTestClient();
@@ -213,7 +213,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Console.WriteLine($"Found {count} containers with default options, including our test container");
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CanEnumerateContainerFilesWithDefaultOptions()
     {
         ContainerClient client = GetTestClient();
@@ -245,7 +245,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Console.WriteLine($"Found {count} files in test container {_testContainerId} with default options");
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CanEnumerateContainersWithCancellation()
     {
         ContainerClient client = GetTestClient();
@@ -290,7 +290,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Console.WriteLine($"Enumerated {count} containers with cancellation");
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CanEnumerateContainerFilesWithCancellation()
     {
         ContainerClient client = GetTestClient();
@@ -335,7 +335,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Console.WriteLine($"Enumerated {count} files with cancellation token");
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ContainerCollectionOptionsCanBeConfigured()
     {
         ContainerClient client = GetTestClient();
@@ -386,7 +386,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Console.WriteLine($"Ascending: {ascendingCount}, Descending: {descendingCount}");
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ContainerFileCollectionOptionsCanBeConfigured()
     {
         ContainerClient client = GetTestClient();
@@ -439,17 +439,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Console.WriteLine($"Files - Ascending: {ascendingCount}, Descending: {descendingCount}");
     }
 
-    private static void Validate(ContainerResource container)
-    {
-        Assert.That(container, Is.Not.Null);
-        Assert.That(container.Id, Is.Not.Null.And.Not.Empty);
-        Assert.That(container.Object, Is.Not.Null.And.Not.Empty);
-        Assert.That(container.CreatedAt, Is.GreaterThan(DateTimeOffset.MinValue));
-        Assert.That(container.Status, Is.Not.Null.And.Not.Empty);
-        // Name can be null/empty for some containers
-    }
-
-    [Test]
+    [RecordedTest]
     public async Task CanGetContainer()
     {
         ContainerClient client = GetTestClient();
@@ -468,7 +458,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Console.WriteLine($"Retrieved container: {container.Id} with status {container.Status}");
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CanGetContainerWithCancellation()
     {
         ContainerClient client = GetTestClient();
@@ -490,7 +480,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Console.WriteLine($"Retrieved container with cancellation: {container.Id}");
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CanCreateAndDeleteContainerFile()
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
@@ -548,7 +538,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CanCreateGetAndDeleteContainerFile()
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
@@ -588,7 +578,7 @@ public class ContainerTests : OpenAIRecordedTestBase
                 Console.WriteLine($"Retrieved file metadata: {fileResource.Id}, {fileResource.Bytes} bytes");
 
                 // Get the file content
-                ClientResult<BinaryData> contentResult = await client.GetContainerFileContentAsync(_testContainerId, fileId);
+                ClientResult<BinaryData> contentResult = await client.DownloadContainerFileAsync(_testContainerId, fileId);
                 BinaryData fileContent = contentResult.Value;
 
                 Assert.That(fileContent, Is.Not.Null);
@@ -612,7 +602,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CanGetContainerFileWithCancellation()
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
@@ -650,8 +640,8 @@ public class ContainerTests : OpenAIRecordedTestBase
                 Validate(fileResource);
                 Assert.That(fileResource.Id, Is.EqualTo(fileId));
 
-                // Test GetContainerFileContent with cancellation
-                ClientResult<BinaryData> contentResult = await client.GetContainerFileContentAsync(_testContainerId, fileId, cancellationTokenSource.Token);
+                // Test DownloadContainerFile with cancellation
+                ClientResult<BinaryData> contentResult = await client.DownloadContainerFileAsync(_testContainerId, fileId, cancellationTokenSource.Token);
                 BinaryData fileContent = contentResult.Value;
 
                 Assert.That(fileContent, Is.Not.Null);
@@ -672,7 +662,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task CanDeleteContainerFileWithCancellation()
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
@@ -713,7 +703,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public void CreateContainerFileValidatesParameters()
     {
         ContainerClient client = GetTestClient();
@@ -740,7 +730,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Console.WriteLine("Parameter validation tests passed");
     }
 
-    [Test]
+    [RecordedTest]
     public void GetContainerFileValidatesParameters()
     {
         ContainerClient client = GetTestClient();
@@ -756,18 +746,18 @@ public class ContainerTests : OpenAIRecordedTestBase
             await client.GetContainerFileAsync("container123", ""));
 
         Assert.ThrowsAsync<ArgumentNullException>(async () => 
-            await client.GetContainerFileContentAsync(null, "file123"));
+            await client.DownloadContainerFileAsync(null, "file123"));
         Assert.ThrowsAsync<ArgumentException>(async () => 
-            await client.GetContainerFileContentAsync("", "file123"));
+            await client.DownloadContainerFileAsync("", "file123"));
         Assert.ThrowsAsync<ArgumentNullException>(async () => 
-            await client.GetContainerFileContentAsync("container123", null));
+            await client.DownloadContainerFileAsync("container123", null));
         Assert.ThrowsAsync<ArgumentException>(async () => 
-            await client.GetContainerFileContentAsync("container123", ""));
+            await client.DownloadContainerFileAsync("container123", ""));
 
         Console.WriteLine("Parameter validation tests passed for GetContainerFile methods");
     }
 
-    [Test]
+    [RecordedTest]
     public void DeleteContainerFileValidatesParameters()
     {
         ContainerClient client = GetTestClient();
@@ -785,7 +775,7 @@ public class ContainerTests : OpenAIRecordedTestBase
         Console.WriteLine("Parameter validation tests passed for DeleteContainerFile methods");
     }
 
-    [Test]
+    [RecordedTest]
     public void GetContainerValidatesParameters()
     {
         ContainerClient client = GetTestClient();
@@ -797,6 +787,16 @@ public class ContainerTests : OpenAIRecordedTestBase
             await client.GetContainerAsync(""));
 
         Console.WriteLine("Parameter validation tests passed for GetContainer methods");
+    }
+
+    private static void Validate(ContainerResource container)
+    {
+        Assert.That(container, Is.Not.Null);
+        Assert.That(container.Id, Is.Not.Null.And.Not.Empty);
+        Assert.That(container.Object, Is.Not.Null.And.Not.Empty);
+        Assert.That(container.CreatedAt, Is.GreaterThan(DateTimeOffset.MinValue));
+        Assert.That(container.Status, Is.Not.Null.And.Not.Empty);
+        // Name can be null/empty for some containers
     }
 
     private static void Validate(ContainerFileResource file)

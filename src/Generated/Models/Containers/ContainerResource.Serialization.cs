@@ -193,7 +193,7 @@ namespace OpenAI.Containers
 
         public static explicit operator ContainerResource(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
+            PipelineResponse response = result.GetRawResponse();
             using JsonDocument document = JsonDocument.Parse(response.Content);
             return DeserializeContainerResource(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
