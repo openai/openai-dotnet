@@ -11,8 +11,8 @@ Thank you to our developer community members who helped to make the OpenAI clien
 ### Features Added
 
 - OpenAI.Responses:
-  - Enabled support for stable web search functionality, with a separate factory for preview web search features.
-  - Added `FileName` property to `FileCitationMessageAnnotation` to provide the name of the cited file.
+  - Enabled support for stable web search via the `WebSearchTool` class, with a separate `WebSearchPreviewTool` class for preview web search features.
+  - Added `Filename` property to `FileCitationMessageAnnotation` to provide the name of the cited file.
   - Exposed reasoning streaming events, including:
     - `StreamingResponseReasoningTextDeltaUpdate` and `StreamingResponseReasoningTextDoneUpdate` for reasoning text events.
     - `StreamingResponseReasoningSummaryPartAddedUpdate` and `StreamingResponseReasoningSummaryPartDoneUpdate` for reasoning summary part events.
@@ -23,13 +23,11 @@ Thank you to our developer community members who helped to make the OpenAI clien
 - OpenAI.Assistants:
   - Fixed an issue with custom serialization for `MessageCreationAttachment` that prevented proper handling of file attachments in message creation. _(A community contribution, courtesy of [BenjaminDavidPinter](https://github.com/BenjaminDavidPinter))_
 - OpenAI.Responses:
-  - Fixed the generated serialization name of `partial_image_b64` to ensure correct serialization of partial image data in streaming responses.
+  - Fixed the generated serialization name of `partial_image_b64` in `StreamingResponseImageGenerationCallPartialImageUpdate` to ensure correct serialization of partial image data in streaming responses.
 
 ### Other Changes
 
 - Updated the `System.ClientModel` dependency to version 1.8.0.
-- Updated the `@typespec/http-client-csharp` generator to version 1.0.0-alpha.20251031.1.
-- Removed the preview version badge from the README file.
 
 ## 2.6.0 (2025-10-31)
 
