@@ -12,7 +12,6 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    [Experimental("OPENAI001")]
     internal partial class OpenAIResponse
     {
         [Experimental("SCME0001")]

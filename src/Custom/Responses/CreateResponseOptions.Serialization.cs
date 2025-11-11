@@ -246,7 +246,7 @@ namespace OpenAI.Responses
             string user = default;
             ResponseServiceTier? serviceTier = default;
             string previousResponseId = default;
-            InternalModelIdsResponses? model = default;
+            ModelIdsResponses? model = default;
             ResponseReasoningOptions reasoning = default;
             bool? background = default;
             int? maxOutputTokens = default;
@@ -336,7 +336,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    model = new InternalModelIdsResponses(prop.Value.GetString());
+                    model = new ModelIdsResponses(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("reasoning"u8))

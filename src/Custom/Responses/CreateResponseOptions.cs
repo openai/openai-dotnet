@@ -1,4 +1,3 @@
-using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -24,7 +23,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CreateResponseOptions(IDictionary<string, string> metadata, float? temperature, float? topP, string user, ResponseServiceTier? serviceTier, string previousResponseId, InternalModelIdsResponses? model, ResponseReasoningOptions reasoning, bool? background, int? maxOutputTokens, string instructions, ResponseTextOptions text, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncation, IList<ResponseItem> input, IList<Includable> include, bool? parallelToolCalls, bool? store, bool? stream, in JsonPatch patch)
+        internal CreateResponseOptions(IDictionary<string, string> metadata, float? temperature, float? topP, string user, ResponseServiceTier? serviceTier, string previousResponseId, ModelIdsResponses? model, ResponseReasoningOptions reasoning, bool? background, int? maxOutputTokens, string instructions, ResponseTextOptions text, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncation, IList<ResponseItem> input, IList<Includable> include, bool? parallelToolCalls, bool? store, bool? stream, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -68,7 +67,7 @@ namespace OpenAI.Responses
 
         public string PreviousResponseId { get; set; }
 
-        internal InternalModelIdsResponses? Model { get; set; }
+        public ModelIdsResponses? Model { get; set; }
 
         public ResponseReasoningOptions Reasoning { get; set; }
 

@@ -10,7 +10,6 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    [Experimental("OPENAI001")]
     internal partial class ResponseCreationOptions
     {
         [Experimental("SCME0001")]

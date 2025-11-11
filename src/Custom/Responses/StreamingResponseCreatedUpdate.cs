@@ -7,7 +7,6 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
 {
-    [Experimental("OPENAI001")]
     public partial class StreamingResponseCreatedUpdate : StreamingResponseUpdate
     {
         internal StreamingResponseCreatedUpdate(int sequenceNumber, ResponseResult response) : base(InternalResponseStreamEventType.ResponseCreated, sequenceNumber)
