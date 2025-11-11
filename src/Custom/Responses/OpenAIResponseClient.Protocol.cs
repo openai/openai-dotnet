@@ -11,7 +11,7 @@ namespace OpenAI.Responses;
 [CodeGenSuppress("CancelResponseAsync", typeof(string), typeof(IEnumerable<InternalIncludable>), typeof(bool?), typeof(int?), typeof(RequestOptions))]
 [CodeGenSuppress("GetResponse", typeof(string), typeof(IEnumerable<InternalIncludable>), typeof(bool?), typeof(int?), typeof(RequestOptions))]
 [CodeGenSuppress("GetResponseAsync", typeof(string), typeof(IEnumerable<InternalIncludable>), typeof(bool?), typeof(int?), typeof(RequestOptions))]
-public partial class OpenAIResponseClient
+public partial class ResponseClient
 {
     public virtual async Task<ClientResult> GetResponseAsync(string responseId, bool? stream, int? startingAfter, RequestOptions options)
     {

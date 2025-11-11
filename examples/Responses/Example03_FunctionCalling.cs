@@ -62,7 +62,7 @@ public partial class ResponseExamples
     [Test]
     public void Example03_FunctionCalling()
     {
-        OpenAIResponseClient client = new("gpt-5", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponseClient client = new("gpt-5", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         List<ResponseItem> inputItems =
         [

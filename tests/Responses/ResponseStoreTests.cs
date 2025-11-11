@@ -23,7 +23,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetInputItemsWithPagination()
     {
-        OpenAIResponseClient client = GetTestClient();
+        ResponseClient client = GetTestClient();
 
         // Create a response with multiple input items
         List<ResponseItem> inputItems = new()
@@ -60,7 +60,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetInputItemsWithMultiPartPagination()
     {
-        OpenAIResponseClient client = GetTestClient();
+        ResponseClient client = GetTestClient();
 
         string filePath = Path.Join("Assets", "files_travis_favorite_food.pdf");
 
@@ -112,7 +112,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetInputItemsWithAfterIdPagination()
     {
-        OpenAIResponseClient client = GetTestClient();
+        ResponseClient client = GetTestClient();
 
         // Ensure multiple input items exist to paginate
         List<ResponseItem> inputItems = new()
@@ -153,7 +153,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetInputItemsWithOrderFiltering()
     {
-        OpenAIResponseClient client = GetTestClient();
+        ResponseClient client = GetTestClient();
 
         // Create inputs in a defined sequence
         List<ResponseItem> inputItems = new()
@@ -202,7 +202,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetInputItemsHandlesLargeLimits()
     {
-        OpenAIResponseClient client = GetTestClient();
+        ResponseClient client = GetTestClient();
 
         ResponseResult response = await client.CreateResponseAsync(new(
             [
@@ -227,7 +227,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetInputItemsWithMinimalLimits()
     {
-        OpenAIResponseClient client = GetTestClient();
+        ResponseClient client = GetTestClient();
 
         ResponseResult response = await client.CreateResponseAsync(new(
             [
@@ -252,7 +252,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetInputItemsWithCancellationToken()
     {
-        OpenAIResponseClient client = GetTestClient();
+        ResponseClient client = GetTestClient();
 
         ResponseResult response = await client.CreateResponseAsync(new(
             [
@@ -288,7 +288,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetInputItemsWithCombinedOptions()
     {
-        OpenAIResponseClient client = GetTestClient();
+        ResponseClient client = GetTestClient();
 
         ResponseResult response = await client.CreateResponseAsync(new(
             [
@@ -316,5 +316,5 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         Assert.That(items, Has.Count.GreaterThan(0));
     }
 
-    private OpenAIResponseClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel);
+    private ResponseClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<ResponseClient>(TestScenario.Responses, overrideModel);
 }

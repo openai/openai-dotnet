@@ -14,7 +14,7 @@ public partial class ResponseExamples
     [Test]
     public void Example09_ModelOverridePerRequest()
     {
-        OpenAIResponseClient client = new(model: "gpt-4o", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponseClient client = new(model: "gpt-4o", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         // Add extra request fields using Patch.
         // Patch lets you set fields like `model` that aren't exposed on CreateResponseOptions.

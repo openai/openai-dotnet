@@ -121,7 +121,7 @@ internal static class TestHelpers
             TestScenario.Realtime => new RealtimeClient(credential, options),
 #pragma warning restore
 #pragma warning disable OPENAI003
-            TestScenario.Responses => new OpenAIResponseClient(model, credential, options),
+            TestScenario.Responses => new ResponseClient(model, credential, options),
 #pragma warning restore
             _ => throw new NotImplementedException(),
         };

@@ -7,12 +7,12 @@ using System.Linq;
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
-    public partial class ResponseItemList
+    public partial class ResponseItemCollection
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal ResponseItemList(IEnumerable<ResponseItem> data, bool hasMore, string firstId, string lastId)
+        internal ResponseItemCollection(IEnumerable<ResponseItem> data, bool hasMore, string firstId, string lastId)
         {
             Data = data.ToList();
             HasMore = hasMore;
@@ -21,7 +21,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseItemList(string @object, IList<ResponseItem> data, bool hasMore, string firstId, string lastId, in JsonPatch patch)
+        internal ResponseItemCollection(string @object, IList<ResponseItem> data, bool hasMore, string firstId, string lastId, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Object = @object;

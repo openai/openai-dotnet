@@ -20,7 +20,7 @@ public partial class ResponseExamples
     [Test]
     public async Task Example04_FunctionCallingStreamingAsync()
     {
-        OpenAIResponseClient client = new("gpt-5", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponseClient client = new("gpt-5", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         List<ResponseItem> inputItems =
         [

@@ -13,15 +13,15 @@ using OpenAI;
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
-    public partial class OpenAIResponseClient
+    public partial class ResponseClient
     {
         private readonly Uri _endpoint;
 
-        protected OpenAIResponseClient()
+        protected ResponseClient()
         {
         }
 
-        internal OpenAIResponseClient(ClientPipeline pipeline, Uri endpoint)
+        internal ResponseClient(ClientPipeline pipeline, Uri endpoint)
         {
             _endpoint = endpoint;
             Pipeline = pipeline;
@@ -81,7 +81,7 @@ namespace OpenAI.Responses
         {
             Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
-            return new OpenAIResponseClientGetResponseInputItemsCollectionResult(
+            return new ResponseClientGetResponseInputItemsCollectionResult(
                 this,
                 responseId,
                 limit,
@@ -95,7 +95,7 @@ namespace OpenAI.Responses
         {
             Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
-            return new OpenAIResponseClientGetResponseInputItemsAsyncCollectionResult(
+            return new ResponseClientGetResponseInputItemsAsyncCollectionResult(
                 this,
                 responseId,
                 limit,
@@ -109,7 +109,7 @@ namespace OpenAI.Responses
         {
             Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
-            return new OpenAIResponseClientGetResponseInputItemsCollectionResultOfT(
+            return new ResponseClientGetResponseInputItemsCollectionResultOfT(
                 this,
                 responseId,
                 options?.PageSizeLimit,
@@ -123,7 +123,7 @@ namespace OpenAI.Responses
         {
             Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
-            return new OpenAIResponseClientGetResponseInputItemsAsyncCollectionResultOfT(
+            return new ResponseClientGetResponseInputItemsAsyncCollectionResultOfT(
                 this,
                 responseId,
                 options?.PageSizeLimit,

@@ -332,16 +332,16 @@ public partial class OpenAIClient
     public virtual RealtimeClient GetRealtimeClient() => new(_keyCredential, _options);
 
     /// <summary>
-    /// Gets a new instance of <see cref="OpenAIResponseClient"/> that reuses the client configuration details provided to
+    /// Gets a new instance of <see cref="ResponseClient"/> that reuses the client configuration details provided to
     /// the <see cref="OpenAIClient"/> instance.
     /// </summary>
     /// <remarks>
-    /// This method is functionally equivalent to using the <see cref="OpenAIResponseClient"/> constructor directly with
+    /// This method is functionally equivalent to using the <see cref="ResponseClient"/> constructor directly with
     /// the same configuration details.
     /// </remarks>
-    /// <returns> A new <see cref="OpenAIResponseClient"/>. </returns>
+    /// <returns> A new <see cref="ResponseClient"/>. </returns>
     [Experimental("OPENAI001")]
-    public virtual OpenAIResponseClient GetOpenAIResponseClient(string model) => new(Pipeline, model, _options);
+    public virtual ResponseClient GetOpenAIResponseClient(string model) => new(Pipeline, model, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="VectorStoreClient"/> that reuses the client configuration details provided to

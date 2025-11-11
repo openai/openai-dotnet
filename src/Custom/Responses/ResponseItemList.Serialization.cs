@@ -7,13 +7,13 @@ using System.Text.Json;
 
 namespace OpenAI.Responses
 {
-    public partial class ResponseItemList : IJsonModel<ResponseItemList>
+    public partial class ResponseItemCollection : IJsonModel<ResponseItemCollection>
     {
-        internal ResponseItemList() : this(null, null, default, null, null, default)
+        internal ResponseItemCollection() : this(null, null, default, null, null, default)
         {
         }
 
-        void IJsonModel<ResponseItemList>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<ResponseItemCollection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -30,10 +30,10 @@ namespace OpenAI.Responses
 
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ResponseItemList>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ResponseItemCollection>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(ResponseItemList)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(ResponseItemCollection)} does not support writing '{format}' format.");
             }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (!Patch.Contains("$.object"u8))
@@ -84,20 +84,20 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        ResponseItemList IJsonModel<ResponseItemList>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        ResponseItemCollection IJsonModel<ResponseItemCollection>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected virtual ResponseItemList JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual ResponseItemCollection JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ResponseItemList>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ResponseItemCollection>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(ResponseItemList)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(ResponseItemCollection)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeResponseItemList(document.RootElement, null, options);
         }
 
-        internal static ResponseItemList DeserializeResponseItemList(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static ResponseItemCollection DeserializeResponseItemList(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -145,7 +145,7 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ResponseItemList(
+            return new ResponseItemCollection(
                 @object,
                 data0,
                 hasMore,
@@ -154,25 +154,25 @@ namespace OpenAI.Responses
                 patch);
         }
 
-        BinaryData IPersistableModel<ResponseItemList>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<ResponseItemCollection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ResponseItemList>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ResponseItemCollection>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(ResponseItemList)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ResponseItemCollection)} does not support writing '{options.Format}' format.");
             }
         }
 
-        ResponseItemList IPersistableModel<ResponseItemList>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        ResponseItemCollection IPersistableModel<ResponseItemCollection>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        protected virtual ResponseItemList PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual ResponseItemCollection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<ResponseItemList>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<ResponseItemCollection>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
@@ -181,13 +181,13 @@ namespace OpenAI.Responses
                         return DeserializeResponseItemList(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(ResponseItemList)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(ResponseItemCollection)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<ResponseItemList>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<ResponseItemCollection>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        public static explicit operator ResponseItemList(ClientResult result)
+        public static explicit operator ResponseItemCollection(ClientResult result)
         {
             using PipelineResponse response = result.GetRawResponse();
             BinaryData data = response.Content;

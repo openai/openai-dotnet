@@ -5,6 +5,9 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
+using System.Threading;
+using OpenAI.Responses;
 
 namespace OpenAI
 {
@@ -14,11 +17,18 @@ namespace OpenAI
         private readonly ApiKeyCredential _keyCredential;
         private const string AuthorizationHeader = "Authorization";
         private const string AuthorizationApiKeyPrefix = "Bearer";
+        private ResponseClient _cachedResponseClient;
 
         protected OpenAIClient()
         {
         }
 
         public ClientPipeline Pipeline { get; }
+
+        [Experimental("OPENAI001")]
+        public virtual ResponseClient GetResponseClient()
+        {
+            return Volatile.Read(ref _cachedResponseClient) ?? Interlocked.CompareExchange(ref _cachedResponseClient, new ResponseClient(Pipeline, _endpoint), null) ?? _cachedResponseClient;
+        }
     }
 }

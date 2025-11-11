@@ -6,14 +6,13 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class OpenAIResponseClientGetResponseInputItemsAsyncCollectionResultOfT : AsyncCollectionResult<ResponseItem>
+    internal partial class ResponseClientGetResponseInputItemsAsyncCollectionResult : AsyncCollectionResult
     {
-        private readonly OpenAIResponseClient _client;
+        private readonly ResponseClient _client;
         private readonly string _responseId;
         private readonly int? _limit;
         private readonly string _order;
@@ -21,7 +20,7 @@ namespace OpenAI.Responses
         private readonly string _before;
         private readonly RequestOptions _options;
 
-        public OpenAIResponseClientGetResponseInputItemsAsyncCollectionResultOfT(OpenAIResponseClient client, string responseId, int? limit, string order, string after, string before, RequestOptions options)
+        public ResponseClientGetResponseInputItemsAsyncCollectionResult(ResponseClient client, string responseId, int? limit, string order, string after, string before, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
@@ -65,15 +64,6 @@ namespace OpenAI.Responses
             else
             {
                 return null;
-            }
-        }
-
-        protected override async IAsyncEnumerable<ResponseItem> GetValuesFromPageAsync(ClientResult page)
-        {
-            foreach (ResponseItem item in ((InternalResponseItemList)page).Data)
-            {
-                yield return item;
-                await Task.Yield();
             }
         }
     }

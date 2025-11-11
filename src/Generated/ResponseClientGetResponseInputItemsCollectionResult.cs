@@ -10,9 +10,9 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class OpenAIResponseClientGetResponseInputItemsAsyncCollectionResult : AsyncCollectionResult
+    internal partial class ResponseClientGetResponseInputItemsCollectionResult : CollectionResult
     {
-        private readonly OpenAIResponseClient _client;
+        private readonly ResponseClient _client;
         private readonly string _responseId;
         private readonly int? _limit;
         private readonly string _order;
@@ -20,7 +20,7 @@ namespace OpenAI.Responses
         private readonly string _before;
         private readonly RequestOptions _options;
 
-        public OpenAIResponseClientGetResponseInputItemsAsyncCollectionResult(OpenAIResponseClient client, string responseId, int? limit, string order, string after, string before, RequestOptions options)
+        public ResponseClientGetResponseInputItemsCollectionResult(ResponseClient client, string responseId, int? limit, string order, string after, string before, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
@@ -33,13 +33,13 @@ namespace OpenAI.Responses
             _options = options;
         }
 
-        public override async IAsyncEnumerable<ClientResult> GetRawPagesAsync()
+        public override IEnumerable<ClientResult> GetRawPages()
         {
             PipelineMessage message = _client.CreateGetResponseInputItemsRequest(_responseId, _limit, _order, _after, _before, _options);
             string nextToken = null;
             while (true)
             {
-                ClientResult result = ClientResult.FromResponse(await _client.Pipeline.ProcessMessageAsync(message, _options).ConfigureAwait(false));
+                ClientResult result = ClientResult.FromResponse(_client.Pipeline.ProcessMessage(message, _options));
                 yield return result;
 
                 // Plugin customization: add hasMore assignment

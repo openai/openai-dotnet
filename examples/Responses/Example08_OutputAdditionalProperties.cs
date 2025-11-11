@@ -15,7 +15,7 @@ public partial class ResponseExamples
     [Test]
     public void Example08_OutputAdditionalProperties()
     {
-        OpenAIResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         CreateResponseOptions options = new([
             ResponseItem.CreateUserMessageItem("Generate an image of gray tabby cat hugging an otter with an orange scarf")

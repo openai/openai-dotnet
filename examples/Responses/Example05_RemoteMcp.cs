@@ -26,7 +26,7 @@ public partial class ResponseExamples
             }
         };
 
-        OpenAIResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         ResponseResult response = client.CreateResponse(options);
 

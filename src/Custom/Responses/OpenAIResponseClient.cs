@@ -23,17 +23,17 @@ namespace OpenAI.Responses;
 [CodeGenSuppress("CancelResponseAsync", typeof(string), typeof(IEnumerable<InternalIncludable>), typeof(bool?), typeof(int?), typeof(CancellationToken))]
 [CodeGenSuppress("GetResponse", typeof(string), typeof(IEnumerable<InternalIncludable>), typeof(bool?), typeof(int?), typeof(CancellationToken))]
 [CodeGenSuppress("GetResponseAsync", typeof(string), typeof(IEnumerable<InternalIncludable>), typeof(bool?), typeof(int?), typeof(CancellationToken))]
-public partial class OpenAIResponseClient
+public partial class ResponseClient
 {
     private readonly string _model;
 
     // CUSTOM: Added as a convenience.
-    /// <summary> Initializes a new instance of <see cref="OpenAIResponseClient"/>. </summary>
+    /// <summary> Initializes a new instance of <see cref="ResponseClient"/>. </summary>
     /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
     /// <param name="apiKey"> The API key to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="apiKey"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    public OpenAIResponseClient(string model, string apiKey) : this(model, new ApiKeyCredential(apiKey), new OpenAIClientOptions())
+    public ResponseClient(string model, string apiKey) : this(model, new ApiKeyCredential(apiKey), new OpenAIClientOptions())
     {
     }
 
@@ -41,12 +41,12 @@ public partial class OpenAIResponseClient
     // - Added `model` parameter.
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
-    /// <summary> Initializes a new instance of <see cref="OpenAIResponseClient"/>. </summary>
+    /// <summary> Initializes a new instance of <see cref="ResponseClient"/>. </summary>
     /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
     /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="credential"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    public OpenAIResponseClient(string model, ApiKeyCredential credential) : this(model, credential, new OpenAIClientOptions())
+    public ResponseClient(string model, ApiKeyCredential credential) : this(model, credential, new OpenAIClientOptions())
     {
     }
 
@@ -54,34 +54,34 @@ public partial class OpenAIResponseClient
     // - Added `model` parameter.
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
-    /// <summary> Initializes a new instance of <see cref="OpenAIResponseClient"/>. </summary>
+    /// <summary> Initializes a new instance of <see cref="ResponseClient"/>. </summary>
     /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
     /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="credential"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    public OpenAIResponseClient(string model, ApiKeyCredential credential, OpenAIClientOptions options) : this(model, OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
+    public ResponseClient(string model, ApiKeyCredential credential, OpenAIClientOptions options) : this(model, OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
     {
     }
 
     // CUSTOM: Added as a convenience.
-    /// <summary> Initializes a new instance of <see cref="OpenAIResponseClient"/>. </summary>
+    /// <summary> Initializes a new instance of <see cref="ResponseClient"/>. </summary>
     /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
     /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="authenticationPolicy"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    public OpenAIResponseClient(string model, AuthenticationPolicy authenticationPolicy) : this(model, authenticationPolicy, new OpenAIClientOptions())
+    public ResponseClient(string model, AuthenticationPolicy authenticationPolicy) : this(model, authenticationPolicy, new OpenAIClientOptions())
     {
     }
 
     // CUSTOM: Added as a convenience.
-    /// <summary> Initializes a new instance of <see cref="OpenAIResponseClient"/>. </summary>
+    /// <summary> Initializes a new instance of <see cref="ResponseClient"/>. </summary>
     /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
     /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="authenticationPolicy"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    public OpenAIResponseClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
+    public ResponseClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
     {
         Argument.AssertNotNullOrEmpty(model, nameof(model));
         Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
@@ -97,13 +97,13 @@ public partial class OpenAIResponseClient
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
     // - Made protected.
-    /// <summary> Initializes a new instance of <see cref="OpenAIResponseClient"/>. </summary>
+    /// <summary> Initializes a new instance of <see cref="ResponseClient"/>. </summary>
     /// <param name="pipeline"> The HTTP pipeline to send and receive REST requests and responses. </param>
     /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> or <paramref name="model"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    protected internal OpenAIResponseClient(ClientPipeline pipeline, string model, OpenAIClientOptions options)
+    protected internal ResponseClient(ClientPipeline pipeline, string model, OpenAIClientOptions options)
     {
         Argument.AssertNotNull(pipeline, nameof(pipeline));
         options ??= new OpenAIClientOptions();
@@ -411,24 +411,24 @@ public partial class OpenAIResponseClient
         return ClientResult.FromValue(convenienceResult, protocolResult.GetRawResponse());
     }
 
-    public virtual ClientResult<ResponseItemList> GetResponseInputItems(GetResponseInputItemsOptions options = default, CancellationToken cancellationToken = default)
+    public virtual ClientResult<ResponseItemCollection> GetResponseInputItems(GetResponseInputItemsOptions options = default, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
         Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
 
         PipelineMessage message = CreateGetResponseInputItemsRequest(options.ResponseId, options.Limit, options.After, options.Order, options.Before, cancellationToken.ToRequestOptions());
         ClientResult result = ClientResult.FromResponse(Pipeline.ProcessMessage(message, cancellationToken.ToRequestOptions()));
-        return ClientResult.FromValue((ResponseItemList)result, result.GetRawResponse());
+        return ClientResult.FromValue((ResponseItemCollection)result, result.GetRawResponse());
     }
 
-    public virtual async Task<ClientResult<ResponseItemList>> GetResponseInputItemsAsync(GetResponseInputItemsOptions options = default, CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<ResponseItemCollection>> GetResponseInputItemsAsync(GetResponseInputItemsOptions options = default, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
         Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
 
         PipelineMessage message = CreateGetResponseInputItemsRequest(options.ResponseId, options.Limit, options.After, options.Order, options.Before, cancellationToken.ToRequestOptions());
         ClientResult result = ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, cancellationToken.ToRequestOptions()).ConfigureAwait(false));
-        return ClientResult.FromValue((ResponseItemList)result, result.GetRawResponse());
+        return ClientResult.FromValue((ResponseItemCollection)result, result.GetRawResponse());
     }
 
     internal virtual ResponseCreationOptions CreatePerCallOptions(ResponseCreationOptions userOptions, IEnumerable<ResponseItem> inputItems, bool stream = false)
