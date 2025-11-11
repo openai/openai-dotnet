@@ -726,7 +726,7 @@ namespace OpenAI.Chat
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeChatCompletionOptions(document.RootElement, data, options);
                     }
@@ -747,6 +747,40 @@ namespace OpenAI.Chat
             {
                 return WebSearchOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("web_search_options"u8.Length)], out value);
             }
+            if (local.StartsWith("response_format"u8))
+            {
+                return ResponseFormat.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("response_format"u8.Length)], out value);
+            }
+            if (local.StartsWith("audio"u8))
+            {
+                return AudioOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("audio"u8.Length)], out value);
+            }
+            if (local.StartsWith("prediction"u8))
+            {
+                return OutputPrediction.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("prediction"u8.Length)], out value);
+            }
+            if (local.StartsWith("stream_options"u8))
+            {
+                return StreamOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("stream_options"u8.Length)], out value);
+            }
+            if (local.StartsWith("tool_choice"u8))
+            {
+                return ToolChoice.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("tool_choice"u8.Length)], out value);
+            }
+            if (local.StartsWith("function_call"u8))
+            {
+                return FunctionChoice.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("function_call"u8.Length)], out value);
+            }
+            if (local.StartsWith("messages"u8))
+            {
+                int propertyLength = "messages"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                return Messages[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+            }
             if (local.StartsWith("tools"u8))
             {
                 int propertyLength = "tools"u8.Length;
@@ -756,6 +790,16 @@ namespace OpenAI.Chat
                     return false;
                 }
                 return Tools[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+            }
+            if (local.StartsWith("functions"u8))
+            {
+                int propertyLength = "functions"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                return Functions[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
             }
             return false;
         }
@@ -771,6 +815,47 @@ namespace OpenAI.Chat
                 WebSearchOptions.Patch.Set([.. "$"u8, .. local.Slice("web_search_options"u8.Length)], value);
                 return true;
             }
+            if (local.StartsWith("response_format"u8))
+            {
+                ResponseFormat.Patch.Set([.. "$"u8, .. local.Slice("response_format"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("audio"u8))
+            {
+                AudioOptions.Patch.Set([.. "$"u8, .. local.Slice("audio"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("prediction"u8))
+            {
+                OutputPrediction.Patch.Set([.. "$"u8, .. local.Slice("prediction"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("stream_options"u8))
+            {
+                StreamOptions.Patch.Set([.. "$"u8, .. local.Slice("stream_options"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("tool_choice"u8))
+            {
+                ToolChoice.Patch.Set([.. "$"u8, .. local.Slice("tool_choice"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("function_call"u8))
+            {
+                FunctionChoice.Patch.Set([.. "$"u8, .. local.Slice("function_call"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("messages"u8))
+            {
+                int propertyLength = "messages"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                Messages[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                return true;
+            }
             if (local.StartsWith("tools"u8))
             {
                 int propertyLength = "tools"u8.Length;
@@ -780,6 +865,17 @@ namespace OpenAI.Chat
                     return false;
                 }
                 Tools[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                return true;
+            }
+            if (local.StartsWith("functions"u8))
+            {
+                int propertyLength = "functions"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                Functions[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
                 return true;
             }
             return false;

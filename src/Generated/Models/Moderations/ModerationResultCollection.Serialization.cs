@@ -92,7 +92,7 @@ namespace OpenAI.Moderations
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeModerationResultCollection(document.RootElement, options);
                     }
@@ -107,7 +107,7 @@ namespace OpenAI.Moderations
         public static explicit operator ModerationResultCollection(ClientResult result)
         {
             PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
             return DeserializeModerationResultCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

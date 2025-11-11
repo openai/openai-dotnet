@@ -175,7 +175,7 @@ namespace OpenAI.VectorStores
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalListVectorStoreFilesResponse(document.RootElement, options);
                     }
@@ -189,7 +189,7 @@ namespace OpenAI.VectorStores
         public static explicit operator InternalListVectorStoreFilesResponse(ClientResult result)
         {
             PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
             return DeserializeInternalListVectorStoreFilesResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

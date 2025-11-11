@@ -259,7 +259,7 @@ namespace OpenAI.Moderations
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalModerationCategories(document.RootElement, options);
                     }

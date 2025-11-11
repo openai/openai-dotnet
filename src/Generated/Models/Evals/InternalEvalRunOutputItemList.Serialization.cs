@@ -174,7 +174,7 @@ namespace OpenAI.Evals
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalEvalRunOutputItemList(document.RootElement, options);
                     }
@@ -188,7 +188,7 @@ namespace OpenAI.Evals
         public static explicit operator InternalEvalRunOutputItemList(ClientResult result)
         {
             PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
             return DeserializeInternalEvalRunOutputItemList(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

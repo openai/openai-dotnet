@@ -169,7 +169,7 @@ namespace OpenAI.Chat
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeChatTokenUsage(document.RootElement, data, options);
                     }
@@ -179,5 +179,42 @@ namespace OpenAI.Chat
         }
 
         string IPersistableModel<ChatTokenUsage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("completion_tokens_details"u8))
+            {
+                return OutputTokenDetails.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("completion_tokens_details"u8.Length)], out value);
+            }
+            if (local.StartsWith("prompt_tokens_details"u8))
+            {
+                return InputTokenDetails.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("prompt_tokens_details"u8.Length)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("completion_tokens_details"u8))
+            {
+                OutputTokenDetails.Patch.Set([.. "$"u8, .. local.Slice("completion_tokens_details"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("prompt_tokens_details"u8))
+            {
+                InputTokenDetails.Patch.Set([.. "$"u8, .. local.Slice("prompt_tokens_details"u8.Length)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

@@ -174,7 +174,7 @@ namespace OpenAI.Batch
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalListBatchesResponse(document.RootElement, options);
                     }
@@ -188,7 +188,7 @@ namespace OpenAI.Batch
         public static explicit operator InternalListBatchesResponse(ClientResult result)
         {
             PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
             return DeserializeInternalListBatchesResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

@@ -181,7 +181,7 @@ namespace OpenAI.Chat
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalChatCompletionList(document.RootElement, data, options);
                     }
@@ -196,7 +196,7 @@ namespace OpenAI.Chat
         {
             PipelineResponse response = result.GetRawResponse();
             BinaryData data = response.Content;
-            using JsonDocument document = JsonDocument.Parse(data);
+            using JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions);
             return DeserializeInternalChatCompletionList(document.RootElement, data, ModelSerializationExtensions.WireOptions);
         }
 
