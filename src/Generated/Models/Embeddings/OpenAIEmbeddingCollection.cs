@@ -6,6 +6,7 @@ using System.ClientModel.Primitives;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace OpenAI.Embeddings
 {
@@ -14,6 +15,7 @@ namespace OpenAI.Embeddings
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
+        [JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;

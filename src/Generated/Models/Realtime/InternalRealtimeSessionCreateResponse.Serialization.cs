@@ -351,7 +351,7 @@ namespace OpenAI.Realtime
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalRealtimeSessionCreateResponse(document.RootElement, options);
                     }
@@ -365,7 +365,7 @@ namespace OpenAI.Realtime
         public static explicit operator InternalRealtimeSessionCreateResponse(ClientResult result)
         {
             PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
             return DeserializeInternalRealtimeSessionCreateResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

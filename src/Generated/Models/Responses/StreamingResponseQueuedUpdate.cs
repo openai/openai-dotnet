@@ -19,6 +19,7 @@ namespace OpenAI.Responses
         internal StreamingResponseQueuedUpdate(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch, OpenAIResponse response) : base(kind, sequenceNumber, patch)
         {
             Response = response;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 

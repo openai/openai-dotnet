@@ -260,7 +260,7 @@ namespace OpenAI.Responses
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeMcpTool(document.RootElement, data, options);
                     }
@@ -281,6 +281,10 @@ namespace OpenAI.Responses
             {
                 return AllowedTools.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("allowed_tools"u8.Length)], out value);
             }
+            if (local.StartsWith("require_approval"u8))
+            {
+                return ToolCallApprovalPolicy.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("require_approval"u8.Length)], out value);
+            }
             return false;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -293,6 +297,11 @@ namespace OpenAI.Responses
             if (local.StartsWith("allowed_tools"u8))
             {
                 AllowedTools.Patch.Set([.. "$"u8, .. local.Slice("allowed_tools"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("require_approval"u8))
+            {
+                ToolCallApprovalPolicy.Patch.Set([.. "$"u8, .. local.Slice("require_approval"u8.Length)], value);
                 return true;
             }
             return false;

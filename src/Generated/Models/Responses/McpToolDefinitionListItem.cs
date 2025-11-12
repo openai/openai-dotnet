@@ -30,6 +30,7 @@ namespace OpenAI.Responses
             ServerLabel = serverLabel;
             ToolDefinitions = toolDefinitions ?? new ChangeTrackingList<McpToolDefinition>();
             Error = error;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 

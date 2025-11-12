@@ -14,15 +14,15 @@ namespace OpenAI
             PropertyName = propertyName;
         }
 
-        public CodeGenSerializationAttribute(string propertyName, string propertySerializationName)
+        public CodeGenSerializationAttribute(string propertyName, string serializationName)
         {
             PropertyName = propertyName;
-            PropertySerializationName = propertySerializationName;
+            SerializationName = serializationName;
         }
 
         public string PropertyName { get; }
 
-        public string PropertySerializationName { get; set; }
+        public string SerializationName { get; set; }
 
         public string SerializationValueHook { get; set; }
 
