@@ -26,11 +26,11 @@ public partial class ResponseExamples
             }
         };
 
-        ResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         ResponseResult response = await client.CreateResponseAsync(options);
 
-        Console.WriteLine($"[ASSISTANT]: {response.OutputText}");
+        Console.WriteLine($"[ASSISTANT]: {response.GetOutputText()}");
     }
 }
 

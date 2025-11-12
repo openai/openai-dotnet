@@ -88,10 +88,10 @@ namespace OpenAI.Responses
             {
                 writer.WriteNull("top_p"u8);
             }
-            if (Optional.IsDefined(User) && !Patch.Contains("$.user"u8))
+            if (Optional.IsDefined(EndUserId) && !Patch.Contains("$.user"u8))
             {
                 writer.WritePropertyName("user"u8);
-                writer.WriteStringValue(User);
+                writer.WriteStringValue(EndUserId);
             }
             else
             {
@@ -112,30 +112,30 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("model"u8);
                 writer.WriteStringValue(InternalModel.Value.ToString());
             }
-            if (Optional.IsDefined(Reasoning) && !Patch.Contains("$.reasoning"u8))
+            if (Optional.IsDefined(ReasoningOptions) && !Patch.Contains("$.reasoning"u8))
             {
                 writer.WritePropertyName("reasoning"u8);
-                writer.WriteObjectValue(Reasoning, options);
+                writer.WriteObjectValue(ReasoningOptions, options);
             }
-            if (Optional.IsDefined(Background) && !Patch.Contains("$.background"u8))
+            if (Optional.IsDefined(IsBackgroundModeEnabled) && !Patch.Contains("$.background"u8))
             {
                 writer.WritePropertyName("background"u8);
-                writer.WriteBooleanValue(Background.Value);
+                writer.WriteBooleanValue(IsBackgroundModeEnabled.Value);
             }
-            if (Optional.IsDefined(MaxOutputTokens) && !Patch.Contains("$.max_output_tokens"u8))
+            if (Optional.IsDefined(MaxOutputTokenCount) && !Patch.Contains("$.max_output_tokens"u8))
             {
                 writer.WritePropertyName("max_output_tokens"u8);
-                writer.WriteNumberValue(MaxOutputTokens.Value);
+                writer.WriteNumberValue(MaxOutputTokenCount.Value);
             }
             if (Optional.IsDefined(Instructions) && !Patch.Contains("$.instructions"u8))
             {
                 writer.WritePropertyName("instructions"u8);
                 writer.WriteStringValue(Instructions);
             }
-            if (Optional.IsDefined(Text) && !Patch.Contains("$.text"u8))
+            if (Optional.IsDefined(TextOptions) && !Patch.Contains("$.text"u8))
             {
                 writer.WritePropertyName("text"u8);
-                writer.WriteObjectValue(Text, options);
+                writer.WriteObjectValue(TextOptions, options);
             }
             if (Patch.Contains("$.tools"u8))
             {
@@ -165,10 +165,10 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("tool_choice"u8);
                 writer.WriteObjectValue(ToolChoice, options);
             }
-            if (Optional.IsDefined(Truncation) && !Patch.Contains("$.truncation"u8))
+            if (Optional.IsDefined(TruncationMode) && !Patch.Contains("$.truncation"u8))
             {
                 writer.WritePropertyName("truncation"u8);
-                writer.WriteStringValue(Truncation.Value.ToString());
+                writer.WriteStringValue(TruncationMode.Value.ToString());
             }
             if (!Patch.Contains("$.id"u8))
             {
@@ -199,10 +199,10 @@ namespace OpenAI.Responses
             {
                 writer.WriteNull("error"u8);
             }
-            if (Optional.IsDefined(IncompleteDetails) && !Patch.Contains("$.incomplete_details"u8))
+            if (Optional.IsDefined(IncompleteStatusDetails) && !Patch.Contains("$.incomplete_details"u8))
             {
                 writer.WritePropertyName("incomplete_details"u8);
-                writer.WriteObjectValue(IncompleteDetails, options);
+                writer.WriteObjectValue(IncompleteStatusDetails, options);
             }
             else
             {
@@ -220,13 +220,13 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("output"u8);
                 writer.WriteStartArray();
-                for (int i = 0; i < Output.Count; i++)
+                for (int i = 0; i < OutputItems.Count; i++)
                 {
-                    if (Output[i].Patch.IsRemoved("$"u8))
+                    if (OutputItems[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
-                    writer.WriteObjectValue(Output[i], options);
+                    writer.WriteObjectValue(OutputItems[i], options);
                 }
                 Patch.WriteTo(writer, "$.output"u8);
                 writer.WriteEndArray();
@@ -244,7 +244,7 @@ namespace OpenAI.Responses
             if (!Patch.Contains("$.parallel_tool_calls"u8))
             {
                 writer.WritePropertyName("parallel_tool_calls"u8);
-                writer.WriteBooleanValue(ParallelToolCalls);
+                writer.WriteBooleanValue(IsParallelToolCallsEnabled);
             }
 
             Patch.WriteTo(writer);
@@ -626,11 +626,11 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("reasoning"u8))
             {
-                return Reasoning.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("reasoning"u8.Length)], out value);
+                return ReasoningOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("reasoning"u8.Length)], out value);
             }
             if (local.StartsWith("text"u8))
             {
-                return Text.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("text"u8.Length)], out value);
+                return TextOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("text"u8.Length)], out value);
             }
             if (local.StartsWith("error"u8))
             {
@@ -638,7 +638,7 @@ namespace OpenAI.Responses
             }
             if (local.StartsWith("incomplete_details"u8))
             {
-                return IncompleteDetails.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("incomplete_details"u8.Length)], out value);
+                return IncompleteStatusDetails.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("incomplete_details"u8.Length)], out value);
             }
             if (local.StartsWith("usage"u8))
             {
@@ -662,7 +662,7 @@ namespace OpenAI.Responses
                 {
                     return false;
                 }
-                return Output[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+                return OutputItems[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
             }
             return false;
         }
@@ -675,12 +675,12 @@ namespace OpenAI.Responses
 
             if (local.StartsWith("reasoning"u8))
             {
-                Reasoning.Patch.Set([.. "$"u8, .. local.Slice("reasoning"u8.Length)], value);
+                ReasoningOptions.Patch.Set([.. "$"u8, .. local.Slice("reasoning"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("text"u8))
             {
-                Text.Patch.Set([.. "$"u8, .. local.Slice("text"u8.Length)], value);
+                TextOptions.Patch.Set([.. "$"u8, .. local.Slice("text"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("error"u8))
@@ -690,7 +690,7 @@ namespace OpenAI.Responses
             }
             if (local.StartsWith("incomplete_details"u8))
             {
-                IncompleteDetails.Patch.Set([.. "$"u8, .. local.Slice("incomplete_details"u8.Length)], value);
+                IncompleteStatusDetails.Patch.Set([.. "$"u8, .. local.Slice("incomplete_details"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("usage"u8))
@@ -717,7 +717,7 @@ namespace OpenAI.Responses
                 {
                     return false;
                 }
-                Output[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                OutputItems[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
                 return true;
             }
             return false;

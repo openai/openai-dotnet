@@ -19,7 +19,7 @@ public partial class ResponseExamples
     [Test]
     public async Task Example03_FunctionCallingAsync()
     {
-        ResponseClient client = new("gpt-5", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new("gpt-5", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         List<ResponseItem> inputItems =
         [
@@ -40,9 +40,9 @@ public partial class ResponseExamples
             requiresAction = false;
             ResponseResult response = await client.CreateResponseAsync(options);
 
-            inputItems.AddRange(response.Output);
+            inputItems.AddRange(response.OutputItems);
 
-            foreach (ResponseItem outputItem in response.Output)
+            foreach (ResponseItem outputItem in response.OutputItems)
             {
                 if (outputItem is FunctionCallResponseItem functionCall)
                 {
@@ -89,7 +89,7 @@ public partial class ResponseExamples
                 }
             }
 
-            PrintMessageItems(response.Output.OfType<MessageResponseItem>());
+            PrintMessageItems(response.OutputItems.OfType<MessageResponseItem>());
 
         } while (requiresAction);
     }

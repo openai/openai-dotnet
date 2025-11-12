@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     internal partial class ResponseClientGetResponseInputItemsAsyncCollectionResultOfT : AsyncCollectionResult<ResponseItem>
     {
-        private readonly ResponseClient _client;
+        private readonly ResponsesClient _client;
         private readonly string _responseId;
         private readonly int? _limit;
         private readonly string _order;
@@ -21,7 +21,7 @@ namespace OpenAI.Responses
         private readonly string _before;
         private readonly RequestOptions _options;
 
-        public ResponseClientGetResponseInputItemsAsyncCollectionResultOfT(ResponseClient client, string responseId, int? limit, string order, string after, string before, RequestOptions options)
+        public ResponseClientGetResponseInputItemsAsyncCollectionResultOfT(ResponsesClient client, string responseId, int? limit, string order, string after, string before, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 

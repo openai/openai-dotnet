@@ -8,7 +8,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class ResponseClient
+    public partial class ResponsesClient
     {
         private static PipelineMessageClassifier _pipelineMessageClassifier200;
 

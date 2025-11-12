@@ -75,7 +75,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ComputerToolWithScreenshotRoundTrip()
     {
-        ResponseClient client = GetTestClient("computer-use-preview-2025-03-11");
+        ResponsesClient client = GetTestClient("computer-use-preview-2025-03-11");
         ResponseTool computerTool = ResponseTool.CreateComputerTool(ComputerToolEnvironment.Windows, 1024, 768);
         CreateResponseOptions responseOptions = new(
             [
@@ -84,14 +84,14 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             ])
         {
             Tools = { computerTool },
-            Truncation = ResponseTruncationMode.Auto,
+            TruncationMode = ResponseTruncationMode.Auto,
         };
         ResponseResult response = await client.CreateResponseAsync(responseOptions);
 
         while (true)
         {
-            Assert.That(response.Output.Count, Is.GreaterThan(0));
-            ResponseItem outputItem = response.Output?.LastOrDefault();
+            Assert.That(response.OutputItems.Count, Is.GreaterThan(0));
+            ResponseItem outputItem = response.OutputItems?.LastOrDefault();
             if (outputItem is ComputerCallResponseItem computerCall)
             {
                 if (computerCall.Action.Kind == ComputerCallActionKind.Screenshot)
@@ -138,7 +138,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task WebSearchCall()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
         ResponseResult response = await client.CreateResponseAsync(
             new CreateResponseOptions([ResponseItem.CreateUserMessageItem("Searching the internet, what's the weather like in Seattle?")])
             {
@@ -149,11 +149,11 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
                 ToolChoice = ResponseToolChoice.CreateWebSearchChoice()
             });
 
-        Assert.That(response.Output, Has.Count.EqualTo(2));
-        Assert.That(response.Output[0], Is.InstanceOf<WebSearchCallResponseItem>());
-        Assert.That(response.Output[1], Is.InstanceOf<MessageResponseItem>());
+        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+        Assert.That(response.OutputItems[0], Is.InstanceOf<WebSearchCallResponseItem>());
+        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
 
-        MessageResponseItem message = (MessageResponseItem)response.Output[1];
+        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
         Assert.That(message.Content, Has.Count.GreaterThan(0));
         Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
         Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
@@ -165,7 +165,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task WebSearchCallPreview()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
         ResponseResult response = await client.CreateResponseAsync(
             new CreateResponseOptions([ResponseItem.CreateUserMessageItem("What was a positive news story from today?")])
             {
@@ -176,11 +176,11 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
                 ToolChoice = ResponseToolChoice.CreateWebSearchChoice()
             });
 
-        Assert.That(response.Output, Has.Count.EqualTo(2));
-        Assert.That(response.Output[0], Is.InstanceOf<WebSearchCallResponseItem>());
-        Assert.That(response.Output[1], Is.InstanceOf<MessageResponseItem>());
+        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+        Assert.That(response.OutputItems[0], Is.InstanceOf<WebSearchCallResponseItem>());
+        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
 
-        MessageResponseItem message = (MessageResponseItem)response.Output[1];
+        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
         Assert.That(message.Content, Has.Count.GreaterThan(0));
         Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
         Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
@@ -192,7 +192,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task WebSearchCallStreaming()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         const string message = "Searching the internet, what's the weather like in San Francisco?";
 
@@ -260,7 +260,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ResponseWithImageGenTool()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Generate an image of gray tabby cat hugging an otter with an orange scarf")])
         {
@@ -280,17 +280,17 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponseResult response = await client.CreateResponseAsync(
             options);
 
-        Assert.That(response.Output, Has.Count.EqualTo(2));
-        Assert.That(response.Output[0], Is.InstanceOf<ImageGenerationCallResponseItem>());
-        Assert.That(response.Output[1], Is.InstanceOf<MessageResponseItem>());
+        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+        Assert.That(response.OutputItems[0], Is.InstanceOf<ImageGenerationCallResponseItem>());
+        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
 
-        MessageResponseItem message = (MessageResponseItem)response.Output[1];
+        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
         Assert.That(message.Content, Has.Count.GreaterThan(0));
         Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
 
         Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<ImageGenerationTool>());
 
-        ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.Output[0];
+        ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
         Assert.That(imageGenResponse.Status, Is.EqualTo(ImageGenerationCallStatus.Completed));
         Assert.That(imageGenResponse.ImageResultBytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
@@ -298,7 +298,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ImageGenToolStreaming()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         const string message = "Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape";
 
@@ -381,7 +381,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ImageGenToolInputMaskWithImageBytes()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         string imageFilename = "images_dog_and_cat.png";
         string imagePath = Path.Combine("Assets", imageFilename);
@@ -399,17 +399,17 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponseResult response = await client.CreateResponseAsync(
             options);
 
-        Assert.That(response.Output, Has.Count.EqualTo(2));
-        Assert.That(response.Output[0], Is.InstanceOf<ImageGenerationCallResponseItem>());
-        Assert.That(response.Output[1], Is.InstanceOf<MessageResponseItem>());
+        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+        Assert.That(response.OutputItems[0], Is.InstanceOf<ImageGenerationCallResponseItem>());
+        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
 
-        MessageResponseItem message = (MessageResponseItem)response.Output[1];
+        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
         Assert.That(message.Content, Has.Count.GreaterThan(0));
         Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
 
         Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<ImageGenerationTool>());
 
-        ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.Output[0];
+        ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
         Assert.That(imageGenResponse.Status, Is.EqualTo(ImageGenerationCallStatus.Completed));
         Assert.That(imageGenResponse.ImageResultBytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
@@ -417,7 +417,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ImageGenToolInputMaskWithImageUri()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Generate an image of gray tabby cat hugging an otter with an orange scarf")])
         {
@@ -433,17 +433,17 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponseResult response = await client.CreateResponseAsync(
             options);
 
-        Assert.That(response.Output, Has.Count.EqualTo(2));
-        Assert.That(response.Output[0], Is.InstanceOf<ImageGenerationCallResponseItem>());
-        Assert.That(response.Output[1], Is.InstanceOf<MessageResponseItem>());
+        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+        Assert.That(response.OutputItems[0], Is.InstanceOf<ImageGenerationCallResponseItem>());
+        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
 
-        MessageResponseItem message = (MessageResponseItem)response.Output[1];
+        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
         Assert.That(message.Content, Has.Count.GreaterThan(0));
         Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
 
         Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<ImageGenerationTool>());
 
-        ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.Output[0];
+        ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
         Assert.That(imageGenResponse.Status, Is.EqualTo(ImageGenerationCallStatus.Completed));
         Assert.That(imageGenResponse.ImageResultBytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
@@ -451,7 +451,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ImageGenToolInputMaskWithFileId()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
 
@@ -484,17 +484,17 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponseResult response = await client.CreateResponseAsync(
             options);
 
-        Assert.That(response.Output, Has.Count.EqualTo(2));
-        Assert.That(response.Output[0], Is.InstanceOf<ImageGenerationCallResponseItem>());
-        Assert.That(response.Output[1], Is.InstanceOf<MessageResponseItem>());
+        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+        Assert.That(response.OutputItems[0], Is.InstanceOf<ImageGenerationCallResponseItem>());
+        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
 
-        MessageResponseItem message = (MessageResponseItem)response.Output[1];
+        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
         Assert.That(message.Content, Has.Count.GreaterThan(0));
         Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
 
         Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<ImageGenerationTool>());
 
-        ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.Output[0];
+        ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
         Assert.That(imageGenResponse.Status, Is.EqualTo(ImageGenerationCallStatus.Completed));
         Assert.That(imageGenResponse.ImageResultBytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
@@ -502,7 +502,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task StreamingResponses()
     {
-        ResponseClient client = GetTestClient("gpt-4o-mini"); // "computer-use-alpha");
+        ResponsesClient client = GetTestClient("gpt-4o-mini"); // "computer-use-alpha");
 
         List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("Hello, world!")];
         List<string> deltaTextSegments = [];
@@ -517,7 +517,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             }
             else if (update is StreamingResponseCompletedUpdate responseCompletedUpdate)
             {
-                finalResponseText = responseCompletedUpdate.Response.Output[0] is MessageResponseItem messageItem
+                finalResponseText = responseCompletedUpdate.Response.OutputItems[0] is MessageResponseItem messageItem
                     ? messageItem.Content[0].Text
                     : null;
             }
@@ -530,12 +530,12 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task StreamingResponsesWithReasoningSummary()
     {
-        ResponseClient client = GetTestClient("o3-mini");
+        ResponsesClient client = GetTestClient("o3-mini");
         List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("I’m visiting New York for 3 days and love food and art. What’s the best way to plan my trip?")];
 
         CreateResponseOptions options = new(inputItems)
         {
-            Reasoning = new()
+            ReasoningOptions = new()
             {
                 ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Auto,
                 ReasoningEffortLevel = ResponseReasoningEffortLevel.High,
@@ -592,7 +592,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [TestCase("computer-use-preview")]
     public async Task ResponsesHelloWorldWithTool(string model)
     {
-        ResponseClient client = GetTestClient(model);
+        ResponsesClient client = GetTestClient(model);
 
         CreateResponseOptions options = new(
             [
@@ -620,7 +620,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
                         """),
                     strictModeEnabled: false),
             },
-            Truncation = ResponseTruncationMode.Auto,
+            TruncationMode = ResponseTruncationMode.Auto,
         };
 
         ResponseResult response = await client.CreateResponseAsync(
@@ -633,17 +633,17 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response.PreviousResponseId, Is.Null);
         // Observed: input may not exist on normal responses
         // Assert.That(response.Input.Count, Is.EqualTo(1));
-        Assert.That(response.Output.Count, Is.EqualTo(1));
+        Assert.That(response.OutputItems.Count, Is.EqualTo(1));
     }
 
     [RecordedTest]
     public async Task ResponsesWithReasoning()
     {
-        ResponseClient client = GetTestClient("o3-mini");
+        ResponsesClient client = GetTestClient("o3-mini");
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("What's the best way to fold a burrito?")])
         {
-            Reasoning = new()
+            ReasoningOptions = new()
             {
                 ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Detailed,
                 ReasoningEffortLevel = ResponseReasoningEffortLevel.Low,
@@ -659,17 +659,17 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response, Is.Not.Null);
         Assert.That(response.Id, Is.Not.Null);
         Assert.That(response.CreatedAt, Is.GreaterThan(new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero)));
-        Assert.That(response.Truncation, Is.EqualTo(ResponseTruncationMode.Disabled));
-        Assert.That(response.MaxOutputTokens, Is.Null);
+        Assert.That(response.TruncationMode, Is.EqualTo(ResponseTruncationMode.Disabled));
+        Assert.That(response.MaxOutputTokenCount, Is.Null);
         Assert.That(response.Model, Does.StartWith("o3-mini"));
         Assert.That(response.Usage, Is.Not.Null);
         Assert.That(response.Usage.OutputTokenDetails, Is.Not.Null);
         Assert.That(response.Usage.OutputTokenDetails.ReasoningTokenCount, Is.GreaterThan(0));
         Assert.That(response.Metadata, Is.Not.Null.Or.Empty);
         Assert.That(response.Metadata["superfluous_key"], Is.EqualTo("superfluous_value"));
-        Assert.That(response.Output, Has.Count.EqualTo(2));
-        ReasoningResponseItem reasoningItem = response.Output[0] as ReasoningResponseItem;
-        MessageResponseItem messageItem = response.Output[1] as MessageResponseItem;
+        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+        ReasoningResponseItem reasoningItem = response.OutputItems[0] as ReasoningResponseItem;
+        MessageResponseItem messageItem = response.OutputItems[1] as MessageResponseItem;
         Assert.That(reasoningItem.SummaryParts, Has.Count.GreaterThan(0));
         Assert.That(reasoningItem.GetSummaryText(), Is.Not.Null.And.Not.Empty);
         Assert.That(reasoningItem.Id, Is.Not.Null.And.Not.Empty);
@@ -681,7 +681,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [TestCase("gpt-4o-mini")]
     public async Task HelloWorldStreaming(string model)
     {
-        ResponseClient client = GetTestClient(model);
+        ResponsesClient client = GetTestClient(model);
 
         ResponseContentPart contentPart
             = ResponseContentPart.CreateInputTextPart("Hello, responses!");
@@ -691,7 +691,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             in client.CreateResponseStreamingAsync(
                 new ([inputItem])
                 {
-                    Truncation = ResponseTruncationMode.Auto,
+                    TruncationMode = ResponseTruncationMode.Auto,
                 }))
         {
             Console.WriteLine(ModelReaderWriter.Write(update));
@@ -701,7 +701,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CanDeleteResponse()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         ResponseResult response = await client.CreateResponseAsync(new([ResponseItem.CreateUserMessageItem("Hello, model!")]));
 
@@ -722,12 +722,12 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CanOptOutOfStorage()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         ResponseResult response = await client.CreateResponseAsync(
             new ([ResponseItem.CreateUserMessageItem("Hello, model!")])
             {
-                Store = false,
+                IsStoredOutputEnabled = false,
             });
 
         ClientResultException expectedException = Assert.ThrowsAsync<ClientResultException>(async () => await client.GetResponseAsync(new(response.Id)));
@@ -737,7 +737,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ResponseServiceTierWorks()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         MessageResponseItem message = ResponseItem.CreateUserMessageItem("Using a comprehensive evaluation of popular media in the 1970s and 1980s, what were the most common sci-fi themes?");
         CreateResponseOptions options = new([message])
@@ -753,14 +753,14 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task OutputTextMethod()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
         ResponseResult response = await client.CreateResponseAsync(
             new([ResponseItem.CreateUserMessageItem("Respond with only the word hello.")]));
         var outputText = response.GetOutputText();
         Assert.That(outputText.Length, Is.GreaterThan(0).And.LessThan(7));
         Assert.That(outputText.ToLower(), Does.Contain("hello"));
 
-        response.Output.Add(ResponseItem.CreateAssistantMessageItem("More text!"));
+        response.OutputItems.Add(ResponseItem.CreateAssistantMessageItem("More text!"));
         Assert.That(response.GetOutputText().ToLower(), Does.EndWith("more text!"));
 
         response = await client.CreateResponseAsync(
@@ -776,13 +776,13 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
                 },
                 ToolChoice = ResponseToolChoice.CreateRequiredChoice(),
             });
-        Assert.That(response.OutputText, Is.Null);
+        Assert.That(response.GetOutputText(), Is.Null);
     }
 
     [RecordedTest]
     public async Task MessageHistoryWorks()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         ResponseResult response = await client.CreateResponseAsync(new(
             [
@@ -799,7 +799,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ImageInputWorks()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         string imagePath = Path.Join("Assets", "images_dog_and_cat.png");
         BinaryData imageBytes = BinaryData.FromBytes(await File.ReadAllBytesAsync(imagePath));
@@ -813,14 +813,14 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
                     ]),
             ]));
 
-        Console.WriteLine(response.OutputText);
-        Assert.That(response.OutputText.ToLowerInvariant(), Does.Contain("dog").Or.Contain("cat").IgnoreCase);
+        Console.WriteLine(response.GetOutputText());
+        Assert.That(response.GetOutputText().ToLowerInvariant(), Does.Contain("dog").Or.Contain("cat").IgnoreCase);
     }
 
     [RecordedTest]
     public async Task FileInputFromIdWorks()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
         OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
         string filePath = Path.Join("Assets", "files_travis_favorite_food.pdf");
 
@@ -849,7 +849,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task FileInputFromBinaryWorks()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         string filePath = Path.Join("Assets", "files_travis_favorite_food.pdf");
         Stream fileStream = File.OpenRead(filePath);
@@ -895,17 +895,17 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             options.Instructions = instructions;
         }
 
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
         ResponseResult response = await client.CreateResponseAsync(options);
 
         Assert.That(response, Is.Not.Null);
-        Assert.That(response.Output, Is.Not.Null.And.Not.Empty);
-        Assert.That(response.Output[0], Is.InstanceOf<MessageResponseItem>());
-        Assert.That((response.Output[0] as MessageResponseItem).Content, Is.Not.Null.And.Not.Empty);
-        Assert.That((response.Output[0] as MessageResponseItem).Content[0].Text, Does.StartWith("Arr, matey"));
+        Assert.That(response.OutputItems, Is.Not.Null.And.Not.Empty);
+        Assert.That(response.OutputItems[0], Is.InstanceOf<MessageResponseItem>());
+        Assert.That((response.OutputItems[0] as MessageResponseItem).Content, Is.Not.Null.And.Not.Empty);
+        Assert.That((response.OutputItems[0] as MessageResponseItem).Content[0].Text, Does.StartWith("Arr, matey"));
 
         ResponseResult retrievedResponse = await client.GetResponseAsync(new(response.Id));
-        Assert.That((retrievedResponse?.Output?.FirstOrDefault() as MessageResponseItem)?.Content?.FirstOrDefault()?.Text, Does.StartWith("Arr, matey"));
+        Assert.That((retrievedResponse?.OutputItems?.FirstOrDefault() as MessageResponseItem)?.Content?.FirstOrDefault()?.Text, Does.StartWith("Arr, matey"));
 
         if (instructionMethod == ResponsesTestInstructionMethod.InstructionsProperty)
         {
@@ -939,8 +939,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task TwoTurnCrossModel()
     {
-        ResponseClient client = GetTestClient("gpt-4o-mini");
-        ResponseClient client2 = GetTestClient("o3-mini");
+        ResponsesClient client = GetTestClient("gpt-4o-mini");
+        ResponsesClient client2 = GetTestClient("o3-mini");
 
 
         ResponseResult response = await client.CreateResponseAsync(new(
@@ -957,12 +957,12 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [TestCase("computer-use-preview", Ignore = "Not yet supported with computer-use-preview")]
     public async Task StructuredOutputs(string modelName)
     {
-        ResponseClient client = GetTestClient(modelName);
+        ResponsesClient client = GetTestClient(modelName);
 
         ResponseResult response = await client.CreateResponseAsync(
             new ([ResponseItem.CreateUserMessageItem("Write a JSON document with a list of five animals")])
             {
-                Text = new ResponseTextOptions()
+                TextOptions = new ResponseTextOptions()
                 {
                     TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
                         "data_list",
@@ -985,10 +985,10 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             });
 
         Assert.That(
-            response?.Text?.TextFormat?.Kind,
+            response?.TextOptions?.TextFormat?.Kind,
             Is.EqualTo(ResponseTextFormatKind.JsonSchema));
-        Assert.That(response?.Output, Has.Count.EqualTo(1));
-        MessageResponseItem message = response.Output[0] as MessageResponseItem;
+        Assert.That(response?.OutputItems, Has.Count.EqualTo(1));
+        MessageResponseItem message = response.OutputItems[0] as MessageResponseItem;
         Assert.That(message?.Content, Has.Count.EqualTo(1));
         Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
 
@@ -1003,7 +1003,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task FunctionCallWorks()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")])
         {
@@ -1013,8 +1013,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponseResult response = await client.CreateResponseAsync(
             options);
 
-        Assert.That(response.Output, Has.Count.EqualTo(1));
-        FunctionCallResponseItem functionCall = response.Output[0] as FunctionCallResponseItem;
+        Assert.That(response.OutputItems, Has.Count.EqualTo(1));
+        FunctionCallResponseItem functionCall = response.OutputItems[0] as FunctionCallResponseItem;
         Assert.That(functionCall, Is.Not.Null);
         Assert.That(functionCall!.Id, Has.Length.GreaterThan(0));
         Assert.That(functionCall.FunctionName, Is.EqualTo("get_weather_at_location"));
@@ -1035,8 +1035,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         ResponseResult turn2Response = await client.CreateResponseAsync(
             turn2Options);
-        Assert.That(turn2Response.Output?.Count, Is.EqualTo(1));
-        MessageResponseItem turn2Message = turn2Response!.Output[0] as MessageResponseItem;
+        Assert.That(turn2Response.OutputItems?.Count, Is.EqualTo(1));
+        MessageResponseItem turn2Message = turn2Response!.OutputItems[0] as MessageResponseItem;
         Assert.That(turn2Message, Is.Not.Null);
         Assert.That(turn2Message!.Role, Is.EqualTo(MessageRole.Assistant));
         Assert.That(turn2Message.Content, Has.Count.EqualTo(1));
@@ -1049,7 +1049,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task FunctionCallStreamingWorks()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")])
         {
@@ -1098,18 +1098,18 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task MaxTokens()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         ResponseResult response = await client.CreateResponseAsync(
             new CreateResponseOptions([ResponseItem.CreateUserMessageItem("Write three haikus about tropical fruit")])
             {
-                MaxOutputTokens = 20,
+                MaxOutputTokenCount = 20,
             });
 
         Assert.That(
-            response?.IncompleteDetails?.Reason,
+            response?.IncompleteStatusDetails?.Reason,
             Is.EqualTo(ResponseIncompleteStatusReason.MaxOutputTokens));
-        MessageResponseItem message = response?.Output?.FirstOrDefault() as MessageResponseItem; ;
+        MessageResponseItem message = response?.OutputItems?.FirstOrDefault() as MessageResponseItem; ;
         Assert.That(message?.Content?.FirstOrDefault(), Is.Not.Null);
         Assert.That(message?.Status, Is.EqualTo(MessageStatus.Incomplete));
     }
@@ -1117,7 +1117,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task FunctionToolChoiceWorks()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         ResponseToolChoice toolChoice
             = ResponseToolChoice.CreateFunctionChoice(s_GetWeatherAtLocationToolName);
@@ -1135,7 +1135,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response.ToolChoice.Kind, Is.EqualTo(ResponseToolChoiceKind.Function));
         Assert.That(response.ToolChoice.FunctionName, Is.EqualTo(toolChoice.FunctionName));
 
-        FunctionCallResponseItem functionCall = response.Output.FirstOrDefault() as FunctionCallResponseItem;
+        FunctionCallResponseItem functionCall = response.OutputItems.FirstOrDefault() as FunctionCallResponseItem;
         Assert.That(functionCall, Is.Not.Null);
         Assert.That(functionCall.FunctionName, Is.EqualTo(toolChoice.FunctionName));
     }
@@ -1144,11 +1144,11 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CanStreamBackgroundResponses()
     {
-        ResponseClient client = GetTestClient("gpt-4.1-mini");
+        ResponsesClient client = GetTestClient("gpt-4.1-mini");
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Hello, model!")])
         {
-            Background = true,
+            IsBackgroundModeEnabled = true,
         };
 
         AsyncCollectionResult<StreamingResponseUpdate> updates = client.CreateResponseStreamingAsync(options);
@@ -1175,7 +1175,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         Assert.That(retrievedResponse, Is.Not.Null);
         Assert.That(retrievedResponse.Id, Is.EqualTo(queuedResponseId));
-        Assert.That(retrievedResponse.Background, Is.True);
+        Assert.That(retrievedResponse.IsBackgroundModeEnabled, Is.True);
         Assert.That(retrievedResponse.Status, Is.EqualTo(ResponseStatus.Queued));
 
         // Now try continuing the stream.
@@ -1199,24 +1199,24 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         Assert.That(firstContinuedSequenceNumber, Is.EqualTo(lastSequenceNumber + 1));
         Assert.That(completedResponse?.Id, Is.EqualTo(queuedResponseId));
-        Assert.That(completedResponse?.Output?.FirstOrDefault(), Is.Not.Null);
+        Assert.That(completedResponse?.OutputItems?.FirstOrDefault(), Is.Not.Null);
     }
 
     [RecordedTest]
     public async Task CanCancelBackgroundResponses()
     {
-        ResponseClient client = GetTestClient("gpt-4.1-mini");
+        ResponsesClient client = GetTestClient("gpt-4.1-mini");
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Hello, model!")])
         {
-            Background = true,
+            IsBackgroundModeEnabled = true,
         };
 
         ResponseResult response = await client.CreateResponseAsync(options);
 
         Assert.That(response, Is.Not.Null);
         Assert.That(response.Id, Is.Not.Null.And.Not.Empty);
-        Assert.That(response.Background, Is.True);
+        Assert.That(response.IsBackgroundModeEnabled, Is.True);
         Assert.That(response.Status, Is.EqualTo(ResponseStatus.Queued));
 
         ResponseResult cancelledResponse = await client.CancelResponseAsync(response.Id);
@@ -1248,5 +1248,5 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             """),
         strictModeEnabled: false);
 
-    private ResponseClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<ResponseClient>(TestScenario.Responses, overrideModel);
+    private ResponsesClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<ResponsesClient>(TestScenario.Responses, overrideModel);
 }

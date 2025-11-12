@@ -13,15 +13,15 @@ using OpenAI;
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
-    public partial class ResponseClient
+    public partial class ResponsesClient
     {
         private readonly Uri _endpoint;
 
-        protected ResponseClient()
+        protected ResponsesClient()
         {
         }
 
-        internal ResponseClient(ClientPipeline pipeline, Uri endpoint)
+        internal ResponsesClient(ClientPipeline pipeline, Uri endpoint)
         {
             _endpoint = endpoint;
             Pipeline = pipeline;

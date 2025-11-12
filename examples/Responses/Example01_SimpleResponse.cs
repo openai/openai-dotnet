@@ -13,11 +13,11 @@ public partial class ResponseExamples
     [Test]
     public void Example01_SimpleResponse()
     {
-        ResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         ResponseResult response = client.CreateResponse(new ([ResponseItem.CreateUserMessageItem("Say 'this is a test.'")]));
 
-        Console.WriteLine($"[ASSISTANT]: {response.OutputText}");
+        Console.WriteLine($"[ASSISTANT]: {response.GetOutputText()}");
     }
 }
 

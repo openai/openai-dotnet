@@ -45,13 +45,13 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         };
 
-        ResponseClient client = GetTestClient(overrideModel: "gpt-5");
+        ResponsesClient client = GetTestClient(overrideModel: "gpt-5");
 
         ResponseResult response = await client.CreateResponseAsync(options);
-        Assert.That(response.Output, Has.Count.GreaterThan(0));
+        Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
 
         // Check tool list.
-        List<McpToolDefinitionListItem> toolDefinitionListItems = response.Output.OfType<McpToolDefinitionListItem>().ToList();
+        List<McpToolDefinitionListItem> toolDefinitionListItems = response.OutputItems.OfType<McpToolDefinitionListItem>().ToList();
         Assert.That(toolDefinitionListItems, Has.Count.EqualTo(1));
 
         McpToolDefinitionListItem listItem = toolDefinitionListItems[0];
@@ -63,7 +63,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(rollToolDefinition.Annotations, Is.Not.Null);
 
         // Check tool call.
-        List<McpToolCallItem> toolCallItems = response.Output.OfType<McpToolCallItem>().ToList();
+        List<McpToolCallItem> toolCallItems = response.OutputItems.OfType<McpToolCallItem>().ToList();
         Assert.That(toolCallItems, Has.Count.EqualTo(1));
 
         McpToolCallItem toolCallItem = toolCallItems[0];
@@ -74,7 +74,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(toolCallItem.Error, Is.Null);
 
         // Check assistant message.
-        MessageResponseItem assistantMessageItem = response.Output.Last() as MessageResponseItem;
+        MessageResponseItem assistantMessageItem = response.OutputItems.Last() as MessageResponseItem;
         Assert.That(assistantMessageItem, Is.Not.Null);
     }
 
@@ -97,7 +97,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         };
 
-        ResponseClient client = GetTestClient(overrideModel: "gpt-5");
+        ResponsesClient client = GetTestClient(overrideModel: "gpt-5");
 
         AsyncCollectionResult<StreamingResponseUpdate> responseUpdates = client.CreateResponseStreamingAsync(options);
 
@@ -211,15 +211,15 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         };
 
-        ResponseClient client = GetTestClient(overrideModel: "gpt-5");
+        ResponsesClient client = GetTestClient(overrideModel: "gpt-5");
 
         ResponseResult response = await client.CreateResponseAsync(options);
-        Assert.That(response.Output, Has.Count.GreaterThan(0));
-        Assert.That(response.Output.OfType<McpToolDefinitionListItem>().ToList(), Has.Count.EqualTo(1));
+        Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
+        Assert.That(response.OutputItems.OfType<McpToolDefinitionListItem>().ToList(), Has.Count.EqualTo(1));
 
         // Confirm there are no approval requests and that the tool was called.
-        Assert.That(response.Output.OfType<McpToolCallApprovalRequestItem>().ToList(), Has.Count.EqualTo(0));
-        Assert.That(response.Output.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(1));
+        Assert.That(response.OutputItems.OfType<McpToolCallApprovalRequestItem>().ToList(), Has.Count.EqualTo(0));
+        Assert.That(response.OutputItems.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(1));
     }
 
     [RecordedTest]
@@ -252,15 +252,15 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         };
 
-        ResponseClient client = GetTestClient(overrideModel: "gpt-5");
+        ResponsesClient client = GetTestClient(overrideModel: "gpt-5");
 
         ResponseResult response1 = await client.CreateResponseAsync(options);
-        Assert.That(response1.Output, Has.Count.GreaterThan(0));
-        Assert.That(response1.Output.OfType<McpToolDefinitionListItem>().ToList(), Has.Count.EqualTo(1));
-        Assert.That(response1.Output.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(0));
+        Assert.That(response1.OutputItems, Has.Count.GreaterThan(0));
+        Assert.That(response1.OutputItems.OfType<McpToolDefinitionListItem>().ToList(), Has.Count.EqualTo(1));
+        Assert.That(response1.OutputItems.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(0));
 
         // Check that it stopped at the approval request.
-        McpToolCallApprovalRequestItem approvalRequestItem = response1.Output.Last() as McpToolCallApprovalRequestItem;
+        McpToolCallApprovalRequestItem approvalRequestItem = response1.OutputItems.Last() as McpToolCallApprovalRequestItem;
         Assert.That(approvalRequestItem, Is.Not.Null);
 
         // Prepare the response.
@@ -270,8 +270,8 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         options.Input.Add(approvalResponseItem);
 
         ResponseResult response2 = await client.CreateResponseAsync(options);
-        Assert.That(response2.Output, Has.Count.GreaterThan(0));
-        Assert.That(response2.Output.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(1));
+        Assert.That(response2.OutputItems, Has.Count.GreaterThan(0));
+        Assert.That(response2.OutputItems.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(1));
     }
 
     [RecordedTest]
@@ -297,14 +297,14 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         };
 
-        ResponseClient client = GetTestClient(overrideModel: "gpt-5");
+        ResponsesClient client = GetTestClient(overrideModel: "gpt-5");
 
         ResponseResult response = await client.CreateResponseAsync(options);
-        Assert.That(response.Output, Has.Count.GreaterThan(0));
-        Assert.That(response.Output.OfType<McpToolDefinitionListItem>().ToList(), Has.Count.EqualTo(1));
-        Assert.That(response.Output.OfType<McpToolCallApprovalRequestItem>().ToList(), Has.Count.EqualTo(0));
+        Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
+        Assert.That(response.OutputItems.OfType<McpToolDefinitionListItem>().ToList(), Has.Count.EqualTo(1));
+        Assert.That(response.OutputItems.OfType<McpToolCallApprovalRequestItem>().ToList(), Has.Count.EqualTo(0));
 
-        List<McpToolCallItem> toolCallItems = response.Output.OfType<McpToolCallItem>().ToList();
+        List<McpToolCallItem> toolCallItems = response.OutputItems.OfType<McpToolCallItem>().ToList();
         Assert.That(toolCallItems, Has.Count.EqualTo(1));
 
         McpToolCallItem toolCallItem = toolCallItems[0];
@@ -338,13 +338,13 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         };
 
-        ResponseClient client = GetTestClient(overrideModel: "gpt-5");
+        ResponsesClient client = GetTestClient(overrideModel: "gpt-5");
 
         ResponseResult response = await client.CreateResponseAsync(options);
-        Assert.That(response.Output, Has.Count.GreaterThan(0));
-        Assert.That(response.Output.OfType<McpToolDefinitionListItem>().ToList(), Has.Count.EqualTo(1));
-        Assert.That(response.Output.OfType<McpToolCallApprovalRequestItem>().ToList(), Has.Count.EqualTo(0));
-        Assert.That(response.Output.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(0));
+        Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
+        Assert.That(response.OutputItems.OfType<McpToolDefinitionListItem>().ToList(), Has.Count.EqualTo(1));
+        Assert.That(response.OutputItems.OfType<McpToolCallApprovalRequestItem>().ToList(), Has.Count.EqualTo(0));
+        Assert.That(response.OutputItems.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(0));
     }
 
     [RecordedTest]
@@ -372,7 +372,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             await Task.Delay(TimeSpan.FromSeconds(5));
         }
 
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         ResponseResult response = await client.CreateResponseAsync(
             new([ResponseItem.CreateUserMessageItem("Using the file search tool, what's Travis's favorite food?")])
@@ -382,12 +382,12 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                     ResponseTool.CreateFileSearchTool(vectorStoreIds: [vectorStore.Id]),
                 }
             });
-        Assert.That(response.Output?.Count, Is.EqualTo(2));
-        FileSearchCallResponseItem fileSearchCall = response.Output[0] as FileSearchCallResponseItem;
+        Assert.That(response.OutputItems?.Count, Is.EqualTo(2));
+        FileSearchCallResponseItem fileSearchCall = response.OutputItems[0] as FileSearchCallResponseItem;
         Assert.That(fileSearchCall, Is.Not.Null);
         Assert.That(fileSearchCall?.Status, Is.EqualTo(FileSearchCallStatus.Completed));
         Assert.That(fileSearchCall?.Queries, Has.Count.GreaterThan(0));
-        MessageResponseItem message = response.Output[1] as MessageResponseItem;
+        MessageResponseItem message = response.OutputItems[1] as MessageResponseItem;
         Assert.That(message, Is.Not.Null);
         ResponseContentPart messageContentPart = message.Content?.FirstOrDefault();
         Assert.That(messageContentPart, Is.Not.Null);
@@ -407,7 +407,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CodeInterpreterToolWithoutFileIds()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new CodeInterpreterToolContainer(CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration()));
         CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem("Calculate the factorial of 5 using Python code.")])
@@ -419,11 +419,11 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             responseOptions);
 
         Assert.That(response, Is.Not.Null);
-        Assert.That(response.Output, Has.Count.EqualTo(2));
-        Assert.That(response.Output[0], Is.InstanceOf<CodeInterpreterCallResponseItem>());
-        Assert.That(response.Output[1], Is.InstanceOf<MessageResponseItem>());
+        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+        Assert.That(response.OutputItems[0], Is.InstanceOf<CodeInterpreterCallResponseItem>());
+        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
 
-        MessageResponseItem message = (MessageResponseItem)response.Output[1];
+        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
         Assert.That(message.Content, Has.Count.GreaterThan(0));
         Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
         Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
@@ -437,7 +437,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CodeInterpreterToolWithEmptyFileIds()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new(new AutomaticCodeInterpreterToolContainerConfiguration()));
         CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem("Generate a simple chart using matplotlib. Ensure you emit debug logging and include any resulting log file output.")])
@@ -450,11 +450,11 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         Assert.That(response, Is.Not.Null);
         Assert.That(response, Is.Not.Null);
-        Assert.That(response.Output, Has.Count.EqualTo(2));
-        Assert.That(response.Output[0], Is.InstanceOf<CodeInterpreterCallResponseItem>());
-        Assert.That(response.Output[1], Is.InstanceOf<MessageResponseItem>());
+        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+        Assert.That(response.OutputItems[0], Is.InstanceOf<CodeInterpreterCallResponseItem>());
+        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
 
-        MessageResponseItem message = (MessageResponseItem)response.Output[1];
+        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
         Assert.That(message.Content, Has.Count.GreaterThan(0));
         Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
         Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
@@ -469,7 +469,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     public async Task CodeInterpreterToolWithContainerIdFromContainerApi()
     {
         ContainerClient containerClient = GetProxiedOpenAIClient<ContainerClient>(TestScenario.Containers);
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         // Create a container first using the Containers API
         CreateContainerBody containerBody = new("test-container-for-code-interpreter");
@@ -492,11 +492,11 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                 responseOptions);
 
             Assert.That(response, Is.Not.Null);
-            Assert.That(response.Output, Has.Count.EqualTo(2));
-            Assert.That(response.Output[0], Is.InstanceOf<CodeInterpreterCallResponseItem>());
-            Assert.That(response.Output[1], Is.InstanceOf<MessageResponseItem>());
+            Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+            Assert.That(response.OutputItems[0], Is.InstanceOf<CodeInterpreterCallResponseItem>());
+            Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
 
-            MessageResponseItem message = (MessageResponseItem)response.Output[1];
+            MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
             Assert.That(message.Content, Has.Count.GreaterThan(0));
             Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
             Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
@@ -524,7 +524,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     public async Task CodeInterpreterToolWithUploadedFileIds()
     {
         OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         // Create some test files to upload
         string csvContent = "name,age,city\nAlice,30,New York\nBob,25,Los Angeles\nCharlie,35,Chicago";
@@ -557,7 +557,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                 responseOptions);
 
             Assert.That(response, Is.Not.Null);
-            Assert.That(response.Output, Is.Not.Null.And.Not.Empty);
+            Assert.That(response.OutputItems, Is.Not.Null.And.Not.Empty);
 
             // Basic validation that the response was created successfully
             Assert.That(response.Id, Is.Not.Null.And.Not.Empty);
@@ -585,7 +585,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CodeInterpreterToolStreaming()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new CodeInterpreterToolContainer(new AutomaticCodeInterpreterToolContainerConfiguration()));
         CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem("Calculate the factorial of 5 using Python code and show me the code step by step.")])
@@ -619,7 +619,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     public async Task CodeInterpreterToolStreamingWithFiles()
     {
         OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         // Create test CSV data
         string csvContent = "x,y\n1,2\n2,4\n3,6\n4,8\n5,10";
@@ -682,7 +682,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ImageGenToolWorks()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Generate an image of gray tabby cat hugging an otter with an orange scarf")])
         {
@@ -701,17 +701,17 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         ResponseResult response = await client.CreateResponseAsync(options);
 
-        Assert.That(response.Output, Has.Count.EqualTo(2));
-        Assert.That(response.Output[0], Is.InstanceOf<ImageGenerationCallResponseItem>());
-        Assert.That(response.Output[1], Is.InstanceOf<MessageResponseItem>());
+        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+        Assert.That(response.OutputItems[0], Is.InstanceOf<ImageGenerationCallResponseItem>());
+        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
 
-        MessageResponseItem message = (MessageResponseItem)response.Output[1];
+        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
         Assert.That(message.Content, Has.Count.GreaterThan(0));
         Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
 
         Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<ImageGenerationTool>());
 
-        ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.Output[0];
+        ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
         Assert.That(imageGenResponse.Status, Is.EqualTo(ImageGenerationCallStatus.Completed));
         Assert.That(imageGenResponse.ImageResultBytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
@@ -719,7 +719,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ImageGenToolStreaming()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         const string message = "Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape";
 
@@ -802,7 +802,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ImageGenToolInputMaskWithImageBytes()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         string imageFilename = "images_dog_and_cat.png";
         string imagePath = Path.Combine("Assets", imageFilename);
@@ -819,17 +819,17 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         ResponseResult response = await client.CreateResponseAsync(options);
 
-        Assert.That(response.Output, Has.Count.EqualTo(2));
-        Assert.That(response.Output[0], Is.InstanceOf<ImageGenerationCallResponseItem>());
-        Assert.That(response.Output[1], Is.InstanceOf<MessageResponseItem>());
+        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+        Assert.That(response.OutputItems[0], Is.InstanceOf<ImageGenerationCallResponseItem>());
+        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
 
-        MessageResponseItem message = (MessageResponseItem)response.Output[1];
+        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
         Assert.That(message.Content, Has.Count.GreaterThan(0));
         Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
 
         Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<ImageGenerationTool>());
 
-        ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.Output[0];
+        ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
         Assert.That(imageGenResponse.Status, Is.EqualTo(ImageGenerationCallStatus.Completed));
         Assert.That(imageGenResponse.ImageResultBytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
@@ -837,7 +837,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ImageGenToolInputMaskWithImageUri()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Generate an image of gray tabby cat hugging an otter with an orange scarf")])
         {
@@ -852,17 +852,17 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         ResponseResult response = await client.CreateResponseAsync(options);
 
-        Assert.That(response.Output, Has.Count.EqualTo(2));
-        Assert.That(response.Output[0], Is.InstanceOf<ImageGenerationCallResponseItem>());
-        Assert.That(response.Output[1], Is.InstanceOf<MessageResponseItem>());
+        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+        Assert.That(response.OutputItems[0], Is.InstanceOf<ImageGenerationCallResponseItem>());
+        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
 
-        MessageResponseItem message = (MessageResponseItem)response.Output[1];
+        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
         Assert.That(message.Content, Has.Count.GreaterThan(0));
         Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
 
         Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<ImageGenerationTool>());
 
-        ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.Output[0];
+        ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
         Assert.That(imageGenResponse.Status, Is.EqualTo(ImageGenerationCallStatus.Completed));
         Assert.That(imageGenResponse.ImageResultBytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
@@ -870,7 +870,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ImageGenToolInputMaskWithFileId()
     {
-        ResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
 
@@ -902,17 +902,17 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         ResponseResult response = await client.CreateResponseAsync(options);
 
-        Assert.That(response.Output, Has.Count.EqualTo(2));
-        Assert.That(response.Output[0], Is.InstanceOf<ImageGenerationCallResponseItem>());
-        Assert.That(response.Output[1], Is.InstanceOf<MessageResponseItem>());
+        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+        Assert.That(response.OutputItems[0], Is.InstanceOf<ImageGenerationCallResponseItem>());
+        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
 
-        MessageResponseItem message = (MessageResponseItem)response.Output[1];
+        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
         Assert.That(message.Content, Has.Count.GreaterThan(0));
         Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
 
         Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<ImageGenerationTool>());
 
-        ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.Output[0];
+        ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
         Assert.That(imageGenResponse.Status, Is.EqualTo(ImageGenerationCallStatus.Completed));
         Assert.That(imageGenResponse.ImageResultBytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
@@ -987,5 +987,5 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         }
     }
 
-    private ResponseClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<ResponseClient>(TestScenario.Responses, overrideModel);
+    private ResponsesClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<ResponsesClient>(TestScenario.Responses, overrideModel);
 }

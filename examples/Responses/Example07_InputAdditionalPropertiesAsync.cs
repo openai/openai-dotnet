@@ -15,7 +15,7 @@ public partial class ResponseExamples
     [Test]
     public async Task Example07_InputAdditionalPropertiesAsync()
     {
-        ResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         // Add extra request fields using Patch.
         // Patch lets you set fields like `reasoning.effort` and `text.verbosity` that aren’t modeled on CreateResponseOptions in the request payload.
@@ -28,7 +28,7 @@ public partial class ResponseExamples
 
         ResponseResult response = await client.CreateResponseAsync(options);
 
-        Console.WriteLine($"[ASSISTANT]: {response.OutputText}");
+        Console.WriteLine($"[ASSISTANT]: {response.GetOutputText()}");
 
         // Read extra fields from the response via Patch.
         // The service returns fields like `reasoning.effort` and `text.verbosity` that aren’t modeled on OpenAIResponse.

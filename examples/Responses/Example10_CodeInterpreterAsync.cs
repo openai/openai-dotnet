@@ -18,7 +18,7 @@ public partial class ResponseExamples
     [Test]
     public async Task Example10_CodeInterpreterAsync()
     {
-        ResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         CodeInterpreterToolContainer container = new(CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration());
         CodeInterpreterTool codeInterpreterTool = new(container);
@@ -31,7 +31,7 @@ public partial class ResponseExamples
 
         ResponseResult response = await client.CreateResponseAsync(options);
 
-        MessageResponseItem message = response.Output
+        MessageResponseItem message = response.OutputItems
             .OfType<MessageResponseItem>()
             .FirstOrDefault();
 

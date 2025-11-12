@@ -29,23 +29,23 @@ namespace OpenAI.Responses
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Temperature = temperature;
             TopP = topP;
-            User = user;
+            EndUserId = user;
             ServiceTier = serviceTier;
             PreviousResponseId = previousResponseId;
             Model = model;
-            Reasoning = reasoning;
-            Background = background;
-            MaxOutputTokens = maxOutputTokens;
+            ReasoningOptions = reasoning;
+            IsBackgroundModeEnabled = background;
+            MaxOutputTokenCount = maxOutputTokens;
             Instructions = instructions;
-            Text = text;
+            TextOptions = text;
             Tools = tools ?? new ChangeTrackingList<ResponseTool>();
             ToolChoice = toolChoice;
-            Truncation = truncation;
+            TruncationMode = truncation;
             Input = input;
             Include = include ?? new ChangeTrackingList<Includable>();
-            ParallelToolCalls = parallelToolCalls;
-            Store = store;
-            Stream = stream;
+            IsParallelToolCallsEnabled = parallelToolCalls;
+            IsStoredOutputEnabled = store;
+            IsStreamingEnabled = stream;
             _patch = patch;
             _patch.SetPropagators(PropagateSet, PropagateGet);
         }
@@ -55,47 +55,107 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
+        /// <summary>
+        /// Gets a dictionary of custom metadata for the response. This corresponds to the "metadata" property in the JSON representation.
+        /// </summary>
         public IDictionary<string, string> Metadata { get; }
 
+        /// <summary>
+        /// Gets or sets the sampling temperature to use, between 0 and 2. This corresponds to the "temperature" property in the JSON representation.
+        /// </summary>
         public float? Temperature { get; set; }
 
+        /// <summary>
+        /// Gets or sets the nucleus sampling parameter, between 0 and 1. This corresponds to the "top_p" property in the JSON representation.
+        /// </summary>
         public float? TopP { get; set; }
 
-        public string User { get; set; }
+        /// <summary>
+        /// Gets or sets a unique identifier representing the end-user. This corresponds to the "user" property in the JSON representation.
+        /// </summary>
+        public string EndUserId { get; set; }
 
+        /// <summary>
+        /// Gets or sets the service tier to be used for processing the request. This corresponds to the "service_tier" property in the JSON representation.
+        /// </summary>
         public ResponseServiceTier? ServiceTier { get; set; }
 
+        /// <summary>
+        /// Gets or sets the ID of the response to continue from, enabling streaming responses. This corresponds to the "previous_response_id" property in the JSON representation.
+        /// </summary>
         public string PreviousResponseId { get; set; }
 
+        /// <summary>
+        /// Gets or sets the model to be used for generating the response. This corresponds to the "model" property in the JSON representation.
+        /// </summary>
         public ModelIdsResponses? Model { get; set; }
 
-        public ResponseReasoningOptions Reasoning { get; set; }
+        /// <summary>
+        /// Gets or sets the reasoning options for the response. This corresponds to the "reasoning" property in the JSON representation.
+        /// </summary>
+        public ResponseReasoningOptions ReasoningOptions { get; set; }
 
-        public bool? Background { get; set; }
+        /// <summary>
+        /// Gets or sets whether to run the response in background mode. This corresponds to the "background" property in the JSON representation.
+        /// </summary>
+        public bool? IsBackgroundModeEnabled { get; set; }
 
-        public int? MaxOutputTokens { get; set; }
+        /// <summary>
+        /// Gets or sets the maximum number of output tokens to generate. This corresponds to the "max_output_tokens" property in the JSON representation.
+        /// </summary>
+        public int? MaxOutputTokenCount { get; set; }
 
+        /// <summary>
+        /// Gets or sets the instructions to guide the response generation. This corresponds to the "instructions" property in the JSON representation.
+        /// </summary>
         public string Instructions { get; set; }
 
-        public ResponseTextOptions Text { get; set; }
+        /// <summary>
+        /// Gets or sets the text format options for the response. This corresponds to the "text" property in the JSON representation.
+        /// </summary>
+        public ResponseTextOptions TextOptions { get; set; }
 
+        /// <summary>
+        /// Gets a list of tools available to the response. This corresponds to the "tools" property in the JSON representation.
+        /// </summary>
         public IList<ResponseTool> Tools { get; }
 
+        /// <summary>
+        /// Gets or sets how tool calls should be selected during response generation. This corresponds to the "tool_choice" property in the JSON representation.
+        /// </summary>
         public ResponseToolChoice ToolChoice { get; set; }
 
-        public ResponseTruncationMode? Truncation { get; set; }
+        /// <summary>
+        /// Gets or sets the truncation mode for the response. This corresponds to the "truncation" property in the JSON representation.
+        /// </summary>
+        public ResponseTruncationMode? TruncationMode { get; set; }
 
+        /// <summary>
+        /// Gets or sets the input items to be processed for the response. This corresponds to the "input" property in the JSON representation.
+        /// </summary>
         public IList<ResponseItem> Input { get; internal set; }
 
+        /// <summary>
+        /// Gets or sets the list of fields to include in the response. This corresponds to the "include" property in the JSON representation.
+        /// </summary>
         public IList<Includable> Include { get; set; }
 
-        public bool? ParallelToolCalls { get; set; }
+        /// <summary>
+        /// Gets or sets whether multiple tool calls can be made in parallel. This corresponds to the "parallel_tool_calls" property in the JSON representation.
+        /// </summary>
+        public bool? IsParallelToolCallsEnabled { get; set; }
 
-        public bool? Store { get; set; }
+        /// <summary>
+        /// Gets or sets whether the response should be stored for later retrieval. This corresponds to the "store" property in the JSON representation.
+        /// </summary>
+        public bool? IsStoredOutputEnabled { get; set; }
 
-        public bool? Stream { get; set; }
+        /// <summary>
+        /// Gets or sets whether the response should be streamed. This corresponds to the "stream" property in the JSON representation.
+        /// </summary>
+        public bool? IsStreamingEnabled { get; set; }
 
-        internal static CreateResponseOptions Create(IEnumerable<ResponseItem> inputItems, ResponseClient client, ResponseCreationOptions options = null, bool isStreaming = false)
+        internal static CreateResponseOptions Create(IEnumerable<ResponseItem> inputItems, ResponsesClient client, ResponseCreationOptions options = null, bool isStreaming = false)
         {
             Argument.AssertNotNull(inputItems, nameof(inputItems));
             options ??= new();
