@@ -81,7 +81,7 @@ namespace OpenAI.Responses
         {
             Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
-            return new ResponseClientGetResponseInputItemsCollectionResult(
+            return new ResponsesClientGetResponseInputItemsCollectionResult(
                 this,
                 responseId,
                 limit,
@@ -95,7 +95,7 @@ namespace OpenAI.Responses
         {
             Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
-            return new ResponseClientGetResponseInputItemsAsyncCollectionResult(
+            return new ResponsesClientGetResponseInputItemsAsyncCollectionResult(
                 this,
                 responseId,
                 limit,
@@ -109,7 +109,7 @@ namespace OpenAI.Responses
         {
             Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
-            return new ResponseClientGetResponseInputItemsCollectionResultOfT(
+            return new ResponsesClientGetResponseInputItemsCollectionResultOfT(
                 this,
                 responseId,
                 options?.PageSizeLimit,
@@ -123,7 +123,7 @@ namespace OpenAI.Responses
         {
             Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
-            return new ResponseClientGetResponseInputItemsAsyncCollectionResultOfT(
+            return new ResponsesClientGetResponseInputItemsAsyncCollectionResultOfT(
                 this,
                 responseId,
                 options?.PageSizeLimit,

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class ResponseClientGetResponseInputItemsCollectionResult : CollectionResult
+    internal partial class ResponsesClientGetResponseInputItemsCollectionResultOfT : CollectionResult<ResponseItem>
     {
         private readonly ResponsesClient _client;
         private readonly string _responseId;
@@ -20,7 +20,7 @@ namespace OpenAI.Responses
         private readonly string _before;
         private readonly RequestOptions _options;
 
-        public ResponseClientGetResponseInputItemsCollectionResult(ResponsesClient client, string responseId, int? limit, string order, string after, string before, RequestOptions options)
+        public ResponsesClientGetResponseInputItemsCollectionResultOfT(ResponsesClient client, string responseId, int? limit, string order, string after, string before, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
@@ -65,6 +65,11 @@ namespace OpenAI.Responses
             {
                 return null;
             }
+        }
+
+        protected override IEnumerable<ResponseItem> GetValuesFromPage(ClientResult page)
+        {
+            return ((InternalResponseItemList)page).Data;
         }
     }
 }
