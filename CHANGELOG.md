@@ -24,10 +24,11 @@ Thank you to our developer community members who helped to make the OpenAI clien
   - Fixed an issue with custom serialization for `MessageCreationAttachment` that prevented proper handling of file attachments in message creation. _(A community contribution, courtesy of [BenjaminDavidPinter](https://github.com/BenjaminDavidPinter))_
 - OpenAI.Responses:
   - Fixed the generated serialization name of `partial_image_b64` in `StreamingResponseImageGenerationCallPartialImageUpdate` to ensure correct serialization of partial image data in streaming responses.
+  - Fixed serialization issues with `Patch` properties by adding the `JsonIgnore` attribute, preventing `System.InvalidOperationException` when using `JsonSerializer` without the custom converter.
 
 ### Other Changes
 
-- Updated the `System.ClientModel` dependency to version 1.8.0 to adopt bug fixes for JSON Patch.  For more context, see the [System.ClientModel ChangeLog](https://github.com/Azure/azure-sdk-for-net/blob/System.ClientModel_1.8.1/sdk/core/System.ClientModel/CHANGELOG.md)
+- Updated the `System.ClientModel` dependency to version 1.8.1 to adopt bug fixes for JSON Patch.  For more context, see the [System.ClientModel ChangeLog](https://github.com/Azure/azure-sdk-for-net/blob/System.ClientModel_1.8.1/sdk/core/System.ClientModel/CHANGELOG.md)
 
 ## 2.6.0 (2025-10-31)
 
