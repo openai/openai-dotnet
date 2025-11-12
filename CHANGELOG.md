@@ -27,7 +27,7 @@ Thank you to our developer community members who helped to make the OpenAI clien
 
 ### Other Changes
 
-- Updated the `System.ClientModel` dependency to version 1.8.0.
+- Updated the `System.ClientModel` dependency to version 1.8.0 to adopt bug fixes for JSON Patch.  For more context, see the [System.ClientModel ChangeLog](https://github.com/Azure/azure-sdk-for-net/blob/System.ClientModel_1.8.1/sdk/core/System.ClientModel/CHANGELOG.md)
 
 ## 2.6.0 (2025-10-31)
 
