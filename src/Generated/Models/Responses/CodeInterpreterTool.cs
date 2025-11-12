@@ -22,6 +22,7 @@ namespace OpenAI.Responses
         internal CodeInterpreterTool(InternalToolType kind, in JsonPatch patch, CodeInterpreterToolContainer container) : base(kind, patch)
         {
             Container = container;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }

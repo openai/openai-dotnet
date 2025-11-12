@@ -20,6 +20,7 @@ namespace OpenAI.Internal
         internal InternalResponseFormatJsonSchema(InternalResponseFormatType kind, in JsonPatch patch, InternalResponseFormatJsonSchemaJsonSchema jsonSchema) : base(kind, patch)
         {
             JsonSchema = jsonSchema;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 

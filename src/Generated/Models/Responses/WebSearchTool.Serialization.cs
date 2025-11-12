@@ -155,5 +155,42 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<WebSearchTool>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("filters"u8))
+            {
+                return Filters.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("filters"u8.Length)], out value);
+            }
+            if (local.StartsWith("user_location"u8))
+            {
+                return UserLocation.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("user_location"u8.Length)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("filters"u8))
+            {
+                Filters.Patch.Set([.. "$"u8, .. local.Slice("filters"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("user_location"u8))
+            {
+                UserLocation.Patch.Set([.. "$"u8, .. local.Slice("user_location"u8.Length)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

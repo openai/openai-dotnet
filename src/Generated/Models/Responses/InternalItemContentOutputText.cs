@@ -28,6 +28,7 @@ namespace OpenAI.Responses
             InternalText = internalText;
             Annotations = annotations ?? new ChangeTrackingList<ResponseMessageAnnotation>();
             Logprobs = logprobs ?? new ChangeTrackingList<InternalLogProb>();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
