@@ -107,7 +107,7 @@ function Invoke-GenAPI {
     Write-Output ""
 
     # System.ClientModel
-    $systemClientModelPath = Join-Path $nugetPackagesPath "system.clientmodel\1.7.0"
+    $systemClientModelPath = Join-Path $nugetPackagesPath "system.clientmodel\1.8.1"
     $systemClientModelRef = $null
     if (Test-Path $systemClientModelPath) {
         $systemClientModelRef = Get-ChildItem `
