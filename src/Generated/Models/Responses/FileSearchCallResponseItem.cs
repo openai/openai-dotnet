@@ -28,6 +28,7 @@ namespace OpenAI.Responses
             Status = status;
             Queries = queries ?? new ChangeTrackingList<string>();
             Results = results ?? new ChangeTrackingList<FileSearchCallResult>();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 

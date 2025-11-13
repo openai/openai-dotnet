@@ -141,7 +141,7 @@ namespace OpenAI.Files
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeFileDeletionResult(document.RootElement, options);
                     }
@@ -156,7 +156,7 @@ namespace OpenAI.Files
         public static explicit operator FileDeletionResult(ClientResult result)
         {
             PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
             return DeserializeFileDeletionResult(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

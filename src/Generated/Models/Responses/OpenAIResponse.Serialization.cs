@@ -577,7 +577,7 @@ namespace OpenAI.Responses
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeOpenAIResponse(document.RootElement, data, options);
                     }
@@ -592,7 +592,7 @@ namespace OpenAI.Responses
         {
             PipelineResponse response = result.GetRawResponse();
             BinaryData data = response.Content;
-            using JsonDocument document = JsonDocument.Parse(data);
+            using JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions);
             return DeserializeOpenAIResponse(document.RootElement, data, ModelSerializationExtensions.WireOptions);
         }
 
@@ -602,9 +602,21 @@ namespace OpenAI.Responses
             ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
             value = default;
 
+            if (local.StartsWith("reasoning"u8))
+            {
+                return ReasoningOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("reasoning"u8.Length)], out value);
+            }
+            if (local.StartsWith("text"u8))
+            {
+                return TextOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("text"u8.Length)], out value);
+            }
             if (local.StartsWith("error"u8))
             {
                 return Error.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("error"u8.Length)], out value);
+            }
+            if (local.StartsWith("incomplete_details"u8))
+            {
+                return IncompleteStatusDetails.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("incomplete_details"u8.Length)], out value);
             }
             if (local.StartsWith("usage"u8))
             {
@@ -620,6 +632,16 @@ namespace OpenAI.Responses
                 }
                 return Tools[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
             }
+            if (local.StartsWith("output"u8))
+            {
+                int propertyLength = "output"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                return OutputItems[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+            }
             return false;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -629,9 +651,24 @@ namespace OpenAI.Responses
         {
             ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
 
+            if (local.StartsWith("reasoning"u8))
+            {
+                ReasoningOptions.Patch.Set([.. "$"u8, .. local.Slice("reasoning"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("text"u8))
+            {
+                TextOptions.Patch.Set([.. "$"u8, .. local.Slice("text"u8.Length)], value);
+                return true;
+            }
             if (local.StartsWith("error"u8))
             {
                 Error.Patch.Set([.. "$"u8, .. local.Slice("error"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("incomplete_details"u8))
+            {
+                IncompleteStatusDetails.Patch.Set([.. "$"u8, .. local.Slice("incomplete_details"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("usage"u8))
@@ -648,6 +685,17 @@ namespace OpenAI.Responses
                     return false;
                 }
                 Tools[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                return true;
+            }
+            if (local.StartsWith("output"u8))
+            {
+                int propertyLength = "output"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                OutputItems[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
                 return true;
             }
             return false;

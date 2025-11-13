@@ -23,6 +23,7 @@ namespace OpenAI.Responses
         {
             // Plugin customization: ensure initialization of collections
             Path = path ?? new ChangeTrackingList<InternalCoordinate>();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 

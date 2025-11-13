@@ -313,7 +313,7 @@ namespace OpenAI.Chat
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeChatCompletionMessageListDatum(document.RootElement, data, options);
                     }
@@ -333,6 +333,10 @@ namespace OpenAI.Chat
             if (local.StartsWith("function_call"u8))
             {
                 return FunctionCall.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("function_call"u8.Length)], out value);
+            }
+            if (local.StartsWith("audio"u8))
+            {
+                return OutputAudio.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("audio"u8.Length)], out value);
             }
             if (local.StartsWith("tool_calls"u8))
             {
@@ -376,6 +380,11 @@ namespace OpenAI.Chat
             if (local.StartsWith("function_call"u8))
             {
                 FunctionCall.Patch.Set([.. "$"u8, .. local.Slice("function_call"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("audio"u8))
+            {
+                OutputAudio.Patch.Set([.. "$"u8, .. local.Slice("audio"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("tool_calls"u8))

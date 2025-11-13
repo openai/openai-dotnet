@@ -152,7 +152,7 @@ namespace OpenAI.Models
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeOpenAIModel(document.RootElement, options);
                     }
@@ -167,7 +167,7 @@ namespace OpenAI.Models
         public static explicit operator OpenAIModel(ClientResult result)
         {
             PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
             return DeserializeOpenAIModel(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

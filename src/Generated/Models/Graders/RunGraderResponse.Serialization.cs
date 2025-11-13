@@ -161,7 +161,7 @@ namespace OpenAI.Graders
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeRunGraderResponse(document.RootElement, options);
                     }
@@ -175,7 +175,7 @@ namespace OpenAI.Graders
         public static explicit operator RunGraderResponse(ClientResult result)
         {
             PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
             return DeserializeRunGraderResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

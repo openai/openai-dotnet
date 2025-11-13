@@ -135,7 +135,7 @@ namespace OpenAI.Internal
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalWebSearchLocation(document.RootElement, data, options);
                     }

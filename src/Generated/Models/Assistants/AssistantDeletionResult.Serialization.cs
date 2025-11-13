@@ -136,7 +136,7 @@ namespace OpenAI.Assistants
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeAssistantDeletionResult(document.RootElement, options);
                     }
@@ -150,7 +150,7 @@ namespace OpenAI.Assistants
         public static explicit operator AssistantDeletionResult(ClientResult result)
         {
             PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
             return DeserializeAssistantDeletionResult(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

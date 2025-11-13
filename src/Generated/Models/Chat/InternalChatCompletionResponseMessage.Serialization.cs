@@ -257,7 +257,7 @@ namespace OpenAI.Chat
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalChatCompletionResponseMessage(document.RootElement, data, options);
                     }
@@ -274,6 +274,10 @@ namespace OpenAI.Chat
             ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
             value = default;
 
+            if (local.StartsWith("function_call"u8))
+            {
+                return FunctionCall.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("function_call"u8.Length)], out value);
+            }
             if (local.StartsWith("audio"u8))
             {
                 return Audio.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("audio"u8.Length)], out value);
@@ -307,6 +311,11 @@ namespace OpenAI.Chat
         {
             ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
 
+            if (local.StartsWith("function_call"u8))
+            {
+                FunctionCall.Patch.Set([.. "$"u8, .. local.Slice("function_call"u8.Length)], value);
+                return true;
+            }
             if (local.StartsWith("audio"u8))
             {
                 Audio.Patch.Set([.. "$"u8, .. local.Slice("audio"u8.Length)], value);

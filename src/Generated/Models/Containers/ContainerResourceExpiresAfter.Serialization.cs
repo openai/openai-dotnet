@@ -124,7 +124,7 @@ namespace OpenAI.Containers
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeContainerResourceExpiresAfter(document.RootElement, options);
                     }

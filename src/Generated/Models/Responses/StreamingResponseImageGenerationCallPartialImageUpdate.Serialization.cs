@@ -55,9 +55,9 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("partial_image_index"u8);
                 writer.WriteNumberValue(PartialImageIndex);
             }
-            if (!Patch.Contains("$.PartialImageBytes"u8))
+            if (!Patch.Contains("$.partial_image_b64"u8))
             {
-                writer.WritePropertyName("PartialImageBytes"u8);
+                writer.WritePropertyName("partial_image_b64"u8);
                 writer.WriteBase64StringValue(PartialImageBytes.ToArray(), "D");
             }
 
@@ -120,7 +120,7 @@ namespace OpenAI.Responses
                     partialImageIndex = prop.Value.GetInt32();
                     continue;
                 }
-                if (prop.NameEquals("PartialImageBytes"u8))
+                if (prop.NameEquals("partial_image_b64"u8))
                 {
                     partialImageBytes = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
                     continue;
@@ -159,7 +159,7 @@ namespace OpenAI.Responses
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeStreamingResponseImageGenerationCallPartialImageUpdate(document.RootElement, data, options);
                     }
