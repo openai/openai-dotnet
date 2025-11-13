@@ -12,7 +12,7 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class OpenAIResponse : IJsonModel<OpenAIResponse>
+    internal partial class OpenAIResponse : IJsonModel<OpenAIResponse>
     {
         internal OpenAIResponse() : this(null, default, default, null, default, null, null, null, default, default, null, null, null, null, default, null, null, default, default, null, null, null, null, default, default)
         {

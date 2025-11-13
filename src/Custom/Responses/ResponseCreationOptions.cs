@@ -1,7 +1,5 @@
-using System;
 using System.ClientModel;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses;
 
@@ -12,7 +10,7 @@ namespace OpenAI.Responses;
 [CodeGenType("CreateResponse")]
 [CodeGenVisibility(nameof(ResponseCreationOptions), CodeGenVisibility.Public)]
 [CodeGenSuppress(nameof(ResponseCreationOptions), typeof(IEnumerable<ResponseItem>))]
-public partial class ResponseCreationOptions
+internal partial class ResponseCreationOptions
 {
     // CUSTOM: Temporarily made internal.
     [CodeGenMember("Include")]
@@ -73,13 +71,14 @@ public partial class ResponseCreationOptions
     [CodeGenMember("Tools")]
     public IList<ResponseTool> Tools { get; }
 
-    internal ResponseCreationOptions GetClone()
-    {
-        ResponseCreationOptions copiedOptions = (ResponseCreationOptions)this.MemberwiseClone();
-        copiedOptions.Patch = _patch;
-
-        return copiedOptions;
-    }
+        internal ResponseCreationOptions GetClone()
+        {
+            ResponseCreationOptions copiedOptions = (ResponseCreationOptions)this.MemberwiseClone();
+    #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+            copiedOptions.Patch = _patch;
+    #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
+            return copiedOptions;
+        }
 
     internal BinaryContent ToBinaryContent() => BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
 }
