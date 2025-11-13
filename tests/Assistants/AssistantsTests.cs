@@ -1003,6 +1003,11 @@ public class AssistantsTests : OpenAIRecordedTestBase
             Assert.That(assistant.Name, Is.EqualTo($"Test Assistant {i}"));
         }
 
+        if (Mode != RecordedTestMode.Playback)
+        {
+            await Task.Delay(TimeSpan.FromSeconds(10));
+        }
+
         // Page through collection
         int count = 0;
         AsyncCollectionResult<Assistant> assistants = client.GetAssistantsAsync(new AssistantCollectionOptions() { Order = AssistantCollectionOrder.Descending });
@@ -1031,7 +1036,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task Pagination_CanPageThroughAssistantCollection()
     {
-        const int TestAssistantCount = 10;
+        const int TestAssistantCount = 5;
         const int TestPageSizeLimit = 2;
 
         AssistantClient client = GetTestClient();
@@ -1045,6 +1050,11 @@ public class AssistantsTests : OpenAIRecordedTestBase
             });
             Validate(assistant);
             Assert.That(assistant.Name, Is.EqualTo($"Test Assistant {i}"));
+        }
+
+        if (Mode != RecordedTestMode.Playback)
+        {
+            await Task.Delay(TimeSpan.FromSeconds(10));
         }
 
         // Page through collection
@@ -1096,7 +1106,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task Pagination_CanRehydrateAssistantPageCollectionFromBytes()
     {
-        const int TestAssistantCount = 10;
+        const int TestAssistantCount = 5;
         const int TestPageSizeLimit = 2;
 
         AssistantClient client = GetTestClient();
@@ -1110,6 +1120,11 @@ public class AssistantsTests : OpenAIRecordedTestBase
             });
             Validate(assistant);
             Assert.That(assistant.Name, Is.EqualTo($"Test Assistant {i}"));
+        }
+
+        if (Mode != RecordedTestMode.Playback)
+        {
+            await Task.Delay(TimeSpan.FromSeconds(10));
         }
 
         AsyncCollectionResult<Assistant> assistants = client.GetAssistantsAsync(

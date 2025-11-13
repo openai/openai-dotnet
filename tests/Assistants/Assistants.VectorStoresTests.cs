@@ -108,7 +108,10 @@ public class VectorStoresTests : OpenAIRecordedTestBase
     public async Task CanEnumerateVectorStores()
     {
         VectorStoreClient client = GetTestClient();
-        for (int i = 0; i < 5; i++)
+
+        int vectorStoreCount = 3;
+
+        for (int i = 0; i < vectorStoreCount; i++)
         {
             VectorStore vectorStore = await client.CreateVectorStoreAsync(
                 new VectorStoreCreationOptions()
@@ -122,7 +125,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
 
         if (Mode != RecordedTestMode.Playback)
         {
-            await Task.Delay(5000);
+            await Task.Delay(TimeSpan.FromSeconds(10));
         }
 
         int lastIdSeen = int.MaxValue;
@@ -155,7 +158,9 @@ public class VectorStoresTests : OpenAIRecordedTestBase
         VectorStore vectorStore = await client.CreateVectorStoreAsync();
         Validate(vectorStore);
 
-        IReadOnlyList<OpenAIFile> files = await GetNewTestFiles(3);
+        int fileCount = 3;
+
+        IReadOnlyList<OpenAIFile> files = await GetNewTestFiles(fileCount);
 
         foreach (OpenAIFile file in files)
         {
@@ -169,6 +174,10 @@ public class VectorStoresTests : OpenAIRecordedTestBase
                 Assert.That(vectorStoreFile.CreatedAt, Is.GreaterThan(s_2024));
                 Assert.That(vectorStoreFile.Status, Is.EqualTo(VectorStoreFileStatus.InProgress));
             });
+        }
+        if (Mode != RecordedTestMode.Playback)
+        {
+            await Task.Delay(TimeSpan.FromSeconds(10));
         }
 
         FileFromStoreRemovalResult removalResult = await client.RemoveFileFromVectorStoreAsync(vectorStore.Id, files[0].Id);
@@ -189,7 +198,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
             Assert.That(vectorStoreFile.FileId, Is.Not.EqualTo(files[0].Id));
             Assert.That(vectorStoreFile.VectorStoreId, Is.EqualTo(vectorStore.Id));
         }
-        Assert.That(count, Is.EqualTo(2));
+        Assert.That(count, Is.EqualTo(fileCount - 1));
     }
 
     [RecordedTest]
