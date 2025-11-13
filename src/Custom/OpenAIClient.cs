@@ -341,7 +341,7 @@ public partial class OpenAIClient
     /// </remarks>
     /// <returns> A new <see cref="ResponsesClient"/>. </returns>
     [Experimental("OPENAI001")]
-    public virtual ResponsesClient GetOpenAIResponseClient(string model) => new(Pipeline, model, _options);
+    public virtual ResponsesClient GetResponsesClient(string model) => new(Pipeline, model, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="VectorStoreClient"/> that reuses the client configuration details provided to
