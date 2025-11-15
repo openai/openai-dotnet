@@ -13,7 +13,7 @@ namespace OpenAI.Audio
 {
     public partial class AudioTranscription : IJsonModel<AudioTranscription>
     {
-        internal AudioTranscription() : this(null, null, default, null, null, null, null, null)
+        internal AudioTranscription() : this(null, null, default, null, null, null, null, null, null)
         {
         }
 
@@ -74,6 +74,18 @@ namespace OpenAI.Audio
                 }
                 writer.WriteEndArray();
             }
+            if (Optional.IsDefined(Usage) && _additionalBinaryDataProperties?.ContainsKey("usage") != true)
+            {
+                writer.WritePropertyName("usage"u8);
+#if NET6_0_OR_GREATER
+                writer.WriteRawValue(Usage);
+#else
+                using (JsonDocument document = JsonDocument.Parse(Usage))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
+#endif
+            }
             if (Optional.IsCollectionDefined(TranscriptionTokenLogProbabilities) && _additionalBinaryDataProperties?.ContainsKey("logprobs") != true)
             {
                 writer.WritePropertyName("logprobs"u8);
@@ -132,6 +144,7 @@ namespace OpenAI.Audio
             string text = default;
             IReadOnlyList<TranscribedWord> words = default;
             IReadOnlyList<TranscribedSegment> segments = default;
+            BinaryData usage = default;
             IReadOnlyList<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -184,6 +197,15 @@ namespace OpenAI.Audio
                     segments = array;
                     continue;
                 }
+                if (prop.NameEquals("usage"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    usage = BinaryData.FromString(prop.Value.GetRawText());
+                    continue;
+                }
                 if (prop.NameEquals("logprobs"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -208,6 +230,7 @@ namespace OpenAI.Audio
                 text,
                 words ?? new ChangeTrackingList<TranscribedWord>(),
                 segments ?? new ChangeTrackingList<TranscribedSegment>(),
+                usage,
                 transcriptionTokenLogProbabilities ?? new ChangeTrackingList<AudioTokenLogProbabilityDetails>(),
                 additionalBinaryDataProperties);
         }

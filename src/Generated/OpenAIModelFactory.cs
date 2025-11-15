@@ -1261,6 +1261,50 @@ namespace OpenAI
             return new ItemRetrievedUpdate(RealtimeUpdateKind.ItemRetrieved, eventId, additionalBinaryDataProperties: null, item);
         }
 
+        public static TranscriptTextUsageTokensInputTokenDetails TranscriptTextUsageTokensInputTokenDetails(long? textTokens = default, long? audioTokens = default)
+        {
+            return new TranscriptTextUsageTokensInputTokenDetails(textTokens, audioTokens, additionalBinaryDataProperties: null);
+        }
+
+        public static DotNetTranscriptTextUsage DotNetTranscriptTextUsage(string kind = default)
+        {
+            return new UnknownDotNetTranscriptTextUsage(new DotNetTranscriptTextUsageType(kind), additionalBinaryDataProperties: null);
+        }
+
+        public static DotNetTranscriptTextUsageTokens DotNetTranscriptTextUsageTokens(long inputTokens = default, TranscriptTextUsageTokensInputTokenDetails inputTokenDetails = default, long outputTokens = default, long totalTokens = default)
+        {
+            return new DotNetTranscriptTextUsageTokens(
+                DotNetTranscriptTextUsageType.Tokens,
+                additionalBinaryDataProperties: null,
+                inputTokens,
+                inputTokenDetails,
+                outputTokens,
+                totalTokens);
+        }
+
+        public static DotNetTranscriptTextUsageDuration DotNetTranscriptTextUsageDuration(double seconds = default)
+        {
+            return new DotNetTranscriptTextUsageDuration(DotNetTranscriptTextUsageType.Duration, additionalBinaryDataProperties: null, seconds);
+        }
+
+        public static AudioTranscription AudioTranscription(string language = default, TimeSpan? duration = default, string text = default, IEnumerable<TranscribedWord> words = default, IEnumerable<TranscribedSegment> segments = default, BinaryData usage = default, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default)
+        {
+            words ??= new ChangeTrackingList<TranscribedWord>();
+            segments ??= new ChangeTrackingList<TranscribedSegment>();
+            transcriptionTokenLogProbabilities ??= new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
+
+            return new AudioTranscription(
+                "transcribe",
+                language,
+                duration,
+                text,
+                words.ToList(),
+                segments.ToList(),
+                usage,
+                transcriptionTokenLogProbabilities.ToList(),
+                additionalBinaryDataProperties: null);
+        }
+
         public static ChatFunctionChoice ChatFunctionChoice()
         {
             return new ChatFunctionChoice(default);
@@ -1294,23 +1338,6 @@ namespace OpenAI
         public static AudioTokenLogProbabilityDetails AudioTokenLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)
         {
             return new AudioTokenLogProbabilityDetails(token, logProbability, utf8Bytes, additionalBinaryDataProperties: null);
-        }
-
-        public static AudioTranscription AudioTranscription(string language = default, TimeSpan? duration = default, string text = default, IEnumerable<TranscribedWord> words = default, IEnumerable<TranscribedSegment> segments = default, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default)
-        {
-            words ??= new ChangeTrackingList<TranscribedWord>();
-            segments ??= new ChangeTrackingList<TranscribedSegment>();
-            transcriptionTokenLogProbabilities ??= new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
-
-            return new AudioTranscription(
-                "transcribe",
-                language,
-                duration,
-                text,
-                words.ToList(),
-                segments.ToList(),
-                transcriptionTokenLogProbabilities.ToList(),
-                additionalBinaryDataProperties: null);
         }
 
         public static BatchCollectionOptions BatchCollectionOptions(string afterId = default, int? pageSizeLimit = default)

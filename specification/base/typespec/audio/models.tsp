@@ -223,6 +223,9 @@ model CreateTranscriptionResponseVerboseJson {
 
   /** Segments of the transcribed text and their corresponding details. */
   segments?: TranscriptionSegment[];
+
+  /** Token or duration usage statistics for the request. */
+  usage?: TranscriptTextUsageTokens | TranscriptTextUsageDuration;
 }
 
 model CreateTranslationResponseJson {
@@ -393,4 +396,57 @@ model VadConfig {
    * thus might perform better in noisy environments.
    */
   threshold?: float32 = 0.5;
+}
+
+/** Usage statistics for models billed by token usage. */
+@summary("TranscriptTextUsageTokens")
+model TranscriptTextUsageTokens {
+  /** The type of the usage object. Always `tokens` for this variant. */
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+  @extension("x-stainless-const", true)
+  type: "tokens";
+
+  /** Number of input tokens billed for this request. */
+  #suppress "@azure-tools/typespec-azure-core/no-generic-numeric" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+  input_tokens: integer;
+
+  /** Details about the input tokens billed for this request. */
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+  input_token_details?: TranscriptTextUsageTokensInputTokenDetails;
+
+  /** Number of output tokens generated. */
+  #suppress "@azure-tools/typespec-azure-core/no-generic-numeric" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+  output_tokens: integer;
+
+  /** Total number of tokens used (input + output). */
+  #suppress "@azure-tools/typespec-azure-core/no-generic-numeric" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+  total_tokens: integer;
+}
+
+#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+model TranscriptTextUsageTokensInputTokenDetails {
+  #suppress "@azure-tools/typespec-azure-core/no-generic-numeric" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+  text_tokens?: integer;
+  #suppress "@azure-tools/typespec-azure-core/no-generic-numeric" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+  audio_tokens?: integer;
+}
+
+/** Usage statistics for models billed by audio input duration. */
+@summary("TranscriptTextUsageDuration")
+model TranscriptTextUsageDuration {
+  /** The type of the usage object. Always `duration` for this variant. */
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+  @extension("x-stainless-const", true)
+  type: "duration";
+
+  /** Duration of the input audio in seconds. */
+  #suppress "@azure-tools/typespec-azure-core/no-generic-numeric" "Auto-suppressed warnings non-applicable rules during import."
+  seconds: numeric;
 }
