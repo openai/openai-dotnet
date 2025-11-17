@@ -36,14 +36,19 @@ interface Responses {
   @route("{response_id}")
   getResponse(
     @path
-    @example("resp_677efb5139a88190b512bc3fef8e535d")
     response_id: string,
 
     @query(#{ name: "include[]", explode: true })
-    includables?: Includable[] = #[],
+    include?: Includable[],
 
-    @query stream?: boolean = false,
-    @query starting_after?: int32,
+    @query(#{ explode: true })
+    stream?: boolean,
+
+    @query(#{ explode: true })
+    starting_after?: int32,
+
+    @query(#{ explode: true })
+    include_obfuscation?: boolean,
   ): Response | SseResponseOf<ResponseStreamEvent> | ResponseErrorResponse;
 
   @delete
