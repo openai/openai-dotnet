@@ -15,8 +15,6 @@ namespace OpenAI.Responses;
 [CodeGenType("Responses")]
 [CodeGenSuppress("CreateResponseAsync", typeof(ResponseCreationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("CreateResponse", typeof(ResponseCreationOptions), typeof(CancellationToken))]
-[CodeGenSuppress("GetResponse", typeof(string), typeof(string), typeof(IEnumerable<IncludedResponseProperty>), typeof(bool?), typeof(int?), typeof(CancellationToken))]
-[CodeGenSuppress("GetResponseAsync", typeof(string), typeof(string), typeof(IEnumerable<IncludedResponseProperty>), typeof(bool?), typeof(int?), typeof(CancellationToken))]
 [CodeGenSuppress("DeleteResponse", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("DeleteResponseAsync", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("CancelResponse", typeof(string), typeof(IEnumerable<IncludedResponseProperty>), typeof(bool?), typeof(int?), typeof(CancellationToken))]
@@ -228,7 +226,7 @@ public partial class OpenAIResponseClient
             cancellationToken);
     }
 
-    internal async Task<ClientResult<OpenAIResponse>> GetResponseAsync(string responseId, IEnumerable<IncludedResponseProperty> include, int? startingAfter, bool? includeObfuscation, RequestOptions requestOptions)
+    internal async Task<ClientResult<OpenAIResponse>> GetResponseAsync(string responseId, IEnumerable<IncludedResponseProperty> include, RequestOptions requestOptions)
     {
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
         Argument.AssertNotNull(requestOptions, nameof(requestOptions));
@@ -237,21 +235,21 @@ public partial class OpenAIResponseClient
             throw new InvalidOperationException("'requestOptions.BufferResponse' must be 'true' when calling 'GetResponseAsync'.");
         }
 
-        ClientResult protocolResult = await GetResponseAsync(responseId, include, stream: null, startingAfter, includeObfuscation, requestOptions).ConfigureAwait(false);
+        ClientResult protocolResult = await GetResponseAsync(responseId, include, stream: null, startingAfter: null, includeObfuscation: null, requestOptions).ConfigureAwait(false);
         OpenAIResponse convenienceResult = (OpenAIResponse)protocolResult;
         return ClientResult.FromValue(convenienceResult, protocolResult.GetRawResponse());
     }
 
-    public virtual Task<ClientResult<OpenAIResponse>> GetResponseAsync(string responseId, IEnumerable<IncludedResponseProperty> include = default, int? startingAfter = default, bool? includeObfuscation = default, CancellationToken cancellationToken = default)
+    public virtual Task<ClientResult<OpenAIResponse>> GetResponseAsync(string responseId, IEnumerable<IncludedResponseProperty> include = default, CancellationToken cancellationToken = default)
     {
-        return GetResponseAsync(responseId, include, startingAfter, includeObfuscation, cancellationToken.ToRequestOptions() ?? new RequestOptions());
+        return GetResponseAsync(responseId, include, cancellationToken.ToRequestOptions() ?? new RequestOptions());
     }
 
-    public virtual ClientResult<OpenAIResponse> GetResponse(string responseId, IEnumerable<IncludedResponseProperty> include = default, int? startingAfter = default, bool? includeObfuscation = default, CancellationToken cancellationToken = default)
+    public virtual ClientResult<OpenAIResponse> GetResponse(string responseId, IEnumerable<IncludedResponseProperty> include = default, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
-        ClientResult protocolResult = GetResponse(responseId, include, stream: null, startingAfter, includeObfuscation, cancellationToken.ToRequestOptions());
+        ClientResult protocolResult = GetResponse(responseId, include, stream: null, startingAfter: null, includeObfuscation: null, cancellationToken.ToRequestOptions());
         OpenAIResponse convenienceResult = (OpenAIResponse)protocolResult;
         return ClientResult.FromValue(convenienceResult, protocolResult.GetRawResponse());
     }
