@@ -38,8 +38,6 @@ namespace OpenAI {
         [Experimental("OPENAI001")]
         public virtual ResponsesClient GetResponsesClient();
         [Experimental("OPENAI001")]
-        public virtual ResponsesClient GetResponsesClient(string model);
-        [Experimental("OPENAI001")]
         public virtual VectorStoreClient GetVectorStoreClient();
         [Experimental("OPENAI001")]
         public virtual VideoClient GetVideoClient();
@@ -5096,10 +5094,9 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class CreateResponseOptions : IJsonModel<CreateResponseOptions>, IPersistableModel<CreateResponseOptions> {
-        public CreateResponseOptions(List<ResponseItem> input);
-        public string EndUserId { get; set; }
-        public IList<Includable> Include { get; set; }
-        public IList<ResponseItem> Input { get; }
+        public CreateResponseOptions(IEnumerable<ResponseItem> inputItems, string model);
+        public IList<Includable> IncludedProperties { get; }
+        public IList<ResponseItem> InputItems { get; }
         public string Instructions { get; set; }
         public bool? IsBackgroundModeEnabled { get; set; }
         public bool? IsParallelToolCallsEnabled { get; set; }
@@ -5107,7 +5104,8 @@ namespace OpenAI.Responses {
         public bool? IsStreamingEnabled { get; set; }
         public int? MaxOutputTokenCount { get; set; }
         public IDictionary<string, string> Metadata { get; }
-        public ModelIdsResponses? Model { get; set; }
+        public string Model { get; set; }
+        [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
@@ -5120,6 +5118,7 @@ namespace OpenAI.Responses {
         public IList<ResponseTool> Tools { get; }
         public float? TopP { get; set; }
         public ResponseTruncationMode? TruncationMode { get; set; }
+        public string User { get; set; }
         protected virtual CreateResponseOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         public static implicit operator BinaryContent(CreateResponseOptions createResponseOptions);
@@ -5626,81 +5625,6 @@ namespace OpenAI.Responses {
         Incomplete = 2
     }
     [Experimental("OPENAI001")]
-    public readonly partial struct ModelIdsResponses : IEquatable<ModelIdsResponses> {
-        public ModelIdsResponses(string value);
-        public static ModelIdsResponses Chatgpt4oLatest { get; }
-        public static ModelIdsResponses CodexMiniLatest { get; }
-        public static ModelIdsResponses ComputerUsePreview { get; }
-        public static ModelIdsResponses ComputerUsePreview20250311 { get; }
-        public static ModelIdsResponses Gpt35Turbo { get; }
-        public static ModelIdsResponses Gpt35Turbo0125 { get; }
-        public static ModelIdsResponses Gpt35Turbo0301 { get; }
-        public static ModelIdsResponses Gpt35Turbo0613 { get; }
-        public static ModelIdsResponses Gpt35Turbo1106 { get; }
-        public static ModelIdsResponses Gpt35Turbo16k { get; }
-        public static ModelIdsResponses Gpt35Turbo16k0613 { get; }
-        public static ModelIdsResponses Gpt4 { get; }
-        public static ModelIdsResponses Gpt40125Preview { get; }
-        public static ModelIdsResponses Gpt40314 { get; }
-        public static ModelIdsResponses Gpt40613 { get; }
-        public static ModelIdsResponses Gpt41 { get; }
-        public static ModelIdsResponses Gpt41106Preview { get; }
-        public static ModelIdsResponses Gpt4120250414 { get; }
-        public static ModelIdsResponses Gpt41Mini { get; }
-        public static ModelIdsResponses Gpt41Mini20250414 { get; }
-        public static ModelIdsResponses Gpt41Nano { get; }
-        public static ModelIdsResponses Gpt41Nano20250414 { get; }
-        public static ModelIdsResponses Gpt432k { get; }
-        public static ModelIdsResponses Gpt432k0314 { get; }
-        public static ModelIdsResponses Gpt432k0613 { get; }
-        public static ModelIdsResponses Gpt4o { get; }
-        public static ModelIdsResponses Gpt4o20240513 { get; }
-        public static ModelIdsResponses Gpt4o20240806 { get; }
-        public static ModelIdsResponses Gpt4o20241120 { get; }
-        public static ModelIdsResponses Gpt4oAudioPreview { get; }
-        public static ModelIdsResponses Gpt4oAudioPreview20241001 { get; }
-        public static ModelIdsResponses Gpt4oAudioPreview20241217 { get; }
-        public static ModelIdsResponses Gpt4oAudioPreview20250603 { get; }
-        public static ModelIdsResponses Gpt4oMini { get; }
-        public static ModelIdsResponses Gpt4oMini20240718 { get; }
-        public static ModelIdsResponses Gpt4oMiniAudioPreview { get; }
-        public static ModelIdsResponses Gpt4oMiniAudioPreview20241217 { get; }
-        public static ModelIdsResponses Gpt4oMiniSearchPreview { get; }
-        public static ModelIdsResponses Gpt4oMiniSearchPreview20250311 { get; }
-        public static ModelIdsResponses Gpt4oSearchPreview { get; }
-        public static ModelIdsResponses Gpt4oSearchPreview20250311 { get; }
-        public static ModelIdsResponses Gpt4Turbo { get; }
-        public static ModelIdsResponses Gpt4Turbo20240409 { get; }
-        public static ModelIdsResponses Gpt4TurboPreview { get; }
-        public static ModelIdsResponses Gpt4VisionPreview { get; }
-        public static ModelIdsResponses O1 { get; }
-        public static ModelIdsResponses O120241217 { get; }
-        public static ModelIdsResponses O1Mini { get; }
-        public static ModelIdsResponses O1Mini20240912 { get; }
-        public static ModelIdsResponses O1Preview { get; }
-        public static ModelIdsResponses O1Preview20240912 { get; }
-        public static ModelIdsResponses O1Pro { get; }
-        public static ModelIdsResponses O1Pro20250319 { get; }
-        public static ModelIdsResponses O3 { get; }
-        public static ModelIdsResponses O320250416 { get; }
-        public static ModelIdsResponses O3Mini { get; }
-        public static ModelIdsResponses O3Mini20250131 { get; }
-        public static ModelIdsResponses O3Pro { get; }
-        public static ModelIdsResponses O3Pro20250610 { get; }
-        public static ModelIdsResponses O4Mini { get; }
-        public static ModelIdsResponses O4Mini20250416 { get; }
-        public readonly bool Equals(ModelIdsResponses other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(ModelIdsResponses left, ModelIdsResponses right);
-        public static implicit operator ModelIdsResponses(string value);
-        public static implicit operator ModelIdsResponses?(string value);
-        public static bool operator !=(ModelIdsResponses left, ModelIdsResponses right);
-        public override readonly string ToString();
-    }
-    [Experimental("OPENAI001")]
     public static class OpenAIResponsesModelFactory {
         public static MessageResponseItem MessageResponseItem(string id = null, MessageRole role = MessageRole.Assistant, MessageStatus? status = null);
         public static ReasoningResponseItem ReasoningResponseItem(string id = null, string encryptedContent = null, ReasoningStatus? status = null, IEnumerable<ReasoningSummaryPart> summaryParts = null);
@@ -5951,6 +5875,7 @@ namespace OpenAI.Responses {
         public string FirstId { get; }
         public bool HasMore { get; }
         public string LastId { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
         public string Object { get; }
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
@@ -6079,7 +6004,6 @@ namespace OpenAI.Responses {
         public string Id { get; }
         public ResponseIncompleteStatusDetails IncompleteStatusDetails { get; }
         public string Instructions { get; }
-        public ModelIdsResponses? InternalModel { get; }
         public bool? IsBackgroundModeEnabled { get; }
         public bool IsParallelToolCallsEnabled { get; }
         public int? MaxOutputTokenCount { get; }
@@ -6112,16 +6036,14 @@ namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class ResponsesClient {
         protected ResponsesClient();
-        protected internal ResponsesClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
-        public ResponsesClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
-        public ResponsesClient(string model, ApiKeyCredential credential);
-        public ResponsesClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
-        public ResponsesClient(string model, AuthenticationPolicy authenticationPolicy);
-        public ResponsesClient(string model, string apiKey);
+        public ResponsesClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public ResponsesClient(ApiKeyCredential credential);
+        public ResponsesClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public ResponsesClient(AuthenticationPolicy authenticationPolicy);
+        protected internal ResponsesClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        public ResponsesClient(string apiKey);
         [Experimental("OPENAI001")]
         public virtual Uri Endpoint { get; }
-        [Experimental("OPENAI001")]
-        public virtual string Model { get; }
         public ClientPipeline Pipeline { get; }
         public virtual ClientResult CancelResponse(string responseId, RequestOptions options);
         public virtual ClientResult<ResponseResult> CancelResponse(string responseId, CancellationToken cancellationToken = default);

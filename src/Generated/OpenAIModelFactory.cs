@@ -1332,6 +1332,37 @@ namespace OpenAI
             return new CodeInterpreterToolContainer(containerId, containerConfiguration, default);
         }
 
+        public static CreateResponseOptions CreateResponseOptions(IDictionary<string, string> metadata = default, float? temperature = default, float? topP = default, string user = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? isBackgroundModeEnabled = default, int? maxOutputTokenCount = default, string instructions = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, IEnumerable<ResponseItem> inputItems = default, IEnumerable<Includable> includedProperties = default, bool? isParallelToolCallsEnabled = default, bool? isStoredOutputEnabled = default, bool? isStreamingEnabled = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+            tools ??= new ChangeTrackingList<ResponseTool>();
+            inputItems ??= new ChangeTrackingList<ResponseItem>();
+            includedProperties ??= new ChangeTrackingList<Includable>();
+
+            return new CreateResponseOptions(
+                metadata,
+                temperature,
+                topP,
+                user,
+                serviceTier,
+                previousResponseId,
+                model,
+                reasoningOptions,
+                isBackgroundModeEnabled,
+                maxOutputTokenCount,
+                instructions,
+                textOptions,
+                tools.ToList(),
+                toolChoice,
+                truncationMode,
+                inputItems.ToList(),
+                includedProperties.ToList(),
+                isParallelToolCallsEnabled,
+                isStoredOutputEnabled,
+                isStreamingEnabled,
+                default);
+        }
+
         public static VectorStoreCollectionOptions VectorStoreCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, VectorStoreCollectionOrder? order = default)
         {
             return new VectorStoreCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);

@@ -16,7 +16,7 @@ public partial class ResponseExamples
     {
         CreateResponseOptions options = new([
             ResponseItem.CreateUserMessageItem("Roll 2d4+1")
-        ])
+        ], "gpt-5")
         {
             Tools = {
                 new McpTool(serverLabel: "dmcp", serverUri: new Uri("https://dmcp-server.deno.dev/sse"))
@@ -27,7 +27,7 @@ public partial class ResponseExamples
             }
         };
 
-        ResponsesClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         ResponseResult response = await client.CreateResponseAsync(options);
 

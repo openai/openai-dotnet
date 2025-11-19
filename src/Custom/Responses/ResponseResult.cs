@@ -100,7 +100,7 @@ namespace OpenAI.Responses
         /// <summary>
         /// Gets the internal model identifier that was used for generating the response.
         /// </summary>
-        public ModelIdsResponses? InternalModel { get; }
+        internal ModelIdsResponses? InternalModel { get; }
 
         /// <summary>
         /// Gets the model name that was used for generating the response. This corresponds to the "model" property in the JSON representation.

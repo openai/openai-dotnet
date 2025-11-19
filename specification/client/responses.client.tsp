@@ -93,6 +93,7 @@ using TypeSpec.HttpClient.CSharp;
 
 // models.tsp
 @@dynamicModel(CreateResponse);
+@@dynamicModel(DotNetCreateResponse);
 @@dynamicModel(Response);
 @@dynamicModel(ResponseProperties);
 @@dynamicModel(ItemParam);

@@ -104,6 +104,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(CreateContainerBody))]
     [ModelReaderWriterBuildable(typeof(CreateContainerBodyExpiresAfter))]
     [ModelReaderWriterBuildable(typeof(CreateContainerFileBody))]
+    [ModelReaderWriterBuildable(typeof(CreateResponseOptions))]
     [ModelReaderWriterBuildable(typeof(CustomMcpToolCallApprovalPolicy))]
     [ModelReaderWriterBuildable(typeof(DeleteContainerFileResponse))]
     [ModelReaderWriterBuildable(typeof(DeleteContainerResponse))]

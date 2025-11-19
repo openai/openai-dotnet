@@ -16,11 +16,11 @@ public partial class ResponseExamples
     [Test]
     public async Task Example08_OutputAdditionalPropertiesAsync()
     {
-        ResponsesClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(   apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         CreateResponseOptions options = new([
             ResponseItem.CreateUserMessageItem("Generate an image of gray tabby cat hugging an otter with an orange scarf")
-        ])
+        ], "gpt-5")
         {
             Tools =
             {

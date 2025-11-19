@@ -62,14 +62,14 @@ public partial class ResponseExamples
     [Test]
     public void Example03_FunctionCalling()
     {
-        ResponsesClient client = new("gpt-5", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         List<ResponseItem> inputItems =
         [
             ResponseItem.CreateUserMessageItem("What's the weather like today for my current location?"),
         ];
 
-        CreateResponseOptions options = new(inputItems)
+        CreateResponseOptions options = new(inputItems, "gpt-5")
         {
             Tools = { getCurrentLocationTool, getCurrentWeatherTool },
         };

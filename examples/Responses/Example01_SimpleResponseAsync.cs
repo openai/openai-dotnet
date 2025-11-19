@@ -14,9 +14,9 @@ public partial class ResponseExamples
     [Test]
     public async Task Example01_SimpleResponseAsync()
     {
-        ResponsesClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        ResponseResult response = await client.CreateResponseAsync(new ([ResponseItem.CreateUserMessageItem("Say 'this is a test.'")]));
+        ResponseResult response = await client.CreateResponseAsync(new ([ResponseItem.CreateUserMessageItem("Say 'this is a test.'")], "gpt-5"));
 
         Console.WriteLine($"[ASSISTANT]: {response.GetOutputText()}");
     }

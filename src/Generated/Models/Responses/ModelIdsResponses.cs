@@ -4,13 +4,11 @@
 
 using System;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
-    [Experimental("OPENAI001")]
-    public readonly partial struct ModelIdsResponses : IEquatable<ModelIdsResponses>
+    internal readonly partial struct ModelIdsResponses : IEquatable<ModelIdsResponses>
     {
         private readonly string _value;
         private const string Gpt41Value = "gpt-4.1";
@@ -82,127 +80,127 @@ namespace OpenAI.Responses
             _value = value;
         }
 
-        public static ModelIdsResponses Gpt41 { get; } = new ModelIdsResponses(Gpt41Value);
+        internal static ModelIdsResponses Gpt41 { get; } = new ModelIdsResponses(Gpt41Value);
 
-        public static ModelIdsResponses Gpt41Mini { get; } = new ModelIdsResponses(Gpt41MiniValue);
+        internal static ModelIdsResponses Gpt41Mini { get; } = new ModelIdsResponses(Gpt41MiniValue);
 
-        public static ModelIdsResponses Gpt41Nano { get; } = new ModelIdsResponses(Gpt41NanoValue);
+        internal static ModelIdsResponses Gpt41Nano { get; } = new ModelIdsResponses(Gpt41NanoValue);
 
-        public static ModelIdsResponses Gpt4120250414 { get; } = new ModelIdsResponses(Gpt4120250414Value);
+        internal static ModelIdsResponses Gpt4120250414 { get; } = new ModelIdsResponses(Gpt4120250414Value);
 
-        public static ModelIdsResponses Gpt41Mini20250414 { get; } = new ModelIdsResponses(Gpt41Mini20250414Value);
+        internal static ModelIdsResponses Gpt41Mini20250414 { get; } = new ModelIdsResponses(Gpt41Mini20250414Value);
 
-        public static ModelIdsResponses Gpt41Nano20250414 { get; } = new ModelIdsResponses(Gpt41Nano20250414Value);
+        internal static ModelIdsResponses Gpt41Nano20250414 { get; } = new ModelIdsResponses(Gpt41Nano20250414Value);
 
-        public static ModelIdsResponses O4Mini { get; } = new ModelIdsResponses(O4MiniValue);
+        internal static ModelIdsResponses O4Mini { get; } = new ModelIdsResponses(O4MiniValue);
 
-        public static ModelIdsResponses O4Mini20250416 { get; } = new ModelIdsResponses(O4Mini20250416Value);
+        internal static ModelIdsResponses O4Mini20250416 { get; } = new ModelIdsResponses(O4Mini20250416Value);
 
-        public static ModelIdsResponses O3 { get; } = new ModelIdsResponses(O3Value);
+        internal static ModelIdsResponses O3 { get; } = new ModelIdsResponses(O3Value);
 
-        public static ModelIdsResponses O320250416 { get; } = new ModelIdsResponses(O320250416Value);
+        internal static ModelIdsResponses O320250416 { get; } = new ModelIdsResponses(O320250416Value);
 
-        public static ModelIdsResponses O3Mini { get; } = new ModelIdsResponses(O3MiniValue);
+        internal static ModelIdsResponses O3Mini { get; } = new ModelIdsResponses(O3MiniValue);
 
-        public static ModelIdsResponses O3Mini20250131 { get; } = new ModelIdsResponses(O3Mini20250131Value);
+        internal static ModelIdsResponses O3Mini20250131 { get; } = new ModelIdsResponses(O3Mini20250131Value);
 
-        public static ModelIdsResponses O1 { get; } = new ModelIdsResponses(O1Value);
+        internal static ModelIdsResponses O1 { get; } = new ModelIdsResponses(O1Value);
 
-        public static ModelIdsResponses O120241217 { get; } = new ModelIdsResponses(O120241217Value);
+        internal static ModelIdsResponses O120241217 { get; } = new ModelIdsResponses(O120241217Value);
 
-        public static ModelIdsResponses O1Preview { get; } = new ModelIdsResponses(O1PreviewValue);
+        internal static ModelIdsResponses O1Preview { get; } = new ModelIdsResponses(O1PreviewValue);
 
-        public static ModelIdsResponses O1Preview20240912 { get; } = new ModelIdsResponses(O1Preview20240912Value);
+        internal static ModelIdsResponses O1Preview20240912 { get; } = new ModelIdsResponses(O1Preview20240912Value);
 
-        public static ModelIdsResponses O1Mini { get; } = new ModelIdsResponses(O1MiniValue);
+        internal static ModelIdsResponses O1Mini { get; } = new ModelIdsResponses(O1MiniValue);
 
-        public static ModelIdsResponses O1Mini20240912 { get; } = new ModelIdsResponses(O1Mini20240912Value);
+        internal static ModelIdsResponses O1Mini20240912 { get; } = new ModelIdsResponses(O1Mini20240912Value);
 
-        public static ModelIdsResponses Gpt4o { get; } = new ModelIdsResponses(Gpt4oValue);
+        internal static ModelIdsResponses Gpt4o { get; } = new ModelIdsResponses(Gpt4oValue);
 
-        public static ModelIdsResponses Gpt4o20241120 { get; } = new ModelIdsResponses(Gpt4o20241120Value);
+        internal static ModelIdsResponses Gpt4o20241120 { get; } = new ModelIdsResponses(Gpt4o20241120Value);
 
-        public static ModelIdsResponses Gpt4o20240806 { get; } = new ModelIdsResponses(Gpt4o20240806Value);
+        internal static ModelIdsResponses Gpt4o20240806 { get; } = new ModelIdsResponses(Gpt4o20240806Value);
 
-        public static ModelIdsResponses Gpt4o20240513 { get; } = new ModelIdsResponses(Gpt4o20240513Value);
+        internal static ModelIdsResponses Gpt4o20240513 { get; } = new ModelIdsResponses(Gpt4o20240513Value);
 
-        public static ModelIdsResponses Gpt4oAudioPreview { get; } = new ModelIdsResponses(Gpt4oAudioPreviewValue);
+        internal static ModelIdsResponses Gpt4oAudioPreview { get; } = new ModelIdsResponses(Gpt4oAudioPreviewValue);
 
-        public static ModelIdsResponses Gpt4oAudioPreview20241001 { get; } = new ModelIdsResponses(Gpt4oAudioPreview20241001Value);
+        internal static ModelIdsResponses Gpt4oAudioPreview20241001 { get; } = new ModelIdsResponses(Gpt4oAudioPreview20241001Value);
 
-        public static ModelIdsResponses Gpt4oAudioPreview20241217 { get; } = new ModelIdsResponses(Gpt4oAudioPreview20241217Value);
+        internal static ModelIdsResponses Gpt4oAudioPreview20241217 { get; } = new ModelIdsResponses(Gpt4oAudioPreview20241217Value);
 
-        public static ModelIdsResponses Gpt4oAudioPreview20250603 { get; } = new ModelIdsResponses(Gpt4oAudioPreview20250603Value);
+        internal static ModelIdsResponses Gpt4oAudioPreview20250603 { get; } = new ModelIdsResponses(Gpt4oAudioPreview20250603Value);
 
-        public static ModelIdsResponses Gpt4oMiniAudioPreview { get; } = new ModelIdsResponses(Gpt4oMiniAudioPreviewValue);
+        internal static ModelIdsResponses Gpt4oMiniAudioPreview { get; } = new ModelIdsResponses(Gpt4oMiniAudioPreviewValue);
 
-        public static ModelIdsResponses Gpt4oMiniAudioPreview20241217 { get; } = new ModelIdsResponses(Gpt4oMiniAudioPreview20241217Value);
+        internal static ModelIdsResponses Gpt4oMiniAudioPreview20241217 { get; } = new ModelIdsResponses(Gpt4oMiniAudioPreview20241217Value);
 
-        public static ModelIdsResponses Gpt4oSearchPreview { get; } = new ModelIdsResponses(Gpt4oSearchPreviewValue);
+        internal static ModelIdsResponses Gpt4oSearchPreview { get; } = new ModelIdsResponses(Gpt4oSearchPreviewValue);
 
-        public static ModelIdsResponses Gpt4oMiniSearchPreview { get; } = new ModelIdsResponses(Gpt4oMiniSearchPreviewValue);
+        internal static ModelIdsResponses Gpt4oMiniSearchPreview { get; } = new ModelIdsResponses(Gpt4oMiniSearchPreviewValue);
 
-        public static ModelIdsResponses Gpt4oSearchPreview20250311 { get; } = new ModelIdsResponses(Gpt4oSearchPreview20250311Value);
+        internal static ModelIdsResponses Gpt4oSearchPreview20250311 { get; } = new ModelIdsResponses(Gpt4oSearchPreview20250311Value);
 
-        public static ModelIdsResponses Gpt4oMiniSearchPreview20250311 { get; } = new ModelIdsResponses(Gpt4oMiniSearchPreview20250311Value);
+        internal static ModelIdsResponses Gpt4oMiniSearchPreview20250311 { get; } = new ModelIdsResponses(Gpt4oMiniSearchPreview20250311Value);
 
-        public static ModelIdsResponses Chatgpt4oLatest { get; } = new ModelIdsResponses(Chatgpt4oLatestValue);
+        internal static ModelIdsResponses Chatgpt4oLatest { get; } = new ModelIdsResponses(Chatgpt4oLatestValue);
 
-        public static ModelIdsResponses CodexMiniLatest { get; } = new ModelIdsResponses(CodexMiniLatestValue);
+        internal static ModelIdsResponses CodexMiniLatest { get; } = new ModelIdsResponses(CodexMiniLatestValue);
 
-        public static ModelIdsResponses Gpt4oMini { get; } = new ModelIdsResponses(Gpt4oMiniValue);
+        internal static ModelIdsResponses Gpt4oMini { get; } = new ModelIdsResponses(Gpt4oMiniValue);
 
-        public static ModelIdsResponses Gpt4oMini20240718 { get; } = new ModelIdsResponses(Gpt4oMini20240718Value);
+        internal static ModelIdsResponses Gpt4oMini20240718 { get; } = new ModelIdsResponses(Gpt4oMini20240718Value);
 
-        public static ModelIdsResponses Gpt4Turbo { get; } = new ModelIdsResponses(Gpt4TurboValue);
+        internal static ModelIdsResponses Gpt4Turbo { get; } = new ModelIdsResponses(Gpt4TurboValue);
 
-        public static ModelIdsResponses Gpt4Turbo20240409 { get; } = new ModelIdsResponses(Gpt4Turbo20240409Value);
+        internal static ModelIdsResponses Gpt4Turbo20240409 { get; } = new ModelIdsResponses(Gpt4Turbo20240409Value);
 
-        public static ModelIdsResponses Gpt40125Preview { get; } = new ModelIdsResponses(Gpt40125PreviewValue);
+        internal static ModelIdsResponses Gpt40125Preview { get; } = new ModelIdsResponses(Gpt40125PreviewValue);
 
-        public static ModelIdsResponses Gpt4TurboPreview { get; } = new ModelIdsResponses(Gpt4TurboPreviewValue);
+        internal static ModelIdsResponses Gpt4TurboPreview { get; } = new ModelIdsResponses(Gpt4TurboPreviewValue);
 
-        public static ModelIdsResponses Gpt41106Preview { get; } = new ModelIdsResponses(Gpt41106PreviewValue);
+        internal static ModelIdsResponses Gpt41106Preview { get; } = new ModelIdsResponses(Gpt41106PreviewValue);
 
-        public static ModelIdsResponses Gpt4VisionPreview { get; } = new ModelIdsResponses(Gpt4VisionPreviewValue);
+        internal static ModelIdsResponses Gpt4VisionPreview { get; } = new ModelIdsResponses(Gpt4VisionPreviewValue);
 
-        public static ModelIdsResponses Gpt4 { get; } = new ModelIdsResponses(Gpt4Value);
+        internal static ModelIdsResponses Gpt4 { get; } = new ModelIdsResponses(Gpt4Value);
 
-        public static ModelIdsResponses Gpt40314 { get; } = new ModelIdsResponses(Gpt40314Value);
+        internal static ModelIdsResponses Gpt40314 { get; } = new ModelIdsResponses(Gpt40314Value);
 
-        public static ModelIdsResponses Gpt40613 { get; } = new ModelIdsResponses(Gpt40613Value);
+        internal static ModelIdsResponses Gpt40613 { get; } = new ModelIdsResponses(Gpt40613Value);
 
-        public static ModelIdsResponses Gpt432k { get; } = new ModelIdsResponses(Gpt432kValue);
+        internal static ModelIdsResponses Gpt432k { get; } = new ModelIdsResponses(Gpt432kValue);
 
-        public static ModelIdsResponses Gpt432k0314 { get; } = new ModelIdsResponses(Gpt432k0314Value);
+        internal static ModelIdsResponses Gpt432k0314 { get; } = new ModelIdsResponses(Gpt432k0314Value);
 
-        public static ModelIdsResponses Gpt432k0613 { get; } = new ModelIdsResponses(Gpt432k0613Value);
+        internal static ModelIdsResponses Gpt432k0613 { get; } = new ModelIdsResponses(Gpt432k0613Value);
 
-        public static ModelIdsResponses Gpt35Turbo { get; } = new ModelIdsResponses(Gpt35TurboValue);
+        internal static ModelIdsResponses Gpt35Turbo { get; } = new ModelIdsResponses(Gpt35TurboValue);
 
-        public static ModelIdsResponses Gpt35Turbo16k { get; } = new ModelIdsResponses(Gpt35Turbo16kValue);
+        internal static ModelIdsResponses Gpt35Turbo16k { get; } = new ModelIdsResponses(Gpt35Turbo16kValue);
 
-        public static ModelIdsResponses Gpt35Turbo0301 { get; } = new ModelIdsResponses(Gpt35Turbo0301Value);
+        internal static ModelIdsResponses Gpt35Turbo0301 { get; } = new ModelIdsResponses(Gpt35Turbo0301Value);
 
-        public static ModelIdsResponses Gpt35Turbo0613 { get; } = new ModelIdsResponses(Gpt35Turbo0613Value);
+        internal static ModelIdsResponses Gpt35Turbo0613 { get; } = new ModelIdsResponses(Gpt35Turbo0613Value);
 
-        public static ModelIdsResponses Gpt35Turbo1106 { get; } = new ModelIdsResponses(Gpt35Turbo1106Value);
+        internal static ModelIdsResponses Gpt35Turbo1106 { get; } = new ModelIdsResponses(Gpt35Turbo1106Value);
 
-        public static ModelIdsResponses Gpt35Turbo0125 { get; } = new ModelIdsResponses(Gpt35Turbo0125Value);
+        internal static ModelIdsResponses Gpt35Turbo0125 { get; } = new ModelIdsResponses(Gpt35Turbo0125Value);
 
-        public static ModelIdsResponses Gpt35Turbo16k0613 { get; } = new ModelIdsResponses(Gpt35Turbo16k0613Value);
+        internal static ModelIdsResponses Gpt35Turbo16k0613 { get; } = new ModelIdsResponses(Gpt35Turbo16k0613Value);
 
-        public static ModelIdsResponses O1Pro { get; } = new ModelIdsResponses(O1ProValue);
+        internal static ModelIdsResponses O1Pro { get; } = new ModelIdsResponses(O1ProValue);
 
-        public static ModelIdsResponses O1Pro20250319 { get; } = new ModelIdsResponses(O1Pro20250319Value);
+        internal static ModelIdsResponses O1Pro20250319 { get; } = new ModelIdsResponses(O1Pro20250319Value);
 
-        public static ModelIdsResponses O3Pro { get; } = new ModelIdsResponses(O3ProValue);
+        internal static ModelIdsResponses O3Pro { get; } = new ModelIdsResponses(O3ProValue);
 
-        public static ModelIdsResponses O3Pro20250610 { get; } = new ModelIdsResponses(O3Pro20250610Value);
+        internal static ModelIdsResponses O3Pro20250610 { get; } = new ModelIdsResponses(O3Pro20250610Value);
 
-        public static ModelIdsResponses ComputerUsePreview { get; } = new ModelIdsResponses(ComputerUsePreviewValue);
+        internal static ModelIdsResponses ComputerUsePreview { get; } = new ModelIdsResponses(ComputerUsePreviewValue);
 
-        public static ModelIdsResponses ComputerUsePreview20250311 { get; } = new ModelIdsResponses(ComputerUsePreview20250311Value);
+        internal static ModelIdsResponses ComputerUsePreview20250311 { get; } = new ModelIdsResponses(ComputerUsePreview20250311Value);
 
         public static bool operator ==(ModelIdsResponses left, ModelIdsResponses right) => left.Equals(right);
 

@@ -14,7 +14,7 @@ public partial class ResponseExamples
     public void Example06_RemoteMcpAuthentication()
     {
         CreateResponseOptions options = new([
-            ResponseItem.CreateUserMessageItem("Create a payment link for $20")])
+            ResponseItem.CreateUserMessageItem("Create a payment link for $20")], "gpt-5")
         {
             Tools = {
                 new McpTool(serverLabel: "stripe", serverUri: new Uri("https://mcp.stripe.com"))
@@ -24,7 +24,7 @@ public partial class ResponseExamples
             }
         };
 
-        ResponsesClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         ResponseResult response = client.CreateResponse(options);
 

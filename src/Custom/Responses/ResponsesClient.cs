@@ -25,15 +25,10 @@ namespace OpenAI.Responses;
 [CodeGenSuppress("GetResponseAsync", typeof(string), typeof(IEnumerable<InternalIncludable>), typeof(bool?), typeof(int?), typeof(CancellationToken))]
 public partial class ResponsesClient
 {
-    private readonly string _model;
-
     // CUSTOM: Added as a convenience.
     /// <summary> Initializes a new instance of <see cref="ResponsesClient"/>. </summary>
-    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
     /// <param name="apiKey"> The API key to authenticate with the service. </param>
-    /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="apiKey"/> is null. </exception>
-    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    public ResponsesClient(string model, string apiKey) : this(model, new ApiKeyCredential(apiKey), new OpenAIClientOptions())
+    public ResponsesClient(string apiKey) : this(new ApiKeyCredential(apiKey), new OpenAIClientOptions())
     {
     }
 
@@ -42,11 +37,8 @@ public partial class ResponsesClient
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
     /// <summary> Initializes a new instance of <see cref="ResponsesClient"/>. </summary>
-    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
     /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
-    /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="credential"/> is null. </exception>
-    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    public ResponsesClient(string model, ApiKeyCredential credential) : this(model, credential, new OpenAIClientOptions())
+    public ResponsesClient(ApiKeyCredential credential) : this(credential, new OpenAIClientOptions())
     {
     }
 
@@ -55,39 +47,29 @@ public partial class ResponsesClient
     // - Used a custom pipeline.
     // - Demoted the endpoint parameter to be a property in the options class.
     /// <summary> Initializes a new instance of <see cref="ResponsesClient"/>. </summary>
-    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
     /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
-    /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="credential"/> is null. </exception>
-    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    public ResponsesClient(string model, ApiKeyCredential credential, OpenAIClientOptions options) : this(model, OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
+    public ResponsesClient(ApiKeyCredential credential, OpenAIClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
     {
     }
 
     // CUSTOM: Added as a convenience.
     /// <summary> Initializes a new instance of <see cref="ResponsesClient"/>. </summary>
-    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
     /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
-    /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="authenticationPolicy"/> is null. </exception>
-    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    public ResponsesClient(string model, AuthenticationPolicy authenticationPolicy) : this(model, authenticationPolicy, new OpenAIClientOptions())
+    public ResponsesClient(AuthenticationPolicy authenticationPolicy) : this(authenticationPolicy, new OpenAIClientOptions())
     {
     }
 
     // CUSTOM: Added as a convenience.
     /// <summary> Initializes a new instance of <see cref="ResponsesClient"/>. </summary>
-    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
     /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
-    /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="authenticationPolicy"/> is null. </exception>
-    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    public ResponsesClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
+    /// <exception cref="ArgumentNullException"><paramref name="authenticationPolicy"/> is null. </exception>
+    public ResponsesClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
     {
-        Argument.AssertNotNullOrEmpty(model, nameof(model));
         Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
         options ??= new OpenAIClientOptions();
 
-        _model = model;
         Pipeline = OpenAIClient.CreatePipeline(authenticationPolicy, options);
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
@@ -99,16 +81,13 @@ public partial class ResponsesClient
     // - Made protected.
     /// <summary> Initializes a new instance of <see cref="ResponsesClient"/>. </summary>
     /// <param name="pipeline"> The HTTP pipeline to send and receive REST requests and responses. </param>
-    /// <param name="model"> The name of the model to use in requests sent to the service. To learn more about the available models, see <see href="https://platform.openai.com/docs/models"/>. </param>
     /// <param name="options"> The options to configure the client. </param>
-    /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> or <paramref name="model"/> is null. </exception>
-    /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    protected internal ResponsesClient(ClientPipeline pipeline, string model, OpenAIClientOptions options)
+    /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> is null. </exception>
+    protected internal ResponsesClient(ClientPipeline pipeline, OpenAIClientOptions options)
     {
         Argument.AssertNotNull(pipeline, nameof(pipeline));
         options ??= new OpenAIClientOptions();
 
-        _model = model;
         Pipeline = pipeline;
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
@@ -119,18 +98,12 @@ public partial class ResponsesClient
     [Experimental("OPENAI001")]
     public virtual Uri Endpoint => _endpoint;
 
-    /// <summary>
-    /// Gets the name of the model used in requests sent to the service.
-    /// </summary>
-    [Experimental("OPENAI001")]
-    public virtual string Model => _model;
-
-    internal virtual Task<ClientResult<OpenAIResponse>> CreateResponseAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
+    internal virtual Task<ClientResult<OpenAIResponse>> CreateResponseAsync(IEnumerable<ResponseItem> inputItems, string model, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
     {
-        return CreateResponseAsync(inputItems, options, cancellationToken.ToRequestOptions() ?? new RequestOptions());
+        return CreateResponseAsync(inputItems, model, options, cancellationToken.ToRequestOptions() ?? new RequestOptions());
     }
 
-    internal async Task<ClientResult<OpenAIResponse>> CreateResponseAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options, RequestOptions requestOptions)
+    internal async Task<ClientResult<OpenAIResponse>> CreateResponseAsync(IEnumerable<ResponseItem> inputItems, string model, ResponseCreationOptions options, RequestOptions requestOptions)
     {
         Argument.AssertNotNullOrEmpty(inputItems, nameof(inputItems));
         Argument.AssertNotNull(requestOptions, nameof(requestOptions));
@@ -139,39 +112,41 @@ public partial class ResponsesClient
             throw new InvalidOperationException("'requestOptions.BufferResponse' must be 'true' when calling 'CreateResponseAsync'.");
         }
 
-        using BinaryContent content = CreatePerCallOptions(options, inputItems, stream: false).ToBinaryContent();
+        using BinaryContent content = CreatePerCallOptions(options, inputItems, model, stream: false).ToBinaryContent();
         ClientResult protocolResult = await CreateResponseAsync(content, requestOptions).ConfigureAwait(false);
         OpenAIResponse convenienceValue = (OpenAIResponse)protocolResult;
         return ClientResult.FromValue(convenienceValue, protocolResult.GetRawResponse());
     }
 
-    internal virtual ClientResult<OpenAIResponse> CreateResponse(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
+    internal virtual ClientResult<OpenAIResponse> CreateResponse(IEnumerable<ResponseItem> inputItems, string model, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(inputItems, nameof(inputItems));
 
-        using BinaryContent content = CreatePerCallOptions(options, inputItems, stream: false).ToBinaryContent();
+        using BinaryContent content = CreatePerCallOptions(options, inputItems, model, stream: false).ToBinaryContent();
         ClientResult protocolResult = CreateResponse(content, cancellationToken.ToRequestOptions());
         OpenAIResponse convenienceValue = (OpenAIResponse)protocolResult;
         return ClientResult.FromValue(convenienceValue, protocolResult.GetRawResponse());
     }
 
-    internal virtual async Task<ClientResult<OpenAIResponse>> CreateResponseAsync(string userInputText, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
+    internal virtual async Task<ClientResult<OpenAIResponse>> CreateResponseAsync(string userInputText, string model, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(userInputText, nameof(userInputText));
 
         return await CreateResponseAsync(
             [ResponseItem.CreateUserMessageItem(userInputText)],
+            model,
             options,
             cancellationToken)
                 .ConfigureAwait(false);
     }
 
-    internal virtual ClientResult<OpenAIResponse> CreateResponse(string userInputText, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
+    internal virtual ClientResult<OpenAIResponse> CreateResponse(string userInputText, string model, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(userInputText, nameof(userInputText));
 
         return CreateResponse(
             [ResponseItem.CreateUserMessageItem(userInputText)],
+            model,
             options,
             cancellationToken);
     }
@@ -192,12 +167,12 @@ public partial class ResponsesClient
         return ClientResult.FromValue((ResponseResult)result.GetRawResponse().Content, result.GetRawResponse());
     }
 
-    internal virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
+    internal virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(IEnumerable<ResponseItem> inputItems, string model, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
     {
-        return CreateResponseStreamingAsync(inputItems, options, cancellationToken.ToRequestOptions(streaming: true));
+        return CreateResponseStreamingAsync(inputItems, model, options, cancellationToken.ToRequestOptions(streaming: true));
     }
 
-    internal AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options, RequestOptions requestOptions)
+    internal AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(IEnumerable<ResponseItem> inputItems, string model, ResponseCreationOptions options, RequestOptions requestOptions)
     {
         Argument.AssertNotNullOrEmpty(inputItems, nameof(inputItems));
         Argument.AssertNotNull(requestOptions, nameof(requestOptions));
@@ -206,7 +181,7 @@ public partial class ResponsesClient
             throw new InvalidOperationException("'requestOptions.BufferResponse' must be 'false' when calling 'CreateResponseStreamingAsync'.");
         }
 
-        using BinaryContent content = CreatePerCallOptions(options, inputItems, stream: true).ToBinaryContent();
+        using BinaryContent content = CreatePerCallOptions(options, inputItems, model, stream: true).ToBinaryContent();
         return new AsyncSseUpdateCollection<StreamingResponseUpdate>(
             async () => await CreateResponseAsync(content, requestOptions).ConfigureAwait(false),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
@@ -233,11 +208,11 @@ public partial class ResponsesClient
             requestOptions.CancellationToken);
     }
 
-    internal virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
+    internal virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(IEnumerable<ResponseItem> inputItems, string model, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(inputItems, nameof(inputItems));
 
-        using BinaryContent content = CreatePerCallOptions(options, inputItems, stream: true).ToBinaryContent();
+        using BinaryContent content = CreatePerCallOptions(options, inputItems, model, stream: true).ToBinaryContent();
         return new SseUpdateCollection<StreamingResponseUpdate>(
             () => CreateResponse(content, cancellationToken.ToRequestOptions(streaming: true)),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
@@ -254,22 +229,24 @@ public partial class ResponsesClient
             cancellationToken);
     }
 
-    internal virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(string userInputText, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
+    internal virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(string userInputText, string model, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(userInputText, nameof(userInputText));
 
         return CreateResponseStreamingAsync(
             [ResponseItem.CreateUserMessageItem(userInputText)],
+            model,
             options,
             cancellationToken);
     }
 
-    internal virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(string userInputText, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
+    internal virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(string userInputText, string model, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(userInputText, nameof(userInputText));
 
         return CreateResponseStreaming(
             [ResponseItem.CreateUserMessageItem(userInputText)],
+            model,
             options,
             cancellationToken);
     }
@@ -431,18 +408,22 @@ public partial class ResponsesClient
         return ClientResult.FromValue((ResponseItemCollection)result, result.GetRawResponse());
     }
 
-    internal virtual ResponseCreationOptions CreatePerCallOptions(ResponseCreationOptions userOptions, IEnumerable<ResponseItem> inputItems, bool stream = false)
+    internal virtual ResponseCreationOptions CreatePerCallOptions(ResponseCreationOptions userOptions, IEnumerable<ResponseItem> inputItems, string model, bool stream = false)
     {
         ResponseCreationOptions copiedOptions = userOptions is null
             ? new()
             : userOptions.GetClone();
 
         copiedOptions.Input = inputItems.ToList();
-        copiedOptions.Model = Model;
 
         if (stream)
         {
             copiedOptions.Stream = true;
+        }
+
+        if (string.IsNullOrEmpty(copiedOptions.Model))
+        {
+            copiedOptions.Model = model;
         }
 
         return copiedOptions;
@@ -453,11 +434,6 @@ public partial class ResponsesClient
         CreateResponseOptions copiedOptions = userOptions is null
             ? new()
             : userOptions.GetClone();
-
-        if (copiedOptions.Model is null)
-        {
-            copiedOptions.Model = Model;
-        }
 
         if (stream)
         {
