@@ -8,6 +8,8 @@ using TypeSpec.HttpClient.CSharp;
 
 @@alternateType(CreateResponse.service_tier, DotNetResponseServiceTier);
 @@alternateType(Response.service_tier, DotNetResponseServiceTier);
+@@alternateType(CreateResponse.conversation, string);
+@@clientName(CreateResponse.conversation, "ConversationId");
 
 // ------------ ItemResources ------------
 @@usage(ItemResource, Usage.input | Usage.output);

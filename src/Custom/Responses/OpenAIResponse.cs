@@ -31,6 +31,10 @@ public partial class OpenAIResponse
     public int? MaxOutputTokenCount { get; }
 
     // CUSTOM: Renamed.
+    [CodeGenMember("MaxToolCalls")]
+    public int? MaxToolCallCount { get; }
+
+    // CUSTOM: Renamed.
     [CodeGenMember("Text")]
     public ResponseTextOptions TextOptions { get; }
 
