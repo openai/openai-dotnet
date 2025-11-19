@@ -8,5 +8,8 @@
   "dependencies": {
     "@open-ai/plugin": "file:codegen"
   },
-  "private": true
+  "private": true,
+  "overrides": {
+    "glob": "^11.1.0"
+  }
 }
