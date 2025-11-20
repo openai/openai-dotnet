@@ -14,7 +14,9 @@ public partial class ResponseExamples
     [Test]
     public async Task Example06_RemoteMcpAuthenticationAsync()
     {
-        ResponseCreationOptions options = new()
+        CreateResponseOptions options = new([
+            ResponseItem.CreateUserMessageItem("Create a payment link for $20")
+        ], "gpt-5")
         {
             Tools = {
                 new McpTool(serverLabel: "stripe", serverUri: new Uri("https://mcp.stripe.com"))
@@ -24,9 +26,9 @@ public partial class ResponseExamples
             }
         };
 
-        OpenAIResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        OpenAIResponse response = await client.CreateResponseAsync("Create a payment link for $20", options);
+        ResponseResult response = await client.CreateResponseAsync(options);
 
         Console.WriteLine($"[ASSISTANT]: {response.GetOutputText()}");
     }

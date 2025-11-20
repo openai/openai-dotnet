@@ -11,7 +11,7 @@ public static partial class OpenAIResponsesModelFactory
 {
     /// <summary> Initializes a new instance of <see cref="OpenAI.Responses.OpenAIResponse"/>. </summary>
     /// <returns> A new <see cref="OpenAI.Responses.OpenAIResponse"/> instance for mocking. </returns>
-    public static OpenAIResponse OpenAIResponse(
+    internal static OpenAIResponse OpenAIResponse(
         string id = null,
         DateTimeOffset createdAt = default,
         ResponseStatus? status = null,

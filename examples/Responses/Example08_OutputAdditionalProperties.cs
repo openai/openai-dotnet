@@ -15,9 +15,11 @@ public partial class ResponseExamples
     [Test]
     public void Example08_OutputAdditionalProperties()
     {
-        OpenAIResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        ResponseCreationOptions options = new()
+        CreateResponseOptions options = new([
+            ResponseItem.CreateUserMessageItem("Generate an image of gray tabby cat hugging an otter with an orange scarf")
+        ], "gpt-5")
         {
             Tools =
             {
@@ -28,7 +30,7 @@ public partial class ResponseExamples
             }
         };
 
-        OpenAIResponse response = client.CreateResponse("Generate an image of gray tabby cat hugging an otter with an orange scarf", options);
+        ResponseResult response = client.CreateResponse(options);
         ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[1];
         BinaryData bytes = imageGenResponse.ImageResultBytes;
 

@@ -5,6 +5,7 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using OpenAI.Responses;
 
 namespace OpenAI
 {
@@ -14,6 +15,7 @@ namespace OpenAI
         private readonly ApiKeyCredential _keyCredential;
         private const string AuthorizationHeader = "Authorization";
         private const string AuthorizationApiKeyPrefix = "Bearer";
+        private ResponsesClient _cachedResponsesClient;
 
         protected OpenAIClient()
         {

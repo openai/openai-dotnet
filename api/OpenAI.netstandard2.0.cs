@@ -23,8 +23,8 @@ namespace OpenAI {
         public virtual ModerationClient GetModerationClient(string model);
         public virtual OpenAIFileClient GetOpenAIFileClient();
         public virtual OpenAIModelClient GetOpenAIModelClient();
-        public virtual OpenAIResponseClient GetOpenAIResponseClient(string model);
         public virtual RealtimeClient GetRealtimeClient();
+        public virtual ResponsesClient GetResponsesClient();
         public virtual VectorStoreClient GetVectorStoreClient();
         public virtual VideoClient GetVideoClient();
     }
@@ -4454,6 +4454,38 @@ namespace OpenAI.Responses {
         protected override ResponseMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
+    public class CreateResponseOptions : IJsonModel<CreateResponseOptions>, IPersistableModel<CreateResponseOptions> {
+        public CreateResponseOptions(IEnumerable<ResponseItem> inputItems, string model);
+        public CreateResponseOptions(IEnumerable<ResponseItem> inputItems);
+        public IList<IncludedResponseProperty> IncludedProperties { get; }
+        public IList<ResponseItem> InputItems { get; }
+        public string Instructions { get; set; }
+        public bool? IsBackgroundModeEnabled { get; set; }
+        public bool? IsParallelToolCallsEnabled { get; set; }
+        public bool? IsStoredOutputEnabled { get; set; }
+        public bool? IsStreamingEnabled { get; set; }
+        public int? MaxOutputTokenCount { get; set; }
+        public IDictionary<string, string> Metadata { get; }
+        public string Model { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public string PreviousResponseId { get; set; }
+        public ResponseReasoningOptions ReasoningOptions { get; set; }
+        public ResponseServiceTier? ServiceTier { get; set; }
+        public float? Temperature { get; set; }
+        public ResponseTextOptions TextOptions { get; set; }
+        public ResponseToolChoice ToolChoice { get; set; }
+        public IList<ResponseTool> Tools { get; }
+        public float? TopP { get; set; }
+        public ResponseTruncationMode? TruncationMode { get; set; }
+        public string User { get; set; }
+        protected virtual CreateResponseOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public static implicit operator BinaryContent(CreateResponseOptions createResponseOptions);
+        protected virtual CreateResponseOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
     public class CustomMcpToolCallApprovalPolicy : IJsonModel<CustomMcpToolCallApprovalPolicy>, IPersistableModel<CustomMcpToolCallApprovalPolicy> {
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -4593,6 +4625,22 @@ namespace OpenAI.Responses {
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public partial struct GetResponseInputItemsOptions {
+        public GetResponseInputItemsOptions(string responseId);
+        public string After { get; set; }
+        public string Before { get; set; }
+        public int? Limit { get; set; }
+        public string Order { get; set; }
+        public string ResponseId { get; set; }
+    }
+    public class GetResponseOptions {
+        public GetResponseOptions(string responseId);
+        public IEnumerable<IncludedResponseProperty> IncludedProperties { get; set; }
+        public bool? IncludeObfuscation { get; set; }
+        public string ResponseId { get; set; }
+        public int? StartingAfter { get; set; }
+        public bool Stream { get; set; }
     }
     public readonly partial struct GlobalMcpToolCallApprovalPolicy : IEquatable<GlobalMcpToolCallApprovalPolicy> {
         public GlobalMcpToolCallApprovalPolicy(string value);
@@ -4939,49 +4987,8 @@ namespace OpenAI.Responses {
         protected virtual OpenAIResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
-    public class OpenAIResponseClient {
-        protected OpenAIResponseClient();
-        protected internal OpenAIResponseClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
-        public OpenAIResponseClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
-        public OpenAIResponseClient(string model, ApiKeyCredential credential);
-        public OpenAIResponseClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
-        public OpenAIResponseClient(string model, AuthenticationPolicy authenticationPolicy);
-        public OpenAIResponseClient(string model, string apiKey);
-        public Uri Endpoint { get; }
-        public string Model { get; }
-        public ClientPipeline Pipeline { get; }
-        public virtual ClientResult CancelResponse(string responseId, RequestOptions options);
-        public virtual ClientResult<OpenAIResponse> CancelResponse(string responseId, CancellationToken cancellationToken = default);
-        public virtual Task<ClientResult> CancelResponseAsync(string responseId, RequestOptions options);
-        public virtual Task<ClientResult<OpenAIResponse>> CancelResponseAsync(string responseId, CancellationToken cancellationToken = default);
-        public virtual ClientResult CreateResponse(BinaryContent content, RequestOptions options = null);
-        public virtual ClientResult<OpenAIResponse> CreateResponse(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
-        public virtual ClientResult<OpenAIResponse> CreateResponse(string userInputText, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
-        public virtual Task<ClientResult> CreateResponseAsync(BinaryContent content, RequestOptions options = null);
-        public virtual Task<ClientResult<OpenAIResponse>> CreateResponseAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
-        public virtual Task<ClientResult<OpenAIResponse>> CreateResponseAsync(string userInputText, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(string userInputText, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(string userInputText, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
-        public virtual ClientResult DeleteResponse(string responseId, RequestOptions options);
-        public virtual ClientResult<ResponseDeletionResult> DeleteResponse(string responseId, CancellationToken cancellationToken = default);
-        public virtual Task<ClientResult> DeleteResponseAsync(string responseId, RequestOptions options);
-        public virtual Task<ClientResult<ResponseDeletionResult>> DeleteResponseAsync(string responseId, CancellationToken cancellationToken = default);
-        public virtual ClientResult GetResponse(string responseId, IEnumerable<IncludedResponseProperty> include, bool? stream, int? startingAfter, bool? includeObfuscation, RequestOptions options);
-        public virtual ClientResult<OpenAIResponse> GetResponse(string responseId, IEnumerable<IncludedResponseProperty> include = null, CancellationToken cancellationToken = default);
-        public virtual Task<ClientResult> GetResponseAsync(string responseId, IEnumerable<IncludedResponseProperty> include, bool? stream, int? startingAfter, bool? includeObfuscation, RequestOptions options);
-        public virtual Task<ClientResult<OpenAIResponse>> GetResponseAsync(string responseId, IEnumerable<IncludedResponseProperty> include = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<ResponseItem> GetResponseInputItems(string responseId, ResponseItemCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult GetResponseInputItems(string responseId, int? limit, string order, string after, string before, RequestOptions options);
-        public virtual AsyncCollectionResult<ResponseItem> GetResponseInputItemsAsync(string responseId, ResponseItemCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult GetResponseInputItemsAsync(string responseId, int? limit, string order, string after, string before, RequestOptions options);
-        public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, IEnumerable<IncludedResponseProperty> include = null, int? startingAfter = null, bool? includeObfuscation = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, IEnumerable<IncludedResponseProperty> include = null, int? startingAfter = null, bool? includeObfuscation = null, CancellationToken cancellationToken = default);
-    }
     public static class OpenAIResponsesModelFactory {
         public static MessageResponseItem MessageResponseItem(string id = null, MessageRole role = MessageRole.Assistant, MessageStatus? status = null);
-        public static OpenAIResponse OpenAIResponse(string id = null, DateTimeOffset createdAt = default, ResponseStatus? status = null, ResponseError error = null, ResponseTokenUsage usage = null, string endUserId = null, ResponseReasoningOptions reasoningOptions = null, int? maxOutputTokenCount = null, ResponseTextOptions textOptions = null, ResponseTruncationMode? truncationMode = null, ResponseIncompleteStatusDetails incompleteStatusDetails = null, IEnumerable<ResponseItem> outputItems = null, bool parallelToolCallsEnabled = false, ResponseToolChoice toolChoice = null, string model = null, IDictionary<string, string> metadata = null, float? temperature = null, float? topP = null, ResponseServiceTier? serviceTier = null, string previousResponseId = null, bool? backgroundModeEnabled = null, string instructions = null, IEnumerable<ResponseTool> tools = null);
         public static ReasoningResponseItem ReasoningResponseItem(string id = null, string encryptedContent = null, ReasoningStatus? status = null, IEnumerable<ReasoningSummaryPart> summaryParts = null);
         public static ReasoningResponseItem ReasoningResponseItem(string id = null, string encryptedContent = null, ReasoningStatus? status = null, string summaryText = null);
         public static ReferenceResponseItem ReferenceResponseItem(string id = null);
@@ -5226,6 +5233,21 @@ namespace OpenAI.Responses {
         protected virtual ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
+    public class ResponseItemCollection : IJsonModel<ResponseItemCollection>, IPersistableModel<ResponseItemCollection> {
+        public IList<ResponseItem> Data { get; }
+        public string FirstId { get; }
+        public bool HasMore { get; }
+        public string LastId { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public string Object { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        protected virtual ResponseItemCollection JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public static explicit operator ResponseItemCollection(ClientResult result);
+        protected virtual ResponseItemCollection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
     public class ResponseItemCollectionOptions : IJsonModel<ResponseItemCollectionOptions>, IPersistableModel<ResponseItemCollectionOptions> {
         public string AfterId { get; set; }
         public string BeforeId { get; set; }
@@ -5323,6 +5345,81 @@ namespace OpenAI.Responses {
         public static implicit operator ResponseReasoningSummaryVerbosity?(string value);
         public static bool operator !=(ResponseReasoningSummaryVerbosity left, ResponseReasoningSummaryVerbosity right);
         public override readonly string ToString();
+    }
+    public class ResponseResult : IJsonModel<ResponseResult>, IPersistableModel<ResponseResult> {
+        public DateTimeOffset CreatedAt { get; }
+        public string EndUserId { get; }
+        public ResponseError Error { get; }
+        public string Id { get; }
+        public ResponseIncompleteStatusDetails IncompleteStatusDetails { get; }
+        public string Instructions { get; }
+        public bool? IsBackgroundModeEnabled { get; }
+        public bool IsParallelToolCallsEnabled { get; }
+        public int? MaxOutputTokenCount { get; }
+        public IDictionary<string, string> Metadata { get; }
+        public string Model { get; }
+        public string Object { get; }
+        public IList<ResponseItem> OutputItems { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public string PreviousResponseId { get; }
+        public ResponseReasoningOptions ReasoningOptions { get; }
+        public ResponseServiceTier? ServiceTier { get; }
+        public ResponseStatus? Status { get; }
+        public float? Temperature { get; }
+        public ResponseTextOptions TextOptions { get; }
+        public ResponseToolChoice ToolChoice { get; }
+        public IList<ResponseTool> Tools { get; }
+        public float? TopP { get; }
+        public ResponseTruncationMode? TruncationMode { get; }
+        public ResponseTokenUsage Usage { get; }
+        public string GetOutputText();
+        protected virtual ResponseResult JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public static explicit operator ResponseResult(BinaryData data);
+        public static explicit operator ResponseResult(ClientResult result);
+        protected virtual ResponseResult PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class ResponsesClient {
+        protected ResponsesClient();
+        public ResponsesClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public ResponsesClient(ApiKeyCredential credential);
+        public ResponsesClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public ResponsesClient(AuthenticationPolicy authenticationPolicy);
+        protected internal ResponsesClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        public ResponsesClient(string apiKey);
+        public virtual Uri Endpoint { get; }
+        public ClientPipeline Pipeline { get; }
+        public virtual ClientResult CancelResponse(string responseId, RequestOptions options);
+        public virtual ClientResult<ResponseResult> CancelResponse(string responseId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> CancelResponseAsync(string responseId, RequestOptions options);
+        public virtual Task<ClientResult<ResponseResult>> CancelResponseAsync(string responseId, CancellationToken cancellationToken = default);
+        public virtual ClientResult<ResponseResult> CreateResponse(CreateResponseOptions options, CancellationToken cancellationToken = default);
+        public virtual ClientResult CreateResponse(BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult<ResponseResult>> CreateResponseAsync(CreateResponseOptions options, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> CreateResponseAsync(BinaryContent content, RequestOptions options = null);
+        public virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(CreateResponseOptions options, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(CreateResponseOptions options, CancellationToken cancellationToken = default);
+        public virtual ClientResult DeleteResponse(string responseId, RequestOptions options);
+        public virtual ClientResult<ResponseDeletionResult> DeleteResponse(string responseId, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> DeleteResponseAsync(string responseId, RequestOptions options);
+        public virtual Task<ClientResult<ResponseDeletionResult>> DeleteResponseAsync(string responseId, CancellationToken cancellationToken = default);
+        public virtual ClientResult<ResponseResult> GetResponse(GetResponseOptions options, CancellationToken cancellationToken = default);
+        public virtual ClientResult GetResponse(string responseId, IEnumerable<IncludedResponseProperty> include, bool? stream, int? startingAfter, bool? includeObfuscation, RequestOptions options);
+        public virtual ClientResult<OpenAIResponse> GetResponse(string responseId, IEnumerable<IncludedResponseProperty> include = null, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult<ResponseResult>> GetResponseAsync(GetResponseOptions options, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> GetResponseAsync(string responseId, IEnumerable<IncludedResponseProperty> include, bool? stream, int? startingAfter, bool? includeObfuscation, RequestOptions options);
+        public virtual ClientResult<ResponseItemCollection> GetResponseInputItems(GetResponseInputItemsOptions options = default, CancellationToken cancellationToken = default);
+        public virtual CollectionResult<ResponseItem> GetResponseInputItems(string responseId, ResponseItemCollectionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult GetResponseInputItems(string responseId, int? limit, string order, string after, string before, RequestOptions options);
+        public virtual Task<ClientResult<ResponseItemCollection>> GetResponseInputItemsAsync(GetResponseInputItemsOptions options = default, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult<ResponseItem> GetResponseInputItemsAsync(string responseId, ResponseItemCollectionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult GetResponseInputItemsAsync(string responseId, int? limit, string order, string after, string before, RequestOptions options);
+        public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(GetResponseOptions options, CancellationToken cancellationToken = default);
+        public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, IEnumerable<IncludedResponseProperty> include = null, int? startingAfter = null, bool? includeObfuscation = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(GetResponseOptions options, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, IEnumerable<IncludedResponseProperty> include = null, int? startingAfter = null, bool? includeObfuscation = null, CancellationToken cancellationToken = default);
     }
     public readonly partial struct ResponseServiceTier : IEquatable<ResponseServiceTier> {
         public ResponseServiceTier(string value);
@@ -5489,7 +5586,7 @@ namespace OpenAI.Responses {
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class StreamingResponseCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCompletedUpdate>, IPersistableModel<StreamingResponseCompletedUpdate> {
-        public OpenAIResponse Response { get; }
+        public ResponseResult Response { get; }
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -5516,7 +5613,7 @@ namespace OpenAI.Responses {
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class StreamingResponseCreatedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCreatedUpdate>, IPersistableModel<StreamingResponseCreatedUpdate> {
-        public OpenAIResponse Response { get; }
+        public ResponseResult Response { get; }
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -5532,7 +5629,7 @@ namespace OpenAI.Responses {
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class StreamingResponseFailedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseFailedUpdate>, IPersistableModel<StreamingResponseFailedUpdate> {
-        public OpenAIResponse Response { get; }
+        public ResponseResult Response { get; }
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -5615,14 +5712,14 @@ namespace OpenAI.Responses {
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class StreamingResponseIncompleteUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseIncompleteUpdate>, IPersistableModel<StreamingResponseIncompleteUpdate> {
-        public OpenAIResponse Response { get; }
+        public ResponseResult Response { get; }
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class StreamingResponseInProgressUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseInProgressUpdate>, IPersistableModel<StreamingResponseInProgressUpdate> {
-        public OpenAIResponse Response { get; }
+        public ResponseResult Response { get; }
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -5731,7 +5828,7 @@ namespace OpenAI.Responses {
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class StreamingResponseQueuedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseQueuedUpdate>, IPersistableModel<StreamingResponseQueuedUpdate> {
-        public OpenAIResponse Response { get; }
+        public ResponseResult Response { get; }
         protected override StreamingResponseUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);

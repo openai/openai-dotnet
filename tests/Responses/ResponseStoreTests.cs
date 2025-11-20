@@ -23,7 +23,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetInputItemsWithPagination()
     {
-        OpenAIResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         // Create a response with multiple input items
         List<ResponseItem> inputItems = new()
@@ -34,7 +34,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
             ResponseItem.CreateUserMessageItem("Item 4")
         };
 
-        OpenAIResponse response = await client.CreateResponseAsync(inputItems);
+        ResponseResult response = await client.CreateResponseAsync(new(inputItems, "gpt-4o-mini"));
 
         // Paginate through input items with a small page size
         var options = new ResponseItemCollectionOptions()
@@ -60,7 +60,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetInputItemsWithMultiPartPagination()
     {
-        OpenAIResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         string filePath = Path.Join("Assets", "files_travis_favorite_food.pdf");
 
@@ -77,7 +77,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
             ResponseItem.CreateUserMessageItem("Item 4")
         };
 
-        OpenAIResponse response = await client.CreateResponseAsync(inputItems);
+        ResponseResult response = await client.CreateResponseAsync(new(inputItems, "gpt-4o-mini"));
 
         // Paginate through input items with a small page size
         var options = new ResponseItemCollectionOptions()
@@ -112,7 +112,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetInputItemsWithAfterIdPagination()
     {
-        OpenAIResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         // Ensure multiple input items exist to paginate
         List<ResponseItem> inputItems = new()
@@ -122,7 +122,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
             ResponseItem.CreateUserMessageItem("C")
         };
 
-        OpenAIResponse response = await client.CreateResponseAsync(inputItems);
+        ResponseResult response = await client.CreateResponseAsync(new(inputItems, "gpt-4o-mini"));
 
         string afterId = null;
         await foreach (ResponseItem first in client.GetResponseInputItemsAsync(response.Id))
@@ -153,7 +153,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetInputItemsWithOrderFiltering()
     {
-        OpenAIResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         // Create inputs in a defined sequence
         List<ResponseItem> inputItems = new()
@@ -162,7 +162,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
             ResponseItem.CreateUserMessageItem("Second")
         };
 
-        OpenAIResponse response = await client.CreateResponseAsync(inputItems);
+        ResponseResult response = await client.CreateResponseAsync(new(inputItems, "gpt-4o-mini"));
 
         // Ascending
         var ascOptions = new ResponseItemCollectionOptions()
@@ -202,14 +202,14 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetInputItemsHandlesLargeLimits()
     {
-        OpenAIResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
-        OpenAIResponse response = await client.CreateResponseAsync(
+        ResponseResult response = await client.CreateResponseAsync(new(
             [
                 ResponseItem.CreateUserMessageItem("alpha"),
                 ResponseItem.CreateUserMessageItem("beta"),
                 ResponseItem.CreateUserMessageItem("gamma"),
-            ]);
+            ], "gpt-4o-mini"));
 
         var options = new ResponseItemCollectionOptions() { PageSizeLimit = 100 };
 
@@ -227,14 +227,14 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetInputItemsWithMinimalLimits()
     {
-        OpenAIResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
-        OpenAIResponse response = await client.CreateResponseAsync(
+        ResponseResult response = await client.CreateResponseAsync(new(
             [
                 ResponseItem.CreateUserMessageItem("x"),
                 ResponseItem.CreateUserMessageItem("y"),
                 ResponseItem.CreateUserMessageItem("z"),
-            ]);
+            ], "gpt-4o-mini"));
 
         var options = new ResponseItemCollectionOptions() { PageSizeLimit = 1 };
 
@@ -252,14 +252,14 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetInputItemsWithCancellationToken()
     {
-        OpenAIResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
-        OpenAIResponse response = await client.CreateResponseAsync(
+        ResponseResult response = await client.CreateResponseAsync(new(
             [
                 ResponseItem.CreateUserMessageItem("ct1"),
                 ResponseItem.CreateUserMessageItem("ct2"),
                 ResponseItem.CreateUserMessageItem("ct3"),
-            ]);
+            ], "gpt-4o-mini"));
 
         using var cts = new System.Threading.CancellationTokenSource();
 
@@ -288,14 +288,14 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetInputItemsWithCombinedOptions()
     {
-        OpenAIResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
-        OpenAIResponse response = await client.CreateResponseAsync(
+        ResponseResult response = await client.CreateResponseAsync(new(
             [
                 ResponseItem.CreateUserMessageItem("co1"),
                 ResponseItem.CreateUserMessageItem("co2"),
                 ResponseItem.CreateUserMessageItem("co3"),
-            ]);
+            ], "gpt-4o-mini"));
 
         using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(30));
 
@@ -316,5 +316,5 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         Assert.That(items, Has.Count.GreaterThan(0));
     }
 
-    private OpenAIResponseClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel);
+    private ResponsesClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<ResponsesClient>(TestScenario.Responses, overrideModel);
 }
