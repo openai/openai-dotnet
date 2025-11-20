@@ -5096,7 +5096,7 @@ namespace OpenAI.Responses {
     public class CreateResponseOptions : IJsonModel<CreateResponseOptions>, IPersistableModel<CreateResponseOptions> {
         public CreateResponseOptions(IEnumerable<ResponseItem> inputItems, string model);
         public CreateResponseOptions(IEnumerable<ResponseItem> inputItems);
-        public IList<Includable> IncludedProperties { get; }
+        public IList<IncludedResponseProperty> IncludedProperties { get; }
         public IList<ResponseItem> InputItems { get; }
         public string Instructions { get; set; }
         public bool? IsBackgroundModeEnabled { get; set; }
@@ -5293,6 +5293,8 @@ namespace OpenAI.Responses {
     }
     public class GetResponseOptions {
         public GetResponseOptions(string responseId);
+        public IEnumerable<IncludedResponseProperty> IncludedProperties { get; set; }
+        public bool? IncludeObfuscation { get; set; }
         public string ResponseId { get; set; }
         public int? StartingAfter { get; set; }
         public bool Stream { get; set; }
@@ -5463,14 +5465,6 @@ namespace OpenAI.Responses {
         public static bool operator ==(ImageGenerationToolSize left, ImageGenerationToolSize right);
         public static bool operator !=(ImageGenerationToolSize left, ImageGenerationToolSize right);
         public override readonly string ToString();
-    }
-    [Experimental("OPENAI001")]
-    public enum Includable {
-        FileSearchCallResults = 0,
-        MessageInputImageImageUrl = 1,
-        ComputerCallOutputOutputImageUrl = 2,
-        ReasoningEncryptedContent = 3,
-        CodeInterpreterCallOutputs = 4
     }
     [Experimental("OPENAI001")]
     public readonly partial struct IncludedResponseProperty : IEquatable<IncludedResponseProperty> {
@@ -6146,10 +6140,8 @@ namespace OpenAI.Responses {
         public virtual ClientResult<ResponseResult> GetResponse(GetResponseOptions options, CancellationToken cancellationToken = default);
         public virtual ClientResult GetResponse(string responseId, IEnumerable<IncludedResponseProperty> include, bool? stream, int? startingAfter, bool? includeObfuscation, RequestOptions options);
         public virtual ClientResult<OpenAIResponse> GetResponse(string responseId, IEnumerable<IncludedResponseProperty> include = null, CancellationToken cancellationToken = default);
-        public virtual ClientResult GetResponse(string responseId, bool? stream, int? startingAfter, RequestOptions options);
         public virtual Task<ClientResult<ResponseResult>> GetResponseAsync(GetResponseOptions options, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GetResponseAsync(string responseId, IEnumerable<IncludedResponseProperty> include, bool? stream, int? startingAfter, bool? includeObfuscation, RequestOptions options);
-        public virtual Task<ClientResult> GetResponseAsync(string responseId, bool? stream, int? startingAfter, RequestOptions options);
         public virtual ClientResult<ResponseItemCollection> GetResponseInputItems(GetResponseInputItemsOptions options = default, CancellationToken cancellationToken = default);
         public virtual CollectionResult<ResponseItem> GetResponseInputItems(string responseId, ResponseItemCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual CollectionResult GetResponseInputItems(string responseId, int? limit, string order, string after, string before, RequestOptions options);
