@@ -801,20 +801,34 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [LiveOnly(Reason = "Temp due to the recording framework timing out")]
     public async Task ImageGenToolInputMaskWithImageBytes()
     {
-        ResponsesClient client = GetTestClient();
+        ResponsesClient client = GetTestClient(options: new() { NetworkTimeout = TimeSpan.FromMinutes(5) });
 
-        string imageFilename = "images_dog_and_cat.png";
+        string imageFilename = "images_empty_room.png";
         string imagePath = Path.Combine("Assets", imageFilename);
-        CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Generate an image of gray tabby cat hugging an otter with an orange scarf")], "gpt-4o-mini")
+        BinaryData imageBytes = BinaryData.FromBytes(File.ReadAllBytes(imagePath));
+
+        string maskFilename = "images_empty_room_with_mask.png";
+        string maskPath = Path.Combine("Assets", maskFilename);
+        BinaryData maskBytes = BinaryData.FromBytes(File.ReadAllBytes(maskPath));
+
+        List<ResponseItem> inputItems = [
+            ResponseItem.CreateUserMessageItem("Edit this image by adding a big cat with big round eyes and large cat ears, sitting in an empty room and looking at the camera."),
+            ResponseItem.CreateUserMessageItem([ResponseContentPart.CreateInputImagePart(imageBytes, "image/png")])
+        ];
+
+        CreateResponseOptions options = new(inputItems, "gpt-4o-mini")
         {
             Tools =
             {
-            ResponseTool.CreateImageGenerationTool(
-                model: "gpt-image-1",
-                outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
-                inputImageMask: new(BinaryData.FromBytes(File.ReadAllBytes(imagePath)), "image/png"))
+                ResponseTool.CreateImageGenerationTool(
+                    model: "gpt-image-1-mini",
+                    outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
+                    size: ImageGenerationToolSize.W1024xH1024,
+                    quality: ImageGenerationToolQuality.Low,
+                    inputImageMask: new(maskBytes, "image/png"))
             }
         };
 
@@ -838,16 +852,26 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ImageGenToolInputMaskWithImageUri()
     {
-        ResponsesClient client = GetTestClient();
+        ResponsesClient client = GetTestClient(options: new() { NetworkTimeout = TimeSpan.FromMinutes(5) });
 
-        CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Generate an image of gray tabby cat hugging an otter with an orange scarf")], "gpt-4o-mini")
+        Uri imageUri = new("https://github.com/openai/openai-dotnet/blob/db6328accdd7927f19915cdc5412eb841f2447c1/tests/Assets/images_empty_room.png?raw=true");
+        Uri maskUri = new("https://github.com/openai/openai-dotnet/blob/db6328accdd7927f19915cdc5412eb841f2447c1/tests/Assets/images_empty_room_with_mask.png?raw=true");
+
+        List<ResponseItem> inputItems = [
+            ResponseItem.CreateUserMessageItem("Edit this image by adding a big cat with big round eyes and large cat ears, sitting in an empty room and looking at the camera."),
+            ResponseItem.CreateUserMessageItem([ResponseContentPart.CreateInputImagePart(imageUri)])
+        ];
+
+        CreateResponseOptions options = new(inputItems, "gpt-4o-mini")
         {
             Tools =
             {
-            ResponseTool.CreateImageGenerationTool(
-                model: "gpt-image-1",
-                outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
-                inputImageMask: new(imageUri: new Uri("https://upload.wikimedia.org/wikipedia/commons/c/c3/Openai.png")))
+                ResponseTool.CreateImageGenerationTool(
+                    model: "gpt-image-1-mini",
+                    outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
+                    size: ImageGenerationToolSize.W1024xH1024,
+                    quality: ImageGenerationToolQuality.Low,
+                    inputImageMask: new(maskUri))
             }
         };
 
@@ -869,35 +893,55 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    [Category("MPFD")]
     public async Task ImageGenToolInputMaskWithFileId()
     {
-        ResponsesClient client = GetTestClient();
+        ResponsesClient client = GetTestClient(options: new() { NetworkTimeout = TimeSpan.FromMinutes(5) });
 
         OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
 
-        string imageFilename = "images_dog_and_cat.png";
+        string imageFilename = "images_empty_room.png";
         string imagePath = Path.Combine("Assets", imageFilename);
-        using Stream image = File.OpenRead(imagePath);
-        BinaryData imageData = BinaryData.FromStream(image);
+        BinaryData imageBytes = BinaryData.FromBytes(File.ReadAllBytes(imagePath));
 
-        OpenAIFile file;
+        string maskFilename = "images_empty_room_with_mask.png";
+        string maskPath = Path.Combine("Assets", maskFilename);
+        BinaryData maskBytes = BinaryData.FromBytes(File.ReadAllBytes(maskPath));
+
+        OpenAIFile imageFile;
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            file = await fileClient.UploadFileAsync(
-            imageData,
-            imageFilename,
-            FileUploadPurpose.UserData);
+            imageFile = await fileClient.UploadFileAsync(imageBytes, imageFilename, FileUploadPurpose.UserData);
         }
-        Validate(file);
+        Validate(imageFile);
 
-        CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Generate an image of gray tabby cat hugging an otter with an orange scarf")], "gpt-4o-mini")
+        OpenAIFile maskFile;
+        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
+        {
+            maskFile = await fileClient.UploadFileAsync(maskBytes, maskFilename, FileUploadPurpose.UserData);
+        }
+        Validate(imageFile);
+
+        if (Mode != RecordedTestMode.Playback)
+        {
+            await Task.Delay(TimeSpan.FromSeconds(10));
+        }
+
+        List<ResponseItem> inputItems = [
+            ResponseItem.CreateUserMessageItem("Edit this image by adding a big cat with big round eyes and large cat ears, sitting in an empty room and looking at the camera."),
+            ResponseItem.CreateUserMessageItem([ResponseContentPart.CreateInputImagePart(imageFileId: imageFile.Id)])
+        ];
+
+        CreateResponseOptions options = new(inputItems, "gpt-4o-mini")
         {
             Tools =
             {
-            ResponseTool.CreateImageGenerationTool(
-                model: "gpt-image-1",
-                outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
-                inputImageMask: new(fileId: file.Id))
+                ResponseTool.CreateImageGenerationTool(
+                    model: "gpt-image-1-mini",
+                    outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
+                    size: ImageGenerationToolSize.W1024xH1024,
+                    quality: ImageGenerationToolQuality.Low,
+                    inputImageMask: new(fileId: maskFile.Id))
             }
         };
 
@@ -988,5 +1032,5 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         }
     }
 
-    private ResponsesClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<ResponsesClient>(TestScenario.Responses, overrideModel);
+    private ResponsesClient GetTestClient(string overrideModel = null, OpenAIClientOptions options = null) => GetProxiedOpenAIClient<ResponsesClient>(TestScenario.Responses, overrideModel, options: options);
 }

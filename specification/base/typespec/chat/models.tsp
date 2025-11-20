@@ -305,8 +305,8 @@ model CreateChatCompletionRequest {
     If specified, our system will make a best effort to sample deterministically, such that repeated requests with the same `seed` and parameters should return the same result.
     Determinism is not guaranteed, and you should refer to the `system_fingerprint` response parameter to monitor changes in the backend.
     """)
-  @minValue(-9223372036854776000)
-  @maxValue(9223372036854776000)
+  @minValue(-9223372036854775808)
+  @maxValue(9223372036854775807)
   seed?: int64 | null;
 
   stream_options?: ChatCompletionStreamOptions | null = null;

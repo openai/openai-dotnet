@@ -5,6 +5,7 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,6 +43,22 @@ namespace OpenAI.Responses
             Argument.AssertNotNull(content, nameof(content));
 
             using PipelineMessage message = CreateCreateResponseRequest(content, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult GetResponse(string responseId, IEnumerable<IncludedResponseProperty> include, bool? stream, int? startingAfter, bool? includeObfuscation, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
+
+            using PipelineMessage message = CreateGetResponseRequest(responseId, include, stream, startingAfter, includeObfuscation, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> GetResponseAsync(string responseId, IEnumerable<IncludedResponseProperty> include, bool? stream, int? startingAfter, bool? includeObfuscation, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
+
+            using PipelineMessage message = CreateGetResponseRequest(responseId, include, stream, startingAfter, includeObfuscation, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 

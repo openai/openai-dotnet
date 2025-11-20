@@ -1,5 +1,45 @@
 # Release History
 
+## 2.8.0 (Unreleased)
+
+### Acknowledgments
+
+### Features Added
+
+### Bugs Fixed
+
+### Other Changes
+
+## 2.7.0 (2025-11-13)
+
+### Acknowledgments
+
+Thank you to our developer community members who helped to make the OpenAI client library better with their contributions to this release:
+
+- Benjamin Pinter _([GitHub](https://github.com/BenjaminDavidPinter))_
+
+### Features Added
+
+- OpenAI.Responses:
+  - Enabled support for stable web search via the `WebSearchTool` class, with a separate `WebSearchPreviewTool` class for preview web search features.
+  - Added `Filename` property to `FileCitationMessageAnnotation` to provide the name of the cited file.
+  - Exposed reasoning streaming events, including:
+    - `StreamingResponseReasoningTextDeltaUpdate` and `StreamingResponseReasoningTextDoneUpdate` for reasoning text events.
+    - `StreamingResponseReasoningSummaryPartAddedUpdate` and `StreamingResponseReasoningSummaryPartDoneUpdate` for reasoning summary part events.
+    - `StreamingResponseReasoningSummaryTextDeltaUpdate` and `StreamingResponseReasoningSummaryTextDoneUpdate` for reasoning summary text events.
+
+### Bugs Fixed
+
+- OpenAI.Assistants:
+  - Fixed an issue with custom serialization for `MessageCreationAttachment` that prevented proper handling of file attachments in message creation. _(A community contribution, courtesy of [BenjaminDavidPinter](https://github.com/BenjaminDavidPinter))_
+- OpenAI.Responses:
+  - Fixed the generated serialization name of `partial_image_b64` in `StreamingResponseImageGenerationCallPartialImageUpdate` to ensure correct serialization of partial image data in streaming responses.
+  - Fixed serialization issues with `Patch` properties by adding the `JsonIgnore` attribute, preventing `System.InvalidOperationException` when using `JsonSerializer` without the custom converter.
+
+### Other Changes
+
+- Updated the `System.ClientModel` dependency to version 1.8.1 to adopt bug fixes for JSON Patch.  For more context, see the [System.ClientModel ChangeLog](https://github.com/Azure/azure-sdk-for-net/blob/System.ClientModel_1.8.1/sdk/core/System.ClientModel/CHANGELOG.md)
+
 ## 2.6.0 (2025-10-31)
 
 ### Acknowledgments

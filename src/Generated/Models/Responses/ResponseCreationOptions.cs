@@ -11,13 +11,14 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class ResponseCreationOptions
+    [Experimental("OPENAI001")]
+    public partial class ResponseCreationOptions
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseCreationOptions(IDictionary<string, string> metadata, float? temperature, float? topP, string endUserId, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? backgroundModeEnabled, int? maxOutputTokenCount, string instructions, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncationMode, IList<ResponseItem> input, IList<InternalIncludable> include, bool? parallelToolCallsEnabled, bool? storedOutputEnabled, bool? stream, in JsonPatch patch)
+        internal ResponseCreationOptions(IDictionary<string, string> metadata, float? temperature, float? topP, string endUserId, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? backgroundModeEnabled, int? maxOutputTokenCount, string instructions, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncationMode, IList<ResponseItem> input, IList<IncludedResponseProperty> includedProperties, bool? parallelToolCallsEnabled, bool? storedOutputEnabled, bool? stream, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -36,7 +37,7 @@ namespace OpenAI.Responses
             ToolChoice = toolChoice;
             TruncationMode = truncationMode;
             Input = input ?? new ChangeTrackingList<ResponseItem>();
-            Include = include ?? new ChangeTrackingList<InternalIncludable>();
+            IncludedProperties = includedProperties ?? new ChangeTrackingList<IncludedResponseProperty>();
             ParallelToolCallsEnabled = parallelToolCallsEnabled;
             StoredOutputEnabled = storedOutputEnabled;
             Stream = stream;

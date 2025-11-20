@@ -15,29 +15,29 @@ namespace OpenAI.Responses
 
     internal static partial class IncludableExtensions
     {
-        internal static Includable ToIncludable(this InternalIncludable internalIncludable)
+        internal static Includable ToIncludable(this IncludedResponseProperty includable)
         {
-            if (internalIncludable == InternalIncludable.FileSearchCallResults)
+            if (includable == IncludedResponseProperty.FileSearchCallResults)
             {
                 return Includable.FileSearchCallResults;
             }
-            if (internalIncludable == InternalIncludable.MessageInputImageImageUrl)
+            if (includable == IncludedResponseProperty.MessageInputImageUri)
             {
                 return Includable.MessageInputImageImageUrl;
             }
-            if (internalIncludable == InternalIncludable.ComputerCallOutputOutputImageUrl)
+            if (includable == IncludedResponseProperty.ComputerCallOutputImageUri)
             {
                 return Includable.ComputerCallOutputOutputImageUrl;
             }
-            if (internalIncludable == InternalIncludable.ReasoningEncryptedContent)
+            if (includable == IncludedResponseProperty.ReasoningEncryptedContent)
             {
                 return Includable.ReasoningEncryptedContent;
             }
-            if (internalIncludable == InternalIncludable.CodeInterpreterCallOutputs)
+            if (includable == IncludedResponseProperty.CodeInterpreterCallOutputs)
             {
                 return Includable.CodeInterpreterCallOutputs;
             }
-            throw new ArgumentException($"Unknown InternalIncludable value: {internalIncludable}", nameof(internalIncludable));
+            throw new ArgumentException($"Unknown Includable value: {includable}", nameof(includable));
         }
     }
 }

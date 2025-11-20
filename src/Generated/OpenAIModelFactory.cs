@@ -581,6 +581,37 @@ namespace OpenAI
             return new McpToolFilter(toolNames.ToList(), isReadOnly, default);
         }
 
+        public static ResponseCreationOptions ResponseCreationOptions(IDictionary<string, string> metadata = default, float? temperature = default, float? topP = default, string endUserId = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? backgroundModeEnabled = default, int? maxOutputTokenCount = default, string instructions = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, IEnumerable<ResponseItem> input = default, IEnumerable<IncludedResponseProperty> includedProperties = default, bool? parallelToolCallsEnabled = default, bool? storedOutputEnabled = default, bool? stream = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+            tools ??= new ChangeTrackingList<ResponseTool>();
+            input ??= new ChangeTrackingList<ResponseItem>();
+            includedProperties ??= new ChangeTrackingList<IncludedResponseProperty>();
+
+            return new ResponseCreationOptions(
+                metadata,
+                temperature,
+                topP,
+                endUserId,
+                serviceTier,
+                previousResponseId,
+                model,
+                reasoningOptions,
+                backgroundModeEnabled,
+                maxOutputTokenCount,
+                instructions,
+                textOptions,
+                tools.ToList(),
+                toolChoice,
+                truncationMode,
+                input.ToList(),
+                includedProperties.ToList(),
+                parallelToolCallsEnabled,
+                storedOutputEnabled,
+                stream,
+                default);
+        }
+
         public static ResponseTextOptions ResponseTextOptions(ResponseTextFormat textFormat = default)
         {
             return new ResponseTextOptions(textFormat, default);
@@ -650,6 +681,40 @@ namespace OpenAI
         public static McpToolDefinition McpToolDefinition(string name = default, string description = default, BinaryData inputSchema = default, BinaryData annotations = default)
         {
             return new McpToolDefinition(name, description, inputSchema, annotations, default);
+        }
+
+        public static OpenAIResponse OpenAIResponse(IDictionary<string, string> metadata = default, float? temperature = default, float? topP = default, string endUserId = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? backgroundModeEnabled = default, int? maxOutputTokenCount = default, string instructions = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, string id = default, ResponseStatus? status = default, DateTimeOffset createdAt = default, ResponseError error = default, ResponseIncompleteStatusDetails incompleteStatusDetails = default, IEnumerable<ResponseItem> outputItems = default, ResponseTokenUsage usage = default, bool parallelToolCallsEnabled = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+            tools ??= new ChangeTrackingList<ResponseTool>();
+            outputItems ??= new ChangeTrackingList<ResponseItem>();
+
+            return new OpenAIResponse(
+                metadata,
+                temperature,
+                topP,
+                endUserId,
+                serviceTier,
+                previousResponseId,
+                model,
+                reasoningOptions,
+                backgroundModeEnabled,
+                maxOutputTokenCount,
+                instructions,
+                textOptions,
+                tools.ToList(),
+                toolChoice,
+                truncationMode,
+                id,
+                "response",
+                status,
+                createdAt,
+                error,
+                incompleteStatusDetails,
+                outputItems.ToList(),
+                usage,
+                parallelToolCallsEnabled,
+                default);
         }
 
         public static ResponseError ResponseError(ResponseErrorCode code = default, string message = default)

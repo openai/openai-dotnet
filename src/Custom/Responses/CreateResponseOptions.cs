@@ -8,6 +8,18 @@ namespace OpenAI.Responses
     [CodeGenType("DotNetCreateResponse")]
     public partial class CreateResponseOptions
     {
+        public CreateResponseOptions(IEnumerable<ResponseItem> inputItems, string model)
+        {
+            Argument.AssertNotNull(inputItems, nameof(inputItems));
+            Argument.AssertNotNullOrEmpty(model, nameof(model));
+
+            Metadata = new ChangeTrackingDictionary<string, string>();
+            Tools = new ChangeTrackingList<ResponseTool>();
+            InputItems = inputItems.ToList();
+            IncludedProperties = new ChangeTrackingList<Includable>();
+            Model = model;
+        }
+
         /// <summary>
         /// Gets or sets whether to run the response in background mode. This corresponds to the "background" property in the JSON representation.
         /// </summary>
@@ -102,8 +114,8 @@ namespace OpenAI.Responses
                 responseCreationOptions.Tools,
                 responseCreationOptions.ToolChoice,
                 responseCreationOptions.TruncationMode,
-                inputItems.ToList(),
-                [.. responseCreationOptions.Include.Select(x => x.ToIncludable())],
+                [.. inputItems],
+                [.. responseCreationOptions.IncludedProperties.Select(x => x.ToIncludable())],
                 responseCreationOptions.ParallelToolCallsEnabled,
                 responseCreationOptions.StoredOutputEnabled,
                 responseCreationOptions.Stream,

@@ -10,12 +10,8 @@ namespace OpenAI.Responses;
 [CodeGenType("CreateResponse")]
 [CodeGenVisibility(nameof(ResponseCreationOptions), CodeGenVisibility.Public)]
 [CodeGenSuppress(nameof(ResponseCreationOptions), typeof(IEnumerable<ResponseItem>))]
-internal partial class ResponseCreationOptions
+public partial class ResponseCreationOptions
 {
-    // CUSTOM: Temporarily made internal.
-    [CodeGenMember("Include")]
-    internal IList<InternalIncludable> Include { get; set; }
-
     // CUSTOM:
     // - Made internal. This value comes from a parameter on the client method.
     // - Added setter.
@@ -66,6 +62,10 @@ internal partial class ResponseCreationOptions
     // CUSTOM: Using convenience type.
     [CodeGenMember("ToolChoice")]
     public ResponseToolChoice ToolChoice { get; set; }
+
+    // CUSTOM: Renamed.
+    [CodeGenMember("Include")]
+    public IList<IncludedResponseProperty> IncludedProperties { get; }
 
     // CUSTOM: Apply get-only collection pattern
     [CodeGenMember("Tools")]

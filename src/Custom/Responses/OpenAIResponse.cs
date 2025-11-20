@@ -8,7 +8,7 @@ namespace OpenAI.Responses;
 // - Renamed.
 [CodeGenType("Response")]
 [CodeGenSuppress("OutputText")]
-internal partial class OpenAIResponse
+public partial class OpenAIResponse
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Background")]

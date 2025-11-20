@@ -13,7 +13,8 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class OpenAIResponse
+    [Experimental("OPENAI001")]
+    public partial class OpenAIResponse
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;

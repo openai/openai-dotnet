@@ -18,7 +18,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public CreateResponseOptions(IEnumerable<ResponseItem> inputItems, string model)
+        public CreateResponseOptions(IEnumerable<ResponseItem> inputItems)
         {
             Argument.AssertNotNull(inputItems, nameof(inputItems));
 
@@ -26,7 +26,6 @@ namespace OpenAI.Responses
             Tools = new ChangeTrackingList<ResponseTool>();
             InputItems = inputItems.ToList();
             IncludedProperties = new ChangeTrackingList<Includable>();
-            Model = model;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
