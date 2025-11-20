@@ -287,7 +287,7 @@ public partial class ResponsesClient
         Argument.AssertNotNull(options, nameof(options));
         Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
 
-        ClientResult protocolResult = await GetResponseAsync(options.ResponseId, stream: options.Stream, startingAfter: options.StartingAfter, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        ClientResult protocolResult = await GetResponseAsync(options.ResponseId, options.IncludedProperties, stream: options.Stream, startingAfter: options.StartingAfter, includeObfuscation: options.IncludeObfuscation, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue((ResponseResult)protocolResult, protocolResult.GetRawResponse());
     }
 
@@ -296,7 +296,7 @@ public partial class ResponsesClient
         Argument.AssertNotNull(options, nameof(options));
         Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
 
-        ClientResult protocolResult = GetResponse(options.ResponseId, stream: options.Stream, startingAfter: options.StartingAfter, cancellationToken.ToRequestOptions());
+        ClientResult protocolResult = GetResponse(options.ResponseId, options.IncludedProperties, stream: options.Stream, startingAfter: options.StartingAfter, includeObfuscation: options.IncludeObfuscation, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue((ResponseResult)protocolResult, protocolResult.GetRawResponse());
     }
 
@@ -326,7 +326,7 @@ public partial class ResponsesClient
         Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
 
         return new SseUpdateCollection<StreamingResponseUpdate>(
-            () => GetResponse(options.ResponseId, stream: true, startingAfter: options.StartingAfter, cancellationToken.ToRequestOptions(streaming: true)),
+            () => GetResponse(options.ResponseId, options.IncludedProperties, stream: true, startingAfter: options.StartingAfter, includeObfuscation: options.IncludeObfuscation, cancellationToken.ToRequestOptions(streaming: true)),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
             cancellationToken);
     }
@@ -342,7 +342,7 @@ public partial class ResponsesClient
         }
 
         return new AsyncSseUpdateCollection<StreamingResponseUpdate>(
-            async () => await GetResponseAsync(options.ResponseId, options.Stream, startingAfter: options.StartingAfter, cancellationToken.ToRequestOptions()).ConfigureAwait(false),
+            async () => await GetResponseAsync(options.ResponseId, options.IncludedProperties, options.Stream, startingAfter: options.StartingAfter, includeObfuscation: options.IncludeObfuscation, cancellationToken.ToRequestOptions()).ConfigureAwait(false),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
             cancellationToken);
     }

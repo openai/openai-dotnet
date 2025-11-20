@@ -199,7 +199,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    writer.WriteStringValue(IncludedProperties[i].ToSerialString());
+                    writer.WriteStringValue(IncludedProperties[i].ToString());
                 }
                 Patch.WriteTo(writer, "$.include"u8);
                 writer.WriteEndArray();
@@ -259,7 +259,7 @@ namespace OpenAI.Responses
             ResponseToolChoice toolChoice = default;
             ResponseTruncationMode? truncationMode = default;
             IList<ResponseItem> inputItems = default;
-            IList<Includable> includedProperties = default;
+            IList<IncludedResponseProperty> includedProperties = default;
             bool? isParallelToolCallsEnabled = default;
             bool? isStoredOutputEnabled = default;
             bool? isStreamingEnabled = default;
@@ -436,10 +436,10 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    List<Includable> array = new List<Includable>();
+                    List<IncludedResponseProperty> array = new List<IncludedResponseProperty>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(item.GetString().ToIncludable());
+                        array.Add(new IncludedResponseProperty(item.GetString()));
                     }
                     includedProperties = array;
                     continue;
@@ -493,7 +493,7 @@ namespace OpenAI.Responses
                 toolChoice,
                 truncationMode,
                 inputItems,
-                includedProperties ?? new ChangeTrackingList<Includable>(),
+                includedProperties ?? new ChangeTrackingList<IncludedResponseProperty>(),
                 isParallelToolCallsEnabled,
                 isStoredOutputEnabled,
                 isStreamingEnabled,

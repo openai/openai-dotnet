@@ -685,7 +685,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         CreateResponseOptions options = new(inputItems, "gpt-5-mini")
         {
             IsStoredOutputEnabled = false,
-            IncludedProperties = { Includable.ReasoningEncryptedContent }
+            IncludedProperties = { IncludedResponseProperty.ReasoningEncryptedContent }
         };
 
         // First turn.

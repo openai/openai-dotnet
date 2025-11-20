@@ -5095,6 +5095,7 @@ namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class CreateResponseOptions : IJsonModel<CreateResponseOptions>, IPersistableModel<CreateResponseOptions> {
         public CreateResponseOptions(IEnumerable<ResponseItem> inputItems, string model);
+        public CreateResponseOptions(IEnumerable<ResponseItem> inputItems);
         public IList<Includable> IncludedProperties { get; }
         public IList<ResponseItem> InputItems { get; }
         public string Instructions { get; set; }
@@ -5464,14 +5465,14 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     [Experimental("OPENAI001")]
-<<<<<<< HEAD
     public enum Includable {
         FileSearchCallResults = 0,
         MessageInputImageImageUrl = 1,
         ComputerCallOutputOutputImageUrl = 2,
         ReasoningEncryptedContent = 3,
         CodeInterpreterCallOutputs = 4
-=======
+    }
+    [Experimental("OPENAI001")]
     public readonly partial struct IncludedResponseProperty : IEquatable<IncludedResponseProperty> {
         public IncludedResponseProperty(string value);
         public static IncludedResponseProperty CodeInterpreterCallOutputs { get; }
@@ -5489,7 +5490,6 @@ namespace OpenAI.Responses {
         public static implicit operator IncludedResponseProperty?(string value);
         public static bool operator !=(IncludedResponseProperty left, IncludedResponseProperty right);
         public override readonly string ToString();
->>>>>>> upstream/main
     }
     [Experimental("OPENAI001")]
     public class McpTool : ResponseTool, IJsonModel<McpTool>, IPersistableModel<McpTool> {
@@ -5645,8 +5645,6 @@ namespace OpenAI.Responses {
         Incomplete = 2
     }
     [Experimental("OPENAI001")]
-<<<<<<< HEAD
-=======
     public class OpenAIResponse : IJsonModel<OpenAIResponse>, IPersistableModel<OpenAIResponse> {
         public bool? BackgroundModeEnabled { get; }
         public DateTimeOffset CreatedAt { get; }
@@ -5683,50 +5681,6 @@ namespace OpenAI.Responses {
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
-    public class OpenAIResponseClient {
-        protected OpenAIResponseClient();
-        protected internal OpenAIResponseClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
-        public OpenAIResponseClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
-        public OpenAIResponseClient(string model, ApiKeyCredential credential);
-        public OpenAIResponseClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
-        public OpenAIResponseClient(string model, AuthenticationPolicy authenticationPolicy);
-        public OpenAIResponseClient(string model, string apiKey);
-        [Experimental("OPENAI001")]
-        public Uri Endpoint { get; }
-        [Experimental("OPENAI001")]
-        public string Model { get; }
-        public ClientPipeline Pipeline { get; }
-        public virtual ClientResult CancelResponse(string responseId, RequestOptions options);
-        public virtual ClientResult<OpenAIResponse> CancelResponse(string responseId, CancellationToken cancellationToken = default);
-        public virtual Task<ClientResult> CancelResponseAsync(string responseId, RequestOptions options);
-        public virtual Task<ClientResult<OpenAIResponse>> CancelResponseAsync(string responseId, CancellationToken cancellationToken = default);
-        public virtual ClientResult CreateResponse(BinaryContent content, RequestOptions options = null);
-        public virtual ClientResult<OpenAIResponse> CreateResponse(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
-        public virtual ClientResult<OpenAIResponse> CreateResponse(string userInputText, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
-        public virtual Task<ClientResult> CreateResponseAsync(BinaryContent content, RequestOptions options = null);
-        public virtual Task<ClientResult<OpenAIResponse>> CreateResponseAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
-        public virtual Task<ClientResult<OpenAIResponse>> CreateResponseAsync(string userInputText, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(string userInputText, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(IEnumerable<ResponseItem> inputItems, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(string userInputText, ResponseCreationOptions options = null, CancellationToken cancellationToken = default);
-        public virtual ClientResult DeleteResponse(string responseId, RequestOptions options);
-        public virtual ClientResult<ResponseDeletionResult> DeleteResponse(string responseId, CancellationToken cancellationToken = default);
-        public virtual Task<ClientResult> DeleteResponseAsync(string responseId, RequestOptions options);
-        public virtual Task<ClientResult<ResponseDeletionResult>> DeleteResponseAsync(string responseId, CancellationToken cancellationToken = default);
-        public virtual ClientResult GetResponse(string responseId, IEnumerable<IncludedResponseProperty> include, bool? stream, int? startingAfter, bool? includeObfuscation, RequestOptions options);
-        public virtual ClientResult<OpenAIResponse> GetResponse(string responseId, IEnumerable<IncludedResponseProperty> include = null, CancellationToken cancellationToken = default);
-        public virtual Task<ClientResult> GetResponseAsync(string responseId, IEnumerable<IncludedResponseProperty> include, bool? stream, int? startingAfter, bool? includeObfuscation, RequestOptions options);
-        public virtual Task<ClientResult<OpenAIResponse>> GetResponseAsync(string responseId, IEnumerable<IncludedResponseProperty> include = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult<ResponseItem> GetResponseInputItems(string responseId, ResponseItemCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual CollectionResult GetResponseInputItems(string responseId, int? limit, string order, string after, string before, RequestOptions options);
-        public virtual AsyncCollectionResult<ResponseItem> GetResponseInputItemsAsync(string responseId, ResponseItemCollectionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult GetResponseInputItemsAsync(string responseId, int? limit, string order, string after, string before, RequestOptions options);
-        public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, IEnumerable<IncludedResponseProperty> include = null, int? startingAfter = null, bool? includeObfuscation = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, IEnumerable<IncludedResponseProperty> include = null, int? startingAfter = null, bool? includeObfuscation = null, CancellationToken cancellationToken = default);
-    }
-    [Experimental("OPENAI001")]
->>>>>>> upstream/main
     public static class OpenAIResponsesModelFactory {
         public static MessageResponseItem MessageResponseItem(string id = null, MessageRole role = MessageRole.Assistant, MessageStatus? status = null);
         public static ReasoningResponseItem ReasoningResponseItem(string id = null, string encryptedContent = null, ReasoningStatus? status = null, IEnumerable<ReasoningSummaryPart> summaryParts = null);
@@ -5820,8 +5774,6 @@ namespace OpenAI.Responses {
         Refusal = 5
     }
     [Experimental("OPENAI001")]
-<<<<<<< HEAD
-=======
     public class ResponseCreationOptions : IJsonModel<ResponseCreationOptions>, IPersistableModel<ResponseCreationOptions> {
         public bool? BackgroundModeEnabled { get; set; }
         public string EndUserId { get; set; }
@@ -5850,7 +5802,6 @@ namespace OpenAI.Responses {
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
->>>>>>> upstream/main
     public class ResponseDeletionResult : IJsonModel<ResponseDeletionResult>, IPersistableModel<ResponseDeletionResult> {
         public bool Deleted { get; }
         public string Id { get; }
@@ -6193,8 +6144,11 @@ namespace OpenAI.Responses {
         public virtual Task<ClientResult> DeleteResponseAsync(string responseId, RequestOptions options);
         public virtual Task<ClientResult<ResponseDeletionResult>> DeleteResponseAsync(string responseId, CancellationToken cancellationToken = default);
         public virtual ClientResult<ResponseResult> GetResponse(GetResponseOptions options, CancellationToken cancellationToken = default);
+        public virtual ClientResult GetResponse(string responseId, IEnumerable<IncludedResponseProperty> include, bool? stream, int? startingAfter, bool? includeObfuscation, RequestOptions options);
+        public virtual ClientResult<OpenAIResponse> GetResponse(string responseId, IEnumerable<IncludedResponseProperty> include = null, CancellationToken cancellationToken = default);
         public virtual ClientResult GetResponse(string responseId, bool? stream, int? startingAfter, RequestOptions options);
         public virtual Task<ClientResult<ResponseResult>> GetResponseAsync(GetResponseOptions options, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> GetResponseAsync(string responseId, IEnumerable<IncludedResponseProperty> include, bool? stream, int? startingAfter, bool? includeObfuscation, RequestOptions options);
         public virtual Task<ClientResult> GetResponseAsync(string responseId, bool? stream, int? startingAfter, RequestOptions options);
         public virtual ClientResult<ResponseItemCollection> GetResponseInputItems(GetResponseInputItemsOptions options = default, CancellationToken cancellationToken = default);
         public virtual CollectionResult<ResponseItem> GetResponseInputItems(string responseId, ResponseItemCollectionOptions options = null, CancellationToken cancellationToken = default);
@@ -6203,7 +6157,9 @@ namespace OpenAI.Responses {
         public virtual AsyncCollectionResult<ResponseItem> GetResponseInputItemsAsync(string responseId, ResponseItemCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult GetResponseInputItemsAsync(string responseId, int? limit, string order, string after, string before, RequestOptions options);
         public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(GetResponseOptions options, CancellationToken cancellationToken = default);
+        public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, IEnumerable<IncludedResponseProperty> include = null, int? startingAfter = null, bool? includeObfuscation = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(GetResponseOptions options, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, IEnumerable<IncludedResponseProperty> include = null, int? startingAfter = null, bool? includeObfuscation = null, CancellationToken cancellationToken = default);
     }
     [Experimental("OPENAI001")]
     public readonly partial struct ResponseServiceTier : IEquatable<ResponseServiceTier> {

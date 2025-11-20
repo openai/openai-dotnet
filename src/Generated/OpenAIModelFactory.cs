@@ -1397,12 +1397,12 @@ namespace OpenAI
             return new CodeInterpreterToolContainer(containerId, containerConfiguration, default);
         }
 
-        public static CreateResponseOptions CreateResponseOptions(IDictionary<string, string> metadata = default, float? temperature = default, float? topP = default, string user = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? isBackgroundModeEnabled = default, int? maxOutputTokenCount = default, string instructions = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, IEnumerable<ResponseItem> inputItems = default, IEnumerable<Includable> includedProperties = default, bool? isParallelToolCallsEnabled = default, bool? isStoredOutputEnabled = default, bool? isStreamingEnabled = default)
+        public static CreateResponseOptions CreateResponseOptions(IDictionary<string, string> metadata = default, float? temperature = default, float? topP = default, string user = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? isBackgroundModeEnabled = default, int? maxOutputTokenCount = default, string instructions = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, IEnumerable<ResponseItem> inputItems = default, IEnumerable<IncludedResponseProperty> includedProperties = default, bool? isParallelToolCallsEnabled = default, bool? isStoredOutputEnabled = default, bool? isStreamingEnabled = default)
         {
             metadata ??= new ChangeTrackingDictionary<string, string>();
             tools ??= new ChangeTrackingList<ResponseTool>();
             inputItems ??= new ChangeTrackingList<ResponseItem>();
-            includedProperties ??= new ChangeTrackingList<Includable>();
+            includedProperties ??= new ChangeTrackingList<IncludedResponseProperty>();
 
             return new CreateResponseOptions(
                 metadata,

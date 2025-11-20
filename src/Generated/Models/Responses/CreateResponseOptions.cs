@@ -25,11 +25,11 @@ namespace OpenAI.Responses
             Metadata = new ChangeTrackingDictionary<string, string>();
             Tools = new ChangeTrackingList<ResponseTool>();
             InputItems = inputItems.ToList();
-            IncludedProperties = new ChangeTrackingList<Includable>();
+            IncludedProperties = new ChangeTrackingList<IncludedResponseProperty>();
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CreateResponseOptions(IDictionary<string, string> metadata, float? temperature, float? topP, string user, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? isBackgroundModeEnabled, int? maxOutputTokenCount, string instructions, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncationMode, IList<ResponseItem> inputItems, IList<Includable> includedProperties, bool? isParallelToolCallsEnabled, bool? isStoredOutputEnabled, bool? isStreamingEnabled, in JsonPatch patch)
+        internal CreateResponseOptions(IDictionary<string, string> metadata, float? temperature, float? topP, string user, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? isBackgroundModeEnabled, int? maxOutputTokenCount, string instructions, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncationMode, IList<ResponseItem> inputItems, IList<IncludedResponseProperty> includedProperties, bool? isParallelToolCallsEnabled, bool? isStoredOutputEnabled, bool? isStreamingEnabled, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -48,7 +48,7 @@ namespace OpenAI.Responses
             ToolChoice = toolChoice;
             TruncationMode = truncationMode;
             InputItems = inputItems ?? new ChangeTrackingList<ResponseItem>();
-            IncludedProperties = includedProperties ?? new ChangeTrackingList<Includable>();
+            IncludedProperties = includedProperties ?? new ChangeTrackingList<IncludedResponseProperty>();
             IsParallelToolCallsEnabled = isParallelToolCallsEnabled;
             IsStoredOutputEnabled = isStoredOutputEnabled;
             IsStreamingEnabled = isStreamingEnabled;

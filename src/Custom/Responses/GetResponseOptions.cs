@@ -1,4 +1,6 @@
 
+using System.Collections.Generic;
+
 namespace OpenAI.Responses
 {
     public class GetResponseOptions
@@ -13,5 +15,9 @@ namespace OpenAI.Responses
         public int? StartingAfter { get; set; }
 
         public bool Stream { get; set; }
+
+        public IEnumerable<IncludedResponseProperty> IncludedProperties { get; set;}
+
+        public bool? IncludeObfuscation { get; set; }
     }
 }   

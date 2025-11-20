@@ -16,7 +16,7 @@ namespace OpenAI.Responses
             Metadata = new ChangeTrackingDictionary<string, string>();
             Tools = new ChangeTrackingList<ResponseTool>();
             InputItems = inputItems.ToList();
-            IncludedProperties = new ChangeTrackingList<Includable>();
+            IncludedProperties = new ChangeTrackingList<IncludedResponseProperty>();
             Model = model;
         }
 
@@ -42,7 +42,7 @@ namespace OpenAI.Responses
         /// Gets or sets the list of fields to include in the response. This corresponds to the "include" property in the JSON representation.
         /// </summary>
         [CodeGenMember("Include")]
-        public IList<Includable> IncludedProperties { get; }
+        public IList<IncludedResponseProperty> IncludedProperties { get; }
 
         /// <summary>
         /// Gets or sets whether multiple tool calls can be made in parallel. This corresponds to the "parallel_tool_calls" property in the JSON representation.
@@ -115,7 +115,7 @@ namespace OpenAI.Responses
                 responseCreationOptions.ToolChoice,
                 responseCreationOptions.TruncationMode,
                 [.. inputItems],
-                [.. responseCreationOptions.IncludedProperties.Select(x => x.ToIncludable())],
+                [.. responseCreationOptions.IncludedProperties],
                 responseCreationOptions.ParallelToolCallsEnabled,
                 responseCreationOptions.StoredOutputEnabled,
                 responseCreationOptions.Stream,
