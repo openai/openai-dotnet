@@ -8,18 +8,18 @@ namespace OpenAI.Responses
 {
     internal partial class InternalResponsesMessageItemParam : InternalItemParam
     {
-        internal InternalResponsesMessageItemParam(InternalResponsesMessageRole role) : base(InternalItemType.Message)
+        internal InternalResponsesMessageItemParam(InternalMessageRoleEx role) : base(InternalItemType.Message)
         {
             Role = role;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalResponsesMessageItemParam(InternalItemType kind, in JsonPatch patch, InternalResponsesMessageRole role) : base(kind, patch)
+        internal InternalResponsesMessageItemParam(InternalItemType kind, in JsonPatch patch, InternalMessageRoleEx role) : base(kind, patch)
         {
             Role = role;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        internal InternalResponsesMessageRole Role { get; set; }
+        internal InternalMessageRoleEx Role { get; set; }
     }
 }

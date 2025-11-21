@@ -10,16 +10,15 @@ public partial class ReasoningResponseItem
     [CodeGenMember("Status")]
     public ReasoningStatus? Status { get; }
 
-    // CUSTOM: Added for convenience.
-    public ReasoningResponseItem(string summaryText) : this(summaryParts: [new ReasoningSummaryTextPart(summaryText)])
+    // CUSTOM: Added as a convenience.
+    public ReasoningResponseItem(string summaryText) : this(summary: [new ReasoningSummaryTextPart(summaryText)])
     {
-        Argument.AssertNotNull(summaryText, nameof(summaryText));
     }
 
-    // CUSTOM: Added for convenience.
+    // CUSTOM: Added as a convenience.
     public string GetSummaryText()
     {
         return string.Concat(
-            values: SummaryParts.Select(part => (part as ReasoningSummaryTextPart)?.Text ?? string.Empty));
+            values: Summary.Select(part => (part as ReasoningSummaryTextPart)?.Text ?? string.Empty));
     }
 }

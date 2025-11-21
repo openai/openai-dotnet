@@ -70,7 +70,7 @@ namespace OpenAI.Responses
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             MessageStatus? status = default;
-            InternalResponsesMessageRole internalRole = default;
+            InternalMessageRoleEx internalRoleEx = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -90,12 +90,12 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("role"u8))
                 {
-                    internalRole = new InternalResponsesMessageRole(prop.Value.GetString());
+                    internalRoleEx = new InternalMessageRoleEx(prop.Value.GetString());
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalUnknownResponsesMessageItemResource(kind, id, patch, status, internalRole);
+            return new InternalUnknownResponsesMessageItemResource(kind, id, patch, status, internalRoleEx);
         }
 
         BinaryData IPersistableModel<MessageResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
