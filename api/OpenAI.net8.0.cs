@@ -5907,7 +5907,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ResponseItem : IJsonModel<ResponseItem>, IPersistableModel<ResponseItem> {
-        public string Id { get; }
+        public string Id { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]

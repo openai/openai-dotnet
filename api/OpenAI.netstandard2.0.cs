@@ -5195,7 +5195,7 @@ namespace OpenAI.Responses {
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ResponseItem : IJsonModel<ResponseItem>, IPersistableModel<ResponseItem> {
-        public string Id { get; }
+        public string Id { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
