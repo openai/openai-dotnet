@@ -14,7 +14,7 @@ namespace OpenAI.Responses
 {
     public partial class OpenAIResponse : IJsonModel<OpenAIResponse>
     {
-        internal OpenAIResponse() : this(null, default, default, null, default, null, null, null, default, default, null, null, null, null, default, null, null, default, default, null, null, null, null, default, default)
+        internal OpenAIResponse() : this(null, default, default, null, default, null, null, null, default, default, default, null, null, null, null, default, null, null, default, default, null, null, null, null, default, default)
         {
         }
 
@@ -131,6 +131,11 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("max_output_tokens"u8);
                 writer.WriteNumberValue(MaxOutputTokenCount.Value);
+            }
+            if (Optional.IsDefined(MaxToolCallCount) && !Patch.Contains("$.max_tool_calls"u8))
+            {
+                writer.WritePropertyName("max_tool_calls"u8);
+                writer.WriteNumberValue(MaxToolCallCount.Value);
             }
             if (Optional.IsDefined(Instructions) && !Patch.Contains("$.instructions"u8))
             {
@@ -280,6 +285,7 @@ namespace OpenAI.Responses
             ResponseReasoningOptions reasoningOptions = default;
             bool? backgroundModeEnabled = default;
             int? maxOutputTokenCount = default;
+            int? maxToolCallCount = default;
             string instructions = default;
             ResponseTextOptions textOptions = default;
             IList<ResponseTool> tools = default;
@@ -403,6 +409,16 @@ namespace OpenAI.Responses
                         continue;
                     }
                     maxOutputTokenCount = prop.Value.GetInt32();
+                    continue;
+                }
+                if (prop.NameEquals("max_tool_calls"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        maxToolCallCount = null;
+                        continue;
+                    }
+                    maxToolCallCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("instructions"u8))
@@ -538,6 +554,7 @@ namespace OpenAI.Responses
                 reasoningOptions,
                 backgroundModeEnabled,
                 maxOutputTokenCount,
+                maxToolCallCount,
                 instructions,
                 textOptions,
                 tools ?? new ChangeTrackingList<ResponseTool>(),

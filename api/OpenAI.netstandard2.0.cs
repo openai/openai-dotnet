@@ -1521,6 +1521,7 @@ namespace OpenAI.Chat {
         public ChatReasoningEffortLevel? ReasoningEffortLevel { get; set; }
         public ChatResponseFormat ResponseFormat { get; set; }
         public ChatResponseModalities ResponseModalities { get; set; }
+        public string SafetyIdentifier { get; set; }
         public long? Seed { get; set; }
         public ChatServiceTier? ServiceTier { get; set; }
         public IList<string> StopSequences { get; }
@@ -4914,6 +4915,7 @@ namespace OpenAI.Responses {
         public ResponseIncompleteStatusDetails IncompleteStatusDetails { get; }
         public string Instructions { get; }
         public int? MaxOutputTokenCount { get; }
+        public int? MaxToolCallCount { get; }
         public IDictionary<string, string> Metadata { get; }
         public string Model { get; }
         public IList<ResponseItem> OutputItems { get; }
@@ -4981,7 +4983,7 @@ namespace OpenAI.Responses {
     }
     public static class OpenAIResponsesModelFactory {
         public static MessageResponseItem MessageResponseItem(string id = null, MessageRole role = MessageRole.Assistant, MessageStatus? status = null);
-        public static OpenAIResponse OpenAIResponse(string id = null, DateTimeOffset createdAt = default, ResponseStatus? status = null, ResponseError error = null, ResponseTokenUsage usage = null, string endUserId = null, ResponseReasoningOptions reasoningOptions = null, int? maxOutputTokenCount = null, ResponseTextOptions textOptions = null, ResponseTruncationMode? truncationMode = null, ResponseIncompleteStatusDetails incompleteStatusDetails = null, IEnumerable<ResponseItem> outputItems = null, bool parallelToolCallsEnabled = false, ResponseToolChoice toolChoice = null, string model = null, IDictionary<string, string> metadata = null, float? temperature = null, float? topP = null, ResponseServiceTier? serviceTier = null, string previousResponseId = null, bool? backgroundModeEnabled = null, string instructions = null, IEnumerable<ResponseTool> tools = null);
+        public static OpenAIResponse OpenAIResponse(string id = null, DateTimeOffset createdAt = default, ResponseStatus? status = null, ResponseError error = null, ResponseTokenUsage usage = null, string endUserId = null, ResponseReasoningOptions reasoningOptions = null, int? maxOutputTokenCount = null, int? maxToolCallCount = null, ResponseTextOptions textOptions = null, ResponseTruncationMode? truncationMode = null, ResponseIncompleteStatusDetails incompleteStatusDetails = null, IEnumerable<ResponseItem> outputItems = null, bool parallelToolCallsEnabled = false, ResponseToolChoice toolChoice = null, string model = null, IDictionary<string, string> metadata = null, float? temperature = null, float? topP = null, ResponseServiceTier? serviceTier = null, string previousResponseId = null, bool? backgroundModeEnabled = null, string instructions = null, IEnumerable<ResponseTool> tools = null);
         public static ReasoningResponseItem ReasoningResponseItem(string id = null, string encryptedContent = null, ReasoningStatus? status = null, IEnumerable<ReasoningSummaryPart> summaryParts = null);
         public static ReasoningResponseItem ReasoningResponseItem(string id = null, string encryptedContent = null, ReasoningStatus? status = null, string summaryText = null);
         public static ReferenceResponseItem ReferenceResponseItem(string id = null);
@@ -5065,10 +5067,12 @@ namespace OpenAI.Responses {
     }
     public class ResponseCreationOptions : IJsonModel<ResponseCreationOptions>, IPersistableModel<ResponseCreationOptions> {
         public bool? BackgroundModeEnabled { get; set; }
+        public string ConversationId { get; set; }
         public string EndUserId { get; set; }
         public IList<IncludedResponseProperty> IncludedProperties { get; }
         public string Instructions { get; set; }
         public int? MaxOutputTokenCount { get; set; }
+        public int? MaxToolCallCount { get; set; }
         public IDictionary<string, string> Metadata { get; }
         public bool? ParallelToolCallsEnabled { get; set; }
         [Serialization.JsonIgnore]
@@ -5076,12 +5080,14 @@ namespace OpenAI.Responses {
         public ref JsonPatch Patch { get; }
         public string PreviousResponseId { get; set; }
         public ResponseReasoningOptions ReasoningOptions { get; set; }
+        public string SafetyIdentifier { get; set; }
         public ResponseServiceTier? ServiceTier { get; set; }
         public bool? StoredOutputEnabled { get; set; }
         public float? Temperature { get; set; }
         public ResponseTextOptions TextOptions { get; set; }
         public ResponseToolChoice ToolChoice { get; set; }
         public IList<ResponseTool> Tools { get; }
+        public int? TopLogProbabilityCount { get; set; }
         public float? TopP { get; set; }
         public ResponseTruncationMode? TruncationMode { get; set; }
         protected virtual ResponseCreationOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);

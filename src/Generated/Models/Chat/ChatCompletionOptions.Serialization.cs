@@ -14,7 +14,7 @@ namespace OpenAI.Chat
 {
     public partial class ChatCompletionOptions : IJsonModel<ChatCompletionOptions>
     {
-        public ChatCompletionOptions() : this(null, default, default, null, default, null, null, null, default, default, default, default, null, default, null, null, default, default, null, null, default, default, default, null, default, null, null, null, default, null, null, default)
+        public ChatCompletionOptions() : this(null, default, default, default, null, null, default, null, null, null, default, default, default, default, null, null, null, default, default, null, null, default, default, default, null, default, null, null, null, default, null, null, default)
         {
         }
 
@@ -77,6 +77,11 @@ namespace OpenAI.Chat
                 writer.WritePropertyName("temperature"u8);
                 writer.WriteNumberValue(Temperature.Value);
             }
+            if (Optional.IsDefined(TopLogProbabilityCount) && !Patch.Contains("$.top_logprobs"u8))
+            {
+                writer.WritePropertyName("top_logprobs"u8);
+                writer.WriteNumberValue(TopLogProbabilityCount.Value);
+            }
             if (Optional.IsDefined(TopP) && !Patch.Contains("$.top_p"u8))
             {
                 writer.WritePropertyName("top_p"u8);
@@ -86,6 +91,11 @@ namespace OpenAI.Chat
             {
                 writer.WritePropertyName("user"u8);
                 writer.WriteStringValue(EndUserId);
+            }
+            if (Optional.IsDefined(SafetyIdentifier) && !Patch.Contains("$.safety_identifier"u8))
+            {
+                writer.WritePropertyName("safety_identifier"u8);
+                writer.WriteStringValue(SafetyIdentifier);
             }
             if (Optional.IsDefined(ServiceTier) && !Patch.Contains("$.service_tier"u8))
             {
@@ -162,11 +172,6 @@ namespace OpenAI.Chat
             {
                 writer.WritePropertyName("web_search_options"u8);
                 writer.WriteObjectValue(WebSearchOptions, options);
-            }
-            if (Optional.IsDefined(TopLogProbabilityCount) && !Patch.Contains("$.top_logprobs"u8))
-            {
-                writer.WritePropertyName("top_logprobs"u8);
-                writer.WriteNumberValue(TopLogProbabilityCount.Value);
             }
             if (Optional.IsDefined(ResponseFormat) && !Patch.Contains("$.response_format"u8))
             {
@@ -324,8 +329,10 @@ namespace OpenAI.Chat
             }
             IDictionary<string, string> metadata = default;
             float? temperature = default;
+            int? topLogProbabilityCount = default;
             float? topP = default;
             string endUserId = default;
+            string safetyIdentifier = default;
             ChatServiceTier? serviceTier = default;
             IList<ChatMessage> messages = default;
             string model = default;
@@ -335,7 +342,6 @@ namespace OpenAI.Chat
             float? frequencyPenalty = default;
             float? presencePenalty = default;
             ChatWebSearchOptions webSearchOptions = default;
-            int? topLogProbabilityCount = default;
             ChatResponseFormat responseFormat = default;
             ChatAudioOptions audioOptions = default;
             bool? storedOutputEnabled = default;
@@ -389,6 +395,16 @@ namespace OpenAI.Chat
                     temperature = prop.Value.GetSingle();
                     continue;
                 }
+                if (prop.NameEquals("top_logprobs"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        topLogProbabilityCount = null;
+                        continue;
+                    }
+                    topLogProbabilityCount = prop.Value.GetInt32();
+                    continue;
+                }
                 if (prop.NameEquals("top_p"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -402,6 +418,11 @@ namespace OpenAI.Chat
                 if (prop.NameEquals("user"u8))
                 {
                     endUserId = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("safety_identifier"u8))
+                {
+                    safetyIdentifier = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("service_tier"u8))
@@ -489,16 +510,6 @@ namespace OpenAI.Chat
                         continue;
                     }
                     webSearchOptions = ChatWebSearchOptions.DeserializeChatWebSearchOptions(prop.Value, prop.Value.GetUtf8Bytes(), options);
-                    continue;
-                }
-                if (prop.NameEquals("top_logprobs"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        topLogProbabilityCount = null;
-                        continue;
-                    }
-                    topLogProbabilityCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("response_format"u8))
@@ -670,8 +681,10 @@ namespace OpenAI.Chat
             return new ChatCompletionOptions(
                 metadata ?? new ChangeTrackingDictionary<string, string>(),
                 temperature,
+                topLogProbabilityCount,
                 topP,
                 endUserId,
+                safetyIdentifier,
                 serviceTier,
                 messages,
                 model,
@@ -681,7 +694,6 @@ namespace OpenAI.Chat
                 frequencyPenalty,
                 presencePenalty,
                 webSearchOptions,
-                topLogProbabilityCount,
                 responseFormat,
                 audioOptions,
                 storedOutputEnabled,

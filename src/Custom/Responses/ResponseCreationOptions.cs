@@ -46,6 +46,10 @@ public partial class ResponseCreationOptions
     public int? MaxOutputTokenCount { get; set; }
 
     // CUSTOM: Renamed.
+    [CodeGenMember("MaxToolCalls")]
+    public int? MaxToolCallCount { get; set; }
+
+    // CUSTOM: Renamed.
     [CodeGenMember("Text")]
     public ResponseTextOptions TextOptions { get; set; }
 
@@ -72,6 +76,10 @@ public partial class ResponseCreationOptions
     // CUSTOM: Apply get-only collection pattern
     [CodeGenMember("Tools")]
     public IList<ResponseTool> Tools { get; }
+
+    // CUSTOM: Renamed.
+    [CodeGenMember("TopLogprobs")]
+    public int? TopLogProbabilityCount { get; set; }
 
     internal ResponseCreationOptions GetClone()
     {

@@ -87,6 +87,25 @@ model CreateResponse {
    * for more information.
    */
   stream?: boolean | null = false;
+
+  /** The conversation that this response belongs to.
+   *  Items from this conversation are prepended to input_items for this response request.
+   *  Input items and output items from this response are automatically added to this conversation after this response completes. */
+  conversation?: ConversationParam | null;
+}
+
+/**The conversation that this response belongs to. Items from this conversation are prepended to `input_items` for this response request.
+Input items and output items from this response are automatically added to this conversation after this response completes.*/
+union ConversationParam {
+  string,
+  `ConversationParam-2`,
+}
+
+/** The conversation that this response belongs to. */
+@summary("Conversation object")
+model `ConversationParam-2` {
+  /** The unique ID of the conversation. */
+  id: string;
 }
 
 model Response {
@@ -177,6 +196,9 @@ model ResponseProperties {
 
   /** An upper bound for the number of tokens that can be generated for a response, including visible output tokens and [reasoning tokens](/docs/guides/reasoning). */
   max_output_tokens?: int32 | null;
+
+  /** The maximum number of total calls to built-in tools that can be processed in a response. This maximum number applies across all built-in tool calls, not per individual tool. Any further attempts to call a tool by the model will be ignored. */
+  max_tool_calls?: int32 | null;
 
   @doc("""
     Inserts a system (or developer) message as the first item in the model's context.
