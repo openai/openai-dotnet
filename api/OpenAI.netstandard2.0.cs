@@ -4266,7 +4266,7 @@ namespace OpenAI.Responses {
         public string Code { get; set; }
         public string ContainerId { get; set; }
         public IList<CodeInterpreterCallOutput> Outputs { get; }
-        public CodeInterpreterCallStatus? Status { get; }
+        public CodeInterpreterCallStatus? Status { get; set; }
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -4374,7 +4374,7 @@ namespace OpenAI.Responses {
         public IList<ComputerCallSafetyCheck> AcknowledgedSafetyChecks { get; }
         public string CallId { get; set; }
         public ComputerCallOutput Output { get; set; }
-        public ComputerCallOutputStatus? Status { get; }
+        public ComputerCallOutputStatus? Status { get; set; }
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -4390,7 +4390,7 @@ namespace OpenAI.Responses {
         public ComputerCallAction Action { get; set; }
         public string CallId { get; set; }
         public IList<ComputerCallSafetyCheck> PendingSafetyChecks { get; }
-        public ComputerCallStatus? Status { get; }
+        public ComputerCallStatus? Status { get; set; }
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -4488,7 +4488,7 @@ namespace OpenAI.Responses {
         public FileSearchCallResponseItem(IEnumerable<string> queries);
         public IList<string> Queries { get; }
         public IList<FileSearchCallResult> Results { get; set; }
-        public FileSearchCallStatus? Status { get; }
+        public FileSearchCallStatus? Status { get; set; }
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -4556,7 +4556,7 @@ namespace OpenAI.Responses {
         public FunctionCallOutputResponseItem(string callId, string functionOutput);
         public string CallId { get; set; }
         public string FunctionOutput { get; set; }
-        public FunctionCallOutputStatus? Status { get; }
+        public FunctionCallOutputStatus? Status { get; set; }
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -4572,7 +4572,7 @@ namespace OpenAI.Responses {
         public string CallId { get; set; }
         public BinaryData FunctionArguments { get; set; }
         public string FunctionName { get; set; }
-        public FunctionCallStatus? Status { get; }
+        public FunctionCallStatus? Status { get; set; }
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -4612,7 +4612,7 @@ namespace OpenAI.Responses {
     public class ImageGenerationCallResponseItem : ResponseItem, IJsonModel<ImageGenerationCallResponseItem>, IPersistableModel<ImageGenerationCallResponseItem> {
         public ImageGenerationCallResponseItem(BinaryData imageResultBytes);
         public BinaryData ImageResultBytes { get; set; }
-        public ImageGenerationCallStatus? Status { get; }
+        public ImageGenerationCallStatus? Status { get; set; }
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -4887,7 +4887,7 @@ namespace OpenAI.Responses {
     public class MessageResponseItem : ResponseItem, IJsonModel<MessageResponseItem>, IPersistableModel<MessageResponseItem> {
         public IList<ResponseContentPart> Content { get; }
         public MessageRole Role { get; }
-        public MessageStatus? Status { get; }
+        public MessageStatus? Status { get; set; }
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -4990,7 +4990,7 @@ namespace OpenAI.Responses {
         public ReasoningResponseItem(IEnumerable<ReasoningSummaryPart> summaryParts);
         public ReasoningResponseItem(string summaryText);
         public string EncryptedContent { get; set; }
-        public ReasoningStatus? Status { get; }
+        public ReasoningStatus? Status { get; set; }
         public IList<ReasoningSummaryPart> SummaryParts { get; }
         public string GetSummaryText();
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -5875,7 +5875,7 @@ namespace OpenAI.Responses {
     }
     public class WebSearchCallResponseItem : ResponseItem, IJsonModel<WebSearchCallResponseItem>, IPersistableModel<WebSearchCallResponseItem> {
         public WebSearchCallResponseItem();
-        public WebSearchCallStatus? Status { get; }
+        public WebSearchCallStatus? Status { get; set; }
         protected override ResponseItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
