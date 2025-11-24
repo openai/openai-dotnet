@@ -92,6 +92,12 @@ namespace OpenAI.Responses
         [CodeGenMember("Truncation")]
         public ResponseTruncationMode? TruncationMode { get; set; }
 
+        /// <summary>
+        /// Gets or sets the end user identifier. This corresponds to the "user" property in the JSON representation.
+        /// </summary>
+        [CodeGenMember("User")]
+        public string EndUserId { get; set; }
+
         internal static CreateResponseOptions Create(IEnumerable<ResponseItem> inputItems, string model, ResponsesClient client, ResponseCreationOptions options = null, bool isStreaming = false)
         {
             Argument.AssertNotNull(inputItems, nameof(inputItems));

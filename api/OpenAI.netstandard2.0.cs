@@ -4457,6 +4457,7 @@ namespace OpenAI.Responses {
     public class CreateResponseOptions : IJsonModel<CreateResponseOptions>, IPersistableModel<CreateResponseOptions> {
         public CreateResponseOptions(IEnumerable<ResponseItem> inputItems, string model);
         public CreateResponseOptions(IEnumerable<ResponseItem> inputItems);
+        public string EndUserId { get; set; }
         public IList<IncludedResponseProperty> IncludedProperties { get; }
         public IList<ResponseItem> InputItems { get; }
         public string Instructions { get; set; }
@@ -5347,32 +5348,33 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class ResponseResult : IJsonModel<ResponseResult>, IPersistableModel<ResponseResult> {
-        public DateTimeOffset CreatedAt { get; }
-        public string EndUserId { get; }
-        public ResponseError Error { get; }
-        public string Id { get; }
-        public ResponseIncompleteStatusDetails IncompleteStatusDetails { get; }
-        public string Instructions { get; }
-        public bool? IsBackgroundModeEnabled { get; }
-        public bool IsParallelToolCallsEnabled { get; }
-        public int? MaxOutputTokenCount { get; }
-        public IDictionary<string, string> Metadata { get; }
+        public DateTimeOffset CreatedAt { get; set; }
+        public string EndUserId { get; set; }
+        public ResponseError Error { get; set; }
+        public string Id { get; set; }
+        public ResponseIncompleteStatusDetails IncompleteStatusDetails { get; set; }
+        public string Instructions { get; set; }
+        public bool? IsBackgroundModeEnabled { get; set; }
+        public bool IsParallelToolCallsEnabled { get; set; }
+        public int? MaxOutputTokenCount { get; set; }
+        public IDictionary<string, string> Metadata { get; set; }
         public string Model { get; }
-        public string Object { get; }
-        public IList<ResponseItem> OutputItems { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public string Object { get; set; }
+        public IList<ResponseItem> OutputItems { get; set; }
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
-        public string PreviousResponseId { get; }
-        public ResponseReasoningOptions ReasoningOptions { get; }
-        public ResponseServiceTier? ServiceTier { get; }
-        public ResponseStatus? Status { get; }
-        public float? Temperature { get; }
-        public ResponseTextOptions TextOptions { get; }
-        public ResponseToolChoice ToolChoice { get; }
-        public IList<ResponseTool> Tools { get; }
-        public float? TopP { get; }
-        public ResponseTruncationMode? TruncationMode { get; }
-        public ResponseTokenUsage Usage { get; }
+        public string PreviousResponseId { get; set; }
+        public ResponseReasoningOptions ReasoningOptions { get; set; }
+        public ResponseServiceTier? ServiceTier { get; set; }
+        public ResponseStatus? Status { get; set; }
+        public float? Temperature { get; set; }
+        public ResponseTextOptions TextOptions { get; set; }
+        public ResponseToolChoice ToolChoice { get; set; }
+        public IList<ResponseTool> Tools { get; set; }
+        public float? TopP { get; set; }
+        public ResponseTruncationMode? TruncationMode { get; set; }
+        public ResponseTokenUsage Usage { get; set; }
         public string GetOutputText();
         protected virtual ResponseResult JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
