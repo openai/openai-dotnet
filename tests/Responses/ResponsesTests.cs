@@ -1,6 +1,7 @@
 ﻿using Microsoft.ClientModel.TestFramework;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
+using OpenAI.Conversations;
 using OpenAI.Files;
 using OpenAI.Responses;
 using OpenAI.Tests.Utility;
@@ -520,6 +521,41 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         ClientResultException expectedException = Assert.ThrowsAsync<ClientResultException>(async () => await client.GetResponseAsync(response.Id));
         Assert.That(expectedException.Message, Does.Contain("not found"));
+    }
+
+    [RecordedTest]
+    public async Task ResponseUsingConversations()
+    {
+        ConversationClient conversationClient = GetProxiedOpenAIClient<ConversationClient>(TestScenario.Conversations);
+
+        BinaryData createConversationParameters = BinaryData.FromBytes("""
+            {
+               "metadata": { "topic": "test" },
+               "items": [
+                   {
+                       "type": "message",
+                       "role": "user",
+                       "content": "Say 'this is a test.'"
+                   }
+               ]
+            }
+            """u8.ToArray());
+
+        using BinaryContent requestContent = BinaryContent.Create(createConversationParameters);
+        ClientResult conversationResult = await conversationClient.CreateConversationAsync(requestContent);
+        using JsonDocument conversationResultAsJson = JsonDocument.Parse(conversationResult.GetRawResponse().Content.ToString());
+        string conversationId = conversationResultAsJson.RootElement.GetProperty("id"u8).GetString();
+
+        OpenAIResponseClient client = GetTestClient("gpt-4.1");
+        OpenAIResponse response = await client.CreateResponseAsync(
+            [ResponseItem.CreateUserMessageItem("Hello, model!")],
+            new ResponseCreationOptions()
+            {
+                ConversationId = conversationId,
+            });
+
+        Assert.That(response, Is.Not.Null);
+        Assert.That(response.ConversationId, Is.EqualTo(conversationId));
     }
 
     [RecordedTest]

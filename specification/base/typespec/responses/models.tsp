@@ -168,6 +168,9 @@ model Response {
 
   /** Whether to allow the model to run tool calls in parallel. */
   parallel_tool_calls: boolean = true;
+
+  /** The conversation that this response belongs to. Input items and output items from this response are automatically added to this conversation. */
+  conversation?: `ConversationParam-2` | null;
 }
 
 model ResponseProperties {

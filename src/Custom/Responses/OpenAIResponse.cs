@@ -62,6 +62,12 @@ public partial class OpenAIResponse
     [CodeGenMember("Model")]
     public string Model { get; }
 
+    public string ConversationId => Conversation.Id;
+
+    // CUSTOM: Renamed.
+    [CodeGenMember("TopLogprobs")]
+    public int? TopLogProbabilityCount { get; }
+
     // CUSTOM: Made internal
     internal string Object { get; } = "response";
 

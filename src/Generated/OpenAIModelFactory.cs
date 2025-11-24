@@ -687,41 +687,6 @@ namespace OpenAI
             return new McpToolDefinition(name, description, inputSchema, annotations, default);
         }
 
-        public static OpenAIResponse OpenAIResponse(IDictionary<string, string> metadata = default, float? temperature = default, float? topP = default, string endUserId = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? backgroundModeEnabled = default, int? maxOutputTokenCount = default, int? maxToolCallCount = default, string instructions = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, string id = default, ResponseStatus? status = default, DateTimeOffset createdAt = default, ResponseError error = default, ResponseIncompleteStatusDetails incompleteStatusDetails = default, IEnumerable<ResponseItem> outputItems = default, ResponseTokenUsage usage = default, bool parallelToolCallsEnabled = default)
-        {
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-            tools ??= new ChangeTrackingList<ResponseTool>();
-            outputItems ??= new ChangeTrackingList<ResponseItem>();
-
-            return new OpenAIResponse(
-                metadata,
-                temperature,
-                topP,
-                endUserId,
-                serviceTier,
-                previousResponseId,
-                model,
-                reasoningOptions,
-                backgroundModeEnabled,
-                maxOutputTokenCount,
-                maxToolCallCount,
-                instructions,
-                textOptions,
-                tools.ToList(),
-                toolChoice,
-                truncationMode,
-                id,
-                "response",
-                status,
-                createdAt,
-                error,
-                incompleteStatusDetails,
-                outputItems.ToList(),
-                usage,
-                parallelToolCallsEnabled,
-                default);
-        }
-
         public static ResponseError ResponseError(ResponseErrorCode code = default, string message = default)
         {
             return new ResponseError(code, message, default);

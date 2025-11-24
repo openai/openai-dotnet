@@ -18,6 +18,7 @@ public static partial class OpenAIResponsesModelFactory
         ResponseError error = null,
         ResponseTokenUsage usage = null,
         string endUserId = null,
+        string safetyIdentifier = null,
         ResponseReasoningOptions reasoningOptions = null,
         int? maxOutputTokenCount = null,
         int? maxToolCallCount = null,
@@ -30,12 +31,14 @@ public static partial class OpenAIResponsesModelFactory
         string model = null,
         IDictionary<string, string> metadata = null,
         float? temperature = null,
+        int? topLogProbabilityCount = null,
         float? topP = null,
         ResponseServiceTier? serviceTier = null,
         string previousResponseId = null,
         bool? backgroundModeEnabled = null,
         string instructions = null,
-        IEnumerable<ResponseTool> tools = null)
+        IEnumerable<ResponseTool> tools = null,
+        string conversationId = null)
     {
         outputItems ??= new List<ResponseItem>();
         tools ??= new List<ResponseTool>();
@@ -44,6 +47,7 @@ public static partial class OpenAIResponsesModelFactory
         return new OpenAIResponse(
            metadata: metadata,
            temperature: temperature,
+           topLogProbabilityCount: topLogProbabilityCount,
            topP: topP,
            serviceTier: serviceTier,
            previousResponseId: previousResponseId,
@@ -56,6 +60,7 @@ public static partial class OpenAIResponsesModelFactory
            error: error,
            usage: usage,
            endUserId: endUserId,
+           safetyIdentifier: safetyIdentifier,
            reasoningOptions: reasoningOptions,
            maxOutputTokenCount: maxOutputTokenCount,
            maxToolCallCount: maxToolCallCount,
@@ -67,6 +72,7 @@ public static partial class OpenAIResponsesModelFactory
            toolChoice: toolChoice,
            model: model,
            @object: "response",
+           conversation: new(conversationId),
            patch: default);
     }
 

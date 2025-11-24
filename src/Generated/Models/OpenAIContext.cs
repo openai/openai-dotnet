@@ -227,6 +227,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalComputerUsePreviewToolCallOutputItemParam))]
     [ModelReaderWriterBuildable(typeof(InternalContainerFileListResource))]
     [ModelReaderWriterBuildable(typeof(InternalContainerListResource))]
+    [ModelReaderWriterBuildable(typeof(InternalConversation))]
     [ModelReaderWriterBuildable(typeof(InternalConversationItemCollectionOptions))]
     [ModelReaderWriterBuildable(typeof(InternalCoordinate))]
     [ModelReaderWriterBuildable(typeof(InternalCreateAssistantRequestToolResources))]
