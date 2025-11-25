@@ -17,13 +17,15 @@ namespace OpenAI.Chat
         private JsonPatch _patch;
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ChatCompletionOptions(IDictionary<string, string> metadata, float? temperature, float? topP, string endUserId, ChatServiceTier? serviceTier, IList<ChatMessage> messages, string model, IList<InternalCreateChatCompletionRequestModality> internalModalities, ChatReasoningEffortLevel? reasoningEffortLevel, int? maxOutputTokenCount, float? frequencyPenalty, float? presencePenalty, ChatWebSearchOptions webSearchOptions, int? topLogProbabilityCount, ChatResponseFormat responseFormat, ChatAudioOptions audioOptions, bool? storedOutputEnabled, bool? stream, IList<string> stopSequences, IDictionary<int, int> logitBiases, bool? includeLogProbabilities, int? deprecatedMaxTokens, int? n, ChatOutputPrediction outputPrediction, long? seed, InternalChatCompletionStreamOptions streamOptions, IList<ChatTool> tools, ChatToolChoice toolChoice, bool? allowParallelToolCalls, ChatFunctionChoice functionChoice, IList<ChatFunction> functions, in JsonPatch patch)
+        internal ChatCompletionOptions(IDictionary<string, string> metadata, float? temperature, int? topLogProbabilityCount, float? topP, string endUserId, string safetyIdentifier, ChatServiceTier? serviceTier, IList<ChatMessage> messages, string model, IList<InternalCreateChatCompletionRequestModality> internalModalities, ChatReasoningEffortLevel? reasoningEffortLevel, int? maxOutputTokenCount, float? frequencyPenalty, float? presencePenalty, ChatWebSearchOptions webSearchOptions, ChatResponseFormat responseFormat, ChatAudioOptions audioOptions, bool? storedOutputEnabled, bool? stream, IList<string> stopSequences, IDictionary<int, int> logitBiases, bool? includeLogProbabilities, int? deprecatedMaxTokens, int? n, ChatOutputPrediction outputPrediction, long? seed, InternalChatCompletionStreamOptions streamOptions, IList<ChatTool> tools, ChatToolChoice toolChoice, bool? allowParallelToolCalls, ChatFunctionChoice functionChoice, IList<ChatFunction> functions, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Temperature = temperature;
+            TopLogProbabilityCount = topLogProbabilityCount;
             TopP = topP;
             EndUserId = endUserId;
+            SafetyIdentifier = safetyIdentifier;
             ServiceTier = serviceTier;
             Messages = messages ?? new ChangeTrackingList<ChatMessage>();
             Model = model;
@@ -33,7 +35,6 @@ namespace OpenAI.Chat
             FrequencyPenalty = frequencyPenalty;
             PresencePenalty = presencePenalty;
             WebSearchOptions = webSearchOptions;
-            TopLogProbabilityCount = topLogProbabilityCount;
             ResponseFormat = responseFormat;
             AudioOptions = audioOptions;
             StoredOutputEnabled = storedOutputEnabled;
@@ -64,6 +65,9 @@ namespace OpenAI.Chat
         public float? Temperature { get; set; }
 
         public float? TopP { get; set; }
+
+        [Experimental("OPENAI001")]
+        public string SafetyIdentifier { get; set; }
 
         [Experimental("OPENAI001")]
         public ChatServiceTier? ServiceTier { get; set; }

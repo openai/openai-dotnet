@@ -31,6 +31,10 @@ public partial class OpenAIResponse
     public int? MaxOutputTokenCount { get; }
 
     // CUSTOM: Renamed.
+    [CodeGenMember("MaxToolCalls")]
+    public int? MaxToolCallCount { get; }
+
+    // CUSTOM: Renamed.
     [CodeGenMember("Text")]
     public ResponseTextOptions TextOptions { get; }
 
@@ -57,6 +61,12 @@ public partial class OpenAIResponse
     // CUSTOM: Use a plain string.
     [CodeGenMember("Model")]
     public string Model { get; }
+
+    public string ConversationId => Conversation.Id;
+
+    // CUSTOM: Renamed.
+    [CodeGenMember("TopLogprobs")]
+    public int? TopLogProbabilityCount { get; }
 
     // CUSTOM: Made internal
     internal string Object { get; } = "response";
