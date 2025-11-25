@@ -1397,7 +1397,7 @@ namespace OpenAI
             return new CodeInterpreterToolContainer(containerId, containerConfiguration, default);
         }
 
-        public static CreateResponseOptions CreateResponseOptions(IDictionary<string, string> metadata = default, float? temperature = default, float? topP = default, string user = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? isBackgroundModeEnabled = default, int? maxOutputTokenCount = default, string instructions = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, IEnumerable<ResponseItem> inputItems = default, IEnumerable<IncludedResponseProperty> includedProperties = default, bool? isParallelToolCallsEnabled = default, bool? isStoredOutputEnabled = default, bool? isStreamingEnabled = default)
+        public static CreateResponseOptions CreateResponseOptions(IDictionary<string, string> metadata = default, float? temperature = default, float? topP = default, string endUserId = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? backgroundModeEnabled = default, int? maxOutputTokenCount = default, string instructions = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, IEnumerable<ResponseItem> inputItems = default, IEnumerable<IncludedResponseProperty> includedProperties = default, bool? parallelToolCallsEnabled = default, bool? storedOutputEnabled = default, bool? streamingEnabled = default)
         {
             metadata ??= new ChangeTrackingDictionary<string, string>();
             tools ??= new ChangeTrackingList<ResponseTool>();
@@ -1408,12 +1408,12 @@ namespace OpenAI
                 metadata,
                 temperature,
                 topP,
-                user,
+                endUserId,
                 serviceTier,
                 previousResponseId,
                 model,
                 reasoningOptions,
-                isBackgroundModeEnabled,
+                backgroundModeEnabled,
                 maxOutputTokenCount,
                 instructions,
                 textOptions,
@@ -1422,9 +1422,9 @@ namespace OpenAI
                 truncationMode,
                 inputItems.ToList(),
                 includedProperties.ToList(),
-                isParallelToolCallsEnabled,
-                isStoredOutputEnabled,
-                isStreamingEnabled,
+                parallelToolCallsEnabled,
+                storedOutputEnabled,
+                streamingEnabled,
                 default);
         }
 

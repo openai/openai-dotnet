@@ -80,10 +80,10 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("top_p"u8);
                 writer.WriteNumberValue(TopP.Value);
             }
-            if (Optional.IsDefined(User) && !Patch.Contains("$.user"u8))
+            if (Optional.IsDefined(EndUserId) && !Patch.Contains("$.user"u8))
             {
                 writer.WritePropertyName("user"u8);
-                writer.WriteStringValue(User);
+                writer.WriteStringValue(EndUserId);
             }
             if (Optional.IsDefined(ServiceTier) && !Patch.Contains("$.service_tier"u8))
             {
@@ -246,12 +246,12 @@ namespace OpenAI.Responses
             IDictionary<string, string> metadata = default;
             float? temperature = default;
             float? topP = default;
-            string user = default;
+            string endUserId = default;
             ResponseServiceTier? serviceTier = default;
             string previousResponseId = default;
             string model = default;
             ResponseReasoningOptions reasoningOptions = default;
-            bool? isBackgroundModeEnabled = default;
+            bool? backgroundModeEnabled = default;
             int? maxOutputTokenCount = default;
             string instructions = default;
             ResponseTextOptions textOptions = default;
@@ -260,9 +260,9 @@ namespace OpenAI.Responses
             ResponseTruncationMode? truncationMode = default;
             IList<ResponseItem> inputItems = default;
             IList<IncludedResponseProperty> includedProperties = default;
-            bool? isParallelToolCallsEnabled = default;
-            bool? isStoredOutputEnabled = default;
-            bool? isStreamingEnabled = default;
+            bool? parallelToolCallsEnabled = default;
+            bool? storedOutputEnabled = default;
+            bool? streamingEnabled = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -311,7 +311,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("user"u8))
                 {
-                    user = prop.Value.GetString();
+                    endUserId = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("service_tier"u8))
@@ -352,10 +352,10 @@ namespace OpenAI.Responses
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        isBackgroundModeEnabled = null;
+                        backgroundModeEnabled = null;
                         continue;
                     }
-                    isBackgroundModeEnabled = prop.Value.GetBoolean();
+                    backgroundModeEnabled = prop.Value.GetBoolean();
                     continue;
                 }
                 if (prop.NameEquals("max_output_tokens"u8))
@@ -448,30 +448,30 @@ namespace OpenAI.Responses
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        isParallelToolCallsEnabled = null;
+                        parallelToolCallsEnabled = null;
                         continue;
                     }
-                    isParallelToolCallsEnabled = prop.Value.GetBoolean();
+                    parallelToolCallsEnabled = prop.Value.GetBoolean();
                     continue;
                 }
                 if (prop.NameEquals("store"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        isStoredOutputEnabled = null;
+                        storedOutputEnabled = null;
                         continue;
                     }
-                    isStoredOutputEnabled = prop.Value.GetBoolean();
+                    storedOutputEnabled = prop.Value.GetBoolean();
                     continue;
                 }
                 if (prop.NameEquals("stream"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        isStreamingEnabled = null;
+                        streamingEnabled = null;
                         continue;
                     }
-                    isStreamingEnabled = prop.Value.GetBoolean();
+                    streamingEnabled = prop.Value.GetBoolean();
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
@@ -480,12 +480,12 @@ namespace OpenAI.Responses
                 metadata ?? new ChangeTrackingDictionary<string, string>(),
                 temperature,
                 topP,
-                user,
+                endUserId,
                 serviceTier,
                 previousResponseId,
                 model,
                 reasoningOptions,
-                isBackgroundModeEnabled,
+                backgroundModeEnabled,
                 maxOutputTokenCount,
                 instructions,
                 textOptions,
@@ -494,9 +494,9 @@ namespace OpenAI.Responses
                 truncationMode,
                 inputItems,
                 includedProperties ?? new ChangeTrackingList<IncludedResponseProperty>(),
-                isParallelToolCallsEnabled,
-                isStoredOutputEnabled,
-                isStreamingEnabled,
+                parallelToolCallsEnabled,
+                storedOutputEnabled,
+                streamingEnabled,
                 patch);
         }
 

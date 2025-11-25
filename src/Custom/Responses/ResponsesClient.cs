@@ -21,6 +21,9 @@ namespace OpenAI.Responses;
 [CodeGenSuppress("CancelResponseAsync", typeof(string), typeof(IEnumerable<IncludedResponseProperty>), typeof(bool?), typeof(int?), typeof(CancellationToken))]
 [CodeGenSuppress("GetResponse", typeof(string), typeof(IEnumerable<IncludedResponseProperty>), typeof(bool?), typeof(int?), typeof(bool?), typeof(CancellationToken))]
 [CodeGenSuppress("GetResponseAsync", typeof(string), typeof(IEnumerable<IncludedResponseProperty>), typeof(bool?), typeof(int?), typeof(bool?), typeof(CancellationToken))]
+[CodeGenSuppress("GetResponseInputItems", typeof(string), typeof(int?), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
+[CodeGenSuppress("GetResponseInputItemsAsync", typeof(string), typeof(int?), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
+
 public partial class ResponsesClient
 {
     // CUSTOM: Added as a convenience.
@@ -389,6 +392,22 @@ public partial class ResponsesClient
         ClientResult protocolResult = CancelResponse(responseId, cancellationToken.ToRequestOptions());
         ResponseResult convenienceResult = (ResponseResult)protocolResult;
         return ClientResult.FromValue(convenienceResult, protocolResult.GetRawResponse());
+    }
+
+    public virtual ClientResult GetResponseInputItems(string responseId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
+
+        PipelineMessage message = CreateGetResponseInputItemsRequest(responseId, limit, after, order, before, options);
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+    }
+
+    public virtual async Task<ClientResult> GetResponseInputItemsAsync(string responseId, int? limit, string order, string after, string before, RequestOptions options)
+    {
+        Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
+
+        PipelineMessage message = CreateGetResponseInputItemsRequest(responseId, limit, after, order, before, options);
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
     public virtual ClientResult<ResponseItemCollection> GetResponseInputItems(GetResponseInputItemsOptions options = default, CancellationToken cancellationToken = default)
