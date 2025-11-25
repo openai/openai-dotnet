@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "137",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Darwin 25.0.0 Darwin Kernel Version 25.0.0: Wed Sep 17 21:42:08 PDT 2025; root:xnu-12377.1.9~141/RELEASE_ARM64_T8132)"
+        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini",
@@ -30,31 +30,35 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "99c8409f79692c9d-DFW",
+        "CF-RAY": "9a44b483c94769fb-DFW",
         "Connection": "keep-alive",
         "Content-Length": "1478",
         "Content-Type": "application/json",
-        "Date": "Mon, 10 Nov 2025 20:20:47 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "444",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
+        "Set-Cookie": [
+          "Sanitized",
+          "Sanitized"
+        ],
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "449",
+        "x-envoy-upstream-service-time": "2042",
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "150000000",
         "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "149999972",
+        "x-ratelimit-remaining-tokens": "149999970",
         "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_0a1a67e2dcf43d1d016912491eaff08191929d563d272bd37e",
+        "id": "resp_0f2e256a85ea081c01692632b43828819796458fbf55cf7dc7",
         "object": "response",
-        "created_at": 1762806046,
+        "created_at": 1764111028,
         "status": "completed",
         "background": false,
         "billing": {
@@ -68,7 +72,7 @@
         "model": "gpt-4o-mini-2024-07-18",
         "output": [
           {
-            "id": "msg_0a1a67e2dcf43d1d016912491efe6881918dc99da6309c860f",
+            "id": "msg_0f2e256a85ea081c01692632b52d708197ac8b301ee8f9698a",
             "type": "message",
             "status": "completed",
             "content": [
@@ -121,36 +125,36 @@
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/responses/resp_0a1a67e2dcf43d1d016912491eaff08191929d563d272bd37e?stream=false",
+      "RequestUri": "https://api.openai.com/v1/responses/resp_0f2e256a85ea081c01692632b43828819796458fbf55cf7dc7",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Darwin 25.0.0 Darwin Kernel Version 25.0.0: Wed Sep 17 21:42:08 PDT 2025; root:xnu-12377.1.9~141/RELEASE_ARM64_T8132)"
+        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
       },
       "RequestBody": null,
       "StatusCode": 404,
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "99c840a2ccce2c9d-DFW",
+        "CF-RAY": "9a44b4936f1c69fb-DFW",
         "Connection": "keep-alive",
         "Content-Length": "197",
         "Content-Type": "application/json",
-        "Date": "Mon, 10 Nov 2025 20:20:47 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "98",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "101",
+        "x-envoy-upstream-service-time": "86",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
         "error": {
-          "message": "Response with id 'resp_0a1a67e2dcf43d1d016912491eaff08191929d563d272bd37e' not found.",
+          "message": "Response with id 'resp_0f2e256a85ea081c01692632b43828819796458fbf55cf7dc7' not found.",
           "type": "invalid_request_error",
           "param": null,
           "code": null

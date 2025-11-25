@@ -14,7 +14,7 @@ namespace OpenAI.Responses
 {
     public partial class OpenAIResponse : IJsonModel<OpenAIResponse>
     {
-        internal OpenAIResponse() : this(null, default, default, null, default, null, null, null, default, default, null, null, null, null, default, null, null, default, default, null, null, null, null, default, default)
+        internal OpenAIResponse() : this(null, default, default, default, null, null, default, null, null, null, default, default, default, null, null, null, null, default, null, null, default, default, null, null, null, null, default, null, default)
         {
         }
 
@@ -84,6 +84,11 @@ namespace OpenAI.Responses
             {
                 writer.WriteNull("temperature"u8);
             }
+            if (Optional.IsDefined(TopLogProbabilityCount) && !Patch.Contains("$.top_logprobs"u8))
+            {
+                writer.WritePropertyName("top_logprobs"u8);
+                writer.WriteNumberValue(TopLogProbabilityCount.Value);
+            }
             if (Optional.IsDefined(TopP) && !Patch.Contains("$.top_p"u8))
             {
                 writer.WritePropertyName("top_p"u8);
@@ -101,6 +106,11 @@ namespace OpenAI.Responses
             else
             {
                 writer.WriteNull("user"u8);
+            }
+            if (Optional.IsDefined(SafetyIdentifier) && !Patch.Contains("$.safety_identifier"u8))
+            {
+                writer.WritePropertyName("safety_identifier"u8);
+                writer.WriteStringValue(SafetyIdentifier);
             }
             if (Optional.IsDefined(ServiceTier) && !Patch.Contains("$.service_tier"u8))
             {
@@ -131,6 +141,11 @@ namespace OpenAI.Responses
             {
                 writer.WritePropertyName("max_output_tokens"u8);
                 writer.WriteNumberValue(MaxOutputTokenCount.Value);
+            }
+            if (Optional.IsDefined(MaxToolCallCount) && !Patch.Contains("$.max_tool_calls"u8))
+            {
+                writer.WritePropertyName("max_tool_calls"u8);
+                writer.WriteNumberValue(MaxToolCallCount.Value);
             }
             if (Optional.IsDefined(Instructions) && !Patch.Contains("$.instructions"u8))
             {
@@ -246,6 +261,11 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("parallel_tool_calls"u8);
                 writer.WriteBooleanValue(ParallelToolCallsEnabled);
             }
+            if (Optional.IsDefined(Conversation) && !Patch.Contains("$.conversation"u8))
+            {
+                writer.WritePropertyName("conversation"u8);
+                writer.WriteObjectValue(Conversation, options);
+            }
 
             Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -272,14 +292,17 @@ namespace OpenAI.Responses
             }
             IDictionary<string, string> metadata = default;
             float? temperature = default;
+            int? topLogProbabilityCount = default;
             float? topP = default;
             string endUserId = default;
+            string safetyIdentifier = default;
             ResponseServiceTier? serviceTier = default;
             string previousResponseId = default;
             string model = default;
             ResponseReasoningOptions reasoningOptions = default;
             bool? backgroundModeEnabled = default;
             int? maxOutputTokenCount = default;
+            int? maxToolCallCount = default;
             string instructions = default;
             ResponseTextOptions textOptions = default;
             IList<ResponseTool> tools = default;
@@ -294,6 +317,7 @@ namespace OpenAI.Responses
             IList<ResponseItem> outputItems = default;
             ResponseTokenUsage usage = default;
             bool parallelToolCallsEnabled = default;
+            Conversation conversation = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -331,6 +355,16 @@ namespace OpenAI.Responses
                     temperature = prop.Value.GetSingle();
                     continue;
                 }
+                if (prop.NameEquals("top_logprobs"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        topLogProbabilityCount = null;
+                        continue;
+                    }
+                    topLogProbabilityCount = prop.Value.GetInt32();
+                    continue;
+                }
                 if (prop.NameEquals("top_p"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -349,6 +383,11 @@ namespace OpenAI.Responses
                         continue;
                     }
                     endUserId = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("safety_identifier"u8))
+                {
+                    safetyIdentifier = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("service_tier"u8))
@@ -403,6 +442,16 @@ namespace OpenAI.Responses
                         continue;
                     }
                     maxOutputTokenCount = prop.Value.GetInt32();
+                    continue;
+                }
+                if (prop.NameEquals("max_tool_calls"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        maxToolCallCount = null;
+                        continue;
+                    }
+                    maxToolCallCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("instructions"u8))
@@ -525,19 +574,32 @@ namespace OpenAI.Responses
                     parallelToolCallsEnabled = prop.Value.GetBoolean();
                     continue;
                 }
+                if (prop.NameEquals("conversation"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        conversation = null;
+                        continue;
+                    }
+                    conversation = Conversation.DeserializeConversation(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    continue;
+                }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new OpenAIResponse(
                 metadata,
                 temperature,
+                topLogProbabilityCount,
                 topP,
                 endUserId,
+                safetyIdentifier,
                 serviceTier,
                 previousResponseId,
                 model,
                 reasoningOptions,
                 backgroundModeEnabled,
                 maxOutputTokenCount,
+                maxToolCallCount,
                 instructions,
                 textOptions,
                 tools ?? new ChangeTrackingList<ResponseTool>(),
@@ -552,6 +614,7 @@ namespace OpenAI.Responses
                 outputItems,
                 usage,
                 parallelToolCallsEnabled,
+                conversation,
                 patch);
         }
 
@@ -622,6 +685,10 @@ namespace OpenAI.Responses
             {
                 return Usage.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("usage"u8.Length)], out value);
             }
+            if (local.StartsWith("conversation"u8))
+            {
+                return Conversation.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("conversation"u8.Length)], out value);
+            }
             if (local.StartsWith("tools"u8))
             {
                 int propertyLength = "tools"u8.Length;
@@ -674,6 +741,11 @@ namespace OpenAI.Responses
             if (local.StartsWith("usage"u8))
             {
                 Usage.Patch.Set([.. "$"u8, .. local.Slice("usage"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("conversation"u8))
+            {
+                Conversation.Patch.Set([.. "$"u8, .. local.Slice("conversation"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("tools"u8))

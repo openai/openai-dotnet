@@ -18,19 +18,22 @@ namespace OpenAI.Responses
         private JsonPatch _patch;
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseCreationOptions(IDictionary<string, string> metadata, float? temperature, float? topP, string endUserId, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? backgroundModeEnabled, int? maxOutputTokenCount, string instructions, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncationMode, IList<ResponseItem> input, IList<IncludedResponseProperty> includedProperties, bool? parallelToolCallsEnabled, bool? storedOutputEnabled, bool? stream, in JsonPatch patch)
+        internal ResponseCreationOptions(IDictionary<string, string> metadata, float? temperature, int? topLogProbabilityCount, float? topP, string endUserId, string safetyIdentifier, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? backgroundModeEnabled, int? maxOutputTokenCount, int? maxToolCallCount, string instructions, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncationMode, IList<ResponseItem> input, IList<IncludedResponseProperty> includedProperties, bool? parallelToolCallsEnabled, bool? storedOutputEnabled, bool? stream, string conversationId, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Temperature = temperature;
+            TopLogProbabilityCount = topLogProbabilityCount;
             TopP = topP;
             EndUserId = endUserId;
+            SafetyIdentifier = safetyIdentifier;
             ServiceTier = serviceTier;
             PreviousResponseId = previousResponseId;
             Model = model;
             ReasoningOptions = reasoningOptions;
             BackgroundModeEnabled = backgroundModeEnabled;
             MaxOutputTokenCount = maxOutputTokenCount;
+            MaxToolCallCount = maxToolCallCount;
             Instructions = instructions;
             TextOptions = textOptions;
             Tools = tools ?? new ChangeTrackingList<ResponseTool>();
@@ -41,6 +44,7 @@ namespace OpenAI.Responses
             ParallelToolCallsEnabled = parallelToolCallsEnabled;
             StoredOutputEnabled = storedOutputEnabled;
             Stream = stream;
+            ConversationId = conversationId;
             _patch = patch;
             _patch.SetPropagators(PropagateSet, PropagateGet);
         }
@@ -57,10 +61,14 @@ namespace OpenAI.Responses
 
         public float? TopP { get; set; }
 
+        public string SafetyIdentifier { get; set; }
+
         public ResponseServiceTier? ServiceTier { get; set; }
 
         public string PreviousResponseId { get; set; }
 
         public string Instructions { get; set; }
+
+        public string ConversationId { get; set; }
     }
 }

@@ -36,19 +36,22 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal OpenAIResponse(IDictionary<string, string> metadata, float? temperature, float? topP, string endUserId, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? backgroundModeEnabled, int? maxOutputTokenCount, string instructions, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncationMode, string id, string @object, ResponseStatus? status, DateTimeOffset createdAt, ResponseError error, ResponseIncompleteStatusDetails incompleteStatusDetails, IList<ResponseItem> outputItems, ResponseTokenUsage usage, bool parallelToolCallsEnabled, in JsonPatch patch)
+        internal OpenAIResponse(IDictionary<string, string> metadata, float? temperature, int? topLogProbabilityCount, float? topP, string endUserId, string safetyIdentifier, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? backgroundModeEnabled, int? maxOutputTokenCount, int? maxToolCallCount, string instructions, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncationMode, string id, string @object, ResponseStatus? status, DateTimeOffset createdAt, ResponseError error, ResponseIncompleteStatusDetails incompleteStatusDetails, IList<ResponseItem> outputItems, ResponseTokenUsage usage, bool parallelToolCallsEnabled, Conversation conversation, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
             Temperature = temperature;
+            TopLogProbabilityCount = topLogProbabilityCount;
             TopP = topP;
             EndUserId = endUserId;
+            SafetyIdentifier = safetyIdentifier;
             ServiceTier = serviceTier;
             PreviousResponseId = previousResponseId;
             Model = model;
             ReasoningOptions = reasoningOptions;
             BackgroundModeEnabled = backgroundModeEnabled;
             MaxOutputTokenCount = maxOutputTokenCount;
+            MaxToolCallCount = maxToolCallCount;
             Instructions = instructions;
             TextOptions = textOptions;
             Tools = tools ?? new ChangeTrackingList<ResponseTool>();
@@ -63,6 +66,7 @@ namespace OpenAI.Responses
             OutputItems = outputItems ?? new ChangeTrackingList<ResponseItem>();
             Usage = usage;
             ParallelToolCallsEnabled = parallelToolCallsEnabled;
+            Conversation = conversation;
             _patch = patch;
             _patch.SetPropagators(PropagateSet, PropagateGet);
         }
@@ -78,6 +82,8 @@ namespace OpenAI.Responses
         public float? Temperature { get; }
 
         public float? TopP { get; }
+
+        public string SafetyIdentifier { get; }
 
         public ResponseServiceTier? ServiceTier { get; }
 
@@ -96,5 +102,7 @@ namespace OpenAI.Responses
         public ResponseError Error { get; }
 
         public ResponseTokenUsage Usage { get; }
+
+        public Conversation Conversation { get; }
     }
 }

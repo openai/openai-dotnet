@@ -44,6 +44,10 @@ public partial class ResponseCreationOptions
     public int? MaxOutputTokenCount { get; set; }
 
     // CUSTOM: Renamed.
+    [CodeGenMember("MaxToolCalls")]
+    public int? MaxToolCallCount { get; set; }
+
+    // CUSTOM: Renamed.
     [CodeGenMember("Text")]
     public ResponseTextOptions TextOptions { get; set; }
 
@@ -71,14 +75,17 @@ public partial class ResponseCreationOptions
     [CodeGenMember("Tools")]
     public IList<ResponseTool> Tools { get; }
 
-        internal ResponseCreationOptions GetClone()
-        {
-            ResponseCreationOptions copiedOptions = (ResponseCreationOptions)this.MemberwiseClone();
-    #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
-            copiedOptions.Patch = _patch;
-    #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
-            return copiedOptions;
-        }
+    // CUSTOM: Renamed.
+    [CodeGenMember("TopLogprobs")]
+    public int? TopLogProbabilityCount { get; set; }
+
+    internal ResponseCreationOptions GetClone()
+    {
+        ResponseCreationOptions copiedOptions = (ResponseCreationOptions)this.MemberwiseClone();
+        copiedOptions.Patch = _patch;
+
+        return copiedOptions;
+    }
 
     internal BinaryContent ToBinaryContent() => BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
 }

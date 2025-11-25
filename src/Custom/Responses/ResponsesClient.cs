@@ -252,10 +252,6 @@ public partial class ResponsesClient
             cancellationToken);
     }
 
-    internal virtual Task<ClientResult<OpenAIResponse>> GetResponseAsync(string responseId, IEnumerable<IncludedResponseProperty> include, CancellationToken cancellationToken = default)
-    {
-        return GetResponseAsync(responseId, include, cancellationToken.ToRequestOptions() ?? new RequestOptions());
-    }
 
     internal async Task<ClientResult<OpenAIResponse>> GetResponseAsync(string responseId, IEnumerable<IncludedResponseProperty> include, RequestOptions requestOptions)
     {
@@ -271,16 +267,21 @@ public partial class ResponsesClient
         return ClientResult.FromValue(convenienceResult, protocolResult.GetRawResponse());
     }
 
-    public virtual ClientResult<OpenAIResponse> GetResponse(string responseId, IEnumerable<IncludedResponseProperty> include = default, CancellationToken cancellationToken = default)
+    public virtual Task<ClientResult<OpenAIResponse>> GetResponseAsync(string responseId, IEnumerable<IncludedResponseProperty> includedProperties = default, CancellationToken cancellationToken = default)
+    {
+        return GetResponseAsync(responseId, includedProperties, cancellationToken.ToRequestOptions() ?? new RequestOptions());
+    }
+
+    public virtual ClientResult<OpenAIResponse> GetResponse(string responseId, IEnumerable<IncludedResponseProperty> includedProperties = default, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
-        ClientResult protocolResult = GetResponse(responseId, include, stream: null, startingAfter: null, includeObfuscation: null, cancellationToken.ToRequestOptions());
+        ClientResult protocolResult = GetResponse(responseId, includedProperties, stream: null, startingAfter: null, includeObfuscation: null, cancellationToken.ToRequestOptions());
         OpenAIResponse convenienceResult = (OpenAIResponse)protocolResult;
         return ClientResult.FromValue(convenienceResult, protocolResult.GetRawResponse());
     }
 
-    public virtual async Task<ClientResult<ResponseResult>> GetResponseAsync(string responseId, GetResponseOptions options = default, CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<ResponseResult>> GetResponseAsync(string responseId, GetResponseOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
@@ -289,7 +290,7 @@ public partial class ResponsesClient
         return ClientResult.FromValue((ResponseResult)protocolResult, protocolResult.GetRawResponse());
     }
 
-    public virtual ClientResult<ResponseResult> GetResponse(string responseId, GetResponseOptions options = default, CancellationToken cancellationToken = default)
+    public virtual ClientResult<ResponseResult> GetResponse(string responseId, GetResponseOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
@@ -345,17 +346,17 @@ public partial class ResponsesClient
             cancellationToken);
     }
 
-    public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, IEnumerable<IncludedResponseProperty> include = default, int? startingAfter = default, bool? includeObfuscation = default, CancellationToken cancellationToken = default)
+    public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, IEnumerable<IncludedResponseProperty> includedProperties = default, int? startingAfter = default, bool? includeObfuscation = default, CancellationToken cancellationToken = default)
     {
-        return GetResponseStreamingAsync(responseId, include, startingAfter, includeObfuscation, cancellationToken.ToRequestOptions(streaming: true));
+        return GetResponseStreamingAsync(responseId, includedProperties, startingAfter, includeObfuscation, cancellationToken.ToRequestOptions(streaming: true));
     }
 
-    public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, IEnumerable<IncludedResponseProperty> include = default, int? startingAfter = default, bool? includeObfuscation = default, CancellationToken cancellationToken = default)
+    public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, IEnumerable<IncludedResponseProperty> includedProperties = default, int? startingAfter = default, bool? includeObfuscation = default, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(responseId, nameof(responseId));
 
         return new SseUpdateCollection<StreamingResponseUpdate>(
-            () => GetResponse(responseId, include, stream: true, startingAfter, includeObfuscation, cancellationToken.ToRequestOptions(streaming: true)),
+            () => GetResponse(responseId, includedProperties, stream: true, startingAfter, includeObfuscation, cancellationToken.ToRequestOptions(streaming: true)),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
             cancellationToken);
     }

@@ -13,7 +13,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal ResponseResult(IDictionary<string, string> metadata, float? temperature, float? topP, string user, string id, DateTimeOffset createdAt, ResponseError error, ResponseIncompleteStatusDetails incompleteDetails, IEnumerable<ResponseItem> output, bool parallelToolCalls)
+        internal ResponseResult(IDictionary<string, string> metadata, float? temperature, float? topP, string user, string id, DateTimeOffset createdAt, ResponseError error, ResponseIncompleteStatusDetails incompleteDetails, IEnumerable<ResponseItem> output, bool parallelToolCalls, Conversation conversation = null)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -27,10 +27,11 @@ namespace OpenAI.Responses
             IncompleteStatusDetails = incompleteDetails;
             OutputItems = output.ToList();
             ParallelToolCallsEnabled = parallelToolCalls;
+            Conversation = conversation;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseResult(IDictionary<string, string> metadata, float? temperature, float? topP, string user, ResponseServiceTier? serviceTier, string previousResponseId, ModelIdsResponses? model, ResponseReasoningOptions reasoning, bool? background, int? maxOutputTokens, string instructions, ResponseTextOptions text, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncation, string id, string @object, ResponseStatus? status, DateTimeOffset createdAt, ResponseError error, ResponseIncompleteStatusDetails incompleteDetails, IList<ResponseItem> output, string outputText, ResponseTokenUsage usage, bool parallelToolCalls, in JsonPatch patch)
+        internal ResponseResult(IDictionary<string, string> metadata, float? temperature, float? topP, string user, ResponseServiceTier? serviceTier, string previousResponseId, ModelIdsResponses? model, ResponseReasoningOptions reasoning, bool? background, int? maxOutputTokens, string instructions, ResponseTextOptions text, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncation, string id, string @object, ResponseStatus? status, DateTimeOffset createdAt, ResponseError error, ResponseIncompleteStatusDetails incompleteDetails, IList<ResponseItem> output, string outputText, ResponseTokenUsage usage, bool parallelToolCalls, Conversation conversation, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -58,6 +59,7 @@ namespace OpenAI.Responses
             OutputText = outputText;
             Usage = usage;
             ParallelToolCallsEnabled = parallelToolCalls;
+            Conversation = conversation;
             _patch = patch;
             _patch.SetPropagators(PropagateSet, PropagateGet);
         }
@@ -197,6 +199,8 @@ namespace OpenAI.Responses
         /// Gets whether multiple tool calls were made in parallel. This corresponds to the "parallel_tool_calls" property in the JSON representation.
         /// </summary>
         public bool ParallelToolCallsEnabled { get; set; }
+
+        public Conversation Conversation { get; set; }
 
         public string GetOutputText()
         {

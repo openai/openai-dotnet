@@ -89,6 +89,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(ContainerFileResource))]
     [ModelReaderWriterBuildable(typeof(ContainerResource))]
     [ModelReaderWriterBuildable(typeof(ContainerResourceExpiresAfter))]
+    [ModelReaderWriterBuildable(typeof(Conversation))]
     [ModelReaderWriterBuildable(typeof(ConversationContentPart))]
     [ModelReaderWriterBuildable(typeof(ConversationFunctionTool))]
     [ModelReaderWriterBuildable(typeof(ConversationInputTokenUsageDetails))]

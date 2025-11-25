@@ -4,6 +4,7 @@ using OpenAI.Audio;
 using OpenAI.Batch;
 using OpenAI.Chat;
 using OpenAI.Containers;
+using OpenAI.Conversations;
 using OpenAI.Embeddings;
 using OpenAI.Files;
 using OpenAI.FineTuning;
@@ -38,6 +39,7 @@ internal static class TestHelpers
         Batch,
         Chat,
         Containers,
+        Conversations,
         Embeddings,
         Files,
         FineTuning,
@@ -70,6 +72,7 @@ internal static class TestHelpers
         TestScenario.Realtime => "gpt-4o-realtime-preview-2024-10-01",
         TestScenario.Responses => "gpt-4o-mini",
         TestScenario.Containers => "gpt-4o-mini",
+        TestScenario.Conversations => null,
         _ => throw new NotImplementedException(),
     };
 
@@ -106,6 +109,9 @@ internal static class TestHelpers
             TestScenario.Chat => new ChatClient(model, credential, options),
 #pragma warning disable OPENAI001
             TestScenario.Containers => new ContainerClient(credential, options),
+#pragma warning restore OPENAI001
+#pragma warning disable OPENAI001
+            TestScenario.Conversations => new ConversationClient(credential, options),
 #pragma warning restore OPENAI001
             TestScenario.Embeddings => new EmbeddingClient(model, credential, options),
             TestScenario.Files => new OpenAIFileClient(credential, options),

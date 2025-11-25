@@ -9,7 +9,7 @@ namespace OpenAI.Responses
 {
     public partial class ResponseResult : IJsonModel<ResponseResult>
     {
-        internal ResponseResult() : this(null, default, default, null, default, null, default, null, default, default, null, null, null, null, default, null, null, default, default, null, null, null, null, null, default, default)
+        internal ResponseResult() : this(null, default, default, null, default, null, default, null, default, default, null, null, null, null, default, null, null, default, default, null, null, null, null, null, default, default, default)
         {
         }
 
@@ -246,6 +246,11 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("parallel_tool_calls"u8);
                 writer.WriteBooleanValue(ParallelToolCallsEnabled);
             }
+            if (Optional.IsDefined(Conversation) && !Patch.Contains("$.conversation"u8))
+            {
+                writer.WritePropertyName("conversation"u8);
+                writer.WriteObjectValue(Conversation, options);
+            }
 
             Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -295,6 +300,7 @@ namespace OpenAI.Responses
             string outputText = default;
             ResponseTokenUsage usage = default;
             bool parallelToolCalls = default;
+            Conversation conversation = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -540,6 +546,16 @@ namespace OpenAI.Responses
                     parallelToolCalls = prop.Value.GetBoolean();
                     continue;
                 }
+                if (prop.NameEquals("conversation"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        conversation = null;
+                        continue;
+                    }
+                    conversation = Conversation.DeserializeConversation(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    continue;
+                }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new ResponseResult(
@@ -568,6 +584,7 @@ namespace OpenAI.Responses
                 outputText,
                 usage,
                 parallelToolCalls,
+                conversation,
                 patch);
         }
 
@@ -643,6 +660,10 @@ namespace OpenAI.Responses
             if (local.StartsWith("usage"u8))
             {
                 return Usage.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("usage"u8.Length)], out value);
+            }
+            if (local.StartsWith("conversation"u8))
+            {
+                return Conversation.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("conversation"u8.Length)], out value);
             }
             if (local.StartsWith("tools"u8))
             {

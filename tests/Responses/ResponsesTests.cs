@@ -1,6 +1,7 @@
 ﻿using Microsoft.ClientModel.TestFramework;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
+using OpenAI.Conversations;
 using OpenAI.Files;
 using OpenAI.Responses;
 using OpenAI.Tests.Utility;
@@ -736,7 +737,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         async Task RetrieveThatResponseAsync()
         {
-            ResponseResult retrievedResponse = await client.GetResponseAsync(response.Id);
+            ResponseResult retrievedResponse = await client.GetResponseAsync(response.Id, new GetResponseOptions());
             Assert.That(retrievedResponse.Id, Is.EqualTo(response.Id));
         }
 
@@ -761,6 +762,64 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         ClientResultException expectedException = Assert.ThrowsAsync<ClientResultException>(async () => await client.GetResponseAsync(new(response.Id)));
         Assert.That(expectedException.Message, Does.Contain("not found"));
+    }
+
+    [RecordedTest]
+    public async Task ResponseUsingConversations()
+    {
+        ConversationClient conversationClient = GetProxiedOpenAIClient<ConversationClient>(TestScenario.Conversations);
+
+        BinaryData createConversationParameters = BinaryData.FromBytes("""
+            {
+               "metadata": { "topic": "test" },
+               "items": [
+                   {
+                       "type": "message",
+                       "role": "user",
+                       "content": "tell me a joke"
+                   }
+               ]
+            }
+            """u8.ToArray());
+
+        using BinaryContent requestContent = BinaryContent.Create(createConversationParameters);
+        var conversationResult = await conversationClient.CreateConversationAsync(requestContent);
+        using JsonDocument conversationResultAsJson = JsonDocument.Parse(conversationResult.GetRawResponse().Content.ToString());
+        string conversationId = conversationResultAsJson.RootElement.GetProperty("id"u8).GetString();
+
+        ResponsesClient client = GetTestClient("gpt-4.1");
+        ResponseResult response = await client.CreateResponseAsync(
+            
+            new CreateResponseOptions([ResponseItem.CreateUserMessageItem("tell me another")], "gpt-4.1")
+            {
+                ConversationId = conversationId,
+            });
+
+        Assert.That(response, Is.Not.Null);
+        Assert.That(response.Conversation.Id, Is.EqualTo(conversationId));
+
+        var conversationResults = conversationClient.GetConversationItemsAsync(conversationId);
+        var conversationItems = new List<JsonElement>();
+        await foreach (ClientResult result in conversationResults.GetRawPagesAsync())
+        {
+            using JsonDocument getConversationItemsResultAsJson = JsonDocument.Parse(result.GetRawResponse().Content.ToString());
+            foreach (JsonElement element in getConversationItemsResultAsJson.RootElement.GetProperty("data").EnumerateArray())
+            {
+                conversationItems.Add(element.Clone());
+            }
+        }
+
+        Assert.That(conversationItems, Is.Not.Empty, "Expected the conversation to contain items.");
+        Assert.That(conversationItems.Count, Is.GreaterThanOrEqualTo(2));
+
+        var lastItem = conversationItems[conversationItems.Count - 1];
+        var secondLastItem = conversationItems[conversationItems.Count - 2];
+
+        string GetContentText(JsonElement item) =>
+            item.GetProperty("content")[0].GetProperty("text").GetString();
+
+        Assert.That(GetContentText(lastItem), Is.EqualTo("tell me a joke"));
+        Assert.That(GetContentText(secondLastItem), Is.EqualTo("tell me another"));
     }
 
     [RecordedTest]
@@ -933,7 +992,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That((response.OutputItems[0] as MessageResponseItem).Content, Is.Not.Null.And.Not.Empty);
         Assert.That((response.OutputItems[0] as MessageResponseItem).Content[0].Text, Does.StartWith("Arr, matey"));
 
-        ResponseResult retrievedResponse = await client.GetResponseAsync(new(response.Id));
+        ResponseResult retrievedResponse = await client.GetResponseAsync(new(response.Id), new GetResponseOptions());
         Assert.That((retrievedResponse?.OutputItems?.FirstOrDefault() as MessageResponseItem)?.Content?.FirstOrDefault()?.Text, Does.StartWith("Arr, matey"));
 
         if (instructionMethod == ResponsesTestInstructionMethod.InstructionsProperty)
@@ -1200,7 +1259,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(lastSequenceNumber, Is.GreaterThan(0));
 
         // Try getting the response without streaming it.
-        ResponseResult retrievedResponse = await client.GetResponseAsync(new(queuedResponseId));
+        ResponseResult retrievedResponse = await client.GetResponseAsync(new(queuedResponseId), options: null);
 
         Assert.That(retrievedResponse, Is.Not.Null);
         Assert.That(retrievedResponse.Id, Is.EqualTo(queuedResponseId));

@@ -249,6 +249,9 @@ model ModelResponsePropertiesForRequest {
   @minValue(0)
   @maxValue(2)
   temperature?: float32 | null = 1;
+  
+  /** An integer between 0 and 20 specifying the number of most likely tokens to return at each token position, each with an associated log probability. */
+  top_logprobs?: int32 | null;
 
   @doc("""
     An alternative to sampling with temperature, called nucleus sampling,
@@ -265,6 +268,10 @@ model ModelResponsePropertiesForRequest {
   /** A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](/docs/guides/safety-best-practices#end-user-ids). */
   user?: string;
 
+  /**A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
+  The IDs should be a string that uniquely identifies each user. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#safety-identifiers).*/
+  safety_identifier?: string;
+
   service_tier?: ServiceTier;
 }
 model ModelResponsePropertiesForResponse {
@@ -277,6 +284,9 @@ model ModelResponsePropertiesForResponse {
   @minValue(0)
   @maxValue(2)
   temperature: float32 | null;
+
+  /** An integer between 0 and 20 specifying the number of most likely tokens to return at each token position, each with an associated log probability. */
+  top_logprobs?: int32 | null;
 
   @doc("""
     An alternative to sampling with temperature, called nucleus sampling,
@@ -292,6 +302,10 @@ model ModelResponsePropertiesForResponse {
 
   /** A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](/docs/guides/safety-best-practices#end-user-ids). */
   user: string | null;
+
+  /**A stable identifier used to help detect users of your application that may be violating OpenAI's usage policies.
+  The IDs should be a string that uniquely identifies each user. We recommend hashing their username or email address, in order to avoid sending us any identifying information. [Learn more](https://platform.openai.com/docs/guides/safety-best-practices#safety-identifiers).*/
+  safety_identifier?: string;
 
   service_tier?: ServiceTier;
 }

@@ -192,15 +192,6 @@ model CreateChatCompletionRequest {
     search_context_size?: WebSearchContextSize = "medium";
   };
 
-  @doc("""
-    An integer between 0 and 20 specifying the number of most likely tokens to
-    return at each token position, each with an associated log probability.
-    `logprobs` must be set to `true` if this parameter is used.
-    """)
-  @minValue(0)
-  @maxValue(20)
-  top_logprobs?: int32 | null;
-
   // Tool customization: apply a named union type
   @doc("""
     An object specifying the format that the model must output.
