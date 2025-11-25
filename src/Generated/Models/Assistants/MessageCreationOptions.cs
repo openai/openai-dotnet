@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    [Experimental("OPENAI001")]
+    [Experimental("OPENAI001")] 
     public partial class MessageCreationOptions
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;

@@ -24,7 +24,7 @@ namespace OpenAI.Responses
         /// Gets or sets whether to run the response in background mode. This corresponds to the "background" property in the JSON representation.
         /// </summary>
         [CodeGenMember("Background")]
-        public bool? IsBackgroundModeEnabled { get; set; }
+        public bool? BackgroundModeEnabled { get; set; }
 
         /// <summary>
         /// Gets or sets how tool calls should be selected during response generation. This corresponds to the "tool_choice" property in the JSON representation.
@@ -48,19 +48,19 @@ namespace OpenAI.Responses
         /// Gets or sets whether multiple tool calls can be made in parallel. This corresponds to the "parallel_tool_calls" property in the JSON representation.
         /// </summary>
         [CodeGenMember("ParallelToolCalls")]
-        public bool? IsParallelToolCallsEnabled { get; set; }
+        public bool? ParallelToolCallsEnabled { get; set; }
 
         /// <summary>
         /// Gets or sets whether the response should be stored for later retrieval. This corresponds to the "store" property in the JSON representation.
         /// </summary>
         [CodeGenMember("Store")]
-        public bool? IsStoredOutputEnabled { get; set; }
+        public bool? StoredOutputEnabled { get; set; }
 
         /// <summary>
         /// Gets or sets whether the response should be streamed. This corresponds to the "stream" property in the JSON representation.
         /// </summary>
         [CodeGenMember("Stream")]
-        public bool? IsStreamingEnabled { get; set; }
+        public bool? StreamingEnabled { get; set; }
 
         /// <summary>
         /// Gets or sets the maximum number of output tokens to generate. This corresponds to the "max_output_tokens" property in the JSON representation.

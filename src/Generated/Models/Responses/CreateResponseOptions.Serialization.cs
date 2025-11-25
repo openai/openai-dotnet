@@ -105,10 +105,10 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("reasoning"u8);
                 writer.WriteObjectValue(ReasoningOptions, options);
             }
-            if (Optional.IsDefined(IsBackgroundModeEnabled) && !Patch.Contains("$.background"u8))
+            if (Optional.IsDefined(BackgroundModeEnabled) && !Patch.Contains("$.background"u8))
             {
                 writer.WritePropertyName("background"u8);
-                writer.WriteBooleanValue(IsBackgroundModeEnabled.Value);
+                writer.WriteBooleanValue(BackgroundModeEnabled.Value);
             }
             if (Optional.IsDefined(MaxOutputTokenCount) && !Patch.Contains("$.max_output_tokens"u8))
             {
@@ -204,20 +204,20 @@ namespace OpenAI.Responses
                 Patch.WriteTo(writer, "$.include"u8);
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(IsParallelToolCallsEnabled) && !Patch.Contains("$.parallel_tool_calls"u8))
+            if (Optional.IsDefined(ParallelToolCallsEnabled) && !Patch.Contains("$.parallel_tool_calls"u8))
             {
                 writer.WritePropertyName("parallel_tool_calls"u8);
-                writer.WriteBooleanValue(IsParallelToolCallsEnabled.Value);
+                writer.WriteBooleanValue(ParallelToolCallsEnabled.Value);
             }
-            if (Optional.IsDefined(IsStoredOutputEnabled) && !Patch.Contains("$.store"u8))
+            if (Optional.IsDefined(StoredOutputEnabled) && !Patch.Contains("$.store"u8))
             {
                 writer.WritePropertyName("store"u8);
-                writer.WriteBooleanValue(IsStoredOutputEnabled.Value);
+                writer.WriteBooleanValue(StoredOutputEnabled.Value);
             }
-            if (Optional.IsDefined(IsStreamingEnabled) && !Patch.Contains("$.stream"u8))
+            if (Optional.IsDefined(StreamingEnabled) && !Patch.Contains("$.stream"u8))
             {
                 writer.WritePropertyName("stream"u8);
-                writer.WriteBooleanValue(IsStreamingEnabled.Value);
+                writer.WriteBooleanValue(StreamingEnabled.Value);
             }
 
             Patch.WriteTo(writer);

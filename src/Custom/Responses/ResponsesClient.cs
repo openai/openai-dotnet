@@ -268,11 +268,6 @@ public partial class ResponsesClient
         return ClientResult.FromValue(convenienceResult, protocolResult.GetRawResponse());
     }
 
-    // public virtual Task<ClientResult<OpenAIResponse>> GetResponseAsync(string responseId, IEnumerable<IncludedResponseProperty> include = default, CancellationToken cancellationToken = default)
-    // {
-    //     return GetResponseAsync(responseId, include, cancellationToken.ToRequestOptions() ?? new RequestOptions());
-    // }
-
     public virtual ClientResult<OpenAIResponse> GetResponse(string responseId, IEnumerable<IncludedResponseProperty> include = default, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
@@ -282,21 +277,21 @@ public partial class ResponsesClient
         return ClientResult.FromValue(convenienceResult, protocolResult.GetRawResponse());
     }
 
-    public virtual async Task<ClientResult<ResponseResult>> GetResponseAsync(GetResponseOptions options, CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<ResponseResult>> GetResponseAsync(string responseId, GetResponseOptions options = default, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
-        Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
+        Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
-        ClientResult protocolResult = await GetResponseAsync(options.ResponseId, options.IncludedProperties, stream: options.Stream, startingAfter: options.StartingAfter, includeObfuscation: options.IncludeObfuscation, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        ClientResult protocolResult = await GetResponseAsync(responseId, options.IncludedProperties, stream: options.StreamingEnabled, startingAfter: options.StartingAfter, includeObfuscation: options.IncludeObfuscation, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue((ResponseResult)protocolResult, protocolResult.GetRawResponse());
     }
 
-    public virtual ClientResult<ResponseResult> GetResponse(GetResponseOptions options, CancellationToken cancellationToken = default)
+    public virtual ClientResult<ResponseResult> GetResponse(string responseId, GetResponseOptions options = default, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
-        Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
+        Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
-        ClientResult protocolResult = GetResponse(options.ResponseId, options.IncludedProperties, stream: options.Stream, startingAfter: options.StartingAfter, includeObfuscation: options.IncludeObfuscation, cancellationToken.ToRequestOptions());
+        ClientResult protocolResult = GetResponse(responseId, options.IncludedProperties, stream: options.StreamingEnabled, startingAfter: options.StartingAfter, includeObfuscation: options.IncludeObfuscation, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue((ResponseResult)protocolResult, protocolResult.GetRawResponse());
     }
 
@@ -320,29 +315,29 @@ public partial class ResponsesClient
             requestOptions.CancellationToken);
     }
 
-    public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(GetResponseOptions options, CancellationToken cancellationToken = default)
+    public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, GetResponseOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
-        Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
+        Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
         return new SseUpdateCollection<StreamingResponseUpdate>(
-            () => GetResponse(options.ResponseId, options.IncludedProperties, stream: true, startingAfter: options.StartingAfter, includeObfuscation: options.IncludeObfuscation, cancellationToken.ToRequestOptions(streaming: true)),
+            () => GetResponse(responseId, options.IncludedProperties, stream: true, startingAfter: options.StartingAfter, includeObfuscation: options.IncludeObfuscation, cancellationToken.ToRequestOptions(streaming: true)),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
             cancellationToken);
     }
 
-    public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(GetResponseOptions options, CancellationToken cancellationToken = default)
+    public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, GetResponseOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
-        Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
+        Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
-        if (options.Stream is true)
+        if (options.StreamingEnabled is true)
         {
             throw new InvalidOperationException("'options.Stream' must be 'true' when calling 'GetResponseStreamingAsync'.");
         }
 
         return new AsyncSseUpdateCollection<StreamingResponseUpdate>(
-            async () => await GetResponseAsync(options.ResponseId, options.IncludedProperties, options.Stream, startingAfter: options.StartingAfter, includeObfuscation: options.IncludeObfuscation, cancellationToken.ToRequestOptions()).ConfigureAwait(false),
+            async () => await GetResponseAsync(responseId, options.IncludedProperties, options.StreamingEnabled, startingAfter: options.StartingAfter, includeObfuscation: options.IncludeObfuscation, cancellationToken.ToRequestOptions()).ConfigureAwait(false),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
             cancellationToken);
     }
@@ -445,7 +440,7 @@ public partial class ResponsesClient
 
         if (stream)
         {
-            copiedOptions.IsStreamingEnabled = true;
+            copiedOptions.StreamingEnabled = true;
         }
 
         return copiedOptions;

@@ -117,10 +117,10 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("reasoning"u8);
                 writer.WriteObjectValue(ReasoningOptions, options);
             }
-            if (Optional.IsDefined(IsBackgroundModeEnabled) && !Patch.Contains("$.background"u8))
+            if (Optional.IsDefined(BackgroundModeEnabled) && !Patch.Contains("$.background"u8))
             {
                 writer.WritePropertyName("background"u8);
-                writer.WriteBooleanValue(IsBackgroundModeEnabled.Value);
+                writer.WriteBooleanValue(BackgroundModeEnabled.Value);
             }
             if (Optional.IsDefined(MaxOutputTokenCount) && !Patch.Contains("$.max_output_tokens"u8))
             {
@@ -244,7 +244,7 @@ namespace OpenAI.Responses
             if (!Patch.Contains("$.parallel_tool_calls"u8))
             {
                 writer.WritePropertyName("parallel_tool_calls"u8);
-                writer.WriteBooleanValue(IsParallelToolCallsEnabled);
+                writer.WriteBooleanValue(ParallelToolCallsEnabled);
             }
 
             Patch.WriteTo(writer);

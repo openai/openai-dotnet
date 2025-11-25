@@ -4457,23 +4457,23 @@ namespace OpenAI.Responses {
     public class CreateResponseOptions : IJsonModel<CreateResponseOptions>, IPersistableModel<CreateResponseOptions> {
         public CreateResponseOptions(IEnumerable<ResponseItem> inputItems, string model);
         public CreateResponseOptions(IEnumerable<ResponseItem> inputItems);
+        public bool? BackgroundModeEnabled { get; set; }
         public string EndUserId { get; set; }
         public IList<IncludedResponseProperty> IncludedProperties { get; }
         public IList<ResponseItem> InputItems { get; }
         public string Instructions { get; set; }
-        public bool? IsBackgroundModeEnabled { get; set; }
-        public bool? IsParallelToolCallsEnabled { get; set; }
-        public bool? IsStoredOutputEnabled { get; set; }
-        public bool? IsStreamingEnabled { get; set; }
         public int? MaxOutputTokenCount { get; set; }
         public IDictionary<string, string> Metadata { get; }
         public string Model { get; set; }
+        public bool? ParallelToolCallsEnabled { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
         public string PreviousResponseId { get; set; }
         public ResponseReasoningOptions ReasoningOptions { get; set; }
         public ResponseServiceTier? ServiceTier { get; set; }
+        public bool? StoredOutputEnabled { get; set; }
+        public bool? StreamingEnabled { get; set; }
         public float? Temperature { get; set; }
         public ResponseTextOptions TextOptions { get; set; }
         public ResponseToolChoice ToolChoice { get; set; }
@@ -4636,12 +4636,10 @@ namespace OpenAI.Responses {
         public string ResponseId { get; set; }
     }
     public class GetResponseOptions {
-        public GetResponseOptions(string responseId);
         public IEnumerable<IncludedResponseProperty> IncludedProperties { get; set; }
         public bool? IncludeObfuscation { get; set; }
-        public string ResponseId { get; set; }
         public int? StartingAfter { get; set; }
-        public bool Stream { get; set; }
+        public bool StreamingEnabled { get; set; }
     }
     public readonly partial struct GlobalMcpToolCallApprovalPolicy : IEquatable<GlobalMcpToolCallApprovalPolicy> {
         public GlobalMcpToolCallApprovalPolicy(string value);
@@ -5348,20 +5346,20 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class ResponseResult : IJsonModel<ResponseResult>, IPersistableModel<ResponseResult> {
+        public bool? BackgroundModeEnabled { get; set; }
         public DateTimeOffset CreatedAt { get; set; }
         public string EndUserId { get; set; }
         public ResponseError Error { get; set; }
         public string Id { get; set; }
         public ResponseIncompleteStatusDetails IncompleteStatusDetails { get; set; }
         public string Instructions { get; set; }
-        public bool? IsBackgroundModeEnabled { get; set; }
-        public bool IsParallelToolCallsEnabled { get; set; }
         public int? MaxOutputTokenCount { get; set; }
-        public IDictionary<string, string> Metadata { get; set; }
+        public IDictionary<string, string> Metadata { get; }
         public string Model { get; }
         [EditorBrowsable(EditorBrowsableState.Never)]
         public string Object { get; set; }
-        public IList<ResponseItem> OutputItems { get; set; }
+        public IList<ResponseItem> OutputItems { get; }
+        public bool ParallelToolCallsEnabled { get; set; }
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
         public string PreviousResponseId { get; set; }
@@ -5371,7 +5369,7 @@ namespace OpenAI.Responses {
         public float? Temperature { get; set; }
         public ResponseTextOptions TextOptions { get; set; }
         public ResponseToolChoice ToolChoice { get; set; }
-        public IList<ResponseTool> Tools { get; set; }
+        public IList<ResponseTool> Tools { get; }
         public float? TopP { get; set; }
         public ResponseTruncationMode? TruncationMode { get; set; }
         public ResponseTokenUsage Usage { get; set; }
@@ -5407,10 +5405,10 @@ namespace OpenAI.Responses {
         public virtual ClientResult<ResponseDeletionResult> DeleteResponse(string responseId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> DeleteResponseAsync(string responseId, RequestOptions options);
         public virtual Task<ClientResult<ResponseDeletionResult>> DeleteResponseAsync(string responseId, CancellationToken cancellationToken = default);
-        public virtual ClientResult<ResponseResult> GetResponse(GetResponseOptions options, CancellationToken cancellationToken = default);
+        public virtual ClientResult<ResponseResult> GetResponse(string responseId, GetResponseOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult GetResponse(string responseId, IEnumerable<IncludedResponseProperty> include, bool? stream, int? startingAfter, bool? includeObfuscation, RequestOptions options);
         public virtual ClientResult<OpenAIResponse> GetResponse(string responseId, IEnumerable<IncludedResponseProperty> include = null, CancellationToken cancellationToken = default);
-        public virtual Task<ClientResult<ResponseResult>> GetResponseAsync(GetResponseOptions options, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult<ResponseResult>> GetResponseAsync(string responseId, GetResponseOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GetResponseAsync(string responseId, IEnumerable<IncludedResponseProperty> include, bool? stream, int? startingAfter, bool? includeObfuscation, RequestOptions options);
         public virtual ClientResult<ResponseItemCollection> GetResponseInputItems(GetResponseInputItemsOptions options = default, CancellationToken cancellationToken = default);
         public virtual CollectionResult<ResponseItem> GetResponseInputItems(string responseId, ResponseItemCollectionOptions options = null, CancellationToken cancellationToken = default);
@@ -5418,9 +5416,9 @@ namespace OpenAI.Responses {
         public virtual Task<ClientResult<ResponseItemCollection>> GetResponseInputItemsAsync(GetResponseInputItemsOptions options = default, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<ResponseItem> GetResponseInputItemsAsync(string responseId, ResponseItemCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult GetResponseInputItemsAsync(string responseId, int? limit, string order, string after, string before, RequestOptions options);
-        public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(GetResponseOptions options, CancellationToken cancellationToken = default);
+        public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, GetResponseOptions options, CancellationToken cancellationToken = default);
         public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, IEnumerable<IncludedResponseProperty> include = null, int? startingAfter = null, bool? includeObfuscation = null, CancellationToken cancellationToken = default);
-        public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(GetResponseOptions options, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, GetResponseOptions options, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, IEnumerable<IncludedResponseProperty> include = null, int? startingAfter = null, bool? includeObfuscation = null, CancellationToken cancellationToken = default);
     }
     public readonly partial struct ResponseServiceTier : IEquatable<ResponseServiceTier> {

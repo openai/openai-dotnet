@@ -684,7 +684,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("Hello, world!")];
         CreateResponseOptions options = new(inputItems, "gpt-5-mini")
         {
-            IsStoredOutputEnabled = false,
+            StoredOutputEnabled = false,
             IncludedProperties = { IncludedResponseProperty.ReasoningEncryptedContent }
         };
 
@@ -736,7 +736,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         async Task RetrieveThatResponseAsync()
         {
-            ResponseResult retrievedResponse = await client.GetResponseAsync(new(response.Id));
+            ResponseResult retrievedResponse = await client.GetResponseAsync(response.Id);
             Assert.That(retrievedResponse.Id, Is.EqualTo(response.Id));
         }
 
@@ -756,7 +756,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponseResult response = await client.CreateResponseAsync(
             new ([ResponseItem.CreateUserMessageItem("Hello, model!")], "gpt-4o-mini")
             {
-                IsStoredOutputEnabled = false,
+                StoredOutputEnabled = false,
             });
 
         ClientResultException expectedException = Assert.ThrowsAsync<ClientResultException>(async () => await client.GetResponseAsync(new(response.Id)));
@@ -1177,7 +1177,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Hello, model!")], "gpt-4o-mini")
         {
-            IsBackgroundModeEnabled = true,
+            BackgroundModeEnabled = true,
         };
 
         AsyncCollectionResult<StreamingResponseUpdate> updates = client.CreateResponseStreamingAsync(options);
@@ -1204,11 +1204,11 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         Assert.That(retrievedResponse, Is.Not.Null);
         Assert.That(retrievedResponse.Id, Is.EqualTo(queuedResponseId));
-        Assert.That(retrievedResponse.IsBackgroundModeEnabled, Is.True);
+        Assert.That(retrievedResponse.BackgroundModeEnabled, Is.True);
         Assert.That(retrievedResponse.Status, Is.EqualTo(ResponseStatus.Queued));
 
         // Now try continuing the stream.
-        AsyncCollectionResult<StreamingResponseUpdate> continuedUpdates = client.GetResponseStreamingAsync(new GetResponseOptions(queuedResponseId) { StartingAfter = lastSequenceNumber });
+        AsyncCollectionResult<StreamingResponseUpdate> continuedUpdates = client.GetResponseStreamingAsync(queuedResponseId, new GetResponseOptions() { StartingAfter = lastSequenceNumber });
 
         ResponseResult completedResponse = null;
         int? firstContinuedSequenceNumber = null;
@@ -1238,14 +1238,14 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Hello, model!")], "gpt-4.1-mini")
         {
-            IsBackgroundModeEnabled = true,
+            BackgroundModeEnabled = true,
         };
 
         ResponseResult response = await client.CreateResponseAsync(options);
 
         Assert.That(response, Is.Not.Null);
         Assert.That(response.Id, Is.Not.Null.And.Not.Empty);
-        Assert.That(response.IsBackgroundModeEnabled, Is.True);
+        Assert.That(response.BackgroundModeEnabled, Is.True);
         Assert.That(response.Status, Is.EqualTo(ResponseStatus.Queued));
 
         ResponseResult cancelledResponse = await client.CancelResponseAsync(response.Id);

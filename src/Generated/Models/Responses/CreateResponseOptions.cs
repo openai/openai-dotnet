@@ -40,7 +40,7 @@ namespace OpenAI.Responses
             PreviousResponseId = previousResponseId;
             Model = model;
             ReasoningOptions = reasoningOptions;
-            IsBackgroundModeEnabled = isBackgroundModeEnabled;
+            BackgroundModeEnabled = isBackgroundModeEnabled;
             MaxOutputTokenCount = maxOutputTokenCount;
             Instructions = instructions;
             TextOptions = textOptions;
@@ -49,9 +49,9 @@ namespace OpenAI.Responses
             TruncationMode = truncationMode;
             InputItems = inputItems ?? new ChangeTrackingList<ResponseItem>();
             IncludedProperties = includedProperties ?? new ChangeTrackingList<IncludedResponseProperty>();
-            IsParallelToolCallsEnabled = isParallelToolCallsEnabled;
-            IsStoredOutputEnabled = isStoredOutputEnabled;
-            IsStreamingEnabled = isStreamingEnabled;
+            ParallelToolCallsEnabled = isParallelToolCallsEnabled;
+            StoredOutputEnabled = isStoredOutputEnabled;
+            StreamingEnabled = isStreamingEnabled;
             _patch = patch;
             _patch.SetPropagators(PropagateSet, PropagateGet);
         }
