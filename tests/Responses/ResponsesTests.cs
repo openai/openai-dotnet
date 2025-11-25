@@ -535,20 +535,20 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
                    {
                        "type": "message",
                        "role": "user",
-                       "content": "Say 'this is a test.'"
+                       "content": "tell me a joke"
                    }
                ]
             }
             """u8.ToArray());
 
         using BinaryContent requestContent = BinaryContent.Create(createConversationParameters);
-        ClientResult conversationResult = await conversationClient.CreateConversationAsync(requestContent);
+        var conversationResult = await conversationClient.CreateConversationAsync(requestContent);
         using JsonDocument conversationResultAsJson = JsonDocument.Parse(conversationResult.GetRawResponse().Content.ToString());
         string conversationId = conversationResultAsJson.RootElement.GetProperty("id"u8).GetString();
 
         OpenAIResponseClient client = GetTestClient("gpt-4.1");
         OpenAIResponse response = await client.CreateResponseAsync(
-            [ResponseItem.CreateUserMessageItem("Hello, model!")],
+            [ResponseItem.CreateUserMessageItem("tell me another")],
             new ResponseCreationOptions()
             {
                 ConversationId = conversationId,
@@ -556,6 +556,29 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         Assert.That(response, Is.Not.Null);
         Assert.That(response.ConversationId, Is.EqualTo(conversationId));
+
+        var conversationResults = conversationClient.GetConversationItemsAsync(conversationId);
+        var conversationItems = new List<JsonElement>();
+        await foreach (ClientResult result in conversationResults.GetRawPagesAsync())
+        {
+            using JsonDocument getConversationItemsResultAsJson = JsonDocument.Parse(result.GetRawResponse().Content.ToString());
+            foreach (JsonElement element in getConversationItemsResultAsJson.RootElement.GetProperty("data").EnumerateArray())
+            {
+                conversationItems.Add(element.Clone());
+            }
+        }
+
+        Assert.That(conversationItems, Is.Not.Empty, "Expected the conversation to contain items.");
+        Assert.That(conversationItems.Count, Is.GreaterThanOrEqualTo(2));
+
+        var lastItem = conversationItems[conversationItems.Count - 1];
+        var secondLastItem = conversationItems[conversationItems.Count - 2];
+
+        string GetContentText(JsonElement item) =>
+            item.GetProperty("content")[0].GetProperty("text").GetString();
+
+        Assert.That(GetContentText(lastItem), Is.EqualTo("tell me a joke"));
+        Assert.That(GetContentText(secondLastItem), Is.EqualTo("tell me another"));
     }
 
     [RecordedTest]

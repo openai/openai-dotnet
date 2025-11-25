@@ -6,7 +6,7 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "179",
+        "Content-Length": "172",
         "Content-Type": "application/json",
         "User-Agent": "OpenAI/2.7.0 (.NET 9.0.11; Microsoft Windows 10.0.26200)"
       },
@@ -18,7 +18,7 @@
           {
             "type": "message",
             "role": "user",
-            "content": "Say 'this is a test.'"
+            "content": "tell me a joke"
           }
         ]
       },
@@ -26,7 +26,7 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9a3bfbee688e8a1a-BOM",
+        "CF-RAY": "9a436f3efa914808-BOM",
         "Connection": "keep-alive",
         "Content-Length": "164",
         "Content-Type": "application/json",
@@ -38,14 +38,14 @@
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "150",
+        "x-envoy-upstream-service-time": "127",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "conv_6924cd7e1d4881979082cfaf6b644b630a01ba2bba6d673c",
+        "id": "conv_6925fea8f6608193873c1eed5d053c9401bf3930200ca79a",
         "object": "conversation",
-        "created_at": 1764019582,
+        "created_at": 1764097704,
         "metadata": {
           "topic": "test"
         }
@@ -57,7 +57,7 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "190",
+        "Content-Length": "192",
         "Content-Type": "application/json",
         "User-Agent": "OpenAI/2.7.0 (.NET 9.0.11; Microsoft Windows 10.0.26200)"
       },
@@ -70,20 +70,20 @@
             "content": [
               {
                 "type": "input_text",
-                "text": "Hello, model!"
+                "text": "tell me another"
               }
             ]
           }
         ],
-        "conversation": "conv_6924cd7e1d4881979082cfaf6b644b630a01ba2bba6d673c"
+        "conversation": "conv_6925fea8f6608193873c1eed5d053c9401bf3930200ca79a"
       },
       "StatusCode": 200,
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9a3bfbf66e658a1a-BOM",
+        "CF-RAY": "9a436f439d494808-BOM",
         "Connection": "keep-alive",
-        "Content-Length": "1578",
+        "Content-Length": "1631",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -93,26 +93,26 @@
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "2415",
+        "x-envoy-upstream-service-time": "2425",
         "x-ratelimit-limit-requests": "10000",
         "x-ratelimit-limit-tokens": "30000000",
         "x-ratelimit-remaining-requests": "9999",
-        "x-ratelimit-remaining-tokens": "29999959",
+        "x-ratelimit-remaining-tokens": "29999963",
         "x-ratelimit-reset-requests": "6ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_0a01ba2bba6d673c006924cd7f1f0c8197aa9fe22701896c9a",
+        "id": "resp_01bf3930200ca79a006925fea9b5cc81939886422636ada7fb",
         "object": "response",
-        "created_at": 1764019583,
+        "created_at": 1764097705,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
         "conversation": {
-          "id": "conv_6924cd7e1d4881979082cfaf6b644b630a01ba2bba6d673c"
+          "id": "conv_6925fea8f6608193873c1eed5d053c9401bf3930200ca79a"
         },
         "error": null,
         "incomplete_details": null,
@@ -122,7 +122,7 @@
         "model": "gpt-4.1-2025-04-14",
         "output": [
           {
-            "id": "msg_0a01ba2bba6d673c006924cd7f98fc8197b6fecf0e216eb4c3",
+            "id": "msg_01bf3930200ca79a006925feaa59dc8193a568ed2d08b18a74",
             "type": "message",
             "status": "completed",
             "content": [
@@ -130,7 +130,7 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "Hello! This is a test. How can I help you today?"
+                "text": "Sure! Here you go:\n\nWhy did the scarecrow win an award?  \nBecause he was outstanding in his field!"
               }
             ],
             "role": "assistant"
@@ -160,18 +160,94 @@
         "top_p": 1.0,
         "truncation": "disabled",
         "usage": {
-          "input_tokens": 22,
+          "input_tokens": 18,
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 15,
+          "output_tokens": 25,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 37
+          "total_tokens": 43
         },
         "user": null,
         "metadata": {}
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/conversations/conv_6925fea8f6608193873c1eed5d053c9401bf3930200ca79a/items",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.11; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9a436f54db7e4808-BOM",
+        "Connection": "keep-alive",
+        "Content-Length": "1166",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "141",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "msg_01bf3930200ca79a006925feaa59dc8193a568ed2d08b18a74",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "Sure! Here you go:\n\nWhy did the scarecrow win an award?  \nBecause he was outstanding in his field!"
+              }
+            ],
+            "role": "assistant"
+          },
+          {
+            "id": "msg_01bf3930200ca79a006925fea9dc64819391e2a1481f3dd223",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "tell me another"
+              }
+            ],
+            "role": "user"
+          },
+          {
+            "id": "msg_6925fea8f6808193b67b32d7f28aeb1101bf3930200ca79a",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "tell me a joke"
+              }
+            ],
+            "role": "user"
+          }
+        ],
+        "first_id": "msg_01bf3930200ca79a006925feaa59dc8193a568ed2d08b18a74",
+        "has_more": false,
+        "last_id": "msg_6925fea8f6808193b67b32d7f28aeb1101bf3930200ca79a"
       }
     }
   ],

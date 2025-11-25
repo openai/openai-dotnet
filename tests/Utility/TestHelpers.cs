@@ -72,7 +72,7 @@ internal static class TestHelpers
         TestScenario.Realtime => "gpt-4o-realtime-preview-2024-10-01",
         TestScenario.Responses => "gpt-4o-mini",
         TestScenario.Containers => "gpt-4o-mini",
-        TestScenario.Conversations => "gpt-4o-mini",
+        TestScenario.Conversations => null,
         _ => throw new NotImplementedException(),
     };
 
