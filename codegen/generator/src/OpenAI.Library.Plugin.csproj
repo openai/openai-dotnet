@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.TypeSpec.Generator.ClientModel" Version="1.0.0-alpha.20251113.2" />
+      <PackageReference Include="Microsoft.TypeSpec.Generator.ClientModel" Version="1.0.0-alpha.20251123.3" />
     </ItemGroup>
 
   <!-- Copy output to package dist path for local execution and  -->
