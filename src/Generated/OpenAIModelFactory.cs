@@ -687,6 +687,44 @@ namespace OpenAI
             return new McpToolDefinition(name, description, inputSchema, annotations, default);
         }
 
+        public static OpenAIResponse OpenAIResponse(IDictionary<string, string> metadata = default, float? temperature = default, int? topLogProbabilityCount = default, float? topP = default, string endUserId = default, string safetyIdentifier = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? backgroundModeEnabled = default, int? maxOutputTokenCount = default, int? maxToolCallCount = default, string instructions = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, string id = default, ResponseStatus? status = default, DateTimeOffset createdAt = default, ResponseError error = default, ResponseIncompleteStatusDetails incompleteStatusDetails = default, IEnumerable<ResponseItem> outputItems = default, ResponseTokenUsage usage = default, bool parallelToolCallsEnabled = default, Conversation conversation = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+            tools ??= new ChangeTrackingList<ResponseTool>();
+            outputItems ??= new ChangeTrackingList<ResponseItem>();
+
+            return new OpenAIResponse(
+                metadata,
+                temperature,
+                topLogProbabilityCount,
+                topP,
+                endUserId,
+                safetyIdentifier,
+                serviceTier,
+                previousResponseId,
+                model,
+                reasoningOptions,
+                backgroundModeEnabled,
+                maxOutputTokenCount,
+                maxToolCallCount,
+                instructions,
+                textOptions,
+                tools.ToList(),
+                toolChoice,
+                truncationMode,
+                id,
+                "response",
+                status,
+                createdAt,
+                error,
+                incompleteStatusDetails,
+                outputItems.ToList(),
+                usage,
+                parallelToolCallsEnabled,
+                conversation,
+                default);
+        }
+
         public static ResponseError ResponseError(ResponseErrorCode code = default, string message = default)
         {
             return new ResponseError(code, message, default);
@@ -716,6 +754,11 @@ namespace OpenAI
         public static ResponseOutputTokenUsageDetails ResponseOutputTokenUsageDetails(int reasoningTokenCount = default)
         {
             return new ResponseOutputTokenUsageDetails(reasoningTokenCount, default);
+        }
+
+        public static Conversation Conversation(string id = default)
+        {
+            return new Conversation(id, default);
         }
 
         public static ResponseDeletionResult ResponseDeletionResult(string id = default)
@@ -1365,6 +1408,41 @@ namespace OpenAI
         public static CodeInterpreterToolContainer CodeInterpreterToolContainer(string containerId = default, CodeInterpreterToolContainerConfiguration containerConfiguration = default)
         {
             return new CodeInterpreterToolContainer(containerId, containerConfiguration, default);
+        }
+
+        public static CreateResponseOptions CreateResponseOptions(IDictionary<string, string> metadata = default, float? temperature = default, int? topLogprobs = default, float? topP = default, string endUserId = default, string safetyIdentifier = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? backgroundModeEnabled = default, int? maxOutputTokenCount = default, int? maxToolCalls = default, string instructions = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, IEnumerable<ResponseItem> inputItems = default, IEnumerable<IncludedResponseProperty> includedProperties = default, bool? parallelToolCallsEnabled = default, bool? storedOutputEnabled = default, bool? streamingEnabled = default, string conversationId = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+            tools ??= new ChangeTrackingList<ResponseTool>();
+            inputItems ??= new ChangeTrackingList<ResponseItem>();
+            includedProperties ??= new ChangeTrackingList<IncludedResponseProperty>();
+
+            return new CreateResponseOptions(
+                metadata,
+                temperature,
+                topLogprobs,
+                topP,
+                endUserId,
+                safetyIdentifier,
+                serviceTier,
+                previousResponseId,
+                model,
+                reasoningOptions,
+                backgroundModeEnabled,
+                maxOutputTokenCount,
+                maxToolCalls,
+                instructions,
+                textOptions,
+                tools.ToList(),
+                toolChoice,
+                truncationMode,
+                inputItems.ToList(),
+                includedProperties.ToList(),
+                parallelToolCallsEnabled,
+                storedOutputEnabled,
+                streamingEnabled,
+                conversationId,
+                default);
         }
 
         public static VectorStoreCollectionOptions VectorStoreCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, VectorStoreCollectionOrder? order = default)

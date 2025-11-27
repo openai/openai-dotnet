@@ -317,7 +317,7 @@ namespace OpenAI.Responses
             IList<ResponseItem> outputItems = default;
             ResponseTokenUsage usage = default;
             bool parallelToolCallsEnabled = default;
-            InternalConversation conversation = default;
+            Conversation conversation = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -581,7 +581,7 @@ namespace OpenAI.Responses
                         conversation = null;
                         continue;
                     }
-                    conversation = InternalConversation.DeserializeInternalConversation(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    conversation = Conversation.DeserializeConversation(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());

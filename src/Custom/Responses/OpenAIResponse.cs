@@ -1,9 +1,5 @@
-using System.ClientModel;
-using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text.Json;
 
 namespace OpenAI.Responses;
 

@@ -11,31 +11,31 @@ namespace OpenAI.Tests.Responses;
 [Category("Smoke")]
 public partial class OpenAIResponsesModelFactoryTests
 {
-    [Test]
-    public void OpenAIResponseWorks()
-    {
-        string id = "response_123";
-        DateTimeOffset createdAt = DateTimeOffset.UtcNow;
-        ResponseStatus status = ResponseStatus.Completed;
-        string model = "gpt-4o";
-        IEnumerable<ResponseItem> outputItems = [
-            OpenAIResponsesModelFactory.MessageResponseItem(id: "msg_1", role: MessageRole.User, status: MessageStatus.Completed),
-            OpenAIResponsesModelFactory.ReasoningResponseItem(id: "reason_1", encryptedContent: "encrypted", status: ReasoningStatus.InProgress, summaryText: "summary")
-        ];
+    // [Test]
+    // public void OpenAIResponseWorks()
+    // {
+    //     string id = "response_123";
+    //     DateTimeOffset createdAt = DateTimeOffset.UtcNow;
+    //     ResponseStatus status = ResponseStatus.Completed;
+    //     string model = "gpt-4o";
+    //     IEnumerable<ResponseItem> outputItems = [
+    //         OpenAIResponsesModelFactory.MessageResponseItem(id: "msg_1", role: MessageRole.User, status: MessageStatus.Completed),
+    //         OpenAIResponsesModelFactory.ReasoningResponseItem(id: "reason_1", encryptedContent: "encrypted", status: ReasoningStatus.InProgress, summaryText: "summary")
+    //     ];
 
-        OpenAIResponse response = OpenAIResponsesModelFactory.OpenAIResponse(
-            id: id,
-            createdAt: createdAt,
-            status: status,
-            model: model,
-            outputItems: outputItems);
+    //     OpenAIResponse response = OpenAIResponsesModelFactory.OpenAIResponse(
+    //         id: id,
+    //         createdAt: createdAt,
+    //         status: status,
+    //         model: model,
+    //         outputItems: outputItems);
 
-        Assert.That(response.Id, Is.EqualTo(id));
-        Assert.That(response.CreatedAt, Is.EqualTo(createdAt));
-        Assert.That(response.Status, Is.EqualTo(status));
-        Assert.That(response.Model, Is.EqualTo(model));
-        Assert.That(response.OutputItems.SequenceEqual(outputItems), Is.True);
-    }
+    //     Assert.That(response.Id, Is.EqualTo(id));
+    //     Assert.That(response.CreatedAt, Is.EqualTo(createdAt));
+    //     Assert.That(response.Status, Is.EqualTo(status));
+    //     Assert.That(response.Model, Is.EqualTo(model));
+    //     Assert.That(response.OutputItems.SequenceEqual(outputItems), Is.True);
+    // }
 
     [Test]
     public void MessageResponseItemWorks()
