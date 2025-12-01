@@ -19,10 +19,6 @@ namespace OpenAI.Responses
 
         internal InternalLogProb(string token, float logprob, IEnumerable<int> bytes, IEnumerable<InternalTopLogProb> topLogprobs)
         {
-            Argument.AssertNotNull(token, nameof(token));
-            Argument.AssertNotNull(bytes, nameof(bytes));
-            Argument.AssertNotNull(topLogprobs, nameof(topLogprobs));
-
             Token = token;
             Logprob = logprob;
             Bytes = bytes.ToList();

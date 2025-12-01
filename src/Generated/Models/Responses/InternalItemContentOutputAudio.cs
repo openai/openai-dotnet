@@ -3,7 +3,6 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
-using OpenAI;
 
 namespace OpenAI.Responses
 {
@@ -11,9 +10,6 @@ namespace OpenAI.Responses
     {
         public InternalItemContentOutputAudio(string data, string transcript) : base(InternalItemContentType.OutputAudio)
         {
-            Argument.AssertNotNull(data, nameof(data));
-            Argument.AssertNotNull(transcript, nameof(transcript));
-
             Data = data;
             Transcript = transcript;
         }

@@ -14,10 +14,6 @@ namespace OpenAI.Evals
     {
         internal InternalEvalGraderScoreModelParams(string name, string model, IEnumerable<InternalEvalItem> input) : base(GraderType.ScoreModel)
         {
-            Argument.AssertNotNull(name, nameof(name));
-            Argument.AssertNotNull(model, nameof(model));
-            Argument.AssertNotNull(input, nameof(input));
-
             Name = name;
             Model = model;
             Input = input.ToList();

@@ -4,7 +4,6 @@
 
 using System;
 using System.ComponentModel;
-using OpenAI;
 
 namespace OpenAI.Evals
 {
@@ -17,8 +16,6 @@ namespace OpenAI.Evals
 
         public InternalEvalRunDataSourceType(string value)
         {
-            Argument.AssertNotNull(value, nameof(value));
-
             _value = value;
         }
 

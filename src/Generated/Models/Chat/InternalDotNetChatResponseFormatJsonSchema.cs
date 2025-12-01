@@ -3,7 +3,6 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
-using OpenAI;
 using OpenAI.Internal;
 
 namespace OpenAI.Chat
@@ -12,8 +11,6 @@ namespace OpenAI.Chat
     {
         internal InternalDotNetChatResponseFormatJsonSchema(InternalDotNetChatResponseFormatJsonSchemaJsonSchema jsonSchema) : base(InternalResponseFormatType.JsonSchema)
         {
-            Argument.AssertNotNull(jsonSchema, nameof(jsonSchema));
-
             JsonSchema = jsonSchema;
         }
 

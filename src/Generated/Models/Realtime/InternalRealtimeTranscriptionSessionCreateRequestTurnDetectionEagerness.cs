@@ -4,7 +4,6 @@
 
 using System;
 using System.ComponentModel;
-using OpenAI;
 
 namespace OpenAI.Realtime
 {
@@ -18,8 +17,6 @@ namespace OpenAI.Realtime
 
         public InternalRealtimeTranscriptionSessionCreateRequestTurnDetectionEagerness(string value)
         {
-            Argument.AssertNotNull(value, nameof(value));
-
             _value = value;
         }
 

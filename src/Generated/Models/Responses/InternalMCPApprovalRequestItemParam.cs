@@ -3,7 +3,6 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
-using OpenAI;
 
 namespace OpenAI.Responses
 {
@@ -11,10 +10,6 @@ namespace OpenAI.Responses
     {
         public InternalMCPApprovalRequestItemParam(string serverLabel, string name, string arguments) : base(InternalItemType.McpApprovalRequest)
         {
-            Argument.AssertNotNull(serverLabel, nameof(serverLabel));
-            Argument.AssertNotNull(name, nameof(name));
-            Argument.AssertNotNull(arguments, nameof(arguments));
-
             ServerLabel = serverLabel;
             Name = name;
             Arguments = arguments;

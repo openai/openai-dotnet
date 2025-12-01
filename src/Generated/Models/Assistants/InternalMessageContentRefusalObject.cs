@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Assistants
 {
@@ -12,8 +11,6 @@ namespace OpenAI.Assistants
     {
         public InternalMessageContentRefusalObject(string internalRefusal) : base(InternalMessageContentType.Refusal)
         {
-            Argument.AssertNotNull(internalRefusal, nameof(internalRefusal));
-
             InternalRefusal = internalRefusal;
         }
 

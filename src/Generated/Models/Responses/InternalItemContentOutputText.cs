@@ -13,9 +13,6 @@ namespace OpenAI.Responses
     {
         public InternalItemContentOutputText(string internalText, IEnumerable<ResponseMessageAnnotation> annotations) : base(InternalItemContentType.OutputText)
         {
-            Argument.AssertNotNull(internalText, nameof(internalText));
-            Argument.AssertNotNull(annotations, nameof(annotations));
-
             InternalText = internalText;
             Annotations = annotations.ToList();
             Logprobs = new ChangeTrackingList<InternalLogProb>();

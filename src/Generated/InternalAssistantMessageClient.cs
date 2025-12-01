@@ -28,8 +28,6 @@ namespace OpenAI.Assistants
 
         public virtual CollectionResult GetMessages(string threadId, int? limit, string order, string after, string before, RequestOptions options)
         {
-            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-
             return new InternalAssistantMessageClientGetMessagesCollectionResult(
                 this,
                 threadId,
@@ -42,8 +40,6 @@ namespace OpenAI.Assistants
 
         public virtual AsyncCollectionResult GetMessagesAsync(string threadId, int? limit, string order, string after, string before, RequestOptions options)
         {
-            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-
             return new InternalAssistantMessageClientGetMessagesAsyncCollectionResult(
                 this,
                 threadId,
@@ -56,8 +52,6 @@ namespace OpenAI.Assistants
 
         public virtual CollectionResult<ThreadMessage> GetMessages(string threadId, MessageCollectionOptions options = default, CancellationToken cancellationToken = default)
         {
-            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-
             return new InternalAssistantMessageClientGetMessagesCollectionResultOfT(
                 this,
                 threadId,
@@ -70,8 +64,6 @@ namespace OpenAI.Assistants
 
         public virtual AsyncCollectionResult<ThreadMessage> GetMessagesAsync(string threadId, MessageCollectionOptions options = default, CancellationToken cancellationToken = default)
         {
-            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-
             return new InternalAssistantMessageClientGetMessagesAsyncCollectionResultOfT(
                 this,
                 threadId,

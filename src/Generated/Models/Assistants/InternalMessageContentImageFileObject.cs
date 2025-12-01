@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Assistants
 {
@@ -12,8 +11,6 @@ namespace OpenAI.Assistants
     {
         internal InternalMessageContentImageFileObject(InternalMessageContentItemFileObjectImageFile imageFile) : base(InternalMessageContentType.ImageFile)
         {
-            Argument.AssertNotNull(imageFile, nameof(imageFile));
-
             ImageFile = imageFile;
         }
 

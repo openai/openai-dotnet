@@ -3,7 +3,6 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
-using OpenAI;
 
 namespace OpenAI.Chat
 {
@@ -11,8 +10,6 @@ namespace OpenAI.Chat
     {
         internal InternalChatCompletionRequestMessageContentPartAudio(InternalChatCompletionRequestMessageContentPartAudioInputAudio inputAudio)
         {
-            Argument.AssertNotNull(inputAudio, nameof(inputAudio));
-
             InputAudio = inputAudio;
         }
 

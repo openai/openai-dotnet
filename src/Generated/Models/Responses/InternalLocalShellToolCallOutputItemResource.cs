@@ -3,7 +3,6 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
-using OpenAI;
 
 namespace OpenAI.Responses
 {
@@ -11,8 +10,6 @@ namespace OpenAI.Responses
     {
         internal InternalLocalShellToolCallOutputItemResource(InternalLocalShellToolCallOutputItemResourceStatus status, string output) : base(InternalItemType.LocalShellCallOutput)
         {
-            Argument.AssertNotNull(output, nameof(output));
-
             Status = status;
             Output = output;
         }

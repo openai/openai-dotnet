@@ -13,9 +13,6 @@ namespace OpenAI.Responses
     {
         public InternalMCPListToolsItemParam(string serverLabel, IEnumerable<McpToolDefinition> tools) : base(InternalItemType.McpListTools)
         {
-            Argument.AssertNotNull(serverLabel, nameof(serverLabel));
-            Argument.AssertNotNull(tools, nameof(tools));
-
             ServerLabel = serverLabel;
             Tools = tools.ToList();
         }

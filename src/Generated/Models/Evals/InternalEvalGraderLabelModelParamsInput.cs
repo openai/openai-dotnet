@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Evals
 {
@@ -14,9 +13,6 @@ namespace OpenAI.Evals
 
         public InternalEvalGraderLabelModelParamsInput(string role, string content)
         {
-            Argument.AssertNotNull(role, nameof(role));
-            Argument.AssertNotNull(content, nameof(content));
-
             Role = role;
             Content = content;
         }

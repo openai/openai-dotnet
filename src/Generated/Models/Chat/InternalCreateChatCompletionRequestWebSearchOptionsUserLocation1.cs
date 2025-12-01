@@ -6,7 +6,6 @@ using System.ClientModel.Primitives;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
-using OpenAI;
 using OpenAI.Internal;
 
 namespace OpenAI.Chat
@@ -18,8 +17,6 @@ namespace OpenAI.Chat
 
         internal InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1(InternalWebSearchLocation approximate)
         {
-            Argument.AssertNotNull(approximate, nameof(approximate));
-
             Approximate = approximate;
         }
 

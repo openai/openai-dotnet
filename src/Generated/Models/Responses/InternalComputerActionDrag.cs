@@ -13,8 +13,6 @@ namespace OpenAI.Responses
     {
         internal InternalComputerActionDrag(IEnumerable<InternalCoordinate> path) : base(ComputerCallActionKind.Drag)
         {
-            Argument.AssertNotNull(path, nameof(path));
-
             Path = path.ToList();
         }
 

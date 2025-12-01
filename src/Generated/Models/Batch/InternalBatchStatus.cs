@@ -4,7 +4,6 @@
 
 using System;
 using System.ComponentModel;
-using OpenAI;
 
 namespace OpenAI.Batch
 {
@@ -22,8 +21,6 @@ namespace OpenAI.Batch
 
         public InternalBatchStatus(string value)
         {
-            Argument.AssertNotNull(value, nameof(value));
-
             _value = value;
         }
 

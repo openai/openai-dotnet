@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Evals
 {
@@ -12,8 +11,6 @@ namespace OpenAI.Evals
     {
         public InternalEvalItemContentOutputText(string text) : base(InternalEvalItemContentType.OutputText)
         {
-            Argument.AssertNotNull(text, nameof(text));
-
             Text = text;
         }
 
