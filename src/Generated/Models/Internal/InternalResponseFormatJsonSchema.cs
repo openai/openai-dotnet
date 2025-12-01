@@ -3,7 +3,6 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
-using OpenAI;
 
 namespace OpenAI.Internal
 {
@@ -11,8 +10,6 @@ namespace OpenAI.Internal
     {
         internal InternalResponseFormatJsonSchema(InternalResponseFormatJsonSchemaJsonSchema jsonSchema) : base(InternalResponseFormatType.JsonSchema)
         {
-            Argument.AssertNotNull(jsonSchema, nameof(jsonSchema));
-
             JsonSchema = jsonSchema;
         }
 

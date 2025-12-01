@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 using OpenAI.Internal;
 
 namespace OpenAI.Assistants
@@ -13,8 +12,6 @@ namespace OpenAI.Assistants
     {
         internal InternalDotNetAssistantResponseFormatJsonSchema(InternalDotNetAssistantResponseFormatJsonSchemaJsonSchema jsonSchema) : base(InternalResponseFormatType.JsonSchema)
         {
-            Argument.AssertNotNull(jsonSchema, nameof(jsonSchema));
-
             JsonSchema = jsonSchema;
         }
 

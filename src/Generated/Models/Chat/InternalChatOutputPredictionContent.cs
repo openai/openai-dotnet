@@ -3,7 +3,6 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
-using OpenAI;
 
 namespace OpenAI.Chat
 {
@@ -12,8 +11,6 @@ namespace OpenAI.Chat
         public InternalChatOutputPredictionContent(ChatMessageContent content) : base(InternalChatOutputPredictionKind.StaticContent)
         {
             // Plugin customization: ensure initialization of collections
-            Argument.AssertNotNull(content, nameof(content));
-
             Content = content ?? new ChatMessageContent();
         }
 

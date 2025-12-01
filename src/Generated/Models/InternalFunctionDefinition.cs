@@ -17,8 +17,6 @@ namespace OpenAI
 
         public InternalFunctionDefinition(string name)
         {
-            Argument.AssertNotNull(name, nameof(name));
-
             Name = name;
         }
 

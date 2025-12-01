@@ -13,10 +13,6 @@ namespace OpenAI.Responses
     {
         public InternalComputerUsePreviewToolCallItemParam(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks) : base(InternalItemType.ComputerCall)
         {
-            Argument.AssertNotNull(callId, nameof(callId));
-            Argument.AssertNotNull(action, nameof(action));
-            Argument.AssertNotNull(pendingSafetyChecks, nameof(pendingSafetyChecks));
-
             CallId = callId;
             Action = action;
             PendingSafetyChecks = pendingSafetyChecks.ToList();

@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Assistants
 {
@@ -12,8 +11,6 @@ namespace OpenAI.Assistants
     {
         public InternalMessageContentTextObject(BinaryData internalText) : base(InternalMessageContentType.Text)
         {
-            Argument.AssertNotNull(internalText, nameof(internalText));
-
             InternalText = internalText;
         }
 

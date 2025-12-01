@@ -14,8 +14,6 @@ namespace OpenAI.FineTuning
 
         public InternalCreateFineTuningJobRequestWandbIntegrationWandb(string project)
         {
-            Argument.AssertNotNull(project, nameof(project));
-
             Project = project;
             Tags = new ChangeTrackingList<string>();
         }

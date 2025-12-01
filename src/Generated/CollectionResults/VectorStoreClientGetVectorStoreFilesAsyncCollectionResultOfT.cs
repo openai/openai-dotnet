@@ -7,7 +7,6 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using OpenAI;
 
 namespace OpenAI.VectorStores
 {
@@ -24,8 +23,6 @@ namespace OpenAI.VectorStores
 
         public VectorStoreClientGetVectorStoreFilesAsyncCollectionResultOfT(VectorStoreClient client, string vectorStoreId, int? limit, string order, string after, string before, string filter, RequestOptions options)
         {
-            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-
             _client = client;
             _vectorStoreId = vectorStoreId;
             _limit = limit;

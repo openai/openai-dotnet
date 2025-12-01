@@ -15,8 +15,6 @@ namespace OpenAI.Assistants
 
         public InternalSubmitToolOutputsRunRequest(IEnumerable<ToolOutput> toolOutputs)
         {
-            Argument.AssertNotNull(toolOutputs, nameof(toolOutputs));
-
             ToolOutputs = toolOutputs.ToList();
         }
 

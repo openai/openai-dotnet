@@ -4,7 +4,6 @@
 
 using System;
 using System.ComponentModel;
-using OpenAI;
 
 namespace OpenAI.Audio
 {
@@ -15,8 +14,6 @@ namespace OpenAI.Audio
 
         public InternalCreateTranslationRequestModel(string value)
         {
-            Argument.AssertNotNull(value, nameof(value));
-
             _value = value;
         }
 

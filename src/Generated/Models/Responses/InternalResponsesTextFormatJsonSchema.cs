@@ -4,7 +4,6 @@
 
 using System;
 using System.ClientModel.Primitives;
-using OpenAI;
 
 namespace OpenAI.Responses
 {
@@ -12,9 +11,6 @@ namespace OpenAI.Responses
     {
         public InternalResponsesTextFormatJsonSchema(string name, BinaryData schema) : base(InternalResponsesTextFormatType.JsonSchema)
         {
-            Argument.AssertNotNull(name, nameof(name));
-            Argument.AssertNotNull(schema, nameof(schema));
-
             Name = name;
             Schema = schema;
         }

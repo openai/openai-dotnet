@@ -3,7 +3,6 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
-using OpenAI;
 
 namespace OpenAI.Responses
 {
@@ -11,9 +10,6 @@ namespace OpenAI.Responses
     {
         public InternalFunctionToolCallOutputItemParam(string callId, string output) : base(InternalItemType.FunctionCallOutput)
         {
-            Argument.AssertNotNull(callId, nameof(callId));
-            Argument.AssertNotNull(output, nameof(output));
-
             CallId = callId;
             Output = output;
         }

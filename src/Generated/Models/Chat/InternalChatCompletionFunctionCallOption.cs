@@ -6,7 +6,6 @@ using System.ClientModel.Primitives;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
-using OpenAI;
 
 namespace OpenAI.Chat
 {
@@ -17,8 +16,6 @@ namespace OpenAI.Chat
 
         public InternalChatCompletionFunctionCallOption(string name)
         {
-            Argument.AssertNotNull(name, nameof(name));
-
             Name = name;
         }
 

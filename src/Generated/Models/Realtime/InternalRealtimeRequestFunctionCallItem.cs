@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Realtime
 {
@@ -12,10 +11,6 @@ namespace OpenAI.Realtime
     {
         public InternalRealtimeRequestFunctionCallItem(string name, string callId, string arguments) : base(InternalRealtimeItemType.FunctionCall)
         {
-            Argument.AssertNotNull(name, nameof(name));
-            Argument.AssertNotNull(callId, nameof(callId));
-            Argument.AssertNotNull(arguments, nameof(arguments));
-
             Name = name;
             CallId = callId;
             Arguments = arguments;

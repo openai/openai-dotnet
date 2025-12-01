@@ -13,8 +13,6 @@ namespace OpenAI.Responses
     {
         public InternalReasoningItemParam(IEnumerable<ReasoningSummaryPart> summary) : base(InternalItemType.Reasoning)
         {
-            Argument.AssertNotNull(summary, nameof(summary));
-
             Summary = summary.ToList();
         }
 

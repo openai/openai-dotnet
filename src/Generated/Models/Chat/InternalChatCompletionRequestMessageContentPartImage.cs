@@ -3,7 +3,6 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
-using OpenAI;
 
 namespace OpenAI.Chat
 {
@@ -11,8 +10,6 @@ namespace OpenAI.Chat
     {
         internal InternalChatCompletionRequestMessageContentPartImage(InternalChatCompletionRequestMessageContentPartImageImageUrl imageUrl)
         {
-            Argument.AssertNotNull(imageUrl, nameof(imageUrl));
-
             ImageUrl = imageUrl;
         }
 

@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Files
 {
@@ -14,8 +13,6 @@ namespace OpenAI.Files
 
         public InternalAddUploadPartRequest(BinaryData data)
         {
-            Argument.AssertNotNull(data, nameof(data));
-
             Data = data;
         }
 

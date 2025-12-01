@@ -4,7 +4,6 @@
 
 using System;
 using System.ComponentModel;
-using OpenAI;
 
 namespace OpenAI.Images
 {
@@ -17,8 +16,6 @@ namespace OpenAI.Images
 
         public InternalCreateImageRequestModel(string value)
         {
-            Argument.AssertNotNull(value, nameof(value));
-
             _value = value;
         }
 

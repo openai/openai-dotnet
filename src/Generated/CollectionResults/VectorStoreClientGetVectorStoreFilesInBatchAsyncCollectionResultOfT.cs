@@ -7,7 +7,6 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using OpenAI;
 
 namespace OpenAI.VectorStores
 {
@@ -25,9 +24,6 @@ namespace OpenAI.VectorStores
 
         public VectorStoreClientGetVectorStoreFilesInBatchAsyncCollectionResultOfT(VectorStoreClient client, string vectorStoreId, string batchId, int? limit, string order, string after, string before, string filter, RequestOptions options)
         {
-            Argument.AssertNotNullOrEmpty(vectorStoreId, nameof(vectorStoreId));
-            Argument.AssertNotNullOrEmpty(batchId, nameof(batchId));
-
             _client = client;
             _vectorStoreId = vectorStoreId;
             _batchId = batchId;

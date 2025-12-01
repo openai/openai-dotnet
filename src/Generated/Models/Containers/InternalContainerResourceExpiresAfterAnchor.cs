@@ -4,7 +4,6 @@
 
 using System;
 using System.ComponentModel;
-using OpenAI;
 
 namespace OpenAI.Containers
 {
@@ -15,8 +14,6 @@ namespace OpenAI.Containers
 
         public InternalContainerResourceExpiresAfterAnchor(string value)
         {
-            Argument.AssertNotNull(value, nameof(value));
-
             _value = value;
         }
 

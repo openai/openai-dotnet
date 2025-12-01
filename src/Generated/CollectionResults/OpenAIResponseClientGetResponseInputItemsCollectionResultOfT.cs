@@ -6,7 +6,6 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Responses
 {
@@ -22,8 +21,6 @@ namespace OpenAI.Responses
 
         public OpenAIResponseClientGetResponseInputItemsCollectionResultOfT(OpenAIResponseClient client, string responseId, int? limit, string order, string after, string before, RequestOptions options)
         {
-            Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
-
             _client = client;
             _responseId = responseId;
             _limit = limit;

@@ -7,7 +7,6 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using OpenAI;
 
 namespace OpenAI.Containers
 {
@@ -22,8 +21,6 @@ namespace OpenAI.Containers
 
         public ContainerClientGetContainerFilesAsyncCollectionResultOfT(ContainerClient client, string containerId, int? limit, string order, string after, RequestOptions options)
         {
-            Argument.AssertNotNullOrEmpty(containerId, nameof(containerId));
-
             _client = client;
             _containerId = containerId;
             _limit = limit;

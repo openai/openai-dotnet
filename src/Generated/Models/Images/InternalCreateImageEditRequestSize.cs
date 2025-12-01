@@ -4,7 +4,6 @@
 
 using System;
 using System.ComponentModel;
-using OpenAI;
 
 namespace OpenAI.Images
 {
@@ -20,8 +19,6 @@ namespace OpenAI.Images
 
         public InternalCreateImageEditRequestSize(string value)
         {
-            Argument.AssertNotNull(value, nameof(value));
-
             _value = value;
         }
 

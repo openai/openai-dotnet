@@ -4,7 +4,6 @@
 
 using System;
 using System.ComponentModel;
-using OpenAI;
 
 namespace OpenAI.Conversations
 {
@@ -16,8 +15,6 @@ namespace OpenAI.Conversations
 
         public InternalConversationItemCollectionOrder(string value)
         {
-            Argument.AssertNotNull(value, nameof(value));
-
             _value = value;
         }
 

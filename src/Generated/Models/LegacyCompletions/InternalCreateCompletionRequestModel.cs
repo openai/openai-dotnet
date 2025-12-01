@@ -4,7 +4,6 @@
 
 using System;
 using System.ComponentModel;
-using OpenAI;
 
 namespace OpenAI.LegacyCompletions
 {
@@ -17,8 +16,6 @@ namespace OpenAI.LegacyCompletions
 
         public InternalCreateCompletionRequestModel(string value)
         {
-            Argument.AssertNotNull(value, nameof(value));
-
             _value = value;
         }
 

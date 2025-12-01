@@ -14,8 +14,6 @@ namespace OpenAI.Assistants
 
         public InternalMessageContentTextObjectText1(string value)
         {
-            Argument.AssertNotNull(value, nameof(value));
-
             Value = value;
             Annotations = new ChangeTrackingList<InternalMessageContentTextObjectAnnotation>();
         }

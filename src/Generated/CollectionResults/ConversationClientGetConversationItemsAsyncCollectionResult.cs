@@ -5,7 +5,6 @@
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Conversations
 {
@@ -21,8 +20,6 @@ namespace OpenAI.Conversations
 
         public ConversationClientGetConversationItemsAsyncCollectionResult(ConversationClient client, string conversationId, long? limit, string order, string after, IEnumerable<IncludedConversationItemProperty> include, RequestOptions options)
         {
-            Argument.AssertNotNullOrEmpty(conversationId, nameof(conversationId));
-
             _client = client;
             _conversationId = conversationId;
             _limit = limit;

@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.VectorStores
 {
@@ -12,8 +11,6 @@ namespace OpenAI.VectorStores
     {
         internal InternalStaticChunkingStrategyRequestParam(InternalStaticChunkingStrategy @static) : base(InternalChunkingStrategyRequestParamType.Static)
         {
-            Argument.AssertNotNull(@static, nameof(@static));
-
             Static = @static;
         }
 
