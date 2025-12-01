@@ -17,18 +17,20 @@ public partial class ResponseExamples
     {
         ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        CreateResponseOptions options = new([
-            ResponseItem.CreateUserMessageItem("Generate an image of gray tabby cat hugging an otter with an orange scarf")
-        ], "gpt-5")
-        {
-            Tools =
+        CreateResponseOptions options = new(
+            "gpt-5",
+            [
+                ResponseItem.CreateUserMessageItem("Generate an image of gray tabby cat hugging an otter with an orange scarf")
+            ])
             {
-                ResponseTool.CreateImageGenerationTool(
-                    model: "gpt-image-1",
-                    outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
-                    inputFidelity: ImageGenerationToolInputFidelity.High)
-            }
-        };
+                Tools =
+                {
+                    ResponseTool.CreateImageGenerationTool(
+                        model: "gpt-image-1",
+                        outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
+                        inputFidelity: ImageGenerationToolInputFidelity.High)
+                }
+            };
 
         ResponseResult response = client.CreateResponse(options);
         ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[1];

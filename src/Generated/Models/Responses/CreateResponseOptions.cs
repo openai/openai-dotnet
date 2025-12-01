@@ -6,7 +6,6 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Text.Json.Serialization;
 using OpenAI;
 
@@ -17,16 +16,6 @@ namespace OpenAI.Responses
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
-
-        public CreateResponseOptions(IEnumerable<ResponseItem> inputItems)
-        {
-            Argument.AssertNotNull(inputItems, nameof(inputItems));
-
-            Metadata = new ChangeTrackingDictionary<string, string>();
-            Tools = new ChangeTrackingList<ResponseTool>();
-            InputItems = inputItems.ToList();
-            IncludedProperties = new ChangeTrackingList<IncludedResponseProperty>();
-        }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal CreateResponseOptions(IDictionary<string, string> metadata, float? temperature, int? topLogprobs, float? topP, string endUserId, string safetyIdentifier, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? backgroundModeEnabled, int? maxOutputTokenCount, int? maxToolCalls, string instructions, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncationMode, IList<ResponseItem> inputItems, IList<IncludedResponseProperty> includedProperties, bool? parallelToolCallsEnabled, bool? storedOutputEnabled, bool? streamingEnabled, string conversationId, in JsonPatch patch)

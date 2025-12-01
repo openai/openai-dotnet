@@ -304,21 +304,6 @@ public partial class ResponsesClient
         return GetResponseStreamingAsync(responseId, startingAfter, cancellationToken);
     }
 
-    internal AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, IEnumerable<IncludedResponseProperty> include, int? startingAfter, bool? includeObfuscation, RequestOptions requestOptions)
-    {
-        Argument.AssertNotNull(responseId, nameof(responseId));
-        Argument.AssertNotNull(requestOptions, nameof(requestOptions));
-        if (requestOptions.BufferResponse is true)
-        {
-            throw new InvalidOperationException("'requestOptions.BufferResponse' must be 'false' when calling 'GetResponseStreamingAsync'.");
-        }
-
-        return new AsyncSseUpdateCollection<StreamingResponseUpdate>(
-            async () => await GetResponseAsync(responseId, include, stream: true, startingAfter, includeObfuscation, requestOptions).ConfigureAwait(false),
-            StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
-            requestOptions.CancellationToken);
-    }
-
     public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, GetResponseOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
@@ -348,7 +333,7 @@ public partial class ResponsesClient
 
     public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, IEnumerable<IncludedResponseProperty> includedProperties = default, int? startingAfter = default, bool? includeObfuscation = default, CancellationToken cancellationToken = default)
     {
-        return GetResponseStreamingAsync(responseId, includedProperties, startingAfter, includeObfuscation, cancellationToken.ToRequestOptions(streaming: true));
+        return GetResponseStreamingAsync(responseId, includedProperties, startingAfter, includeObfuscation, cancellationToken);
     }
 
     public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, IEnumerable<IncludedResponseProperty> includedProperties = default, int? startingAfter = default, bool? includeObfuscation = default, CancellationToken cancellationToken = default)

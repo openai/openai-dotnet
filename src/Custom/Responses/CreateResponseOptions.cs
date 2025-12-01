@@ -5,10 +5,12 @@ using System.Linq;
 
 namespace OpenAI.Responses
 {
+    [CodeGenSuppress("CreateResponseOptions", typeof(IEnumerable<ResponseItem>))]
+
     [CodeGenType("DotNetCreateResponse")]
     public partial class CreateResponseOptions
     {
-        public CreateResponseOptions(IEnumerable<ResponseItem> inputItems, string model)
+         public CreateResponseOptions(string model, IEnumerable<ResponseItem> inputItems)
         {
             Argument.AssertNotNull(inputItems, nameof(inputItems));
             Argument.AssertNotNullOrEmpty(model, nameof(model));

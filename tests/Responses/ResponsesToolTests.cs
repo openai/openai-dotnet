@@ -34,7 +34,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
 
-        CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Roll 2d4+1")], "gpt-5")
+        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
@@ -86,7 +86,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
 
-        CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Roll 2d4+1")], "gpt-5")
+        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
@@ -200,7 +200,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                     }
                 });
 
-        CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Roll 2d4+1")], "gpt-5")
+        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
@@ -241,7 +241,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                     }
                 });
 
-        CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Roll 2d4+1")], "gpt-5")
+        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
@@ -282,7 +282,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
 
-        CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Roll 2d4+1")], "gpt-5")
+        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
@@ -323,7 +323,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         McpToolCallApprovalPolicy approvalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval);
 
-        CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Roll 2d4+1")], "gpt-5")
+        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
             Tools = {
                 new McpTool(serverLabel, serverUri)
@@ -375,7 +375,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         ResponsesClient client = GetTestClient();
 
         ResponseResult response = await client.CreateResponseAsync(
-            new([ResponseItem.CreateUserMessageItem("Using the file search tool, what's Travis's favorite food?")], "gpt-4o-mini")
+            new("gpt-4o-mini", [ResponseItem.CreateUserMessageItem("Using the file search tool, what's Travis's favorite food?")])
             {
                 Tools =
                 {
@@ -410,7 +410,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         ResponsesClient client = GetTestClient();
 
         ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new CodeInterpreterToolContainer(CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration()));
-        CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem("Calculate the factorial of 5 using Python code.")], "gpt-4o-mini")
+        CreateResponseOptions responseOptions = new("gpt-4o-mini", [ResponseItem.CreateUserMessageItem("Calculate the factorial of 5 using Python code.")])
         {
             Tools = { codeInterpreterTool },
         };
@@ -440,7 +440,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         ResponsesClient client = GetTestClient();
 
         ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new(new AutomaticCodeInterpreterToolContainerConfiguration()));
-        CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem("Generate a simple chart using matplotlib. Ensure you emit debug logging and include any resulting log file output.")], "gpt-4o-mini")
+        CreateResponseOptions responseOptions = new("gpt-4o-mini", [ResponseItem.CreateUserMessageItem("Generate a simple chart using matplotlib. Ensure you emit debug logging and include any resulting log file output.")])
         {
             Tools = { codeInterpreterTool },
         };
@@ -483,7 +483,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         {
             // Create CodeInterpreter tool with the container ID
             ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new(containerId));
-            CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem("Calculate the factorial of 5 using Python code.")], "gpt-4o-mini")
+            CreateResponseOptions responseOptions = new("gpt-4o-mini", [ResponseItem.CreateUserMessageItem("Calculate the factorial of 5 using Python code.")])
             {
                 Tools = { codeInterpreterTool },
             };
@@ -548,7 +548,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
             // Create CodeInterpreter tool with uploaded file IDs
             ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new(CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration(fileIds)));
-            CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem("Analyze the CSV data in the uploaded file and create a simple visualization. Also run the Python script that was uploaded.")], "gpt-4o-mini")
+            CreateResponseOptions responseOptions = new("gpt-4o-mini", [ResponseItem.CreateUserMessageItem("Analyze the CSV data in the uploaded file and create a simple visualization. Also run the Python script that was uploaded.")])
             {
                 Tools = { codeInterpreterTool },
             };
@@ -588,7 +588,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         ResponsesClient client = GetTestClient();
 
         ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new CodeInterpreterToolContainer(new AutomaticCodeInterpreterToolContainerConfiguration()));
-        CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem("Calculate the factorial of 5 using Python code and show me the code step by step.")], "gpt-4o-mini")
+        CreateResponseOptions responseOptions = new("gpt-4o-mini", [ResponseItem.CreateUserMessageItem("Calculate the factorial of 5 using Python code and show me the code step by step.")])
         {
             Tools = { codeInterpreterTool },
         };
@@ -635,7 +635,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
             // Create CodeInterpreter tool with uploaded file IDs
             ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new CodeInterpreterToolContainer(CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration(fileIds)));
-            CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem("Load the CSV file and create a simple plot visualization showing the relationship between x and y values.")], "gpt-4o-mini")
+            CreateResponseOptions responseOptions = new("gpt-4o-mini", [ResponseItem.CreateUserMessageItem("Load the CSV file and create a simple plot visualization showing the relationship between x and y values.")])
             {
                 Tools = { codeInterpreterTool },
             };
@@ -684,7 +684,9 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetTestClient();
 
-        CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Generate an image of gray tabby cat hugging an otter with an orange scarf")], "gpt-4o-mini")
+        CreateResponseOptions options = new(
+            "gpt-4o-mini",
+            [ResponseItem.CreateUserMessageItem("Generate an image of gray tabby cat hugging an otter with an orange scarf")])
         {
             Tools =
             {
@@ -723,7 +725,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         const string message = "Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape";
 
-        CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem(message)], "gpt-4o-mini")
+        CreateResponseOptions responseOptions = new("gpt-4o-mini", [ResponseItem.CreateUserMessageItem(message)])
         {
             Tools =
             {
@@ -819,7 +821,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             ResponseItem.CreateUserMessageItem([ResponseContentPart.CreateInputImagePart(imageBytes, "image/png")])
         ];
 
-        CreateResponseOptions options = new(inputItems, "gpt-4o-mini")
+        CreateResponseOptions options = new("gpt-4o-mini", inputItems)
         {
             Tools =
             {
@@ -862,7 +864,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             ResponseItem.CreateUserMessageItem([ResponseContentPart.CreateInputImagePart(imageUri)])
         ];
 
-        CreateResponseOptions options = new(inputItems, "gpt-4o-mini")
+        CreateResponseOptions options = new("gpt-4o-mini", inputItems)
         {
             Tools =
             {
@@ -932,7 +934,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             ResponseItem.CreateUserMessageItem([ResponseContentPart.CreateInputImagePart(imageFileId: imageFile.Id)])
         ];
 
-        CreateResponseOptions options = new(inputItems, "gpt-4o-mini")
+        CreateResponseOptions options = new("gpt-4o-mini", inputItems)
         {
             Tools =
             {

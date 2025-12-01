@@ -27,7 +27,7 @@ public partial class ResponseExamples
             ResponseItem.CreateUserMessageItem("What's the weather like today for my current location?"),
         ];
 
-        CreateResponseOptions options = new(inputItems, "gpt-5")
+        CreateResponseOptions options = new("gpt-5", inputItems)
         {
             Tools = { getCurrentLocationTool, getCurrentWeatherTool },
         };

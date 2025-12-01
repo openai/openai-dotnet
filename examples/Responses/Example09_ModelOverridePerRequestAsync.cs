@@ -21,9 +21,12 @@ public partial class ResponseExamples
         // Patch lets you set fields like `model` that aren't exposed on CreateResponseOptions.
         // This overrides the model set on the client just for the request where this options instance is used.
         // See the API docs https://platform.openai.com/docs/api-reference/responses/create for supported additional fields.
-        CreateResponseOptions options = new([
-            ResponseItem.CreateUserMessageItem("Say 'this is a test.")
-        ], "gpt-4o"); // Model can also be set via constructor
+        CreateResponseOptions options = new(
+            "gpt-4o",
+            [
+                ResponseItem.CreateUserMessageItem("Say 'this is a test.")
+            ]
+        ); // Model can also be set via constructor
         options.Patch.Set("$.model"u8, "gpt-5");
 
         ResponseResult response = await client.CreateResponseAsync(options);

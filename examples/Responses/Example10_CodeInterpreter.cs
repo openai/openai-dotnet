@@ -25,7 +25,7 @@ public partial class ResponseExamples
         [
             ResponseItem.CreateUserMessageItem("Create an Excel spreadsheet that contains the mathematical times tables from 1-12 and make it available for download."),
         ];
-        CreateResponseOptions options = new(inputItems, "gpt-5")
+        CreateResponseOptions options = new("gpt-5", inputItems)
         {
             Tools = { codeInterpreterTool }
         };

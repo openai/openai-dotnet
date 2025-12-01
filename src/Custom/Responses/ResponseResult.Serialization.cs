@@ -107,10 +107,10 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("previous_response_id"u8);
                 writer.WriteStringValue(PreviousResponseId);
             }
-            if (Optional.IsDefined(InternalModel) && !Patch.Contains("$.model"u8))
+            if (Optional.IsDefined(Model) && !Patch.Contains("$.model"u8))
             {
                 writer.WritePropertyName("model"u8);
-                writer.WriteStringValue(InternalModel.Value.ToString());
+                writer.WriteStringValue(Model);
             }
             if (Optional.IsDefined(ReasoningOptions) && !Patch.Contains("$.reasoning"u8))
             {
@@ -281,7 +281,7 @@ namespace OpenAI.Responses
             string user = default;
             ResponseServiceTier? serviceTier = default;
             string previousResponseId = default;
-            ModelIdsResponses? model = default;
+            string model = default;
             ResponseReasoningOptions reasoning = default;
             bool? background = default;
             int? maxOutputTokens = default;
@@ -383,7 +383,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    model = new ModelIdsResponses(prop.Value.GetString());
+                    model = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("reasoning"u8))

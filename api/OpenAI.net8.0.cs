@@ -5108,8 +5108,7 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class CreateResponseOptions : IJsonModel<CreateResponseOptions>, IPersistableModel<CreateResponseOptions> {
-        public CreateResponseOptions(IEnumerable<ResponseItem> inputItems, string model);
-        public CreateResponseOptions(IEnumerable<ResponseItem> inputItems);
+        public CreateResponseOptions(string model, IEnumerable<ResponseItem> inputItems);
         public bool? BackgroundModeEnabled { get; set; }
         public string ConversationId { get; set; }
         public string EndUserId { get; set; }
@@ -6111,7 +6110,7 @@ namespace OpenAI.Responses {
         public string Instructions { get; set; }
         public int? MaxOutputTokenCount { get; set; }
         public IDictionary<string, string> Metadata { get; }
-        public string Model { get; }
+        public string Model { get; set; }
         [EditorBrowsable(EditorBrowsableState.Never)]
         public string Object { get; set; }
         public IList<ResponseItem> OutputItems { get; }

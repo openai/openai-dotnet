@@ -18,9 +18,12 @@ public partial class ResponseExamples
     {
         ResponsesClient client = new(   apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        CreateResponseOptions options = new([
-            ResponseItem.CreateUserMessageItem("Generate an image of gray tabby cat hugging an otter with an orange scarf")
-        ], "gpt-5")
+        CreateResponseOptions options = new(
+            "gpt-5",
+            [
+                ResponseItem.CreateUserMessageItem("Generate an image of gray tabby cat hugging an otter with an orange scarf")
+            ]
+        )
         {
             Tools =
             {

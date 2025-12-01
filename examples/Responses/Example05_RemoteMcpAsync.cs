@@ -14,18 +14,20 @@ public partial class ResponseExamples
     [Test]
     public async Task Example05_RemoteMcpAsync()
     {
-        CreateResponseOptions options = new([
-            ResponseItem.CreateUserMessageItem("Roll 2d4+1")
-        ], "gpt-5")
-        {
-            Tools = {
-                new McpTool(serverLabel: "dmcp", serverUri: new Uri("https://dmcp-server.deno.dev/sse"))
-                {
-                    ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
-                    ToolCallApprovalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
+        CreateResponseOptions options = new(
+            "gpt-5",
+            [
+                ResponseItem.CreateUserMessageItem("Roll 2d4+1")
+            ])
+            {
+                Tools = {
+                    new McpTool(serverLabel: "dmcp", serverUri: new Uri("https://dmcp-server.deno.dev/sse"))
+                    {
+                        ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
+                        ToolCallApprovalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
+                    }
                 }
-            }
-        };
+            };
 
         ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 

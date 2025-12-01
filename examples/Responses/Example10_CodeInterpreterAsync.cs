@@ -22,9 +22,10 @@ public partial class ResponseExamples
 
         CodeInterpreterToolContainer container = new(CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration());
         CodeInterpreterTool codeInterpreterTool = new(container);
-        CreateResponseOptions options = new([
+        CreateResponseOptions options = new("gpt-5",
+        [
             ResponseItem.CreateUserMessageItem("Create an Excel spreadsheet that contains the mathematical times tables from 1-12 and make it available for download."),
-        ], "gpt-5")
+        ])
         {
             Tools = { codeInterpreterTool }
         };

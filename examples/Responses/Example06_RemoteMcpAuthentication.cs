@@ -13,16 +13,17 @@ public partial class ResponseExamples
     [Test]
     public void Example06_RemoteMcpAuthentication()
     {
-        CreateResponseOptions options = new([
-            ResponseItem.CreateUserMessageItem("Create a payment link for $20")], "gpt-5")
-        {
-            Tools = {
-                new McpTool(serverLabel: "stripe", serverUri: new Uri("https://mcp.stripe.com"))
-                {
-                    AuthorizationToken = Environment.GetEnvironmentVariable("STRIPE_OAUTH_ACCESS_TOKEN"),
+        CreateResponseOptions options = new(
+            "gpt-5",
+            [ResponseItem.CreateUserMessageItem("Create a payment link for $20")])
+            {
+                Tools = {
+                    new McpTool(serverLabel: "stripe", serverUri: new Uri("https://mcp.stripe.com"))
+                    {
+                        AuthorizationToken = Environment.GetEnvironmentVariable("STRIPE_OAUTH_ACCESS_TOKEN"),
+                    }
                 }
-            }
-        };
+            };
 
         ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 

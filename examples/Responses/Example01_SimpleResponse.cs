@@ -15,7 +15,7 @@ public partial class ResponseExamples
     {
         ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        ResponseResult response = client.CreateResponse(new ([ResponseItem.CreateUserMessageItem("Say 'this is a test.'")], "gpt-5"));
+        ResponseResult response = client.CreateResponse(new ("gpt-5", [ResponseItem.CreateUserMessageItem("Say 'this is a test.'")]));
 
         Console.WriteLine($"[ASSISTANT]: {response.GetOutputText()}");
     }
