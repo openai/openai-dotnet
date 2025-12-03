@@ -99,12 +99,12 @@ public partial class ResponsesClient
     [Experimental("OPENAI001")]
     public virtual Uri Endpoint => _endpoint;
 
-    internal virtual Task<ClientResult<OpenAIResponse>> CreateResponseAsync(IEnumerable<ResponseItem> inputItems, string model, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
+    internal virtual Task<ClientResult<ResponseResult>> CreateResponseAsync(IEnumerable<ResponseItem> inputItems, string model, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
     {
         return CreateResponseAsync(inputItems, model, options, cancellationToken.ToRequestOptions() ?? new RequestOptions());
     }
 
-    internal async Task<ClientResult<OpenAIResponse>> CreateResponseAsync(IEnumerable<ResponseItem> inputItems, string model, ResponseCreationOptions options, RequestOptions requestOptions)
+    internal async Task<ClientResult<ResponseResult>> CreateResponseAsync(IEnumerable<ResponseItem> inputItems, string model, ResponseCreationOptions options, RequestOptions requestOptions)
     {
         Argument.AssertNotNullOrEmpty(inputItems, nameof(inputItems));
         Argument.AssertNotNull(requestOptions, nameof(requestOptions));
@@ -115,21 +115,21 @@ public partial class ResponsesClient
 
         using BinaryContent content = CreatePerCallOptions(options, inputItems, model, stream: false).ToBinaryContent();
         ClientResult protocolResult = await CreateResponseAsync(content, requestOptions).ConfigureAwait(false);
-        OpenAIResponse convenienceValue = (OpenAIResponse)protocolResult;
+        ResponseResult convenienceValue = (ResponseResult)protocolResult;
         return ClientResult.FromValue(convenienceValue, protocolResult.GetRawResponse());
     }
 
-    internal virtual ClientResult<OpenAIResponse> CreateResponse(IEnumerable<ResponseItem> inputItems, string model, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
+    internal virtual ClientResult<ResponseResult> CreateResponse(IEnumerable<ResponseItem> inputItems, string model, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(inputItems, nameof(inputItems));
 
         using BinaryContent content = CreatePerCallOptions(options, inputItems, model, stream: false).ToBinaryContent();
         ClientResult protocolResult = CreateResponse(content, cancellationToken.ToRequestOptions());
-        OpenAIResponse convenienceValue = (OpenAIResponse)protocolResult;
+        ResponseResult convenienceValue = (ResponseResult)protocolResult;
         return ClientResult.FromValue(convenienceValue, protocolResult.GetRawResponse());
     }
 
-    internal virtual async Task<ClientResult<OpenAIResponse>> CreateResponseAsync(string userInputText, string model, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
+    internal virtual async Task<ClientResult<ResponseResult>> CreateResponseAsync(string userInputText, string model, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(userInputText, nameof(userInputText));
 
@@ -141,7 +141,7 @@ public partial class ResponsesClient
                 .ConfigureAwait(false);
     }
 
-    internal virtual ClientResult<OpenAIResponse> CreateResponse(string userInputText, string model, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
+    internal virtual ClientResult<ResponseResult> CreateResponse(string userInputText, string model, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(userInputText, nameof(userInputText));
 
@@ -155,6 +155,10 @@ public partial class ResponsesClient
     public virtual ClientResult<ResponseResult> CreateResponse(CreateResponseOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
+        if (options.StreamingEnabled is true)
+        {
+            throw new InvalidOperationException("'options.StreamingEnabled' must be 'false' when calling 'CreateResponse'.");
+        }
 
         ClientResult result = this.CreateResponse(CreatePerCallOptions(options), cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
         return ClientResult.FromValue((ResponseResult)result.GetRawResponse().Content, result.GetRawResponse());
@@ -223,6 +227,10 @@ public partial class ResponsesClient
     public virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(CreateResponseOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
+        if (options.StreamingEnabled is false)
+        {
+            throw new InvalidOperationException("'options.StreamingEnabled' must be 'true' when calling 'CreateResponseStreaming'.");
+        }
 
         return new SseUpdateCollection<StreamingResponseUpdate>(
             () => CreateResponse(CreatePerCallOptions(options, true), cancellationToken.ToRequestOptions(streaming: true)),
@@ -253,7 +261,7 @@ public partial class ResponsesClient
     }
 
 
-    internal async Task<ClientResult<OpenAIResponse>> GetResponseAsync(string responseId, IEnumerable<IncludedResponseProperty> include, RequestOptions requestOptions)
+    internal async Task<ClientResult<ResponseResult>> GetResponseAsync(string responseId, IEnumerable<IncludedResponseProperty> include, RequestOptions requestOptions)
     {
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
         Argument.AssertNotNull(requestOptions, nameof(requestOptions));
@@ -263,39 +271,39 @@ public partial class ResponsesClient
         }
 
         ClientResult protocolResult = await GetResponseAsync(responseId, include, stream: null, startingAfter: null, includeObfuscation: null, requestOptions).ConfigureAwait(false);
-        OpenAIResponse convenienceResult = (OpenAIResponse)protocolResult;
+        ResponseResult convenienceResult = (ResponseResult)protocolResult;
         return ClientResult.FromValue(convenienceResult, protocolResult.GetRawResponse());
     }
 
-    public virtual Task<ClientResult<OpenAIResponse>> GetResponseAsync(string responseId, IEnumerable<IncludedResponseProperty> includedProperties = default, CancellationToken cancellationToken = default)
+    public virtual Task<ClientResult<ResponseResult>> GetResponseAsync(string responseId, IEnumerable<IncludedResponseProperty> includedProperties = default, CancellationToken cancellationToken = default)
     {
         return GetResponseAsync(responseId, includedProperties, cancellationToken.ToRequestOptions() ?? new RequestOptions());
     }
 
-    public virtual ClientResult<OpenAIResponse> GetResponse(string responseId, IEnumerable<IncludedResponseProperty> includedProperties = default, CancellationToken cancellationToken = default)
+    public virtual ClientResult<ResponseResult> GetResponse(string responseId, IEnumerable<IncludedResponseProperty> includedProperties = default, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
         ClientResult protocolResult = GetResponse(responseId, includedProperties, stream: null, startingAfter: null, includeObfuscation: null, cancellationToken.ToRequestOptions());
-        OpenAIResponse convenienceResult = (OpenAIResponse)protocolResult;
+        ResponseResult convenienceResult = (ResponseResult)protocolResult;
         return ClientResult.FromValue(convenienceResult, protocolResult.GetRawResponse());
     }
 
-    public virtual async Task<ClientResult<ResponseResult>> GetResponseAsync(string responseId, GetResponseOptions options, CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<ResponseResult>> GetResponseAsync(GetResponseOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
-        Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
+        Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
 
-        ClientResult protocolResult = await GetResponseAsync(responseId, options.IncludedProperties, stream: options.StreamingEnabled, startingAfter: options.StartingAfter, includeObfuscation: options.IncludeObfuscation, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        ClientResult protocolResult = await GetResponseAsync(options.ResponseId, options.IncludedProperties, stream: options.StreamingEnabled, startingAfter: options.StartingAfter, includeObfuscation: options.IncludeObfuscation, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue((ResponseResult)protocolResult, protocolResult.GetRawResponse());
     }
 
-    public virtual ClientResult<ResponseResult> GetResponse(string responseId, GetResponseOptions options, CancellationToken cancellationToken = default)
+    public virtual ClientResult<ResponseResult> GetResponse(GetResponseOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
-        Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
+        Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
 
-        ClientResult protocolResult = GetResponse(responseId, options.IncludedProperties, stream: options.StreamingEnabled, startingAfter: options.StartingAfter, includeObfuscation: options.IncludeObfuscation, cancellationToken.ToRequestOptions());
+        ClientResult protocolResult = GetResponse(options.ResponseId, options.IncludedProperties, stream: options.StreamingEnabled, startingAfter: options.StartingAfter, includeObfuscation: options.IncludeObfuscation, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue((ResponseResult)protocolResult, protocolResult.GetRawResponse());
     }
 
@@ -304,21 +312,21 @@ public partial class ResponsesClient
         return GetResponseStreamingAsync(responseId, startingAfter, cancellationToken);
     }
 
-    public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, GetResponseOptions options, CancellationToken cancellationToken = default)
+    public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(GetResponseOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
-        Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
+        Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
 
         return new SseUpdateCollection<StreamingResponseUpdate>(
-            () => GetResponse(responseId, options.IncludedProperties, stream: true, startingAfter: options.StartingAfter, includeObfuscation: options.IncludeObfuscation, cancellationToken.ToRequestOptions(streaming: true)),
+            () => GetResponse(options.ResponseId, options.IncludedProperties, stream: true, startingAfter: options.StartingAfter, includeObfuscation: options.IncludeObfuscation, cancellationToken.ToRequestOptions(streaming: true)),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
             cancellationToken);
     }
 
-    public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, GetResponseOptions options, CancellationToken cancellationToken = default)
+    public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(GetResponseOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
-        Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
+        Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
 
         if (options.StreamingEnabled is true)
         {
@@ -326,7 +334,7 @@ public partial class ResponsesClient
         }
 
         return new AsyncSseUpdateCollection<StreamingResponseUpdate>(
-            async () => await GetResponseAsync(responseId, options.IncludedProperties, options.StreamingEnabled, startingAfter: options.StartingAfter, includeObfuscation: options.IncludeObfuscation, cancellationToken.ToRequestOptions()).ConfigureAwait(false),
+            async () => await GetResponseAsync(options.ResponseId, options.IncludedProperties, options.StreamingEnabled, startingAfter: options.StartingAfter, includeObfuscation: options.IncludeObfuscation, cancellationToken.ToRequestOptions()).ConfigureAwait(false),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
             cancellationToken);
     }
@@ -401,7 +409,7 @@ public partial class ResponsesClient
         Argument.AssertNotNull(options, nameof(options));
         Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
 
-        PipelineMessage message = CreateGetResponseInputItemsRequest(options.ResponseId, options.Limit, options.After, options.Order, options.Before, cancellationToken.ToRequestOptions());
+        PipelineMessage message = CreateGetResponseInputItemsRequest(options.ResponseId, options.PageSizeLimit, options.AfterId, options.Order, options.BeforeId, cancellationToken.ToRequestOptions());
         ClientResult result = ClientResult.FromResponse(Pipeline.ProcessMessage(message, cancellationToken.ToRequestOptions()));
         return ClientResult.FromValue((ResponseItemCollection)result, result.GetRawResponse());
     }
@@ -411,7 +419,7 @@ public partial class ResponsesClient
         Argument.AssertNotNull(options, nameof(options));
         Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
 
-        PipelineMessage message = CreateGetResponseInputItemsRequest(options.ResponseId, options.Limit, options.After, options.Order, options.Before, cancellationToken.ToRequestOptions());
+        PipelineMessage message = CreateGetResponseInputItemsRequest(options.ResponseId, options.PageSizeLimit, options.AfterId, options.Order, options.BeforeId, cancellationToken.ToRequestOptions());
         ClientResult result = ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, cancellationToken.ToRequestOptions()).ConfigureAwait(false));
         return ClientResult.FromValue((ResponseItemCollection)result, result.GetRawResponse());
     }

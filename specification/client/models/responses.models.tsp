@@ -38,6 +38,16 @@ model ResponseItemCollectionOptions {
 }
 
 @access(Access.public)
+@usage(Usage.input)
+model GetResponseOptions {
+  response_id: string;
+  @query startingAfter?: int32;
+  @query includeObfuscation?: boolean;
+  @query includedProperties?: Includable[] | null;
+  @query streamingEnabled?: boolean;
+}
+
+@access(Access.public)
 @usage(Usage.input | Usage.output)
 union DotNetGlobalToolCallApprovalPolicy {
   string,
@@ -69,7 +79,7 @@ model DotNetCodeInterpreterToolContainer {
   container?: CodeInterpreterContainerConfiguration;
 }
 
-@usage(Usage.input| Usage.json)
+@usage(Usage.input | Usage.json)
 model DotNetCreateResponse {
-    ...CreateResponse;
+  ...CreateResponse;
 }

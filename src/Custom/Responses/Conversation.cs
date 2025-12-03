@@ -1,5 +1,5 @@
 namespace OpenAI.Responses
 {
     [CodeGenType("ConversationParam2")]
-    public partial class Conversation { }
+    public partial class ResponseConversationOptions { }
 }

@@ -9,9 +9,9 @@ namespace OpenAI.Responses;
 [Experimental("OPENAI001")]
 public static partial class OpenAIResponsesModelFactory
 {
-    /// <summary> Initializes a new instance of <see cref="OpenAI.Responses.OpenAIResponse"/>. </summary>
-    /// <returns> A new <see cref="OpenAI.Responses.OpenAIResponse"/> instance for mocking. </returns>
-    internal static OpenAIResponse OpenAIResponse(
+    /// <summary> Initializes a new instance of <see cref="OpenAI.Responses.ResponseResult"/>. </summary>
+    /// <returns> A new <see cref="OpenAI.Responses.ResponseResult"/> instance for mocking. </returns>
+    internal static ResponseResult OpenAIResponse(
         string id = null,
         DateTimeOffset createdAt = default,
         ResponseStatus? status = null,
@@ -44,7 +44,7 @@ public static partial class OpenAIResponsesModelFactory
         tools ??= new List<ResponseTool>();
         metadata ??= new Dictionary<string, string>();
 
-        return new OpenAIResponse(
+        return new ResponseResult(
            metadata: metadata,
            temperature: temperature,
            topLogProbabilityCount: topLogProbabilityCount,

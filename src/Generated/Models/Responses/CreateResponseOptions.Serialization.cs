@@ -75,10 +75,10 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("temperature"u8);
                 writer.WriteNumberValue(Temperature.Value);
             }
-            if (Optional.IsDefined(TopLogprobs) && !Patch.Contains("$.top_logprobs"u8))
+            if (Optional.IsDefined(TopLogProbabilityCount) && !Patch.Contains("$.top_logprobs"u8))
             {
                 writer.WritePropertyName("top_logprobs"u8);
-                writer.WriteNumberValue(TopLogprobs.Value);
+                writer.WriteNumberValue(TopLogProbabilityCount.Value);
             }
             if (Optional.IsDefined(TopP) && !Patch.Contains("$.top_p"u8))
             {
@@ -265,7 +265,7 @@ namespace OpenAI.Responses
             }
             IDictionary<string, string> metadata = default;
             float? temperature = default;
-            int? topLogprobs = default;
+            int? topLogProbabilityCount = default;
             float? topP = default;
             string endUserId = default;
             string safetyIdentifier = default;
@@ -327,10 +327,10 @@ namespace OpenAI.Responses
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        topLogprobs = null;
+                        topLogProbabilityCount = null;
                         continue;
                     }
-                    topLogprobs = prop.Value.GetInt32();
+                    topLogProbabilityCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("top_p"u8))
@@ -533,7 +533,7 @@ namespace OpenAI.Responses
             return new CreateResponseOptions(
                 metadata ?? new ChangeTrackingDictionary<string, string>(),
                 temperature,
-                topLogprobs,
+                topLogProbabilityCount,
                 topP,
                 endUserId,
                 safetyIdentifier,

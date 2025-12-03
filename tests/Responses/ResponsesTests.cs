@@ -436,8 +436,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             }
         };
 
-        ResponseResult response = await client.CreateResponseAsync(
-            options);
+        ResponseResult response = await client.CreateResponseAsync(options);
 
         Assert.That(response.OutputItems, Has.Count.EqualTo(2));
         Assert.That(response.OutputItems[0], Is.InstanceOf<ImageGenerationCallResponseItem>());
@@ -745,7 +744,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         async Task RetrieveThatResponseAsync()
         {
-            ResponseResult retrievedResponse = await client.GetResponseAsync(response.Id, new GetResponseOptions());
+            ResponseResult retrievedResponse = await client.GetResponseAsync(new GetResponseOptions(response.Id));
             Assert.That(retrievedResponse.Id, Is.EqualTo(response.Id));
         }
 
@@ -768,7 +767,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
                 StoredOutputEnabled = false,
             });
 
-        ClientResultException expectedException = Assert.ThrowsAsync<ClientResultException>(async () => await client.GetResponseAsync(new(response.Id)));
+        ClientResultException expectedException = Assert.ThrowsAsync<ClientResultException>(async () => await client.GetResponseAsync(new GetResponseOptions(response.Id)));
         Assert.That(expectedException.Message, Does.Contain("not found"));
     }
 
@@ -804,7 +803,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             });
 
         Assert.That(response, Is.Not.Null);
-        Assert.That(response.Conversation.Id, Is.EqualTo(conversationId));
+        Assert.That(response.ConversationOptions.Id, Is.EqualTo(conversationId));
 
         var conversationResults = conversationClient.GetConversationItemsAsync(conversationId);
         var conversationItems = new List<JsonElement>();
@@ -1002,7 +1001,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That((response.OutputItems[0] as MessageResponseItem).Content, Is.Not.Null.And.Not.Empty);
         Assert.That((response.OutputItems[0] as MessageResponseItem).Content[0].Text, Does.StartWith("Arr, matey"));
 
-        ResponseResult retrievedResponse = await client.GetResponseAsync(new(response.Id), new GetResponseOptions());
+        ResponseResult retrievedResponse = await client.GetResponseAsync(new GetResponseOptions(response.Id));
         Assert.That((retrievedResponse?.OutputItems?.FirstOrDefault() as MessageResponseItem)?.Content?.FirstOrDefault()?.Text, Does.StartWith("Arr, matey"));
 
         if (instructionMethod == ResponsesTestInstructionMethod.InstructionsProperty)
@@ -1269,7 +1268,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(lastSequenceNumber, Is.GreaterThan(0));
 
         // Try getting the response without streaming it.
-        ResponseResult retrievedResponse = await client.GetResponseAsync(new(queuedResponseId), options: null);
+        ResponseResult retrievedResponse = await client.GetResponseAsync(new GetResponseOptions(queuedResponseId));
 
         Assert.That(retrievedResponse, Is.Not.Null);
         Assert.That(retrievedResponse.Id, Is.EqualTo(queuedResponseId));
@@ -1277,7 +1276,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(retrievedResponse.Status, Is.EqualTo(ResponseStatus.Queued));
 
         // Now try continuing the stream.
-        AsyncCollectionResult<StreamingResponseUpdate> continuedUpdates = client.GetResponseStreamingAsync(queuedResponseId, new GetResponseOptions() { StartingAfter = lastSequenceNumber });
+        AsyncCollectionResult<StreamingResponseUpdate> continuedUpdates = client.GetResponseStreamingAsync(new GetResponseOptions(queuedResponseId) { StartingAfter = lastSequenceNumber });
 
         ResponseResult completedResponse = null;
         int? firstContinuedSequenceNumber = null;

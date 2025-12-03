@@ -88,6 +88,13 @@ namespace OpenAI.Responses
         [CodeGenMember("Text")]
         public ResponseTextOptions TextOptions { get; set; }
 
+        /// <summary>
+        /// An integer between 0 and 20 specifying the number of most likely tokens to return at each token position, each with an associated log probability.
+        /// This corresponds to the "top_logprobs" property in the JSON representation.
+        /// </summary>
+        [CodeGenMember("TopLogprobs")]
+        public int? TopLogProbabilityCount { get; set; }
+
          /// <summary>
         /// Gets or sets the truncation mode for the response. This corresponds to the "truncation" property in the JSON representation.
         /// </summary>
@@ -109,7 +116,7 @@ namespace OpenAI.Responses
             return new CreateResponseOptions(
                 metadata: responseCreationOptions.Metadata,
                 temperature: responseCreationOptions.Temperature,
-                topLogprobs: responseCreationOptions.TopLogProbabilityCount,
+                topLogProbabilityCount: responseCreationOptions.TopLogProbabilityCount,
                 topP: responseCreationOptions.TopP,
                 endUserId: responseCreationOptions.EndUserId,
                 safetyIdentifier: responseCreationOptions.SafetyIdentifier,
