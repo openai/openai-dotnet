@@ -404,24 +404,24 @@ public partial class ResponsesClient
         return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
-    public virtual ClientResult<ResponseItemCollection> GetResponseInputItems(GetResponseInputItemsOptions options = default, CancellationToken cancellationToken = default)
+    public virtual ClientResult<ResponseItemCollectionPage> GetResponseInputItems(GetResponseInputItemsOptions options = default, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
         Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
 
         PipelineMessage message = CreateGetResponseInputItemsRequest(options.ResponseId, options.PageSizeLimit, options.AfterId, options.Order, options.BeforeId, cancellationToken.ToRequestOptions());
         ClientResult result = ClientResult.FromResponse(Pipeline.ProcessMessage(message, cancellationToken.ToRequestOptions()));
-        return ClientResult.FromValue((ResponseItemCollection)result, result.GetRawResponse());
+        return ClientResult.FromValue((ResponseItemCollectionPage)result, result.GetRawResponse());
     }
 
-    public virtual async Task<ClientResult<ResponseItemCollection>> GetResponseInputItemsAsync(GetResponseInputItemsOptions options = default, CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<ResponseItemCollectionPage>> GetResponseInputItemsAsync(GetResponseInputItemsOptions options = default, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
         Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
 
         PipelineMessage message = CreateGetResponseInputItemsRequest(options.ResponseId, options.PageSizeLimit, options.AfterId, options.Order, options.BeforeId, cancellationToken.ToRequestOptions());
         ClientResult result = ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, cancellationToken.ToRequestOptions()).ConfigureAwait(false));
-        return ClientResult.FromValue((ResponseItemCollection)result, result.GetRawResponse());
+        return ClientResult.FromValue((ResponseItemCollectionPage)result, result.GetRawResponse());
     }
 
     internal virtual ResponseCreationOptions CreatePerCallOptions(ResponseCreationOptions userOptions, IEnumerable<ResponseItem> inputItems, string model, bool stream = false)
