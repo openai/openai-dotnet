@@ -14,8 +14,6 @@ namespace OpenAI.Evals
 
         internal InternalCreateEvalRunRequest(InternalEvalRunDataSourceParams dataSource)
         {
-            Argument.AssertNotNull(dataSource, nameof(dataSource));
-
             Metadata = new ChangeTrackingDictionary<string, string>();
             DataSource = dataSource;
         }

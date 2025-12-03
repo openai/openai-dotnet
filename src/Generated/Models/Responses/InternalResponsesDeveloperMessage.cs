@@ -13,8 +13,6 @@ namespace OpenAI.Responses
     {
         public InternalResponsesDeveloperMessage(IEnumerable<ResponseContentPart> internalContent) : base(InternalResponsesMessageRole.Developer)
         {
-            Argument.AssertNotNull(internalContent, nameof(internalContent));
-
             InternalContent = internalContent.ToList();
         }
 

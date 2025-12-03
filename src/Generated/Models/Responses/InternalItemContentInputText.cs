@@ -3,7 +3,6 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
-using OpenAI;
 
 namespace OpenAI.Responses
 {
@@ -11,8 +10,6 @@ namespace OpenAI.Responses
     {
         public InternalItemContentInputText(string internalText) : base(InternalItemContentType.InputText)
         {
-            Argument.AssertNotNull(internalText, nameof(internalText));
-
             InternalText = internalText;
         }
 

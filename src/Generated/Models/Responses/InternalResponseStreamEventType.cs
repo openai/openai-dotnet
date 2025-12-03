@@ -4,7 +4,6 @@
 
 using System;
 using System.ComponentModel;
-using OpenAI;
 
 namespace OpenAI.Responses
 {
@@ -69,8 +68,6 @@ namespace OpenAI.Responses
 
         public InternalResponseStreamEventType(string value)
         {
-            Argument.AssertNotNull(value, nameof(value));
-
             _value = value;
         }
 

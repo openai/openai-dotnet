@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 using OpenAI.Graders;
 
 namespace OpenAI.Evals
@@ -13,9 +12,6 @@ namespace OpenAI.Evals
     {
         public InternalEvalGraderPythonParams(string name, string source) : base(GraderType.Python)
         {
-            Argument.AssertNotNull(name, nameof(name));
-            Argument.AssertNotNull(source, nameof(source));
-
             Name = name;
             Source = source;
         }

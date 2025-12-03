@@ -4,7 +4,9 @@ namespace OpenAI.Responses;
 [CodeGenType("CodeInterpreterToolCallItemResource")]
 public partial class CodeInterpreterCallResponseItem
 {
-    // CUSTOM: Made nullable since this is a read-only property.  
+    // CUSTOM:
+    // - Made nullable because this is an optional property.
+    // - Added setter because this is an optional property in an input/output type.
     [CodeGenMember("Status")]
-    public CodeInterpreterCallStatus? Status { get; }
+    public CodeInterpreterCallStatus? Status { get; set; }
 }

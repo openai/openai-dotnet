@@ -13,8 +13,6 @@ namespace OpenAI.Responses
     {
         public InternalFileSearchToolCallItemParam(IEnumerable<string> queries) : base(InternalItemType.FileSearchCall)
         {
-            Argument.AssertNotNull(queries, nameof(queries));
-
             Queries = queries.ToList();
             Results = new ChangeTrackingList<FileSearchCallResult>();
         }

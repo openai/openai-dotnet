@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Evals
 {
@@ -14,8 +13,6 @@ namespace OpenAI.Evals
 
         public InternalEvalResponsesRunDataSourceParamsInputMessages2(string itemReference)
         {
-            Argument.AssertNotNull(itemReference, nameof(itemReference));
-
             ItemReference = itemReference;
         }
 

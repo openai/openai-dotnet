@@ -13,8 +13,6 @@ namespace OpenAI.Responses
     {
         public InternalResponsesUserMessageItemParam(IEnumerable<ResponseContentPart> content) : base(InternalResponsesMessageRole.User)
         {
-            Argument.AssertNotNull(content, nameof(content));
-
             Content = content.ToList();
         }
 

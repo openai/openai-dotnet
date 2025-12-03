@@ -6,7 +6,6 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Chat
 {
@@ -21,8 +20,6 @@ namespace OpenAI.Chat
 
         public ChatClientGetChatCompletionMessagesCollectionResultOfT(ChatClient client, string completionId, string after, int? limit, string order, RequestOptions options)
         {
-            Argument.AssertNotNullOrEmpty(completionId, nameof(completionId));
-
             _client = client;
             _completionId = completionId;
             _after = after;

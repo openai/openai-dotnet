@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Files
 {
@@ -14,9 +13,6 @@ namespace OpenAI.Files
 
         internal InternalCreateUploadRequest(string filename, InternalCreateUploadRequestPurpose purpose, int bytes, string mimeType)
         {
-            Argument.AssertNotNull(filename, nameof(filename));
-            Argument.AssertNotNull(mimeType, nameof(mimeType));
-
             Filename = filename;
             Purpose = purpose;
             Bytes = bytes;

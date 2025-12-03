@@ -13,8 +13,6 @@ namespace OpenAI.Responses
     {
         public InternalComputerActionKeyPress(IEnumerable<string> keys) : base(ComputerCallActionKind.KeyPress)
         {
-            Argument.AssertNotNull(keys, nameof(keys));
-
             Keys = keys.ToList();
         }
 

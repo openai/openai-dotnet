@@ -3,7 +3,6 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
-using OpenAI;
 
 namespace OpenAI.Responses
 {
@@ -11,8 +10,6 @@ namespace OpenAI.Responses
     {
         public InternalItemContentRefusal(string internalRefusal) : base(InternalItemContentType.Refusal)
         {
-            Argument.AssertNotNull(internalRefusal, nameof(internalRefusal));
-
             InternalRefusal = internalRefusal;
         }
 

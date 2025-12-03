@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 using OpenAI.Graders;
 
 namespace OpenAI.Evals
@@ -13,10 +12,6 @@ namespace OpenAI.Evals
     {
         public InternalEvalGraderTextSimilarityParams(string name, string input, string reference, GraderTextSimilarityEvaluationMetric evaluationMetric, float passThreshold) : base(GraderType.TextSimilarity)
         {
-            Argument.AssertNotNull(name, nameof(name));
-            Argument.AssertNotNull(input, nameof(input));
-            Argument.AssertNotNull(reference, nameof(reference));
-
             Name = name;
             Input = input;
             Reference = reference;

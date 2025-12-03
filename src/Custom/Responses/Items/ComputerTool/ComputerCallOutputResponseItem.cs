@@ -4,7 +4,9 @@ namespace OpenAI.Responses;
 [CodeGenType("ComputerToolCallOutputItemResource")]
 public partial class ComputerCallOutputResponseItem
 {
-    // CUSTOM: Made nullable since this is a read-only property.
+    // CUSTOM:
+    // - Made nullable because this is an optional property.
+    // - Added setter because this is an optional property in an input/output type.
     [CodeGenMember("Status")]
-    public ComputerCallOutputStatus? Status { get; }
+    public ComputerCallOutputStatus? Status { get; set; }
 }

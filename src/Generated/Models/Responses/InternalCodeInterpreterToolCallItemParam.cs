@@ -12,8 +12,6 @@ namespace OpenAI.Responses
     {
         public InternalCodeInterpreterToolCallItemParam(string code) : base(InternalItemType.CodeInterpreterCall)
         {
-            Argument.AssertNotNull(code, nameof(code));
-
             Code = code;
             Outputs = new ChangeTrackingList<CodeInterpreterCallOutput>();
         }

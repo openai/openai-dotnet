@@ -4,7 +4,6 @@
 
 using System;
 using System.ComponentModel;
-using OpenAI;
 
 namespace OpenAI.Files
 {
@@ -18,8 +17,6 @@ namespace OpenAI.Files
 
         public InternalCreateUploadRequestPurpose(string value)
         {
-            Argument.AssertNotNull(value, nameof(value));
-
             _value = value;
         }
 

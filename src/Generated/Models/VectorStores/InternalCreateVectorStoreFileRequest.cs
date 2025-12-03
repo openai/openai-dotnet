@@ -14,8 +14,6 @@ namespace OpenAI.VectorStores
 
         public InternalCreateVectorStoreFileRequest(string fileId)
         {
-            Argument.AssertNotNull(fileId, nameof(fileId));
-
             FileId = fileId;
             Attributes = new ChangeTrackingDictionary<string, BinaryData>();
         }

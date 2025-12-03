@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Realtime
 {
@@ -12,8 +11,6 @@ namespace OpenAI.Realtime
     {
         public InternalRealtimeClientEventSessionUpdate(ConversationSessionOptions session) : base(InternalRealtimeClientEventType.SessionUpdate)
         {
-            Argument.AssertNotNull(session, nameof(session));
-
             Session = session;
         }
 

@@ -72,7 +72,7 @@ public static partial class OpenAIResponsesModelFactory
            toolChoice: toolChoice,
            model: model,
            @object: "response",
-           conversation: new(conversationId),
+           conversationOptions: new(conversationId),
            patch: default);
     }
 

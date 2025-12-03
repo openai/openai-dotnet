@@ -12,9 +12,6 @@ namespace OpenAI.Responses
     {
         public InternalComputerUsePreviewToolCallOutputItemParam(string callId, ComputerCallOutput output) : base(InternalItemType.ComputerCallOutput)
         {
-            Argument.AssertNotNull(callId, nameof(callId));
-            Argument.AssertNotNull(output, nameof(output));
-
             CallId = callId;
             AcknowledgedSafetyChecks = new ChangeTrackingList<ComputerCallSafetyCheck>();
             Output = output;

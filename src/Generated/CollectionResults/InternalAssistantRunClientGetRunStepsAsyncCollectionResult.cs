@@ -6,7 +6,6 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Assistants
 {
@@ -24,9 +23,6 @@ namespace OpenAI.Assistants
 
         internal InternalAssistantRunClientGetRunStepsAsyncCollectionResult(InternalAssistantRunClient client, string threadId, string runId, int? limit, string order, string after, string before, IEnumerable<InternalIncludedRunStepProperty> include, RequestOptions options)
         {
-            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-            Argument.AssertNotNullOrEmpty(runId, nameof(runId));
-
             _client = client;
             _threadId = threadId;
             _runId = runId;

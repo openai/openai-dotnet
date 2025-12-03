@@ -23,32 +23,24 @@ namespace OpenAI.LegacyCompletions
 
         public virtual ClientResult CreateCompletion(BinaryContent content, RequestOptions options = null)
         {
-            Argument.AssertNotNull(content, nameof(content));
-
             using PipelineMessage message = CreateCreateCompletionRequest(content, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
         public virtual async Task<ClientResult> CreateCompletionAsync(BinaryContent content, RequestOptions options = null)
         {
-            Argument.AssertNotNull(content, nameof(content));
-
             using PipelineMessage message = CreateCreateCompletionRequest(content, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
         public virtual ClientResult<InternalCreateCompletionResponse> CreateCompletion(InternalCreateCompletionRequest requestBody, CancellationToken cancellationToken = default)
         {
-            Argument.AssertNotNull(requestBody, nameof(requestBody));
-
             ClientResult result = CreateCompletion(requestBody, cancellationToken.ToRequestOptions());
             return ClientResult.FromValue((InternalCreateCompletionResponse)result, result.GetRawResponse());
         }
 
         public virtual async Task<ClientResult<InternalCreateCompletionResponse>> CreateCompletionAsync(InternalCreateCompletionRequest requestBody, CancellationToken cancellationToken = default)
         {
-            Argument.AssertNotNull(requestBody, nameof(requestBody));
-
             ClientResult result = await CreateCompletionAsync(requestBody, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
             return ClientResult.FromValue((InternalCreateCompletionResponse)result, result.GetRawResponse());
         }

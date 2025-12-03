@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Moderations
 {
@@ -14,8 +13,6 @@ namespace OpenAI.Moderations
 
         internal InternalCreateModerationRequestInput2(InternalCreateModerationRequestInputImageUrl imageUrl)
         {
-            Argument.AssertNotNull(imageUrl, nameof(imageUrl));
-
             ImageUrl = imageUrl;
         }
 

@@ -4,7 +4,6 @@
 
 using System;
 using System.ComponentModel;
-using OpenAI;
 
 namespace OpenAI.Embeddings
 {
@@ -16,8 +15,6 @@ namespace OpenAI.Embeddings
 
         public InternalCreateEmbeddingRequestEncodingFormat(string value)
         {
-            Argument.AssertNotNull(value, nameof(value));
-
             _value = value;
         }
 

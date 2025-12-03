@@ -15,8 +15,6 @@ namespace OpenAI.Evals
 
         public InternalEvalResponsesRunDataSourceParamsInputMessages1(IEnumerable<BinaryData> template)
         {
-            Argument.AssertNotNull(template, nameof(template));
-
             Template = template.ToList();
         }
 

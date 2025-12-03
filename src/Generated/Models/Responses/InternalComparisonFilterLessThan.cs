@@ -4,7 +4,6 @@
 
 using System;
 using System.ClientModel.Primitives;
-using OpenAI;
 
 namespace OpenAI.Responses
 {
@@ -12,9 +11,6 @@ namespace OpenAI.Responses
     {
         public InternalComparisonFilterLessThan(string key, BinaryData value) : base(InternalComparisonFilterType.Lt, key, value)
         {
-            Argument.AssertNotNull(key, nameof(key));
-            Argument.AssertNotNull(value, nameof(value));
-
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

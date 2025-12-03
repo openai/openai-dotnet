@@ -7,7 +7,6 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using OpenAI;
 
 namespace OpenAI.Assistants
 {
@@ -23,8 +22,6 @@ namespace OpenAI.Assistants
 
         internal InternalAssistantMessageClientGetMessagesAsyncCollectionResultOfT(InternalAssistantMessageClient client, string threadId, int? limit, string order, string after, string before, RequestOptions options)
         {
-            Argument.AssertNotNullOrEmpty(threadId, nameof(threadId));
-
             _client = client;
             _threadId = threadId;
             _limit = limit;

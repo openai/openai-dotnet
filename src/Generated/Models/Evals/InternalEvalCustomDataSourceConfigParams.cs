@@ -13,8 +13,6 @@ namespace OpenAI.Evals
         public InternalEvalCustomDataSourceConfigParams(IDictionary<string, BinaryData> itemSchema) : base(InternalEvalDataSourceConfigType.Custom)
         {
             // Plugin customization: ensure initialization of collections
-            Argument.AssertNotNull(itemSchema, nameof(itemSchema));
-
             ItemSchema = itemSchema ?? new ChangeTrackingDictionary<string, BinaryData>();
         }
 

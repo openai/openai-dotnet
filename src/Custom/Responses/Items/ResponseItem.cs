@@ -10,9 +10,9 @@ namespace OpenAI.Responses;
 [CodeGenType("ItemResource")]
 public partial class ResponseItem
 {
-    // CUSTOM: Specify read-only semantics for ID
+    // CUSTOM: Added setter because this is required in output scenarios and optional in input scenarios.
     [CodeGenMember("Id")]
-    public string Id { get; internal set; }
+    public string Id { get; set; }
 
     public static MessageResponseItem CreateUserMessageItem(IEnumerable<ResponseContentPart> contentParts)
     {

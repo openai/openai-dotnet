@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Realtime
 {
@@ -12,8 +11,6 @@ namespace OpenAI.Realtime
     {
         public InternalRealtimeClientEventConversationItemTruncate(string itemId, int contentIndex, int audioEndMs) : base(InternalRealtimeClientEventType.ConversationItemTruncate)
         {
-            Argument.AssertNotNull(itemId, nameof(itemId));
-
             ItemId = itemId;
             ContentIndex = contentIndex;
             AudioEndMs = audioEndMs;

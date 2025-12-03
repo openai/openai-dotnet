@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 using OpenAI.Graders;
 
 namespace OpenAI.FineTuning
@@ -15,8 +14,6 @@ namespace OpenAI.FineTuning
 
         public InternalFineTuneReinforcementMethod(BinaryData grader)
         {
-            Argument.AssertNotNull(grader, nameof(grader));
-
             Grader = grader;
         }
 

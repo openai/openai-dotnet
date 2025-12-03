@@ -3,7 +3,6 @@
 #nullable disable
 
 using System.ClientModel.Primitives;
-using OpenAI;
 
 namespace OpenAI.Responses
 {
@@ -11,8 +10,6 @@ namespace OpenAI.Responses
     {
         public InternalComputerActionTypeKeys(string text) : base(ComputerCallActionKind.Type)
         {
-            Argument.AssertNotNull(text, nameof(text));
-
             Text = text;
         }
 

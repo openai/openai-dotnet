@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Realtime
 {
@@ -14,8 +13,6 @@ namespace OpenAI.Realtime
 
         public InternalRealtimeToolChoiceFunctionObjectFunction(string name)
         {
-            Argument.AssertNotNull(name, nameof(name));
-
             Name = name;
         }
 

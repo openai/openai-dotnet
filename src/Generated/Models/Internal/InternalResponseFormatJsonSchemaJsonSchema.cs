@@ -7,7 +7,6 @@ using System.ClientModel.Primitives;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
-using OpenAI;
 
 namespace OpenAI.Internal
 {
@@ -18,8 +17,6 @@ namespace OpenAI.Internal
 
         public InternalResponseFormatJsonSchemaJsonSchema(string name)
         {
-            Argument.AssertNotNull(name, nameof(name));
-
             Name = name;
         }
 

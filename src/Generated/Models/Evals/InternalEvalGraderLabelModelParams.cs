@@ -14,12 +14,6 @@ namespace OpenAI.Evals
     {
         public InternalEvalGraderLabelModelParams(string name, string model, IEnumerable<BinaryData> input, IEnumerable<string> labels, IEnumerable<string> passingLabels) : base(GraderType.LabelModel)
         {
-            Argument.AssertNotNull(name, nameof(name));
-            Argument.AssertNotNull(model, nameof(model));
-            Argument.AssertNotNull(input, nameof(input));
-            Argument.AssertNotNull(labels, nameof(labels));
-            Argument.AssertNotNull(passingLabels, nameof(passingLabels));
-
             Name = name;
             Model = model;
             Input = input.ToList();
