@@ -5942,23 +5942,6 @@ namespace OpenAI.Responses {
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
-    public class ResponseItemCollection : IJsonModel<ResponseItemCollection>, IPersistableModel<ResponseItemCollection> {
-        public IList<ResponseItem> Data { get; }
-        public string FirstId { get; }
-        public bool HasMore { get; }
-        public string LastId { get; }
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public string Object { get; }
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        [Experimental("SCME0001")]
-        public ref JsonPatch Patch { get; }
-        protected virtual ResponseItemCollection JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        public static explicit operator ResponseItemCollection(ClientResult result);
-        protected virtual ResponseItemCollection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    [Experimental("OPENAI001")]
     public class ResponseItemCollectionOptions : IJsonModel<ResponseItemCollectionOptions>, IPersistableModel<ResponseItemCollectionOptions> {
         public string AfterId { get; set; }
         public string BeforeId { get; set; }
@@ -5984,6 +5967,23 @@ namespace OpenAI.Responses {
         public static implicit operator ResponseItemCollectionOrder?(string value);
         public static bool operator !=(ResponseItemCollectionOrder left, ResponseItemCollectionOrder right);
         public override readonly string ToString();
+    }
+    [Experimental("OPENAI001")]
+    public class ResponseItemCollectionPage : IJsonModel<ResponseItemCollectionPage>, IPersistableModel<ResponseItemCollectionPage> {
+        public IList<ResponseItem> Data { get; }
+        public string FirstId { get; }
+        public bool HasMore { get; }
+        public string LastId { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public string Object { get; }
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        protected virtual ResponseItemCollectionPage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public static explicit operator ResponseItemCollectionPage(ClientResult result);
+        protected virtual ResponseItemCollectionPage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
     public class ResponseMessageAnnotation : IJsonModel<ResponseMessageAnnotation>, IPersistableModel<ResponseMessageAnnotation> {
@@ -6136,19 +6136,23 @@ namespace OpenAI.Responses {
         public virtual ClientResult<ResponseResult> GetResponse(GetResponseOptions options, CancellationToken cancellationToken = default);
         public virtual ClientResult GetResponse(string responseId, IEnumerable<IncludedResponseProperty> include, bool? stream, int? startingAfter, bool? includeObfuscation, RequestOptions options);
         public virtual ClientResult<ResponseResult> GetResponse(string responseId, IEnumerable<IncludedResponseProperty> includedProperties = null, CancellationToken cancellationToken = default);
+        public virtual ClientResult<ResponseResult> GetResponse(string responseId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<ResponseResult>> GetResponseAsync(GetResponseOptions options, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GetResponseAsync(string responseId, IEnumerable<IncludedResponseProperty> include, bool? stream, int? startingAfter, bool? includeObfuscation, RequestOptions options);
         public virtual Task<ClientResult<ResponseResult>> GetResponseAsync(string responseId, IEnumerable<IncludedResponseProperty> includedProperties = null, CancellationToken cancellationToken = default);
-        public virtual ClientResult<ResponseItemCollection> GetResponseInputItems(GetResponseInputItemsOptions options = default, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult<ResponseResult>> GetResponseAsync(string responseId, CancellationToken cancellationToken = default);
+        public virtual ClientResult<ResponseItemCollectionPage> GetResponseInputItems(GetResponseInputItemsOptions options = default, CancellationToken cancellationToken = default);
         public virtual CollectionResult<ResponseItem> GetResponseInputItems(string responseId, ResponseItemCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual ClientResult GetResponseInputItems(string responseId, int? limit, string order, string after, string before, RequestOptions options);
-        public virtual Task<ClientResult<ResponseItemCollection>> GetResponseInputItemsAsync(GetResponseInputItemsOptions options = default, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult<ResponseItemCollectionPage>> GetResponseInputItemsAsync(GetResponseInputItemsOptions options = default, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<ResponseItem> GetResponseInputItemsAsync(string responseId, ResponseItemCollectionOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GetResponseInputItemsAsync(string responseId, int? limit, string order, string after, string before, RequestOptions options);
         public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(GetResponseOptions options, CancellationToken cancellationToken = default);
         public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, IEnumerable<IncludedResponseProperty> includedProperties = null, int? startingAfter = null, bool? includeObfuscation = null, CancellationToken cancellationToken = default);
+        public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(GetResponseOptions options, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, IEnumerable<IncludedResponseProperty> includedProperties = null, int? startingAfter = null, bool? includeObfuscation = null, CancellationToken cancellationToken = default);
+        public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, CancellationToken cancellationToken = default);
     }
     [Experimental("OPENAI001")]
     public readonly partial struct ResponseServiceTier : IEquatable<ResponseServiceTier> {

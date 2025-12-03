@@ -280,6 +280,16 @@ public partial class ResponsesClient
         return GetResponseAsync(responseId, includedProperties, cancellationToken.ToRequestOptions() ?? new RequestOptions());
     }
 
+    public virtual ClientResult<ResponseResult> GetResponse(string responseId, CancellationToken cancellationToken = default)
+    {
+        return GetResponse(responseId, default, cancellationToken);
+    }
+
+    public virtual Task<ClientResult<ResponseResult>> GetResponseAsync(string responseId, CancellationToken cancellationToken = default)
+    {
+        return GetResponseAsync(responseId, default, cancellationToken);
+    }
+
     public virtual ClientResult<ResponseResult> GetResponse(string responseId, IEnumerable<IncludedResponseProperty> includedProperties = default, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
@@ -323,6 +333,16 @@ public partial class ResponsesClient
             cancellationToken);
     }
 
+    public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(responseId, nameof(responseId));
+
+        return new SseUpdateCollection<StreamingResponseUpdate>(
+            () => GetResponse(responseId, default, stream: true, startingAfter: default, includeObfuscation: default, cancellationToken.ToRequestOptions(streaming: true)),
+            StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
+            cancellationToken);
+    }
+
     public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(GetResponseOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
@@ -335,6 +355,16 @@ public partial class ResponsesClient
 
         return new AsyncSseUpdateCollection<StreamingResponseUpdate>(
             async () => await GetResponseAsync(options.ResponseId, options.IncludedProperties, options.StreamingEnabled, startingAfter: options.StartingAfter, includeObfuscation: options.IncludeObfuscation, cancellationToken.ToRequestOptions()).ConfigureAwait(false),
+            StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
+            cancellationToken);
+    }
+
+    public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(responseId, nameof(responseId));
+
+        return new AsyncSseUpdateCollection<StreamingResponseUpdate>(
+            async () => await GetResponseAsync(responseId, default, stream: true, startingAfter: default, includeObfuscation: default, cancellationToken.ToRequestOptions()).ConfigureAwait(false),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
             cancellationToken);
     }
