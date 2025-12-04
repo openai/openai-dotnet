@@ -250,7 +250,8 @@ model CreateImageVariationRequest {
 model Image {
   /** The base64-encoded JSON of the generated image. Default value for `gpt-image-1`, and only present if `response_format` is set to `b64_json` for `dall-e-2` and `dall-e-3`. */
   #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
-  b64_json?: string;
+  @encode("base64", string)
+  b64_json?: bytes;
 
   /** When using `dall-e-2` or `dall-e-3`, the URL of the generated image if `response_format` is set to `url` (default value). Unsupported for `gpt-image-1`. */
   url?: string;

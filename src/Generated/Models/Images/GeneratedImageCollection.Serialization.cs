@@ -35,11 +35,11 @@ namespace OpenAI.Images
                 writer.WritePropertyName("created"u8);
                 writer.WriteNumberValue(CreatedAt, "U");
             }
-            if (Optional.IsCollectionDefined(Data) && _additionalBinaryDataProperties?.ContainsKey("data") != true)
+            if (Optional.IsCollectionDefined(Items) && _additionalBinaryDataProperties?.ContainsKey("data") != true)
             {
                 writer.WritePropertyName("data"u8);
                 writer.WriteStartArray();
-                foreach (GeneratedImage item in Data)
+                foreach (GeneratedImage item in Items)
                 {
                     writer.WriteObjectValue(item, options);
                 }
@@ -50,10 +50,10 @@ namespace OpenAI.Images
                 writer.WritePropertyName("background"u8);
                 writer.WriteStringValue(Background.Value.ToString());
             }
-            if (Optional.IsDefined(OutputFormat) && _additionalBinaryDataProperties?.ContainsKey("output_format") != true)
+            if (Optional.IsDefined(OutputFileFormat) && _additionalBinaryDataProperties?.ContainsKey("output_format") != true)
             {
                 writer.WritePropertyName("output_format"u8);
-                writer.WriteStringValue(OutputFormat.Value.ToString());
+                writer.WriteStringValue(OutputFileFormat.Value.ToString());
             }
             if (Optional.IsDefined(Size) && _additionalBinaryDataProperties?.ContainsKey("size") != true)
             {
@@ -113,11 +113,11 @@ namespace OpenAI.Images
                 return null;
             }
             DateTimeOffset createdAt = default;
-            IList<GeneratedImage> data = default;
-            InternalImagesResponseBackground? background = default;
-            InternalImagesResponseOutputFormat? outputFormat = default;
-            InternalImagesResponseSize? size = default;
-            InternalImagesResponseQuality? quality = default;
+            IList<GeneratedImage> items = default;
+            GeneratedImageBackground? background = default;
+            GeneratedImageFileFormat? outputFileFormat = default;
+            GeneratedImageSize? size = default;
+            GeneratedImageQuality? quality = default;
             ImageTokenUsage usage = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -138,7 +138,7 @@ namespace OpenAI.Images
                     {
                         array.Add(GeneratedImage.DeserializeGeneratedImage(item, options));
                     }
-                    data = array;
+                    items = array;
                     continue;
                 }
                 if (prop.NameEquals("background"u8))
@@ -147,7 +147,7 @@ namespace OpenAI.Images
                     {
                         continue;
                     }
-                    background = new InternalImagesResponseBackground(prop.Value.GetString());
+                    background = new GeneratedImageBackground(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("output_format"u8))
@@ -156,7 +156,7 @@ namespace OpenAI.Images
                     {
                         continue;
                     }
-                    outputFormat = new InternalImagesResponseOutputFormat(prop.Value.GetString());
+                    outputFileFormat = new GeneratedImageFileFormat(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("size"u8))
@@ -165,7 +165,7 @@ namespace OpenAI.Images
                     {
                         continue;
                     }
-                    size = new InternalImagesResponseSize(prop.Value.GetString());
+                    size = new GeneratedImageSize(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("quality"u8))
@@ -174,7 +174,7 @@ namespace OpenAI.Images
                     {
                         continue;
                     }
-                    quality = new InternalImagesResponseQuality(prop.Value.GetString());
+                    quality = new GeneratedImageQuality(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("usage"u8))
@@ -191,9 +191,9 @@ namespace OpenAI.Images
             }
             return new GeneratedImageCollection(
                 createdAt,
-                data ?? new ChangeTrackingList<GeneratedImage>(),
+                items ?? new ChangeTrackingList<GeneratedImage>(),
                 background,
-                outputFormat,
+                outputFileFormat,
                 size,
                 quality,
                 usage,

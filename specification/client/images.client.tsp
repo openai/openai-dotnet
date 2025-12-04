@@ -11,3 +11,5 @@ using Azure.ClientGenerator.Core;
 @@clientLocation(createImage, "Images");
 @@clientLocation(createImageEdit, "Images");
 @@clientLocation(createImageVariation, "Images");
+
+@@clientName(ImagesResponse.data, "Items");

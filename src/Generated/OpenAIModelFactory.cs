@@ -1216,11 +1216,11 @@ namespace OpenAI
             return new ItemRetrievedUpdate(RealtimeUpdateKind.ItemRetrieved, eventId, additionalBinaryDataProperties: null, item);
         }
 
-        public static OpenAIEmbeddingCollection OpenAIEmbeddingCollection(IEnumerable<OpenAIEmbedding> data = default, string model = default, string @object = default, EmbeddingTokenUsage usage = default)
+        public static OpenAIEmbeddingCollection OpenAIEmbeddingCollection(IEnumerable<OpenAIEmbedding> items = default, string model = default, string @object = default, EmbeddingTokenUsage usage = default)
         {
-            data ??= new ChangeTrackingList<OpenAIEmbedding>();
+            items ??= new ChangeTrackingList<OpenAIEmbedding>();
 
-            return new OpenAIEmbeddingCollection(data.ToList(), model, @object, usage, default);
+            return new OpenAIEmbeddingCollection(items.ToList(), model, @object, usage, default);
         }
 
         public static OpenAIEmbedding OpenAIEmbedding(int index = default, BinaryData embeddingProperty = default, string @object = default)
@@ -1251,6 +1251,21 @@ namespace OpenAI
                 stream,
                 partialImages,
                 quality,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static GeneratedImageCollection GeneratedImageCollection(DateTimeOffset createdAt = default, IEnumerable<GeneratedImage> items = default, GeneratedImageBackground? background = default, GeneratedImageFileFormat? outputFileFormat = default, GeneratedImageSize? size = default, GeneratedImageQuality? quality = default, ImageTokenUsage usage = default)
+        {
+            items ??= new ChangeTrackingList<GeneratedImage>();
+
+            return new GeneratedImageCollection(
+                createdAt,
+                items.ToList(),
+                background,
+                outputFileFormat,
+                size,
+                quality,
+                usage,
                 additionalBinaryDataProperties: null);
         }
 
@@ -1301,11 +1316,11 @@ namespace OpenAI
                 additionalBinaryDataProperties: null);
         }
 
-        public static OpenAIModelCollection OpenAIModelCollection(string @object = default, IEnumerable<OpenAIModel> data = default)
+        public static OpenAIModelCollection OpenAIModelCollection(string @object = default, IEnumerable<OpenAIModel> items = default)
         {
-            data ??= new ChangeTrackingList<OpenAIModel>();
+            items ??= new ChangeTrackingList<OpenAIModel>();
 
-            return new OpenAIModelCollection(@object, data.ToList(), serializedAdditionalRawData: null);
+            return new OpenAIModelCollection(@object, items.ToList(), additionalBinaryDataProperties: null);
         }
 
         public static OpenAIModel OpenAIModel(string id = default, DateTimeOffset createdAt = default, string ownedBy = default)

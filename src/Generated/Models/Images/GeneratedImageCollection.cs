@@ -13,16 +13,6 @@ namespace OpenAI.Images
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal IList<GeneratedImage> Data { get; }
-
-        internal InternalImagesResponseBackground? Background { get; }
-
-        internal InternalImagesResponseOutputFormat? OutputFormat { get; }
-
-        internal InternalImagesResponseSize? Size { get; }
-
-        internal InternalImagesResponseQuality? Quality { get; }
-
         [Experimental("OPENAI001")]
         public ImageTokenUsage Usage { get; }
 

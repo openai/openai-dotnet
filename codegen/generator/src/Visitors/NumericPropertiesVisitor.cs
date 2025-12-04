@@ -9,7 +9,7 @@ namespace OpenAILibraryPlugin.Visitors;
 
 /// <summary>
 /// We prefer to use `int` (Int32) for numeric properties unless there is a specific reason to
-/// `long` (Int64). Because using `long` is therefore the exception, this visitor converts all
+/// use `long` (Int64). Because using `long` is therefore the exception, this visitor converts all
 /// `long` properties to `int` by default unless they are explicitly excluded.
 /// </summary>
 public class NumericPropertiesVisitor : ScmLibraryVisitor
@@ -17,6 +17,7 @@ public class NumericPropertiesVisitor : ScmLibraryVisitor
     private static readonly HashSet<string> _excludedProperties = new(StringComparer.OrdinalIgnoreCase)
     {
         "OpenAI.Chat.ChatCompletionOptions.Seed",
+
         "OpenAI.LegacyCompletions.InternalCreateCompletionRequest.Seed",
 
         "OpenAI.Images.ImageTokenUsage.InputTokenCount",

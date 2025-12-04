@@ -3593,7 +3593,15 @@ namespace OpenAI.Images {
         public override readonly string ToString();
     }
     public class GeneratedImageCollection : ObjectModel.ReadOnlyCollection<GeneratedImage>, IJsonModel<GeneratedImageCollection>, IPersistableModel<GeneratedImageCollection> {
+        [Experimental("OPENAI001")]
+        public GeneratedImageBackground? Background { get; }
         public DateTimeOffset CreatedAt { get; }
+        [Experimental("OPENAI001")]
+        public GeneratedImageFileFormat? OutputFileFormat { get; set; }
+        [Experimental("OPENAI001")]
+        public GeneratedImageQuality? Quality { get; }
+        [Experimental("OPENAI001")]
+        public GeneratedImageSize? Size { get; }
         [Experimental("OPENAI001")]
         public ImageTokenUsage Usage { get; }
         [Experimental("OPENAI001")]
@@ -3862,7 +3870,7 @@ namespace OpenAI.Images {
     public static class OpenAIImagesModelFactory {
         public static GeneratedImage GeneratedImage(BinaryData imageBytes = null, Uri imageUri = null, string revisedPrompt = null);
         [Experimental("OPENAI001")]
-        public static GeneratedImageCollection GeneratedImageCollection(DateTimeOffset createdAt = default, IEnumerable<GeneratedImage> items = null, ImageTokenUsage usage = null);
+        public static GeneratedImageCollection GeneratedImageCollection(DateTimeOffset createdAt = default, IEnumerable<GeneratedImage> items = null, GeneratedImageBackground? background = null, GeneratedImageFileFormat? outputFileFormat = null, GeneratedImageSize? size = null, GeneratedImageQuality? quality = null, ImageTokenUsage usage = null);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static GeneratedImageCollection GeneratedImageCollection(DateTimeOffset createdAt, IEnumerable<GeneratedImage> items);
         [Experimental("OPENAI001")]

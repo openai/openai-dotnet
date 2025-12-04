@@ -3117,7 +3117,11 @@ namespace OpenAI.Images {
         public override readonly string ToString();
     }
     public class GeneratedImageCollection : ObjectModel.ReadOnlyCollection<GeneratedImage>, IJsonModel<GeneratedImageCollection>, IPersistableModel<GeneratedImageCollection> {
+        public GeneratedImageBackground? Background { get; }
         public DateTimeOffset CreatedAt { get; }
+        public GeneratedImageFileFormat? OutputFileFormat { get; set; }
+        public GeneratedImageQuality? Quality { get; }
+        public GeneratedImageSize? Size { get; }
         public ImageTokenUsage Usage { get; }
         protected virtual GeneratedImageCollection JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -3343,7 +3347,7 @@ namespace OpenAI.Images {
     }
     public static class OpenAIImagesModelFactory {
         public static GeneratedImage GeneratedImage(BinaryData imageBytes = null, Uri imageUri = null, string revisedPrompt = null);
-        public static GeneratedImageCollection GeneratedImageCollection(DateTimeOffset createdAt = default, IEnumerable<GeneratedImage> items = null, ImageTokenUsage usage = null);
+        public static GeneratedImageCollection GeneratedImageCollection(DateTimeOffset createdAt = default, IEnumerable<GeneratedImage> items = null, GeneratedImageBackground? background = null, GeneratedImageFileFormat? outputFileFormat = null, GeneratedImageSize? size = null, GeneratedImageQuality? quality = null, ImageTokenUsage usage = null);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static GeneratedImageCollection GeneratedImageCollection(DateTimeOffset createdAt, IEnumerable<GeneratedImage> items);
         public static ImageInputTokenUsageDetails ImageInputTokenUsageDetails(long textTokenCount = 0, long imageTokenCount = 0);

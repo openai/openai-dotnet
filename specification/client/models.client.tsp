@@ -10,3 +10,5 @@ using Azure.ClientGenerator.Core;
 @@clientLocation(listModels, "Models");
 @@clientLocation(deleteModel, "Models");
 @@clientLocation(retrieveModel, "Models");
+
+@@clientName(ListModelsResponse.data, "Items");

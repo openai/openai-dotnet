@@ -10,6 +10,8 @@ using TypeSpec.HttpClient.CSharp;
 
 @@clientLocation(createEmbedding, "Embeddings");
 
+@@clientName(CreateEmbeddingResponse.data, "Items");
+
 // ------------ JsonPatch ------------
 
 // models.tsp models
