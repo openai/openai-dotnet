@@ -13,20 +13,24 @@ public partial class ResponseExamples
     [Test]
     public void Example05_RemoteMcp()
     {
-        ResponseCreationOptions options = new()
-        {
-            Tools = {
-                new McpTool(serverLabel: "dmcp", serverUri: new Uri("https://dmcp-server.deno.dev/sse"))
-                {
-                    ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
-                    ToolCallApprovalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
+        CreateResponseOptions options = new(
+            "gpt-5",
+            [
+                ResponseItem.CreateUserMessageItem("Roll 2d4+1")
+            ])
+            {
+                Tools = {
+                    new McpTool(serverLabel: "dmcp", serverUri: new Uri("https://dmcp-server.deno.dev/sse"))
+                    {
+                        ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
+                        ToolCallApprovalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
+                    }
                 }
-            }
-        };
+            };
 
-        OpenAIResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        OpenAIResponse response = client.CreateResponse("Roll 2d4+1", options);
+        ResponseResult response = client.CreateResponse(options);
 
         Console.WriteLine($"[ASSISTANT]: {response.GetOutputText()}");
     }

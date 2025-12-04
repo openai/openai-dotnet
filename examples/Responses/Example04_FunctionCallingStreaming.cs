@@ -19,14 +19,14 @@ public partial class ResponseExamples
     [Test]
     public void Example04_FunctionCallingStreaming()
     {
-        OpenAIResponseClient client = new("gpt-5", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         List<ResponseItem> inputItems =
         [
             ResponseItem.CreateUserMessageItem("What's the weather like today for my current location?"),
         ];
 
-        ResponseCreationOptions options = new()
+        CreateResponseOptions options = new("gpt-5", inputItems)
         {
             Tools = { getCurrentLocationTool, getCurrentWeatherTool },
         };
@@ -38,7 +38,7 @@ public partial class ResponseExamples
         do
         {
             requiresAction = false;
-            CollectionResult<StreamingResponseUpdate> responseUpdates = client.CreateResponseStreaming(inputItems, options);
+            CollectionResult<StreamingResponseUpdate> responseUpdates = client.CreateResponseStreaming(options);
 
             foreach (StreamingResponseUpdate update in responseUpdates)
             {

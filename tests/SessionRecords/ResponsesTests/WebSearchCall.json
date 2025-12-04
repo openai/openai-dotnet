@@ -6,9 +6,9 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "228",
+        "Content-Length": "245",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.6.0 (.NET 9.0.10; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini",
@@ -27,7 +27,7 @@
             "content": [
               {
                 "type": "input_text",
-                "text": "What was a positive news story from today?"
+                "text": "Searching the internet, what's the weather like in Seattle?"
               }
             ]
           }
@@ -37,29 +37,25 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "99ab6fe7eb84a32e-SEA",
+        "CF-RAY": "9a84500e1cfe2e5a-DFW",
         "Connection": "keep-alive",
-        "Content-Length": "5449",
+        "Content-Length": "4066",
         "Content-Type": "application/json",
-        "Date": "Fri, 07 Nov 2025 08:25:01 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "4391",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
-        "Set-Cookie": [
-          "Sanitized",
-          "Sanitized"
-        ],
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "4398",
+        "x-envoy-upstream-service-time": "2493",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_067cacb5b60efb0c00690dacd8eca88196a3b37dfcfa945aaa",
+        "id": "resp_0a06858a7ab172160069306011b6a481a3b8e6b3306daa25d7",
         "object": "response",
-        "created_at": 1762503896,
+        "created_at": 1764778001,
         "status": "completed",
         "background": false,
         "billing": {
@@ -73,16 +69,16 @@
         "model": "gpt-4o-mini-2024-07-18",
         "output": [
           {
-            "id": "ws_067cacb5b60efb0c00690dacd903188196b73a2a55a1527bb8",
+            "id": "ws_0a06858a7ab172160069306011f0a081a391fac77bc8fb0e28",
             "type": "web_search_call",
             "status": "completed",
             "action": {
               "type": "search",
-              "query": "What was a positive news story from today?"
+              "query": "Searching the internet, what's the weather like in Seattle?"
             }
           },
           {
-            "id": "msg_067cacb5b60efb0c00690dacdab0f0819681e663b03fd451ff",
+            "id": "msg_0a06858a7ab172160069306012971881a39163b942e3bb131e",
             "type": "message",
             "status": "completed",
             "content": [
@@ -91,35 +87,14 @@
                 "annotations": [
                   {
                     "type": "url_citation",
-                    "end_index": 466,
-                    "start_index": 334,
-                    "title": "School Assembly News Headlines – 7 November 2025 | Today’s Top Updates » Uniapply Blog",
-                    "url": "https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai"
-                  },
-                  {
-                    "type": "url_citation",
-                    "end_index": 899,
-                    "start_index": 767,
-                    "title": "School Assembly News Headlines – 7 November 2025 | Today’s Top Updates » Uniapply Blog",
-                    "url": "https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai"
-                  },
-                  {
-                    "type": "url_citation",
-                    "end_index": 1259,
-                    "start_index": 1127,
-                    "title": "School Assembly News Headlines – 7 November 2025 | Today’s Top Updates » Uniapply Blog",
-                    "url": "https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai"
-                  },
-                  {
-                    "type": "url_citation",
-                    "end_index": 1690,
-                    "start_index": 1558,
-                    "title": "School Assembly News Headlines – 7 November 2025 | Today’s Top Updates » Uniapply Blog",
-                    "url": "https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai"
+                    "end_index": 1404,
+                    "start_index": 1274,
+                    "title": "Seattle WA Weather in December",
+                    "url": "https://www.currentresults.com/Weather/Washington/Places/seattle-weather-in-december.php?utm_source=openai"
                   }
                 ],
                 "logprobs": [],
-                "text": "On November 7, 2025, several positive news stories emerged:\n\n**India's Environmental Initiatives**\n\nIn a significant environmental effort, citizens across 10 states in India planted over 5 million saplings as part of the \"Clean Air, Green Future\" campaign. This initiative aims to combat air pollution and promote sustainable living. ([uniapply.com](https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai))\n\n**Advancements in Space Exploration**\n\nThe Indian Space Research Organisation (ISRO) successfully tested a prototype of its reusable rocket, marking a major milestone in cost-effective space missions. This achievement is expected to reduce the cost of launching satellites and other space missions. ([uniapply.com](https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai))\n\n**Technological Innovations**\n\nApple launched the iPhone 17 Pro, featuring a new AI-driven camera system and a titanium frame. Pre-orders began in India today, reflecting the country's growing interest in advanced technology. ([uniapply.com](https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai))\n\n**Community Engagement**\n\nIn Mumbai, over 2,000 students participated in a beach cleanup drive at Juhu Beach, collecting nearly 10 tonnes of plastic waste in one day. This event set a record for community-led cleanliness efforts and highlights the city's commitment to environmental conservation. ([uniapply.com](https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai))\n\nThese stories reflect positive developments in environmental conservation, technological innovation, and community engagement. "
+                "text": "As of Wednesday, December 3, 2025, in Seattle, Washington, the current weather is cloudy with a temperature of 44°F (6°C).\n\n## Weather for Seattle, WA:\nCurrent Conditions: Cloudy, 44°F (6°C)\n\nDaily Forecast:\n* Wednesday, December 3: Low: 41°F (5°C), High: 44°F (7°C), Description: A passing morning shower or two; otherwise, cloudy\n* Thursday, December 4: Low: 46°F (8°C), High: 49°F (9°C), Description: Occasional rain and drizzle; the start of an extended stretch of wet weather\n* Friday, December 5: Low: 48°F (9°C), High: 54°F (12°C), Description: Windy with rain; there can be ponding on roadways\n* Saturday, December 6: Low: 46°F (8°C), High: 53°F (12°C), Description: A thick cloud cover with occasional rain\n* Sunday, December 7: Low: 48°F (9°C), High: 55°F (13°C), Description: Rain; breezy in the morning\n* Monday, December 8: Low: 49°F (9°C), High: 55°F (13°C), Description: Cloudy, turning breezy in the afternoon with a little rain\n* Tuesday, December 9: Low: 45°F (7°C), High: 54°F (12°C), Description: Rain\n\n\nDecember in Seattle is typically the coldest and wettest month of the year, with average high temperatures around 46°F (8°C) and lows near 36°F (2°C). The city receives approximately 6 inches (152 mm) of precipitation over 13 days during this month. ([currentresults.com](https://www.currentresults.com/Weather/Washington/Places/seattle-weather-in-december.php?utm_source=openai))\n\nGiven the current conditions and forecast, it's advisable to prepare for cool and wet weather in the coming days. "
               }
             ],
             "role": "assistant"
@@ -164,15 +139,15 @@
         "top_p": 1.0,
         "truncation": "disabled",
         "usage": {
-          "input_tokens": 8504,
+          "input_tokens": 8508,
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 388,
+          "output_tokens": 430,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 8892
+          "total_tokens": 8938
         },
         "user": null,
         "metadata": {}

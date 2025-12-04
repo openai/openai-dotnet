@@ -18,21 +18,19 @@ public partial class ResponseExamples
     [Test]
     public async Task Example10_CodeInterpreterAsync()
     {
-        OpenAIResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         CodeInterpreterToolContainer container = new(CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration());
         CodeInterpreterTool codeInterpreterTool = new(container);
-        ResponseCreationOptions options = new()
+        CreateResponseOptions options = new("gpt-5",
+        [
+            ResponseItem.CreateUserMessageItem("Create an Excel spreadsheet that contains the mathematical times tables from 1-12 and make it available for download."),
+        ])
         {
             Tools = { codeInterpreterTool }
         };
 
-        List<ResponseItem> inputItems =
-        [
-            ResponseItem.CreateUserMessageItem("Create an Excel spreadsheet that contains the mathematical times tables from 1-12 and make it available for download."),
-        ];
-
-        OpenAIResponse response = await client.CreateResponseAsync(inputItems, options);
+        ResponseResult response = await client.CreateResponseAsync(options);
 
         MessageResponseItem message = response.OutputItems
             .OfType<MessageResponseItem>()

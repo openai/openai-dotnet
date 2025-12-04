@@ -17,21 +17,22 @@ public partial class ResponseExamples
     [Test]
     public void Example10_CodeInterpreter()
     {
-        OpenAIResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         CodeInterpreterToolContainer container = new(CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration());
         CodeInterpreterTool codeInterpreterTool = new(container);
-        ResponseCreationOptions options = new()
-        {
-            Tools = { codeInterpreterTool }
-        };
-
         List<ResponseItem> inputItems =
         [
             ResponseItem.CreateUserMessageItem("Create an Excel spreadsheet that contains the mathematical times tables from 1-12 and make it available for download."),
         ];
+        CreateResponseOptions options = new("gpt-5", inputItems)
+        {
+            Tools = { codeInterpreterTool }
+        };
 
-        OpenAIResponse response = client.CreateResponse(inputItems, options);
+        
+
+        ResponseResult response = client.CreateResponse(options);
 
         MessageResponseItem message = response.OutputItems
             .OfType<MessageResponseItem>()
