@@ -3116,7 +3116,11 @@ namespace OpenAI.Images {
         public override readonly string ToString();
     }
     public class GeneratedImageCollection : ObjectModel.ReadOnlyCollection<GeneratedImage>, IJsonModel<GeneratedImageCollection>, IPersistableModel<GeneratedImageCollection> {
+        public GeneratedImageBackground? Background { get; }
         public DateTimeOffset CreatedAt { get; }
+        public GeneratedImageFileFormat? OutputFileFormat { get; set; }
+        public GeneratedImageQuality? Quality { get; }
+        public GeneratedImageSize? Size { get; }
         public ImageTokenUsage Usage { get; }
         protected virtual GeneratedImageCollection JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -3173,6 +3177,7 @@ namespace OpenAI.Images {
     public readonly partial struct GeneratedImageQuality : IEquatable<GeneratedImageQuality> {
         public GeneratedImageQuality(string value);
         public static GeneratedImageQuality Auto { get; }
+        public static GeneratedImageQuality HD { get; }
         public static GeneratedImageQuality High { get; }
         public static GeneratedImageQuality Low { get; }
         public static GeneratedImageQuality Medium { get; }
@@ -3271,6 +3276,9 @@ namespace OpenAI.Images {
     public class ImageEditOptions : IJsonModel<ImageEditOptions>, IPersistableModel<ImageEditOptions> {
         public GeneratedImageBackground? Background { get; set; }
         public string EndUserId { get; set; }
+        public ImageInputFidelity? InputFidelity { get; set; }
+        public int? OutputCompressionFactor { get; set; }
+        public GeneratedImageFileFormat? OutputFileFormat { get; set; }
         public GeneratedImageQuality? Quality { get; set; }
         public GeneratedImageFormat? ResponseFormat { get; set; }
         public GeneratedImageSize? Size { get; set; }
@@ -3294,19 +3302,34 @@ namespace OpenAI.Images {
         protected virtual ImageGenerationOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
+    public readonly partial struct ImageInputFidelity : IEquatable<ImageInputFidelity> {
+        public ImageInputFidelity(string value);
+        public static ImageInputFidelity High { get; }
+        public static ImageInputFidelity Low { get; }
+        public readonly bool Equals(ImageInputFidelity other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(ImageInputFidelity left, ImageInputFidelity right);
+        public static implicit operator ImageInputFidelity(string value);
+        public static implicit operator ImageInputFidelity?(string value);
+        public static bool operator !=(ImageInputFidelity left, ImageInputFidelity right);
+        public override readonly string ToString();
+    }
     public class ImageInputTokenUsageDetails : IJsonModel<ImageInputTokenUsageDetails>, IPersistableModel<ImageInputTokenUsageDetails> {
-        public int ImageTokenCount { get; }
-        public int TextTokenCount { get; }
+        public long ImageTokenCount { get; }
+        public long TextTokenCount { get; }
         protected virtual ImageInputTokenUsageDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ImageInputTokenUsageDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ImageTokenUsage : IJsonModel<ImageTokenUsage>, IPersistableModel<ImageTokenUsage> {
-        public int InputTokenCount { get; }
+        public long InputTokenCount { get; }
         public ImageInputTokenUsageDetails InputTokenDetails { get; }
-        public int OutputTokenCount { get; }
-        public int TotalTokenCount { get; }
+        public long OutputTokenCount { get; }
+        public long TotalTokenCount { get; }
         protected virtual ImageTokenUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ImageTokenUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -3323,9 +3346,11 @@ namespace OpenAI.Images {
     }
     public static class OpenAIImagesModelFactory {
         public static GeneratedImage GeneratedImage(BinaryData imageBytes = null, Uri imageUri = null, string revisedPrompt = null);
-        public static GeneratedImageCollection GeneratedImageCollection(DateTimeOffset createdAt = default, IEnumerable<GeneratedImage> items = null, ImageTokenUsage usage = null);
+        public static GeneratedImageCollection GeneratedImageCollection(DateTimeOffset createdAt = default, IEnumerable<GeneratedImage> items = null, GeneratedImageBackground? background = null, GeneratedImageFileFormat? outputFileFormat = null, GeneratedImageSize? size = null, GeneratedImageQuality? quality = null, ImageTokenUsage usage = null);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static GeneratedImageCollection GeneratedImageCollection(DateTimeOffset createdAt, IEnumerable<GeneratedImage> items);
+        public static ImageInputTokenUsageDetails ImageInputTokenUsageDetails(long textTokenCount = 0, long imageTokenCount = 0);
+        public static ImageTokenUsage ImageTokenUsage(long inputTokenCount = 0, long outputTokenCount = 0, long totalTokenCount = 0, ImageInputTokenUsageDetails inputTokenDetails = null);
     }
 }
 namespace OpenAI.Models {

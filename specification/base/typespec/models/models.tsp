@@ -1,37 +1,38 @@
-/*
- * This file was automatically generated from an OpenAPI .yaml file.
- * Edits made directly to this file will be lost.
- */
-
-using Http;
+import "@typespec/openapi";
 using TypeSpec.OpenAPI;
-
 namespace OpenAI;
-
-model ListModelsResponse {
-  object: "list";
-  data: Model[];
-}
-
 model DeleteModelResponse {
   id: string;
   deleted: boolean;
+  object: string;
+}
 
-  // Tool customization: add a clear enum enforcement of constrained 'object' label
-  object: "model";
+model ListModelsResponse {
+  @extension("x-stainless-const", true)
+  object: "list";
+
+  data: Model[];
 }
 
 /** Describes an OpenAI model offering that can be used with the API. */
+@summary("Model")
+@extension(
+  "x-oaiMeta",
+  #{
+    name: "The model object",
+    example: "{\n  \"id\": \"VAR_chat_model_id\",\n  \"object\": \"model\",\n  \"created\": 1686935002,\n  \"owned_by\": \"openai\"\n}\n",
+  }
+)
 model Model {
   /** The model identifier, which can be referenced in the API endpoints. */
   id: string;
 
-  // Tool customization: 'created' and fields ending in '_at' are Unix encoded utcDateTime
   /** The Unix timestamp (in seconds) when the model was created. */
-  @encode("unixTimestamp", int32)
+  @encode("unixTimestamp", integer)
   created: utcDateTime;
 
   /** The object type, which is always "model". */
+  @extension("x-stainless-const", true)
   object: "model";
 
   /** The organization that owns the model. */

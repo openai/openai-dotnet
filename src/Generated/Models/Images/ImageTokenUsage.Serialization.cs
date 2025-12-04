@@ -30,15 +30,15 @@ namespace OpenAI.Images
             {
                 throw new FormatException($"The model {nameof(ImageTokenUsage)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("total_tokens") != true)
-            {
-                writer.WritePropertyName("total_tokens"u8);
-                writer.WriteNumberValue(TotalTokenCount);
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("input_tokens") != true)
             {
                 writer.WritePropertyName("input_tokens"u8);
                 writer.WriteNumberValue(InputTokenCount);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("total_tokens") != true)
+            {
+                writer.WritePropertyName("total_tokens"u8);
+                writer.WriteNumberValue(TotalTokenCount);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("output_tokens") != true)
             {
@@ -91,26 +91,26 @@ namespace OpenAI.Images
             {
                 return null;
             }
-            int totalTokenCount = default;
-            int inputTokenCount = default;
-            int outputTokenCount = default;
+            long inputTokenCount = default;
+            long totalTokenCount = default;
+            long outputTokenCount = default;
             ImageInputTokenUsageDetails inputTokenDetails = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("total_tokens"u8))
-                {
-                    totalTokenCount = prop.Value.GetInt32();
-                    continue;
-                }
                 if (prop.NameEquals("input_tokens"u8))
                 {
-                    inputTokenCount = prop.Value.GetInt32();
+                    inputTokenCount = prop.Value.GetInt64();
+                    continue;
+                }
+                if (prop.NameEquals("total_tokens"u8))
+                {
+                    totalTokenCount = prop.Value.GetInt64();
                     continue;
                 }
                 if (prop.NameEquals("output_tokens"u8))
                 {
-                    outputTokenCount = prop.Value.GetInt32();
+                    outputTokenCount = prop.Value.GetInt64();
                     continue;
                 }
                 if (prop.NameEquals("input_tokens_details"u8))
@@ -121,7 +121,7 @@ namespace OpenAI.Images
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ImageTokenUsage(totalTokenCount, inputTokenCount, outputTokenCount, inputTokenDetails, additionalBinaryDataProperties);
+            return new ImageTokenUsage(inputTokenCount, totalTokenCount, outputTokenCount, inputTokenDetails, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<ImageTokenUsage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

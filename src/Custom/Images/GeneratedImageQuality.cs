@@ -8,6 +8,7 @@ namespace OpenAI.Images;
 [CodeGenType("CreateImageRequestQuality")]
 public readonly partial struct GeneratedImageQuality
 {
+    // CUSTOM: Renamed.
     [CodeGenMember("Hd")]
-    public static GeneratedImageQuality High { get; } = new GeneratedImageQuality(HdValue);
+    public static GeneratedImageQuality HD { get; } = new GeneratedImageQuality(HdValue);
 }

@@ -39,6 +39,6 @@ public static partial class OpenAIModelsModelFactory
         return new OpenAIModelCollection(
             "list",
             items.ToList(),
-            serializedAdditionalRawData: null);
+            additionalBinaryDataProperties: null);
     }
 }

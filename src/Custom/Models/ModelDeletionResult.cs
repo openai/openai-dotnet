@@ -1,18 +1,16 @@
-﻿using System.ClientModel;
-using System.ClientModel.Primitives;
-using System.Text.Json;
+﻿namespace OpenAI.Models;
 
-namespace OpenAI.Models;
-
+// CUSTOM: Renamed.
+/// <summary> The result of the model deletion. </summary>
 [CodeGenType("DeleteModelResponse")]
 public partial class ModelDeletionResult
 {
+    // CUSTOM: Made private. This property does not add value in the context of a strongly-typed class.
+    [CodeGenMember("Object")]
+    private string Object { get; } = "model";
+
     // CUSTOM: Renamed.
+    /// <summary> The ID of the model. </summary>
     [CodeGenMember("Id")]
     public string ModelId { get; }
-
-    // CUSTOM: Made internal.
-    /// <summary> The object type, which is always `model`. </summary>
-    [CodeGenMember("Object")]
-    internal string Object { get; } = "model";
 }

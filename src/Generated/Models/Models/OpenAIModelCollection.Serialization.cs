@@ -5,6 +5,7 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
@@ -14,6 +15,13 @@ namespace OpenAI.Models
 {
     public partial class OpenAIModelCollection : ReadOnlyCollection<OpenAIModel>, IJsonModel<OpenAIModelCollection>
     {
+        void IJsonModel<OpenAIModelCollection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
+        }
+
         [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -26,6 +34,16 @@ namespace OpenAI.Models
             {
                 writer.WritePropertyName("object"u8);
                 writer.WriteStringValue(Object);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("data") != true)
+            {
+                writer.WritePropertyName("data"u8);
+                writer.WriteStartArray();
+                foreach (OpenAIModel item in Items)
+                {
+                    writer.WriteObjectValue(item, options);
+                }
+                writer.WriteEndArray();
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -61,6 +79,38 @@ namespace OpenAI.Models
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeOpenAIModelCollection(document.RootElement, options);
+        }
+
+        internal static OpenAIModelCollection DeserializeOpenAIModelCollection(JsonElement element, ModelReaderWriterOptions options)
+        {
+            if (element.ValueKind == JsonValueKind.Null)
+            {
+                return null;
+            }
+            string @object = default;
+            IList<OpenAIModel> items = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            foreach (var prop in element.EnumerateObject())
+            {
+                if (prop.NameEquals("object"u8))
+                {
+                    @object = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("data"u8))
+                {
+                    List<OpenAIModel> array = new List<OpenAIModel>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        array.Add(OpenAIModel.DeserializeOpenAIModel(item, options));
+                    }
+                    items = array;
+                    continue;
+                }
+                // Plugin customization: remove options.Format != "W" check
+                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+            }
+            return new OpenAIModelCollection(@object, items, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<OpenAIModelCollection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
