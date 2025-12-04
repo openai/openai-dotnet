@@ -119,39 +119,6 @@ public partial class ResponsesClient
         return ClientResult.FromValue(convenienceValue, protocolResult.GetRawResponse());
     }
 
-    internal virtual ClientResult<ResponseResult> CreateResponse(IEnumerable<ResponseItem> inputItems, string model, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(inputItems, nameof(inputItems));
-
-        using BinaryContent content = CreatePerCallOptions(options, inputItems, model, stream: false).ToBinaryContent();
-        ClientResult protocolResult = CreateResponse(content, cancellationToken.ToRequestOptions());
-        ResponseResult convenienceValue = (ResponseResult)protocolResult;
-        return ClientResult.FromValue(convenienceValue, protocolResult.GetRawResponse());
-    }
-
-    internal virtual async Task<ClientResult<ResponseResult>> CreateResponseAsync(string userInputText, string model, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(userInputText, nameof(userInputText));
-
-        return await CreateResponseAsync(
-            [ResponseItem.CreateUserMessageItem(userInputText)],
-            model,
-            options,
-            cancellationToken)
-                .ConfigureAwait(false);
-    }
-
-    internal virtual ClientResult<ResponseResult> CreateResponse(string userInputText, string model, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(userInputText, nameof(userInputText));
-
-        return CreateResponse(
-            [ResponseItem.CreateUserMessageItem(userInputText)],
-            model,
-            options,
-            cancellationToken);
-    }
-
     public virtual ClientResult<ResponseResult> CreateResponse(CreateResponseOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
@@ -162,6 +129,42 @@ public partial class ResponsesClient
 
         ClientResult result = this.CreateResponse(CreatePerCallOptions(options), cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
         return ClientResult.FromValue((ResponseResult)result.GetRawResponse().Content, result.GetRawResponse());
+    }
+
+    public virtual ClientResult<ResponseResult> CreateResponse(string model, IEnumerable<ResponseItem> inputItems, string previousResponseId = null, string conversationId = null, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(model, nameof(model));
+        Argument.AssertNotNull(inputItems, nameof(inputItems));
+
+        var options = new CreateResponseOptions
+        {
+            Model = model,
+            InputItems = inputItems.ToList(),
+            PreviousResponseId = previousResponseId,
+            ConversationId = conversationId,
+            StreamingEnabled = false,
+        };
+
+        ClientResult result = this.CreateResponse(options, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        return ClientResult.FromValue((ResponseResult)result.GetRawResponse().Content, result.GetRawResponse());
+    }
+
+    public virtual Task<ClientResult<ResponseResult>> CreateResponseAsync(string model, IEnumerable<ResponseItem> inputItems, string previousResponseId = null, string conversationId = null, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(model, nameof(model));
+        Argument.AssertNotNull(inputItems, nameof(inputItems));
+
+        var options = new CreateResponseOptions
+        {
+            Model = model,
+            InputItems = inputItems.ToList(),
+            PreviousResponseId = previousResponseId,
+            ConversationId = conversationId,
+            StreamingEnabled = false,
+        };
+
+        ClientResult result = this.CreateResponse(options, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
+        return Task.FromResult(ClientResult.FromValue((ResponseResult)result.GetRawResponse().Content, result.GetRawResponse()));
     }
 
     public virtual async Task<ClientResult<ResponseResult>> CreateResponseAsync(CreateResponseOptions options, CancellationToken cancellationToken = default)
@@ -196,6 +199,40 @@ public partial class ResponsesClient
     public virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(CreateResponseOptions options, CancellationToken cancellationToken = default)
     {
         return CreateResponseStreamingAsync(CreatePerCallOptions(options, true), cancellationToken.ToRequestOptions(streaming: true));
+    }
+
+    public virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(string model, IEnumerable<ResponseItem> inputItems, string previousResponseId = null, string conversationId = null, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(model, nameof(model));
+        Argument.AssertNotNull(inputItems, nameof(inputItems));
+
+        var options = new CreateResponseOptions
+        {
+            Model = model,
+            InputItems = inputItems.ToList(),
+            PreviousResponseId = previousResponseId,
+            ConversationId = conversationId,
+            StreamingEnabled = true,
+        };
+
+        return CreateResponseStreaming(options, cancellationToken);
+    }
+
+    public virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(string model, IEnumerable<ResponseItem> inputItems, string previousResponseId = null, string conversationId = null, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(model, nameof(model));
+        Argument.AssertNotNull(inputItems, nameof(inputItems));
+
+        var options = new CreateResponseOptions
+        {
+            Model = model,
+            InputItems = inputItems.ToList(),
+            PreviousResponseId = previousResponseId,
+            ConversationId = conversationId,
+            StreamingEnabled = true,
+        };
+
+        return CreateResponseStreamingAsync(options, cancellationToken.ToRequestOptions(streaming: true));
     }
 
     internal AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(CreateResponseOptions options, RequestOptions requestOptions)
@@ -237,29 +274,6 @@ public partial class ResponsesClient
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
             cancellationToken);
     }
-
-    internal virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(string userInputText, string model, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(userInputText, nameof(userInputText));
-
-        return CreateResponseStreamingAsync(
-            [ResponseItem.CreateUserMessageItem(userInputText)],
-            model,
-            options,
-            cancellationToken);
-    }
-
-    internal virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(string userInputText, string model, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(userInputText, nameof(userInputText));
-
-        return CreateResponseStreaming(
-            [ResponseItem.CreateUserMessageItem(userInputText)],
-            model,
-            options,
-            cancellationToken);
-    }
-
 
     internal async Task<ClientResult<ResponseResult>> GetResponseAsync(string responseId, IEnumerable<IncludedResponseProperty> include, RequestOptions requestOptions)
     {
