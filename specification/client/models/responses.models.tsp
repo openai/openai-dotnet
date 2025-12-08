@@ -39,8 +39,8 @@ model ResponseItemCollectionOptions {
 
 @access(Access.public)
 @usage(Usage.input)
-model GetResponseOptions {
-  response_id: string;
+model DotNetGetResponseOptions {
+  @path response_id: string;
   @query startingAfter?: int32;
   @query includeObfuscation?: boolean;
   @query includedProperties?: Includable[] | null;

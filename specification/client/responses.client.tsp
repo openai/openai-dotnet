@@ -287,7 +287,7 @@ using TypeSpec.HttpClient.CSharp;
 // client/models/responses.models.tsp models
 @@dynamicModel(DotNetItemReferenceItemResource);
 @@dynamicModel(ResponseItemCollectionOrder);
-@@dynamicModel(GetResponseOptions);
+@@dynamicModel(DotNetGetResponseOptions);
 @@dynamicModel(DotNetGlobalToolCallApprovalPolicy);
 @@dynamicModel(DotNetCustomToolCallApprovalPolicy);
 @@dynamicModel(DotNetToolCallApprovalPolicy);

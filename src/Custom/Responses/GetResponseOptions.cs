@@ -1,7 +1,7 @@
 
 namespace OpenAI.Responses
 {
-    [CodeGenType("GetResponseOptions")]
+    [CodeGenType("DotNetGetResponseOptions")]
     public partial class GetResponseOptions
     {
         public GetResponseOptions(string responseId)

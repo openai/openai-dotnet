@@ -40,11 +40,6 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(GetResponseOptions)} does not support writing '{format}' format.");
             }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.response_id"u8))
-            {
-                writer.WritePropertyName("response_id"u8);
-                writer.WriteStringValue(ResponseId);
-            }
 
             Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -79,11 +74,6 @@ namespace OpenAI.Responses
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("response_id"u8))
-                {
-                    responseId = prop.Value.GetString();
-                    continue;
-                }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new GetResponseOptions(
