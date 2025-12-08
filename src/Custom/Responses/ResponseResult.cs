@@ -68,9 +68,6 @@ public partial class ResponseResult
     [EditorBrowsable(EditorBrowsableState.Never)]
     public string Object { get; set; } = "response";
 
-    [CodeGenMember("Metadata")]
-    public IDictionary<string, string> Metadata { get; }
-
     [CodeGenMember("Temperature")]
     public float? Temperature { get; set; }
 
@@ -88,9 +85,6 @@ public partial class ResponseResult
 
     [CodeGenMember("Instructions")]
     public string Instructions { get; set; }
-
-    [CodeGenMember("Tools")]
-    public IList<ResponseTool> Tools { get; set; }
 
     [CodeGenMember("Id")]
     public string Id { get; set; }

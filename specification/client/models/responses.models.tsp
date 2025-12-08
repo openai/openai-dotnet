@@ -78,8 +78,3 @@ model DotNetCodeInterpreterToolContainer {
   container_id?: string;
   container?: CodeInterpreterContainerConfiguration;
 }
-
-@usage(Usage.input | Usage.json)
-model DotNetCreateResponse {
-  ...CreateResponse;
-}

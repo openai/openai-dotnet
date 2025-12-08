@@ -13,8 +13,8 @@ namespace OpenAI.Responses;
 // - Added Experimental attribute.
 // - Renamed.
 [CodeGenType("Responses")]
-[CodeGenSuppress("CreateResponseAsync", typeof(ResponseCreationOptions), typeof(CancellationToken))]
-[CodeGenSuppress("CreateResponse", typeof(ResponseCreationOptions), typeof(CancellationToken))]
+// [CodeGenSuppress("CreateResponseAsync", typeof(ResponseCreationOptions), typeof(CancellationToken))]
+// [CodeGenSuppress("CreateResponse", typeof(ResponseCreationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("DeleteResponse", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("DeleteResponseAsync", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("CancelResponse", typeof(string), typeof(IEnumerable<IncludedResponseProperty>), typeof(bool?), typeof(int?), typeof(CancellationToken))]
@@ -99,26 +99,6 @@ public partial class ResponsesClient
     [Experimental("OPENAI001")]
     public virtual Uri Endpoint => _endpoint;
 
-    internal virtual Task<ClientResult<ResponseResult>> CreateResponseAsync(IEnumerable<ResponseItem> inputItems, string model, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
-    {
-        return CreateResponseAsync(inputItems, model, options, cancellationToken.ToRequestOptions() ?? new RequestOptions());
-    }
-
-    internal async Task<ClientResult<ResponseResult>> CreateResponseAsync(IEnumerable<ResponseItem> inputItems, string model, ResponseCreationOptions options, RequestOptions requestOptions)
-    {
-        Argument.AssertNotNullOrEmpty(inputItems, nameof(inputItems));
-        Argument.AssertNotNull(requestOptions, nameof(requestOptions));
-        if (requestOptions.BufferResponse is false)
-        {
-            throw new InvalidOperationException("'requestOptions.BufferResponse' must be 'true' when calling 'CreateResponseAsync'.");
-        }
-
-        using BinaryContent content = CreatePerCallOptions(options, inputItems, model, stream: false).ToBinaryContent();
-        ClientResult protocolResult = await CreateResponseAsync(content, requestOptions).ConfigureAwait(false);
-        ResponseResult convenienceValue = (ResponseResult)protocolResult;
-        return ClientResult.FromValue(convenienceValue, protocolResult.GetRawResponse());
-    }
-
     public virtual ClientResult<ResponseResult> CreateResponse(CreateResponseOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
@@ -175,27 +155,6 @@ public partial class ResponsesClient
         return ClientResult.FromValue((ResponseResult)result.GetRawResponse().Content, result.GetRawResponse());
     }
 
-    internal virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(IEnumerable<ResponseItem> inputItems, string model, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
-    {
-        return CreateResponseStreamingAsync(inputItems, model, options, cancellationToken.ToRequestOptions(streaming: true));
-    }
-
-    internal AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(IEnumerable<ResponseItem> inputItems, string model, ResponseCreationOptions options, RequestOptions requestOptions)
-    {
-        Argument.AssertNotNullOrEmpty(inputItems, nameof(inputItems));
-        Argument.AssertNotNull(requestOptions, nameof(requestOptions));
-        if (requestOptions.BufferResponse is true)
-        {
-            throw new InvalidOperationException("'requestOptions.BufferResponse' must be 'false' when calling 'CreateResponseStreamingAsync'.");
-        }
-
-        using BinaryContent content = CreatePerCallOptions(options, inputItems, model, stream: true).ToBinaryContent();
-        return new AsyncSseUpdateCollection<StreamingResponseUpdate>(
-            async () => await CreateResponseAsync(content, requestOptions).ConfigureAwait(false),
-            StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
-            requestOptions.CancellationToken);
-    }
-
     public virtual AsyncCollectionResult<StreamingResponseUpdate> CreateResponseStreamingAsync(CreateResponseOptions options, CancellationToken cancellationToken = default)
     {
         return CreateResponseStreamingAsync(CreatePerCallOptions(options, true), cancellationToken.ToRequestOptions(streaming: true));
@@ -248,17 +207,6 @@ public partial class ResponsesClient
             async () => await CreateResponseAsync(options, requestOptions).ConfigureAwait(false),
             StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
             requestOptions.CancellationToken);
-    }
-
-    internal virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(IEnumerable<ResponseItem> inputItems, string model, ResponseCreationOptions options = null, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(inputItems, nameof(inputItems));
-
-        using BinaryContent content = CreatePerCallOptions(options, inputItems, model, stream: true).ToBinaryContent();
-        return new SseUpdateCollection<StreamingResponseUpdate>(
-            () => CreateResponse(content, cancellationToken.ToRequestOptions(streaming: true)),
-            StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
-            cancellationToken);
     }
 
     public virtual CollectionResult<StreamingResponseUpdate> CreateResponseStreaming(CreateResponseOptions options, CancellationToken cancellationToken = default)
@@ -466,27 +414,6 @@ public partial class ResponsesClient
         PipelineMessage message = CreateGetResponseInputItemsRequest(options.ResponseId, options.PageSizeLimit, options.AfterId, options.Order, options.BeforeId, cancellationToken.ToRequestOptions());
         ClientResult result = ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, cancellationToken.ToRequestOptions()).ConfigureAwait(false));
         return ClientResult.FromValue((ResponseItemCollectionPage)result, result.GetRawResponse());
-    }
-
-    internal virtual ResponseCreationOptions CreatePerCallOptions(ResponseCreationOptions userOptions, IEnumerable<ResponseItem> inputItems, string model, bool stream = false)
-    {
-        ResponseCreationOptions copiedOptions = userOptions is null
-            ? new()
-            : userOptions.GetClone();
-
-        copiedOptions.Input = inputItems.ToList();
-
-        if (stream)
-        {
-            copiedOptions.Stream = true;
-        }
-
-        if (string.IsNullOrEmpty(copiedOptions.Model))
-        {
-            copiedOptions.Model = model;
-        }
-
-        return copiedOptions;
     }
 
     internal virtual CreateResponseOptions CreatePerCallOptions(CreateResponseOptions userOptions, bool stream = false)

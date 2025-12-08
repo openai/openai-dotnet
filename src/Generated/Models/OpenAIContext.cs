@@ -669,7 +669,6 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(ReferenceResponseItem))]
     [ModelReaderWriterBuildable(typeof(ResponseContentPart))]
     [ModelReaderWriterBuildable(typeof(ResponseConversationOptions))]
-    [ModelReaderWriterBuildable(typeof(ResponseCreationOptions))]
     [ModelReaderWriterBuildable(typeof(ResponseDeletionResult))]
     [ModelReaderWriterBuildable(typeof(ResponseError))]
     [ModelReaderWriterBuildable(typeof(ResponseFinishedUpdate))]

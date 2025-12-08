@@ -7,10 +7,10 @@ namespace OpenAI.Responses
 {
     [CodeGenSuppress("CreateResponseOptions", typeof(IEnumerable<ResponseItem>))]
 
-    [CodeGenType("DotNetCreateResponse")]
+    [CodeGenType("CreateResponse")]
     public partial class CreateResponseOptions
     {
-         public CreateResponseOptions(string model, IEnumerable<ResponseItem> inputItems)
+        public CreateResponseOptions(string model, IEnumerable<ResponseItem> inputItems)
         {
             Argument.AssertNotNull(inputItems, nameof(inputItems));
             Argument.AssertNotNullOrEmpty(model, nameof(model));
@@ -95,7 +95,7 @@ namespace OpenAI.Responses
         [CodeGenMember("TopLogprobs")]
         public int? TopLogProbabilityCount { get; set; }
 
-         /// <summary>
+        /// <summary>
         /// Gets or sets the truncation mode for the response. This corresponds to the "truncation" property in the JSON representation.
         /// </summary>
         [CodeGenMember("Truncation")]
@@ -106,41 +106,6 @@ namespace OpenAI.Responses
         /// </summary>
         [CodeGenMember("User")]
         public string EndUserId { get; set; }
-
-        internal static CreateResponseOptions Create(IEnumerable<ResponseItem> inputItems, string model, ResponsesClient client, ResponseCreationOptions options = null, bool isStreaming = false)
-        {
-            Argument.AssertNotNull(inputItems, nameof(inputItems));
-            options ??= new();
-            var responseCreationOptions = client.CreatePerCallOptions(options, inputItems, model, isStreaming);
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
-            return new CreateResponseOptions(
-                metadata: responseCreationOptions.Metadata,
-                temperature: responseCreationOptions.Temperature,
-                topLogProbabilityCount: responseCreationOptions.TopLogProbabilityCount,
-                topP: responseCreationOptions.TopP,
-                endUserId: responseCreationOptions.EndUserId,
-                safetyIdentifier: responseCreationOptions.SafetyIdentifier,
-                serviceTier: responseCreationOptions.ServiceTier,
-                previousResponseId: responseCreationOptions.PreviousResponseId,
-                model: responseCreationOptions.Model,
-                reasoningOptions: responseCreationOptions.ReasoningOptions,
-                backgroundModeEnabled: responseCreationOptions.BackgroundModeEnabled,
-                maxOutputTokenCount: responseCreationOptions.MaxOutputTokenCount,
-                maxToolCalls: responseCreationOptions.MaxToolCallCount,
-                instructions: responseCreationOptions.Instructions,
-                textOptions: responseCreationOptions.TextOptions,
-                tools: responseCreationOptions.Tools,
-                toolChoice: responseCreationOptions.ToolChoice,
-                truncationMode: responseCreationOptions.TruncationMode,
-                inputItems: [.. inputItems],
-                includedProperties: [.. responseCreationOptions.IncludedProperties],
-                parallelToolCallsEnabled: responseCreationOptions.ParallelToolCallsEnabled,
-                storedOutputEnabled: responseCreationOptions.StoredOutputEnabled,
-                streamingEnabled: responseCreationOptions.Stream,
-                conversationId: responseCreationOptions.ConversationId,
-                new JsonPatch());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates. Suppress this diagnostic to proceed.
-        }
 
         internal CreateResponseOptions GetClone()
         {

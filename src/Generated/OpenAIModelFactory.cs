@@ -581,14 +581,14 @@ namespace OpenAI
             return new McpToolFilter(toolNames.ToList(), isReadOnly, default);
         }
 
-        public static ResponseCreationOptions ResponseCreationOptions(IDictionary<string, string> metadata = default, float? temperature = default, int? topLogProbabilityCount = default, float? topP = default, string endUserId = default, string safetyIdentifier = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? backgroundModeEnabled = default, int? maxOutputTokenCount = default, int? maxToolCallCount = default, string instructions = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, IEnumerable<ResponseItem> input = default, IEnumerable<IncludedResponseProperty> includedProperties = default, bool? parallelToolCallsEnabled = default, bool? storedOutputEnabled = default, bool? stream = default, string conversationId = default)
+        public static CreateResponseOptions CreateResponseOptions(IDictionary<string, string> metadata = default, float? temperature = default, int? topLogProbabilityCount = default, float? topP = default, string endUserId = default, string safetyIdentifier = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? backgroundModeEnabled = default, int? maxOutputTokenCount = default, int? maxToolCalls = default, string instructions = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, IEnumerable<ResponseItem> inputItems = default, IEnumerable<IncludedResponseProperty> includedProperties = default, bool? parallelToolCallsEnabled = default, bool? storedOutputEnabled = default, bool? streamingEnabled = default, string conversationId = default)
         {
             metadata ??= new ChangeTrackingDictionary<string, string>();
             tools ??= new ChangeTrackingList<ResponseTool>();
-            input ??= new ChangeTrackingList<ResponseItem>();
+            inputItems ??= new ChangeTrackingList<ResponseItem>();
             includedProperties ??= new ChangeTrackingList<IncludedResponseProperty>();
 
-            return new ResponseCreationOptions(
+            return new CreateResponseOptions(
                 metadata,
                 temperature,
                 topLogProbabilityCount,
@@ -601,17 +601,17 @@ namespace OpenAI
                 reasoningOptions,
                 backgroundModeEnabled,
                 maxOutputTokenCount,
-                maxToolCallCount,
+                maxToolCalls,
                 instructions,
                 textOptions,
                 tools.ToList(),
                 toolChoice,
                 truncationMode,
-                input.ToList(),
+                inputItems.ToList(),
                 includedProperties.ToList(),
                 parallelToolCallsEnabled,
                 storedOutputEnabled,
-                stream,
+                streamingEnabled,
                 conversationId,
                 default);
         }
@@ -1421,41 +1421,6 @@ namespace OpenAI
         public static CodeInterpreterToolContainer CodeInterpreterToolContainer(string containerId = default, CodeInterpreterToolContainerConfiguration containerConfiguration = default)
         {
             return new CodeInterpreterToolContainer(containerId, containerConfiguration, default);
-        }
-
-        public static CreateResponseOptions CreateResponseOptions(IDictionary<string, string> metadata = default, float? temperature = default, int? topLogProbabilityCount = default, float? topP = default, string endUserId = default, string safetyIdentifier = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? backgroundModeEnabled = default, int? maxOutputTokenCount = default, int? maxToolCalls = default, string instructions = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, IEnumerable<ResponseItem> inputItems = default, IEnumerable<IncludedResponseProperty> includedProperties = default, bool? parallelToolCallsEnabled = default, bool? storedOutputEnabled = default, bool? streamingEnabled = default, string conversationId = default)
-        {
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-            tools ??= new ChangeTrackingList<ResponseTool>();
-            inputItems ??= new ChangeTrackingList<ResponseItem>();
-            includedProperties ??= new ChangeTrackingList<IncludedResponseProperty>();
-
-            return new CreateResponseOptions(
-                metadata,
-                temperature,
-                topLogProbabilityCount,
-                topP,
-                endUserId,
-                safetyIdentifier,
-                serviceTier,
-                previousResponseId,
-                model,
-                reasoningOptions,
-                backgroundModeEnabled,
-                maxOutputTokenCount,
-                maxToolCalls,
-                instructions,
-                textOptions,
-                tools.ToList(),
-                toolChoice,
-                truncationMode,
-                inputItems.ToList(),
-                includedProperties.ToList(),
-                parallelToolCallsEnabled,
-                storedOutputEnabled,
-                streamingEnabled,
-                conversationId,
-                default);
         }
 
         public static VectorStoreCollectionOptions VectorStoreCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, VectorStoreCollectionOrder? order = default)

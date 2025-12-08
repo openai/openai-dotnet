@@ -76,5 +76,9 @@ namespace OpenAI.Responses
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
+
+        public IDictionary<string, string> Metadata { get; }
+
+        public IList<ResponseTool> Tools { get; }
     }
 }
