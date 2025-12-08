@@ -766,6 +766,19 @@ namespace OpenAI
             return new ResponseDeletionResult(id, "response.deleted", true, default);
         }
 
+        public static ResponseItemCollectionPage ResponseItemCollectionPage(IEnumerable<ResponseItem> data = default, bool hasMore = default, string firstId = default, string lastId = default)
+        {
+            data ??= new ChangeTrackingList<ResponseItem>();
+
+            return new ResponseItemCollectionPage(
+                "list",
+                data.ToList(),
+                hasMore,
+                firstId,
+                lastId,
+                default);
+        }
+
         public static ImageGenerationOptions ImageGenerationOptions(string prompt = default, InternalCreateImageRequestModel? model = default, long? n = default, GeneratedImageQuality? quality = default, GeneratedImageFormat? responseFormat = default, GeneratedImageFileFormat? outputFileFormat = default, int? outputCompressionFactor = default, GeneratedImageSize? size = default, GeneratedImageModerationLevel? moderationLevel = default, GeneratedImageBackground? background = default, GeneratedImageStyle? style = default, string endUserId = default)
         {
             return new ImageGenerationOptions(

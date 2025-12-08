@@ -41,8 +41,8 @@ namespace OpenAI.Responses
                 yield return result;
 
                 // Plugin customization: add hasMore assignment
-                bool hasMore = ((InternalResponseItemList)result).HasMore;
-                nextToken = ((InternalResponseItemList)result).LastId;
+                bool hasMore = ((ResponseItemCollectionPage)result).HasMore;
+                nextToken = ((ResponseItemCollectionPage)result).LastId;
                 // Plugin customization: add hasMore == false check to pagination condition
                 if (nextToken == null || !hasMore)
                 {
@@ -54,7 +54,7 @@ namespace OpenAI.Responses
 
         public override ContinuationToken GetContinuationToken(ClientResult page)
         {
-            string nextPage = ((InternalResponseItemList)page).LastId;
+            string nextPage = ((ResponseItemCollectionPage)page).LastId;
             if (nextPage != null)
             {
                 return ContinuationToken.FromBytes(BinaryData.FromString(nextPage));
@@ -67,7 +67,7 @@ namespace OpenAI.Responses
 
         protected override async IAsyncEnumerable<ResponseItem> GetValuesFromPageAsync(ClientResult page)
         {
-            foreach (ResponseItem item in ((InternalResponseItemList)page).Data)
+            foreach (ResponseItem item in ((ResponseItemCollectionPage)page).Data)
             {
                 yield return item;
                 await Task.Yield();

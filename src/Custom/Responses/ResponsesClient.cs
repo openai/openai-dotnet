@@ -13,14 +13,14 @@ namespace OpenAI.Responses;
 // - Added Experimental attribute.
 // - Renamed.
 [CodeGenType("Responses")]
-// [CodeGenSuppress("CreateResponseAsync", typeof(ResponseCreationOptions), typeof(CancellationToken))]
-// [CodeGenSuppress("CreateResponse", typeof(ResponseCreationOptions), typeof(CancellationToken))]
 [CodeGenSuppress("DeleteResponse", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("DeleteResponseAsync", typeof(string), typeof(string), typeof(CancellationToken))]
 [CodeGenSuppress("CancelResponse", typeof(string), typeof(IEnumerable<IncludedResponseProperty>), typeof(bool?), typeof(int?), typeof(CancellationToken))]
 [CodeGenSuppress("CancelResponseAsync", typeof(string), typeof(IEnumerable<IncludedResponseProperty>), typeof(bool?), typeof(int?), typeof(CancellationToken))]
 [CodeGenSuppress("GetResponse", typeof(string), typeof(IEnumerable<IncludedResponseProperty>), typeof(bool?), typeof(int?), typeof(bool?), typeof(CancellationToken))]
 [CodeGenSuppress("GetResponseAsync", typeof(string), typeof(IEnumerable<IncludedResponseProperty>), typeof(bool?), typeof(int?), typeof(bool?), typeof(CancellationToken))]
+[CodeGenSuppress("GetResponseInputItems", typeof(ResponseItemCollectionOptions), typeof(CancellationToken))]
+[CodeGenSuppress("GetResponseInputItems", typeof(ResponseItemCollectionOptions), typeof(CancellationToken))]
 [CodeGenSuppress("GetResponseInputItems", typeof(string), typeof(int?), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
 [CodeGenSuppress("GetResponseInputItemsAsync", typeof(string), typeof(int?), typeof(string), typeof(string), typeof(string), typeof(RequestOptions))]
 
@@ -252,28 +252,16 @@ public partial class ResponsesClient
         return ClientResult.FromValue(convenienceResult, protocolResult.GetRawResponse());
     }
 
-    public virtual Task<ClientResult<ResponseResult>> GetResponseAsync(string responseId, IEnumerable<IncludedResponseProperty> includedProperties = default, CancellationToken cancellationToken = default)
-    {
-        return GetResponseAsync(responseId, includedProperties, cancellationToken.ToRequestOptions() ?? new RequestOptions());
-    }
-
     public virtual ClientResult<ResponseResult> GetResponse(string responseId, CancellationToken cancellationToken = default)
     {
-        return GetResponse(responseId, default, cancellationToken);
+        var response = GetResponse(responseId, Enumerable.Empty<IncludedResponseProperty>(), null, null, null, cancellationToken.ToRequestOptions());
+        return ClientResult.FromValue((ResponseResult)response, response.GetRawResponse());
     }
 
-    public virtual Task<ClientResult<ResponseResult>> GetResponseAsync(string responseId, CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<ResponseResult>> GetResponseAsync(string responseId, CancellationToken cancellationToken = default)
     {
-        return GetResponseAsync(responseId, default, cancellationToken);
-    }
-
-    public virtual ClientResult<ResponseResult> GetResponse(string responseId, IEnumerable<IncludedResponseProperty> includedProperties = default, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
-
-        ClientResult protocolResult = GetResponse(responseId, includedProperties, stream: null, startingAfter: null, includeObfuscation: null, cancellationToken.ToRequestOptions());
-        ResponseResult convenienceResult = (ResponseResult)protocolResult;
-        return ClientResult.FromValue(convenienceResult, protocolResult.GetRawResponse());
+        var response = await GetResponseAsync(responseId, Enumerable.Empty<IncludedResponseProperty>(), null, null, null, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return ClientResult.FromValue((ResponseResult)response, response.GetRawResponse());
     }
 
     public virtual async Task<ClientResult<ResponseResult>> GetResponseAsync(GetResponseOptions options, CancellationToken cancellationToken = default)
@@ -346,21 +334,6 @@ public partial class ResponsesClient
             cancellationToken);
     }
 
-    public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, IEnumerable<IncludedResponseProperty> includedProperties = default, int? startingAfter = default, bool? includeObfuscation = default, CancellationToken cancellationToken = default)
-    {
-        return GetResponseStreamingAsync(responseId, includedProperties, startingAfter, includeObfuscation, cancellationToken);
-    }
-
-    public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, IEnumerable<IncludedResponseProperty> includedProperties = default, int? startingAfter = default, bool? includeObfuscation = default, CancellationToken cancellationToken = default)
-    {
-        Argument.AssertNotNull(responseId, nameof(responseId));
-
-        return new SseUpdateCollection<StreamingResponseUpdate>(
-            () => GetResponse(responseId, includedProperties, stream: true, startingAfter, includeObfuscation, cancellationToken.ToRequestOptions(streaming: true)),
-            StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
-            cancellationToken);
-    }
-
     public virtual async Task<ClientResult<ResponseDeletionResult>> DeleteResponseAsync(string responseId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
@@ -411,25 +384,53 @@ public partial class ResponsesClient
         return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
-    public virtual ClientResult<ResponseItemCollectionPage> GetResponseInputItems(GetResponseInputItemsOptions options = default, CancellationToken cancellationToken = default)
+    public virtual ClientResult<ResponseItemCollectionPage> GetResponseInputItemCollectionPage(ResponseItemCollectionOptions options = default, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
         Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
 
-        PipelineMessage message = CreateGetResponseInputItemsRequest(options.ResponseId, options.PageSizeLimit, options.AfterId, options.Order, options.BeforeId, cancellationToken.ToRequestOptions());
+        PipelineMessage message = CreateGetResponseInputItemsRequest(options.ResponseId, options.PageSizeLimit, options.AfterId, options.Order.ToString(), options.BeforeId, cancellationToken.ToRequestOptions());
         ClientResult result = ClientResult.FromResponse(Pipeline.ProcessMessage(message, cancellationToken.ToRequestOptions()));
         return ClientResult.FromValue((ResponseItemCollectionPage)result, result.GetRawResponse());
     }
 
-    public virtual async Task<ClientResult<ResponseItemCollectionPage>> GetResponseInputItemsAsync(GetResponseInputItemsOptions options = default, CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<ResponseItemCollectionPage>> GetResponseInputItemCollectionPageAsync(ResponseItemCollectionOptions options = default, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
         Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
 
-        PipelineMessage message = CreateGetResponseInputItemsRequest(options.ResponseId, options.PageSizeLimit, options.AfterId, options.Order, options.BeforeId, cancellationToken.ToRequestOptions());
+        PipelineMessage message = CreateGetResponseInputItemsRequest(options.ResponseId, options.PageSizeLimit, options.AfterId, options.Order.ToString(), options.BeforeId, cancellationToken.ToRequestOptions());
         ClientResult result = ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, cancellationToken.ToRequestOptions()).ConfigureAwait(false));
         return ClientResult.FromValue((ResponseItemCollectionPage)result, result.GetRawResponse());
     }
+
+    public virtual CollectionResult<ResponseItem> GetResponseInputItems(ResponseItemCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
+
+            return new ResponsesClientGetResponseInputItemsCollectionResultOfT(
+                this,
+                options.ResponseId,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.AfterId,
+                options?.BeforeId,
+                cancellationToken.ToRequestOptions());
+        }
+
+        public virtual AsyncCollectionResult<ResponseItem> GetResponseInputItemsAsync(ResponseItemCollectionOptions options, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
+
+            return new ResponsesClientGetResponseInputItemsAsyncCollectionResultOfT(
+                this,
+                options.ResponseId,
+                options?.PageSizeLimit,
+                options?.Order?.ToString(),
+                options?.AfterId,
+                options?.BeforeId,
+                cancellationToken.ToRequestOptions());
+        }
 
     internal virtual CreateResponseOptions CreatePerCallOptions(CreateResponseOptions userOptions, bool stream = false)
     {

@@ -398,7 +398,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(annotation.Filename, Is.EqualTo(testFile.Filename));
         Assert.That(annotation.Index, Is.GreaterThan(0));
 
-        await foreach (ResponseItem inputItem in client.GetResponseInputItemsAsync(response.Id))
+        await foreach (ResponseItem inputItem in client.GetResponseInputItemsAsync(new ResponseItemCollectionOptions(response.Id)))
         {
             Console.WriteLine(ModelReaderWriter.Write(inputItem).ToString());
         }

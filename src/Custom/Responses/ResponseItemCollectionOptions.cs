@@ -4,4 +4,10 @@
 [CodeGenType("ResponseItemCollectionOptions")]
 public partial class ResponseItemCollectionOptions
 {
+    public ResponseItemCollectionOptions(string responseId)
+    {
+        ResponseId = responseId;
+    }
+
+    public string ResponseId { get; set; }
 }

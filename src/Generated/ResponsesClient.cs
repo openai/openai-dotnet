@@ -93,33 +93,5 @@ namespace OpenAI.Responses
             using PipelineMessage message = CreateCancelResponseRequest(responseId, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
-
-        public virtual CollectionResult<ResponseItem> GetResponseInputItems(string responseId, ResponseItemCollectionOptions options = default, CancellationToken cancellationToken = default)
-        {
-            Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
-
-            return new ResponsesClientGetResponseInputItemsCollectionResultOfT(
-                this,
-                responseId,
-                options?.PageSizeLimit,
-                options?.Order?.ToString(),
-                options?.AfterId,
-                options?.BeforeId,
-                cancellationToken.ToRequestOptions());
-        }
-
-        public virtual AsyncCollectionResult<ResponseItem> GetResponseInputItemsAsync(string responseId, ResponseItemCollectionOptions options = default, CancellationToken cancellationToken = default)
-        {
-            Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
-
-            return new ResponsesClientGetResponseInputItemsAsyncCollectionResultOfT(
-                this,
-                responseId,
-                options?.PageSizeLimit,
-                options?.Order?.ToString(),
-                options?.AfterId,
-                options?.BeforeId,
-                cancellationToken.ToRequestOptions());
-        }
     }
 }
