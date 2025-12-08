@@ -6,9 +6,9 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "589",
+        "Content-Length": "583",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini",
@@ -46,7 +46,7 @@
             "content": [
               {
                 "type": "input_text",
-                "text": "What should I wear for the weather in San Francisco right now?"
+                "text": "What should I wear for the weather in San Francisco, CA?"
               }
             ]
           }
@@ -57,46 +57,54 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "98040efecab5ba46-SEA",
+        "CF-RAY": "9a8447a818d972fb-DFW",
         "Connection": "keep-alive",
         "Content-Type": "text/event-stream; charset=utf-8",
-        "Date": "Tue, 16 Sep 2025 23:14:10 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "88",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
+        "Set-Cookie": [
+          "Sanitized",
+          "Sanitized"
+        ],
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "96",
+        "x-envoy-upstream-service-time": "55",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": [
         "event: response.created\n",
-        "data: {\"type\":\"response.created\",\"sequence_number\":0,\"response\":{\"id\":\"resp_09d8dbff6d346cb10068c9ef426e908196a67043593060a732\",\"object\":\"response\",\"created_at\":1758064450,\"status\":\"in_progress\",\"background\":false,\"error\":null,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-4o-mini-2024-07-18\",\"output\":[],\"parallel_tool_calls\":true,\"previous_response_id\":null,\"prompt_cache_key\":null,\"reasoning\":{\"effort\":null,\"summary\":null},\"safety_identifier\":null,\"service_tier\":\"auto\",\"store\":true,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":\"auto\",\"tools\":[{\"type\":\"function\",\"description\":\"Gets the weather at a specified location, optionally specifying units for temperature\",\"name\":\"get_weather_at_location\",\"parameters\":{\"type\":\"object\",\"properties\":{\"location\":{\"type\":\"string\"},\"unit\":{\"type\":\"string\",\"enum\":[\"C\",\"F\",\"K\"]}},\"required\":[\"location\"]},\"strict\":false}],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":null,\"user\":null,\"metadata\":{}}}\n\n",
+        "data: {\"type\":\"response.created\",\"sequence_number\":0,\"response\":{\"id\":\"resp_0c25e60be926327b0069305eb9ac6c8195833249c070ef4e7e\",\"object\":\"response\",\"created_at\":1764777657,\"status\":\"in_progress\",\"background\":false,\"error\":null,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-4o-mini-2024-07-18\",\"output\":[],\"parallel_tool_calls\":true,\"previous_response_id\":null,\"prompt_cache_key\":null,\"prompt_cache_retention\":null,\"reasoning\":{\"effort\":null,\"summary\":null},\"safety_identifier\":null,\"service_tier\":\"auto\",\"store\":true,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":\"auto\",\"tools\":[{\"type\":\"function\",\"description\":\"Gets the weather at a specified location, optionally specifying units for temperature\",\"name\":\"get_weather_at_location\",\"parameters\":{\"type\":\"object\",\"properties\":{\"location\":{\"type\":\"string\"},\"unit\":{\"type\":\"string\",\"enum\":[\"C\",\"F\",\"K\"]}},\"required\":[\"location\"]},\"strict\":false}],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":null,\"user\":null,\"metadata\":{}}}\n\n",
         "event: response.in_progress\n",
-        "data: {\"type\":\"response.in_progress\",\"sequence_number\":1,\"response\":{\"id\":\"resp_09d8dbff6d346cb10068c9ef426e908196a67043593060a732\",\"object\":\"response\",\"created_at\":1758064450,\"status\":\"in_progress\",\"background\":false,\"error\":null,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-4o-mini-2024-07-18\",\"output\":[],\"parallel_tool_calls\":true,\"previous_response_id\":null,\"prompt_cache_key\":null,\"reasoning\":{\"effort\":null,\"summary\":null},\"safety_identifier\":null,\"service_tier\":\"auto\",\"store\":true,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":\"auto\",\"tools\":[{\"type\":\"function\",\"description\":\"Gets the weather at a specified location, optionally specifying units for temperature\",\"name\":\"get_weather_at_location\",\"parameters\":{\"type\":\"object\",\"properties\":{\"location\":{\"type\":\"string\"},\"unit\":{\"type\":\"string\",\"enum\":[\"C\",\"F\",\"K\"]}},\"required\":[\"location\"]},\"strict\":false}],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":null,\"user\":null,\"metadata\":{}}}\n\n",
+        "data: {\"type\":\"response.in_progress\",\"sequence_number\":1,\"response\":{\"id\":\"resp_0c25e60be926327b0069305eb9ac6c8195833249c070ef4e7e\",\"object\":\"response\",\"created_at\":1764777657,\"status\":\"in_progress\",\"background\":false,\"error\":null,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-4o-mini-2024-07-18\",\"output\":[],\"parallel_tool_calls\":true,\"previous_response_id\":null,\"prompt_cache_key\":null,\"prompt_cache_retention\":null,\"reasoning\":{\"effort\":null,\"summary\":null},\"safety_identifier\":null,\"service_tier\":\"auto\",\"store\":true,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":\"auto\",\"tools\":[{\"type\":\"function\",\"description\":\"Gets the weather at a specified location, optionally specifying units for temperature\",\"name\":\"get_weather_at_location\",\"parameters\":{\"type\":\"object\",\"properties\":{\"location\":{\"type\":\"string\"},\"unit\":{\"type\":\"string\",\"enum\":[\"C\",\"F\",\"K\"]}},\"required\":[\"location\"]},\"strict\":false}],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":null,\"user\":null,\"metadata\":{}}}\n\n",
         "event: response.output_item.added\n",
-        "data: {\"type\":\"response.output_item.added\",\"sequence_number\":2,\"output_index\":0,\"item\":{\"id\":\"fc_09d8dbff6d346cb10068c9ef4377a88196aab02fa3ec9499e7\",\"type\":\"function_call\",\"status\":\"in_progress\",\"arguments\":\"\",\"call_id\":\"call_MayYOA8A1cOO83rCh0VifkjF\",\"name\":\"get_weather_at_location\"}}\n\n",
+        "data: {\"type\":\"response.output_item.added\",\"sequence_number\":2,\"output_index\":0,\"item\":{\"id\":\"fc_0c25e60be926327b0069305ebaa9648195b0273f9500448380\",\"type\":\"function_call\",\"status\":\"in_progress\",\"arguments\":\"\",\"call_id\":\"call_0UFGPwrziw5rbinYp7rthrTb\",\"name\":\"get_weather_at_location\"}}\n\n",
         "event: response.function_call_arguments.delta\n",
-        "data: {\"type\":\"response.function_call_arguments.delta\",\"sequence_number\":3,\"item_id\":\"fc_09d8dbff6d346cb10068c9ef4377a88196aab02fa3ec9499e7\",\"output_index\":0,\"delta\":\"{\\\"\",\"obfuscation\":\"gtrCCMlAdHDc7Y\"}\n\n",
+        "data: {\"type\":\"response.function_call_arguments.delta\",\"sequence_number\":3,\"item_id\":\"fc_0c25e60be926327b0069305ebaa9648195b0273f9500448380\",\"output_index\":0,\"delta\":\"{\\\"\",\"obfuscation\":\"glOt23pNpmfkeS\"}\n\n",
         "event: response.function_call_arguments.delta\n",
-        "data: {\"type\":\"response.function_call_arguments.delta\",\"sequence_number\":4,\"item_id\":\"fc_09d8dbff6d346cb10068c9ef4377a88196aab02fa3ec9499e7\",\"output_index\":0,\"delta\":\"location\",\"obfuscation\":\"DGyRvfsa\"}\n\n",
+        "data: {\"type\":\"response.function_call_arguments.delta\",\"sequence_number\":4,\"item_id\":\"fc_0c25e60be926327b0069305ebaa9648195b0273f9500448380\",\"output_index\":0,\"delta\":\"location\",\"obfuscation\":\"IZ4TflK5\"}\n\n",
         "event: response.function_call_arguments.delta\n",
-        "data: {\"type\":\"response.function_call_arguments.delta\",\"sequence_number\":5,\"item_id\":\"fc_09d8dbff6d346cb10068c9ef4377a88196aab02fa3ec9499e7\",\"output_index\":0,\"delta\":\"\\\":\\\"\",\"obfuscation\":\"draRDVsJYoKTK\"}\n\n",
+        "data: {\"type\":\"response.function_call_arguments.delta\",\"sequence_number\":5,\"item_id\":\"fc_0c25e60be926327b0069305ebaa9648195b0273f9500448380\",\"output_index\":0,\"delta\":\"\\\":\\\"\",\"obfuscation\":\"xIOaX7qOuXqXI\"}\n\n",
         "event: response.function_call_arguments.delta\n",
-        "data: {\"type\":\"response.function_call_arguments.delta\",\"sequence_number\":6,\"item_id\":\"fc_09d8dbff6d346cb10068c9ef4377a88196aab02fa3ec9499e7\",\"output_index\":0,\"delta\":\"San\",\"obfuscation\":\"cYRQaY22xWSTX\"}\n\n",
+        "data: {\"type\":\"response.function_call_arguments.delta\",\"sequence_number\":6,\"item_id\":\"fc_0c25e60be926327b0069305ebaa9648195b0273f9500448380\",\"output_index\":0,\"delta\":\"San\",\"obfuscation\":\"5sWfliAtrYmZT\"}\n\n",
         "event: response.function_call_arguments.delta\n",
-        "data: {\"type\":\"response.function_call_arguments.delta\",\"sequence_number\":7,\"item_id\":\"fc_09d8dbff6d346cb10068c9ef4377a88196aab02fa3ec9499e7\",\"output_index\":0,\"delta\":\" Francisco\",\"obfuscation\":\"Jw0L2W\"}\n\n",
+        "data: {\"type\":\"response.function_call_arguments.delta\",\"sequence_number\":7,\"item_id\":\"fc_0c25e60be926327b0069305ebaa9648195b0273f9500448380\",\"output_index\":0,\"delta\":\" Francisco\",\"obfuscation\":\"4hLAXL\"}\n\n",
         "event: response.function_call_arguments.delta\n",
-        "data: {\"type\":\"response.function_call_arguments.delta\",\"sequence_number\":8,\"item_id\":\"fc_09d8dbff6d346cb10068c9ef4377a88196aab02fa3ec9499e7\",\"output_index\":0,\"delta\":\"\\\"}\",\"obfuscation\":\"rEapQeh7Ha13DI\"}\n\n",
+        "data: {\"type\":\"response.function_call_arguments.delta\",\"sequence_number\":8,\"item_id\":\"fc_0c25e60be926327b0069305ebaa9648195b0273f9500448380\",\"output_index\":0,\"delta\":\",\",\"obfuscation\":\"eZQAr4Oyuj1UENV\"}\n\n",
+        "event: response.function_call_arguments.delta\n",
+        "data: {\"type\":\"response.function_call_arguments.delta\",\"sequence_number\":9,\"item_id\":\"fc_0c25e60be926327b0069305ebaa9648195b0273f9500448380\",\"output_index\":0,\"delta\":\" CA\",\"obfuscation\":\"kICTItQFBKh3o\"}\n\n",
+        "event: response.function_call_arguments.delta\n",
+        "data: {\"type\":\"response.function_call_arguments.delta\",\"sequence_number\":10,\"item_id\":\"fc_0c25e60be926327b0069305ebaa9648195b0273f9500448380\",\"output_index\":0,\"delta\":\"\\\"}\",\"obfuscation\":\"6tJ7sAtrJPwC2s\"}\n\n",
         "event: response.function_call_arguments.done\n",
-        "data: {\"type\":\"response.function_call_arguments.done\",\"sequence_number\":9,\"item_id\":\"fc_09d8dbff6d346cb10068c9ef4377a88196aab02fa3ec9499e7\",\"output_index\":0,\"arguments\":\"{\\\"location\\\":\\\"San Francisco\\\"}\"}\n\n",
+        "data: {\"type\":\"response.function_call_arguments.done\",\"sequence_number\":11,\"item_id\":\"fc_0c25e60be926327b0069305ebaa9648195b0273f9500448380\",\"output_index\":0,\"arguments\":\"{\\\"location\\\":\\\"San Francisco, CA\\\"}\"}\n\n",
         "event: response.output_item.done\n",
-        "data: {\"type\":\"response.output_item.done\",\"sequence_number\":10,\"output_index\":0,\"item\":{\"id\":\"fc_09d8dbff6d346cb10068c9ef4377a88196aab02fa3ec9499e7\",\"type\":\"function_call\",\"status\":\"completed\",\"arguments\":\"{\\\"location\\\":\\\"San Francisco\\\"}\",\"call_id\":\"call_MayYOA8A1cOO83rCh0VifkjF\",\"name\":\"get_weather_at_location\"}}\n\n",
+        "data: {\"type\":\"response.output_item.done\",\"sequence_number\":12,\"output_index\":0,\"item\":{\"id\":\"fc_0c25e60be926327b0069305ebaa9648195b0273f9500448380\",\"type\":\"function_call\",\"status\":\"completed\",\"arguments\":\"{\\\"location\\\":\\\"San Francisco, CA\\\"}\",\"call_id\":\"call_0UFGPwrziw5rbinYp7rthrTb\",\"name\":\"get_weather_at_location\"}}\n\n",
         "event: response.completed\n",
-        "data: {\"type\":\"response.completed\",\"sequence_number\":11,\"response\":{\"id\":\"resp_09d8dbff6d346cb10068c9ef426e908196a67043593060a732\",\"object\":\"response\",\"created_at\":1758064450,\"status\":\"completed\",\"background\":false,\"error\":null,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-4o-mini-2024-07-18\",\"output\":[{\"id\":\"fc_09d8dbff6d346cb10068c9ef4377a88196aab02fa3ec9499e7\",\"type\":\"function_call\",\"status\":\"completed\",\"arguments\":\"{\\\"location\\\":\\\"San Francisco\\\"}\",\"call_id\":\"call_MayYOA8A1cOO83rCh0VifkjF\",\"name\":\"get_weather_at_location\"}],\"parallel_tool_calls\":true,\"previous_response_id\":null,\"prompt_cache_key\":null,\"reasoning\":{\"effort\":null,\"summary\":null},\"safety_identifier\":null,\"service_tier\":\"default\",\"store\":true,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":\"auto\",\"tools\":[{\"type\":\"function\",\"description\":\"Gets the weather at a specified location, optionally specifying units for temperature\",\"name\":\"get_weather_at_location\",\"parameters\":{\"type\":\"object\",\"properties\":{\"location\":{\"type\":\"string\"},\"unit\":{\"type\":\"string\",\"enum\":[\"C\",\"F\",\"K\"]}},\"required\":[\"location\"]},\"strict\":false}],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":{\"input_tokens\":74,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":18,\"output_tokens_details\":{\"reasoning_tokens\":0},\"total_tokens\":92},\"user\":null,\"metadata\":{}}}\n\n"
+        "data: {\"type\":\"response.completed\",\"sequence_number\":13,\"response\":{\"id\":\"resp_0c25e60be926327b0069305eb9ac6c8195833249c070ef4e7e\",\"object\":\"response\",\"created_at\":1764777657,\"status\":\"completed\",\"background\":false,\"error\":null,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-4o-mini-2024-07-18\",\"output\":[{\"id\":\"fc_0c25e60be926327b0069305ebaa9648195b0273f9500448380\",\"type\":\"function_call\",\"status\":\"completed\",\"arguments\":\"{\\\"location\\\":\\\"San Francisco, CA\\\"}\",\"call_id\":\"call_0UFGPwrziw5rbinYp7rthrTb\",\"name\":\"get_weather_at_location\"}],\"parallel_tool_calls\":true,\"previous_response_id\":null,\"prompt_cache_key\":null,\"prompt_cache_retention\":null,\"reasoning\":{\"effort\":null,\"summary\":null},\"safety_identifier\":null,\"service_tier\":\"default\",\"store\":true,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":\"auto\",\"tools\":[{\"type\":\"function\",\"description\":\"Gets the weather at a specified location, optionally specifying units for temperature\",\"name\":\"get_weather_at_location\",\"parameters\":{\"type\":\"object\",\"properties\":{\"location\":{\"type\":\"string\"},\"unit\":{\"type\":\"string\",\"enum\":[\"C\",\"F\",\"K\"]}},\"required\":[\"location\"]},\"strict\":false}],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":{\"input_tokens\":74,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":20,\"output_tokens_details\":{\"reasoning_tokens\":0},\"total_tokens\":94},\"user\":null,\"metadata\":{}}}\n\n"
       ]
     }
   ],
