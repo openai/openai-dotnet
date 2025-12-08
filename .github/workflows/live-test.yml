@@ -19,6 +19,11 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
+          dotnet-version: '10.x'
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v3
+        with:
           dotnet-version: '9.x'
 
       - name: Setup .NET 8

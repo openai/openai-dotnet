@@ -3,15 +3,15 @@
     <Description>
     The official .NET library for the OpenAI service API.
     </Description>
-    <AssemblyTitle>SDK Code Generation OpenAI</AssemblyTitle>
+    <AssemblyTitle>OpenAI client library for .NET</AssemblyTitle>
     <PackageTags>OpenAI;openai-dotnet;ChatGPT;Dall-E</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Copyright>Copyright (c) 2024 OpenAI (https://openai.com)</Copyright>
+    <Copyright>Copyright (c) 2025 OpenAI (https://openai.com)</Copyright>
 
     <VersionPrefix>2.7.0</VersionPrefix>
     <VersionSuffix></VersionSuffix>
 
-    <TargetFrameworks>net8.0;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net10.0;net8.0;netstandard2.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
 
     <!-- Generate an XML documentation file for the project. -->
@@ -62,10 +62,6 @@
     <InternalsVisibleTo Include="Azure.AI.OpenAI" Condition="'$(Configuration)' == 'Unsigned'" />
   </ItemGroup>
 
-  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
-    <!-- Normalize stored file paths in symbols when in a CI build. -->
-    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-  </PropertyGroup>
   <ItemGroup>
     <None Include="OpenAI.png" Pack="true" PackagePath="\" />
     <None Include="..\CHANGELOG.md" Pack="true" PackagePath="\" />
@@ -73,12 +69,22 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
     <PackageReference Include="System.ClientModel" Version="1.8.1" />
-    <PackageReference Include="System.Net.ServerSentEvents" Version="9.0.9" />
+    <PackageReference Include="System.Net.ServerSentEvents" Version="10.0.0" />
   </ItemGroup>
 
-  <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="8.0.1" />
+  <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="10.0.0" />
   </ItemGroup>
+
+  <!-- Build-only dependencies -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
+  <!-- Build and release configuration -->
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <!-- Normalize stored file paths in symbols when in a CI build. -->
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
 </Project>

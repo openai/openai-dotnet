@@ -760,7 +760,10 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         }
 
         List<ResponseItem> listedItems = [];
-        await client.GetResponseInputItemsAsync(response.Id).ForEachAsync(item => listedItems.Add(item));
+        await foreach (var item in client.GetResponseInputItemsAsync(response.Id))
+        {
+            listedItems.Add(item);
+        }
 
         if (instructionMethod == ResponsesTestInstructionMethod.InstructionsProperty)
         {
