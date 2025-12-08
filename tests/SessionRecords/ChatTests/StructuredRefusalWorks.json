@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "827",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
       },
       "RequestBody": {
         "temperature": 0,
@@ -59,19 +59,19 @@
         "Access-Control-Expose-Headers": "X-Request-ID",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801cef83f5e98e5-SEA",
+        "CF-RAY": "9aad8efd489569e2-DFW",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 16:40:56 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "502",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "516",
+        "x-envoy-upstream-service-time": "569",
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-requests": "10000",
         "x-ratelimit-limit-tokens": "30000000",
@@ -82,9 +82,9 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-CGT1cbef8SVvUl1eExf6LNKMlDtOv",
+        "id": "chatcmpl-CkYAx7J1K8puNOYWDNUyOdzx8Las9",
         "object": "chat.completion",
-        "created": 1758040856,
+        "created": 1765210495,
         "model": "gpt-4o-2024-08-06",
         "choices": [
           {
@@ -115,7 +115,7 @@
           }
         },
         "service_tier": "default",
-        "system_fingerprint": "fp_cbf1785567"
+        "system_fingerprint": "Sanitized"
       }
     },
     {
@@ -126,7 +126,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "323",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
       },
       "RequestBody": {
         "messages": [
@@ -150,19 +150,19 @@
         "Access-Control-Expose-Headers": "X-Request-ID",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801cefbfb3798e5-SEA",
+        "CF-RAY": "9aad8f01691f69e2-DFW",
         "Connection": "keep-alive",
-        "Content-Length": "853",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 16:40:58 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "993",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "1060",
+        "x-envoy-upstream-service-time": "1456",
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-requests": "10000",
         "x-ratelimit-limit-tokens": "30000000",
@@ -173,16 +173,16 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-CGT1d2j5YYfXuUViBz3yZowSWmDz6",
+        "id": "chatcmpl-CkYAyYhJZdoMPzu4sOdjcKCama8sN",
         "object": "chat.completion",
-        "created": 1758040857,
+        "created": 1765210496,
         "model": "gpt-4o-2024-08-06",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "I’m sorry, but I cannot assist with that request.",
+              "content": "I can't assist with that request because it involves illegal activities. If you have questions about legal matters or need information on a different topic, feel free to ask, and I'll be happy to help.",
               "refusal": null,
               "annotations": []
             },
@@ -192,8 +192,8 @@
         ],
         "usage": {
           "prompt_tokens": 52,
-          "completion_tokens": 12,
-          "total_tokens": 64,
+          "completion_tokens": 39,
+          "total_tokens": 91,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0
@@ -206,7 +206,7 @@
           }
         },
         "service_tier": "default",
-        "system_fingerprint": "fp_cbf1785567"
+        "system_fingerprint": "Sanitized"
       }
     }
   ],

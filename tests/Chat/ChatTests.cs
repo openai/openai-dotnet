@@ -1040,6 +1040,36 @@ public class ChatTests : OpenAIRecordedTestBase
         Assert.That(response.IsDisposed);
     }
 
+    [RecordedTest]
+    public async Task ValidateConcurrency()
+    {
+        ChatClient client = GetTestClient();
+        ChatCompletionOptions _options = new()
+        {
+            Temperature = 0,
+        };
+        IReadOnlyList<string> _messages =
+        [
+            "2 + 4 = ?",
+            "3 + 5 = ?",
+            "4 + 6 = ?",
+        ];
+        List<string> responses = [];
+
+        await Parallel.ForEachAsync(_messages, async (message, cancellationToken) =>
+        {
+            List<ChatMessage> messages =
+            [
+                new UserChatMessage(message),
+            ];
+            ChatCompletion completion = await client.CompleteChatAsync(messages, _options, cancellationToken);
+            responses.Add(completion.Content[0].Text);
+            Console.WriteLine($"Message: {message}, Response: {completion.Content[0].Text}");
+            Assert.That(completion.Content[0].Text, Does.StartWith(message.Substring(0, 7)));
+        });
+        Assert.That(responses, Has.Count.EqualTo(_messages.Count));
+    }
+
     [OneTimeTearDown]
     public void TearDown()
     {
