@@ -119,11 +119,15 @@ public partial class ResponsesClient
         var options = new CreateResponseOptions
         {
             Model = model,
-            InputItems = inputItems.ToList(),
             PreviousResponseId = previousResponseId,
             ConversationId = conversationId,
             StreamingEnabled = false,
         };
+
+        foreach (var item in inputItems)
+        {
+            options.InputItems.Add(item);
+        }
 
         ClientResult result = this.CreateResponse(options, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
         return ClientResult.FromValue((ResponseResult)result.GetRawResponse().Content, result.GetRawResponse());
@@ -137,12 +141,15 @@ public partial class ResponsesClient
         var options = new CreateResponseOptions
         {
             Model = model,
-            InputItems = inputItems.ToList(),
             PreviousResponseId = previousResponseId,
             ConversationId = conversationId,
             StreamingEnabled = false,
         };
 
+        foreach (var item in inputItems)
+        {
+            options.InputItems.Add(item);
+        }
         ClientResult result = this.CreateResponse(options, cancellationToken.CanBeCanceled ? new RequestOptions { CancellationToken = cancellationToken } : null);
         return Task.FromResult(ClientResult.FromValue((ResponseResult)result.GetRawResponse().Content, result.GetRawResponse()));
     }
@@ -168,11 +175,15 @@ public partial class ResponsesClient
         var options = new CreateResponseOptions
         {
             Model = model,
-            InputItems = inputItems.ToList(),
             PreviousResponseId = previousResponseId,
             ConversationId = conversationId,
             StreamingEnabled = true,
         };
+
+        foreach (var item in inputItems)
+        {
+            options.InputItems.Add(item);
+        }
 
         return CreateResponseStreaming(options, cancellationToken);
     }
@@ -185,11 +196,15 @@ public partial class ResponsesClient
         var options = new CreateResponseOptions
         {
             Model = model,
-            InputItems = inputItems.ToList(),
             PreviousResponseId = previousResponseId,
             ConversationId = conversationId,
             StreamingEnabled = true,
         };
+
+        foreach (var item in inputItems)
+        {
+            options.InputItems.Add(item);
+        }
 
         return CreateResponseStreamingAsync(options, cancellationToken.ToRequestOptions(streaming: true));
     }

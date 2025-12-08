@@ -38,7 +38,7 @@ namespace OpenAI.Responses
         /// Gets or sets the input items to be processed for the response. This corresponds to the "input" property in the JSON representation.
         /// </summary>
         [CodeGenMember("Input")]
-        public IList<ResponseItem> InputItems { get; internal set; }
+        public IList<ResponseItem> InputItems { get; }
 
         /// <summary>
         /// Gets or sets the list of fields to include in the response. This corresponds to the "include" property in the JSON representation.
