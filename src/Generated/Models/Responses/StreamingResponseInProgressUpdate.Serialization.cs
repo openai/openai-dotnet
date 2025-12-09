@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseInProgressUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseInProgressUpdate>
     {
-        internal StreamingResponseInProgressUpdate() : this(InternalResponseStreamEventType.ResponseInProgress, default, default, null)
+        public StreamingResponseInProgressUpdate() : this(InternalResponseStreamEventType.ResponseInProgress, default, default, null)
         {
         }
 

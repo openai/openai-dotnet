@@ -12,6 +12,10 @@ namespace OpenAI.Responses
 {
     public partial class ResponseItemCollectionOptions : IJsonModel<ResponseItemCollectionOptions>
     {
+        internal ResponseItemCollectionOptions()
+        {
+        }
+
         void IJsonModel<ResponseItemCollectionOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -67,6 +71,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
+            string responseId = default;
             string afterId = default;
             string beforeId = default;
             int? pageSizeLimit = default;
@@ -77,7 +82,13 @@ namespace OpenAI.Responses
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ResponseItemCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties);
+            return new ResponseItemCollectionOptions(
+                responseId,
+                afterId,
+                beforeId,
+                pageSizeLimit,
+                order,
+                additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<ResponseItemCollectionOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

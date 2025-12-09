@@ -205,7 +205,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
                 ResponseTool.CreateWebSearchTool(
                     userLocation: WebSearchToolLocation.CreateApproximateLocation(city: "San Francisco"),
                     searchContextSize: WebSearchToolContextSize.Low)
-            }
+            },
+            StreamingEnabled = true,
         };
 
         string searchItemId = null;
@@ -260,253 +261,6 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
-    public async Task ResponseWithImageGenTool()
-    {
-        ResponsesClient client = GetTestClient();
-
-        CreateResponseOptions options = new(
-            "gpt-4o-mini",
-            [ResponseItem.CreateUserMessageItem("Generate an image of gray tabby cat hugging an otter with an orange scarf")])
-        {
-            Tools =
-            {
-                ResponseTool.CreateImageGenerationTool(
-                    model: "gpt-image-1",
-                    quality: ImageGenerationToolQuality.High,
-                    size: ImageGenerationToolSize.W1024xH1024,
-                    outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
-                    moderationLevel: ImageGenerationToolModerationLevel.Auto,
-                    background: ImageGenerationToolBackground.Transparent,
-                    inputFidelity: ImageGenerationToolInputFidelity.High)
-            }
-        };
-
-        ResponseResult response = await client.CreateResponseAsync(
-            options);
-
-        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
-        Assert.That(response.OutputItems[0], Is.InstanceOf<ImageGenerationCallResponseItem>());
-        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
-
-        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
-        Assert.That(message.Content, Has.Count.GreaterThan(0));
-        Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
-
-        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<ImageGenerationTool>());
-
-        ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
-        Assert.That(imageGenResponse.Status, Is.EqualTo(ImageGenerationCallStatus.Completed));
-        Assert.That(imageGenResponse.ImageResultBytes.ToArray(), Is.Not.Null.And.Not.Empty);
-    }
-
-    [RecordedTest]
-    public async Task ImageGenToolStreaming()
-    {
-        ResponsesClient client = GetTestClient();
-
-        const string message = "Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape";
-
-        CreateResponseOptions responseOptions = new("gpt-4o-mini", [ResponseItem.CreateUserMessageItem(message)])
-        {
-            Tools =
-            {
-                ResponseTool.CreateImageGenerationTool(
-                    model: "gpt-image-1",
-                    quality: ImageGenerationToolQuality.High,
-                    size: ImageGenerationToolSize.W1024xH1024,
-                    outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
-                    moderationLevel: ImageGenerationToolModerationLevel.Auto,
-                    background: ImageGenerationToolBackground.Transparent)
-            }
-        };
-
-        string imageGenItemId = null;
-        int partialCount = 0;
-        int inProgressCount = 0;
-        int generateCount = 0;
-        bool gotCompletedImageGenItem = false;
-        bool gotCompletedResponseItem = false;
-
-        await foreach (StreamingResponseUpdate update
-            in client.CreateResponseStreamingAsync(responseOptions))
-        {
-            if (update is StreamingResponseImageGenerationCallPartialImageUpdate imageGenCallInPartialUpdate)
-            {
-                Assert.That(imageGenCallInPartialUpdate.ItemId, Is.Not.Null.And.Not.Empty);
-                imageGenItemId ??= imageGenCallInPartialUpdate.ItemId;
-                Assert.That(imageGenItemId, Is.EqualTo(imageGenCallInPartialUpdate.ItemId));
-                Assert.That(imageGenCallInPartialUpdate.OutputIndex, Is.EqualTo(0));
-                partialCount++;
-            }
-            else if (update is StreamingResponseImageGenerationCallInProgressUpdate imageGenCallInProgressUpdate)
-            {
-                Assert.That(imageGenCallInProgressUpdate.ItemId, Is.Not.Null.And.Not.Empty);
-                imageGenItemId ??= imageGenCallInProgressUpdate.ItemId;
-                Assert.That(imageGenItemId, Is.EqualTo(imageGenCallInProgressUpdate.ItemId));
-                Assert.That(imageGenCallInProgressUpdate.OutputIndex, Is.EqualTo(0));
-                inProgressCount++;
-            }
-            else if (update is StreamingResponseImageGenerationCallGeneratingUpdate imageGenCallGeneratingUpdate)
-            {
-                Assert.That(imageGenCallGeneratingUpdate.ItemId, Is.Not.Null.And.Not.Empty);
-                imageGenItemId ??= imageGenCallGeneratingUpdate.ItemId;
-                Assert.That(imageGenItemId, Is.EqualTo(imageGenCallGeneratingUpdate.ItemId));
-                Assert.That(imageGenCallGeneratingUpdate.OutputIndex, Is.EqualTo(0));
-                generateCount++;
-            }
-            else if (update is StreamingResponseImageGenerationCallCompletedUpdate outputItemCompleteUpdate)
-            {
-                Assert.That(outputItemCompleteUpdate.ItemId, Is.Not.Null.And.Not.Empty);
-                imageGenItemId ??= outputItemCompleteUpdate.ItemId;
-                Assert.That(imageGenItemId, Is.EqualTo(outputItemCompleteUpdate.ItemId));
-                Assert.That(outputItemCompleteUpdate.OutputIndex, Is.EqualTo(0));
-                gotCompletedImageGenItem = true;
-            }
-            else if (update is StreamingResponseOutputItemDoneUpdate outputItemDoneUpdate)
-            {
-                if (outputItemDoneUpdate.Item is ImageGenerationCallResponseItem imageGenCallItem)
-                {
-                    Assert.That(imageGenCallItem.Id, Is.Not.Null.And.Not.Empty);
-                    imageGenItemId ??= imageGenCallItem.Id;
-                    Assert.That(imageGenItemId, Is.EqualTo(outputItemDoneUpdate.Item.Id));
-                    Assert.That(outputItemDoneUpdate.OutputIndex, Is.EqualTo(0));
-                    gotCompletedResponseItem = true;
-                }
-            }
-        }
-
-        Assert.That(gotCompletedResponseItem || gotCompletedImageGenItem, Is.True);
-        Assert.That(partialCount, Is.EqualTo(1));
-        Assert.That(inProgressCount, Is.EqualTo(1));
-        Assert.That(generateCount, Is.EqualTo(1));
-        Assert.That(imageGenItemId, Is.Not.Null.And.Not.Empty);
-    }
-
-    [RecordedTest]
-    public async Task ImageGenToolInputMaskWithImageBytes()
-    {
-        ResponsesClient client = GetTestClient();
-
-        string imageFilename = "images_dog_and_cat.png";
-        string imagePath = Path.Combine("Assets", imageFilename);
-        CreateResponseOptions options = new("gpt-4o-mini", [ResponseItem.CreateUserMessageItem("Generate an image of gray tabby cat hugging an otter with an orange scarf")])
-        {
-            Tools =
-            {
-            ResponseTool.CreateImageGenerationTool(
-                model: "gpt-image-1",
-                outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
-                inputImageMask: new(BinaryData.FromBytes(File.ReadAllBytes(imagePath)), "image/png"))
-            }
-        };
-
-        ResponseResult response = await client.CreateResponseAsync(
-            options);
-
-        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
-        Assert.That(response.OutputItems[0], Is.InstanceOf<ImageGenerationCallResponseItem>());
-        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
-
-        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
-        Assert.That(message.Content, Has.Count.GreaterThan(0));
-        Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
-
-        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<ImageGenerationTool>());
-
-        ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
-        Assert.That(imageGenResponse.Status, Is.EqualTo(ImageGenerationCallStatus.Completed));
-        Assert.That(imageGenResponse.ImageResultBytes.ToArray(), Is.Not.Null.And.Not.Empty);
-    }
-
-    [RecordedTest]
-    public async Task ImageGenToolInputMaskWithImageUri()
-    {
-        ResponsesClient client = GetTestClient();
-
-        CreateResponseOptions options = new(
-            "gpt-4o-mini",
-            [ResponseItem.CreateUserMessageItem("Generate an image of gray tabby cat hugging an otter with an orange scarf")])
-        {
-            Tools =
-            {
-            ResponseTool.CreateImageGenerationTool(
-                model: "gpt-image-1",
-                outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
-                inputImageMask: new(imageUri: new Uri("https://upload.wikimedia.org/wikipedia/commons/c/c3/Openai.png")))
-            }
-        };
-
-        ResponseResult response = await client.CreateResponseAsync(options);
-
-        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
-        Assert.That(response.OutputItems[0], Is.InstanceOf<ImageGenerationCallResponseItem>());
-        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
-
-        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
-        Assert.That(message.Content, Has.Count.GreaterThan(0));
-        Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
-
-        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<ImageGenerationTool>());
-
-        ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
-        Assert.That(imageGenResponse.Status, Is.EqualTo(ImageGenerationCallStatus.Completed));
-        Assert.That(imageGenResponse.ImageResultBytes.ToArray(), Is.Not.Null.And.Not.Empty);
-    }
-
-    [RecordedTest]
-    public async Task ImageGenToolInputMaskWithFileId()
-    {
-        ResponsesClient client = GetTestClient();
-
-        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
-
-        string imageFilename = "images_dog_and_cat.png";
-        string imagePath = Path.Combine("Assets", imageFilename);
-        using Stream image = File.OpenRead(imagePath);
-        BinaryData imageData = BinaryData.FromStream(image);
-
-        OpenAIFile file;
-        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
-        {
-            file = await fileClient.UploadFileAsync(
-            imageData,
-            imageFilename,
-            FileUploadPurpose.UserData);
-        }
-        Validate(file);
-
-        CreateResponseOptions options = new(
-            "gpt-4o-mini",
-            [ResponseItem.CreateUserMessageItem("Generate an image of gray tabby cat hugging an otter with an orange scarf")])
-        {
-            Tools =
-            {
-            ResponseTool.CreateImageGenerationTool(
-                model: "gpt-image-1",
-                outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
-                inputImageMask: new(fileId: file.Id))
-            }
-        };
-
-        ResponseResult response = await client.CreateResponseAsync(
-            options);
-
-        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
-        Assert.That(response.OutputItems[0], Is.InstanceOf<ImageGenerationCallResponseItem>());
-        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
-
-        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
-        Assert.That(message.Content, Has.Count.GreaterThan(0));
-        Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
-
-        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<ImageGenerationTool>());
-
-        ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
-        Assert.That(imageGenResponse.Status, Is.EqualTo(ImageGenerationCallStatus.Completed));
-        Assert.That(imageGenResponse.ImageResultBytes.ToArray(), Is.Not.Null.And.Not.Empty);
-    }
-
-    [RecordedTest]
     public async Task StreamingResponses()
     {
         ResponsesClient client = GetTestClient(); // "computer-use-alpha");
@@ -514,7 +268,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("Hello, world!")];
         List<string> deltaTextSegments = [];
         string finalResponseText = null;
-        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(new("gpt-4o-mini", inputItems)))
+        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync("gpt-4o-mini", inputItems))
         {
             Console.WriteLine(ModelReaderWriter.Write(update));
             if (update is StreamingResponseOutputTextDeltaUpdate outputTextDeltaUpdate)
@@ -548,8 +302,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
                 ReasoningEffortLevel = ResponseReasoningEffortLevel.High,
             },
             Instructions = "Perform reasoning over any questions asked by the user.",
+            StreamingEnabled = true,
         };
-
 
         var partsAdded = 0;
         var partsDone = 0;
@@ -724,12 +478,13 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             = ResponseContentPart.CreateInputTextPart("Hello, responses!");
         ResponseItem inputItem = ResponseItem.CreateUserMessageItem([contentPart]);
 
-        await foreach (StreamingResponseUpdate update
-            in client.CreateResponseStreamingAsync(
-                new (model, [inputItem])
-                {
-                    TruncationMode = ResponseTruncationMode.Auto,
-                }))
+        CreateResponseOptions options = new(model, [inputItem])
+        {
+            TruncationMode = ResponseTruncationMode.Auto,
+            StreamingEnabled = true,
+        };
+
+        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(options))
         {
             Console.WriteLine(ModelReaderWriter.Write(update));
         }
@@ -799,11 +554,11 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             
             new CreateResponseOptions("gpt-4.1", [ResponseItem.CreateUserMessageItem("tell me another")])
             {
-                ConversationId = conversationId,
+                ConversationOptions = new(conversationId),
             });
 
         Assert.That(response, Is.Not.Null);
-        Assert.That(response.ConversationOptions.Id, Is.EqualTo(conversationId));
+        Assert.That(response.ConversationOptions.ConversationId, Is.EqualTo(conversationId));
 
         var conversationResults = conversationClient.GetConversationItemsAsync(conversationId);
         var conversationItems = new List<JsonElement>();
@@ -1150,7 +905,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new("gpt-4o-mini", [ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")])
         {
-            Tools = { s_GetWeatherAtLocationTool }
+            Tools = { s_GetWeatherAtLocationTool },
+            StreamingEnabled = true,
         };
 
         AsyncCollectionResult<StreamingResponseUpdate> responseUpdates = client.CreateResponseStreamingAsync(

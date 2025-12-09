@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseRefusalDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseRefusalDoneUpdate>
     {
-        internal StreamingResponseRefusalDoneUpdate() : this(InternalResponseStreamEventType.ResponseRefusalDone, default, default, null, default, default, null)
+        public StreamingResponseRefusalDoneUpdate() : this(InternalResponseStreamEventType.ResponseRefusalDone, default, default, null, default, default, null)
         {
         }
 

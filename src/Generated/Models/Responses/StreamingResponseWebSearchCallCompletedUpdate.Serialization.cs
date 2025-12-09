@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseWebSearchCallCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseWebSearchCallCompletedUpdate>
     {
-        internal StreamingResponseWebSearchCallCompletedUpdate() : this(InternalResponseStreamEventType.ResponseWebSearchCallCompleted, default, default, default, null)
+        public StreamingResponseWebSearchCallCompletedUpdate() : this(InternalResponseStreamEventType.ResponseWebSearchCallCompleted, default, default, default, null)
         {
         }
 

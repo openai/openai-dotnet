@@ -94,7 +94,8 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                     ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
                     ToolCallApprovalPolicy = approvalPolicy
                 }
-            }
+            },
+            StreamingEnabled = true,
         };
 
         ResponsesClient client = GetTestClient(overrideModel: "gpt-5");
@@ -591,6 +592,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         CreateResponseOptions responseOptions = new("gpt-4o-mini", [ResponseItem.CreateUserMessageItem("Calculate the factorial of 5 using Python code and show me the code step by step.")])
         {
             Tools = { codeInterpreterTool },
+            StreamingEnabled = true,
         };
 
         int inProgressCount = 0;
@@ -638,6 +640,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             CreateResponseOptions responseOptions = new("gpt-4o-mini", [ResponseItem.CreateUserMessageItem("Load the CSV file and create a simple plot visualization showing the relationship between x and y values.")])
             {
                 Tools = { codeInterpreterTool },
+                StreamingEnabled = true,
             };
 
             int inProgressCount = 0;
@@ -736,7 +739,8 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                     outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
                     moderationLevel: ImageGenerationToolModerationLevel.Auto,
                     background: ImageGenerationToolBackground.Transparent)
-            }
+            },
+            StreamingEnabled = true,
         };
 
         string imageGenItemId = null;

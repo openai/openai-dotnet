@@ -17,6 +17,14 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
+        public GetResponseOptions(string responseId)
+        {
+            Argument.AssertNotNull(responseId, nameof(responseId));
+
+            ResponseId = responseId;
+            IncludedProperties = new ChangeTrackingList<IncludedResponseProperty>();
+        }
+
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal GetResponseOptions(string responseId, int? startingAfter, bool? includeObfuscation, IList<IncludedResponseProperty> includedProperties, bool? streamingEnabled, in JsonPatch patch)
         {
@@ -34,6 +42,8 @@ namespace OpenAI.Responses
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
+
+        public string ResponseId { get; }
 
         public int? StartingAfter { get; set; }
 

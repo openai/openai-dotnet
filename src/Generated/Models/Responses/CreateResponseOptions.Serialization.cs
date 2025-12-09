@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text;
@@ -13,10 +14,6 @@ namespace OpenAI.Responses
 {
     public partial class CreateResponseOptions : IJsonModel<CreateResponseOptions>
     {
-        internal CreateResponseOptions() : this(null, default, default, default, null, null, default, null, null, null, default, default, default, null, null, null, null, default, null, null, default, default, default, null, default)
-        {
-        }
-
         void IJsonModel<CreateResponseOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -125,10 +122,10 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("max_output_tokens"u8);
                 writer.WriteNumberValue(MaxOutputTokenCount.Value);
             }
-            if (Optional.IsDefined(MaxToolCalls) && !Patch.Contains("$.max_tool_calls"u8))
+            if (Optional.IsDefined(MaxToolCallCount) && !Patch.Contains("$.max_tool_calls"u8))
             {
                 writer.WritePropertyName("max_tool_calls"u8);
-                writer.WriteNumberValue(MaxToolCalls.Value);
+                writer.WriteNumberValue(MaxToolCallCount.Value);
             }
             if (Optional.IsDefined(Instructions) && !Patch.Contains("$.instructions"u8))
             {
@@ -181,7 +178,7 @@ namespace OpenAI.Responses
                     writer.WriteRawValue(Patch.GetJson("$.input"u8));
                 }
             }
-            else
+            else if (Optional.IsCollectionDefined(InputItems))
             {
                 writer.WritePropertyName("input"u8);
                 writer.WriteStartArray();
@@ -234,10 +231,10 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("stream"u8);
                 writer.WriteBooleanValue(StreamingEnabled.Value);
             }
-            if (Optional.IsDefined(ConversationId) && !Patch.Contains("$.conversation"u8))
+            if (Optional.IsDefined(ConversationOptions) && !Patch.Contains("$.conversation"u8))
             {
                 writer.WritePropertyName("conversation"u8);
-                writer.WriteStringValue(ConversationId);
+                writer.WriteObjectValue(ConversationOptions, options);
             }
 
             Patch.WriteTo(writer);
@@ -275,7 +272,7 @@ namespace OpenAI.Responses
             ResponseReasoningOptions reasoningOptions = default;
             bool? backgroundModeEnabled = default;
             int? maxOutputTokenCount = default;
-            int? maxToolCalls = default;
+            int? maxToolCallCount = default;
             string instructions = default;
             ResponseTextOptions textOptions = default;
             IList<ResponseTool> tools = default;
@@ -286,7 +283,7 @@ namespace OpenAI.Responses
             bool? parallelToolCallsEnabled = default;
             bool? storedOutputEnabled = default;
             bool? streamingEnabled = default;
-            string conversationId = default;
+            ResponseConversationOptions conversationOptions = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -411,10 +408,10 @@ namespace OpenAI.Responses
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        maxToolCalls = null;
+                        maxToolCallCount = null;
                         continue;
                     }
-                    maxToolCalls = prop.Value.GetInt32();
+                    maxToolCallCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("instructions"u8))
@@ -471,6 +468,10 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("input"u8))
                 {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
                     List<ResponseItem> array = new List<ResponseItem>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
@@ -525,7 +526,11 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("conversation"u8))
                 {
-                    conversationId = prop.Value.GetString();
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    conversationOptions = ResponseConversationOptions.DeserializeResponseConversationOptions(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
@@ -543,18 +548,18 @@ namespace OpenAI.Responses
                 reasoningOptions,
                 backgroundModeEnabled,
                 maxOutputTokenCount,
-                maxToolCalls,
+                maxToolCallCount,
                 instructions,
                 textOptions,
                 tools ?? new ChangeTrackingList<ResponseTool>(),
                 toolChoice,
                 truncationMode,
-                inputItems,
+                inputItems ?? new ChangeTrackingList<ResponseItem>(),
                 includedProperties ?? new ChangeTrackingList<IncludedResponseProperty>(),
                 parallelToolCallsEnabled,
                 storedOutputEnabled,
                 streamingEnabled,
-                conversationId,
+                conversationOptions,
                 patch);
         }
 
@@ -591,6 +596,15 @@ namespace OpenAI.Responses
 
         string IPersistableModel<CreateResponseOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
+        public static implicit operator BinaryContent(CreateResponseOptions createResponseOptions)
+        {
+            if (createResponseOptions == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(createResponseOptions, ModelSerializationExtensions.WireOptions);
+        }
+
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
         {
@@ -604,6 +618,10 @@ namespace OpenAI.Responses
             if (local.StartsWith("text"u8))
             {
                 return TextOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("text"u8.Length)], out value);
+            }
+            if (local.StartsWith("conversation"u8))
+            {
+                return ConversationOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("conversation"u8.Length)], out value);
             }
             if (local.StartsWith("tools"u8))
             {
@@ -642,6 +660,11 @@ namespace OpenAI.Responses
             if (local.StartsWith("text"u8))
             {
                 TextOptions.Patch.Set([.. "$"u8, .. local.Slice("text"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("conversation"u8))
+            {
+                ConversationOptions.Patch.Set([.. "$"u8, .. local.Slice("conversation"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("tools"u8))

@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseReasoningTextDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseReasoningTextDeltaUpdate>
     {
-        internal StreamingResponseReasoningTextDeltaUpdate() : this(InternalResponseStreamEventType.ResponseReasoningTextDelta, default, default, null, default, default, null)
+        public StreamingResponseReasoningTextDeltaUpdate() : this(InternalResponseStreamEventType.ResponseReasoningTextDelta, default, default, null, default, default, null)
         {
         }
 

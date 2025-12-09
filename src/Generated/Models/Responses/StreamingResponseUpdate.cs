@@ -36,7 +36,5 @@ namespace OpenAI.Responses
         public ref JsonPatch Patch => ref _patch;
 
         internal InternalResponseStreamEventType Kind { get; set; }
-
-        public int SequenceNumber { get; }
     }
 }

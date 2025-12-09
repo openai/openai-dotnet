@@ -1,14 +1,12 @@
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text.Json;
 
 namespace OpenAI.Responses;
 
 // CUSTOM:
-// - Added Experimental attribute.
 // - Renamed.
+// - Suppressed client-only OutputText property in favor of a method.
 [CodeGenType("Response")]
 [CodeGenSuppress("OutputText")]
 public partial class ResponseResult
@@ -53,56 +51,22 @@ public partial class ResponseResult
     [CodeGenMember("ParallelToolCalls")]
     public bool ParallelToolCallsEnabled { get; set; }
 
-    // CUSTOM: Using convenience type.
+    // CUSTOM: Changed type.
     [CodeGenMember("ToolChoice")]
     public ResponseToolChoice ToolChoice { get; set; }
-
-    // CUSTOM: Use a plain string.
-    [CodeGenMember("Model")]
-    public string Model { get; set; }
 
     // CUSTOM: Renamed.
     [CodeGenMember("TopLogprobs")]
     public int? TopLogProbabilityCount { get; set; }
 
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public string Object { get; set; } = "response";
-
-    [CodeGenMember("Temperature")]
-    public float? Temperature { get; set; }
-
-    [CodeGenMember("TopP")]
-    public float? TopP { get; set; }
-
-    [CodeGenMember("SafetyIdentifier")]
-    public string SafetyIdentifier { get; set; }
-
-    [CodeGenMember("ServiceTier")]
-    public ResponseServiceTier? ServiceTier { get; set; }
-
-    [CodeGenMember("PreviousResponseId")]
-    public string PreviousResponseId { get; set; }
-
-    [CodeGenMember("Instructions")]
-    public string Instructions { get; set; }
-
-    [CodeGenMember("Id")]
-    public string Id { get; set; }
-
-    [CodeGenMember("Status")]
-    public ResponseStatus? Status { get; set; }
-
-    [CodeGenMember("CreatedAt")]
-    public DateTimeOffset CreatedAt { get; set; }
-
-    [CodeGenMember("Error")]
-    public ResponseError Error { get; set; }
-
-    [CodeGenMember("Usage")]
-    public ResponseTokenUsage Usage { get; set; }
-
+    // CUSTOM: Renamed.
     [CodeGenMember("Conversation")]
     public ResponseConversationOptions ConversationOptions { get; set; }
+
+    // CUSTOM: Applied EditorBrowsableState.Never.
+    [CodeGenMember("Object")]
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public string Object { get; set; } = "response";
 
     public string GetOutputText()
     {
@@ -111,11 +75,5 @@ public partial class ResponseResult
             .SelectMany(message => message.Content.Where(contentPart => contentPart.Kind == ResponseContentPartKind.OutputText)
                 .Select(outputTextPart => outputTextPart.Text));
         return outputTextSegments.Any() ? string.Concat(outputTextSegments) : null;
-    }
-
-    public static explicit operator ResponseResult(BinaryData data)
-    {
-        using JsonDocument document = JsonDocument.Parse(data);
-        return DeserializeResponseResult(document.RootElement, data, ModelSerializationExtensions.WireOptions);
     }
 }

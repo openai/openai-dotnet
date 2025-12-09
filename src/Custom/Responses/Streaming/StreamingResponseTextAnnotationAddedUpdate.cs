@@ -1,9 +1,6 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace OpenAI.Responses;
 
-// CUSTOM:
-// - Renamed.
+// CUSTOM: Renamed.
 [CodeGenType("ResponseOutputTextAnnotationAddedEvent")]
 public partial class StreamingResponseTextAnnotationAddedUpdate
 {

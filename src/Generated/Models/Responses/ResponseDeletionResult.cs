@@ -15,15 +15,16 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal ResponseDeletionResult(string id)
+        internal ResponseDeletionResult(string responseId, bool deleted)
         {
-            Id = id;
+            ResponseId = responseId;
+            Deleted = deleted;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseDeletionResult(string id, string @object, bool deleted, in JsonPatch patch)
+        internal ResponseDeletionResult(string responseId, string @object, bool deleted, in JsonPatch patch)
         {
-            Id = id;
+            ResponseId = responseId;
             Object = @object;
             Deleted = deleted;
             _patch = patch;
@@ -35,8 +36,6 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public string Id { get; }
-
-        public bool Deleted { get; } = true;
+        public bool Deleted { get; set; }
     }
 }
