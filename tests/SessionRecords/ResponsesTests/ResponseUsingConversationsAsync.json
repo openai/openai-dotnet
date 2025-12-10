@@ -26,7 +26,7 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9a436f3efa914808-BOM",
+        "CF-RAY": "9ab7d8bf98567ca7-LAX",
         "Connection": "keep-alive",
         "Content-Length": "164",
         "Content-Type": "application/json",
@@ -36,16 +36,20 @@
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
+        "Set-Cookie": [
+          "Sanitized",
+          "Sanitized"
+        ],
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "127",
+        "x-envoy-upstream-service-time": "400",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "conv_6925fea8f6608193873c1eed5d053c9401bf3930200ca79a",
+        "id": "conv_69389ee6cdac81968695395a111d791709170707cfd7eb30",
         "object": "conversation",
-        "created_at": 1764097704,
+        "created_at": 1765318374,
         "metadata": {
           "topic": "test"
         }
@@ -57,7 +61,7 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "192",
+        "Content-Length": "199",
         "Content-Type": "application/json",
         "User-Agent": "OpenAI/2.7.0 (.NET 9.0.11; Microsoft Windows 10.0.26200)"
       },
@@ -75,15 +79,17 @@
             ]
           }
         ],
-        "conversation": "conv_6925fea8f6608193873c1eed5d053c9401bf3930200ca79a"
+        "conversation": {
+          "id": "conv_69389ee6cdac81968695395a111d791709170707cfd7eb30"
+        }
       },
       "StatusCode": 200,
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9a436f439d494808-BOM",
+        "CF-RAY": "9ab7d8c3eada7ca7-LAX",
         "Connection": "keep-alive",
-        "Content-Length": "1631",
+        "Content-Length": "1624",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -93,26 +99,26 @@
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "2425",
+        "x-envoy-upstream-service-time": "806",
         "x-ratelimit-limit-requests": "10000",
         "x-ratelimit-limit-tokens": "30000000",
         "x-ratelimit-remaining-requests": "9999",
-        "x-ratelimit-remaining-tokens": "29999963",
+        "x-ratelimit-remaining-tokens": "29999996",
         "x-ratelimit-reset-requests": "6ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_01bf3930200ca79a006925fea9b5cc81939886422636ada7fb",
+        "id": "resp_09170707cfd7eb300069389ee75b208196abd5a1a67056b5c8",
         "object": "response",
-        "created_at": 1764097705,
+        "created_at": 1765318375,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
         "conversation": {
-          "id": "conv_6925fea8f6608193873c1eed5d053c9401bf3930200ca79a"
+          "id": "conv_69389ee6cdac81968695395a111d791709170707cfd7eb30"
         },
         "error": null,
         "incomplete_details": null,
@@ -122,7 +128,7 @@
         "model": "gpt-4.1-2025-04-14",
         "output": [
           {
-            "id": "msg_01bf3930200ca79a006925feaa59dc8193a568ed2d08b18a74",
+            "id": "msg_09170707cfd7eb300069389ee7bf98819689b2a5d2cc676594",
             "type": "message",
             "status": "completed",
             "content": [
@@ -130,7 +136,7 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "Sure! Here you go:\n\nWhy did the scarecrow win an award?  \nBecause he was outstanding in his field!"
+                "text": "Sure! Here’s one:\n\nWhy did the math book look sad?\n\nBecause it had too many problems."
               }
             ],
             "role": "assistant"
@@ -164,18 +170,18 @@
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 25,
+          "output_tokens": 22,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 43
+          "total_tokens": 40
         },
         "user": null,
         "metadata": {}
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/conversations/conv_6925fea8f6608193873c1eed5d053c9401bf3930200ca79a/items",
+      "RequestUri": "https://api.openai.com/v1/conversations/conv_69389ee6cdac81968695395a111d791709170707cfd7eb30/items",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
@@ -187,9 +193,9 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9a436f54db7e4808-BOM",
+        "CF-RAY": "9ab7d8cb5f227ca7-LAX",
         "Connection": "keep-alive",
-        "Content-Length": "1166",
+        "Content-Length": "1159",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -199,7 +205,7 @@
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "141",
+        "x-envoy-upstream-service-time": "774",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
@@ -207,7 +213,7 @@
         "object": "list",
         "data": [
           {
-            "id": "msg_01bf3930200ca79a006925feaa59dc8193a568ed2d08b18a74",
+            "id": "msg_09170707cfd7eb300069389ee7bf98819689b2a5d2cc676594",
             "type": "message",
             "status": "completed",
             "content": [
@@ -215,13 +221,13 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "Sure! Here you go:\n\nWhy did the scarecrow win an award?  \nBecause he was outstanding in his field!"
+                "text": "Sure! Here’s one:\n\nWhy did the math book look sad?\n\nBecause it had too many problems."
               }
             ],
             "role": "assistant"
           },
           {
-            "id": "msg_01bf3930200ca79a006925fea9dc64819391e2a1481f3dd223",
+            "id": "msg_09170707cfd7eb300069389ee783d48196b194b721ccae6ceb",
             "type": "message",
             "status": "completed",
             "content": [
@@ -233,7 +239,7 @@
             "role": "user"
           },
           {
-            "id": "msg_6925fea8f6808193b67b32d7f28aeb1101bf3930200ca79a",
+            "id": "msg_69389ee6cdc88196aa12fa8ee652be0e09170707cfd7eb30",
             "type": "message",
             "status": "completed",
             "content": [
@@ -245,9 +251,9 @@
             "role": "user"
           }
         ],
-        "first_id": "msg_01bf3930200ca79a006925feaa59dc8193a568ed2d08b18a74",
+        "first_id": "msg_09170707cfd7eb300069389ee7bf98819689b2a5d2cc676594",
         "has_more": false,
-        "last_id": "msg_6925fea8f6808193b67b32d7f28aeb1101bf3930200ca79a"
+        "last_id": "msg_69389ee6cdc88196aa12fa8ee652be0e09170707cfd7eb30"
       }
     }
   ],

@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseImageGenerationCallGeneratingUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseImageGenerationCallGeneratingUpdate>
     {
-        internal StreamingResponseImageGenerationCallGeneratingUpdate() : this(InternalResponseStreamEventType.ResponseImageGenerationCallGenerating, default, default, default, null)
+        public StreamingResponseImageGenerationCallGeneratingUpdate() : this(InternalResponseStreamEventType.ResponseImageGenerationCallGenerating, default, default, default, null)
         {
         }
 

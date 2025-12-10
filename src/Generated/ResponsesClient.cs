@@ -7,6 +7,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
 using OpenAI;
 
@@ -77,6 +78,22 @@ namespace OpenAI.Responses
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
+        public virtual ClientResult<ResponseDeletionResult> DeleteResponse(string responseId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
+
+            ClientResult result = DeleteResponse(responseId, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((ResponseDeletionResult)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<ResponseDeletionResult>> DeleteResponseAsync(string responseId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
+
+            ClientResult result = await DeleteResponseAsync(responseId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((ResponseDeletionResult)result, result.GetRawResponse());
+        }
+
         public virtual ClientResult CancelResponse(string responseId, RequestOptions options)
         {
             Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
@@ -91,6 +108,22 @@ namespace OpenAI.Responses
 
             using PipelineMessage message = CreateCancelResponseRequest(responseId, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult<ResponseResult> CancelResponse(string responseId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
+
+            ClientResult result = CancelResponse(responseId, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((ResponseResult)result, result.GetRawResponse());
+        }
+
+        public virtual async Task<ClientResult<ResponseResult>> CancelResponseAsync(string responseId, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
+
+            ClientResult result = await CancelResponseAsync(responseId, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((ResponseResult)result, result.GetRawResponse());
         }
     }
 }

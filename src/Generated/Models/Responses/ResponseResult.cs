@@ -79,6 +79,30 @@ namespace OpenAI.Responses
 
         public IDictionary<string, string> Metadata { get; }
 
+        public float? Temperature { get; set; }
+
+        public float? TopP { get; set; }
+
+        public string SafetyIdentifier { get; set; }
+
+        public ResponseServiceTier? ServiceTier { get; set; }
+
+        public string PreviousResponseId { get; set; }
+
+        public string Model { get; set; }
+
+        public string Instructions { get; set; }
+
         public IList<ResponseTool> Tools { get; }
+
+        public string Id { get; set; }
+
+        public ResponseStatus? Status { get; set; }
+
+        public DateTimeOffset CreatedAt { get; set; }
+
+        public ResponseError Error { get; set; }
+
+        public ResponseTokenUsage Usage { get; set; }
     }
 }

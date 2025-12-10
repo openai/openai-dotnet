@@ -29,12 +29,12 @@ namespace OpenAI.Responses
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public int OutputIndex { get; }
+        public int OutputIndex { get; set; }
 
-        public string ItemId { get; }
+        public string ItemId { get; set; }
 
-        public int PartialImageIndex { get; }
+        public int PartialImageIndex { get; set; }
 
-        public BinaryData PartialImageBytes { get; }
+        public BinaryData PartialImageBytes { get; set; }
     }
 }

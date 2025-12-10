@@ -1,3 +1,7 @@
 namespace OpenAI.Responses;
 
-[CodeGenType("ResponseCodeInterpreterCallCompletedEvent")] public partial class StreamingResponseCodeInterpreterCallCompletedUpdate {}
+// CUSTOM: Renamed.
+[CodeGenType("ResponseCodeInterpreterCallCompletedEvent")]
+public partial class StreamingResponseCodeInterpreterCallCompletedUpdate
+{
+}

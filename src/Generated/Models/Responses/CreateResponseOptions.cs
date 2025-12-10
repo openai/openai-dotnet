@@ -17,8 +17,12 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
+        public CreateResponseOptions() : this(null, default, default, default, null, null, default, null, null, null, default, default, default, null, null, null, null, default, null, null, default, default, default, null, default)
+        {
+        }
+
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CreateResponseOptions(IDictionary<string, string> metadata, float? temperature, int? topLogProbabilityCount, float? topP, string endUserId, string safetyIdentifier, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? backgroundModeEnabled, int? maxOutputTokenCount, int? maxToolCalls, string instructions, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncationMode, IList<ResponseItem> inputItems, IList<IncludedResponseProperty> includedProperties, bool? parallelToolCallsEnabled, bool? storedOutputEnabled, bool? streamingEnabled, string conversationId, in JsonPatch patch)
+        internal CreateResponseOptions(IDictionary<string, string> metadata, float? temperature, int? topLogProbabilityCount, float? topP, string endUserId, string safetyIdentifier, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? backgroundModeEnabled, int? maxOutputTokenCount, int? maxToolCallCount, string instructions, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncationMode, IList<ResponseItem> inputItems, IList<IncludedResponseProperty> includedProperties, bool? parallelToolCallsEnabled, bool? storedOutputEnabled, bool? streamingEnabled, ResponseConversationOptions conversationOptions, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -33,7 +37,7 @@ namespace OpenAI.Responses
             ReasoningOptions = reasoningOptions;
             BackgroundModeEnabled = backgroundModeEnabled;
             MaxOutputTokenCount = maxOutputTokenCount;
-            MaxToolCalls = maxToolCalls;
+            MaxToolCallCount = maxToolCallCount;
             Instructions = instructions;
             TextOptions = textOptions;
             Tools = tools ?? new ChangeTrackingList<ResponseTool>();
@@ -44,7 +48,7 @@ namespace OpenAI.Responses
             ParallelToolCallsEnabled = parallelToolCallsEnabled;
             StoredOutputEnabled = storedOutputEnabled;
             StreamingEnabled = streamingEnabled;
-            ConversationId = conversationId;
+            ConversationOptions = conversationOptions;
             _patch = patch;
             _patch.SetPropagators(PropagateSet, PropagateGet);
         }
@@ -67,12 +71,10 @@ namespace OpenAI.Responses
 
         public string PreviousResponseId { get; set; }
 
-        public int? MaxToolCalls { get; set; }
+        public string Model { get; set; }
 
         public string Instructions { get; set; }
 
         public IList<ResponseTool> Tools { get; }
-
-        public string ConversationId { get; set; }
     }
 }

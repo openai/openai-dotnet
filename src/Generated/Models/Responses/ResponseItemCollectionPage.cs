@@ -47,10 +47,10 @@ namespace OpenAI.Responses
 
         public IList<ResponseItem> Data { get; }
 
-        public bool HasMore { get; }
+        public bool HasMore { get; set; }
 
-        public string FirstId { get; }
+        public string FirstId { get; set; }
 
-        public string LastId { get; }
+        public string LastId { get; set; }
     }
 }

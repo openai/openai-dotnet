@@ -1,11 +1,7 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace OpenAI.Responses;
 
-// CUSTOM:
-// - Added Experimental attribute.
-// - Renamed.
+// CUSTOM: Renamed.
 [CodeGenType("ResponseOutputItemDoneEvent")]
-public partial class StreamingResponseOutputItemDoneUpdate : StreamingResponseUpdate
+public partial class StreamingResponseOutputItemDoneUpdate
 {
 }

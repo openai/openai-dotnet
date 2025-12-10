@@ -21,6 +21,47 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    public async Task GetInputItemsCollectionPage()
+    {
+        ResponsesClient client = GetTestClient();
+
+        // Create a response with multiple input items
+        List<ResponseItem> inputItems = new()
+        {
+            ResponseItem.CreateUserMessageItem("Item 1"),
+            ResponseItem.CreateUserMessageItem("Item 2"),
+            ResponseItem.CreateUserMessageItem("Item 3"),
+            ResponseItem.CreateUserMessageItem("Item 4")
+        };
+
+        ResponseResult response = await client.CreateResponseAsync(new("gpt-4o-mini", inputItems));
+
+        // Paginate through input items with a small page size
+        var options = new ResponseItemCollectionOptions(response.Id)
+        {
+            PageSizeLimit = 2
+        };
+
+        ResponseItemCollectionPage page1 = await client.GetResponseInputItemCollectionPageAsync(options);
+
+        Assert.That(page1.Data, Is.Not.Null);
+        Assert.That(page1.Data, Has.Count.EqualTo(2));
+        Assert.That(page1.FirstId, Is.Not.Null.And.Not.Empty);
+        Assert.That(page1.LastId, Is.Not.Null.And.Not.Empty);
+        Assert.That(page1.HasMore, Is.True);
+
+        options.AfterId = page1.LastId;
+
+        ResponseItemCollectionPage page2 = await client.GetResponseInputItemCollectionPageAsync(options);
+
+        Assert.That(page2.Data, Is.Not.Null);
+        Assert.That(page2.Data, Has.Count.EqualTo(2));
+        Assert.That(page2.FirstId, Is.Not.Null.And.Not.Empty);
+        Assert.That(page2.LastId, Is.Not.Null.And.Not.Empty);
+        Assert.That(page2.HasMore, Is.False);
+    }
+
+    [RecordedTest]
     public async Task GetInputItemsWithPagination()
     {
         ResponsesClient client = GetTestClient();
@@ -54,6 +95,37 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         }
 
         Assert.That(totalCount, Is.GreaterThanOrEqualTo(2));
+        Assert.That(lastId, Is.Not.Null);
+    }
+
+    [RecordedTest]
+    public async Task GetInputItemsWithPaginationNoOptions()
+    {
+        ResponsesClient client = GetTestClient();
+
+        // Create a response with multiple input items
+        List<ResponseItem> inputItems = new()
+        {
+            ResponseItem.CreateUserMessageItem("Item 1"),
+            ResponseItem.CreateUserMessageItem("Item 2"),
+            ResponseItem.CreateUserMessageItem("Item 3"),
+            ResponseItem.CreateUserMessageItem("Item 4")
+        };
+
+        ResponseResult response = await client.CreateResponseAsync(new("gpt-4o-mini", inputItems));
+
+        int totalCount = 0;
+        string lastId = null;
+
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id))
+        {
+            Assert.That(item.Id, Is.Not.Null.And.Not.Empty);
+
+            totalCount++;
+            lastId = item.Id;
+        }
+
+        Assert.That(totalCount, Is.EqualTo(4));
         Assert.That(lastId, Is.Not.Null);
     }
 

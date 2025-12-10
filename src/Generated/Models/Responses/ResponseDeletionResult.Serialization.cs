@@ -13,7 +13,7 @@ namespace OpenAI.Responses
 {
     public partial class ResponseDeletionResult : IJsonModel<ResponseDeletionResult>
     {
-        internal ResponseDeletionResult()
+        public ResponseDeletionResult()
         {
         }
 
@@ -43,7 +43,7 @@ namespace OpenAI.Responses
             if (!Patch.Contains("$.id"u8))
             {
                 writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(Id);
+                writer.WriteStringValue(ResponseId);
             }
             if (!Patch.Contains("$.object"u8))
             {
@@ -79,7 +79,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            string id = default;
+            string responseId = default;
             string @object = default;
             bool deleted = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -89,7 +89,7 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("id"u8))
                 {
-                    id = prop.Value.GetString();
+                    responseId = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("object"u8))
@@ -104,7 +104,7 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ResponseDeletionResult(id, @object, deleted, patch);
+            return new ResponseDeletionResult(responseId, @object, deleted, patch);
         }
 
         BinaryData IPersistableModel<ResponseDeletionResult>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

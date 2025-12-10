@@ -14,7 +14,7 @@ namespace OpenAI.Responses
 {
     public partial class ResponseItemCollectionPage : IJsonModel<ResponseItemCollectionPage>
     {
-        internal ResponseItemCollectionPage() : this(null, null, default, null, null, default)
+        public ResponseItemCollectionPage() : this(null, null, default, null, null, default)
         {
         }
 

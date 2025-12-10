@@ -50,6 +50,6 @@ model CodeInterpreterContainerConfiguration {
 
 model DeleteResponseResponse {
     id: string;
-    object: "response";
-    deleted: true;
+    object: "response.deleted";
+    deleted: boolean;
 };

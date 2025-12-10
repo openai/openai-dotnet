@@ -26,7 +26,7 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9a436f20dcee4808-BOM",
+        "CF-RAY": "9ab7ce2c3b779898-LAX",
         "Connection": "keep-alive",
         "Content-Length": "164",
         "Content-Type": "application/json",
@@ -42,14 +42,14 @@
         ],
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "117",
+        "x-envoy-upstream-service-time": "484",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "conv_6925fea431bc8194a4c88c67ea2867fc03291ba5d682a10e",
+        "id": "conv_69389d3598f08194961540fd2efc269c0ee136b97ccde5b3",
         "object": "conversation",
-        "created_at": 1764097700,
+        "created_at": 1765317941,
         "metadata": {
           "topic": "test"
         }
@@ -61,7 +61,7 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "192",
+        "Content-Length": "199",
         "Content-Type": "application/json",
         "User-Agent": "OpenAI/2.7.0 (.NET 9.0.11; Microsoft Windows 10.0.26200)"
       },
@@ -79,15 +79,17 @@
             ]
           }
         ],
-        "conversation": "conv_6925fea431bc8194a4c88c67ea2867fc03291ba5d682a10e"
+        "conversation": {
+          "id": "conv_69389d3598f08194961540fd2efc269c0ee136b97ccde5b3"
+        }
       },
       "StatusCode": 200,
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9a436f248eae4808-BOM",
+        "CF-RAY": "9ab7ce307df39898-LAX",
         "Connection": "keep-alive",
-        "Content-Length": "1631",
+        "Content-Length": "1643",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -97,26 +99,26 @@
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "2431",
+        "x-envoy-upstream-service-time": "954",
         "x-ratelimit-limit-requests": "10000",
         "x-ratelimit-limit-tokens": "30000000",
         "x-ratelimit-remaining-requests": "9999",
-        "x-ratelimit-remaining-tokens": "29999963",
+        "x-ratelimit-remaining-tokens": "29999992",
         "x-ratelimit-reset-requests": "6ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_03291ba5d682a10e006925fea4c15c8194bdc6fd8a8091dbee",
+        "id": "resp_0ee136b97ccde5b30069389d362b148194884f79a55bc9f340",
         "object": "response",
-        "created_at": 1764097700,
+        "created_at": 1765317942,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
         "conversation": {
-          "id": "conv_6925fea431bc8194a4c88c67ea2867fc03291ba5d682a10e"
+          "id": "conv_69389d3598f08194961540fd2efc269c0ee136b97ccde5b3"
         },
         "error": null,
         "incomplete_details": null,
@@ -126,7 +128,7 @@
         "model": "gpt-4.1-2025-04-14",
         "output": [
           {
-            "id": "msg_03291ba5d682a10e006925fea53e288194a866cc71cfc25f07",
+            "id": "msg_0ee136b97ccde5b30069389d3690d4819496d9be8fe716c987",
             "type": "message",
             "status": "completed",
             "content": [
@@ -134,7 +136,7 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "Sure! Here you go:\n\nWhy did the scarecrow win an award?\n\nBecause he was outstanding in his field!"
+                "text": "Of course! Here’s another one:\n\n**Why can’t you give Elsa a balloon?**\n\nBecause she will let it go!"
               }
             ],
             "role": "assistant"
@@ -168,18 +170,18 @@
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 24,
+          "output_tokens": 27,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 42
+          "total_tokens": 45
         },
         "user": null,
         "metadata": {}
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/conversations/conv_6925fea431bc8194a4c88c67ea2867fc03291ba5d682a10e/items",
+      "RequestUri": "https://api.openai.com/v1/conversations/conv_69389d3598f08194961540fd2efc269c0ee136b97ccde5b3/items",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
@@ -191,9 +193,9 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9a436f38bf734808-BOM",
+        "CF-RAY": "9ab7ce390b009898-LAX",
         "Connection": "keep-alive",
-        "Content-Length": "1166",
+        "Content-Length": "1178",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -203,7 +205,7 @@
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "105",
+        "x-envoy-upstream-service-time": "349",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
@@ -211,7 +213,7 @@
         "object": "list",
         "data": [
           {
-            "id": "msg_03291ba5d682a10e006925fea53e288194a866cc71cfc25f07",
+            "id": "msg_0ee136b97ccde5b30069389d3690d4819496d9be8fe716c987",
             "type": "message",
             "status": "completed",
             "content": [
@@ -219,13 +221,13 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "Sure! Here you go:\n\nWhy did the scarecrow win an award?\n\nBecause he was outstanding in his field!"
+                "text": "Of course! Here’s another one:\n\n**Why can’t you give Elsa a balloon?**\n\nBecause she will let it go!"
               }
             ],
             "role": "assistant"
           },
           {
-            "id": "msg_03291ba5d682a10e006925fea4ee788194a1f1ebb8a90e72ac",
+            "id": "msg_0ee136b97ccde5b30069389d3652788194a67fba0b4865e8d5",
             "type": "message",
             "status": "completed",
             "content": [
@@ -237,7 +239,7 @@
             "role": "user"
           },
           {
-            "id": "msg_6925fea432288194bfac5ae77facf13a03291ba5d682a10e",
+            "id": "msg_69389d35991481948df3d31de8a3d1e60ee136b97ccde5b3",
             "type": "message",
             "status": "completed",
             "content": [
@@ -249,9 +251,9 @@
             "role": "user"
           }
         ],
-        "first_id": "msg_03291ba5d682a10e006925fea53e288194a866cc71cfc25f07",
+        "first_id": "msg_0ee136b97ccde5b30069389d3690d4819496d9be8fe716c987",
         "has_more": false,
-        "last_id": "msg_6925fea432288194bfac5ae77facf13a03291ba5d682a10e"
+        "last_id": "msg_69389d35991481948df3d31de8a3d1e60ee136b97ccde5b3"
       }
     }
   ],

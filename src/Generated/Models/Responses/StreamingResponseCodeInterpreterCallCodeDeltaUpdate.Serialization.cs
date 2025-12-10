@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseCodeInterpreterCallCodeDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCodeInterpreterCallCodeDeltaUpdate>
     {
-        internal StreamingResponseCodeInterpreterCallCodeDeltaUpdate() : this(InternalResponseStreamEventType.ResponseCodeInterpreterCallCodeDelta, default, default, default, null, null)
+        public StreamingResponseCodeInterpreterCallCodeDeltaUpdate() : this(InternalResponseStreamEventType.ResponseCodeInterpreterCallCodeDelta, default, default, default, null, null)
         {
         }
 

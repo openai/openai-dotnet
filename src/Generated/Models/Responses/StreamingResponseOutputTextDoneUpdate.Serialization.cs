@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseOutputTextDoneUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseOutputTextDoneUpdate>
     {
-        internal StreamingResponseOutputTextDoneUpdate() : this(InternalResponseStreamEventType.ResponseOutputTextDone, default, default, null, default, default, null)
+        public StreamingResponseOutputTextDoneUpdate() : this(InternalResponseStreamEventType.ResponseOutputTextDone, default, default, null, default, default, null)
         {
         }
 

@@ -2,6 +2,6 @@
 
 // CUSTOM: Renamed.
 [CodeGenType("ResponseReasoningSummaryTextDeltaEvent")]
-public partial class StreamingResponseReasoningSummaryTextDeltaUpdate : StreamingResponseUpdate
+public partial class StreamingResponseReasoningSummaryTextDeltaUpdate
 {
 }

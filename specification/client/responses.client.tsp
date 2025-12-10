@@ -6,10 +6,11 @@ using OpenAI;
 using Azure.ClientGenerator.Core;
 using TypeSpec.HttpClient.CSharp;
 
+@@alternateType(CreateResponse.conversation, `ConversationParam-2`);
+@@alternateType(CreateResponse.`model`, string);
 @@alternateType(CreateResponse.service_tier, DotNetResponseServiceTier);
+@@alternateType(Response.`model`, string);
 @@alternateType(Response.service_tier, DotNetResponseServiceTier);
-@@alternateType(CreateResponse.conversation, string);
-@@clientName(CreateResponse.conversation, "ConversationId");
 
 // ------------ ItemResources ------------
 @@usage(ItemResource, Usage.input | Usage.output);
@@ -286,7 +287,7 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(CompoundFilterOr);
 // client/models/responses.models.tsp models
 @@dynamicModel(DotNetItemReferenceItemResource);
-@@dynamicModel(ResponseItemCollectionOrder);
+@@dynamicModel(DotNetResponseItemCollectionOrder);
 @@dynamicModel(DotNetGetResponseOptions);
 @@dynamicModel(DotNetGlobalToolCallApprovalPolicy);
 @@dynamicModel(DotNetCustomToolCallApprovalPolicy);

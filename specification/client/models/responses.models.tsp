@@ -14,15 +14,15 @@ model DotNetItemReferenceItemResource extends ItemResource {
   ...ItemReferenceItemBase;
 }
 
-alias ResponseItemCollectionOrderQueryParameter = {
+alias DotNetResponseItemCollectionOrderQueryParameter = {
   /**
    * Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
    * for descending order.
    */
-  @query order?: ResponseItemCollectionOrder;
+  @query order?: DotNetResponseItemCollectionOrder;
 };
 
-union ResponseItemCollectionOrder {
+union DotNetResponseItemCollectionOrder {
   string,
   Ascending: "asc",
   Descending: "desc",
@@ -30,11 +30,12 @@ union ResponseItemCollectionOrder {
 
 @access(Access.public)
 @usage(Usage.input)
-model ResponseItemCollectionOptions {
+model DotNetResponseItemCollectionOptions {
+  @path response_id: string;
   ...DotNetCollectionAfterQueryParameter;
   ...DotNetCollectionBeforeQueryParameter;
   ...DotNetCollectionLimitQueryParameter;
-  ...ResponseItemCollectionOrderQueryParameter;
+  ...DotNetResponseItemCollectionOrderQueryParameter;
 }
 
 @access(Access.public)

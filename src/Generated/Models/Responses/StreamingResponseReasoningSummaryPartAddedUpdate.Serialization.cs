@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseReasoningSummaryPartAddedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseReasoningSummaryPartAddedUpdate>
     {
-        internal StreamingResponseReasoningSummaryPartAddedUpdate() : this(InternalResponseStreamEventType.ResponseReasoningSummaryPartAdded, default, default, null, default, default, null)
+        public StreamingResponseReasoningSummaryPartAddedUpdate() : this(InternalResponseStreamEventType.ResponseReasoningSummaryPartAdded, default, default, null, default, default, null)
         {
         }
 

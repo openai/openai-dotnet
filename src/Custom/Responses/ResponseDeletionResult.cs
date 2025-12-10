@@ -1,17 +1,17 @@
-using System.ClientModel;
-using System.ClientModel.Primitives;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json;
+using System.ComponentModel;
 
 namespace OpenAI.Responses;
 
-// CUSTOM:
-// - Added Experimental attribute.
-// - Renamed.
+// CUSTOM: Renamed.
 [CodeGenType("DeleteResponseResponse")]
 public partial class ResponseDeletionResult
 {
-    // CUSTOM: Made internal.
+    // CUSTOM: Renamed.
+    [CodeGenMember("Id")]
+    public string ResponseId { get; set; }
+
+    // CUSTOM: Applied EditorBrowsableState.Never.
     [CodeGenMember("Object")]
-    internal string Object { get; } = "response.deleted";
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public string Object { get; set; } = "response.deleted";
 }
