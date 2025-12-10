@@ -978,6 +978,8 @@ The first image depicts a multicolored apple with a blend of red and green hues,
 
 ## How to work with Azure OpenAI
 
+Switching from OpenAI to Azure OpenAI is simple. Azure OpenAI provides the same powerful models with enterprise-grade security and compliance. Get started with the [Azure OpenAI quick start](https://aka.ms/openai/start) or follow the [switching guide](https://aka.ms/openai/switch).
+
 For Azure OpenAI scenarios use the [Azure SDK](https://github.com/Azure/azure-sdk-for-net) and more specifically the [Azure OpenAI client library for .NET](https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/openai/Azure.AI.OpenAI/README.md). 
 
 The Azure OpenAI client library for .NET is a companion to this library and all common capabilities between OpenAI and Azure OpenAI share the same scenario clients, methods, and request/response types. It is designed to make Azure specific scenarios straightforward, with extensions for Azure-specific concepts like Responsible AI content filter results and On Your Data integration.
@@ -1001,6 +1003,59 @@ ChatCompletion completion = chatClient.CompleteChat(
 
 Console.WriteLine($"{completion.Role}: {completion.Content[0].Text}");
 ```
+
+### Secure Access with Microsoft Entra ID (No API Keys)
+
+For production applications, using Microsoft Entra ID (formerly Azure Active Directory) authentication is recommended over API keys. This approach provides better security through identity-based access control and eliminates the need to manage API keys.
+
+See the [full Entra ID authentication sample](https://github.com/Azure-Samples/azure-openai-starter/blob/main/src/dotnet/responses_example_entra.cs) for a complete working example.
+
+```csharp
+using Azure.AI.OpenAI;
+using Azure.Core.Pipeline;
+using Azure.Identity;
+using OpenAI.Responses;
+
+// Use DefaultAzureCredential for authentication - no API keys needed!
+var credential = new DefaultAzureCredential();
+
+// Create BearerTokenAuthenticationPolicy for Entra ID
+var policy = new BearerAuthenticationPolicy(
+    credential,
+    "https://cognitiveservices.azure.com/.default");
+
+// Configure the client with the authentication policy
+AzureOpenAIClientOptions options = new();
+options.AddPolicy(policy, HttpPipelinePosition.PerCall);
+
+// Create the client pointing to your Azure OpenAI endpoint
+AzureOpenAIClient azureClient = new(
+    new Uri("https://your-resource.openai.azure.com"),
+    credential,
+    options);
+
+// Get a response client for your deployment
+OpenAIResponseClient client = azureClient.GetOpenAIResponseClient("your-deployment-name");
+
+// Use it just like the OpenAI client
+OpenAIResponse response = await client.CreateResponseAsync(
+    userInputText: "What's the weather like today?");
+
+foreach (ResponseItem item in response.OutputItems)
+{
+    if (item is MessageResponseItem message)
+    {
+        Console.WriteLine($"[{message.Role}] {message.Content?.FirstOrDefault()?.Text}");
+    }
+}
+```
+
+**Why this approach works:**
+
+- **Official SDK**: Uses the same OpenAI .NET SDK you're already familiar with
+- **Unified endpoint**: Single Azure OpenAI endpoint for all models and deployments
+- **Enterprise-ready auth**: Microsoft Entra ID provides role-based access control, auditing, and no API key rotation
+- **Drop-in model switching**: Easily switch between OpenAI models by changing deployment names
 
 ## Advanced scenarios
 
