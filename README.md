@@ -975,32 +975,38 @@ This will yield streamed output from the run like the following:
 --- Run started! ---
 The first image depicts a multicolored apple with a blend of red and green hues, while the second image shows an orange with a bright, textured orange peel; one might say it’s comparing apples to oranges!
 ```
-
 ## How to work with Azure OpenAI
 
-For Azure OpenAI scenarios use the [Azure SDK](https://github.com/Azure/azure-sdk-for-net) and more specifically the [Azure OpenAI client library for .NET](https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/openai/Azure.AI.OpenAI/README.md). 
+Switching from OpenAI to Azure OpenAI is simple, and in most cases requires little to no code changes. To get started quickly, check out the starter kit at https://aka.ms/openai/start. If you want to understand how endpoint switching works, you can also read: https://aka.ms/openai/switch.
 
-The Azure OpenAI client library for .NET is a companion to this library and all common capabilities between OpenAI and Azure OpenAI share the same scenario clients, methods, and request/response types. It is designed to make Azure specific scenarios straightforward, with extensions for Azure-specific concepts like Responsible AI content filter results and On Your Data integration.
+### Secure Access with Microsoft Entra ID (No API Keys)
+The starter kit includes examples showing how to call Azure OpenAI securely using Microsoft Entra ID instead of API keys. This is the recommended approach for production scenarios. Here’s a direct link to the .NET sample using Entra ID in the starter kit: https://github.com/Azure-Samples/azure-openai-starter/blob/main/src/dotnet/responses_example_entra.cs
+
+Below is the core pattern using the OpenAI SDK for .NET with Azure OpenAI + Entra ID:
 
 ```c#
-AzureOpenAIClient azureClient = new(
-    new Uri("https://your-azure-openai-resource.com"),
-    new DefaultAzureCredential());
-ChatClient chatClient = azureClient.GetChatClient("my-gpt-35-turbo-deployment");
+using Azure.Identity;
+using OpenAI;
+using OpenAI.Responses;
+using System.ClientModel.Primitives;
 
-ChatCompletion completion = chatClient.CompleteChat(
-    [
-        // System messages represent instructions or other guidance about how the assistant should behave
-        new SystemChatMessage("You are a helpful assistant that talks like a pirate."),
-        // User messages represent user input, whether historical or the most recen tinput
-        new UserChatMessage("Hi, can you help me?"),
-        // Assistant messages in a request represent conversation history for responses
-        new AssistantChatMessage("Arrr! Of course, me hearty! What can I do for ye?"),
-        new UserChatMessage("What's the best way to train a parrot?"),
-    ]);
+var endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")
+    ?? throw new InvalidOperationException("AZURE_OPENAI_ENDPOINT is required.");
 
-Console.WriteLine($"{completion.Role}: {completion.Content[0].Text}");
+var client = new OpenAIResponseClient(
+    "gpt-5-mini",
+    new BearerTokenPolicy(new DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default"),
+    new OpenAIClientOptions { Endpoint = new Uri($"{endpoint}/openai/v1/") }
+);
+
+var response = await client.CreateResponseAsync("Hello world!", new ResponseCreationOptions());
+Console.WriteLine(response.GetOutputText());
 ```
+### Why this works
+- One OpenAI SDK: You use the official OpenAI SDK for .NET. Azure OpenAI is just a different endpoint you point the client library to.
+- Unified /openai/v1/ endpoint: Azure OpenAI uses the same path shape as OpenAI, so most client code can stay unchanged.
+- Enterprise-ready auth: Azure Identity SDK with Microsoft Entra ID lets you access Azure OpenAI without storing secrets.
+- Drop‑in model switching: Swap "gpt-5-mini" or any other model as long as the Azure model deployment has the same name as the model.
 
 ## Advanced scenarios
 
