@@ -10,7 +10,9 @@ namespace OpenAI.Responses;
 
 // CUSTOM:
 // - Renamed.
-// - Suppressed GetResponse methods in favor of methods that take a property bag.
+// - Suppressed GetResponse convenience methods in favor of methods that take a property bag.
+// - Suppressed GetResponseInputItems convenience methods in favor of methods that take a property bag.
+// - Suppressed GetResponseInputItems protocol methods that return CollectionResult in favor of returning ClientResult.
 [CodeGenType("Responses")]
 [CodeGenSuppress("GetResponse", typeof(string), typeof(IEnumerable<IncludedResponseProperty>), typeof(bool?), typeof(int?), typeof(bool?), typeof(CancellationToken))]
 [CodeGenSuppress("GetResponseAsync", typeof(string), typeof(IEnumerable<IncludedResponseProperty>), typeof(bool?), typeof(int?), typeof(bool?), typeof(CancellationToken))]
@@ -336,17 +338,19 @@ public partial class ResponsesClient
     {
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
-        ClientResult result = GetResponse(responseId: responseId, include: null, stream: null, startingAfter: null, includeObfuscation: null, cancellationToken.ToRequestOptions());
-        return ClientResult.FromValue((ResponseResult)result, result.GetRawResponse());
+        var options = new GetResponseOptions(responseId);
+
+        return GetResponse(options, cancellationToken);
     }
 
     // CUSTOM: Added convenience method with no options.
-    public virtual async Task<ClientResult<ResponseResult>> GetResponseAsync(string responseId, CancellationToken cancellationToken = default)
+    public virtual Task<ClientResult<ResponseResult>> GetResponseAsync(string responseId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
-        ClientResult result = await GetResponseAsync(responseId: responseId, include: null, stream: null, startingAfter: null, includeObfuscation: null, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-        return ClientResult.FromValue((ResponseResult)result, result.GetRawResponse());
+        var options = new GetResponseOptions(responseId);
+
+        return GetResponseAsync(options, cancellationToken);
     }
 
     // CUSTOM: Added protocol model method.
@@ -415,10 +419,12 @@ public partial class ResponsesClient
     {
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
-        return new SseUpdateCollection<StreamingResponseUpdate>(
-            () => GetResponse(responseId: responseId, include: null, stream: true, startingAfter: null, includeObfuscation: null, cancellationToken.ToRequestOptions(streaming: true)),
-            StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
-            cancellationToken);
+        var options = new GetResponseOptions(responseId)
+        {
+            StreamingEnabled = true,
+        };
+
+        return GetResponseStreaming(options, cancellationToken);
     }
 
     // CUSTOM: Added convenience method with no options.
@@ -426,79 +432,119 @@ public partial class ResponsesClient
     {
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
-        return new AsyncSseUpdateCollection<StreamingResponseUpdate>(
-            async () => await GetResponseAsync(responseId: responseId, include: null, stream: true, startingAfter: null, includeObfuscation: null, cancellationToken.ToRequestOptions()).ConfigureAwait(false),
-            StreamingResponseUpdate.DeserializeStreamingResponseUpdate,
-            cancellationToken);
+        var options = new GetResponseOptions(responseId)
+        {
+            StreamingEnabled = true,
+        };
+
+        return GetResponseStreamingAsync(options, cancellationToken);
     }
 
     #endregion
 
     #region GetResponseInputItems
 
-    public virtual ClientResult GetResponseInputItems(string responseId, int? limit, string order, string after, string before, RequestOptions options)
+    // CUSTOM: Added protocol method that returns ClientResult.
+    public virtual ClientResult GetResponseInputItemCollectionPage(string responseId, int? limit, string order, string after, string before, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
-        using PipelineMessage message = CreateGetResponseInputItemsRequest(responseId, limit, after, order, before, options);
+        using PipelineMessage message = CreateGetResponseInputItemsRequest(responseId, limit, order, after, before, options);
         return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
     }
 
-    public virtual async Task<ClientResult> GetResponseInputItemsAsync(string responseId, int? limit, string order, string after, string before, RequestOptions options)
+    // CUSTOM: Added protocol method that returns ClientResult.
+    public virtual async Task<ClientResult> GetResponseInputItemCollectionPageAsync(string responseId, int? limit, string order, string after, string before, RequestOptions options)
     {
         Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
 
-        using PipelineMessage message = CreateGetResponseInputItemsRequest(responseId, limit, after, order, before, options);
+        using PipelineMessage message = CreateGetResponseInputItemsRequest(responseId, limit, order, after, before, options);
         return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 
+    // CUSTOM: Added protocol model method.
     public virtual ClientResult<ResponseItemCollectionPage> GetResponseInputItemCollectionPage(ResponseItemCollectionOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
         Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
 
-        PipelineMessage message = CreateGetResponseInputItemsRequest(options.ResponseId, options.PageSizeLimit, options.AfterId, options.Order.ToString(), options.BeforeId, cancellationToken.ToRequestOptions());
-        ClientResult result = ClientResult.FromResponse(Pipeline.ProcessMessage(message, cancellationToken.ToRequestOptions()));
+        ClientResult result = GetResponseInputItemCollectionPage(
+            responseId: options.ResponseId,
+            limit: options.PageSizeLimit,
+            order: options.Order?.ToString(),
+            after: options.AfterId,
+            before: options.BeforeId,
+            cancellationToken.ToRequestOptions());
         return ClientResult.FromValue((ResponseItemCollectionPage)result, result.GetRawResponse());
     }
 
+    // CUSTOM: Added protocol model method.
     public virtual async Task<ClientResult<ResponseItemCollectionPage>> GetResponseInputItemCollectionPageAsync(ResponseItemCollectionOptions options, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(options, nameof(options));
         Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
 
-        PipelineMessage message = CreateGetResponseInputItemsRequest(options.ResponseId, options.PageSizeLimit, options.AfterId, options.Order.ToString(), options.BeforeId, cancellationToken.ToRequestOptions());
-        ClientResult result = ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, cancellationToken.ToRequestOptions()).ConfigureAwait(false));
+        ClientResult result = await GetResponseInputItemCollectionPageAsync(
+            responseId: options.ResponseId,
+            limit: options.PageSizeLimit,
+            order: options.Order?.ToString(),
+            after: options.AfterId,
+            before: options.BeforeId,
+            cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue((ResponseItemCollectionPage)result, result.GetRawResponse());
     }
 
+    // CUSTOM: Added convenience method with pagination.
     public virtual CollectionResult<ResponseItem> GetResponseInputItems(ResponseItemCollectionOptions options, CancellationToken cancellationToken = default)
-        {
-            Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
+    {
+        Argument.AssertNotNull(options, nameof(options));
+        Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
 
-            return new ResponsesClientGetResponseInputItemsCollectionResultOfT(
-                this,
-                options.ResponseId,
-                options?.PageSizeLimit,
-                options?.Order?.ToString(),
-                options?.AfterId,
-                options?.BeforeId,
-                cancellationToken.ToRequestOptions());
-        }
+        return new ResponsesClientGetResponseInputItemsCollectionResultOfT(
+            client: this,
+            responseId: options.ResponseId,
+            limit: options.PageSizeLimit,
+            order: options.Order?.ToString(),
+            after: options.AfterId,
+            before: options.BeforeId,
+            cancellationToken.ToRequestOptions());
+    }
 
+    // CUSTOM: Added convenience method with pagination.
     public virtual AsyncCollectionResult<ResponseItem> GetResponseInputItemsAsync(ResponseItemCollectionOptions options, CancellationToken cancellationToken = default)
-        {
-            Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
+    {
+        Argument.AssertNotNull(options, nameof(options));
+        Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
+    
+        return new ResponsesClientGetResponseInputItemsAsyncCollectionResultOfT(
+            client: this,
+            responseId: options.ResponseId,
+            limit: options.PageSizeLimit,
+            order: options.Order?.ToString(),
+            after: options.AfterId,
+            before: options.BeforeId,
+            cancellationToken.ToRequestOptions());
+    }
 
-            return new ResponsesClientGetResponseInputItemsAsyncCollectionResultOfT(
-                this,
-                options.ResponseId,
-                options?.PageSizeLimit,
-                options?.Order?.ToString(),
-                options?.AfterId,
-                options?.BeforeId,
-                cancellationToken.ToRequestOptions());
-        }
+    // CUSTOM: Added convenience method with pagination and no options.
+    public virtual CollectionResult<ResponseItem> GetResponseInputItems(string responseId, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
+
+        var options = new ResponseItemCollectionOptions(responseId);
+
+        return GetResponseInputItems(options, cancellationToken);
+    }
+
+    // CUSTOM: Added convenience method with pagination and no options.
+    public virtual AsyncCollectionResult<ResponseItem> GetResponseInputItemsAsync(string responseId, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(responseId, nameof(responseId));
+
+        var options = new ResponseItemCollectionOptions(responseId);
+
+        return GetResponseInputItemsAsync(options, cancellationToken);
+    }
 
     #endregion
 }
