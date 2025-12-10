@@ -1,9 +1,11 @@
 ﻿using Microsoft.TypeSpec.Generator.ClientModel;
+using Microsoft.TypeSpec.Generator.ClientModel.Providers;
 using Microsoft.TypeSpec.Generator.Input;
 using Microsoft.TypeSpec.Generator.Primitives;
 using Microsoft.TypeSpec.Generator.Providers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace OpenAILibraryPlugin.Visitors;
 
@@ -20,7 +22,7 @@ public class ProtocolModelVisitor : ScmLibraryVisitor
         "OpenAI.Responses.ResponseItemCollectionPage",
         "OpenAI.Responses.ResponseResult",
 
-        // "OpenAI.Responses.StreamingResponseUpdate",
+        "OpenAI.Responses.StreamingResponseUpdate",
         "OpenAI.Responses.StreamingResponseCodeInterpreterCallCodeDeltaUpdate",
         "OpenAI.Responses.StreamingResponseCodeInterpreterCallCodeDoneUpdate",
         "OpenAI.Responses.StreamingResponseCodeInterpreterCallCompletedUpdate",
@@ -92,18 +94,31 @@ public class ProtocolModelVisitor : ScmLibraryVisitor
     }
 
     // All protocol models should have a public parameterless constructor.
-    protected override ConstructorProvider? VisitConstructor(ConstructorProvider constructorProvider)
+    protected override TypeProvider? VisitType(TypeProvider typeProvider)
     {
-        // TODO: This needs to also skip the base types of discriminated hierarchies.
-        // For now, we will handle base types manually.
-        if (constructorProvider is not null
-            && constructorProvider.Signature.Parameters.Count == 0
-            && _protocolModels.Contains($"{constructorProvider.EnclosingType.Type.Namespace}.{constructorProvider.EnclosingType.Name}"))
+        if (typeProvider is ModelProvider modelProvider
+           && !modelProvider.Type.IsValueType
+           && !modelProvider.DeclarationModifiers.HasFlag(TypeSignatureModifiers.Static))
         {
-            constructorProvider.Signature.Update(modifiers: MethodSignatureModifiers.Public);
+            List<ConstructorProvider> allGeneratedConstructors =
+            [
+              .. modelProvider.Constructors,
+              .. modelProvider.SerializationProviders.SelectMany(mrwProvider => mrwProvider.Constructors),
+            ];
+
+            foreach (ConstructorProvider constructorProvider in allGeneratedConstructors)
+            {
+                if (constructorProvider is not null
+                    && constructorProvider.Signature.Parameters.Count == 0 // Check that this is a default constructor
+                    && modelProvider.DerivedModels.Count == 0 // The default constructor should be visible in the derived models, not the base model
+                    && _protocolModels.Contains($"{constructorProvider.EnclosingType.Type.Namespace}.{constructorProvider.EnclosingType.Name}"))
+                {
+                    constructorProvider.Signature.Update(modifiers: MethodSignatureModifiers.Public);
+                }
+            }
         }
 
-        return constructorProvider;
+        return typeProvider;
     }
 
     // All protocol models should not have an implicit conversion to BinaryContent.

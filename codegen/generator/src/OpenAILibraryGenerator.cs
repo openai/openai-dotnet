@@ -27,7 +27,6 @@ namespace OpenAILibraryPlugin
             AddVisitor(new OpenAILibraryVisitor());
             AddVisitor(new VirtualMessageCreationVisitor());
             AddVisitor(new ProhibitedNamespaceVisitor());
-            // AddVisitor(new ImplicitConversionToBinaryContentVisitor());
             AddVisitor(new ModelSerializationVisitor());
             AddVisitor(new ExperimentalAttributeVisitor());
             AddVisitor(new ModelDirectoryVisitor());
