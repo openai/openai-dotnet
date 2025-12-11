@@ -16,7 +16,12 @@ jobs:
     env:
       version_suffix_args: ${{ format('/p:VersionSuffix="alpha.{0}"', github.run_number) }}
     steps:
-      - name: Setup .NET
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '10.x'
+
+      - name: Setup .NET 9
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: '9.x'
