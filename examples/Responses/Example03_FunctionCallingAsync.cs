@@ -19,17 +19,12 @@ public partial class ResponseExamples
     [Test]
     public async Task Example03_FunctionCallingAsync()
     {
-        ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         List<ResponseItem> inputItems =
         [
             ResponseItem.CreateUserMessageItem("What's the weather like today for my current location?"),
         ];
-
-        CreateResponseOptions options = new("gpt-5", inputItems)
-        {
-            Tools = { getCurrentLocationTool, getCurrentWeatherTool },
-        };
 
         PrintMessageItems(inputItems.OfType<MessageResponseItem>());
 
@@ -38,6 +33,12 @@ public partial class ResponseExamples
         do
         {
             requiresAction = false;
+
+            CreateResponseOptions options = new(inputItems)
+            {
+                Tools = { getCurrentLocationTool, getCurrentWeatherTool },
+            };
+
             ResponseResult response = await client.CreateResponseAsync(options);
 
             inputItems.AddRange(response.OutputItems);

@@ -8,13 +8,12 @@ namespace OpenAI.Responses;
 public partial class CreateResponseOptions
 {
     // CUSTOM: Added as a convenience.
-    public CreateResponseOptions(string model, IEnumerable<ResponseItem> inputItems) : this()
+    public CreateResponseOptions(IEnumerable<ResponseItem> inputItems, string model = default) : this()
     {
-        Argument.AssertNotNull(model, nameof(model));
         Argument.AssertNotNull(inputItems, nameof(inputItems));
 
-        Model = model;
         InputItems = inputItems.ToList();
+        Model = default;
     }
 
     // CUSTOM: Renamed.

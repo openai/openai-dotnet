@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using OpenAI.Responses;
 using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Examples;
 
@@ -13,22 +14,23 @@ public partial class ResponseExamples
     [Test]
     public void Example05_RemoteMcp()
     {
-        CreateResponseOptions options = new(
-            "gpt-5",
-            [
-                ResponseItem.CreateUserMessageItem("Roll 2d4+1")
-            ])
-            {
-                Tools = {
-                    new McpTool(serverLabel: "dmcp", serverUri: new Uri("https://dmcp-server.deno.dev/sse"))
-                    {
-                        ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
-                        ToolCallApprovalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
-                    }
-                }
-            };
+        List<ResponseItem> inputItems =
+        [
+            ResponseItem.CreateUserMessageItem("Roll 2d4+1"),
+        ];
 
-        ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        CreateResponseOptions options = new(inputItems)
+        {
+            Tools = {
+                new McpTool(serverLabel: "dmcp", serverUri: new Uri("https://dmcp-server.deno.dev/sse"))
+                {
+                    ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
+                    ToolCallApprovalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
+                }
+            }
+        };
+
+        ResponsesClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         ResponseResult response = client.CreateResponse(options);
 

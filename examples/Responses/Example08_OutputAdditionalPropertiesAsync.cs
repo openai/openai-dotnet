@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
-using System;
 using OpenAI.Responses;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -16,14 +17,14 @@ public partial class ResponseExamples
     [Test]
     public async Task Example08_OutputAdditionalPropertiesAsync()
     {
-        ResponsesClient client = new(   apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        CreateResponseOptions options = new(
-            "gpt-5",
-            [
-                ResponseItem.CreateUserMessageItem("Generate an image of gray tabby cat hugging an otter with an orange scarf")
-            ]
-        )
+        List<ResponseItem> inputItems =
+        [
+            ResponseItem.CreateUserMessageItem("Generate an image of gray tabby cat hugging an otter with an orange scarf."),
+        ];
+
+        CreateResponseOptions options = new(inputItems)
         {
             Tools =
             {

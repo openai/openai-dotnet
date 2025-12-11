@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using OpenAI.Responses;
 using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Examples;
 
@@ -10,22 +11,26 @@ namespace OpenAI.Examples;
 
 public partial class ResponseExamples
 {
+    [Ignore("Compilation-only example.")]
     [Test]
     public void Example06_RemoteMcpAuthentication()
     {
-        CreateResponseOptions options = new(
-            "gpt-5",
-            [ResponseItem.CreateUserMessageItem("Create a payment link for $20")])
-            {
-                Tools = {
-                    new McpTool(serverLabel: "stripe", serverUri: new Uri("https://mcp.stripe.com"))
-                    {
-                        AuthorizationToken = Environment.GetEnvironmentVariable("STRIPE_OAUTH_ACCESS_TOKEN"),
-                    }
-                }
-            };
+        List<ResponseItem> inputItems =
+        [
+            ResponseItem.CreateUserMessageItem("Roll 2d4+1"),
+        ];
 
-        ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        CreateResponseOptions options = new(inputItems)
+        {
+            Tools = {
+                new McpTool(serverLabel: "stripe", serverUri: new Uri("https://mcp.stripe.com"))
+                {
+                    AuthorizationToken = Environment.GetEnvironmentVariable("STRIPE_OAUTH_ACCESS_TOKEN"),
+                }
+            }
+        };
+
+        ResponsesClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         ResponseResult response = client.CreateResponse(options);
 
