@@ -1069,6 +1069,18 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(cancelledResponse.Status, Is.EqualTo(ResponseStatus.Cancelled));
     }
 
+    [RecordedTest]
+    public async Task GetResponseNoOptions()
+    {
+        ResponsesClient client = GetTestClient();
+
+        ResponseResult createdResponse = await client.CreateResponseAsync("This is a test.");
+
+        ResponseResult retrievedResponse = await client.GetResponseAsync(createdResponse.Id);
+
+        Assert.That(createdResponse.Id, Is.EqualTo(retrievedResponse.Id));
+    }
+
     private List<string> FileIdsToDelete = [];
     private List<string> VectorStoreIdsToDelete = [];
 
