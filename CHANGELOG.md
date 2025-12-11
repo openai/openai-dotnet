@@ -1,14 +1,30 @@
 # Release History
 
-## 2.8.0 (Unreleased)
-
-### Acknowledgments
+## 2.8.0 (2025-12-11)
 
 ### Features Added
 
-### Bugs Fixed
+- OpenAI.Chat:
+  - Added the `SafetyIdentifier` property to `ChatCompletionOptions`, which enables users to specify a stable identifier that can be used to help detect end-users of their application that may be violating OpenAI's usage policies.
+- OpenAI.Responses:
+  - Added the `SafetyIdentifier` property to `CreateResponseOptions` and `ResponseResult`, which enables users to specify a stable identifier that can be used to help detect end-users of their application that may be violating OpenAI's usage policies.
+  - Added the `ConversationOptions` property to `CreateResponseOptions` and `ResponseResult`, which enables users to automatically manage the state of a conversation in a multi-turn interaction by persisting state and sharing context across subsequent responses, rather than having to chain multiple response items together.
+  - Added the `MaxToolCallCount` property to `CreateResponseOptions` and `ResponseResult`, which enables users to set the maximum number of total calls to built-in tools that can be processed in a response. This maximum number applies across all built-in tool calls, not per individual tool. Any further attempts to call a tool by the model will be ignored.
+  - Added the `TopLogProbabilityCount` property to `CreateResponseOptions` and `ResponseResult`, which enables users to specify the number of most likely tokens to return at each token position, each with an associated log probability.
+  - Added the `IncludedProperties` property to `CreateResponseOptions`, which enables users to specify additional output data to be included in the model response.
+  - Added a setter to the `Id` property of `ResponseItem`.
+  - Added a setter to the `Status` property of the types derived from `ResponseItem`.
 
-### Other Changes
+### Breaking Changes in Preview APIs
+
+- OpenAI.Responses:
+  - A few breaking changes have been introduced to our preview of the Responses API in order to better align it with the service REST API, offer more flexibility, and improve usability. See our [examples](https://github.com/openai/openai-dotnet/tree/main/examples/Responses) for helpful references on how to use the updated APIs.
+    - The `OpenAIResponseClient` class has been renamed to `ResponsesClient`.
+    - The `ResponseCreationOptions` class has been renamedto `CreateResponseOptions`.
+    - The `OpenAIResponse` class has been renamed to `ResponseResult`.
+    - When calling the `CreateResponse`, `CreateResponseAsync`, `CreateResponseStreaming` and `CreateResponseStreamingAsync` methods of the `ResponsesClient` with a `CreateResponseOptions`   argument, the input items must now be specified via the new `InputItems` property of `CreateResponseOptions`.
+    - When calling the `CreateResponseStreaming` and `CreateResponseStreamingAsync` methods of the `ResponsesClient` with a `CreateResponseOptions` argument, the `StreamingEnabled` property   of `CreateResponseOptions` must be set to `true`.
+    - The `OpenAIResponsesModelFactory` class used for mocking output models (e.g., `ResponseResult`, `ResponseTokenUsage`, etc.) has been removed in favor of adding setters to the   properties of these models.
 
 ## 2.7.0 (2025-11-13)
 
