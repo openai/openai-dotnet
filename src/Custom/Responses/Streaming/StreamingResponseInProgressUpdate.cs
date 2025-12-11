@@ -1,10 +1,6 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace OpenAI.Responses;
 
-// CUSTOM:
-// - Added Experimental attribute.
-// - Renamed.
+// CUSTOM: Renamed.
 [CodeGenType("ResponseInProgressEvent")]
 public partial class StreamingResponseInProgressUpdate
 {

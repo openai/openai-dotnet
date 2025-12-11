@@ -50,7 +50,7 @@ namespace OpenAI;
 [CodeGenSuppress("_cachedOpenAIModelClient")]
 [CodeGenSuppress("_cachedModerationClient")]
 [CodeGenSuppress("_cachedRealtimeClient")]
-[CodeGenSuppress("_cachedOpenAIResponseClient")]
+[CodeGenSuppress("_cachedResponsesClient")]
 [CodeGenSuppress("_cachedVectorStoreClient")]
 [CodeGenSuppress("_cachedVideoClient")]
 [CodeGenSuppress("_cachedInternalAssistantMessageClient")]
@@ -73,7 +73,7 @@ namespace OpenAI;
 [CodeGenSuppress("GetOpenAIModelClient")]
 [CodeGenSuppress("GetModerationClient")]
 [CodeGenSuppress("GetRealtimeClient")]
-[CodeGenSuppress("GetOpenAIResponseClient")]
+[CodeGenSuppress("GetResponsesClient")]
 [CodeGenSuppress("GetVectorStoreClient")]
 [CodeGenSuppress("GetVideoClient")]
 [CodeGenSuppress("GetInternalAssistantMessageClient")]
@@ -332,16 +332,16 @@ public partial class OpenAIClient
     public virtual RealtimeClient GetRealtimeClient() => new(_keyCredential, _options);
 
     /// <summary>
-    /// Gets a new instance of <see cref="OpenAIResponseClient"/> that reuses the client configuration details provided to
+    /// Gets a new instance of <see cref="ResponsesClient"/> that reuses the client configuration details provided to
     /// the <see cref="OpenAIClient"/> instance.
     /// </summary>
     /// <remarks>
-    /// This method is functionally equivalent to using the <see cref="OpenAIResponseClient"/> constructor directly with
+    /// This method is functionally equivalent to using the <see cref="ResponsesClient"/> constructor directly with
     /// the same configuration details.
     /// </remarks>
-    /// <returns> A new <see cref="OpenAIResponseClient"/>. </returns>
+    /// <returns> A new <see cref="ResponsesClient"/>. </returns>
     [Experimental("OPENAI001")]
-    public virtual OpenAIResponseClient GetOpenAIResponseClient(string model) => new(Pipeline, model, _options);
+    public virtual ResponsesClient GetResponsesClient(string model) => new(Pipeline, model, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="VectorStoreClient"/> that reuses the client configuration details provided to

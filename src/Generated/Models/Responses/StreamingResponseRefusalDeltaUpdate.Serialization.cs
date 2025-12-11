@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseRefusalDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseRefusalDeltaUpdate>
     {
-        internal StreamingResponseRefusalDeltaUpdate() : this(InternalResponseStreamEventType.ResponseRefusalDelta, default, default, null, default, default, null)
+        public StreamingResponseRefusalDeltaUpdate() : this(InternalResponseStreamEventType.ResponseRefusalDelta, default, default, null, default, default, null)
         {
         }
 

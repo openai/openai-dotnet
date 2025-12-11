@@ -8,7 +8,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Copyright>Copyright (c) 2025 OpenAI (https://openai.com)</Copyright>
 
-    <VersionPrefix>2.7.0</VersionPrefix>
+    <VersionPrefix>2.8.0</VersionPrefix>
     <VersionSuffix></VersionSuffix>
 
     <TargetFrameworks>net10.0;net8.0;netstandard2.0</TargetFrameworks>

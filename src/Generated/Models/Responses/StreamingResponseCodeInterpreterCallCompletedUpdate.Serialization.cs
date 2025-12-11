@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseCodeInterpreterCallCompletedUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCodeInterpreterCallCompletedUpdate>
     {
-        internal StreamingResponseCodeInterpreterCallCompletedUpdate() : this(InternalResponseStreamEventType.ResponseCodeInterpreterCallCompleted, default, default, default, null)
+        public StreamingResponseCodeInterpreterCallCompletedUpdate() : this(InternalResponseStreamEventType.ResponseCodeInterpreterCallCompleted, default, default, default, null)
         {
         }
 

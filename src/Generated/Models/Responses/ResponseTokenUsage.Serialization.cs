@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class ResponseTokenUsage : IJsonModel<ResponseTokenUsage>
     {
-        internal ResponseTokenUsage()
+        public ResponseTokenUsage()
         {
         }
 

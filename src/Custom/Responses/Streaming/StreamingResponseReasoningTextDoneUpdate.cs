@@ -2,6 +2,6 @@
 
 // CUSTOM: Renamed.
 [CodeGenType("ResponseReasoningTextDoneEvent")]
-public partial class StreamingResponseReasoningTextDoneUpdate : StreamingResponseUpdate
+public partial class StreamingResponseReasoningTextDoneUpdate
 {
 }

@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using OpenAI.Responses;
 using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Examples;
 
@@ -13,7 +14,12 @@ public partial class ResponseExamples
     [Test]
     public void Example05_RemoteMcp()
     {
-        ResponseCreationOptions options = new()
+        List<ResponseItem> inputItems =
+        [
+            ResponseItem.CreateUserMessageItem("Roll 2d4+1"),
+        ];
+
+        CreateResponseOptions options = new(inputItems)
         {
             Tools = {
                 new McpTool(serverLabel: "dmcp", serverUri: new Uri("https://dmcp-server.deno.dev/sse"))
@@ -24,9 +30,9 @@ public partial class ResponseExamples
             }
         };
 
-        OpenAIResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        OpenAIResponse response = client.CreateResponse("Roll 2d4+1", options);
+        ResponseResult response = client.CreateResponse(options);
 
         Console.WriteLine($"[ASSISTANT]: {response.GetOutputText()}");
     }

@@ -2,6 +2,6 @@
 
 // CUSTOM: Renamed.
 [CodeGenType("ResponseReasoningSummaryPartAddedEvent")]
-public partial class StreamingResponseReasoningSummaryPartAddedUpdate : StreamingResponseUpdate
+public partial class StreamingResponseReasoningSummaryPartAddedUpdate
 {
 }

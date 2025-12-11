@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using OpenAI.Responses;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OpenAI.Examples;
@@ -15,18 +16,23 @@ public partial class ResponseExamples
     [Test]
     public async Task Example09_ModelOverridePerRequestAsync()
     {
-        OpenAIResponseClient client = new(model: "gpt-4o", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(model: "gpt-4o", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+
+        List<ResponseItem> inputItems =
+        [
+            ResponseItem.CreateUserMessageItem("Say 'this is a test."),
+        ];
 
         // Add extra request fields using Patch.
-        // Patch lets you set fields like `model` that aren't exposed on ResponseCreationOptions.
+        // Patch lets you set fields like `model` that aren't exposed on CreateResponseOptions.
         // This overrides the model set on the client just for the request where this options instance is used.
         // See the API docs https://platform.openai.com/docs/api-reference/responses/create for supported additional fields.
-        ResponseCreationOptions options = new();
+        CreateResponseOptions options = new(inputItems); // Model can also be set via constructor
         options.Patch.Set("$.model"u8, "gpt-5");
 
-        OpenAIResponse response = await client.CreateResponseAsync("Say 'this is a test.", options);
+        ResponseResult response = await client.CreateResponseAsync(options);
 
-        Console.WriteLine($"[ASSISTANT]: {response.GetOutputText()}, [Mode]: {response.Model}");
+        Console.WriteLine($"[ASSISTANT]: {response.GetOutputText()}, [Model]: {response.Model}");
     }
 }
 

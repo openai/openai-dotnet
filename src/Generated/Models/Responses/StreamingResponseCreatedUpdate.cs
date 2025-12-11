@@ -10,19 +10,19 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseCreatedUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseCreatedUpdate(int sequenceNumber, OpenAIResponse response) : base(InternalResponseStreamEventType.ResponseCreated, sequenceNumber)
+        internal StreamingResponseCreatedUpdate(int sequenceNumber, ResponseResult response) : base(InternalResponseStreamEventType.ResponseCreated, sequenceNumber)
         {
             Response = response;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseCreatedUpdate(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch, OpenAIResponse response) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseCreatedUpdate(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch, ResponseResult response) : base(kind, sequenceNumber, patch)
         {
             Response = response;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public OpenAIResponse Response { get; }
+        public ResponseResult Response { get; set; }
     }
 }

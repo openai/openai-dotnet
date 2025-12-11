@@ -42,14 +42,12 @@ namespace OpenAI.Responses;
 [CodeGenType("ItemReferenceItemParam")] internal partial class InternalItemReferenceItemParam {}
 [CodeGenType("ItemType")] internal readonly partial struct InternalItemType {}
 [CodeGenType("LocationType")] internal readonly partial struct InternalWebSearchUserLocationKind {}
-[CodeGenType("ModelIdsResponses")] internal readonly partial struct InternalModelIdsResponses {}
 [CodeGenType("RankingOptionsRanker1")] internal readonly partial struct InternalRankingOptionsRanker1 {}
 [CodeGenType("ReasoningGenerateSummary")] internal readonly partial struct InternalReasoningGenerateSummary {}
 [CodeGenType("ReasoningItemParam")] internal partial class InternalReasoningItemParam {}
 [CodeGenType("ReasoningItemResourceSummaryType")] internal readonly partial struct InternalReasoningItemResourceSummaryType {}
 [CodeGenType("ReasoningItemSummaryPartType")] internal readonly partial struct InternalReasoningItemSummaryPartType {}
 [CodeGenType("ResponseErrorResponse")] internal partial class InternalResponseErrorResponse {}
-[CodeGenType("ResponseItemList")] internal partial class InternalResponseItemList {}
 [CodeGenType("ResponseItemListObject")] internal readonly partial struct InternalResponseItemListObject {}
 [CodeGenType("ResponseObject")] internal readonly partial struct InternalCreateResponsesResponseObject {}
 [CodeGenType("ResponsesAssistantMessageItemParam")] internal partial class InternalResponsesAssistantMessageItemParam {}
@@ -122,4 +120,3 @@ namespace OpenAI.Responses;
 [CodeGenType("DotNetCustomToolCallApprovalPolicyNever")] internal partial class InternalDotNetCustomToolCallApprovalPolicyNever { }
 [CodeGenType("UnknownCodeInterpreterToolOutput")] internal partial class InternalUnknownCodeInterpreterToolOutput {}
 [CodeGenType("UnknownCodeInterpreterContainerConfiguration")] internal partial class InternalUnknownCodeInterpreterContainerConfiguration {}
-[CodeGenType("ConversationParam2")] internal partial class InternalConversation {}

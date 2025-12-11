@@ -1,7 +1,7 @@
 ﻿namespace OpenAI.Responses;
 
-// CUSTOM: Make public and use the correct namespace.
-[CodeGenType("ResponseItemCollectionOrder")]
+// CUSTOM: Renamed.
+[CodeGenType("DotNetResponseItemCollectionOrder")]
 public readonly partial struct ResponseItemCollectionOrder
 {
 }

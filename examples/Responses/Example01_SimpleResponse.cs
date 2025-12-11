@@ -13,9 +13,9 @@ public partial class ResponseExamples
     [Test]
     public void Example01_SimpleResponse()
     {
-        OpenAIResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        OpenAIResponse response = client.CreateResponse("Say 'this is a test.'");
+        ResponseResult response = client.CreateResponse("Say 'this is a test.'");
 
         Console.WriteLine($"[ASSISTANT]: {response.GetOutputText()}");
     }

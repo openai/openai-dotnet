@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseMcpListToolsInProgressUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpListToolsInProgressUpdate>
     {
-        internal StreamingResponseMcpListToolsInProgressUpdate() : this(InternalResponseStreamEventType.ResponseMcpListToolsInProgress, default, default, null, default)
+        public StreamingResponseMcpListToolsInProgressUpdate() : this(InternalResponseStreamEventType.ResponseMcpListToolsInProgress, default, default, null, default)
         {
         }
 

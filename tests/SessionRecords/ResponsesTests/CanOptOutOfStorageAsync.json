@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "137",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini",
@@ -30,19 +30,23 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9804105a289eba46-SEA",
+        "CF-RAY": "9a44b483c94769fb-DFW",
         "Connection": "keep-alive",
-        "Content-Length": "1399",
+        "Content-Length": "1478",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 23:15:06 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "713",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
+        "Set-Cookie": [
+          "Sanitized",
+          "Sanitized"
+        ],
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "722",
+        "x-envoy-upstream-service-time": "2042",
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "150000000",
         "x-ratelimit-remaining-requests": "29999",
@@ -52,11 +56,14 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_0dcd707b1e1966ec0168c9ef7a05148190ab7b43eff69da61a",
+        "id": "resp_0f2e256a85ea081c01692632b43828819796458fbf55cf7dc7",
         "object": "response",
-        "created_at": 1758064506,
+        "created_at": 1764111028,
         "status": "completed",
         "background": false,
+        "billing": {
+          "payer": "developer"
+        },
         "error": null,
         "incomplete_details": null,
         "instructions": null,
@@ -65,7 +72,7 @@
         "model": "gpt-4o-mini-2024-07-18",
         "output": [
           {
-            "id": "msg_0dcd707b1e1966ec0168c9ef7a907c8190878ee15359fe44b1",
+            "id": "msg_0f2e256a85ea081c01692632b52d708197ac8b301ee8f9698a",
             "type": "message",
             "status": "completed",
             "content": [
@@ -82,6 +89,7 @@
         "parallel_tool_calls": true,
         "previous_response_id": null,
         "prompt_cache_key": null,
+        "prompt_cache_retention": null,
         "reasoning": {
           "effort": null,
           "summary": null
@@ -117,36 +125,36 @@
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/responses/resp_0dcd707b1e1966ec0168c9ef7a05148190ab7b43eff69da61a",
+      "RequestUri": "https://api.openai.com/v1/responses/resp_0f2e256a85ea081c01692632b43828819796458fbf55cf7dc7",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
       },
       "RequestBody": null,
       "StatusCode": 404,
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9804105f4d36ba46-SEA",
+        "CF-RAY": "9a44b4936f1c69fb-DFW",
         "Connection": "keep-alive",
         "Content-Length": "197",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 23:15:07 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "317",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "395",
+        "x-envoy-upstream-service-time": "86",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
         "error": {
-          "message": "Response with id 'resp_0dcd707b1e1966ec0168c9ef7a05148190ab7b43eff69da61a' not found.",
+          "message": "Response with id 'resp_0f2e256a85ea081c01692632b43828819796458fbf55cf7dc7' not found.",
           "type": "invalid_request_error",
           "param": null,
           "code": null

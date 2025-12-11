@@ -10,19 +10,19 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseIncompleteUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseIncompleteUpdate(int sequenceNumber, OpenAIResponse response) : base(InternalResponseStreamEventType.ResponseIncomplete, sequenceNumber)
+        internal StreamingResponseIncompleteUpdate(int sequenceNumber, ResponseResult response) : base(InternalResponseStreamEventType.ResponseIncomplete, sequenceNumber)
         {
             Response = response;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal StreamingResponseIncompleteUpdate(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch, OpenAIResponse response) : base(kind, sequenceNumber, patch)
+        internal StreamingResponseIncompleteUpdate(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch, ResponseResult response) : base(kind, sequenceNumber, patch)
         {
             Response = response;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public OpenAIResponse Response { get; }
+        public ResponseResult Response { get; set; }
     }
 }
