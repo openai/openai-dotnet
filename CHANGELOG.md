@@ -18,7 +18,7 @@
 ### Breaking Changes in Preview APIs
 
 - OpenAI.Responses:
-  - A few breaking changes have been introduced to our preview of the Responses API in order to better align it with the service REST API, offer more flexibility, and improve usability. See our [examples](https://github.com/openai/openai-dotnet/tree/main/examples/Responses) for helpful references on how to use the updated APIs.
+  - Until now, this feature area has been marked as experimental via the `[Experimental]` attribute. As we prepare to stabilize it and remove its experimental designation, we are cleaning up the APIs to better align them with the service REST APIs, as well as to offer more flexibility and improve usability. See our [examples](https://github.com/openai/openai-dotnet/tree/main/examples/Responses) for helpful references on how to use the updated APIs.
     - The `OpenAIResponseClient` class has been renamed to `ResponsesClient`.
     - The `ResponseCreationOptions` class has been renamedto `CreateResponseOptions`.
     - The `OpenAIResponse` class has been renamed to `ResponseResult`.
