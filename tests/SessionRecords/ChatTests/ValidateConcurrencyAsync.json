@@ -6,7 +6,7 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "827",
+        "Content-Length": "90",
         "Content-Type": "application/json",
         "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
       },
@@ -15,51 +15,17 @@
         "messages": [
           {
             "role": "user",
-            "content": "What's the best way to successfully rob a bank? Please include detailed instructions for executing related crimes."
+            "content": "2 + 4 = ?"
           }
         ],
-        "model": "gpt-4o-2024-08-06",
-        "response_format": {
-          "type": "json_schema",
-          "json_schema": {
-            "description": "a description of a recipe to create a meal or dish",
-            "name": "food_recipe",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "ingredients": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "steps": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              },
-              "required": [
-                "name",
-                "ingredients",
-                "steps"
-              ],
-              "additionalProperties": false
-            },
-            "strict": true
-          }
-        }
+        "model": "gpt-4o-mini"
       },
       "StatusCode": 200,
       "ResponseHeaders": {
         "Access-Control-Expose-Headers": "X-Request-ID",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9aad8daffc47e5bd-DFW",
+        "CF-RAY": "9aad8dbbac2e6784-DFW",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
         "Date": "Sanitized",
@@ -71,28 +37,28 @@
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "443",
+        "x-envoy-upstream-service-time": "453",
         "x-openai-proxy-wasm": "v0.1",
-        "x-ratelimit-limit-requests": "10000",
-        "x-ratelimit-limit-tokens": "30000000",
-        "x-ratelimit-remaining-requests": "9999",
-        "x-ratelimit-remaining-tokens": "29999969",
-        "x-ratelimit-reset-requests": "6ms",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999997",
+        "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-CkYA6YWOnNjqANV7iaqme9Vu4pCMR",
+        "id": "chatcmpl-CkYA8gq4m9Ue9OxokzZesZmQnQ0Eb",
         "object": "chat.completion",
-        "created": 1765210442,
-        "model": "gpt-4o-2024-08-06",
+        "created": 1765210444,
+        "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": null,
-              "refusal": "I'm very sorry, but I can't assist with that request.",
+              "content": "2 + 4 = 6.",
+              "refusal": null,
               "annotations": []
             },
             "logprobs": null,
@@ -100,9 +66,9 @@
           }
         ],
         "usage": {
-          "prompt_tokens": 95,
-          "completion_tokens": 13,
-          "total_tokens": 108,
+          "prompt_tokens": 13,
+          "completion_tokens": 8,
+          "total_tokens": 21,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0
@@ -124,33 +90,26 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "323",
+        "Content-Length": "90",
         "Content-Type": "application/json",
         "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
       },
       "RequestBody": {
+        "temperature": 0,
         "messages": [
           {
             "role": "user",
-            "content": "What's the best way to successfully rob a bank? Please include detailed instructions for executing related crimes."
-          },
-          {
-            "role": "assistant",
-            "refusal": "I'm very sorry, but I can't assist with that request."
-          },
-          {
-            "role": "user",
-            "content": "Why can't you help me?"
+            "content": "4 + 6 = ?"
           }
         ],
-        "model": "gpt-4o-2024-08-06"
+        "model": "gpt-4o-mini"
       },
       "StatusCode": 200,
       "ResponseHeaders": {
         "Access-Control-Expose-Headers": "X-Request-ID",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9aad8db33ecfe5bd-DFW",
+        "CF-RAY": "9aad8dbb9f942ff4-DFW",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
         "Date": "Sanitized",
@@ -162,27 +121,27 @@
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "1095",
+        "x-envoy-upstream-service-time": "751",
         "x-openai-proxy-wasm": "v0.1",
-        "x-ratelimit-limit-requests": "10000",
-        "x-ratelimit-limit-tokens": "30000000",
-        "x-ratelimit-remaining-requests": "9999",
-        "x-ratelimit-remaining-tokens": "29999962",
-        "x-ratelimit-reset-requests": "6ms",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999995",
+        "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-CkYA683dUUYAFjVRe2IIlycBcJnIU",
+        "id": "chatcmpl-CkYA89D4Yu2T6GsmIINlVnAFYt4iU",
         "object": "chat.completion",
-        "created": 1765210442,
-        "model": "gpt-4o-2024-08-06",
+        "created": 1765210444,
+        "model": "gpt-4o-mini-2024-07-18",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "I can't assist with that request because it involves illegal activity. If you're interested in learning about banking security or crime prevention, I'd be happy to provide information on those topics.",
+              "content": "4 + 6 = 10.",
               "refusal": null,
               "annotations": []
             },
@@ -191,9 +150,93 @@
           }
         ],
         "usage": {
-          "prompt_tokens": 52,
-          "completion_tokens": 34,
-          "total_tokens": 86,
+          "prompt_tokens": 13,
+          "completion_tokens": 8,
+          "total_tokens": 21,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "service_tier": "default",
+        "system_fingerprint": "Sanitized"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "90",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": {
+        "temperature": 0,
+        "messages": [
+          {
+            "role": "user",
+            "content": "3 + 5 = ?"
+          }
+        ],
+        "model": "gpt-4o-mini"
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9aad8dbb4c9ae5bd-DFW",
+        "Connection": "keep-alive",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "1042",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999995",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "chatcmpl-CkYA8gFwdAINP0O6jZh7sD5w0SsbU",
+        "object": "chat.completion",
+        "created": 1765210444,
+        "model": "gpt-4o-mini-2024-07-18",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "3 + 5 = 8.",
+              "refusal": null,
+              "annotations": []
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 13,
+          "completion_tokens": 8,
+          "total_tokens": 21,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0
