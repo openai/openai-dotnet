@@ -18,14 +18,17 @@ public partial class ResponseExamples
     [Test]
     public async Task Example10_CodeInterpreterAsync()
     {
-        ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+
+        List<ResponseItem> inputItems =
+        [
+            ResponseItem.CreateUserMessageItem("Create an Excel spreadsheet that contains the mathematical times tables from 1-12 and make it available for download."),
+        ];
 
         CodeInterpreterToolContainer container = new(CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration());
         CodeInterpreterTool codeInterpreterTool = new(container);
-        CreateResponseOptions options = new("gpt-5",
-        [
-            ResponseItem.CreateUserMessageItem("Create an Excel spreadsheet that contains the mathematical times tables from 1-12 and make it available for download."),
-        ])
+
+        CreateResponseOptions options = new(inputItems)
         {
             Tools = { codeInterpreterTool }
         };

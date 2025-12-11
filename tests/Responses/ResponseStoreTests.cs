@@ -34,7 +34,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
             ResponseItem.CreateUserMessageItem("Item 4")
         };
 
-        ResponseResult response = await client.CreateResponseAsync(new("gpt-4o-mini", inputItems));
+        ResponseResult response = await client.CreateResponseAsync(inputItems);
 
         // Paginate through input items with a small page size
         var options = new ResponseItemCollectionOptions(response.Id)
@@ -75,7 +75,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
             ResponseItem.CreateUserMessageItem("Item 4")
         };
 
-        ResponseResult response = await client.CreateResponseAsync(new("gpt-4o-mini", inputItems));
+        ResponseResult response = await client.CreateResponseAsync(inputItems);
 
         // Paginate through input items with a small page size
         var options = new ResponseItemCollectionOptions(response.Id)
@@ -112,7 +112,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
             ResponseItem.CreateUserMessageItem("Item 4")
         };
 
-        ResponseResult response = await client.CreateResponseAsync(new("gpt-4o-mini", inputItems));
+        ResponseResult response = await client.CreateResponseAsync(inputItems);
 
         int totalCount = 0;
         string lastId = null;
@@ -149,7 +149,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
             ResponseItem.CreateUserMessageItem("Item 4")
         };
 
-        ResponseResult response = await client.CreateResponseAsync(new("gpt-4o-mini", inputItems));
+        ResponseResult response = await client.CreateResponseAsync(inputItems);
 
         // Paginate through input items with a small page size
         var options = new ResponseItemCollectionOptions(response.Id)
@@ -194,7 +194,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
             ResponseItem.CreateUserMessageItem("C")
         };
 
-        ResponseResult response = await client.CreateResponseAsync(new("gpt-4o-mini", inputItems));
+        ResponseResult response = await client.CreateResponseAsync(inputItems);
 
         string afterId = null;
         await foreach (ResponseItem first in client.GetResponseInputItemsAsync(new ResponseItemCollectionOptions(response.Id)))
@@ -234,7 +234,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
             ResponseItem.CreateUserMessageItem("Second")
         };
 
-        ResponseResult response = await client.CreateResponseAsync(new("gpt-4o-mini", inputItems));
+        ResponseResult response = await client.CreateResponseAsync(inputItems);
 
         // Ascending
         var ascOptions = new ResponseItemCollectionOptions(response.Id)
@@ -276,13 +276,12 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetTestClient();
 
-        ResponseResult response = await client.CreateResponseAsync(new(
-            "gpt-4o-mini",
+        ResponseResult response = await client.CreateResponseAsync(
             [
                 ResponseItem.CreateUserMessageItem("alpha"),
                 ResponseItem.CreateUserMessageItem("beta"),
                 ResponseItem.CreateUserMessageItem("gamma"),
-            ]));
+            ]);
 
         var options = new ResponseItemCollectionOptions(response.Id) { PageSizeLimit = 100 };
 
@@ -302,13 +301,12 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetTestClient();
 
-        ResponseResult response = await client.CreateResponseAsync(new(
-            "gpt-4o-mini",
+        ResponseResult response = await client.CreateResponseAsync(
             [
                 ResponseItem.CreateUserMessageItem("x"),
                 ResponseItem.CreateUserMessageItem("y"),
                 ResponseItem.CreateUserMessageItem("z"),
-            ]));
+            ]);
 
         var options = new ResponseItemCollectionOptions(response.Id) { PageSizeLimit = 1 };
 
@@ -328,13 +326,12 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetTestClient();
 
-        ResponseResult response = await client.CreateResponseAsync(new(
-            "gpt-4o-mini",
+        ResponseResult response = await client.CreateResponseAsync(
             [
                 ResponseItem.CreateUserMessageItem("ct1"),
                 ResponseItem.CreateUserMessageItem("ct2"),
                 ResponseItem.CreateUserMessageItem("ct3"),
-            ]));
+            ]);
 
         using var cts = new System.Threading.CancellationTokenSource();
 
@@ -365,13 +362,12 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetTestClient();
 
-        ResponseResult response = await client.CreateResponseAsync(new(
-            "gpt-4o-mini",
+        ResponseResult response = await client.CreateResponseAsync(
             [
                 ResponseItem.CreateUserMessageItem("co1"),
                 ResponseItem.CreateUserMessageItem("co2"),
                 ResponseItem.CreateUserMessageItem("co3"),
-            ]));
+            ]);
 
         using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(30));
 

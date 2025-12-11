@@ -19,8 +19,11 @@ public class ProtocolModelVisitor : ScmLibraryVisitor
     {
         "OpenAI.Responses.CreateResponseOptions",
         "OpenAI.Responses.ResponseDeletionResult",
+        "OpenAI.Responses.ResponseInputTokenUsageDetails",
         "OpenAI.Responses.ResponseItemCollectionPage",
+        "OpenAI.Responses.ResponseOutputTokenUsageDetails",
         "OpenAI.Responses.ResponseResult",
+        "OpenAI.Responses.ResponseTokenUsage",
 
         "OpenAI.Responses.StreamingResponseUpdate",
         "OpenAI.Responses.StreamingResponseCodeInterpreterCallCodeDeltaUpdate",

@@ -69,7 +69,7 @@ internal static class TestHelpers
         TestScenario.Moderations => "omni-moderation-latest",
         TestScenario.VectorStores => null,
         TestScenario.TopLevel => null,
-        TestScenario.Realtime => "gpt-4o-realtime-preview-2024-10-01",
+        TestScenario.Realtime => "gpt-realtime",
         TestScenario.Responses => "gpt-4o-mini",
         TestScenario.Containers => "gpt-4o-mini",
         TestScenario.Conversations => null,
@@ -127,7 +127,7 @@ internal static class TestHelpers
             TestScenario.Realtime => new RealtimeClient(credential, options),
 #pragma warning restore
 #pragma warning disable OPENAI003
-            TestScenario.Responses => new ResponsesClient(credential, options),
+            TestScenario.Responses => new ResponsesClient(model, credential, options),
 #pragma warning restore
             _ => throw new NotImplementedException(),
         };
