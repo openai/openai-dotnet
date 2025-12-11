@@ -22,8 +22,8 @@
     - The `OpenAIResponseClient` class has been renamed to `ResponsesClient`.
     - The `ResponseCreationOptions` class has been renamedto `CreateResponseOptions`.
     - The `OpenAIResponse` class has been renamed to `ResponseResult`.
-    - When calling the `CreateResponse`, `CreateResponseAsync`, `CreateResponseStreaming` and `CreateResponseStreamingAsync` methods of the `ResponsesClient` with a `CreateResponseOptions`   argument, the input items must now be specified via the new `InputItems` property of `CreateResponseOptions`.
-    - When calling the `CreateResponseStreaming` and `CreateResponseStreamingAsync` methods of the `ResponsesClient` with a `CreateResponseOptions` argument, the `StreamingEnabled` property   of `CreateResponseOptions` must be set to `true`.
+    - When calling the `CreateResponse`, `CreateResponseAsync`, `CreateResponseStreaming` and `CreateResponseStreamingAsync` methods of the `ResponsesClient` with a `CreateResponseOptions` argument, the input items must now be specified via the new `InputItems` property of `CreateResponseOptions`.
+    - When calling the `CreateResponseStreaming` and `CreateResponseStreamingAsync` methods of the `ResponsesClient` with a `CreateResponseOptions` argument, the `StreamingEnabled` property of `CreateResponseOptions` must be set to `true`.
     - The `OpenAIResponsesModelFactory` class used for mocking output models (e.g., `ResponseResult`, `ResponseTokenUsage`, etc.) has been removed in favor of adding setters to the   properties of these models.
 
 ## 2.7.0 (2025-11-13)
