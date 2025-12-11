@@ -5143,7 +5143,7 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class ResponseInputTokenUsageDetails : IJsonModel<ResponseInputTokenUsageDetails>, IPersistableModel<ResponseInputTokenUsageDetails> {
-        public int CachedTokenCount { get; }
+        public int CachedTokenCount { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
@@ -5247,7 +5247,7 @@ namespace OpenAI.Responses {
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
-        public int ReasoningTokenCount { get; }
+        public int ReasoningTokenCount { get; set; }
         protected virtual ResponseOutputTokenUsageDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ResponseOutputTokenUsageDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -5444,14 +5444,14 @@ namespace OpenAI.Responses {
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ResponseTokenUsage : IJsonModel<ResponseTokenUsage>, IPersistableModel<ResponseTokenUsage> {
-        public int InputTokenCount { get; }
-        public ResponseInputTokenUsageDetails InputTokenDetails { get; }
-        public int OutputTokenCount { get; }
-        public ResponseOutputTokenUsageDetails OutputTokenDetails { get; }
+        public int InputTokenCount { get; set; }
+        public ResponseInputTokenUsageDetails InputTokenDetails { get; set; }
+        public int OutputTokenCount { get; set; }
+        public ResponseOutputTokenUsageDetails OutputTokenDetails { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
-        public int TotalTokenCount { get; }
+        public int TotalTokenCount { get; set; }
         protected virtual ResponseTokenUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual ResponseTokenUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
