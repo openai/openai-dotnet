@@ -80,8 +80,8 @@ using OpenAI.Chat;
 ChatClient client = new(
     model: "MODEL_NAME",
     credential: new ApiKeyCredential(Environment.GetEnvironmentVariable("OPENAI_API_KEY")),
-    options: new OpenAIClientOptions() 
-    { 
+    options: new OpenAIClientOptions()
+    {
         Endpoint = new Uri("BASE_URL")
     }
 );
@@ -175,7 +175,7 @@ public class ChatController : ControllerBase
     public async Task<IActionResult> CompleteChat([FromBody] string message)
     {
         ChatCompletion completion = await _chatClient.CompleteChatAsync(message);
-        
+
         return Ok(new { response = completion.Content[0].Text });
     }
 }
@@ -271,7 +271,7 @@ private static readonly ChatTool getCurrentWeatherTool = ChatTool.CreateFunction
 Next, create a `ChatCompletionOptions` instance and add both to its `Tools` property. You will pass the `ChatCompletionOptions` as an argument in your calls to the `ChatClient`'s `CompleteChat` method.
 
 ```csharp
-List<ChatMessage> messages = 
+List<ChatMessage> messages =
 [
     new UserChatMessage("What's the weather like today?"),
 ];
@@ -995,14 +995,16 @@ var endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")
 
 var client = new OpenAIResponseClient(
     "gpt-5-mini",
-    new BearerTokenPolicy(new DefaultAzureCredential(), "https://cognitiveservices.azure.com/.default"),
+    new BearerTokenPolicy(new DefaultAzureCredential(), "https://ai.azure.com/.default"),
     new OpenAIClientOptions { Endpoint = new Uri($"{endpoint}/openai/v1/") }
 );
 
 var response = await client.CreateResponseAsync("Hello world!", new ResponseCreationOptions());
 Console.WriteLine(response.GetOutputText());
 ```
+
 ### Why this works
+
 - One OpenAI SDK: You use the official OpenAI SDK for .NET. Azure OpenAI is just a different endpoint you point the client library to.
 - Unified /openai/v1/ endpoint: Azure OpenAI uses the same path shape as OpenAI, so most client code can stay unchanged.
 - Enterprise-ready auth: Azure Identity SDK with Microsoft Entra ID lets you access Azure OpenAI without storing secrets.
