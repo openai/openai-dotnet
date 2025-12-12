@@ -71,11 +71,12 @@ public partial class ResponsesSmokeTests
     [Test]
     public void ToolChoiceSerialization()
     {
-        void AssertChoiceEqual(ResponseToolChoice choice, string expected)
+        static void AssertChoiceEqual(ResponseToolChoice choice, string expected)
         {
             string serialized = ModelReaderWriter.Write(choice).ToString();
             Assert.That(serialized, Is.EqualTo(expected));
         }
+
         AssertChoiceEqual(
             ResponseToolChoice.CreateAutoChoice(), @"""auto""");
         AssertChoiceEqual(
@@ -124,7 +125,6 @@ public partial class ResponsesSmokeTests
                 Assert.That(textPart.Text, Is.EqualTo("hello"));
             });
 
-
         AssertSerializationRoundTrip<ResponseContentPart>(
             @"{""type"":""potato"",""potato_details"":{""cultivar"":""russet""}}",
             potatoPart =>
@@ -143,16 +143,15 @@ public partial class ResponsesSmokeTests
     }
 
     [Test]
-    public void StableInputFileContentPartSerialization()
+    public void StableInputFileDataContentPartSerialization()
     {
-        string base64HelloWorld = Convert.ToBase64String(Encoding.UTF8.GetBytes("hello world"));
-
         static void AssertExpectedFilePart(ResponseContentPart filePart)
         {
             Assert.That(filePart.Kind, Is.EqualTo(ResponseContentPartKind.InputFile));
             Assert.That(filePart.InputFileBytesMediaType, Is.EqualTo("text/plain"));
             Assert.That(filePart.InputFilename, Is.EqualTo("test_content_part.txt"));
             Assert.That(Convert.FromBase64String(Convert.ToBase64String(filePart.InputFileBytes.ToArray())), Is.EqualTo("hello world"));
+            Assert.That(filePart.InputFileId, Is.Null);
         }
 
         ResponseContentPart filePart = ResponseContentPart.CreateInputFilePart(
@@ -168,6 +167,204 @@ public partial class ResponsesSmokeTests
         ResponseContentPart deserializedFilePart = ModelReaderWriter.Read<ResponseContentPart>(serializedFilePart);
 
         AssertExpectedFilePart(deserializedFilePart);
+    }
+
+    [Test]
+    public void StableInputFileReferenceContentPartSerialization()
+    {
+        static void AssertExpectedFilePart(ResponseContentPart filePart)
+        {
+            Assert.That(filePart.Kind, Is.EqualTo(ResponseContentPartKind.InputFile));
+            Assert.That(filePart.InputFileId, Is.EqualTo("asst_123abc"));
+            Assert.That(filePart.InputFileBytes, Is.Null);
+            Assert.That(filePart.InputFileBytesMediaType, Is.Null);
+            Assert.That(filePart.InputFilename, Is.Null);
+        }
+
+        ResponseContentPart filePart = ResponseContentPart.CreateInputFilePart("asst_123abc");
+
+        AssertExpectedFilePart(filePart);
+
+        BinaryData serializedFilePart = ModelReaderWriter.Write(filePart);
+        Assert.That(serializedFilePart, Is.Not.Null);
+
+        ResponseContentPart deserializedFilePart = ModelReaderWriter.Read<ResponseContentPart>(serializedFilePart);
+
+        AssertExpectedFilePart(deserializedFilePart);
+    }
+
+    [Test]
+    public void StableInputImageDataContentPartSerialization()
+    {
+        static void AssertExpectedImagePart(ResponseContentPart filePart)
+        {
+            Assert.That(filePart.Kind, Is.EqualTo(ResponseContentPartKind.InputImage));
+            Assert.That(filePart.InputImageDetailLevel, Is.EqualTo(ResponseImageDetailLevel.Low));
+            Assert.That(filePart.InputImageUrl, Is.EqualTo($"data:image/png;base64,{Convert.ToBase64String(Encoding.UTF8.GetBytes("image data"))}"));
+            Assert.That(filePart.InputImageFileId, Is.Null);
+        }
+
+        ResponseContentPart imagePart = ResponseContentPart.CreateInputImagePart(
+            BinaryData.FromBytes(Encoding.UTF8.GetBytes("image data")),
+            "image/png",
+            ResponseImageDetailLevel.Low);
+
+        AssertExpectedImagePart(imagePart);
+
+        BinaryData serializedFilePart = ModelReaderWriter.Write(imagePart);
+        Assert.That(serializedFilePart, Is.Not.Null);
+
+        ResponseContentPart deserializedFilePart = ModelReaderWriter.Read<ResponseContentPart>(serializedFilePart);
+
+        AssertExpectedImagePart(deserializedFilePart);
+    }
+
+    [Test]
+    public void StableInputImageFileContentPartSerialization()
+    {
+        static void AssertExpectedImagePart(ResponseContentPart filePart)
+        {
+            Assert.That(filePart.Kind, Is.EqualTo(ResponseContentPartKind.InputImage));
+            Assert.That(filePart.InputImageDetailLevel, Is.EqualTo(ResponseImageDetailLevel.Auto));
+            Assert.That(filePart.InputImageFileId, Is.EqualTo("image_123abc"));
+            Assert.That(filePart.InputImageUrl, Is.Null);
+        }
+
+        ResponseContentPart imagePart = ResponseContentPart.CreateInputImagePart(
+            "image_123abc",
+            ResponseImageDetailLevel.Auto);
+
+        AssertExpectedImagePart(imagePart);
+
+        BinaryData serializedFilePart = ModelReaderWriter.Write(imagePart);
+        Assert.That(serializedFilePart, Is.Not.Null);
+
+        ResponseContentPart deserializedFilePart = ModelReaderWriter.Read<ResponseContentPart>(serializedFilePart);
+
+        AssertExpectedImagePart(deserializedFilePart);
+    }
+
+    [Test]
+    public void StableInputImageUrlContentPartSerialization()
+    {
+        Uri imageReference = new("https://example.com/image.jpg");
+
+        static void AssertExpectedImagePart(ResponseContentPart filePart)
+        {
+            Assert.That(filePart.Kind, Is.EqualTo(ResponseContentPartKind.InputImage));
+            Assert.That(filePart.InputImageDetailLevel, Is.EqualTo(ResponseImageDetailLevel.High));
+            Assert.That(filePart.InputImageUrl, Is.EqualTo("https://example.com/image.jpg"));
+            Assert.That(filePart.InputImageFileId, Is.Null);
+        }
+
+        ResponseContentPart imagePart = ResponseContentPart.CreateInputImagePart(
+            imageReference,
+            ResponseImageDetailLevel.High);
+
+        AssertExpectedImagePart(imagePart);
+
+        BinaryData serializedFilePart = ModelReaderWriter.Write(imagePart);
+        Assert.That(serializedFilePart, Is.Not.Null);
+
+        ResponseContentPart deserializedFilePart = ModelReaderWriter.Read<ResponseContentPart>(serializedFilePart);
+
+        AssertExpectedImagePart(deserializedFilePart);
+    }
+
+    [Test]
+    public void StableInputTextContentPartSerialization()
+    {
+        static void AssertExpectedTextPart(ResponseContentPart filePart)
+        {
+            Assert.That(filePart.Kind, Is.EqualTo(ResponseContentPartKind.InputText));
+            Assert.That(filePart.Text, Is.EqualTo("input message"));
+        }
+
+        ResponseContentPart filePart = ResponseContentPart.CreateInputTextPart("input message");
+
+        AssertExpectedTextPart(filePart);
+
+        BinaryData serializedFilePart = ModelReaderWriter.Write(filePart);
+        Assert.That(serializedFilePart, Is.Not.Null);
+
+        ResponseContentPart deserializedFilePart = ModelReaderWriter.Read<ResponseContentPart>(serializedFilePart);
+
+        AssertExpectedTextPart(deserializedFilePart);
+    }
+
+    [Test]
+    public void StableOutputTextContentPartSerialization()
+    {
+        static void AssertExpectedTextPart(ResponseContentPart filePart)
+        {
+            Assert.That(filePart.Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
+            Assert.That(filePart.Text, Is.EqualTo("output message"));
+            Assert.That(filePart.OutputTextAnnotations.Count, Is.EqualTo(4));
+
+            ContainerFileCitationMessageAnnotation containerFileAnnotation = filePart.OutputTextAnnotations.OfType<ContainerFileCitationMessageAnnotation>().SingleOrDefault();
+            Assert.That(containerFileAnnotation, Is.Not.Null);
+            Assert.That(containerFileAnnotation.ContainerId, Is.EqualTo("container67"));
+            Assert.That(containerFileAnnotation.FileId, Is.EqualTo("file_123abc"));
+            Assert.That(containerFileAnnotation.Filename, Is.EqualTo("example.txt"));
+            Assert.That(containerFileAnnotation.StartIndex, Is.EqualTo(789));
+            Assert.That(containerFileAnnotation.EndIndex, Is.EqualTo(987));
+
+            FileCitationMessageAnnotation fileAnnotation = filePart.OutputTextAnnotations.OfType<FileCitationMessageAnnotation>().SingleOrDefault();
+            Assert.That(fileAnnotation, Is.Not.Null);
+            Assert.That(fileAnnotation.FileId, Is.EqualTo("file_123abc"));
+            Assert.That(fileAnnotation.Filename, Is.EqualTo("example.txt"));
+            Assert.That(fileAnnotation.Index, Is.EqualTo(789));
+
+            FilePathMessageAnnotation filePathAnnotation = filePart.OutputTextAnnotations.OfType<FilePathMessageAnnotation>().SingleOrDefault();
+            Assert.That(filePathAnnotation, Is.Not.Null);
+            Assert.That(filePathAnnotation.FileId, Is.EqualTo("file_123abc"));
+            Assert.That(filePathAnnotation.Index, Is.EqualTo(789));
+
+            UriCitationMessageAnnotation uriAnnotation = filePart.OutputTextAnnotations.OfType<UriCitationMessageAnnotation>().SingleOrDefault();
+            Assert.That(uriAnnotation, Is.Not.Null);
+            Assert.That(uriAnnotation.Uri.AbsoluteUri, Is.EqualTo("https://example.com/document.md"));
+            Assert.That(uriAnnotation.StartIndex, Is.EqualTo(789));
+            Assert.That(uriAnnotation.EndIndex, Is.EqualTo(987));
+        }
+
+        ResponseContentPart textPart = ResponseContentPart.CreateOutputTextPart(
+            "output message",
+            [
+                new ContainerFileCitationMessageAnnotation("container67", "file_123abc", 789, 987, "example.txt"),
+                new FileCitationMessageAnnotation("file_123abc", 789, "example.txt"),
+                new FilePathMessageAnnotation("file_123abc", 789),
+                new UriCitationMessageAnnotation(new Uri("https://example.com/document.md"), 789, 987, "Example Title"),
+            ]);
+
+        AssertExpectedTextPart(textPart);
+
+        BinaryData serializedFilePart = ModelReaderWriter.Write(textPart);
+        Assert.That(serializedFilePart, Is.Not.Null);
+
+        ResponseContentPart deserializedFilePart = ModelReaderWriter.Read<ResponseContentPart>(serializedFilePart);
+
+        AssertExpectedTextPart(deserializedFilePart);
+    }
+
+    [Test]
+    public void StableRefusalContentPartSerialization()
+    {
+        static void AssertExpectedRefusalPart(ResponseContentPart filePart)
+        {
+            Assert.That(filePart.Kind, Is.EqualTo(ResponseContentPartKind.Refusal));
+            Assert.That(filePart.Refusal, Is.EqualTo("no bueno"));
+        }
+
+        ResponseContentPart refusalPart = ResponseContentPart.CreateRefusalPart("no bueno");
+
+        AssertExpectedRefusalPart(refusalPart);
+
+        BinaryData serializedFilePart = ModelReaderWriter.Write(refusalPart);
+        Assert.That(serializedFilePart, Is.Not.Null);
+
+        ResponseContentPart deserializedFilePart = ModelReaderWriter.Read<ResponseContentPart>(serializedFilePart);
+
+        AssertExpectedRefusalPart(deserializedFilePart);
     }
 
     private static void AssertSerializationRoundTrip<T>(
@@ -387,7 +584,7 @@ public partial class ResponsesSmokeTests
     public void CanSerializeCodeInterpreterCallLogsOutput()
     {
         var customLogs = "Custom logs!";
-        CodeInterpreterCallLogsOutput logOutput = new CodeInterpreterCallLogsOutput(customLogs);
+        CodeInterpreterCallLogsOutput logOutput = new(customLogs);
         logOutput.Patch.Set("$.custom_property"u8, "custom_property");
 
         BinaryData serialized = ModelReaderWriter.Write(logOutput);
