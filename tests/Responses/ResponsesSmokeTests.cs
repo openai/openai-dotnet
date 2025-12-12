@@ -247,8 +247,6 @@ public partial class ResponsesSmokeTests
     [Test]
     public void StableInputImageUrlContentPartSerialization()
     {
-        Uri imageReference = new("https://example.com/image.jpg");
-
         static void AssertExpectedImagePart(ResponseContentPart filePart)
         {
             Assert.That(filePart.Kind, Is.EqualTo(ResponseContentPartKind.InputImage));
@@ -258,7 +256,7 @@ public partial class ResponsesSmokeTests
         }
 
         ResponseContentPart imagePart = ResponseContentPart.CreateInputImagePart(
-            imageReference,
+            new Uri("https://example.com/image.jpg"),
             ResponseImageDetailLevel.High);
 
         AssertExpectedImagePart(imagePart);
