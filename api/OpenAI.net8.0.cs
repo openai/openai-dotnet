@@ -5701,6 +5701,7 @@ namespace OpenAI.Responses {
         public string InputFilename { get; }
         public ResponseImageDetailLevel? InputImageDetailLevel { get; }
         public string InputImageFileId { get; }
+        public string InputImageUrl { get; }
         public ResponseContentPartKind Kind { get; }
         public IReadOnlyList<ResponseMessageAnnotation> OutputTextAnnotations { get; }
         [Serialization.JsonIgnore]
