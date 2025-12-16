@@ -18,22 +18,22 @@ jobs:
       version_suffix_args: ${{ format('/p:VersionSuffix="alpha.{0}"', github.run_number) }}
     steps:
       - name: Setup .NET 10
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '10.x'
 
       - name: Setup .NET 9
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '9.x'
 
       - name: Setup .NET 8
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '8.x'
 
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
 
       - name: Build and pack
         run: dotnet pack
@@ -50,7 +50,7 @@ jobs:
           ${{ env.version_suffix_args}}
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: ${{ !cancelled() }}
         with:
           name: build-artifacts
