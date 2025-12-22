@@ -2090,6 +2090,7 @@ namespace OpenAI.Chat {
         public static ChatReasoningEffortLevel Low { get; }
         public static ChatReasoningEffortLevel Medium { get; }
         public static ChatReasoningEffortLevel Minimal { get; }
+        public static ChatReasoningEffortLevel None { get; }
         public readonly bool Equals(ChatReasoningEffortLevel other);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly bool Equals(object obj);
@@ -5984,6 +5985,7 @@ namespace OpenAI.Responses {
         public static ResponseReasoningEffortLevel Low { get; }
         public static ResponseReasoningEffortLevel Medium { get; }
         public static ResponseReasoningEffortLevel Minimal { get; }
+        public static ResponseReasoningEffortLevel None { get; }
         public readonly bool Equals(ResponseReasoningEffortLevel other);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly bool Equals(object obj);
