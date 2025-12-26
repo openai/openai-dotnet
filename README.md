@@ -87,7 +87,7 @@ ChatClient client = new(
 );
 ```
 
-Replace `CHAT_MODEL` with your model name and `BASE_URL` with your endpoint URI. This is useful when working with OpenAI-compatible APIs or custom deployments.
+Replace `MODEL_NAME` with your model name and `BASE_URL` with your endpoint URI. This is useful when working with OpenAI-compatible APIs or custom deployments.
 
 ### Namespace organization
 
