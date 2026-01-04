@@ -1,8 +1,7 @@
 ﻿using OpenAI.Chat;
-using OpenAI.Shared;
 using System;
 
-namespace OpenAI.Telemetry;
+namespace OpenAI.Shared.Telemetry;
 
 internal class OpenTelemetrySource
 {
