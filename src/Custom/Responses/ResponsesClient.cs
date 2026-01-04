@@ -59,7 +59,7 @@ public partial class ResponsesClient
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="credential"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    public ResponsesClient(string model, ApiKeyCredential credential, OpenAIClientOptions options) : this(model, OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
+    public ResponsesClient(string model, ApiKeyCredential credential, OpenAIClientOptions options) : this(model, OpenAIClientHelpers.CreateApiKeyAuthenticationPolicy(credential), options)
     {
     }
 
@@ -87,8 +87,8 @@ public partial class ResponsesClient
         options ??= new OpenAIClientOptions();
 
         _model = model;
-        Pipeline = OpenAIClient.CreatePipeline(authenticationPolicy, options);
-        _endpoint = OpenAIClient.GetEndpoint(options);
+        Pipeline = OpenAIClientHelpers.CreatePipeline(authenticationPolicy, options);
+        _endpoint = OpenAIClientHelpers.GetEndpoint(options);
     }
 
     // CUSTOM:
@@ -110,7 +110,7 @@ public partial class ResponsesClient
 
         _model = model;
         Pipeline = pipeline;
-        _endpoint = OpenAIClient.GetEndpoint(options);
+        _endpoint = OpenAIClientHelpers.GetEndpoint(options);
     }
 
     /// <summary>
