@@ -1,0 +1,67 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>OpenAI Responses client library for .NET</Description>
+    <AssemblyTitle>OpenAI Responses Library</AssemblyTitle>
+    <PackageTags>OpenAI;openai-dotnet;Responses</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Copyright>Copyright (c) 2025 OpenAI (https://openai.com)</Copyright>
+
+    <VersionPrefix>2.8.0</VersionPrefix>
+    <VersionSuffix></VersionSuffix>
+
+    <TargetFrameworks>net10.0;net8.0;netstandard2.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <PackageIcon>OpenAI.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    
+    <!-- Disable missing XML documentation warnings -->
+    <NoWarn>$(NoWarn),1570,1573,1574,1591</NoWarn>
+    <!-- Disable obsolete warnings -->
+    <NoWarn>$(NoWarn),0618</NoWarn>
+    <!-- Disable unused fields warnings -->
+    <NoWarn>$(NoWarn),0169</NoWarn>
+    <!-- Disable warnings for experimental APIs -->
+    <NoWarn>$(NoWarn),OPENAI001;OPENAI002;OPENAICUA001</NoWarn>
+
+    <Configurations>Debug;Release;Unsigned</Configurations>
+
+    <IsTrimmable Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">true</IsTrimmable>
+    <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">true</IsAotCompatible>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' != 'Unsigned'">
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\OpenAI.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\OpenAI.png" Pack="true" PackagePath="\" />
+    <None Include="..\..\CHANGELOG.md" Pack="true" PackagePath="\" />
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\OpenAI.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.ClientModel" Version="1.8.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Generated\ResponsesClient.cs" Link="Generated\ResponsesClient.cs" />
+    <Compile Include="..\Generated\ResponsesClient.RestClient.cs" Link="Generated\ResponsesClient.RestClient.cs" />
+    <Compile Include="..\Generated\CollectionResults\ResponsesClient*.cs" LinkBase="Generated\CollectionResults" />
+    <Compile Include="..\Custom\Responses\ResponsesClient.cs" Link="Custom\Responses\ResponsesClient.cs" />
+  </ItemGroup>
+
+</Project>

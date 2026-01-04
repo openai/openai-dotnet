@@ -74,13 +74,34 @@
 
   <ItemGroup>
     <Compile Remove="Shared\**" />
-    <Compile Remove="Generated\Internal\**" />
-    <Compile Include="Generated\Internal\ClientPipelineExtensions.cs" />
-    <Compile Remove="Custom\Internal\**" />
-    <Compile Include="Custom\Internal\ClientPipelineExtensions.cs" />
-    <Compile Include="Custom\Internal\InternalFunctionDefinition.cs" />
     <EmbeddedResource Remove="Shared\**" />
     <None Remove="Shared\**" />
+
+    <Compile Remove="Responses\**" />
+    <EmbeddedResource Remove="Responses\**" />
+    <None Remove="Responses\**" />
+
+    <!-- Remove files included in OpenAI.Shared -->
+    <Compile Remove="Generated\Internal\**" />
+    <Compile Remove="Generated\Models\**" />
+    <Compile Remove="Generated\OpenAIClientOptions.cs" />
+    <Compile Remove="Generated\OpenAIModelFactory.cs" />
+    <Compile Remove="Utility\**" />
+
+    <!-- Remove Custom files generally, then include back the ones NOT in Shared -->
+    <Compile Remove="Custom\**" />
+
+    <!-- Include Client/Operation files (these are excluded from Shared) -->
+    <Compile Include="Custom\**\*Client.cs" />
+    <Compile Include="Custom\**\*Client.RestClient.cs" />
+    <Compile Include="Custom\**\*Client.Protocol.cs" />
+    <Compile Include="Custom\**\RealtimeSession.cs" />
+    <Compile Include="Custom\**\*Session.Protocol.cs" />
+    <Compile Include="Custom\**\*Operation.cs" />
+    <Compile Include="Custom\**\*Operation.Protocol.cs" />
+    <Compile Include="Custom\**\FineTuningJob.cs" />
+    <Compile Include="Custom\**\*Job.Protocol.cs" />
+    <Compile Include="Custom\**\*CollectionResult.cs" />
   </ItemGroup>
 
   <ItemGroup>
