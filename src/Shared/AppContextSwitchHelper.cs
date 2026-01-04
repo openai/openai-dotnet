@@ -1,6 +1,6 @@
 using System;
 
-namespace OpenAI;
+namespace OpenAI.Shared;
 
 internal static class AppContextSwitchHelper
 {
