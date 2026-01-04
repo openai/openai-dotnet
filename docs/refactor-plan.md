@@ -98,9 +98,9 @@ Goal: Split the monolithic OpenAI client library into discrete client-focused pa
 - [x] Decide codegen approach for Shared types (Option C: reference in place); prototype on a branch.
  - [x] Identify and move shared primitives: HTTP pipeline abstractions, auth/config, retry/backoff, serialization settings, diagnostics/logging, base models/errors, JSON helpers; adjust namespaces to OpenAI.Shared.*. (Status: moved DataEncodingHelpers, GenericActionPipelinePolicy, SemaphoreSlimExtensions, AppContextSwitchHelper, Async/SseUpdateCollection, Telemetry helpers, CodeGenVisibility attribute, Argument/ModelSerializationExtensions/TypeFormatters/SerializationFormat, Polyfill types into OpenAI.Shared. Decision: keep CustomSerializationHelpers/OpenAIContext compiled with the meta-package to avoid Shared depending on per-client model surfaces.)
 - [x] Update referencing code to consume OpenAI.Shared; remove duplicated utilities; add InternalsVisibleTo only if unavoidable. (OpenAI.csproj now uses a ProjectReference to Shared, excludes duplicate linked files, and builds green.)
-- [ ] Add minimal tests for Shared (unit coverage for serialization/pipeline helpers) and ensure existing tests that depended on Shared types still pass. (Added tests/Shared/ArgumentTests.cs; fixed UserAgent string regression in OpenAIClient.)
-- [ ] CI/build: verify pack produces OpenAI.Shared.nupkg (including symbols) and signing works; add to Test-ApiCompatibility.ps1/Test-AotCompatibility.ps1 matrices.
-- [ ] Docs: add short note in README or docs/overview describing Shared purpose and dependency rule (clients depend on Shared only).
+- [x] Add minimal tests for Shared (unit coverage for serialization/pipeline helpers) and ensure existing tests that depended on Shared types still pass. (Added tests/Shared/DataEncodingHelpersTests.cs; fixed UserAgent string regression in OpenAIClient.)
+- [x] CI/build: verify pack produces OpenAI.Shared.nupkg (including symbols) and signing works; add to Test-ApiCompatibility.ps1/Test-AotCompatibility.ps1 matrices.
+- [x] Docs: add short note in README or docs/overview describing Shared purpose and dependency rule (clients depend on Shared only).
 
 ### Phase 2: Introduce OpenAI.Responses client package
 - [ ] Create src/Responses/OpenAI.Responses.csproj with package metadata and dependency on OpenAI.Shared.

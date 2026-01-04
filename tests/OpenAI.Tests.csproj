@@ -4,8 +4,14 @@
     <IsTestProject>true</IsTestProject>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)' != 'Unsigned'">
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\src\OpenAI.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\src\OpenAI.csproj" />
+    <ProjectReference Include="..\src\Shared\OpenAI.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,8 +36,6 @@
 
   <ItemGroup>
     <Compile Include="..\src\Utility\Telemetry\*.cs" LinkBase="Telemetry\Shared" />
-    <Compile Include="..\src\Shared\Telemetry\*.cs" LinkBase="Telemetry\Shared" />
-    <Compile Include="..\src\Shared\AppContextSwitchHelper.cs" LinkBase="Telemetry\Shared" />
   </ItemGroup>
 
   <ItemGroup>
