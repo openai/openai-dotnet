@@ -58,10 +58,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\Generated\ResponsesClient.cs" Link="Generated\ResponsesClient.cs" />
-    <Compile Include="..\Generated\ResponsesClient.RestClient.cs" Link="Generated\ResponsesClient.RestClient.cs" />
-    <Compile Include="..\Generated\CollectionResults\ResponsesClient*.cs" LinkBase="Generated\CollectionResults" />
-    <Compile Include="..\Custom\Responses\ResponsesClient.cs" Link="Custom\Responses\ResponsesClient.cs" />
   </ItemGroup>
 
 </Project>

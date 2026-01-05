@@ -105,12 +105,12 @@ Goal: Split the monolithic OpenAI client library into discrete client-focused pa
 ### Phase 2: Introduce OpenAI.Responses client package
 - [x] Create src/Responses/OpenAI.Responses.csproj with package metadata and dependency on OpenAI.Shared.
 - [x] Adjust codegen for Responses: ensure files are generated with correct namespaces (OpenAI.Responses).
-- [x] Update `src/Responses/OpenAI.Responses.csproj` to include generated and handwritten files from `src/Generated` and `src/Custom` via `<Compile Include="..." />`.
+- [] Configure `src/Responses/OpenAI.Responses.csproj` to include all types in the `OpenAI.Responses` namespace (both generated and handwritten) from `src/Generated` and `src/Custom`.
 - [x] Update Directory.Build.props/targets inclusions if they assume monolithic paths; ensure analyzers/nullability still apply.
 - [ ] Update tests: create tests/Responses project or relocate relevant tests; update assets/recordings paths if needed; wire into CI test matrix.
 - [ ] Build/pack: verify OpenAI.Responses packs correctly with dependency on OpenAI.Shared; validate nuspec contents and symbols.
 - [x] Integration: ensure monolithic OpenAI.csproj references OpenAI.Responses (and Shared) so existing consumers remain unbroken during transition.
-  - [x] **Crucial**: Update `OpenAI.csproj` to `<Compile Remove="..." />` the files now owned by `OpenAI.Responses` to prevent duplicate type definitions.
+  - [x] **Crucial**: Configure `OpenAI.csproj` to exclude all types in the `OpenAI.Responses` namespace (via `<Compile Remove="..." />`) to prevent duplicate type definitions.
 - [ ] Docs/samples: update relevant snippets and examples to show OpenAI.Responses usage; add migration note for Responses users.
 
 ### Checkpoints and decision gates
