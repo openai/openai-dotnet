@@ -52,8 +52,12 @@
   <ItemGroup>
     <Compile Include="..\Generated\Internal\**\*.cs" Link="Internal\%(RecursiveDir)%(Filename)%(Extension)" />
     <Compile Include="..\Generated\Models\**\*.cs" Link="Models\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Remove="..\Generated\Models\OpenAIContext.cs" />
+    <Compile Remove="..\Generated\Models\FineTuning\InternalFineTuneReinforcementMethod.cs" />
+    <Compile Remove="..\Generated\Models\FineTuning\InternalFineTuneReinforcementMethod.Serialization.cs" />
+    <Compile Remove="..\Generated\Models\FineTuning\FineTuningTrainingMethod.cs" />
+    <Compile Remove="..\Generated\Models\FineTuning\FineTuningTrainingMethod.Serialization.cs" />
     <Compile Include="..\Generated\OpenAIClientOptions.cs" Link="OpenAIClientOptions.cs" />
-    <Compile Include="..\Generated\OpenAIModelFactory.cs" Link="OpenAIModelFactory.cs" />
 
     <Compile Include="..\Custom\**\*.cs" Link="Custom\%(RecursiveDir)%(Filename)%(Extension)" />
     <Compile Remove="..\Custom\**\*Client.cs" />
@@ -66,6 +70,8 @@
     <Compile Remove="..\Custom\**\FineTuningJob.cs" />
     <Compile Remove="..\Custom\**\*Job.Protocol.cs" />
     <Compile Remove="..\Custom\**\*CollectionResult.cs" />
+
+    <Compile Remove="..\Custom\Replacements\InternalFineTuneReinforcementMethod.Serialization.cs" />
 
     <Compile Include="..\Utility\**\*.cs" Link="Utility\%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>

@@ -21,6 +21,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Responses\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.ClientModel.TestFramework" Version="1.0.0-alpha.20250919.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageReference Include="Moq" Version="[4.18.2]" />
@@ -35,7 +39,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\src\Utility\Telemetry\*.cs" LinkBase="Telemetry\Shared" />
   </ItemGroup>
 
 	<ItemGroup>
