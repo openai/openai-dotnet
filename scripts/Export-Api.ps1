@@ -293,6 +293,7 @@ function Invoke-GenAPI {
     $content = $content -creplace ".*private.*dummy.*`n", ""
     $content = $content -creplace " { throw null; }", ";"
     $content = $content -creplace " { }", ";"
+    $content = $content -creplace "new\[\];", "new Type[0]"
     $content = $content -creplace "Diagnostics.CodeAnalysis.Experimental", "Experimental"
     $content = $content -creplace "Diagnostics.CodeAnalysis.SetsRequiredMembers", "SetsRequiredMembers"
 
@@ -300,16 +301,34 @@ function Invoke-GenAPI {
 }
 
 $repoRootPath = Join-Path $PSScriptRoot .. -Resolve
-$projectPath = Join-Path $repoRootPath "src\OpenAI.csproj"
+$solutionPath = Join-Path $repoRootPath "OpenAI.sln"
 
-Invoke-DotNetBuild -ProjectPath $projectPath
+Invoke-DotNetBuild -ProjectPath $solutionPath
 
-$targetFramework = "netstandard2.0"
-$assemblyPath = Join-Path $repoRootPath "src\bin\Debug\$($targetFramework)\OpenAI.dll"
-$destination = Join-Path $repoRootPath "api\OpenAI.$($targetFramework).cs"
-Invoke-GenAPI -TargetFramework $targetFramework -AssemblyPath $assemblyPath -Destination $destination
+$projects = @(
+    @{
+        Name = "OpenAI"
+        AssemblyPath = "src\bin\Debug"
+    },
+    @{
+        Name = "OpenAI.Responses"
+        AssemblyPath = "src\Responses\bin\Debug"
+    },
+    @{
+        Name = "OpenAI.Shared"
+        AssemblyPath = "src\Shared\bin\Debug"
+    }
+)
 
-$targetFramework = "net8.0"
-$assemblyPath = Join-Path $repoRootPath "src\bin\Debug\$($targetFramework)\OpenAI.dll"
-$destination = Join-Path $repoRootPath "api\OpenAI.$($targetFramework).cs"
-Invoke-GenAPI -TargetFramework $targetFramework -AssemblyPath $assemblyPath -Destination $destination
+foreach ($project in $projects) {
+    foreach ($targetFramework in @("netstandard2.0", "net8.0")) {
+        $assemblyPath = Join-Path $repoRootPath "$($project.AssemblyPath)\$($targetFramework)\$($project.Name).dll"
+        $destination = Join-Path $repoRootPath "api\$($project.Name).$($targetFramework).cs"
+        
+        if (Test-Path $assemblyPath) {
+            Invoke-GenAPI -TargetFramework $targetFramework -AssemblyPath $assemblyPath -Destination $destination
+        } else {
+            Write-Warning "Assembly not found: $assemblyPath"
+        }
+    }
+}

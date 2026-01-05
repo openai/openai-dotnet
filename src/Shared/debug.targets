@@ -1,0 +1,5 @@
+<Project>
+  <Target Name="ListSourceFiles">
+    <Message Text="Compile: @(Compile)" Importance="High" />
+  </Target>
+</Project>
