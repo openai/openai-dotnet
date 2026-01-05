@@ -153,17 +153,38 @@ Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
     $content = $content -creplace "partial class", "class"
     $content = $content -creplace " { throw null; }", ";"
     $content = $content -creplace " { }", ";"
+    $content = $content -creplace "new\[\];", "new Type[0]"
+    $content = $content -creplace "Diagnostics.CodeAnalysis.Experimental", "Experimental"
+    $content = $content -creplace "Diagnostics.CodeAnalysis.SetsRequiredMembers", "SetsRequiredMembers"
 
     Set-Content -Path $_.FullName -Value $content -NoNewline
 }
 
-Write-Host ""
-Write-Host "API generation completed successfully." -ForegroundColor Green
-Write-Host ""
+$repoRootPath = Join-Path $PSScriptRoot .. -Resolve
+$solutionPath = Join-Path $repoRootPath "OpenAI.sln"
 
-# List generated files
-Write-Host "Generated files:" -ForegroundColor Cyan
-Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
-    Write-Host "  - $($_.Name)"
+Invoke-DotNetBuild -ProjectPath $solutionPath
+
+$projects = @(
+    @{
+        Name = "OpenAI"
+        AssemblyPath = "src\bin\Debug"
+    },
+    @{
+        Name = "OpenAI.Responses"
+        AssemblyPath = "src\Responses\bin\Debug"
+    }
+)
+
+foreach ($project in $projects) {
+    foreach ($targetFramework in @("netstandard2.0", "net8.0")) {
+        $assemblyPath = Join-Path $repoRootPath "$($project.AssemblyPath)\$($targetFramework)\$($project.Name).dll"
+        $destination = Join-Path $repoRootPath "api\$($project.Name).$($targetFramework).cs"
+        
+        if (Test-Path $assemblyPath) {
+            Invoke-GenAPI -TargetFramework $targetFramework -AssemblyPath $assemblyPath -Destination $destination
+        } else {
+            Write-Warning "Assembly not found: $assemblyPath"
+        }
+    }
 }
-Write-Host ""

@@ -6,6 +6,7 @@ using OpenAI.Chat;
 using OpenAI.Containers;
 using OpenAI.Conversations;
 using OpenAI.Embeddings;
+using OpenAI.Evals;
 using OpenAI.Files;
 using OpenAI.FineTuning;
 using OpenAI.Graders;
@@ -13,6 +14,7 @@ using OpenAI.Images;
 using OpenAI.Models;
 using OpenAI.Moderations;
 using OpenAI.Realtime;
+using OpenAI.Responses;
 using OpenAI.VectorStores;
 using OpenAI.Videos;
 using System;
@@ -241,6 +243,13 @@ public partial class OpenAIClient
     /// <returns> A new <see cref="EmbeddingClient"/>. </returns>
     public virtual EmbeddingClient GetEmbeddingClient(string model) => new(Pipeline, model, _options);
 
+    /// <summary>
+    /// Gets a new instance of <see cref="EvaluationClient"/> that reuses the client configuration details provided to
+    /// the <see cref="OpenAIClient"/> instance.
+    /// </summary>
+    /// <returns></returns>
+    [Experimental("OPENAI001")]
+    public virtual EvaluationClient GetEvaluationClient() => new(Pipeline, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="OpenAIFileClient"/> that reuses the client configuration details provided to
@@ -323,6 +332,17 @@ public partial class OpenAIClient
     [Experimental("OPENAI002")]
     public virtual RealtimeClient GetRealtimeClient() => new(_keyCredential, _options);
 
+    /// <summary>
+    /// Gets a new instance of <see cref="ResponsesClient"/> that reuses the client configuration details provided to
+    /// the <see cref="OpenAIClient"/> instance.
+    /// </summary>
+    /// <remarks>
+    /// This method is functionally equivalent to using the <see cref="ResponsesClient"/> constructor directly with
+    /// the same configuration details.
+    /// </remarks>
+    /// <returns> A new <see cref="ResponsesClient"/>. </returns>
+    [Experimental("OPENAI001")]
+    public virtual ResponsesClient GetResponsesClient(string model) => new(Pipeline, model, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="VectorStoreClient"/> that reuses the client configuration details provided to

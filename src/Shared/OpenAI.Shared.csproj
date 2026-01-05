@@ -51,8 +51,6 @@
 
   <ItemGroup>
     <Compile Include="..\Generated\Internal\**\*.cs" Link="Internal\%(RecursiveDir)%(Filename)%(Extension)" />
-    <Compile Include="..\Generated\Models\**\*.cs" Link="Models\%(RecursiveDir)%(Filename)%(Extension)" />
-    <Compile Remove="..\Generated\Models\OpenAIContext.cs" />
     <Compile Remove="..\Generated\Models\FineTuning\InternalFineTuneReinforcementMethod.cs" />
     <Compile Remove="..\Generated\Models\FineTuning\InternalFineTuneReinforcementMethod.Serialization.cs" />
     <Compile Remove="..\Generated\Models\FineTuning\FineTuningTrainingMethod.cs" />
@@ -60,20 +58,44 @@
     <Compile Include="..\Generated\OpenAIClientOptions.cs" Link="OpenAIClientOptions.cs" />
 
     <Compile Include="..\Custom\**\*.cs" Link="Custom\%(RecursiveDir)%(Filename)%(Extension)" />
-    <Compile Remove="..\Custom\**\*Client.cs" />
-    <Compile Remove="..\Custom\**\*Client.RestClient.cs" />
-    <Compile Remove="..\Custom\**\*Client.Protocol.cs" />
-    <Compile Remove="..\Custom\**\RealtimeSession.cs" />
-    <Compile Remove="..\Custom\**\*Session.Protocol.cs" />
-    <Compile Remove="..\Custom\**\*Operation.cs" />
-    <Compile Remove="..\Custom\**\*Operation.Protocol.cs" />
-    <Compile Remove="..\Custom\**\FineTuningJob.cs" />
-    <Compile Remove="..\Custom\**\*Job.Protocol.cs" />
-    <Compile Remove="..\Custom\**\*CollectionResult.cs" />
+    <Compile Remove="..\Custom\Administration\**" />
+    <Compile Remove="..\Custom\Assistants\**" />
+    <Compile Remove="..\Custom\Audio\**" />
+    <Compile Remove="..\Custom\Batch\**" />
+    <Compile Remove="..\Custom\Chat\**" />
+    <Compile Remove="..\Custom\Containers\**" />
+    <Compile Remove="..\Custom\Conversations\**" />
+    <Compile Remove="..\Custom\Embeddings\**" />
+    <Compile Remove="..\Custom\Evals\**" />
+    <Compile Remove="..\Custom\Files\**" />
+    <Compile Remove="..\Custom\FineTuning\**" />
+    <Compile Remove="..\Custom\Graders\**" />
+    <Compile Remove="..\Custom\Images\**" />
+    <Compile Remove="..\Custom\LegacyCompletions\**" />
+    <Compile Remove="..\Custom\Models\**" />
+    <Compile Remove="..\Custom\Moderations\**" />
+    <Compile Remove="..\Custom\Realtime\**" />
+    <Compile Remove="..\Custom\Responses\**" />
+    <Compile Remove="..\Custom\VectorStores\**" />
+    <Compile Remove="..\Custom\Videos\**" />
+    <Compile Remove="..\Custom\Replacements\**" />
+    <Compile Remove="..\Custom\OpenAIClient.cs" />
+    <Compile Remove="..\Custom\OpenAIModelFactory.cs" />
+    <Compile Remove="..\Custom\OpenAIContext.cs" />
+    <Compile Remove="..\Custom\OpenAIError.cs" />
+    <Compile Remove="..\Custom\Internal\ClientPipelineExtensions.cs" />
+    <Compile Remove="..\Custom\Internal\InternalFunctionDefinition.cs" />
+    <Compile Remove="..\Generated\Internal\ClientPipelineExtensions.cs" />
+    <Compile Remove="..\Generated\Models\**" />
 
+    <Compile Remove="..\Custom\Common\Internal\GeneratorStubs.cs" />
+    <Compile Remove="..\Custom\Common\FileSearchRanker.cs" />
+    <Compile Remove="..\Custom\Common\Internal\InternalResponseFormatJsonSchemaJsonSchema.cs" />
     <Compile Remove="..\Custom\Replacements\InternalFineTuneReinforcementMethod.Serialization.cs" />
 
     <Compile Include="..\Utility\**\*.cs" Link="Utility\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Remove="..\Utility\Telemetry\**" />
+    <Compile Remove="..\Utility\CustomSerializationHelpers.cs" />
   </ItemGroup>
 
   <ItemGroup>

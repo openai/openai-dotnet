@@ -50,12 +50,6 @@ namespace OpenAI {
         [Experimental("OPENAI001")]
         public virtual VideoClient GetVideoClient();
     }
-    public class OpenAIClientOptions : ClientPipelineOptions {
-        public Uri Endpoint { get; set; }
-        public string OrganizationId { get; set; }
-        public string ProjectId { get; set; }
-        public string UserAgentApplicationId { get; set; }
-    }
     [Experimental("OPENAI001")]
     public class OpenAIContext : ModelReaderWriterContext {
         public static OpenAIContext Default { get; }
@@ -263,7 +257,7 @@ namespace OpenAI.Assistants {
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
-    public class AssistantResponseFormat : IEquatable<AssistantResponseFormat>, IEquatable<string>, IJsonModel<AssistantResponseFormat>, IPersistableModel<AssistantResponseFormat> {
+    public class AssistantResponseFormat : IJsonModel<AssistantResponseFormat>, IPersistableModel<AssistantResponseFormat>, IEquatable<AssistantResponseFormat>, IEquatable<string> {
         public static AssistantResponseFormat Auto { get; }
         public static AssistantResponseFormat JsonObject { get; }
         public static AssistantResponseFormat Text { get; }
@@ -3181,7 +3175,7 @@ namespace OpenAI.FineTuning {
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI001")]
-    public readonly partial struct FineTuningStatus : IEquatable<string>, IEquatable<FineTuningStatus> {
+    public readonly partial struct FineTuningStatus : IEquatable<FineTuningStatus>, IEquatable<string> {
         public FineTuningStatus(string value);
         public static FineTuningStatus Cancelled { get; }
         public static FineTuningStatus Failed { get; }

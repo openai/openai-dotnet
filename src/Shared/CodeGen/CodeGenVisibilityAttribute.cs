@@ -4,7 +4,7 @@ using System;
 namespace OpenAI;
 
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct, AllowMultiple = true)]
-public partial class CodeGenVisibilityAttribute : Attribute
+internal partial class CodeGenVisibilityAttribute : Attribute
 {
     public string MemberName { get; }
     public CodeGenVisibility Visibility { get; }
@@ -18,7 +18,7 @@ public partial class CodeGenVisibilityAttribute : Attribute
     }
 }
 
-public enum CodeGenVisibility
+internal enum CodeGenVisibility
 {
     Internal,
     Public,

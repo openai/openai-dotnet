@@ -58,6 +58,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="..\Generated\Models\Responses\**\*.cs" Link="Generated\Models\Responses\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\Custom\Responses\**\*.cs" Link="Custom\Responses\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\Generated\ResponsesClient.cs" Link="Generated\ResponsesClient.cs" />
+    <Compile Include="..\Generated\ResponsesClient.RestClient.cs" Link="Generated\ResponsesClient.RestClient.cs" />
+    <Compile Include="..\Custom\Internal\ClientPipelineExtensions.cs" Link="Custom\Internal\ClientPipelineExtensions.cs" />
+    <Compile Include="..\Generated\Internal\ClientPipelineExtensions.cs" Link="Generated\Internal\ClientPipelineExtensions.cs" />
+    <Compile Include="..\Custom\OpenAIError.cs" Link="Custom\OpenAIError.cs" />
+    <Compile Include="..\Generated\Models\Internal\OpenAIErrorResponse.cs" Link="Generated\Models\Internal\OpenAIErrorResponse.cs" />
+    <Compile Include="..\Generated\Models\Internal\OpenAIErrorResponse.Serialization.cs" Link="Generated\Models\Internal\OpenAIErrorResponse.Serialization.cs" />
+    <Compile Include="..\Generated\Models\Internal\OpenAIError.cs" Link="Generated\Models\Internal\OpenAIError.cs" />
+    <Compile Include="..\Generated\Models\Internal\OpenAIError.Serialization.cs" Link="Generated\Models\Internal\OpenAIError.Serialization.cs" />
+    <Compile Include="..\Generated\CollectionResults\ResponsesClient*.cs" Link="Generated\CollectionResults\%(Filename)%(Extension)" />
+    <Compile Include="..\Custom\OpenAIContext.cs" Link="Custom\OpenAIContext.cs" />
+    <Compile Include="..\Utility\CustomSerializationHelpers.cs" Link="Utility\CustomSerializationHelpers.cs" />
   </ItemGroup>
 
 </Project>
