@@ -93,7 +93,219 @@ Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
     
     $content = Get-Content $_.FullName -Raw
 
-    # Normalize line breaks and whitespace.
+    if ($isWindowsPlatform) {
+        $dotnetPacksPath = Join-Path $env:ProgramFiles "dotnet\packs\Microsoft.NETCore.App.Ref"
+        $nugetPackagesPath = Join-Path $env:UserProfile ".nuget\packages"
+    } elseif ($isMacOSPlatform) {
+        $dotnetPacksPath = "/usr/local/share/dotnet/packs/Microsoft.NETCore.App.Ref"
+        $nugetPackagesPath = Join-Path $env:HOME ".nuget/packages"
+    } else {
+        # Linux or other Unix-like systems
+        $dotnetPacksPath = "/usr/share/dotnet/packs/Microsoft.NETCore.App.Ref"
+        $nugetPackagesPath = Join-Path $env:HOME ".nuget/packages"
+    }
+
+    Write-Output "  * .NET packs:"
+    Write-Output "    $($dotnetPacksPath)"
+    Write-Output ""
+    Write-Output "  * NuGet packages:"
+    Write-Output "    $($nugetPackagesPath)"
+    Write-Output ""
+
+    Write-Output "  Assembly reference paths:"
+    Write-Output ""
+
+    # .NET
+    $netRef = $null
+    if (Test-Path $dotnetPacksPath) {
+        $netRef = Get-ChildItem -Recurse `
+            -Path $dotnetPacksPath `
+            -Include "net8.0" | Select-Object -Last 1
+    }
+    
+    # If not found in primary location, try alternative locations
+    if (-not $netRef) {
+        $alternativePaths = @()
+        if ($isWindowsPlatform) {
+            $alternativePaths += "${env:ProgramFiles(x86)}\dotnet\packs\Microsoft.NETCore.App.Ref"
+        } elseif ($isMacOSPlatform) {
+            $alternativePaths += "/usr/local/share/dotnet/packs/Microsoft.NETCore.App.Ref"
+            $alternativePaths += "/Library/Frameworks/Microsoft.NETCore.App.Ref"
+        } else {
+            $alternativePaths += "/usr/lib/dotnet/packs/Microsoft.NETCore.App.Ref"
+            $alternativePaths += "/opt/dotnet/packs/Microsoft.NETCore.App.Ref"
+        }
+        
+        foreach ($altPath in $alternativePaths) {
+            if (Test-Path $altPath) {
+                $netRef = Get-ChildItem -Recurse -Path $altPath -Include "net8.0" | Select-Object -Last 1
+                if ($netRef) { break }
+            }
+        }
+    }
+
+    Write-Output "  * .NET:"
+    Write-Output "    $($netRef)"
+    Write-Output ""
+
+    # System.ClientModel
+    $systemClientModelPath = Join-Path $nugetPackagesPath "system.clientmodel\1.8.1"
+    $systemClientModelRef = $null
+    if (Test-Path $systemClientModelPath) {
+        $systemClientModelRef = Get-ChildItem `
+            -Path $systemClientModelPath `
+            -Include $(($TargetFramework -eq "netstandard2.0") ? "netstandard2.0" : "net8.0") `
+            -Recurse |
+                Select-Object -Last 1
+    }
+
+    Write-Output "  * System.ClientModel:"
+    Write-Output "    $($systemClientModelRef)"
+    Write-Output ""
+
+    # System.Net.ServerSentEvents
+    $systemNetServerSentEventsPath = Join-Path $nugetPackagesPath "system.net.serversentevents\9.0.9"
+    $systemNetServerSentEventsRef = $null
+    if (Test-Path $systemNetServerSentEventsPath) {
+        $systemNetServerSentEventsRef = Get-ChildItem `
+            -Path $systemNetServerSentEventsPath `
+            -Include $(($TargetFramework -eq "netstandard2.0") ? "netstandard2.0" : "net8.0") `
+            -Recurse |
+                Select-Object -Last 1
+    }
+
+    Write-Output "  * System.Net.ServerSentEvents:"
+    Write-Output "    $($systemNetServerSentEventsRef)"
+    Write-Output ""
+
+    # Microsoft.Extensions.Logging.Abstractions
+    $microsoftExtensionsLoggingAbstractionsPath = Join-Path $nugetPackagesPath "microsoft.extensions.logging.abstractions\8.0.3"
+    $microsoftExtensionsLoggingAbstractionsRef = $null
+    if (Test-Path $microsoftExtensionsLoggingAbstractionsPath) {
+        $microsoftExtensionsLoggingAbstractionsRef = Get-ChildItem `
+            -Path $microsoftExtensionsLoggingAbstractionsPath `
+            -Include  $(($TargetFramework -eq "netstandard2.0") ? "netstandard2.0" : "net8.0") `
+            -Recurse |
+                Select-Object -Last 1
+    }
+
+    Write-Output "  * Microsoft.Extensions.Logging.Abstractions:"
+    Write-Output "    $($microsoftExtensionsLoggingAbstractionsRef)"
+    Write-Output ""
+
+    # Microsoft.Extensions.DependencyInjection.Abstractions
+    $microsoftExtensionsDependencyInjectionAbstractionsPath = Join-Path $nugetPackagesPath "microsoft.extensions.dependencyinjection.abstractions\8.0.2"
+    $microsoftExtensionsDependencyInjectionAbstractionsRef = $null
+    if (Test-Path $microsoftExtensionsDependencyInjectionAbstractionsPath) {
+        $microsoftExtensionsDependencyInjectionAbstractionsRef = Get-ChildItem `
+            -Path $microsoftExtensionsDependencyInjectionAbstractionsPath `
+            -Include  $(($TargetFramework -eq "netstandard2.0") ? "netstandard2.0" : "net8.0") `
+            -Recurse |
+                Select-Object -Last 1
+    }
+
+    Write-Output "  * Microsoft.Extensions.DependencyInjection.Abstractions:"
+    Write-Output "    $($microsoftExtensionsDependencyInjectionAbstractionsRef)"
+    Write-Output ""
+
+    # System.Memory.Data
+    $systemMemoryDataPath = Join-Path $nugetPackagesPath "system.memory.data\8.0.1"
+    $systemMemoryDataRef = $null
+    if (Test-Path $systemMemoryDataPath) {
+        $systemMemoryDataRef = Get-ChildItem `
+            -Path $systemMemoryDataPath `
+            -Include  $(($TargetFramework -eq "netstandard2.0") ? "netstandard2.0" : "net6.0") `
+            -Recurse |
+                Select-Object -Last 1
+    }
+
+    Write-Output "  * System.Memory.Data:"
+    Write-Output "    $($systemMemoryDataRef)"
+    Write-Output ""
+
+    if ($TargetFramework -eq "netstandard2.0") {
+        # System.Diagnostics.DiagnosticSource
+        $systemDiagnosticsDiagnosticSourcePath = Join-Path $nugetPackagesPath "system.diagnostics.diagnosticsource\8.0.1"
+        $systemDiagnosticsDiagnosticSourceRef = $null
+        if (Test-Path $systemDiagnosticsDiagnosticSourcePath) {
+            $systemDiagnosticsDiagnosticSourceRef = Get-ChildItem `
+                -Path $systemDiagnosticsDiagnosticSourcePath `
+                -Include $(($TargetFramework -eq "netstandard2.0") ? "netstandard2.0" : "net5.0") `
+                -Recurse |
+                    Select-Object -Last 1
+        }
+
+        Write-Output "  * System.Diagnostics.DiagnosticSource:"
+        Write-Output "    $($systemDiagnosticsDiagnosticSourceRef)"
+        Write-Output ""
+
+        # Microsoft.Bcl.AsyncInterfaces
+        $microsoftBclAsyncInterfacesPath = Join-Path $nugetPackagesPath "microsoft.bcl.asyncinterfaces\8.0.0"
+        $microsoftBclAsyncInterfacesRef = $null
+        if (Test-Path $microsoftBclAsyncInterfacesPath) {
+            $microsoftBclAsyncInterfacesRef = Get-ChildItem `
+                -Path $microsoftBclAsyncInterfacesPath `
+                -Include "netstandard2.0" `
+                -Recurse |
+                    Select-Object -Last 1
+        }
+
+        Write-Output "  * Microsoft.Bcl.AsyncInterfaces:"
+        Write-Output "    $($microsoftBclAsyncInterfacesRef)"
+        Write-Output ""
+    }
+
+    # Internal project references (e.g. OpenAI.Shared)
+    $assemblyDir = Split-Path -Parent $AssemblyPath
+    $openAiSharedPath = Join-Path $assemblyDir "OpenAI.Shared.dll"
+    if (Test-Path $openAiSharedPath) {
+        Write-Output "  * OpenAI.Shared:"
+        Write-Output "    $($openAiSharedPath)"
+        Write-Output ""
+    }
+    
+    $openAiPath = Join-Path $assemblyDir "OpenAI.dll"
+    if (Test-Path $openAiPath) {
+        Write-Output "  * OpenAI:"
+        Write-Output "    $($openAiPath)"
+        Write-Output ""
+    }
+
+    Write-Output "  NOTE: If any of the above are empty, tool output may be inaccurate."
+    Write-Output ""
+
+    # Build genapi command arguments, excluding null references
+    $genapiArgs = @(
+        "--assembly", $AssemblyPath
+        "--output-path", $Destination
+    )
+    
+    if ($netRef) { $genapiArgs += @("--assembly-reference", $netRef) }
+    if ($systemClientModelRef) { $genapiArgs += @("--assembly-reference", $systemClientModelRef) }
+    if ($systemNetServerSentEventsRef) { $genapiArgs += @("--assembly-reference", $systemNetServerSentEventsRef) }
+    if ($microsoftExtensionsLoggingAbstractionsRef) { $genapiArgs += @("--assembly-reference", $microsoftExtensionsLoggingAbstractionsRef) }
+    if ($microsoftExtensionsDependencyInjectionAbstractionsRef) { $genapiArgs += @("--assembly-reference", $microsoftExtensionsDependencyInjectionAbstractionsRef) }
+    if ($systemMemoryDataRef) { $genapiArgs += @("--assembly-reference", $systemMemoryDataRef) }
+    if ($systemDiagnosticsDiagnosticSourceRef) { $genapiArgs += @("--assembly-reference", $systemDiagnosticsDiagnosticSourceRef) }
+    if ($microsoftBclAsyncInterfacesRef) { $genapiArgs += @("--assembly-reference", $microsoftBclAsyncInterfacesRef) }
+    
+    # Add sibling assemblies as references if they differ from the main assembly
+    if ((Test-Path $openAiSharedPath) -and ($AssemblyPath -ne $openAiSharedPath)) { 
+        $genapiArgs += @("--assembly-reference", $openAiSharedPath) 
+    }
+    if ((Test-Path $openAiPath) -and ($AssemblyPath -ne $openAiPath)) { 
+        $genapiArgs += @("--assembly-reference", $openAiPath) 
+    }
+
+    & genapi @genapiArgs
+
+    Write-Output "Cleaning up $($Destination)..."
+    Write-Output ""
+
+    $content = Get-Content $Destination -Raw
+
+    # Remove empty lines.
+    $content = $content -creplace '//.*\r?\n', ''
     $content = $content -creplace '\r?\n\r?\n', "`n"
     $content = $content -creplace '\r?\n *{', " {"
 
@@ -157,7 +369,20 @@ Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
     $content = $content -creplace "Diagnostics.CodeAnalysis.Experimental", "Experimental"
     $content = $content -creplace "Diagnostics.CodeAnalysis.SetsRequiredMembers", "SetsRequiredMembers"
 
-    Set-Content -Path $_.FullName -Value $content -NoNewline
+    # Manually back-fill OpenAIClientOptions from OpenAI.Shared if we are generating OpenAI
+    if ($AssemblyPath -match "OpenAI.dll$") {
+        $sharedApiPath = $Destination -replace "OpenAI\.","OpenAI.Shared."
+        if (Test-Path $sharedApiPath) {
+             $content = $content -replace '\[assembly: Runtime.CompilerServices.TypeForwardedTo\(typeof\(OpenAI.OpenAIClientOptions\)\)\]\r?\n?', ''
+             $sharedContent = Get-Content $sharedApiPath -Raw
+             if ($sharedContent -match '(?ms)(    public class OpenAIClientOptions : ClientPipelineOptions \{.*?\n    \})') {
+                 $optionsClass = $matches[1]
+                 $content = $content -replace 'namespace OpenAI \{', "namespace OpenAI {`n$optionsClass"
+             }
+        }
+    }
+
+    Set-Content -Path $Destination -Value $content -NoNewline
 }
 
 $repoRootPath = Join-Path $PSScriptRoot .. -Resolve
@@ -166,6 +391,10 @@ $solutionPath = Join-Path $repoRootPath "OpenAI.sln"
 Invoke-DotNetBuild -ProjectPath $solutionPath
 
 $projects = @(
+    @{
+        Name = "OpenAI.Shared"
+        AssemblyPath = "src\Shared\bin\Debug"
+    },
     @{
         Name = "OpenAI"
         AssemblyPath = "src\bin\Debug"
