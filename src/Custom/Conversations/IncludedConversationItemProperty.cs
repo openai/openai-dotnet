@@ -1,7 +1,7 @@
-﻿using System;
+using Microsoft.TypeSpec.Generator.Customizations;
+using System;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using OpenAI;
 
 namespace OpenAI.Conversations
 {

@@ -1,4 +1,6 @@
-﻿namespace OpenAI.Images;
+﻿using Microsoft.TypeSpec.Generator.Customizations;
+
+namespace OpenAI.Images;
 
 // CUSTOM:
 // - Renamed.

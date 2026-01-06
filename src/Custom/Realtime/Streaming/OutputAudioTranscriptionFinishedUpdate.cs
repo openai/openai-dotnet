@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.ClientModel.Primitives;
-using System.Text.Json;
-using System.Diagnostics.CodeAnalysis;
+using Microsoft.TypeSpec.Generator.Customizations;
 
 namespace OpenAI.Realtime;
 

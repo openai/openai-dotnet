@@ -42,8 +42,7 @@ namespace OpenAI.Responses
                 // Plugin customization: add hasMore assignment
                 bool hasMore = ((ResponseItemCollectionPage)result).HasMore;
                 nextToken = ((ResponseItemCollectionPage)result).LastId;
-                // Plugin customization: add hasMore == false check to pagination condition
-                if (nextToken == null || !hasMore)
+                if (string.IsNullOrEmpty(nextToken))
                 {
                     yield break;
                 }
@@ -54,7 +53,7 @@ namespace OpenAI.Responses
         public override ContinuationToken GetContinuationToken(ClientResult page)
         {
             string nextPage = ((ResponseItemCollectionPage)page).LastId;
-            if (nextPage != null)
+            if (!string.IsNullOrEmpty(nextPage))
             {
                 return ContinuationToken.FromBytes(BinaryData.FromString(nextPage));
             }

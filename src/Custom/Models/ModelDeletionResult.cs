@@ -1,4 +1,6 @@
-﻿namespace OpenAI.Models;
+﻿using Microsoft.TypeSpec.Generator.Customizations;
+
+namespace OpenAI.Models;
 
 // CUSTOM: Renamed.
 /// <summary> The result of the model deletion. </summary>

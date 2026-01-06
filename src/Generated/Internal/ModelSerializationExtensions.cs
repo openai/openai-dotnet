@@ -256,6 +256,15 @@ namespace OpenAI
             writer.WriteObjectValue<object>(value, options);
         }
 
+        public static BinaryData GetUtf8Bytes(this JsonElement element)
+        {
+#if NET9_0_OR_GREATER
+            return new global::System.BinaryData(global::System.Runtime.InteropServices.JsonMarshal.GetRawUtf8Value(element).ToArray());
+#else
+            return BinaryData.FromString(element.GetRawText());
+#endif
+        }
+
         public static ReadOnlySpan<byte> SliceToStartOfPropertyName(this ReadOnlySpan<byte> jsonPath)
         {
             ReadOnlySpan<byte> local = jsonPath;
@@ -300,15 +309,6 @@ namespace OpenAI
 #endif
             bytesConsumed += jsonPath.Length - local.Length;
             return key;
-        }
-
-        public static BinaryData GetUtf8Bytes(this JsonElement element)
-        {
-#if NET9_0_OR_GREATER
-            return new global::System.BinaryData(global::System.Runtime.InteropServices.JsonMarshal.GetRawUtf8Value(element).ToArray());
-#else
-            return BinaryData.FromString(element.GetRawText());
-#endif
         }
 
         public static bool TryGetIndex(this ReadOnlySpan<byte> indexSlice, out int index, out int bytesConsumed)

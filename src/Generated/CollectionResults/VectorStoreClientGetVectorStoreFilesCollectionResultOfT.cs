@@ -44,8 +44,7 @@ namespace OpenAI.VectorStores
                 // Plugin customization: add hasMore assignment
                 bool hasMore = ((InternalListVectorStoreFilesResponse)result).HasMore;
                 nextToken = ((InternalListVectorStoreFilesResponse)result).LastId;
-                // Plugin customization: add hasMore == false check to pagination condition
-                if (nextToken == null || !hasMore)
+                if (string.IsNullOrEmpty(nextToken))
                 {
                     yield break;
                 }
@@ -56,7 +55,7 @@ namespace OpenAI.VectorStores
         public override ContinuationToken GetContinuationToken(ClientResult page)
         {
             string nextPage = ((InternalListVectorStoreFilesResponse)page).LastId;
-            if (nextPage != null)
+            if (!string.IsNullOrEmpty(nextPage))
             {
                 return ContinuationToken.FromBytes(BinaryData.FromString(nextPage));
             }

@@ -1,8 +1,5 @@
-﻿using System;
-using System.ClientModel.Primitives;
+﻿using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Text.Json;
 
 namespace OpenAI.Chat;

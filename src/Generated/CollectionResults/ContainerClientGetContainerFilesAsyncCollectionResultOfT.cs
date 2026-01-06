@@ -41,8 +41,7 @@ namespace OpenAI.Containers
                 // Plugin customization: add hasMore assignment
                 bool hasMore = ((InternalContainerFileListResource)result).HasMore;
                 nextToken = ((InternalContainerFileListResource)result).LastId;
-                // Plugin customization: add hasMore == false check to pagination condition
-                if (nextToken == null || !hasMore)
+                if (string.IsNullOrEmpty(nextToken))
                 {
                     yield break;
                 }
@@ -53,7 +52,7 @@ namespace OpenAI.Containers
         public override ContinuationToken GetContinuationToken(ClientResult page)
         {
             string nextPage = ((InternalContainerFileListResource)page).LastId;
-            if (nextPage != null)
+            if (!string.IsNullOrEmpty(nextPage))
             {
                 return ContinuationToken.FromBytes(BinaryData.FromString(nextPage));
             }

@@ -106,7 +106,7 @@ namespace OpenAI.Images
                     {
                         continue;
                     }
-                    imageUri = new Uri(prop.Value.GetString());
+                    imageUri = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("revised_prompt"u8))

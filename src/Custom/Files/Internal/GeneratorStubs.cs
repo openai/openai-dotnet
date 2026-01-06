@@ -1,7 +1,5 @@
-using OpenAI.Graders;
+using Microsoft.TypeSpec.Generator.Customizations;
 using System.ClientModel;
-using System.ClientModel.Primitives;
-using System.Text.Json;
 
 namespace OpenAI.Files;
 

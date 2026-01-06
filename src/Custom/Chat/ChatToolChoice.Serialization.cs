@@ -1,6 +1,6 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 
