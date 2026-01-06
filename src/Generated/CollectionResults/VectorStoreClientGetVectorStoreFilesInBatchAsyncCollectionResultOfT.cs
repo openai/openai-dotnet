@@ -47,7 +47,8 @@ namespace OpenAI.VectorStores
                 // Plugin customization: add hasMore assignment
                 bool hasMore = ((InternalListVectorStoreFilesResponse)result).HasMore;
                 nextToken = ((InternalListVectorStoreFilesResponse)result).LastId;
-                if (string.IsNullOrEmpty(nextToken))
+                // Plugin customization: add hasMore == false check to pagination condition
+                if (string.IsNullOrEmpty(nextToken) || !hasMore)
                 {
                     yield break;
                 }

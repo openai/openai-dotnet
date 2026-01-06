@@ -43,7 +43,8 @@ namespace OpenAI.Assistants
                 // Plugin customization: add hasMore assignment
                 bool hasMore = ((InternalListRunsResponse)result).HasMore;
                 nextToken = ((InternalListRunsResponse)result).LastId;
-                if (string.IsNullOrEmpty(nextToken))
+                // Plugin customization: add hasMore == false check to pagination condition
+                if (string.IsNullOrEmpty(nextToken) || !hasMore)
                 {
                     yield break;
                 }

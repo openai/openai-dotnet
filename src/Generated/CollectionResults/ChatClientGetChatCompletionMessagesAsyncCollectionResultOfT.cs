@@ -41,7 +41,8 @@ namespace OpenAI.Chat
                 // Plugin customization: add hasMore assignment
                 bool hasMore = ((InternalChatCompletionMessageList)result).HasMore;
                 nextToken = ((InternalChatCompletionMessageList)result).LastId;
-                if (string.IsNullOrEmpty(nextToken))
+                // Plugin customization: add hasMore == false check to pagination condition
+                if (string.IsNullOrEmpty(nextToken) || !hasMore)
                 {
                     yield break;
                 }
