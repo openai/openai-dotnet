@@ -134,6 +134,7 @@
     <Compile Include="Custom\OpenAIModelFactory.cs" />
     <Compile Include="Custom\OpenAIContext.cs" />
     <Compile Include="Custom\OpenAIError.cs" />
+    <Compile Include="Custom\TypeForwarding.cs" />
     <Compile Include="Custom\Internal\ClientPipelineExtensions.cs" />
     <Compile Include="Custom\Internal\InternalFunctionDefinition.cs" />
     <Compile Include="Custom\Common\Internal\InternalResponseFormatJsonSchemaJsonSchema.cs" />

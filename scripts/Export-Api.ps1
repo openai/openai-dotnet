@@ -213,6 +213,22 @@ function Invoke-GenAPI {
         Write-Output ""
     }
 
+    # Internal project references (e.g. OpenAI.Shared)
+    $assemblyDir = Split-Path -Parent $AssemblyPath
+    $openAiSharedPath = Join-Path $assemblyDir "OpenAI.Shared.dll"
+    if (Test-Path $openAiSharedPath) {
+        Write-Output "  * OpenAI.Shared:"
+        Write-Output "    $($openAiSharedPath)"
+        Write-Output ""
+    }
+    
+    $openAiPath = Join-Path $assemblyDir "OpenAI.dll"
+    if (Test-Path $openAiPath) {
+        Write-Output "  * OpenAI:"
+        Write-Output "    $($openAiPath)"
+        Write-Output ""
+    }
+
     Write-Output "  NOTE: If any of the above are empty, tool output may be inaccurate."
     Write-Output ""
 
@@ -230,6 +246,14 @@ function Invoke-GenAPI {
     if ($systemMemoryDataRef) { $genapiArgs += @("--assembly-reference", $systemMemoryDataRef) }
     if ($systemDiagnosticsDiagnosticSourceRef) { $genapiArgs += @("--assembly-reference", $systemDiagnosticsDiagnosticSourceRef) }
     if ($microsoftBclAsyncInterfacesRef) { $genapiArgs += @("--assembly-reference", $microsoftBclAsyncInterfacesRef) }
+    
+    # Add sibling assemblies as references if they differ from the main assembly
+    if ((Test-Path $openAiSharedPath) -and ($AssemblyPath -ne $openAiSharedPath)) { 
+        $genapiArgs += @("--assembly-reference", $openAiSharedPath) 
+    }
+    if ((Test-Path $openAiPath) -and ($AssemblyPath -ne $openAiPath)) { 
+        $genapiArgs += @("--assembly-reference", $openAiPath) 
+    }
 
     & genapi @genapiArgs
 
@@ -297,6 +321,19 @@ function Invoke-GenAPI {
     $content = $content -creplace "Diagnostics.CodeAnalysis.Experimental", "Experimental"
     $content = $content -creplace "Diagnostics.CodeAnalysis.SetsRequiredMembers", "SetsRequiredMembers"
 
+    # Manually back-fill OpenAIClientOptions from OpenAI.Shared if we are generating OpenAI
+    if ($AssemblyPath -match "OpenAI.dll$") {
+        $sharedApiPath = $Destination -replace "OpenAI\.","OpenAI.Shared."
+        if (Test-Path $sharedApiPath) {
+             $content = $content -replace '\[assembly: Runtime.CompilerServices.TypeForwardedTo\(typeof\(OpenAI.OpenAIClientOptions\)\)\]\r?\n?', ''
+             $sharedContent = Get-Content $sharedApiPath -Raw
+             if ($sharedContent -match '(?ms)(    public class OpenAIClientOptions : ClientPipelineOptions \{.*?\n    \})') {
+                 $optionsClass = $matches[1]
+                 $content = $content -replace 'namespace OpenAI \{', "namespace OpenAI {`n$optionsClass"
+             }
+        }
+    }
+
     Set-Content -Path $Destination -Value $content -NoNewline
 }
 
@@ -307,16 +344,16 @@ Invoke-DotNetBuild -ProjectPath $solutionPath
 
 $projects = @(
     @{
+        Name = "OpenAI.Shared"
+        AssemblyPath = "src\Shared\bin\Debug"
+    },
+    @{
         Name = "OpenAI"
         AssemblyPath = "src\bin\Debug"
     },
     @{
         Name = "OpenAI.Responses"
         AssemblyPath = "src\Responses\bin\Debug"
-    },
-    @{
-        Name = "OpenAI.Shared"
-        AssemblyPath = "src\Shared\bin\Debug"
     }
 )
 
