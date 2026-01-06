@@ -3119,7 +3119,7 @@ namespace OpenAI.Images {
     public class GeneratedImageCollection : ObjectModel.ReadOnlyCollection<GeneratedImage>, IJsonModel<GeneratedImageCollection>, IPersistableModel<GeneratedImageCollection> {
         public GeneratedImageBackground? Background { get; }
         public DateTimeOffset CreatedAt { get; }
-        public GeneratedImageFileFormat? OutputFileFormat { get; set; }
+        public GeneratedImageFileFormat? OutputFileFormat { get; }
         public GeneratedImageQuality? Quality { get; }
         public GeneratedImageSize? Size { get; }
         public ImageTokenUsage Usage { get; }

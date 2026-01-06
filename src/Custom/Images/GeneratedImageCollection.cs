@@ -45,7 +45,7 @@ public partial class GeneratedImageCollection : ReadOnlyCollection<GeneratedImag
     /// <summary> The format in which the generated images are returned. </summary>
     [Experimental("OPENAI001")]
     [CodeGenMember("OutputFormat")]
-    public GeneratedImageFileFormat? OutputFileFormat { get; set; }
+    public GeneratedImageFileFormat? OutputFileFormat { get; }
 
     // CUSTOM: Changed property type.
     /// <summary> The quality of the image that will be generated. </summary>

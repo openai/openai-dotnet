@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace OpenAI.Images;
 
 // CUSTOM: Renamed.
@@ -9,6 +11,7 @@ namespace OpenAI.Images;
 public readonly partial struct GeneratedImageQuality
 {
     // CUSTOM: Renamed.
+    [Experimental("OPENAI001")]
     [CodeGenMember("Hd")]
     public static GeneratedImageQuality HD { get; } = new GeneratedImageQuality(HdValue);
 }

@@ -3597,7 +3597,7 @@ namespace OpenAI.Images {
         public GeneratedImageBackground? Background { get; }
         public DateTimeOffset CreatedAt { get; }
         [Experimental("OPENAI001")]
-        public GeneratedImageFileFormat? OutputFileFormat { get; set; }
+        public GeneratedImageFileFormat? OutputFileFormat { get; }
         [Experimental("OPENAI001")]
         public GeneratedImageQuality? Quality { get; }
         [Experimental("OPENAI001")]
@@ -3667,6 +3667,7 @@ namespace OpenAI.Images {
         public GeneratedImageQuality(string value);
         [Experimental("OPENAI001")]
         public static GeneratedImageQuality Auto { get; }
+        [Experimental("OPENAI001")]
         public static GeneratedImageQuality HD { get; }
         public static GeneratedImageQuality High { get; }
         [Experimental("OPENAI001")]
