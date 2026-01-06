@@ -7,12 +7,13 @@
 #:property PublishAot=false
 
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using OpenAI.Responses;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-OpenAIResponseClient client = new(model: "gpt-5", apiKey: key);
+ResponsesClient client = new(model: "gpt-5.2", apiKey: key);
 
-ResponseCreationOptions options = new();
+CreateResponseOptions options = new();
 options.Tools.Add(ResponseTool.CreateFunctionTool(
         functionName: "get_weather",
         functionDescription: "Get current temperature for a given location.",
@@ -33,11 +34,12 @@ options.Tools.Add(ResponseTool.CreateFunctionTool(
         strictModeEnabled: true
     )
 );
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("What is the weather like in Paris today?"));
 
-OpenAIResponse response = client.CreateResponse([
-    ResponseItem.CreateUserMessageItem([
-        ResponseContentPart.CreateInputTextPart("What is the weather like in Paris today?")
-    ])
-], options);
+ResponseResult response = client.CreateResponse(options);
+JsonSerializerOptions serializerOptions = new()
+{
+    TypeInfoResolver = new DefaultJsonTypeInfoResolver()
+};
 
-Console.WriteLine(JsonSerializer.Serialize(response.OutputItems[0]));
+Console.WriteLine(JsonSerializer.Serialize(response.OutputItems[0], serializerOptions));

@@ -4,25 +4,21 @@
 #pragma warning disable OPENAI001
 
 #:package OpenAI@2.*
-#:property PublishAot=false
 
 using OpenAI.Responses;
 
 string authToken = Environment.GetEnvironmentVariable("STRIPE_OAUTH_ACCESS_TOKEN")!;
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-OpenAIResponseClient client = new(model: "gpt-5", apiKey: key);
+ResponsesClient client = new(model: "gpt-5.2", apiKey: key);
 
-ResponseCreationOptions options = new();
+CreateResponseOptions options = new();
 options.Tools.Add(ResponseTool.CreateMcpTool(
     serverLabel: "stripe",
     serverUri: new Uri("https://mcp.stripe.com"),
     authorizationToken: authToken
 ));
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("Create a payment link for $20"));
 
-OpenAIResponse response = client.CreateResponse([
-    ResponseItem.CreateUserMessageItem([
-        ResponseContentPart.CreateInputTextPart("Create a payment link for $20")
-    ])
-], options);
+ResponseResult response = client.CreateResponse(options);
 
 Console.WriteLine(response.GetOutputText());

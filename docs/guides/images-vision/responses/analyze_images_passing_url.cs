@@ -4,16 +4,15 @@
 #pragma warning disable OPENAI001
 
 #:package OpenAI@2.*
-#:property PublishAot=false
 
 using OpenAI.Responses;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-OpenAIResponseClient client = new(model: "gpt-5", apiKey: key);
+ResponsesClient client = new(model: "gpt-5.2", apiKey: key);
 
-Uri imageUrl = new("https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/Gfp-wisconsin-madison-the-nature-boardwalk.jpg/2560px-Gfp-wisconsin-madison-the-nature-boardwalk.jpg");
+Uri imageUrl = new("https://openai-documentation.vercel.app/images/cat_and_otter.png");
 
-OpenAIResponse response = client.CreateResponse([
+ResponseResult response = client.CreateResponse([
     ResponseItem.CreateUserMessageItem([
         ResponseContentPart.CreateInputTextPart("What is in this image?"),
         ResponseContentPart.CreateInputImagePart(imageUrl)

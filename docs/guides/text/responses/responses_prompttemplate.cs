@@ -3,17 +3,16 @@
 #pragma warning disable OPENAI001
 
 #:package OpenAI@2.*
-#:property PublishAot=false
 
 using OpenAI.Responses;
 using System.ClientModel;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-OpenAIResponseClient client = new("gpt-4.1", key);
-OpenAIResponse response = client.CreateResponse(
+ResponsesClient client = new(model: "gpt-5.2", apiKey: key);
+ResponseResult response = (ResponseResult)client.CreateResponse(
     BinaryContent.Create(BinaryData.FromObjectAsJson(
     new {
-        model = "gpt-4.1",
+        model = "gpt-5.2",
         prompt = new {
             id = "pmpt_abc123",
             version = "2",
