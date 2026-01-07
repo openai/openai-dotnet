@@ -1,11 +1,15 @@
 ﻿using Microsoft.ClientModel.TestFramework;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
+#if !RESPONSES_ONLY
 using OpenAI.Conversations;
 using OpenAI.Files;
+#endif
 using OpenAI.Responses;
 using OpenAI.Tests.Utility;
+#if !RESPONSES_ONLY
 using OpenAI.VectorStores;
+#endif
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
@@ -17,7 +21,11 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using static OpenAI.Tests.TestHelpers;
 
+#if RESPONSES_ONLY
+namespace OpenAI.Tests.Responses.StandAlone;
+#else
 namespace OpenAI.Tests.Responses;
+#endif
 
 #pragma warning disable OPENAICUA001
 
@@ -31,6 +39,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         TestTimeoutInSeconds = 30;
     }
 
+#if !RESPONSES_ONLY
     [OneTimeTearDown]
     protected void Cleanup()
     {
@@ -71,6 +80,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             VectorStoreIdsToDelete.Add(vectorStore.Id);
         }
     }
+#endif
 
     [Ignore("Failing")]
     [RecordedTest]
@@ -525,6 +535,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(expectedException.Message, Does.Contain("not found"));
     }
 
+#if !RESPONSES_ONLY
     [RecordedTest]
     public async Task ResponseUsingConversations()
     {
@@ -581,6 +592,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(GetContentText(lastItem), Is.EqualTo("tell me a joke"));
         Assert.That(GetContentText(secondLastItem), Is.EqualTo("tell me another"));
     }
+#endif
 
     [RecordedTest]
     public async Task ResponseServiceTierWorks()
@@ -664,6 +676,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response.GetOutputText().ToLowerInvariant(), Does.Contain("dog").Or.Contain("cat").IgnoreCase);
     }
 
+#if !RESPONSES_ONLY
     [RecordedTest]
     public async Task FileInputFromIdWorks()
     {
@@ -692,6 +705,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         Assert.That(response?.GetOutputText().ToLower(), Does.Contain("pizza"));
     }
+#endif
 
     [RecordedTest]
     public async Task FileInputFromBinaryWorks()
@@ -1108,5 +1122,5 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             """),
         strictModeEnabled: false);
 
-    private ResponsesClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<ResponsesClient>(TestScenario.Responses, overrideModel);
+    private new ResponsesClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<ResponsesClient>(TestScenario.Responses, overrideModel);
 }

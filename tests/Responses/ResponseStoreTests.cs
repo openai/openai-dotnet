@@ -8,7 +8,11 @@ using System.IO;
 using System.Threading.Tasks;
 using static OpenAI.Tests.TestHelpers;
 
+#if RESPONSES_ONLY
+namespace OpenAI.Tests.Responses.StandAlone;
+#else
 namespace OpenAI.Tests.Responses;
+#endif
 
 #pragma warning disable OPENAICUA001
 
@@ -388,5 +392,5 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
         Assert.That(items, Has.Count.GreaterThan(0));
     }
 
-    private ResponsesClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<ResponsesClient>(TestScenario.Responses, overrideModel);
+    private new ResponsesClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<ResponsesClient>(TestScenario.Responses, overrideModel);
 }
