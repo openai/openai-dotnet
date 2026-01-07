@@ -8,11 +8,7 @@ using System.IO;
 using System.Threading.Tasks;
 using static OpenAI.Tests.TestHelpers;
 
-#if RESPONSES_ONLY
-namespace OpenAI.Tests.Responses.StandAlone;
-#else
 namespace OpenAI.Tests.Responses;
-#endif
 
 #pragma warning disable OPENAICUA001
 
@@ -138,15 +134,16 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetTestClient();
 
-        string filePath = Path.Join("Assets", "files_travis_favorite_food.pdf");
+        string pdfFilePath = Path.Join("Assets", "files_travis_favorite_food.pdf");
+        string imageFilePath = Path.Join("Assets", "images_dog_and_cat.png");
 
         // Create a response with multiple input items
         List<ResponseItem> inputItems = new()
         {
             ResponseItem.CreateUserMessageItem([
                 ResponseContentPart.CreateInputTextPart("What is input text?"),
-                ResponseContentPart.CreateInputFilePart(BinaryData.FromBytes(File.ReadAllBytes(filePath)), "application/pdf", "test_favorite_foods.pdf"),
-                ResponseContentPart.CreateInputImagePart(new Uri("https://upload.wikimedia.org/wikipedia/commons/c/c3/Openai.png")),
+                ResponseContentPart.CreateInputFilePart(BinaryData.FromBytes(File.ReadAllBytes(pdfFilePath)), "application/pdf", "test_favorite_foods.pdf"),
+                ResponseContentPart.CreateInputImagePart(BinaryData.FromBytes(File.ReadAllBytes(imageFilePath)), "image/png"),
             ]),
             ResponseItem.CreateUserMessageItem("Item 2"),
             ResponseItem.CreateUserMessageItem("Item 3"),

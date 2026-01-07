@@ -67,8 +67,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="$(MSBuildProjectDirectory)\..\Assets\*">
+    <Content Include="..\Assets\*">
+      <Link>Assets\%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
 </Project>
