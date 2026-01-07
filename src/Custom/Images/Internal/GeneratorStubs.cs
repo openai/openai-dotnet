@@ -2,28 +2,49 @@ namespace OpenAI.Images;
 
 // CUSTOM: Made internal.
 
-[CodeGenType("CreateImageEditRequestModel")]
-internal readonly partial struct InternalCreateImageEditRequestModel { }
+[CodeGenType("ImagesResponseBackground")] internal readonly partial struct InternalImagesResponseBackground { }
+[CodeGenType("ImagesResponseOutputFormat")] internal readonly partial struct InternalImagesResponseOutputFormat { }
+[CodeGenType("ImagesResponseQuality")] internal readonly partial struct InternalImagesResponseQuality { }
+[CodeGenType("ImagesResponseSize")] internal readonly partial struct InternalImagesResponseSize { }
 
-[CodeGenType("CreateImageEditRequestResponseFormat")]
-internal readonly partial struct InternalCreateImageEditRequestResponseFormat { }
+// Image generation.
+[CodeGenType("CreateImageRequestModel")] internal readonly partial struct InternalCreateImageRequestModel { }
 
-[CodeGenType("CreateImageEditRequestSize")]
-internal readonly partial struct InternalCreateImageEditRequestSize { }
+// Image edit generation.
+[CodeGenType("CreateImageEditRequestBackground")] internal readonly partial struct InternalCreateImageEditRequestBackground { }
+[CodeGenType("CreateImageEditRequestModel")] internal readonly partial struct InternalCreateImageEditRequestModel { }
+[CodeGenType("CreateImageEditRequestOutputFormat")] internal readonly partial struct InternalCreateImageEditRequestOutputFormat { }
+[CodeGenType("CreateImageEditRequestQuality")] internal readonly partial struct InternalCreateImageEditRequestQuality { }
+[CodeGenType("CreateImageEditRequestResponseFormat")] internal readonly partial struct InternalCreateImageEditRequestResponseFormat { }
+[CodeGenType("CreateImageEditRequestSize")] internal readonly partial struct InternalCreateImageEditRequestSize { }
 
-[CodeGenType("CreateImageRequestModel")]
-internal readonly partial struct InternalCreateImageRequestModel { }
+// Image variation generation.
+[CodeGenType("CreateImageVariationRequestModel")] internal readonly partial struct InternalCreateImageVariationRequestModel { }
+[CodeGenType("CreateImageVariationRequestResponseFormat")] internal readonly partial struct InternalCreateImageVariationRequestResponseFormat { }
+[CodeGenType("CreateImageVariationRequestSize")] internal readonly partial struct InternalCreateImageVariationRequestSize { }
 
-[CodeGenType("CreateImageVariationRequestModel")]
-internal readonly partial struct InternalCreateImageVariationRequestModel { }
+// Streaming image generation.
+[CodeGenType("ImageGenPartialImageEvent")] internal partial class InternalImageGenPartialImageEvent { }
+[CodeGenType("ImageGenCompletedEvent")] internal partial class InternalImageGenCompletedEvent { }
+[CodeGenType("ImageGenPartialImageEventBackground")] internal readonly partial struct InternalImageGenPartialImageEventBackground { }
+[CodeGenType("ImageGenPartialImageEventOutputFormat")] internal readonly partial struct InternalImageGenPartialImageEventOutputFormat { }
+[CodeGenType("ImageGenPartialImageEventQuality")] internal readonly partial struct InternalImageGenPartialImageEventQuality { }
+[CodeGenType("ImageGenPartialImageEventSize")] internal readonly partial struct InternalImageGenPartialImageEventSize { }
+[CodeGenType("ImageGenCompletedEventBackground")] internal readonly partial struct InternalImageGenCompletedEventBackground { }
+[CodeGenType("ImageGenCompletedEventOutputFormat")] internal readonly partial struct InternalImageGenCompletedEventOutputFormat { }
+[CodeGenType("ImageGenCompletedEventQuality")] internal readonly partial struct InternalImageGenCompletedEventQuality { }
+[CodeGenType("ImageGenCompletedEventSize")] internal readonly partial struct InternalImageGenCompletedEventSize { }
+[CodeGenType("ImagesUsage")] internal partial class InternalImagesUsage { }
+[CodeGenType("ImagesUsageInputTokensDetails")] internal partial class InternalImagesUsageInputTokensDetails { }
 
-[CodeGenType("CreateImageVariationRequestResponseFormat")]
-internal readonly partial struct InternalCreateImageVariationRequestResponseFormat { }
-
-[CodeGenType("CreateImageVariationRequestSize")]
-internal readonly partial struct InternalCreateImageVariationRequestSize { }
-
-[CodeGenType("CreateImageEditRequestQuality")]
-internal readonly partial struct InternalCreateImageEditRequestQuality { }
-
-[CodeGenType("CreateImageEditRequestBackground")] internal readonly partial struct InternalCreateImageEditRequestBackground {}
+// Streaming image edit generation.
+[CodeGenType("ImageEditPartialImageEvent")] internal partial class InternalImageEditPartialImageEvent { }
+[CodeGenType("ImageEditCompletedEvent")] internal partial class InternalImageEditCompletedEvent { }
+[CodeGenType("ImageEditPartialImageEventBackground")] internal readonly partial struct InternalImageEditPartialImageEventBackground { }
+[CodeGenType("ImageEditPartialImageEventOutputFormat")] internal readonly partial struct InternalImageEditPartialImageEventOutputFormat { }
+[CodeGenType("ImageEditPartialImageEventQuality")] internal readonly partial struct InternalImageEditPartialImageEventQuality { }
+[CodeGenType("ImageEditPartialImageEventSize")] internal readonly partial struct InternalImageEditPartialImageEventSize { }
+[CodeGenType("ImageEditCompletedEventBackground")] internal readonly partial struct InternalImageEditCompletedEventBackground { }
+[CodeGenType("ImageEditCompletedEventOutputFormat")] internal readonly partial struct InternalImageEditCompletedEventOutputFormat { }
+[CodeGenType("ImageEditCompletedEventQuality")] internal readonly partial struct InternalImageEditCompletedEventQuality { }
+[CodeGenType("ImageEditCompletedEventSize")] internal readonly partial struct InternalImageEditCompletedEventSize { }

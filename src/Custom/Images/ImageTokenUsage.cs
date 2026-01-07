@@ -1,26 +1,27 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace OpenAI.Images;
 
 // CUSTOM:
-// - Added Experimental attribute.
 // - Renamed.
-[CodeGenType("ImagesResponseUsage")]
+[CodeGenType("ImageGenUsage")]
 public partial class ImageTokenUsage
 {
     // CUSTOM: Renamed.
     [CodeGenMember("InputTokens")]
-    public int InputTokenCount { get; }
+    public long InputTokenCount { get; }
 
     // CUSTOM: Renamed.
     [CodeGenMember("OutputTokens")]
-    public int OutputTokenCount { get; }
+    public long OutputTokenCount { get; }
 
     // CUSTOM: Renamed.
     [CodeGenMember("TotalTokens")]
-    public int TotalTokenCount { get; }
+    public long TotalTokenCount { get; }
 
     // CUSTOM: Renamed.
     [CodeGenMember("InputTokensDetails")]
     public ImageInputTokenUsageDetails InputTokenDetails { get; }
+
+    // CUSTOM: Renamed.
+    [CodeGenMember("OutputTokensDetails")]
+    public ImageOutputTokenUsageDetails OutputTokenDetails { get; }
 }

@@ -358,23 +358,6 @@ namespace OpenAI
             return new DeleteContainerFileResponse(id, "container.file.deleted", true, additionalBinaryDataProperties: null);
         }
 
-        public static OpenAIEmbeddingCollection OpenAIEmbeddingCollection(IEnumerable<OpenAIEmbedding> data = default, string model = default, string @object = default, EmbeddingTokenUsage usage = default)
-        {
-            data ??= new ChangeTrackingList<OpenAIEmbedding>();
-
-            return new OpenAIEmbeddingCollection(data.ToList(), model, @object, usage, default);
-        }
-
-        public static OpenAIEmbedding OpenAIEmbedding(int index = default, BinaryData embeddingProperty = default, string @object = default)
-        {
-            return new OpenAIEmbedding(index, embeddingProperty, @object, default);
-        }
-
-        public static EmbeddingTokenUsage EmbeddingTokenUsage(int inputTokenCount = default, int totalTokenCount = default)
-        {
-            return new EmbeddingTokenUsage(inputTokenCount, totalTokenCount, default);
-        }
-
         public static OpenAIFileCollection OpenAIFileCollection(IEnumerable<OpenAIFile> data = default, string @object = default, string firstId = default, string lastId = default, bool hasMore = default)
         {
             data ??= new ChangeTrackingList<OpenAIFile>();
@@ -779,74 +762,6 @@ namespace OpenAI
                 default);
         }
 
-        public static ImageGenerationOptions ImageGenerationOptions(string prompt = default, InternalCreateImageRequestModel? model = default, long? n = default, GeneratedImageQuality? quality = default, GeneratedImageFormat? responseFormat = default, GeneratedImageFileFormat? outputFileFormat = default, int? outputCompressionFactor = default, GeneratedImageSize? size = default, GeneratedImageModerationLevel? moderationLevel = default, GeneratedImageBackground? background = default, GeneratedImageStyle? style = default, string endUserId = default)
-        {
-            return new ImageGenerationOptions(
-                prompt,
-                model,
-                n,
-                quality,
-                responseFormat,
-                outputFileFormat,
-                outputCompressionFactor,
-                size,
-                moderationLevel,
-                background,
-                style,
-                endUserId,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static GeneratedImageCollection GeneratedImageCollection(DateTimeOffset createdAt = default, IEnumerable<GeneratedImage> data = default, ImageTokenUsage usage = default)
-        {
-            data ??= new ChangeTrackingList<GeneratedImage>();
-
-            return new GeneratedImageCollection(createdAt, data.ToList(), usage, additionalBinaryDataProperties: null);
-        }
-
-        public static GeneratedImage GeneratedImage(BinaryData imageBytes = default, Uri imageUri = default, string revisedPrompt = default)
-        {
-            return new GeneratedImage(imageBytes, imageUri, revisedPrompt, additionalBinaryDataProperties: null);
-        }
-
-        public static ImageTokenUsage ImageTokenUsage(int totalTokenCount = default, int inputTokenCount = default, int outputTokenCount = default, ImageInputTokenUsageDetails inputTokenDetails = default)
-        {
-            return new ImageTokenUsage(totalTokenCount, inputTokenCount, outputTokenCount, inputTokenDetails, additionalBinaryDataProperties: null);
-        }
-
-        public static ImageInputTokenUsageDetails ImageInputTokenUsageDetails(int textTokenCount = default, int imageTokenCount = default)
-        {
-            return new ImageInputTokenUsageDetails(textTokenCount, imageTokenCount, additionalBinaryDataProperties: null);
-        }
-
-        public static ImageEditOptions ImageEditOptions(BinaryData image = default, string prompt = default, BinaryData mask = default, GeneratedImageBackground? background = default, InternalCreateImageEditRequestModel? model = default, long? n = default, GeneratedImageSize? size = default, GeneratedImageFormat? responseFormat = default, string endUserId = default, GeneratedImageQuality? quality = default)
-        {
-            return new ImageEditOptions(
-                image,
-                prompt,
-                mask,
-                background,
-                model,
-                n,
-                size,
-                responseFormat,
-                endUserId,
-                quality,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static ImageVariationOptions ImageVariationOptions(BinaryData image = default, InternalCreateImageVariationRequestModel? model = default, long? n = default, GeneratedImageFormat? responseFormat = default, GeneratedImageSize? size = default, string endUserId = default)
-        {
-            return new ImageVariationOptions(
-                image,
-                model,
-                n,
-                responseFormat,
-                size,
-                endUserId,
-                additionalBinaryDataProperties: null);
-        }
-
         public static MessageCreationOptions MessageCreationOptions(Assistants.MessageRole role = default, IEnumerable<MessageContent> content = default, IEnumerable<MessageCreationAttachment> attachments = default, IDictionary<string, string> metadata = default)
         {
             content ??= new ChangeTrackingList<MessageContent>();
@@ -1154,23 +1069,6 @@ namespace OpenAI
             return new FileFromStoreRemovalResult(fileId, removed, "vector_store.file.deleted", additionalBinaryDataProperties: null);
         }
 
-        public static OpenAIModelCollection OpenAIModelCollection(string @object = default, IEnumerable<OpenAIModel> data = default)
-        {
-            data ??= new ChangeTrackingList<OpenAIModel>();
-
-            return new OpenAIModelCollection(@object, data.ToList(), serializedAdditionalRawData: null);
-        }
-
-        public static OpenAIModel OpenAIModel(string id = default, DateTimeOffset createdAt = default, string ownedBy = default)
-        {
-            return new OpenAIModel(id, createdAt, "model", ownedBy, additionalBinaryDataProperties: null);
-        }
-
-        public static ModelDeletionResult ModelDeletionResult(string modelId = default, bool deleted = default)
-        {
-            return new ModelDeletionResult(modelId, deleted, "model", additionalBinaryDataProperties: null);
-        }
-
         public static InputTranscriptionOptions InputTranscriptionOptions(InputTranscriptionModel? model = default, string language = default, string prompt = default)
         {
             return new InputTranscriptionOptions(model, language, prompt, additionalBinaryDataProperties: null);
@@ -1316,6 +1214,134 @@ namespace OpenAI
         public static ItemRetrievedUpdate ItemRetrievedUpdate(string eventId = default, RealtimeItem item = default)
         {
             return new ItemRetrievedUpdate(RealtimeUpdateKind.ItemRetrieved, eventId, additionalBinaryDataProperties: null, item);
+        }
+
+        public static OpenAIEmbeddingCollection OpenAIEmbeddingCollection(IEnumerable<OpenAIEmbedding> items = default, string model = default, string @object = default, EmbeddingTokenUsage usage = default)
+        {
+            items ??= new ChangeTrackingList<OpenAIEmbedding>();
+
+            return new OpenAIEmbeddingCollection(items.ToList(), model, @object, usage, default);
+        }
+
+        public static OpenAIEmbedding OpenAIEmbedding(int index = default, BinaryData embeddingProperty = default, string @object = default)
+        {
+            return new OpenAIEmbedding(index, embeddingProperty, @object, default);
+        }
+
+        public static EmbeddingTokenUsage EmbeddingTokenUsage(int inputTokenCount = default, int totalTokenCount = default)
+        {
+            return new EmbeddingTokenUsage(inputTokenCount, totalTokenCount, default);
+        }
+
+        public static ImageEditOptions ImageEditOptions(BinaryData image = default, string prompt = default, BinaryData mask = default, GeneratedImageBackground? background = default, InternalCreateImageEditRequestModel? model = default, long? n = default, GeneratedImageSize? size = default, GeneratedImageFormat? responseFormat = default, GeneratedImageFileFormat? outputFileFormat = default, int? outputCompressionFactor = default, string endUserId = default, ImageInputFidelity? inputFidelity = default, bool? stream = default, int? partialImages = default, GeneratedImageQuality? quality = default)
+        {
+            return new ImageEditOptions(
+                image,
+                prompt,
+                mask,
+                background,
+                model,
+                n,
+                size,
+                responseFormat,
+                outputFileFormat,
+                outputCompressionFactor,
+                endUserId,
+                inputFidelity,
+                stream,
+                partialImages,
+                quality,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static GeneratedImageCollection GeneratedImageCollection(DateTimeOffset createdAt = default, IEnumerable<GeneratedImage> items = default, GeneratedImageBackground? background = default, GeneratedImageFileFormat? outputFileFormat = default, GeneratedImageSize? size = default, GeneratedImageQuality? quality = default, ImageTokenUsage usage = default)
+        {
+            items ??= new ChangeTrackingList<GeneratedImage>();
+
+            return new GeneratedImageCollection(
+                createdAt,
+                items.ToList(),
+                background,
+                outputFileFormat,
+                size,
+                quality,
+                usage,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static GeneratedImage GeneratedImage(BinaryData imageBytes = default, Uri imageUri = default, string revisedPrompt = default)
+        {
+            return new GeneratedImage(imageBytes, imageUri, revisedPrompt, additionalBinaryDataProperties: null);
+        }
+
+        public static ImageTokenUsage ImageTokenUsage(long inputTokenCount = default, long totalTokenCount = default, long outputTokenCount = default, ImageOutputTokenUsageDetails outputTokenDetails = default, ImageInputTokenUsageDetails inputTokenDetails = default)
+        {
+            return new ImageTokenUsage(
+                inputTokenCount,
+                totalTokenCount,
+                outputTokenCount,
+                outputTokenDetails,
+                inputTokenDetails,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static ImageOutputTokenUsageDetails ImageOutputTokenUsageDetails(long imageTokenCount = default, long textTokenCount = default)
+        {
+            return new ImageOutputTokenUsageDetails(imageTokenCount, textTokenCount, additionalBinaryDataProperties: null);
+        }
+
+        public static ImageInputTokenUsageDetails ImageInputTokenUsageDetails(long textTokenCount = default, long imageTokenCount = default)
+        {
+            return new ImageInputTokenUsageDetails(textTokenCount, imageTokenCount, additionalBinaryDataProperties: null);
+        }
+
+        public static ImageGenerationOptions ImageGenerationOptions(string prompt = default, InternalCreateImageRequestModel? model = default, long? n = default, GeneratedImageQuality? quality = default, GeneratedImageFormat? responseFormat = default, GeneratedImageFileFormat? outputFileFormat = default, int? outputCompressionFactor = default, bool? stream = default, int? partialImages = default, GeneratedImageSize? size = default, GeneratedImageModerationLevel? moderationLevel = default, GeneratedImageBackground? background = default, GeneratedImageStyle? style = default, string endUserId = default)
+        {
+            return new ImageGenerationOptions(
+                prompt,
+                model,
+                n,
+                quality,
+                responseFormat,
+                outputFileFormat,
+                outputCompressionFactor,
+                stream,
+                partialImages,
+                size,
+                moderationLevel,
+                background,
+                style,
+                endUserId,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static ImageVariationOptions ImageVariationOptions(BinaryData image = default, InternalCreateImageVariationRequestModel? model = default, long? n = default, GeneratedImageFormat? responseFormat = default, GeneratedImageSize? size = default, string endUserId = default)
+        {
+            return new ImageVariationOptions(
+                image,
+                model,
+                n,
+                responseFormat,
+                size,
+                endUserId,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static OpenAIModelCollection OpenAIModelCollection(string @object = default, IEnumerable<OpenAIModel> items = default)
+        {
+            items ??= new ChangeTrackingList<OpenAIModel>();
+
+            return new OpenAIModelCollection(@object, items.ToList(), additionalBinaryDataProperties: null);
+        }
+
+        public static OpenAIModel OpenAIModel(string id = default, DateTimeOffset createdAt = default, string ownedBy = default)
+        {
+            return new OpenAIModel(id, createdAt, "model", ownedBy, additionalBinaryDataProperties: null);
+        }
+
+        public static ModelDeletionResult ModelDeletionResult(string modelId = default, bool deleted = default, string @object = default)
+        {
+            return new ModelDeletionResult(modelId, deleted, @object, additionalBinaryDataProperties: null);
         }
 
         public static ChatFunctionChoice ChatFunctionChoice()
