@@ -1,0 +1,74 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net10.0;net9.0;net8.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>OpenAI.Tests</RootNamespace>
+
+    <!--Ignore XML doc comments on test types and members-->
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+
+    <!-- OPENAI001 - Ignore experimental warnings-->
+    <NoWarn>$(NoWarn);OPENAI001;OPENAI002;SCME0001;</NoWarn>
+
+    <!-- Define constant to indicate this is the Responses-only test project -->
+    <DefineConstants>$(DefineConstants);RESPONSES_ONLY</DefineConstants>
+
+    <!-- Disable default compile items since we explicitly include files from this directory -->
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' != 'Unsigned'">
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\src\OpenAI.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Reference only the OpenAI.Responses assembly to validate it works independently -->
+    <ProjectReference Include="..\..\src\Responses\OpenAI.Responses.csproj" />
+    <ProjectReference Include="..\..\src\Shared\OpenAI.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Include all test files from this folder -->
+    <Compile Include="ResponsesTests.cs" />
+    <Compile Include="ResponsesSmokeTests.cs" />
+    <Compile Include="ResponsesToolTests.cs" />
+    <Compile Include="ResponseStoreTests.cs" />
+    <Compile Include="TestHelpers.Responses.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Include local utility files specific to this test project (Responses-only versions) -->
+    <Compile Include="Utility\OpenAIRecordedTestBase.Responses.Only.cs" />
+    <Compile Include="Utility\OpenAITestEnvironment.Responses.Only.cs" />
+    <Compile Include="Utility\TestHelpers.Responses.Only.cs" />
+    <Compile Include="Utility\TestPipelinePolicy.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ClientModel.TestFramework" Version="1.0.0-alpha.20250919.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
+    <PackageReference Include="Moq" Version="[4.18.2]" />
+    <PackageReference Include="NUnit" Version="4.4.0" />
+    <PackageReference Include="NUnit3TestAdapter" Version="6.0.0" />
+    <PackageReference Include="System.Linq.AsyncEnumerable" Version="10.0.0" />
+  </ItemGroup>
+
+  <!-- Conditionally include packages built into the latest runtime -->
+  <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net10.0')) == 'false'">
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>SourcePath</_Parameter1>
+      <_Parameter2>$(MSBuildProjectDirectory)</_Parameter2>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="$(MSBuildProjectDirectory)\..\Assets\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>
