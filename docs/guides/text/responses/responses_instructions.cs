@@ -13,9 +13,10 @@ CreateResponseOptions options = new()
 {
     Instructions = "Talk like a pirate.",
 };
-options.InputItems.Add(ResponseItem.CreateUserMessageItem("Are semicolons optional in JavaScript?"));
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Are semicolons optional in JavaScript?")
+);
 
 ResponseResult response = client.CreateResponse(options);
-
 
 Console.WriteLine(response.GetOutputText());

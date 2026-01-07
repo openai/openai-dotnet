@@ -14,7 +14,8 @@ string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(model: "gpt-5.2", apiKey: key);
 
 CreateResponseOptions options = new();
-options.Tools.Add(ResponseTool.CreateFunctionTool(
+options.Tools.Add(
+    ResponseTool.CreateFunctionTool(
         functionName: "get_weather",
         functionDescription: "Get current temperature for a given location.",
         functionParameters: BinaryData.FromObjectAsJson(new
@@ -34,7 +35,9 @@ options.Tools.Add(ResponseTool.CreateFunctionTool(
         strictModeEnabled: true
     )
 );
-options.InputItems.Add(ResponseItem.CreateUserMessageItem("What is the weather like in Paris today?"));
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("What is the weather like in Paris today?")
+);
 
 ResponseResult response = client.CreateResponse(options);
 JsonSerializerOptions serializerOptions = new()

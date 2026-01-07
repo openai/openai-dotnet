@@ -12,7 +12,9 @@ ResponsesClient client = new(model: "gpt-5.2", apiKey: key);
 
 CreateResponseOptions options = new();
 options.Tools.Add(ResponseTool.CreateWebSearchTool());
-options.InputItems.Add(ResponseItem.CreateUserMessageItem("What was a positive news story from today?"));
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("What was a positive news story from today?")
+);
 
 ResponseResult response = client.CreateResponse(options);
 

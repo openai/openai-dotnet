@@ -3,12 +3,14 @@
 #pragma warning disable OPENAI001
 
 #:package OpenAI@2.*
+#:property PublishAot=false
 
 using OpenAI.Responses;
 using System.ClientModel;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(model: "gpt-5.2", apiKey: key);
+
 ResponseResult response = (ResponseResult)client.CreateResponse(
     BinaryContent.Create(BinaryData.FromObjectAsJson(
     new {
@@ -23,4 +25,5 @@ ResponseResult response = (ResponseResult)client.CreateResponse(
         }
     }
 )));
+
 Console.WriteLine(response.GetOutputText());

@@ -11,8 +11,12 @@ string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(model: "gpt-5.2", apiKey: key);
 
 CreateResponseOptions options = new();
-options.Tools.Add(ResponseTool.CreateFileSearchTool([ "<vector_store_id>" ]));
-options.InputItems.Add(ResponseItem.CreateUserMessageItem("What is deep research by OpenAI?"));
+options.Tools.Add(
+    ResponseTool.CreateFileSearchTool([ "<vector_store_id>" ])
+);
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("What is deep research by OpenAI?")
+);
 
 ResponseResult response = client.CreateResponse(options);
 

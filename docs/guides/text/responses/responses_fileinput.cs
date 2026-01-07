@@ -32,4 +32,5 @@ ResponseResult response = (ResponseResult)client.CreateResponse(
         }
     }
 )));
+
 Console.WriteLine(response.GetOutputText());

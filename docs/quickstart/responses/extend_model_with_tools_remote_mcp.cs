@@ -11,12 +11,16 @@ string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(model: "gpt-5.2", apiKey: key);
 
 CreateResponseOptions options = new();
-options.Tools.Add(ResponseTool.CreateMcpTool(
-    serverLabel: "dmcp",
-    serverUri: new Uri("https://dmcp-server.deno.dev/sse"),
-    toolCallApprovalPolicy: new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
-));
-options.InputItems.Add(ResponseItem.CreateUserMessageItem("Roll 2d4+1"));
+options.Tools.Add(
+    ResponseTool.CreateMcpTool(
+        serverLabel: "dmcp",
+        serverUri: new Uri("https://dmcp-server.deno.dev/sse"),
+        toolCallApprovalPolicy: new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
+    )
+);
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Roll 2d4+1")
+);
 
 ResponseResult response = client.CreateResponse(options);
 

@@ -12,12 +12,16 @@ string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
 ResponsesClient client = new(model: "gpt-5.2", apiKey: key);
 
 CreateResponseOptions options = new();
-options.Tools.Add(ResponseTool.CreateMcpTool(
-    serverLabel: "stripe",
-    serverUri: new Uri("https://mcp.stripe.com"),
-    authorizationToken: authToken
-));
-options.InputItems.Add(ResponseItem.CreateUserMessageItem("Create a payment link for $20"));
+options.Tools.Add(
+    ResponseTool.CreateMcpTool(
+        serverLabel: "stripe",
+        serverUri: new Uri("https://mcp.stripe.com"),
+        authorizationToken: authToken
+    )
+);
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Create a payment link for $20")
+);
 
 ResponseResult response = client.CreateResponse(options);
 
