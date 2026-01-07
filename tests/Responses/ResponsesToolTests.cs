@@ -19,11 +19,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static OpenAI.Tests.TestHelpers;
 
-#if RESPONSES_ONLY
-namespace OpenAI.Tests.Responses.StandAlone;
-#else
 namespace OpenAI.Tests.Responses;
-#endif
 
 [Category("Responses")]
 [Category("ResponsesTools")]

@@ -21,11 +21,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using static OpenAI.Tests.TestHelpers;
 
-#if RESPONSES_ONLY
-namespace OpenAI.Tests.Responses.StandAlone;
-#else
 namespace OpenAI.Tests.Responses;
-#endif
 
 #pragma warning disable OPENAICUA001
 

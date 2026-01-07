@@ -1,0 +1,106 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "336",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI.Shared/2.8.0 (.NET 8.0.16; Darwin 25.2.0 Darwin Kernel Version 25.2.0: Tue Nov 18 21:08:48 PST 2025; root:xnu-12377.61.12~1/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": {
+        "model": "gpt-5",
+        "tools": [
+          {
+            "type": "mcp",
+            "server_label": "dmcp",
+            "server_url": "https://dmcp-server.deno.dev/sse",
+            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
+            "require_approval": "never"
+          }
+        ],
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Roll 2d4+1"
+              }
+            ]
+          }
+        ],
+        "stream": true
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9ba69a92bb8af825-DFW",
+        "Connection": "keep-alive",
+        "Content-Type": "text/event-stream; charset=utf-8",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "149",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": [
+        "event: response.created\n",
+        "data: {\"type\":\"response.created\",\"response\":{\"id\":\"resp_0021e9c776b6b64000695ed26482548197a6edfb7777028408\",\"object\":\"response\",\"created_at\":1767821924,\"status\":\"in_progress\",\"background\":false,\"completed_at\":null,\"error\":null,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-5-2025-08-07\",\"output\":[],\"parallel_tool_calls\":true,\"previous_response_id\":null,\"prompt_cache_key\":null,\"prompt_cache_retention\":null,\"reasoning\":{\"effort\":\"medium\",\"summary\":null},\"safety_identifier\":null,\"service_tier\":\"auto\",\"store\":true,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":\"auto\",\"tools\":[{\"type\":\"mcp\",\"allowed_tools\":null,\"headers\":null,\"require_approval\":\"never\",\"server_description\":\"A Dungeons and Dragons MCP server to assist with dice rolling.\",\"server_label\":\"dmcp\",\"server_url\":\"https://dmcp-server.deno.dev/sse\"}],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":null,\"user\":null,\"metadata\":{}},\"sequence_number\":0}\n\n",
+        "event: response.in_progress\n",
+        "data: {\"type\":\"response.in_progress\",\"response\":{\"id\":\"resp_0021e9c776b6b64000695ed26482548197a6edfb7777028408\",\"object\":\"response\",\"created_at\":1767821924,\"status\":\"in_progress\",\"background\":false,\"completed_at\":null,\"error\":null,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-5-2025-08-07\",\"output\":[],\"parallel_tool_calls\":true,\"previous_response_id\":null,\"prompt_cache_key\":null,\"prompt_cache_retention\":null,\"reasoning\":{\"effort\":\"medium\",\"summary\":null},\"safety_identifier\":null,\"service_tier\":\"auto\",\"store\":true,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":\"auto\",\"tools\":[{\"type\":\"mcp\",\"allowed_tools\":null,\"headers\":null,\"require_approval\":\"never\",\"server_description\":\"A Dungeons and Dragons MCP server to assist with dice rolling.\",\"server_label\":\"dmcp\",\"server_url\":\"https://dmcp-server.deno.dev/sse\"}],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":null,\"user\":null,\"metadata\":{}},\"sequence_number\":1}\n\n",
+        "event: response.output_item.added\n",
+        "data: {\"type\":\"response.output_item.added\",\"item\":{\"id\":\"mcpl_0021e9c776b6b64000695ed264a4f481978148efaa5c01b254\",\"type\":\"mcp_list_tools\",\"server_label\":\"dmcp\",\"tools\":[]},\"output_index\":0,\"sequence_number\":2}\n\n",
+        "event: response.mcp_list_tools.in_progress\n",
+        "data: {\"type\":\"response.mcp_list_tools.in_progress\",\"item_id\":\"mcpl_0021e9c776b6b64000695ed264a4f481978148efaa5c01b254\",\"output_index\":0,\"sequence_number\":3}\n\n",
+        "event: response.mcp_list_tools.completed\n",
+        "data: {\"type\":\"response.mcp_list_tools.completed\",\"item_id\":\"mcpl_0021e9c776b6b64000695ed264a4f481978148efaa5c01b254\",\"output_index\":0,\"sequence_number\":4}\n\n",
+        "event: response.output_item.done\n",
+        "data: {\"type\":\"response.output_item.done\",\"item\":{\"id\":\"mcpl_0021e9c776b6b64000695ed264a4f481978148efaa5c01b254\",\"type\":\"mcp_list_tools\",\"server_label\":\"dmcp\",\"tools\":[{\"annotations\":{\"read_only\":false},\"description\":\"\\n  Given a string of text describing a dice roll in \\n  Dungeons and Dragons, provide a result of the roll.\\n\\n  Example input: 2d6 + 1d4\\n  Example output: 14\\n\",\"input_schema\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"properties\":{\"diceRollExpression\":{\"type\":\"string\"}},\"required\":[\"diceRollExpression\"],\"additionalProperties\":false},\"name\":\"roll\"}]},\"output_index\":0,\"sequence_number\":5}\n\n",
+        "event: response.output_item.added\n",
+        "data: {\"type\":\"response.output_item.added\",\"item\":{\"id\":\"rs_0021e9c776b6b64000695ed265fe5c8197b439880508e0d446\",\"type\":\"reasoning\",\"summary\":[]},\"output_index\":1,\"sequence_number\":6}\n\n",
+        "event: response.output_item.done\n",
+        "data: {\"type\":\"response.output_item.done\",\"item\":{\"id\":\"rs_0021e9c776b6b64000695ed265fe5c8197b439880508e0d446\",\"type\":\"reasoning\",\"summary\":[]},\"output_index\":1,\"sequence_number\":7}\n\n",
+        "event: response.output_item.added\n",
+        "data: {\"type\":\"response.output_item.added\",\"item\":{\"id\":\"mcp_0021e9c776b6b64000695ed26af120819799b8d061060a47eb\",\"type\":\"mcp_call\",\"status\":\"in_progress\",\"approval_request_id\":null,\"arguments\":\"\",\"error\":null,\"name\":\"roll\",\"output\":null,\"server_label\":\"dmcp\"},\"output_index\":2,\"sequence_number\":8}\n\n",
+        "event: response.mcp_call.in_progress\n",
+        "data: {\"type\":\"response.mcp_call.in_progress\",\"item_id\":\"mcp_0021e9c776b6b64000695ed26af120819799b8d061060a47eb\",\"output_index\":2,\"sequence_number\":9}\n\n",
+        "event: response.mcp_call_arguments.delta\n",
+        "data: {\"type\":\"response.mcp_call_arguments.delta\",\"delta\":\"{\\\"diceRollExpression\\\":\\\"2d4+1\\\"}\",\"item_id\":\"mcp_0021e9c776b6b64000695ed26af120819799b8d061060a47eb\",\"obfuscation\":\"4S\",\"output_index\":2,\"sequence_number\":10}\n\n",
+        "event: response.mcp_call_arguments.done\n",
+        "data: {\"type\":\"response.mcp_call_arguments.done\",\"arguments\":\"{\\\"diceRollExpression\\\":\\\"2d4+1\\\"}\",\"item_id\":\"mcp_0021e9c776b6b64000695ed26af120819799b8d061060a47eb\",\"output_index\":2,\"sequence_number\":11}\n\n",
+        "event: response.mcp_call.completed\n",
+        "data: {\"type\":\"response.mcp_call.completed\",\"item_id\":\"mcp_0021e9c776b6b64000695ed26af120819799b8d061060a47eb\",\"output_index\":2,\"sequence_number\":12}\n\n",
+        "event: response.output_item.done\n",
+        "data: {\"type\":\"response.output_item.done\",\"item\":{\"id\":\"mcp_0021e9c776b6b64000695ed26af120819799b8d061060a47eb\",\"type\":\"mcp_call\",\"status\":\"completed\",\"approval_request_id\":null,\"arguments\":\"{\\\"diceRollExpression\\\":\\\"2d4+1\\\"}\",\"error\":null,\"name\":\"roll\",\"output\":\"7\",\"server_label\":\"dmcp\"},\"output_index\":2,\"sequence_number\":13}\n\n",
+        "event: response.output_item.added\n",
+        "data: {\"type\":\"response.output_item.added\",\"item\":{\"id\":\"msg_0021e9c776b6b64000695ed26c12b48197807841cf2e8f5a3b\",\"type\":\"message\",\"status\":\"in_progress\",\"content\":[],\"role\":\"assistant\"},\"output_index\":3,\"sequence_number\":14}\n\n",
+        "event: response.content_part.added\n",
+        "data: {\"type\":\"response.content_part.added\",\"content_index\":0,\"item_id\":\"msg_0021e9c776b6b64000695ed26c12b48197807841cf2e8f5a3b\",\"output_index\":3,\"part\":{\"type\":\"output_text\",\"annotations\":[],\"logprobs\":[],\"text\":\"\"},\"sequence_number\":15}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\"7\",\"item_id\":\"msg_0021e9c776b6b64000695ed26c12b48197807841cf2e8f5a3b\",\"logprobs\":[],\"obfuscation\":\"QIJtAze2znSCyMk\",\"output_index\":3,\"sequence_number\":16}\n\n",
+        "event: response.output_text.done\n",
+        "data: {\"type\":\"response.output_text.done\",\"content_index\":0,\"item_id\":\"msg_0021e9c776b6b64000695ed26c12b48197807841cf2e8f5a3b\",\"logprobs\":[],\"output_index\":3,\"sequence_number\":17,\"text\":\"7\"}\n\n",
+        "event: response.content_part.done\n",
+        "data: {\"type\":\"response.content_part.done\",\"content_index\":0,\"item_id\":\"msg_0021e9c776b6b64000695ed26c12b48197807841cf2e8f5a3b\",\"output_index\":3,\"part\":{\"type\":\"output_text\",\"annotations\":[],\"logprobs\":[],\"text\":\"7\"},\"sequence_number\":18}\n\n",
+        "event: response.output_item.done\n",
+        "data: {\"type\":\"response.output_item.done\",\"item\":{\"id\":\"msg_0021e9c776b6b64000695ed26c12b48197807841cf2e8f5a3b\",\"type\":\"message\",\"status\":\"completed\",\"content\":[{\"type\":\"output_text\",\"annotations\":[],\"logprobs\":[],\"text\":\"7\"}],\"role\":\"assistant\"},\"output_index\":3,\"sequence_number\":19}\n\n",
+        "event: response.completed\n",
+        "data: {\"type\":\"response.completed\",\"response\":{\"id\":\"resp_0021e9c776b6b64000695ed26482548197a6edfb7777028408\",\"object\":\"response\",\"created_at\":1767821924,\"status\":\"completed\",\"background\":false,\"completed_at\":1767821932,\"error\":null,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-5-2025-08-07\",\"output\":[{\"id\":\"mcpl_0021e9c776b6b64000695ed264a4f481978148efaa5c01b254\",\"type\":\"mcp_list_tools\",\"server_label\":\"dmcp\",\"tools\":[{\"annotations\":{\"read_only\":false},\"description\":\"\\n  Given a string of text describing a dice roll in \\n  Dungeons and Dragons, provide a result of the roll.\\n\\n  Example input: 2d6 + 1d4\\n  Example output: 14\\n\",\"input_schema\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"properties\":{\"diceRollExpression\":{\"type\":\"string\"}},\"required\":[\"diceRollExpression\"],\"additionalProperties\":false},\"name\":\"roll\"}]},{\"id\":\"rs_0021e9c776b6b64000695ed265fe5c8197b439880508e0d446\",\"type\":\"reasoning\",\"summary\":[]},{\"id\":\"mcp_0021e9c776b6b64000695ed26af120819799b8d061060a47eb\",\"type\":\"mcp_call\",\"status\":\"completed\",\"approval_request_id\":null,\"arguments\":\"{\\\"diceRollExpression\\\":\\\"2d4+1\\\"}\",\"error\":null,\"name\":\"roll\",\"output\":\"7\",\"server_label\":\"dmcp\"},{\"id\":\"msg_0021e9c776b6b64000695ed26c12b48197807841cf2e8f5a3b\",\"type\":\"message\",\"status\":\"completed\",\"content\":[{\"type\":\"output_text\",\"annotations\":[],\"logprobs\":[],\"text\":\"7\"}],\"role\":\"assistant\"}],\"parallel_tool_calls\":true,\"previous_response_id\":null,\"prompt_cache_key\":null,\"prompt_cache_retention\":null,\"reasoning\":{\"effort\":\"medium\",\"summary\":null},\"safety_identifier\":null,\"service_tier\":\"default\",\"store\":true,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":\"auto\",\"tools\":[{\"type\":\"mcp\",\"allowed_tools\":null,\"headers\":null,\"require_approval\":\"never\",\"server_description\":\"A Dungeons and Dragons MCP server to assist with dice rolling.\",\"server_label\":\"dmcp\",\"server_url\":\"https://dmcp-server.deno.dev/sse\"}],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":{\"input_tokens\":447,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":224,\"output_tokens_details\":{\"reasoning_tokens\":192},\"total_tokens\":671},\"user\":null,\"metadata\":{}},\"sequence_number\":20}\n\n"
+      ]
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}
