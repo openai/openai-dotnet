@@ -4,24 +4,24 @@
 #pragma warning disable OPENAI001
 
 #:package OpenAI@2.*
-#:property PublishAot=false
 
 using OpenAI.Responses;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-OpenAIResponseClient client = new(model: "gpt-5", apiKey: key);
+ResponsesClient client = new(model: "gpt-5.2", apiKey: key);
 
-ResponseCreationOptions options = new();
-options.Tools.Add(ResponseTool.CreateMcpTool(
-    serverLabel: "dmcp",
-    serverUri: new Uri("https://dmcp-server.deno.dev/sse"),
-    toolCallApprovalPolicy: new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
-));
+CreateResponseOptions options = new();
+options.Tools.Add(
+    ResponseTool.CreateMcpTool(
+        serverLabel: "dmcp",
+        serverUri: new Uri("https://dmcp-server.deno.dev/sse"),
+        toolCallApprovalPolicy: new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
+    )
+);
+options.InputItems.Add(
+    ResponseItem.CreateUserMessageItem("Roll 2d4+1")
+);
 
-OpenAIResponse response = client.CreateResponse([
-    ResponseItem.CreateUserMessageItem([
-        ResponseContentPart.CreateInputTextPart("Roll 2d4+1")
-    ])
-], options);
+ResponseResult response = client.CreateResponse(options);
 
 Console.WriteLine(response.GetOutputText());

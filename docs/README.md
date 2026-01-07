@@ -12,7 +12,7 @@ This readme shows you how to run each OpenAI based sample (.cs) file in this fol
 
     ```powershell
     # Install .NET 10 SDK Preview
-    winget install Microsoft.DotNet.SDK.Preview
+    winget install Microsoft.DotNet.SDK.10
     ```
 
 - Mac OS
@@ -20,13 +20,13 @@ This readme shows you how to run each OpenAI based sample (.cs) file in this fol
     ```bash
     # Install .NET 10 SDK Preview
     brew tap isen-ng/dotnet-sdk-versions
-    brew install --cask dotnet-sdk10-preview
+    brew install --cask dotnet-sdk10
     ```
 
 #### Option B: Manual download
 
 1. Visit the [.NET 10 Download Page](https://dotnet.microsoft.com/download/dotnet/10.0)
-1. Download and install: **.NET SDK 10.0 Preview** (required for development and `dotnet run`)
+1. Download and install: **.NET SDK 10.0** (required for development and `dotnet run`)
 
 ### 2. Verify installation
 
@@ -44,7 +44,7 @@ dotnet --version
 You should see output similar to:
 
 ```text
-10.0.100-rc.1.25451.107
+10.0.100
 ```
 
 ## Setup
