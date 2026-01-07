@@ -3326,10 +3326,19 @@ namespace OpenAI.Images {
         protected virtual ImageInputTokenUsageDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
+    public class ImageOutputTokenUsageDetails : IJsonModel<ImageOutputTokenUsageDetails>, IPersistableModel<ImageOutputTokenUsageDetails> {
+        public long ImageTokenCount { get; }
+        public long TextTokenCount { get; }
+        protected virtual ImageOutputTokenUsageDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual ImageOutputTokenUsageDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
     public class ImageTokenUsage : IJsonModel<ImageTokenUsage>, IPersistableModel<ImageTokenUsage> {
         public long InputTokenCount { get; }
         public ImageInputTokenUsageDetails InputTokenDetails { get; }
         public long OutputTokenCount { get; }
+        public ImageOutputTokenUsageDetails OutputTokenDetails { get; }
         public long TotalTokenCount { get; }
         protected virtual ImageTokenUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -3351,7 +3360,7 @@ namespace OpenAI.Images {
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static GeneratedImageCollection GeneratedImageCollection(DateTimeOffset createdAt, IEnumerable<GeneratedImage> items);
         public static ImageInputTokenUsageDetails ImageInputTokenUsageDetails(long textTokenCount = 0, long imageTokenCount = 0);
-        public static ImageTokenUsage ImageTokenUsage(long inputTokenCount = 0, long outputTokenCount = 0, long totalTokenCount = 0, ImageInputTokenUsageDetails inputTokenDetails = null);
+        public static ImageTokenUsage ImageTokenUsage(long inputTokenCount = 0, long outputTokenCount = 0, long totalTokenCount = 0, ImageInputTokenUsageDetails inputTokenDetails = null, ImageOutputTokenUsageDetails outputTokenDetails = null);
     }
 }
 namespace OpenAI.Models {

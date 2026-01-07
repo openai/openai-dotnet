@@ -21,11 +21,12 @@ namespace OpenAI.Images
             InputTokenDetails = inputTokenDetails;
         }
 
-        internal ImageTokenUsage(long inputTokenCount, long totalTokenCount, long outputTokenCount, ImageInputTokenUsageDetails inputTokenDetails, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ImageTokenUsage(long inputTokenCount, long totalTokenCount, long outputTokenCount, ImageOutputTokenUsageDetails outputTokenDetails, ImageInputTokenUsageDetails inputTokenDetails, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             InputTokenCount = inputTokenCount;
             TotalTokenCount = totalTokenCount;
             OutputTokenCount = outputTokenCount;
+            OutputTokenDetails = outputTokenDetails;
             InputTokenDetails = inputTokenDetails;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }

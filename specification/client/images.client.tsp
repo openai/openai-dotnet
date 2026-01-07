@@ -13,3 +13,8 @@ using Azure.ClientGenerator.Core;
 @@clientLocation(createImageVariation, "Images");
 
 @@clientName(ImagesResponse.data, "Items");
+
+@@usage(ImageEditPartialImageEvent, Usage.output);
+@@usage(ImageEditCompletedEvent, Usage.output);
+@@usage(ImageGenPartialImageEvent, Usage.output);
+@@usage(ImageGenCompletedEvent, Usage.output);

@@ -3,7 +3,7 @@
 // CUSTOM:
 // - Renamed.
 // - Changed to extensible enum.
-[CodeGenType("CreateImageEditRequestInputFidelity")]
+[CodeGenType("InputFidelity")]
 public readonly partial struct ImageInputFidelity
 {
 }

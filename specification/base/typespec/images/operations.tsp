@@ -1,8 +1,10 @@
 import "@typespec/http";
 import "@typespec/openapi";
 import "./models.tsp";
+import "@typespec/sse";
 using TypeSpec.Http;
 using TypeSpec.OpenAPI;
+using TypeSpec.SSE;
 namespace OpenAI;
 /** Creates an edited or extended image given one or more source images and a prompt. This endpoint only supports `gpt-image-1` and `dall-e-2`. */
 #suppress "@azure-tools/typespec-azure-core/byos" "Auto-suppressed warnings non-applicable rules during import."
@@ -22,25 +24,227 @@ namespace OpenAI;
       #{
         title: "Edit image",
         request: #{
-          curl: "curl -s -D >(grep -i x-request-id >&2) \\\n  -o >(jq -r '.data[0].b64_json' | base64 --decode > gift-basket.png) \\\n  -X POST \"https://api.openai.com/v1/images/edits\" \\\n  -H \"Authorization: Bearer $OPENAI_API_KEY\" \\\n  -F \"model=gpt-image-1\" \\\n  -F \"image[]=@body-lotion.png\" \\\n  -F \"image[]=@bath-bomb.png\" \\\n  -F \"image[]=@incense-kit.png\" \\\n  -F \"image[]=@soap.png\" \\\n  -F 'prompt=Create a lovely gift basket with these four items in it'\n",
-          python: "from openai import OpenAI\n\nclient = OpenAI(\n    api_key=\"My API Key\",\n)\nimages_response = client.images.edit(\n    image=b\"raw file contents\",\n    prompt=\"A cute baby sea otter wearing a beret\",\n)\nprint(images_response)",
-          `node.js`: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  apiKey: 'My API Key',\n});\n\nconst imagesResponse = await client.images.edit({\n  image: fs.createReadStream('path/to/file'),\n  prompt: 'A cute baby sea otter wearing a beret',\n});\n\nconsole.log(imagesResponse);",
-          go: "package main\n\nimport (\n  \"bytes\"\n  \"context\"\n  \"fmt\"\n  \"io\"\n\n  \"github.com/openai/openai-go\"\n  \"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n  client := openai.NewClient(\n    option.WithAPIKey(\"My API Key\"),\n  )\n  imagesResponse, err := client.Images.Edit(context.TODO(), openai.ImageEditParams{\n    Image: openai.ImageEditParamsImageUnion{\n      OfFile: io.Reader(bytes.NewBuffer([]byte(\"some file contents\"))),\n    },\n    Prompt: \"A cute baby sea otter wearing a beret\",\n  })\n  if err != nil {\n    panic(err.Error())\n  }\n  fmt.Printf(\"%+v\\n\", imagesResponse)\n}\n",
-          java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.images.ImageEditParams;\nimport com.openai.models.images.ImagesResponse;\nimport java.io.ByteArrayInputStream;\nimport java.io.InputStream;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        ImageEditParams params = ImageEditParams.builder()\n            .image(ByteArrayInputStream(\"some content\".getBytes()))\n            .prompt(\"A cute baby sea otter wearing a beret\")\n            .build();\n        ImagesResponse imagesResponse = client.images().edit(params);\n    }\n}",
-          ruby: "require \"openai\"\n\nopenai = OpenAI::Client.new(api_key: \"My API Key\")\n\nimages_response = openai.images.edit(image: Pathname(__FILE__), prompt: \"A cute baby sea otter wearing a beret\")\n\nputs(images_response)",
+          curl: """
+            curl -s -D >(grep -i x-request-id >&2) \\
+              -o >(jq -r '.data[0].b64_json' | base64 --decode > gift-basket.png) \\
+              -X POST "https://api.openai.com/v1/images/edits" \\
+              -H "Authorization: Bearer $OPENAI_API_KEY" \\
+              -F "model=gpt-image-1.5" \\
+              -F "image[]=@body-lotion.png" \\
+              -F "image[]=@bath-bomb.png" \\
+              -F "image[]=@incense-kit.png" \\
+              -F "image[]=@soap.png" \\
+              -F 'prompt=Create a lovely gift basket with these four items in it'
+            
+            """,
+          python: """
+            import os
+            from openai import OpenAI
+            
+            client = OpenAI(
+                api_key=os.environ.get("OPENAI_API_KEY"),  # This is the default and can be omitted
+            )
+            images_response = client.images.edit(
+                image=b"raw file contents",
+                prompt="A cute baby sea otter wearing a beret",
+            )
+            print(images_response)
+            """,
+          `node.js`: """
+            import OpenAI from 'openai';
+            
+            const client = new OpenAI({
+              apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted
+            });
+            
+            const imagesResponse = await client.images.edit({
+              image: fs.createReadStream('path/to/file'),
+              prompt: 'A cute baby sea otter wearing a beret',
+            });
+            
+            console.log(imagesResponse);
+            """,
+          go: """
+            package main
+            
+            import (
+              "bytes"
+              "context"
+              "fmt"
+              "io"
+            
+              "github.com/openai/openai-go"
+              "github.com/openai/openai-go/option"
+            )
+            
+            func main() {
+              client := openai.NewClient(
+                option.WithAPIKey("My API Key"),
+              )
+              imagesResponse, err := client.Images.Edit(context.TODO(), openai.ImageEditParams{
+                Image: openai.ImageEditParamsImageUnion{
+                  OfFile: io.Reader(bytes.NewBuffer([]byte("some file contents"))),
+                },
+                Prompt: "A cute baby sea otter wearing a beret",
+              })
+              if err != nil {
+                panic(err.Error())
+              }
+              fmt.Printf("%+v
+            ", imagesResponse)
+            }
+            
+            """,
+          java: """
+            package com.openai.example;
+            
+            import com.openai.client.OpenAIClient;
+            import com.openai.client.okhttp.OpenAIOkHttpClient;
+            import com.openai.models.images.ImageEditParams;
+            import com.openai.models.images.ImagesResponse;
+            import java.io.ByteArrayInputStream;
+            import java.io.InputStream;
+            
+            public final class Main {
+                private Main() {}
+            
+                public static void main(String[] args) {
+                    OpenAIClient client = OpenAIOkHttpClient.fromEnv();
+            
+                    ImageEditParams params = ImageEditParams.builder()
+                        .image(ByteArrayInputStream("some content".getBytes()))
+                        .prompt("A cute baby sea otter wearing a beret")
+                        .build();
+                    ImagesResponse imagesResponse = client.images().edit(params);
+                }
+            }
+            """,
+          ruby: """
+            require "openai"
+            
+            openai = OpenAI::Client.new(api_key: "My API Key")
+            
+            images_response = openai.images.edit(image: Pathname(__FILE__), prompt: "A cute baby sea otter wearing a beret")
+            
+            puts(images_response)
+            """,
         },
       },
       #{
         title: "Streaming",
         request: #{
-          curl: "curl -s -N -X POST \"https://api.openai.com/v1/images/edits\" \\\n  -H \"Authorization: Bearer $OPENAI_API_KEY\" \\\n  -F \"model=gpt-image-1\" \\\n  -F \"image[]=@body-lotion.png\" \\\n  -F \"image[]=@bath-bomb.png\" \\\n  -F \"image[]=@incense-kit.png\" \\\n  -F \"image[]=@soap.png\" \\\n  -F 'prompt=Create a lovely gift basket with these four items in it' \\\n  -F \"stream=true\"\n",
-          python: "from openai import OpenAI\n\nclient = OpenAI(\n    api_key=\"My API Key\",\n)\nimages_response = client.images.edit(\n    image=b\"raw file contents\",\n    prompt=\"A cute baby sea otter wearing a beret\",\n)\nprint(images_response)",
-          `node.js`: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  apiKey: 'My API Key',\n});\n\nconst imagesResponse = await client.images.edit({\n  image: fs.createReadStream('path/to/file'),\n  prompt: 'A cute baby sea otter wearing a beret',\n});\n\nconsole.log(imagesResponse);",
-          go: "package main\n\nimport (\n  \"bytes\"\n  \"context\"\n  \"fmt\"\n  \"io\"\n\n  \"github.com/openai/openai-go\"\n  \"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n  client := openai.NewClient(\n    option.WithAPIKey(\"My API Key\"),\n  )\n  imagesResponse, err := client.Images.Edit(context.TODO(), openai.ImageEditParams{\n    Image: openai.ImageEditParamsImageUnion{\n      OfFile: io.Reader(bytes.NewBuffer([]byte(\"some file contents\"))),\n    },\n    Prompt: \"A cute baby sea otter wearing a beret\",\n  })\n  if err != nil {\n    panic(err.Error())\n  }\n  fmt.Printf(\"%+v\\n\", imagesResponse)\n}\n",
-          java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.images.ImageEditParams;\nimport com.openai.models.images.ImagesResponse;\nimport java.io.ByteArrayInputStream;\nimport java.io.InputStream;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        ImageEditParams params = ImageEditParams.builder()\n            .image(ByteArrayInputStream(\"some content\".getBytes()))\n            .prompt(\"A cute baby sea otter wearing a beret\")\n            .build();\n        ImagesResponse imagesResponse = client.images().edit(params);\n    }\n}",
-          ruby: "require \"openai\"\n\nopenai = OpenAI::Client.new(api_key: \"My API Key\")\n\nimages_response = openai.images.edit(image: Pathname(__FILE__), prompt: \"A cute baby sea otter wearing a beret\")\n\nputs(images_response)",
+          curl: """
+            curl -s -N -X POST "https://api.openai.com/v1/images/edits" \\
+              -H "Authorization: Bearer $OPENAI_API_KEY" \\
+              -F "model=gpt-image-1.5" \\
+              -F "image[]=@body-lotion.png" \\
+              -F "image[]=@bath-bomb.png" \\
+              -F "image[]=@incense-kit.png" \\
+              -F "image[]=@soap.png" \\
+              -F 'prompt=Create a lovely gift basket with these four items in it' \\
+              -F "stream=true"
+            
+            """,
+          python: """
+            import os
+            from openai import OpenAI
+            
+            client = OpenAI(
+                api_key=os.environ.get("OPENAI_API_KEY"),  # This is the default and can be omitted
+            )
+            images_response = client.images.edit(
+                image=b"raw file contents",
+                prompt="A cute baby sea otter wearing a beret",
+            )
+            print(images_response)
+            """,
+          `node.js`: """
+            import OpenAI from 'openai';
+            
+            const client = new OpenAI({
+              apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted
+            });
+            
+            const imagesResponse = await client.images.edit({
+              image: fs.createReadStream('path/to/file'),
+              prompt: 'A cute baby sea otter wearing a beret',
+            });
+            
+            console.log(imagesResponse);
+            """,
+          go: """
+            package main
+            
+            import (
+              "bytes"
+              "context"
+              "fmt"
+              "io"
+            
+              "github.com/openai/openai-go"
+              "github.com/openai/openai-go/option"
+            )
+            
+            func main() {
+              client := openai.NewClient(
+                option.WithAPIKey("My API Key"),
+              )
+              imagesResponse, err := client.Images.Edit(context.TODO(), openai.ImageEditParams{
+                Image: openai.ImageEditParamsImageUnion{
+                  OfFile: io.Reader(bytes.NewBuffer([]byte("some file contents"))),
+                },
+                Prompt: "A cute baby sea otter wearing a beret",
+              })
+              if err != nil {
+                panic(err.Error())
+              }
+              fmt.Printf("%+v
+            ", imagesResponse)
+            }
+            
+            """,
+          java: """
+            package com.openai.example;
+            
+            import com.openai.client.OpenAIClient;
+            import com.openai.client.okhttp.OpenAIOkHttpClient;
+            import com.openai.models.images.ImageEditParams;
+            import com.openai.models.images.ImagesResponse;
+            import java.io.ByteArrayInputStream;
+            import java.io.InputStream;
+            
+            public final class Main {
+                private Main() {}
+            
+                public static void main(String[] args) {
+                    OpenAIClient client = OpenAIOkHttpClient.fromEnv();
+            
+                    ImageEditParams params = ImageEditParams.builder()
+                        .image(ByteArrayInputStream("some content".getBytes()))
+                        .prompt("A cute baby sea otter wearing a beret")
+                        .build();
+                    ImagesResponse imagesResponse = client.images().edit(params);
+                }
+            }
+            """,
+          ruby: """
+            require "openai"
+            
+            openai = OpenAI::Client.new(api_key: "My API Key")
+            
+            images_response = openai.images.edit(image: Pathname(__FILE__), prompt: "A cute baby sea otter wearing a beret")
+            
+            puts(images_response)
+            """,
         },
-        response: "event: image_edit.partial_image\ndata: {\"type\":\"image_edit.partial_image\",\"b64_json\":\"...\",\"partial_image_index\":0}\n\nevent: image_edit.completed\ndata: {\"type\":\"image_edit.completed\",\"b64_json\":\"...\",\"usage\":{\"total_tokens\":100,\"input_tokens\":50,\"output_tokens\":50,\"input_tokens_details\":{\"text_tokens\":10,\"image_tokens\":40}}}\n",
+        response: """
+          event: image_edit.partial_image
+          data: {"type":"image_edit.partial_image","b64_json":"...","partial_image_index":0}
+          
+          event: image_edit.completed
+          data: {"type":"image_edit.completed","b64_json":"...","usage":{"total_tokens":100,"input_tokens":50,"output_tokens":50,"input_tokens_details":{"text_tokens":10,"image_tokens":40}}}
+          
+          """,
       }
     ],
   }
@@ -54,7 +258,7 @@ op createImageEdit(
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   @multipartBody
   body: CreateImageEditRequest,
-): ImagesResponse | CreateImageEditStreamingResponse;
+): ImagesResponse | SSEStream<CreateImageEditStreamingResponse>;
 
 /** Creates an image given a prompt. [Learn more](https://platform.openai.com/docs/guides/images). */
 #suppress "@azure-tools/typespec-azure-core/response-schema-problem" "Auto-suppressed warnings non-applicable rules during import."
@@ -73,26 +277,224 @@ op createImageEdit(
       #{
         title: "Generate image",
         request: #{
-          curl: "curl https://api.openai.com/v1/images/generations \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Authorization: Bearer $OPENAI_API_KEY\" \\\n  -d '{\n    \"model\": \"gpt-image-1\",\n    \"prompt\": \"A cute baby sea otter\",\n    \"n\": 1,\n    \"size\": \"1024x1024\"\n  }'\n",
-          python: "from openai import OpenAI\n\nclient = OpenAI(\n    api_key=\"My API Key\",\n)\nimages_response = client.images.generate(\n    prompt=\"A cute baby sea otter\",\n)\nprint(images_response)",
-          `node.js`: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  apiKey: 'My API Key',\n});\n\nconst imagesResponse = await client.images.generate({ prompt: 'A cute baby sea otter' });\n\nconsole.log(imagesResponse);",
-          go: "package main\n\nimport (\n  \"context\"\n  \"fmt\"\n\n  \"github.com/openai/openai-go\"\n  \"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n  client := openai.NewClient(\n    option.WithAPIKey(\"My API Key\"),\n  )\n  imagesResponse, err := client.Images.Generate(context.TODO(), openai.ImageGenerateParams{\n    Prompt: \"A cute baby sea otter\",\n  })\n  if err != nil {\n    panic(err.Error())\n  }\n  fmt.Printf(\"%+v\\n\", imagesResponse)\n}\n",
-          java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.images.ImageGenerateParams;\nimport com.openai.models.images.ImagesResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        ImageGenerateParams params = ImageGenerateParams.builder()\n            .prompt(\"A cute baby sea otter\")\n            .build();\n        ImagesResponse imagesResponse = client.images().generate(params);\n    }\n}",
-          ruby: "require \"openai\"\n\nopenai = OpenAI::Client.new(api_key: \"My API Key\")\n\nimages_response = openai.images.generate(prompt: \"A cute baby sea otter\")\n\nputs(images_response)",
+          curl: """
+            curl https://api.openai.com/v1/images/generations \\
+              -H "Content-Type: application/json" \\
+              -H "Authorization: Bearer $OPENAI_API_KEY" \\
+              -d '{
+                "model": "gpt-image-1.5",
+                "prompt": "A cute baby sea otter",
+                "n": 1,
+                "size": "1024x1024"
+              }'
+            
+            """,
+          python: """
+            import os
+            from openai import OpenAI
+            
+            client = OpenAI(
+                api_key=os.environ.get("OPENAI_API_KEY"),  # This is the default and can be omitted
+            )
+            images_response = client.images.generate(
+                prompt="A cute baby sea otter",
+            )
+            print(images_response)
+            """,
+          `node.js`: """
+            import OpenAI from 'openai';
+            
+            const client = new OpenAI({
+              apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted
+            });
+            
+            const imagesResponse = await client.images.generate({ prompt: 'A cute baby sea otter' });
+            
+            console.log(imagesResponse);
+            """,
+          go: """
+            package main
+            
+            import (
+              "context"
+              "fmt"
+            
+              "github.com/openai/openai-go"
+              "github.com/openai/openai-go/option"
+            )
+            
+            func main() {
+              client := openai.NewClient(
+                option.WithAPIKey("My API Key"),
+              )
+              imagesResponse, err := client.Images.Generate(context.TODO(), openai.ImageGenerateParams{
+                Prompt: "A cute baby sea otter",
+              })
+              if err != nil {
+                panic(err.Error())
+              }
+              fmt.Printf("%+v
+            ", imagesResponse)
+            }
+            
+            """,
+          java: """
+            package com.openai.example;
+            
+            import com.openai.client.OpenAIClient;
+            import com.openai.client.okhttp.OpenAIOkHttpClient;
+            import com.openai.models.images.ImageGenerateParams;
+            import com.openai.models.images.ImagesResponse;
+            
+            public final class Main {
+                private Main() {}
+            
+                public static void main(String[] args) {
+                    OpenAIClient client = OpenAIOkHttpClient.fromEnv();
+            
+                    ImageGenerateParams params = ImageGenerateParams.builder()
+                        .prompt("A cute baby sea otter")
+                        .build();
+                    ImagesResponse imagesResponse = client.images().generate(params);
+                }
+            }
+            """,
+          ruby: """
+            require "openai"
+            
+            openai = OpenAI::Client.new(api_key: "My API Key")
+            
+            images_response = openai.images.generate(prompt: "A cute baby sea otter")
+            
+            puts(images_response)
+            """,
         },
-        response: "{\n  \"created\": 1713833628,\n  \"data\": [\n    {\n      \"b64_json\": \"...\"\n    }\n  ],\n  \"usage\": {\n    \"total_tokens\": 100,\n    \"input_tokens\": 50,\n    \"output_tokens\": 50,\n    \"input_tokens_details\": {\n      \"text_tokens\": 10,\n      \"image_tokens\": 40\n    }\n  }\n}\n",
+        response: """
+          {
+            "created": 1713833628,
+            "data": [
+              {
+                "b64_json": "..."
+              }
+            ],
+            "usage": {
+              "total_tokens": 100,
+              "input_tokens": 50,
+              "output_tokens": 50,
+              "input_tokens_details": {
+                "text_tokens": 10,
+                "image_tokens": 40
+              }
+            }
+          }
+          
+          """,
       },
       #{
         title: "Streaming",
         request: #{
-          curl: "curl https://api.openai.com/v1/images/generations \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Authorization: Bearer $OPENAI_API_KEY\" \\\n  -d '{\n    \"model\": \"gpt-image-1\",\n    \"prompt\": \"A cute baby sea otter\",\n    \"n\": 1,\n    \"size\": \"1024x1024\",\n    \"stream\": true\n  }' \\\n  --no-buffer\n",
-          python: "from openai import OpenAI\n\nclient = OpenAI(\n    api_key=\"My API Key\",\n)\nimages_response = client.images.generate(\n    prompt=\"A cute baby sea otter\",\n)\nprint(images_response)",
-          `node.js`: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  apiKey: 'My API Key',\n});\n\nconst imagesResponse = await client.images.generate({ prompt: 'A cute baby sea otter' });\n\nconsole.log(imagesResponse);",
-          go: "package main\n\nimport (\n  \"context\"\n  \"fmt\"\n\n  \"github.com/openai/openai-go\"\n  \"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n  client := openai.NewClient(\n    option.WithAPIKey(\"My API Key\"),\n  )\n  imagesResponse, err := client.Images.Generate(context.TODO(), openai.ImageGenerateParams{\n    Prompt: \"A cute baby sea otter\",\n  })\n  if err != nil {\n    panic(err.Error())\n  }\n  fmt.Printf(\"%+v\\n\", imagesResponse)\n}\n",
-          java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.images.ImageGenerateParams;\nimport com.openai.models.images.ImagesResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        ImageGenerateParams params = ImageGenerateParams.builder()\n            .prompt(\"A cute baby sea otter\")\n            .build();\n        ImagesResponse imagesResponse = client.images().generate(params);\n    }\n}",
-          ruby: "require \"openai\"\n\nopenai = OpenAI::Client.new(api_key: \"My API Key\")\n\nimages_response = openai.images.generate(prompt: \"A cute baby sea otter\")\n\nputs(images_response)",
+          curl: """
+            curl https://api.openai.com/v1/images/generations \\
+              -H "Content-Type: application/json" \\
+              -H "Authorization: Bearer $OPENAI_API_KEY" \\
+              -d '{
+                "model": "gpt-image-1.5",
+                "prompt": "A cute baby sea otter",
+                "n": 1,
+                "size": "1024x1024",
+                "stream": true
+              }' \\
+              --no-buffer
+            
+            """,
+          python: """
+            import os
+            from openai import OpenAI
+            
+            client = OpenAI(
+                api_key=os.environ.get("OPENAI_API_KEY"),  # This is the default and can be omitted
+            )
+            images_response = client.images.generate(
+                prompt="A cute baby sea otter",
+            )
+            print(images_response)
+            """,
+          `node.js`: """
+            import OpenAI from 'openai';
+            
+            const client = new OpenAI({
+              apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted
+            });
+            
+            const imagesResponse = await client.images.generate({ prompt: 'A cute baby sea otter' });
+            
+            console.log(imagesResponse);
+            """,
+          go: """
+            package main
+            
+            import (
+              "context"
+              "fmt"
+            
+              "github.com/openai/openai-go"
+              "github.com/openai/openai-go/option"
+            )
+            
+            func main() {
+              client := openai.NewClient(
+                option.WithAPIKey("My API Key"),
+              )
+              imagesResponse, err := client.Images.Generate(context.TODO(), openai.ImageGenerateParams{
+                Prompt: "A cute baby sea otter",
+              })
+              if err != nil {
+                panic(err.Error())
+              }
+              fmt.Printf("%+v
+            ", imagesResponse)
+            }
+            
+            """,
+          java: """
+            package com.openai.example;
+            
+            import com.openai.client.OpenAIClient;
+            import com.openai.client.okhttp.OpenAIOkHttpClient;
+            import com.openai.models.images.ImageGenerateParams;
+            import com.openai.models.images.ImagesResponse;
+            
+            public final class Main {
+                private Main() {}
+            
+                public static void main(String[] args) {
+                    OpenAIClient client = OpenAIOkHttpClient.fromEnv();
+            
+                    ImageGenerateParams params = ImageGenerateParams.builder()
+                        .prompt("A cute baby sea otter")
+                        .build();
+                    ImagesResponse imagesResponse = client.images().generate(params);
+                }
+            }
+            """,
+          ruby: """
+            require "openai"
+            
+            openai = OpenAI::Client.new(api_key: "My API Key")
+            
+            images_response = openai.images.generate(prompt: "A cute baby sea otter")
+            
+            puts(images_response)
+            """,
         },
-        response: "event: image_generation.partial_image\ndata: {\"type\":\"image_generation.partial_image\",\"b64_json\":\"...\",\"partial_image_index\":0}\n\nevent: image_generation.completed\ndata: {\"type\":\"image_generation.completed\",\"b64_json\":\"...\",\"usage\":{\"total_tokens\":100,\"input_tokens\":50,\"output_tokens\":50,\"input_tokens_details\":{\"text_tokens\":10,\"image_tokens\":40}}}\n",
+        response: """
+          event: image_generation.partial_image
+          data: {"type":"image_generation.partial_image","b64_json":"...","partial_image_index":0}
+          
+          event: image_generation.completed
+          data: {"type":"image_generation.completed","b64_json":"...","usage":{"total_tokens":100,"input_tokens":50,"output_tokens":50,"input_tokens_details":{"text_tokens":10,"image_tokens":40}}}
+          
+          """,
       }
     ],
   }
@@ -102,7 +504,7 @@ op createImage(
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   @body
   body: CreateImageRequest,
-): ImagesResponse | CreateImageStreamingResponse;
+): ImagesResponse | SSEStream<CreateImageStreamingResponse>;
 
 /** Creates a variation of a given image. This endpoint only supports `dall-e-2`. */
 #suppress "@azure-tools/typespec-azure-core/byos" "Auto-suppressed warnings non-applicable rules during import."
@@ -118,15 +520,126 @@ op createImage(
     group: "images",
     returns: "Returns a list of [image](https://platform.openai.com/docs/api-reference/images/object) objects.",
     examples: #{
-      response: "{\n  \"created\": 1589478378,\n  \"data\": [\n    {\n      \"url\": \"https://...\"\n    },\n    {\n      \"url\": \"https://...\"\n    }\n  ]\n}\n",
+      response: """
+        {
+          "created": 1589478378,
+          "data": [
+            {
+              "url": "https://..."
+            },
+            {
+              "url": "https://..."
+            }
+          ]
+        }
+        
+        """,
       request: #{
-        curl: "curl https://api.openai.com/v1/images/variations \\\n  -H \"Authorization: Bearer $OPENAI_API_KEY\" \\\n  -F image=\"@otter.png\" \\\n  -F n=2 \\\n  -F size=\"1024x1024\"\n",
-        python: "from openai import OpenAI\n\nclient = OpenAI(\n    api_key=\"My API Key\",\n)\nimages_response = client.images.create_variation(\n    image=b\"raw file contents\",\n)\nprint(images_response.created)",
-        `node.js`: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  apiKey: 'My API Key',\n});\n\nconst imagesResponse = await client.images.createVariation({ image: fs.createReadStream('otter.png') });\n\nconsole.log(imagesResponse.created);",
-        csharp: "using System;\n\nusing OpenAI.Images;\n\nImageClient client = new(\n    model: \"dall-e-2\",\n    apiKey: Environment.GetEnvironmentVariable(\"OPENAI_API_KEY\")\n);\n\nGeneratedImage image = client.GenerateImageVariation(imageFilePath: \"otter.png\");\n\nConsole.WriteLine(image.ImageUri);\n",
-        go: "package main\n\nimport (\n  \"bytes\"\n  \"context\"\n  \"fmt\"\n  \"io\"\n\n  \"github.com/openai/openai-go\"\n  \"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n  client := openai.NewClient(\n    option.WithAPIKey(\"My API Key\"),\n  )\n  imagesResponse, err := client.Images.NewVariation(context.TODO(), openai.ImageNewVariationParams{\n    Image: io.Reader(bytes.NewBuffer([]byte(\"some file contents\"))),\n  })\n  if err != nil {\n    panic(err.Error())\n  }\n  fmt.Printf(\"%+v\\n\", imagesResponse.Created)\n}\n",
-        java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.images.ImageCreateVariationParams;\nimport com.openai.models.images.ImagesResponse;\nimport java.io.ByteArrayInputStream;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        ImageCreateVariationParams params = ImageCreateVariationParams.builder()\n            .image(ByteArrayInputStream(\"some content\".getBytes()))\n            .build();\n        ImagesResponse imagesResponse = client.images().createVariation(params);\n    }\n}",
-        ruby: "require \"openai\"\n\nopenai = OpenAI::Client.new(api_key: \"My API Key\")\n\nimages_response = openai.images.create_variation(image: Pathname(__FILE__))\n\nputs(images_response)",
+        curl: """
+          curl https://api.openai.com/v1/images/variations \\
+            -H "Authorization: Bearer $OPENAI_API_KEY" \\
+            -F image="@otter.png" \\
+            -F n=2 \\
+            -F size="1024x1024"
+          
+          """,
+        python: """
+          import os
+          from openai import OpenAI
+          
+          client = OpenAI(
+              api_key=os.environ.get("OPENAI_API_KEY"),  # This is the default and can be omitted
+          )
+          images_response = client.images.create_variation(
+              image=b"raw file contents",
+          )
+          print(images_response.created)
+          """,
+        `node.js`: """
+          import OpenAI from 'openai';
+          
+          const client = new OpenAI({
+            apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted
+          });
+          
+          const imagesResponse = await client.images.createVariation({ image: fs.createReadStream('otter.png') });
+          
+          console.log(imagesResponse.created);
+          """,
+        csharp: """
+          using System;
+          
+          using OpenAI.Images;
+          
+          ImageClient client = new(
+              model: "dall-e-2",
+              apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY")
+          );
+          
+          GeneratedImage image = client.GenerateImageVariation(imageFilePath: "otter.png");
+          
+          Console.WriteLine(image.ImageUri);
+          
+          """,
+        go: """
+          package main
+          
+          import (
+            "bytes"
+            "context"
+            "fmt"
+            "io"
+          
+            "github.com/openai/openai-go"
+            "github.com/openai/openai-go/option"
+          )
+          
+          func main() {
+            client := openai.NewClient(
+              option.WithAPIKey("My API Key"),
+            )
+            imagesResponse, err := client.Images.NewVariation(context.TODO(), openai.ImageNewVariationParams{
+              Image: io.Reader(bytes.NewBuffer([]byte("some file contents"))),
+            })
+            if err != nil {
+              panic(err.Error())
+            }
+            fmt.Printf("%+v
+          ", imagesResponse.Created)
+          }
+          
+          """,
+        java: """
+          package com.openai.example;
+          
+          import com.openai.client.OpenAIClient;
+          import com.openai.client.okhttp.OpenAIOkHttpClient;
+          import com.openai.models.images.ImageCreateVariationParams;
+          import com.openai.models.images.ImagesResponse;
+          import java.io.ByteArrayInputStream;
+          
+          public final class Main {
+              private Main() {}
+          
+              public static void main(String[] args) {
+                  OpenAIClient client = OpenAIOkHttpClient.fromEnv();
+          
+                  ImageCreateVariationParams params = ImageCreateVariationParams.builder()
+                      .image(ByteArrayInputStream("some content".getBytes()))
+                      .build();
+                  ImagesResponse imagesResponse = client.images().createVariation(params);
+              }
+          }
+          """,
+        ruby: """
+          require "openai"
+          
+          openai = OpenAI::Client.new(api_key: "My API Key")
+          
+          images_response = openai.images.create_variation(image: Pathname(__FILE__))
+          
+          puts(images_response)
+          """,
       },
     },
   }

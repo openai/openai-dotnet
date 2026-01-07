@@ -1,7 +1,6 @@
 namespace OpenAI.Images;
 
-// CUSTOM:
-// - Renamed.
+// CUSTOM: Renamed.
 [CodeGenType("ImageGenInputUsageDetails")]
 public partial class ImageInputTokenUsageDetails
 {

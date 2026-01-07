@@ -10,6 +10,7 @@ namespace OpenAI.Images
     internal readonly partial struct InternalCreateImageEditRequestModel : IEquatable<InternalCreateImageEditRequestModel>
     {
         private readonly string _value;
+        private const string GptImage15Value = "gpt-image-1.5";
         private const string DallE2Value = "dall-e-2";
         private const string GptImage1Value = "gpt-image-1";
         private const string GptImage1MiniValue = "gpt-image-1-mini";
@@ -18,6 +19,8 @@ namespace OpenAI.Images
         {
             _value = value;
         }
+
+        internal static InternalCreateImageEditRequestModel GptImage15 { get; } = new InternalCreateImageEditRequestModel(GptImage15Value);
 
         internal static InternalCreateImageEditRequestModel DallE2 { get; } = new InternalCreateImageEditRequestModel(DallE2Value);
 

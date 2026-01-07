@@ -65,13 +65,14 @@ public static partial class OpenAIImagesModelFactory
     /// <summary> Initializes a new instance of <see cref="OpenAI.Images.ImageTokenUsage"/>. </summary>
     /// <returns> A new <see cref="OpenAI.Images.ImageTokenUsage"/> instance for mocking. </returns>.
     [Experimental("OPENAI001")]
-    public static ImageTokenUsage ImageTokenUsage(long inputTokenCount = default, long outputTokenCount = default, long totalTokenCount = default, ImageInputTokenUsageDetails inputTokenDetails = default)
+    public static ImageTokenUsage ImageTokenUsage(long inputTokenCount = default, long outputTokenCount = default, long totalTokenCount = default, ImageInputTokenUsageDetails inputTokenDetails = default, ImageOutputTokenUsageDetails outputTokenDetails = default)
     {
         return new ImageTokenUsage(
             inputTokenCount: inputTokenCount,
             outputTokenCount: outputTokenCount,
             totalTokenCount: totalTokenCount,
             inputTokenDetails: inputTokenDetails,
+            outputTokenDetails: outputTokenDetails,
             additionalBinaryDataProperties: null);
     }
 }

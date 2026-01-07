@@ -45,6 +45,11 @@ namespace OpenAI.Images
                 writer.WritePropertyName("output_tokens"u8);
                 writer.WriteNumberValue(OutputTokenCount);
             }
+            if (Optional.IsDefined(OutputTokenDetails) && _additionalBinaryDataProperties?.ContainsKey("output_tokens_details") != true)
+            {
+                writer.WritePropertyName("output_tokens_details"u8);
+                writer.WriteObjectValue(OutputTokenDetails, options);
+            }
             if (_additionalBinaryDataProperties?.ContainsKey("input_tokens_details") != true)
             {
                 writer.WritePropertyName("input_tokens_details"u8);
@@ -94,6 +99,7 @@ namespace OpenAI.Images
             long inputTokenCount = default;
             long totalTokenCount = default;
             long outputTokenCount = default;
+            ImageOutputTokenUsageDetails outputTokenDetails = default;
             ImageInputTokenUsageDetails inputTokenDetails = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -113,6 +119,15 @@ namespace OpenAI.Images
                     outputTokenCount = prop.Value.GetInt64();
                     continue;
                 }
+                if (prop.NameEquals("output_tokens_details"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    outputTokenDetails = ImageOutputTokenUsageDetails.DeserializeImageOutputTokenUsageDetails(prop.Value, options);
+                    continue;
+                }
                 if (prop.NameEquals("input_tokens_details"u8))
                 {
                     inputTokenDetails = ImageInputTokenUsageDetails.DeserializeImageInputTokenUsageDetails(prop.Value, options);
@@ -121,7 +136,13 @@ namespace OpenAI.Images
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ImageTokenUsage(inputTokenCount, totalTokenCount, outputTokenCount, inputTokenDetails, additionalBinaryDataProperties);
+            return new ImageTokenUsage(
+                inputTokenCount,
+                totalTokenCount,
+                outputTokenCount,
+                outputTokenDetails,
+                inputTokenDetails,
+                additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<ImageTokenUsage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

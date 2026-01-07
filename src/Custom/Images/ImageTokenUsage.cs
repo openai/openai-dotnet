@@ -20,4 +20,8 @@ public partial class ImageTokenUsage
     // CUSTOM: Renamed.
     [CodeGenMember("InputTokensDetails")]
     public ImageInputTokenUsageDetails InputTokenDetails { get; }
+
+    // CUSTOM: Renamed.
+    [CodeGenMember("OutputTokensDetails")]
+    public ImageOutputTokenUsageDetails OutputTokenDetails { get; }
 }

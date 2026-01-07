@@ -10,9 +10,9 @@ using OpenAI;
 
 namespace OpenAI.Images
 {
-    internal partial class InternalImageEditPartialImageEvent : InternalImageEditStreamEvent, IJsonModel<InternalImageEditPartialImageEvent>
+    internal partial class InternalImageEditPartialImageEvent : IJsonModel<InternalImageEditPartialImageEvent>
     {
-        internal InternalImageEditPartialImageEvent() : this(InternalImageEditStreamEventType.ImageEditPartialImage, null, null, default, default, default, default, default, default)
+        internal InternalImageEditPartialImageEvent()
         {
         }
 
@@ -23,23 +23,27 @@ namespace OpenAI.Images
             writer.WriteEndObject();
         }
 
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalImageEditPartialImageEvent>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalImageEditPartialImageEvent)} does not support writing '{format}' format.");
             }
-            base.JsonModelWriteCore(writer, options);
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
+            {
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Kind);
+            }
             if (_additionalBinaryDataProperties?.ContainsKey("b64_json") != true)
             {
                 writer.WritePropertyName("b64_json"u8);
-                writer.WriteStringValue(B64Json);
+                writer.WriteBase64StringValue(B64Json.ToArray(), "D");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
                 writer.WritePropertyName("created_at"u8);
-                writer.WriteNumberValue(CreatedAt);
+                writer.WriteNumberValue(CreatedAt, "U");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("size") != true)
             {
@@ -66,11 +70,31 @@ namespace OpenAI.Images
                 writer.WritePropertyName("partial_image_index"u8);
                 writer.WriteNumberValue(PartialImageIndex);
             }
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
-        InternalImageEditPartialImageEvent IJsonModel<InternalImageEditPartialImageEvent>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalImageEditPartialImageEvent)JsonModelCreateCore(ref reader, options);
+        InternalImageEditPartialImageEvent IJsonModel<InternalImageEditPartialImageEvent>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected override InternalImageEditStreamEvent JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual InternalImageEditPartialImageEvent JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalImageEditPartialImageEvent>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -87,30 +111,30 @@ namespace OpenAI.Images
             {
                 return null;
             }
-            InternalImageEditStreamEventType kind = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            string b64Json = default;
-            int createdAt = default;
+            string kind = default;
+            BinaryData b64Json = default;
+            DateTimeOffset createdAt = default;
             InternalImageEditPartialImageEventSize size = default;
             InternalImageEditPartialImageEventQuality quality = default;
             InternalImageEditPartialImageEventBackground background = default;
             InternalImageEditPartialImageEventOutputFormat outputFormat = default;
             int partialImageIndex = default;
+            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalImageEditStreamEventType(prop.Value.GetString());
+                    kind = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("b64_json"u8))
                 {
-                    b64Json = prop.Value.GetString();
+                    b64Json = BinaryData.FromBytes(prop.Value.GetBytesFromBase64("D"));
                     continue;
                 }
                 if (prop.NameEquals("created_at"u8))
                 {
-                    createdAt = prop.Value.GetInt32();
+                    createdAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
                     continue;
                 }
                 if (prop.NameEquals("size"u8))
@@ -143,19 +167,19 @@ namespace OpenAI.Images
             }
             return new InternalImageEditPartialImageEvent(
                 kind,
-                additionalBinaryDataProperties,
                 b64Json,
                 createdAt,
                 size,
                 quality,
                 background,
                 outputFormat,
-                partialImageIndex);
+                partialImageIndex,
+                additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalImageEditPartialImageEvent>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalImageEditPartialImageEvent>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -167,9 +191,9 @@ namespace OpenAI.Images
             }
         }
 
-        InternalImageEditPartialImageEvent IPersistableModel<InternalImageEditPartialImageEvent>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalImageEditPartialImageEvent)PersistableModelCreateCore(data, options);
+        InternalImageEditPartialImageEvent IPersistableModel<InternalImageEditPartialImageEvent>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        protected override InternalImageEditStreamEvent PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual InternalImageEditPartialImageEvent PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<InternalImageEditPartialImageEvent>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)

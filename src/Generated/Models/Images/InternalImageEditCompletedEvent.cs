@@ -7,9 +7,11 @@ using System.Collections.Generic;
 
 namespace OpenAI.Images
 {
-    internal partial class InternalImageEditCompletedEvent : InternalImageEditStreamEvent
+    internal partial class InternalImageEditCompletedEvent
     {
-        internal InternalImageEditCompletedEvent(string b64Json, int createdAt, InternalImageEditCompletedEventSize size, InternalImageEditCompletedEventQuality quality, InternalImageEditCompletedEventBackground background, InternalImageEditCompletedEventOutputFormat outputFormat, InternalImagesUsage usage) : base(InternalImageEditStreamEventType.ImageEditCompleted)
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
+        internal InternalImageEditCompletedEvent(BinaryData b64Json, DateTimeOffset createdAt, InternalImageEditCompletedEventSize size, InternalImageEditCompletedEventQuality quality, InternalImageEditCompletedEventBackground background, InternalImageEditCompletedEventOutputFormat outputFormat, InternalImagesUsage usage)
         {
             B64Json = b64Json;
             CreatedAt = createdAt;
@@ -20,8 +22,9 @@ namespace OpenAI.Images
             Usage = usage;
         }
 
-        internal InternalImageEditCompletedEvent(InternalImageEditStreamEventType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string b64Json, int createdAt, InternalImageEditCompletedEventSize size, InternalImageEditCompletedEventQuality quality, InternalImageEditCompletedEventBackground background, InternalImageEditCompletedEventOutputFormat outputFormat, InternalImagesUsage usage) : base(kind, additionalBinaryDataProperties)
+        internal InternalImageEditCompletedEvent(string kind, BinaryData b64Json, DateTimeOffset createdAt, InternalImageEditCompletedEventSize size, InternalImageEditCompletedEventQuality quality, InternalImageEditCompletedEventBackground background, InternalImageEditCompletedEventOutputFormat outputFormat, InternalImagesUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            Kind = kind;
             B64Json = b64Json;
             CreatedAt = createdAt;
             Size = size;
@@ -29,11 +32,14 @@ namespace OpenAI.Images
             Background = background;
             OutputFormat = outputFormat;
             Usage = usage;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string B64Json { get; }
+        public string Kind { get; } = "image_edit.completed";
 
-        public int CreatedAt { get; }
+        public BinaryData B64Json { get; }
+
+        public DateTimeOffset CreatedAt { get; }
 
         internal InternalImageEditCompletedEventSize Size { get; }
 
@@ -44,5 +50,11 @@ namespace OpenAI.Images
         internal InternalImageEditCompletedEventOutputFormat OutputFormat { get; }
 
         internal InternalImagesUsage Usage { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

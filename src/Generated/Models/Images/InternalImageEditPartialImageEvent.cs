@@ -7,9 +7,11 @@ using System.Collections.Generic;
 
 namespace OpenAI.Images
 {
-    internal partial class InternalImageEditPartialImageEvent : InternalImageEditStreamEvent
+    internal partial class InternalImageEditPartialImageEvent
     {
-        internal InternalImageEditPartialImageEvent(string b64Json, int createdAt, InternalImageEditPartialImageEventSize size, InternalImageEditPartialImageEventQuality quality, InternalImageEditPartialImageEventBackground background, InternalImageEditPartialImageEventOutputFormat outputFormat, int partialImageIndex) : base(InternalImageEditStreamEventType.ImageEditPartialImage)
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
+        internal InternalImageEditPartialImageEvent(BinaryData b64Json, DateTimeOffset createdAt, InternalImageEditPartialImageEventSize size, InternalImageEditPartialImageEventQuality quality, InternalImageEditPartialImageEventBackground background, InternalImageEditPartialImageEventOutputFormat outputFormat, int partialImageIndex)
         {
             B64Json = b64Json;
             CreatedAt = createdAt;
@@ -20,8 +22,9 @@ namespace OpenAI.Images
             PartialImageIndex = partialImageIndex;
         }
 
-        internal InternalImageEditPartialImageEvent(InternalImageEditStreamEventType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string b64Json, int createdAt, InternalImageEditPartialImageEventSize size, InternalImageEditPartialImageEventQuality quality, InternalImageEditPartialImageEventBackground background, InternalImageEditPartialImageEventOutputFormat outputFormat, int partialImageIndex) : base(kind, additionalBinaryDataProperties)
+        internal InternalImageEditPartialImageEvent(string kind, BinaryData b64Json, DateTimeOffset createdAt, InternalImageEditPartialImageEventSize size, InternalImageEditPartialImageEventQuality quality, InternalImageEditPartialImageEventBackground background, InternalImageEditPartialImageEventOutputFormat outputFormat, int partialImageIndex, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            Kind = kind;
             B64Json = b64Json;
             CreatedAt = createdAt;
             Size = size;
@@ -29,11 +32,14 @@ namespace OpenAI.Images
             Background = background;
             OutputFormat = outputFormat;
             PartialImageIndex = partialImageIndex;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string B64Json { get; }
+        public string Kind { get; } = "image_edit.partial_image";
 
-        public int CreatedAt { get; }
+        public BinaryData B64Json { get; }
+
+        public DateTimeOffset CreatedAt { get; }
 
         internal InternalImageEditPartialImageEventSize Size { get; }
 
@@ -44,5 +50,11 @@ namespace OpenAI.Images
         internal InternalImageEditPartialImageEventOutputFormat OutputFormat { get; }
 
         public int PartialImageIndex { get; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }

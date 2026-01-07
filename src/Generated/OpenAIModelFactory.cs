@@ -1274,9 +1274,20 @@ namespace OpenAI
             return new GeneratedImage(imageBytes, imageUri, revisedPrompt, additionalBinaryDataProperties: null);
         }
 
-        public static ImageTokenUsage ImageTokenUsage(long inputTokenCount = default, long totalTokenCount = default, long outputTokenCount = default, ImageInputTokenUsageDetails inputTokenDetails = default)
+        public static ImageTokenUsage ImageTokenUsage(long inputTokenCount = default, long totalTokenCount = default, long outputTokenCount = default, ImageOutputTokenUsageDetails outputTokenDetails = default, ImageInputTokenUsageDetails inputTokenDetails = default)
         {
-            return new ImageTokenUsage(inputTokenCount, totalTokenCount, outputTokenCount, inputTokenDetails, additionalBinaryDataProperties: null);
+            return new ImageTokenUsage(
+                inputTokenCount,
+                totalTokenCount,
+                outputTokenCount,
+                outputTokenDetails,
+                inputTokenDetails,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static ImageOutputTokenUsageDetails ImageOutputTokenUsageDetails(long imageTokenCount = default, long textTokenCount = default)
+        {
+            return new ImageOutputTokenUsageDetails(imageTokenCount, textTokenCount, additionalBinaryDataProperties: null);
         }
 
         public static ImageInputTokenUsageDetails ImageInputTokenUsageDetails(long textTokenCount = default, long imageTokenCount = default)
