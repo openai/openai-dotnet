@@ -41,7 +41,7 @@ namespace OpenAI.Chat
                 bool hasMore = ((InternalChatCompletionMessageList)result).HasMore;
                 nextToken = ((InternalChatCompletionMessageList)result).LastId;
                 // Plugin customization: add hasMore == false check to pagination condition
-                if (nextToken == null || !hasMore)
+                if (string.IsNullOrEmpty(nextToken) || !hasMore)
                 {
                     yield break;
                 }
@@ -52,7 +52,7 @@ namespace OpenAI.Chat
         public override ContinuationToken GetContinuationToken(ClientResult page)
         {
             string nextPage = ((InternalChatCompletionMessageList)page).LastId;
-            if (nextPage != null)
+            if (!string.IsNullOrEmpty(nextPage))
             {
                 return ContinuationToken.FromBytes(BinaryData.FromString(nextPage));
             }

@@ -1,3 +1,4 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using System;
 using System.IO;
 

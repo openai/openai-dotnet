@@ -1,6 +1,5 @@
 using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 using OpenAI.Files;
 using OpenAI.FineTuning;
 using OpenAI.Tests.Utility;

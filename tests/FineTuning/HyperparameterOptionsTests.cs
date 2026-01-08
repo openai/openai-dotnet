@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using OpenAI.FineTuning;
-using System;
 
 namespace OpenAI.Tests.FineTuning;
 

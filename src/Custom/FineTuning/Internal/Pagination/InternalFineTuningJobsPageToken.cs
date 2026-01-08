@@ -1,5 +1,6 @@
-﻿#nullable enable
+#nullable enable
 
+using Microsoft.TypeSpec.Generator.Customizations;
 using System.ClientModel;
 using System.Diagnostics.CodeAnalysis;
 

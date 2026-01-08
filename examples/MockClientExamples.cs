@@ -1,8 +1,8 @@
-﻿using System.ClientModel.Primitives;
-using System.ClientModel;
-using Moq;
+﻿using Moq;
 using NUnit.Framework;
 using OpenAI.Audio;
+using System.ClientModel;
+using System.ClientModel.Primitives;
 
 namespace OpenAI.Examples.Miscellaneous;
 

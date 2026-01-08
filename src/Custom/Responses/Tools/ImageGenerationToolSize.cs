@@ -1,5 +1,5 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+using Microsoft.TypeSpec.Generator.Customizations;
+using System;
 
 namespace OpenAI.Responses;
 
