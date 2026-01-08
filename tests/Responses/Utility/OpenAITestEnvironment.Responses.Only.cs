@@ -1,0 +1,33 @@
+using Microsoft.ClientModel.TestFramework;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+
+namespace OpenAI.Tests;
+
+public class OpenAITestEnvironment : TestEnvironment
+{
+    static OpenAITestEnvironment()
+    {
+        // RepositoryRoot resolves to tests/ directory (parent of Responses/)
+        // Same path as the original OpenAI.Tests project
+        DevCertPath = Path.Combine(
+            RepositoryRoot,
+            "Utility",
+            "testproxy",
+            "dotnet-devcert.pfx");
+    }
+    
+    public string OpenApiKey => GetRecordedVariable("OPEN-API-KEY", options => options.IsSecret("api-key"));
+
+    public override Dictionary<string, string> ParseEnvironmentFile() => new()
+        {
+            { "OPEN-API-KEY", Environment.GetEnvironmentVariable("OPENAI_API_KEY") ?? "api-key" }
+        };
+
+    public override Task WaitForEnvironmentAsync()
+    {
+        return Task.CompletedTask;
+    }
+}

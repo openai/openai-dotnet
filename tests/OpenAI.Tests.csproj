@@ -10,8 +10,18 @@
     <NoWarn>$(NoWarn);OPENAI001;OPENAI002;SCME0001;</NoWarn>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)' != 'Unsigned'">
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\src\OpenAI.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\src\OpenAI.csproj" />
+    <ProjectReference Include="..\src\Shared\OpenAI.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Responses\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,8 +39,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\src\Utility\Telemetry\*.cs" LinkBase="Telemetry\Shared" />
-    <Compile Include="..\src\Utility\AppContextSwitchHelper.cs" LinkBase="Telemetry\Shared" />
   </ItemGroup>
 
 	<ItemGroup>

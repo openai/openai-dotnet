@@ -1,0 +1,5 @@
+<Project>
+  <Target Name="ShowCompileItems" BeforeTargets="CoreCompile">
+    <Message Text="Compile Item: %(Compile.Identity)" Importance="High" />
+  </Target>
+</Project>

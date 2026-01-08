@@ -1,4 +1,10 @@
 namespace OpenAI {
+    public class OpenAIClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     public class OpenAIClient {
         protected OpenAIClient();
         public OpenAIClient(ApiKeyCredential credential, OpenAIClientOptions options);
@@ -27,12 +33,6 @@ namespace OpenAI {
         public virtual ResponsesClient GetResponsesClient(string model);
         public virtual VectorStoreClient GetVectorStoreClient();
         public virtual VideoClient GetVideoClient();
-    }
-    public class OpenAIClientOptions : ClientPipelineOptions {
-        public Uri Endpoint { get; set; }
-        public string OrganizationId { get; set; }
-        public string ProjectId { get; set; }
-        public string UserAgentApplicationId { get; set; }
     }
     public class OpenAIContext : ModelReaderWriterContext {
         public static OpenAIContext Default { get; }
@@ -231,7 +231,7 @@ namespace OpenAI.Assistants {
         protected virtual AssistantModificationOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
-    public class AssistantResponseFormat : IEquatable<AssistantResponseFormat>, IEquatable<string>, IJsonModel<AssistantResponseFormat>, IPersistableModel<AssistantResponseFormat> {
+    public class AssistantResponseFormat : IJsonModel<AssistantResponseFormat>, IPersistableModel<AssistantResponseFormat>, IEquatable<AssistantResponseFormat>, IEquatable<string> {
         public static AssistantResponseFormat Auto { get; }
         public static AssistantResponseFormat JsonObject { get; }
         public static AssistantResponseFormat Text { get; }
@@ -2715,7 +2715,7 @@ namespace OpenAI.FineTuning {
         protected virtual FineTuningOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
-    public readonly partial struct FineTuningStatus : IEquatable<string>, IEquatable<FineTuningStatus> {
+    public readonly partial struct FineTuningStatus : IEquatable<FineTuningStatus>, IEquatable<string> {
         public FineTuningStatus(string value);
         public static FineTuningStatus Cancelled { get; }
         public static FineTuningStatus Failed { get; }
