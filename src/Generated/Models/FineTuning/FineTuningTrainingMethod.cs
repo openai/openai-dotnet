@@ -11,12 +11,30 @@ namespace OpenAI.FineTuning
     [Experimental("OPENAI001")]
     public partial class FineTuningTrainingMethod
     {
-        internal FineTuningTrainingMethod(InternalFineTuningJobRequestMethodSupervised supervised, InternalFineTuningJobRequestMethodDpo dpo, InternalFineTuneReinforcementMethod reinforcement, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
+        internal FineTuningTrainingMethod(InternalFineTuneMethodType kind)
         {
+            Kind = kind;
+        }
+
+        internal FineTuningTrainingMethod(InternalFineTuneMethodType kind, InternalFineTuningJobRequestMethodSupervised supervised, InternalFineTuningJobRequestMethodDpo dpo, InternalFineTuneReinforcementMethod reinforcement, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        {
+            Kind = kind;
             Supervised = supervised;
             Dpo = dpo;
             Reinforcement = reinforcement;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
+        }
+
+        internal InternalFineTuneMethodType Kind { get; set; }
+
+        internal InternalFineTuneReinforcementMethod Reinforcement { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
         }
     }
 }

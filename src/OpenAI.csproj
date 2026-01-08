@@ -52,10 +52,6 @@
   <ItemGroup>
     <Compile Remove="Generated/OpenAIModelFactory.cs" />
     <Compile Remove="Generated/Models/OpenAIContext.cs" />
-    <Compile Remove="Generated/Models/FineTuning/InternalFineTuneReinforcementMethod.cs" />
-    <Compile Remove="Generated/Models/FineTuning/InternalFineTuneReinforcementMethod.Serialization.cs" />
-    <Compile Remove="Generated/Models/FineTuning/FineTuningTrainingMethod.cs" />
-    <Compile Remove="Generated/Models/FineTuning/FineTuningTrainingMethod.Serialization.cs" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(Configuration)' != 'Unsigned'">
