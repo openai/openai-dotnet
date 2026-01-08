@@ -1,5 +1,4 @@
 ﻿using Microsoft.ClientModel.TestFramework;
-using Microsoft.ClientModel.TestFramework.TestProxy.Admin;
 using NUnit.Framework;
 using System.ClientModel;
 using static OpenAI.Tests.TestHelpers;

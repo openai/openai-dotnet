@@ -41,7 +41,7 @@ namespace OpenAI.Assistants
                 bool hasMore = ((InternalListAssistantsResponse)result).HasMore;
                 nextToken = ((InternalListAssistantsResponse)result).LastId;
                 // Plugin customization: add hasMore == false check to pagination condition
-                if (nextToken == null || !hasMore)
+                if (string.IsNullOrEmpty(nextToken) || !hasMore)
                 {
                     yield break;
                 }
@@ -52,7 +52,7 @@ namespace OpenAI.Assistants
         public override ContinuationToken GetContinuationToken(ClientResult page)
         {
             string nextPage = ((InternalListAssistantsResponse)page).LastId;
-            if (nextPage != null)
+            if (!string.IsNullOrEmpty(nextPage))
             {
                 return ContinuationToken.FromBytes(BinaryData.FromString(nextPage));
             }

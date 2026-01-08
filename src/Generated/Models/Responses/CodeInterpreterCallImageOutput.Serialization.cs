@@ -83,7 +83,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("url"u8))
                 {
-                    imageUri = new Uri(prop.Value.GetString());
+                    imageUri = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString());
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());

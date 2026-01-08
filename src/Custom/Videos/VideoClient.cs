@@ -1,4 +1,5 @@
-﻿using System;
+using Microsoft.TypeSpec.Generator.Customizations;
+using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;

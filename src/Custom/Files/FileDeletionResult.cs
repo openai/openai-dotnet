@@ -1,6 +1,4 @@
-﻿using System.ClientModel;
-using System.ClientModel.Primitives;
-using System.Text.Json;
+using Microsoft.TypeSpec.Generator.Customizations;
 
 namespace OpenAI.Files;
 

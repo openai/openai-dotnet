@@ -1,7 +1,6 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
 
 namespace OpenAI.Chat;

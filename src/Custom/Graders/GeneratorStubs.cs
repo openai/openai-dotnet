@@ -1,4 +1,6 @@
-﻿namespace OpenAI.Graders;
+using Microsoft.TypeSpec.Generator.Customizations;
+
+namespace OpenAI.Graders;
 
 [CodeGenType("GraderStringCheckOperation")] public readonly partial struct GraderStringCheckOperation { }
 [CodeGenType("GraderType")] public readonly partial struct GraderType { }

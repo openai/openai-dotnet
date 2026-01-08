@@ -1,3 +1,5 @@
+using Microsoft.TypeSpec.Generator.Customizations;
+
 namespace OpenAI.Chat;
 
 /// <summary> A breakdown of the number of tokens used in the input as reported in <see cref="ChatTokenUsage.InputTokenCount"/>. </summary>

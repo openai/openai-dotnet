@@ -1,3 +1,4 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using OpenAI.Telemetry;
 using System;
 using System.ClientModel;

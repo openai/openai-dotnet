@@ -1,3 +1,5 @@
+using Microsoft.TypeSpec.Generator.Customizations;
+
 namespace OpenAI.Embeddings;
 
 // CUSTOM: Renamed.

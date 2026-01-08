@@ -1,4 +1,4 @@
-﻿using System;
+using Microsoft.TypeSpec.Generator.Customizations;
 
 namespace OpenAI.Assistants;
 

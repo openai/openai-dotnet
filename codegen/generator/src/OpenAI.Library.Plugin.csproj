@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <Nullable>enable</Nullable>
         <RootNamespace>OpenAI.Microsoft.Generator.CSharp.ClientModel.Plugin</RootNamespace>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.TypeSpec.Generator.ClientModel" Version="1.0.0-alpha.20251125.5" />
+      <PackageReference Include="Microsoft.TypeSpec.Generator.ClientModel" Version="1.0.0-alpha.20251223.2" />
     </ItemGroup>
 
   <!-- Copy output to package dist path for local execution and  -->
