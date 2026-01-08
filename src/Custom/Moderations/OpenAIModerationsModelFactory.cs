@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -69,5 +70,27 @@ public static partial class OpenAIModerationsModelFactory
             violence,
             violenceGraphic,
             serializedAdditionalRawData: null);
+    }
+
+    public static ModerationInputPart ModerationInputPart(string kind = default)
+    {
+
+        return new InternalUnknownCreateModerationRequestInput(kind.ToModerationInputPartKind(), additionalBinaryDataProperties: null);
+    }
+
+    public static ModerationTextPart ModerationTextPart(string text = default)
+    {
+
+        return new ModerationTextPart(ModerationInputPartKind.Text, additionalBinaryDataProperties: null, text);
+    }
+
+    public static ModerationImagePart ModerationImagePart(Uri imageUri = default)
+    {
+        return new ModerationImagePart(new InternalModerationImagePartImageUrl(imageUri));
+    }
+
+    public static ModerationImagePart ModerationImagePart(BinaryData imageBytes = default, string imageBytesMediaType = default)
+    {
+        return new ModerationImagePart(new InternalModerationImagePartImageUrl(imageBytes, imageBytesMediaType));
     }
 }

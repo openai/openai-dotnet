@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "77",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.6.0-alpha.20251030.2 (.NET 9.0.10; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.8.0 (.NET 10.0.1; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "input": "I am killing all my houseplants!",
@@ -18,24 +18,24 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "996e7803fe5a838f-SEA",
+        "CF-RAY": "9bade5050e6fb9a2-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "1960",
+        "Content-Length": "1959",
         "Content-Type": "application/json",
-        "Date": "Thu, 30 Oct 2025 22:49:57 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "151",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "155",
+        "x-envoy-upstream-service-time": "137",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "modr-2838",
+        "id": "modr-197",
         "model": "omni-moderation-latest",
         "results": [
           {

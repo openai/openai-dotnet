@@ -193,6 +193,40 @@ public partial class ModerationClient
         return ClientResult.FromValue((ModerationResultCollection)result, result.GetRawResponse());
     }
 
+    /// <summary> Classifies if the inputs are potentially harmful across several categories. </summary>
+    /// <param name="inputParts"> A collection of content items that can include text and image information to classify. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="inputParts"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="inputParts"/> is an empty collection, and was expected to be non-empty. </exception>
+    public virtual async Task<ClientResult<ModerationResult>> ClassifyModerationInputsAsync(IEnumerable<ModerationInputPart> inputParts, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(inputParts, nameof(inputParts));
+
+        ModerationOptions options = new();
+        CreateModerationOptions(inputParts, ref options);
+
+        using BinaryContent content = options.ToBinaryContent(); ;
+        ClientResult result = await ClassifyTextAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return ClientResult.FromValue(((ModerationResultCollection)result).FirstOrDefault(), result.GetRawResponse());
+    }
+
+    /// <summary> Classifies if the inputs are potentially harmful across several categories. </summary>
+    /// <param name="inputParts"> A collection of content items that can include text and image information to classify. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="inputParts"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="inputParts"/> is an empty collection, and was expected to be non-empty. </exception>
+    public virtual ClientResult<ModerationResult> ClassifyModerationInputs(IEnumerable<ModerationInputPart> inputParts, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNullOrEmpty(inputParts, nameof(inputParts));
+
+        ModerationOptions options = new();
+        CreateModerationOptions(inputParts, ref options);
+
+        using BinaryContent content = options.ToBinaryContent();
+        ClientResult result = ClassifyText(content, cancellationToken.ToRequestOptions());
+        return ClientResult.FromValue(((ModerationResultCollection)result).FirstOrDefault(), result.GetRawResponse());
+    }
+
     private void CreateModerationOptions(string input, ref ModerationOptions options)
     {
         using MemoryStream stream = new();
@@ -221,6 +255,23 @@ public partial class ModerationClient
         writer.Flush();
 
         options.Input = BinaryData.FromBytes(stream.GetBuffer().AsMemory(0, (int)stream.Length));
+        options.Model = _model;
+    }
+
+    private void CreateModerationOptions(IEnumerable<ModerationInputPart> inputParts, ref ModerationOptions options)
+    {
+        using MemoryStream stream = new();
+        using Utf8JsonWriter writer = new(stream);
+
+        writer.WriteStartArray();
+        foreach (ModerationInputPart part in inputParts)
+        {
+            writer.WriteObjectValue(part);
+        }
+        writer.WriteEndArray();
+        writer.Flush();
+
+        options.Input = BinaryData.FromBytes(stream.ToArray());
         options.Model = _model;
     }
 }

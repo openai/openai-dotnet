@@ -17,5 +17,5 @@ public partial class ModerationCategory
     public float Score { get; }
 
     /// <summary> The kinds of inputs that the score is applicable to. </summary>
-    internal ModerationApplicableInputKinds ApplicableInputKinds { get; }
+    public ModerationApplicableInputKinds ApplicableInputKinds { get; }
 }
