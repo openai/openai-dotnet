@@ -2,9 +2,36 @@
 
 #nullable disable
 
+using System;
+using System.Collections.Generic;
+using OpenAI.Graders;
+
 namespace OpenAI.FineTuning
 {
     internal partial class InternalFineTuneReinforcementMethod
     {
+        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+
+        public InternalFineTuneReinforcementMethod(BinaryData grader)
+        {
+            Grader = grader;
+        }
+
+        internal InternalFineTuneReinforcementMethod(BinaryData grader, FineTuneReinforcementHyperparameters hyperparameters, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        {
+            Grader = grader;
+            Hyperparameters = hyperparameters;
+            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+        }
+
+        public BinaryData Grader { get; set; }
+
+        public FineTuneReinforcementHyperparameters Hyperparameters { get; set; }
+
+        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
+        {
+            get => _additionalBinaryDataProperties;
+            set => _additionalBinaryDataProperties = value;
+        }
     }
 }
