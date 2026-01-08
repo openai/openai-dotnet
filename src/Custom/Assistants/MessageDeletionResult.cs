@@ -1,7 +1,4 @@
-using System.ClientModel;
-using System.ClientModel.Primitives;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.Json;
+using Microsoft.TypeSpec.Generator.Customizations;
 
 namespace OpenAI.Assistants;
 

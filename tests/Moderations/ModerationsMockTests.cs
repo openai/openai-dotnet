@@ -2,7 +2,6 @@
 using Microsoft.ClientModel.TestFramework.Mocks;
 using NUnit.Framework;
 using OpenAI.Moderations;
-using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.Linq;

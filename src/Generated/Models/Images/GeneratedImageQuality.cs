@@ -34,6 +34,8 @@ namespace OpenAI.Images
         [Experimental("OPENAI001")]
         public static GeneratedImageQuality Medium { get; } = new GeneratedImageQuality(MediumValue);
 
+        public static GeneratedImageQuality High { get; } = new GeneratedImageQuality(HighValue);
+
         [Experimental("OPENAI001")]
         public static GeneratedImageQuality Auto { get; } = new GeneratedImageQuality(AutoValue);
 

@@ -1,8 +1,8 @@
-﻿using System;
+﻿using NUnit.Framework;
+using OpenAI.Moderations;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
-using OpenAI.Moderations;
 
 namespace OpenAI.Tests.Moderations;
 

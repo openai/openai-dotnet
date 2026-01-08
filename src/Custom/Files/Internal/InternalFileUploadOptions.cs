@@ -1,4 +1,5 @@
-﻿using System.IO;
+using Microsoft.TypeSpec.Generator.Customizations;
+using System.IO;
 
 namespace OpenAI.Files;
 

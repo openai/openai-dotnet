@@ -1,3 +1,4 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
@@ -14,10 +15,10 @@ namespace OpenAI.Models;
 /// <summary> The service client for OpenAI model operations. </summary>
 [CodeGenType("Models")]
 [CodeGenSuppress("OpenAIModelClient", typeof(ClientPipeline), typeof(Uri))]
-[CodeGenSuppress("ListModelsAsync", typeof(CancellationToken))]
-[CodeGenSuppress("ListModels", typeof(CancellationToken))]
-[CodeGenSuppress("RetrieveModelAsync", typeof(string), typeof(CancellationToken))]
-[CodeGenSuppress("RetrieveModel", typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("GetModelsAsync", typeof(CancellationToken))]
+[CodeGenSuppress("GetModels", typeof(CancellationToken))]
+[CodeGenSuppress("GetModelAsync", typeof(string), typeof(CancellationToken))]
+[CodeGenSuppress("GetModel", typeof(string), typeof(CancellationToken))]
 
 public partial class OpenAIModelClient
 {

@@ -1,6 +1,5 @@
-using System;
+using Microsoft.TypeSpec.Generator.Customizations;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace OpenAI.Moderations;
 

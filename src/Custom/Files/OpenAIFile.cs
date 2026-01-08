@@ -1,9 +1,7 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using System;
-using System.ClientModel;
-using System.ClientModel.Primitives;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Text.Json;
 
 namespace OpenAI.Files;
 

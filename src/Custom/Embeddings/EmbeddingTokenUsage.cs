@@ -1,5 +1,8 @@
+using Microsoft.TypeSpec.Generator.Customizations;
+
 namespace OpenAI.Embeddings;
 
+// CUSTOM: Renamed.
 [CodeGenType("CreateEmbeddingResponseUsage")]
 public partial class EmbeddingTokenUsage
 {

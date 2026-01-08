@@ -5,7 +5,6 @@ using OpenAI.VectorStores;
 using System;
 using System.ClientModel;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenAI.Examples;

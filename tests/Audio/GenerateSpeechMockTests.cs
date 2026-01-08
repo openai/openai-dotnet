@@ -1,9 +1,9 @@
-﻿using System;
-using System.ClientModel;
-using System.Threading;
-using Microsoft.ClientModel.TestFramework;
+﻿using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
 using OpenAI.Audio;
+using System;
+using System.ClientModel;
+using System.Threading;
 
 namespace OpenAI.Tests.Audio;
 

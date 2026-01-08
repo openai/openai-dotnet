@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
+using Microsoft.TypeSpec.Generator.Customizations;
+using System;
 
 namespace OpenAI.Chat;
 

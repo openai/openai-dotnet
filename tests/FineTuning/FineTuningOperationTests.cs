@@ -1,10 +1,5 @@
 ﻿using NUnit.Framework;
 using OpenAI.FineTuning;
-using System;
-using System.ClientModel.Primitives;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace OpenAI.Tests.FineTuning;
 

@@ -1,3 +1,5 @@
+using Microsoft.TypeSpec.Generator.Customizations;
+
 namespace OpenAI.Moderations;
 
 [CodeGenType("CreateModerationRequestModel")]

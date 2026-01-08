@@ -11,8 +11,8 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using static OpenAI.Tests.Telemetry.TestMeterListener;
 using static OpenAI.Tests.Telemetry.TestActivityListener;
+using static OpenAI.Tests.Telemetry.TestMeterListener;
 
 namespace OpenAI.Tests.Telemetry;
 

@@ -1,3 +1,5 @@
+using Microsoft.TypeSpec.Generator.Customizations;
+
 namespace OpenAI.Internal;
 
 [CodeGenType("ResponseFormat")] internal partial class InternalResponseFormat { }

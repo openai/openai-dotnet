@@ -1,3 +1,4 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using OpenAI.Files;
 using System;
 using System.ClientModel;

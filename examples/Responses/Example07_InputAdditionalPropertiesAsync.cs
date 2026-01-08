@@ -1,8 +1,8 @@
 ﻿using NUnit.Framework;
-using System;
 using OpenAI.Responses;
-using System.Threading.Tasks;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace OpenAI.Examples;
 

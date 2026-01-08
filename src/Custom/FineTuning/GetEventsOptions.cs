@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+using Microsoft.TypeSpec.Generator.Customizations;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
 
 namespace OpenAI.FineTuning;
 

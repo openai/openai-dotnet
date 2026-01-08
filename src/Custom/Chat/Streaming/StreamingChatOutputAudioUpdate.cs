@@ -1,7 +1,7 @@
 namespace OpenAI.Chat;
 
+using Microsoft.TypeSpec.Generator.Customizations;
 using System;
-using System.Diagnostics.CodeAnalysis;
 
 // CUSTOM: Added Experimental attribute.
 /// <summary>

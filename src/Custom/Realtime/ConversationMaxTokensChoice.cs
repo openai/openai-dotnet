@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Realtime;

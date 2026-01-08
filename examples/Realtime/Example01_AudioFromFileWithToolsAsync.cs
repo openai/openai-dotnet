@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using OpenAI.Images;
 using OpenAI.Realtime;
 using System;
 using System.ClientModel;

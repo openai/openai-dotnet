@@ -1,5 +1,5 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using OpenAI.Internal;
-using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Chat;
 

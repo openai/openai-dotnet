@@ -160,7 +160,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    serverUri = new Uri(prop.Value.GetString());
+                    serverUri = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("connector_id"u8))

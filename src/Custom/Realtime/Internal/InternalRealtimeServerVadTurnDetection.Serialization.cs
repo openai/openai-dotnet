@@ -1,4 +1,4 @@
-using OpenAI.VectorStores;
+using Microsoft.TypeSpec.Generator.Customizations;
 using System;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;

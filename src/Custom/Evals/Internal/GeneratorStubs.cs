@@ -1,4 +1,4 @@
-using OpenAI.Files;
+using Microsoft.TypeSpec.Generator.Customizations;
 using System.ClientModel;
 
 namespace OpenAI.Evals;

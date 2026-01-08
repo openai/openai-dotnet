@@ -104,7 +104,7 @@ namespace OpenAI.Chat
                 }
                 if (prop.NameEquals("url"u8))
                 {
-                    url = new Uri(prop.Value.GetString());
+                    url = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("title"u8))

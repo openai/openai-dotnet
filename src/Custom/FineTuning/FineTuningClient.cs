@@ -1,3 +1,4 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using OpenAI.VectorStores;
 using System;
 using System.ClientModel;

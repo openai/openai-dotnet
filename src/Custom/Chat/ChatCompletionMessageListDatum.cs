@@ -1,4 +1,6 @@
-﻿namespace OpenAI.Chat;
+using Microsoft.TypeSpec.Generator.Customizations;
+
+namespace OpenAI.Chat;
 
 [CodeGenType("ChatCompletionMessageListDatum")]
 public partial class ChatCompletionMessageListDatum

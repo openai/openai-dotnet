@@ -1,4 +1,4 @@
-using OpenAI.Containers;
+using Microsoft.TypeSpec.Generator.Customizations;
 using System.ClientModel;
 
 namespace OpenAI.VectorStores;

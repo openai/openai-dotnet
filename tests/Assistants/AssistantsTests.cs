@@ -1,3 +1,9 @@
+using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
+using OpenAI.Assistants;
+using OpenAI.Files;
+using OpenAI.Tests.Utility;
+using OpenAI.VectorStores;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
@@ -7,12 +13,6 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.ClientModel.TestFramework;
-using NUnit.Framework;
-using OpenAI.Assistants;
-using OpenAI.Files;
-using OpenAI.Tests.Utility;
-using OpenAI.VectorStores;
 using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Assistants;

@@ -101,7 +101,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("url"u8))
                 {
-                    uri = new Uri(prop.Value.GetString());
+                    uri = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("start_index"u8))

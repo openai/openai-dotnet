@@ -1,5 +1,4 @@
 using System;
-using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.FineTuning;

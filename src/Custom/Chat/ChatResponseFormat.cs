@@ -1,4 +1,4 @@
-using OpenAI.Internal;
+using Microsoft.TypeSpec.Generator.Customizations;
 using System;
 
 namespace OpenAI.Chat;

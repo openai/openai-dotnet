@@ -1,4 +1,5 @@
-﻿using System.ClientModel.Primitives;
+using Microsoft.TypeSpec.Generator.Customizations;
+using System.ClientModel.Primitives;
 using System.Text.Json;
 
 namespace OpenAI.Realtime;

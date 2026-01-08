@@ -1,7 +1,7 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using OpenAI.Chat;
 using System.ClientModel;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Assistants;
 

@@ -12,7 +12,7 @@ namespace OpenAI.Images
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ImageGenerationOptions(string prompt, InternalCreateImageRequestModel? model, long? n, GeneratedImageQuality? quality, GeneratedImageFormat? responseFormat, GeneratedImageFileFormat? outputFileFormat, int? outputCompressionFactor, GeneratedImageSize? size, GeneratedImageModerationLevel? moderationLevel, GeneratedImageBackground? background, GeneratedImageStyle? style, string endUserId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ImageGenerationOptions(string prompt, InternalCreateImageRequestModel? model, long? n, GeneratedImageQuality? quality, GeneratedImageFormat? responseFormat, GeneratedImageFileFormat? outputFileFormat, int? outputCompressionFactor, bool? stream, int? partialImages, GeneratedImageSize? size, GeneratedImageModerationLevel? moderationLevel, GeneratedImageBackground? background, GeneratedImageStyle? style, string endUserId, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Prompt = prompt;
             Model = model;
@@ -21,6 +21,8 @@ namespace OpenAI.Images
             ResponseFormat = responseFormat;
             OutputFileFormat = outputFileFormat;
             OutputCompressionFactor = outputCompressionFactor;
+            Stream = stream;
+            PartialImages = partialImages;
             Size = size;
             ModerationLevel = moderationLevel;
             Background = background;

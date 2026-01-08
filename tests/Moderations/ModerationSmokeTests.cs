@@ -1,14 +1,13 @@
-using NUnit.Framework;
-using OpenAI.Moderations;
-using OpenAI.Tests.Utility;
-using System.ClientModel;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.ClientModel.Primitives;
-using System.Text.Json;
 using Microsoft.ClientModel.TestFramework;
 using Microsoft.ClientModel.TestFramework.Mocks;
+using NUnit.Framework;
+using OpenAI.Moderations;
+using System;
+using System.ClientModel;
+using System.ClientModel.Primitives;
+using System.Collections.Generic;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace OpenAI.Tests.Moderations;
 

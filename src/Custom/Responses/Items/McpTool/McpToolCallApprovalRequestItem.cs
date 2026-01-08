@@ -1,4 +1,5 @@
-﻿using System;
+using Microsoft.TypeSpec.Generator.Customizations;
+using System;
 
 namespace OpenAI.Responses;
 

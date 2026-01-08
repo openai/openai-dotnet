@@ -38,7 +38,7 @@ namespace OpenAI.Batch
                 bool hasMore = ((InternalListBatchesResponse)result).HasMore;
                 nextToken = ((InternalListBatchesResponse)result).LastId;
                 // Plugin customization: add hasMore == false check to pagination condition
-                if (nextToken == null || !hasMore)
+                if (string.IsNullOrEmpty(nextToken) || !hasMore)
                 {
                     yield break;
                 }
@@ -49,7 +49,7 @@ namespace OpenAI.Batch
         public override ContinuationToken GetContinuationToken(ClientResult page)
         {
             string nextPage = ((InternalListBatchesResponse)page).LastId;
-            if (nextPage != null)
+            if (!string.IsNullOrEmpty(nextPage))
             {
                 return ContinuationToken.FromBytes(BinaryData.FromString(nextPage));
             }

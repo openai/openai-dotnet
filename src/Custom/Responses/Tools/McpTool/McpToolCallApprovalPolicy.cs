@@ -1,4 +1,6 @@
-﻿namespace OpenAI.Responses;
+using Microsoft.TypeSpec.Generator.Customizations;
+
+namespace OpenAI.Responses;
 
 // CUSTOM: This type represents a non-discriminated union of the following components:
 // * A GlobalPolicy defined as an extensible enum.

@@ -1,3 +1,4 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using OpenAI.Assistants;
 using OpenAI.Audio;
 using OpenAI.Batch;
