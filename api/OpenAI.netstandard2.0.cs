@@ -3420,7 +3420,15 @@ namespace OpenAI.Models {
     }
 }
 namespace OpenAI.Moderations {
+    [Flags]
+    public enum ModerationApplicableInputKinds {
+        None = 0,
+        Other = 1,
+        Text = 2,
+        Image = 4
+    }
     public class ModerationCategory {
+        public ModerationApplicableInputKinds ApplicableInputKinds { get; }
         public bool Flagged { get; }
         public float Score { get; }
     }
@@ -3435,12 +3443,36 @@ namespace OpenAI.Moderations {
         public Uri Endpoint { get; }
         public string Model { get; }
         public ClientPipeline Pipeline { get; }
+        public virtual ClientResult<ModerationResult> ClassifyModerationInputs(IEnumerable<ModerationInputPart> inputParts, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult<ModerationResult>> ClassifyModerationInputsAsync(IEnumerable<ModerationInputPart> inputParts, CancellationToken cancellationToken = default);
         public virtual ClientResult ClassifyText(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<ModerationResultCollection> ClassifyText(IEnumerable<string> inputs, CancellationToken cancellationToken = default);
         public virtual ClientResult<ModerationResult> ClassifyText(string input, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> ClassifyTextAsync(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<ModerationResultCollection>> ClassifyTextAsync(IEnumerable<string> inputs, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<ModerationResult>> ClassifyTextAsync(string input, CancellationToken cancellationToken = default);
+    }
+    public class ModerationImagePart : ModerationInputPart, IJsonModel<ModerationImagePart>, IPersistableModel<ModerationImagePart> {
+        public BinaryData ImageBytes { get; }
+        public string ImageBytesMediaType { get; }
+        public Uri ImageUri { get; }
+        protected override ModerationInputPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ModerationInputPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public abstract class ModerationInputPart : IJsonModel<ModerationInputPart>, IPersistableModel<ModerationInputPart> {
+        public static ModerationInputPart CreateImagePart(BinaryData imageBytes, string imageBytesMediaType);
+        public static ModerationInputPart CreateImagePart(Uri imageUri);
+        public static ModerationInputPart CreateTextPart(string text);
+        protected virtual ModerationInputPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual ModerationInputPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public enum ModerationInputPartKind {
+        Text = 0,
+        Image = 1
     }
     public class ModerationResult : IJsonModel<ModerationResult>, IPersistableModel<ModerationResult> {
         public bool Flagged { get; }
@@ -3471,12 +3503,23 @@ namespace OpenAI.Moderations {
         protected virtual ModerationResultCollection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
+    public class ModerationTextPart : ModerationInputPart, IJsonModel<ModerationTextPart>, IPersistableModel<ModerationTextPart> {
+        public string Text { get; }
+        protected override ModerationInputPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ModerationInputPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
     public static class OpenAIModerationsModelFactory {
         public static ModerationCategory ModerationCategory(bool flagged = false, float score = 0);
+        public static ModerationImagePart ModerationImagePart(BinaryData imageBytes = null, string imageBytesMediaType = null);
+        public static ModerationImagePart ModerationImagePart(Uri imageUri = null);
+        public static ModerationInputPart ModerationInputPart(string kind = null);
         public static ModerationResult ModerationResult(bool flagged = false, ModerationCategory hate = null, ModerationCategory hateThreatening = null, ModerationCategory harassment = null, ModerationCategory harassmentThreatening = null, ModerationCategory selfHarm = null, ModerationCategory selfHarmIntent = null, ModerationCategory selfHarmInstructions = null, ModerationCategory sexual = null, ModerationCategory sexualMinors = null, ModerationCategory violence = null, ModerationCategory violenceGraphic = null, ModerationCategory illicit = null, ModerationCategory illicitViolent = null);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static ModerationResult ModerationResult(bool flagged, ModerationCategory hate, ModerationCategory hateThreatening, ModerationCategory harassment, ModerationCategory harassmentThreatening, ModerationCategory selfHarm, ModerationCategory selfHarmIntent, ModerationCategory selfHarmInstructions, ModerationCategory sexual, ModerationCategory sexualMinors, ModerationCategory violence, ModerationCategory violenceGraphic);
         public static ModerationResultCollection ModerationResultCollection(string id = null, string model = null, IEnumerable<ModerationResult> items = null);
+        public static ModerationTextPart ModerationTextPart(string text = null);
     }
 }
 namespace OpenAI.Realtime {

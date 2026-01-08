@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System;
+﻿using System;
+using Microsoft.TypeSpec.Generator.Customizations;
 
 namespace OpenAI.Moderations;
 

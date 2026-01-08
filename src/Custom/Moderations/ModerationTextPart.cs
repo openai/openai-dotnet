@@ -1,4 +1,6 @@
-﻿namespace OpenAI.Moderations;
+﻿using Microsoft.TypeSpec.Generator.Customizations;
+
+namespace OpenAI.Moderations;
 
 // CUSTOM: Renamed.
 [CodeGenType("ModerationTextInput")]
