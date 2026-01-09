@@ -3420,7 +3420,15 @@ namespace OpenAI.Models {
     }
 }
 namespace OpenAI.Moderations {
+    [Flags]
+    public enum ModerationApplicableInputKinds {
+        None = 0,
+        Other = 1,
+        Text = 2,
+        Image = 4
+    }
     public class ModerationCategory {
+        public ModerationApplicableInputKinds ApplicableInputKinds { get; }
         public bool Flagged { get; }
         public float Score { get; }
     }
@@ -3435,12 +3443,32 @@ namespace OpenAI.Moderations {
         public Uri Endpoint { get; }
         public string Model { get; }
         public ClientPipeline Pipeline { get; }
+        public virtual ClientResult<ModerationResult> ClassifyModerationInputs(IEnumerable<ModerationInputPart> inputParts, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult<ModerationResult>> ClassifyModerationInputsAsync(IEnumerable<ModerationInputPart> inputParts, CancellationToken cancellationToken = default);
         public virtual ClientResult ClassifyText(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<ModerationResultCollection> ClassifyText(IEnumerable<string> inputs, CancellationToken cancellationToken = default);
         public virtual ClientResult<ModerationResult> ClassifyText(string input, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> ClassifyTextAsync(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<ModerationResultCollection>> ClassifyTextAsync(IEnumerable<string> inputs, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<ModerationResult>> ClassifyTextAsync(string input, CancellationToken cancellationToken = default);
+    }
+    public class ModerationInputPart : IJsonModel<ModerationInputPart>, IPersistableModel<ModerationInputPart> {
+        public BinaryData ImageBytes { get; }
+        public string ImageBytesMediaType { get; }
+        public Uri ImageUri { get; }
+        public ModerationInputPartKind Kind { get; }
+        public string Text { get; }
+        public static ModerationInputPart CreateImagePart(BinaryData imageBytes, string imageBytesMediaType);
+        public static ModerationInputPart CreateImagePart(Uri imageUri);
+        public static ModerationInputPart CreateTextPart(string text);
+        protected virtual ModerationInputPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual ModerationInputPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public enum ModerationInputPartKind {
+        Text = 0,
+        Image = 1
     }
     public class ModerationResult : IJsonModel<ModerationResult>, IPersistableModel<ModerationResult> {
         public bool Flagged { get; }
