@@ -1,13 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-
-    <!-- CS1591 - Ignore XML doc comments on test types and members-->
-    <NoWarn>$(NoWarn);CS1591;</NoWarn>
-
-    <LangVersion>latest</LangVersion>
+    <TargetFrameworks>$(SampleTargetFrameworks)</TargetFrameworks>
+    <IsTestProject>true</IsTestProject>
   </PropertyGroup>
-    
+
   <ItemGroup>
     <!-- Exclude the aspnet-core subdirectory from compilation -->
     <Compile Remove="aspnet-core/**" />
@@ -18,10 +14,10 @@
     <ProjectReference Include="..\src\OpenAI.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
-    <PackageReference Include="NUnit" Version="3.13.2" />
-    <PackageReference Include="NUnit3TestAdapter" Version="4.4.2" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
-    <PackageReference Include="Moq" Version="[4.18.2]" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Moq" />
   </ItemGroup>
 </Project>

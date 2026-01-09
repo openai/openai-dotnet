@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="examples/OpenAI.Examples.csproj" />
+  <Project Path="src/OpenAI.csproj" />
+  <Project Path="tests/OpenAI.Tests.csproj" />
+</Solution>
