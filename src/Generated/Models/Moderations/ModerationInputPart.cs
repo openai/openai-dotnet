@@ -9,22 +9,20 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Moderations
 {
     [Experimental("OPENAI001")]
-    public abstract partial class ModerationInputPart
+    public partial class ModerationInputPart
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        private protected ModerationInputPart(ModerationInputPartKind kind)
+        private protected ModerationInputPart(InternalModerationInputPartType internalType)
         {
-            Kind = kind;
+            InternalType = internalType;
         }
 
-        internal ModerationInputPart(ModerationInputPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ModerationInputPart(InternalModerationInputPartType internalType, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Kind = kind;
+            InternalType = internalType;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-
-        internal ModerationInputPartKind Kind { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

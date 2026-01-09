@@ -21,7 +21,7 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9bade4fb0f76b9a2-SEA",
+        "CF-RAY": "9bb330709f8508e3-SEA",
         "Connection": "keep-alive",
         "Content-Length": "3844",
         "Content-Type": "application/json",
@@ -31,18 +31,14 @@
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
-        "Set-Cookie": [
-          "Sanitized",
-          "Sanitized"
-        ],
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "155",
+        "x-envoy-upstream-service-time": "185",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "modr-2128",
+        "id": "modr-6388",
         "model": "omni-moderation-latest",
         "results": [
           {

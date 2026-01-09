@@ -1,4 +1,115 @@
 {
-  "Entries": [],
-  "Variables": {}
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/moderations",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "136",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.8.0 (.NET 10.0.1; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "input": [
+          {
+            "type": "image_url",
+            "image_url": {
+              "url": "https://avatars.githubusercontent.com/u/14957082"
+            }
+          }
+        ],
+        "model": "omni-moderation-latest"
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9bb330c37c8408e3-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1666",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "359",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "modr-7189",
+        "model": "omni-moderation-latest",
+        "results": [
+          {
+            "flagged": false,
+            "categories": {
+              "harassment": false,
+              "harassment/threatening": false,
+              "sexual": false,
+              "hate": false,
+              "hate/threatening": false,
+              "illicit": false,
+              "illicit/violent": false,
+              "self-harm/intent": false,
+              "self-harm/instructions": false,
+              "self-harm": false,
+              "sexual/minors": false,
+              "violence": false,
+              "violence/graphic": false
+            },
+            "category_scores": {
+              "harassment": 0.0,
+              "harassment/threatening": 0.0,
+              "sexual": 0.00017546144100994869,
+              "hate": 0.0,
+              "hate/threatening": 0.0,
+              "illicit": 0.0,
+              "illicit/violent": 0.0,
+              "self-harm/intent": 0.00021228441957103978,
+              "self-harm/instructions": 4.006369222920725e-6,
+              "self-harm": 0.0004966672729750374,
+              "sexual/minors": 0.0,
+              "violence": 0.023019261758539952,
+              "violence/graphic": 0.0000646203290719727
+            },
+            "category_applied_input_types": {
+              "harassment": [],
+              "harassment/threatening": [],
+              "sexual": [
+                "image"
+              ],
+              "hate": [],
+              "hate/threatening": [],
+              "illicit": [],
+              "illicit/violent": [],
+              "self-harm/intent": [
+                "image"
+              ],
+              "self-harm/instructions": [
+                "image"
+              ],
+              "self-harm": [
+                "image"
+              ],
+              "sexual/minors": [],
+              "violence": [
+                "image"
+              ],
+              "violence/graphic": [
+                "image"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
 }

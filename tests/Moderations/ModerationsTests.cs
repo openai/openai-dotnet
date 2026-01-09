@@ -57,19 +57,17 @@ public class ModerationsTests : OpenAIRecordedTestBase
         Assert.That(moderations[1].Violence.Score, Is.GreaterThan(0.2));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ClassifySingleImage()
     {
-        ModerationClient client = GetTestClient<ModerationClient>(TestScenario.Moderations);
+        ModerationClient client = GetProxiedOpenAIClient<ModerationClient>(TestScenario.Moderations);
 
         List<ModerationInputPart> inputs =
             [
                 ModerationInputPart.CreateImagePart(new Uri("https://avatars.githubusercontent.com/u/14957082"))
             ];
 
-        ModerationResult moderation = IsAsync
-            ? await client.ClassifyModerationInputsAsync(inputs)
-            : client.ClassifyModerationInputs(inputs);
+        ModerationResult moderation = await client.ClassifyModerationInputsAsync(inputs);
         Assert.That(moderation, Is.Not.Null);
         Assert.That(moderation.Flagged, Is.False);
         Assert.That(moderation.Violence.Flagged, Is.False);
@@ -77,10 +75,10 @@ public class ModerationsTests : OpenAIRecordedTestBase
         Assert.That(moderation.Violence.ApplicableInputKinds, Is.EqualTo(ModerationApplicableInputKinds.Image));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ClassifyMultipleTexts()
     {
-        ModerationClient client = GetTestClient<ModerationClient>(TestScenario.Moderations);
+        ModerationClient client = GetProxiedOpenAIClient<ModerationClient>(TestScenario.Moderations);
 
         List<ModerationInputPart> inputs =
             [
@@ -88,9 +86,7 @@ public class ModerationsTests : OpenAIRecordedTestBase
                 ModerationInputPart.CreateTextPart("I am killing all my houseplants!")
             ];
 
-        ModerationResult moderation = IsAsync
-            ? await client.ClassifyModerationInputsAsync(inputs)
-            : client.ClassifyModerationInputs(inputs);
+        ModerationResult moderation = await client.ClassifyModerationInputsAsync(inputs);
         Assert.That(moderation, Is.Not.Null);
         Assert.That(moderation.Flagged, Is.True);
         Assert.That(moderation.Violence.Flagged, Is.True);
@@ -98,10 +94,10 @@ public class ModerationsTests : OpenAIRecordedTestBase
         Assert.That(moderation.Violence.ApplicableInputKinds, Is.EqualTo(ModerationApplicableInputKinds.Text));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ClassifyTextAndImage()
     {
-        ModerationClient client = GetTestClient<ModerationClient>(TestScenario.Moderations);
+        ModerationClient client = GetProxiedOpenAIClient<ModerationClient>(TestScenario.Moderations);
 
         List<ModerationInputPart> inputs =
             [
@@ -109,9 +105,7 @@ public class ModerationsTests : OpenAIRecordedTestBase
                 ModerationInputPart.CreateImagePart(new Uri("https://avatars.githubusercontent.com/u/14957082"))
             ];
 
-        ModerationResult moderation = IsAsync
-            ? await client.ClassifyModerationInputsAsync(inputs)
-            : client.ClassifyModerationInputs(inputs);
+        ModerationResult moderation = await client.ClassifyModerationInputsAsync(inputs);
         Assert.That(moderation, Is.Not.Null);
         Assert.That(moderation.Flagged, Is.False);
         Assert.That(moderation.Violence.Flagged, Is.False);
@@ -119,10 +113,10 @@ public class ModerationsTests : OpenAIRecordedTestBase
         Assert.That(moderation.Violence.ApplicableInputKinds, Is.EqualTo(ModerationApplicableInputKinds.Text | ModerationApplicableInputKinds.Image));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ClassifyMultipleTextsAndSingleImage()
     {
-        ModerationClient client = GetTestClient<ModerationClient>(TestScenario.Moderations);
+        ModerationClient client = GetProxiedOpenAIClient<ModerationClient>(TestScenario.Moderations);
 
         List<ModerationInputPart> inputs =
             [
@@ -131,9 +125,7 @@ public class ModerationsTests : OpenAIRecordedTestBase
                 ModerationInputPart.CreateImagePart(new Uri("https://avatars.githubusercontent.com/u/14957082"))
             ];
 
-        ModerationResult moderation = IsAsync
-            ? await client.ClassifyModerationInputsAsync(inputs)
-            : client.ClassifyModerationInputs(inputs);
+        ModerationResult moderation = await client.ClassifyModerationInputsAsync(inputs);
         Assert.That(moderation, Is.Not.Null);
         Assert.That(moderation.Flagged, Is.True);
         Assert.That(moderation.Violence.Flagged, Is.True);
@@ -141,10 +133,10 @@ public class ModerationsTests : OpenAIRecordedTestBase
         Assert.That(moderation.Violence.ApplicableInputKinds, Is.EqualTo(ModerationApplicableInputKinds.Text | ModerationApplicableInputKinds.Image));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ClassifyBinaryDataImage()
     {
-        ModerationClient client = GetTestClient<ModerationClient>(TestScenario.Moderations);
+        ModerationClient client = GetProxiedOpenAIClient<ModerationClient>(TestScenario.Moderations);
 
         string imageFilePath = Path.Combine("Assets", "images_dog_and_cat.png");
         using Stream imageStream = File.OpenRead(imageFilePath);
@@ -156,9 +148,7 @@ public class ModerationsTests : OpenAIRecordedTestBase
                 ModerationInputPart.CreateImagePart(imageBytes, "image/png")
             ];
 
-        ModerationResult moderation = IsAsync
-            ? await client.ClassifyModerationInputsAsync(inputs)
-            : client.ClassifyModerationInputs(inputs);
+        ModerationResult moderation = await client.ClassifyModerationInputsAsync(inputs);
         Assert.That(moderation, Is.Not.Null);
         Assert.That(moderation.Flagged, Is.True);
         Assert.That(moderation.Violence.Flagged, Is.True);

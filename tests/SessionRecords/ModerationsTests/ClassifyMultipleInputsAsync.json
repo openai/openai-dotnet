@@ -21,9 +21,9 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9bade5235a62b9a2-SEA",
+        "CF-RAY": "9bb330be0af908e3-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "3842",
+        "Content-Length": "3844",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -33,12 +33,12 @@
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "127",
+        "x-envoy-upstream-service-time": "82",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "modr-2351",
+        "id": "modr-6023",
         "model": "omni-moderation-latest",
         "results": [
           {
@@ -134,17 +134,17 @@
             },
             "category_scores": {
               "harassment": 0.0050681319405286316,
-              "harassment/threatening": 0.006255070727370796,
-              "sexual": 4.264746818557914e-6,
+              "harassment/threatening": 0.006228548393007852,
+              "sexual": 4.1335397768930325e-6,
               "hate": 0.00002305067219931397,
-              "hate/threatening": 0.000024346046497898516,
-              "illicit": 0.007632600762426888,
-              "illicit/violent": 0.0015581785104520952,
+              "hate/threatening": 0.000023413582477639402,
+              "illicit": 0.007630710887332989,
+              "illicit/violent": 0.001556509750687821,
               "self-harm/intent": 0.00846215032366349,
               "self-harm/instructions": 0.0002292575353938512,
-              "self-harm": 0.01857262423453905,
-              "sexual/minors": 5.594337713435001e-7,
-              "violence": 0.2001167469458225,
+              "self-harm": 0.018531819836873024,
+              "sexual/minors": 5.422218970016178e-7,
+              "violence": 0.20017406978166777,
               "violence/graphic": 0.0015759078905635787
             },
             "category_applied_input_types": {

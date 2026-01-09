@@ -18,7 +18,7 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9bade5318cafb9a2-SEA",
+        "CF-RAY": "9bb330c69d3f08e3-SEA",
         "Connection": "keep-alive",
         "Content-Length": "1960",
         "Content-Type": "application/json",
@@ -30,12 +30,12 @@
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "128",
+        "x-envoy-upstream-service-time": "135",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "modr-9588",
+        "id": "modr-3781",
         "model": "omni-moderation-latest",
         "results": [
           {

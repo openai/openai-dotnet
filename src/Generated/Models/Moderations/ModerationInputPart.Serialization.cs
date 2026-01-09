@@ -9,8 +9,8 @@ using OpenAI;
 
 namespace OpenAI.Moderations
 {
-    [PersistableModelProxy(typeof(InternalUnknownCreateModerationRequestInput))]
-    public abstract partial class ModerationInputPart : IJsonModel<ModerationInputPart>
+    [PersistableModelProxy(typeof(InternalUnknownModerationInputPart))]
+    public partial class ModerationInputPart : IJsonModel<ModerationInputPart>
     {
         internal ModerationInputPart()
         {
@@ -33,7 +33,7 @@ namespace OpenAI.Moderations
             if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind.ToSerialString());
+                writer.WriteStringValue(InternalType.ToString());
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -81,12 +81,12 @@ namespace OpenAI.Moderations
                 switch (discriminator.GetString())
                 {
                     case "image_url":
-                        return ModerationImagePart.DeserializeModerationImagePart(element, options);
+                        return InternalModerationImagePart.DeserializeInternalModerationImagePart(element, options);
                     case "text":
-                        return ModerationTextPart.DeserializeModerationTextPart(element, options);
+                        return InternalModerationTextPart.DeserializeInternalModerationTextPart(element, options);
                 }
             }
-            return InternalUnknownCreateModerationRequestInput.DeserializeInternalUnknownCreateModerationRequestInput(element, options);
+            return InternalUnknownModerationInputPart.DeserializeInternalUnknownModerationInputPart(element, options);
         }
 
         BinaryData IPersistableModel<ModerationInputPart>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

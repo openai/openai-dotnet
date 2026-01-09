@@ -4006,17 +4006,12 @@ namespace OpenAI.Moderations {
         public virtual Task<ClientResult<ModerationResult>> ClassifyTextAsync(string input, CancellationToken cancellationToken = default);
     }
     [Experimental("OPENAI001")]
-    public class ModerationImagePart : ModerationInputPart, IJsonModel<ModerationImagePart>, IPersistableModel<ModerationImagePart> {
+    public class ModerationInputPart : IJsonModel<ModerationInputPart>, IPersistableModel<ModerationInputPart> {
         public BinaryData ImageBytes { get; }
         public string ImageBytesMediaType { get; }
         public Uri ImageUri { get; }
-        protected override ModerationInputPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override ModerationInputPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    [Experimental("OPENAI001")]
-    public abstract class ModerationInputPart : IJsonModel<ModerationInputPart>, IPersistableModel<ModerationInputPart> {
+        public ModerationInputPartKind Kind { get; }
+        public string Text { get; }
         public static ModerationInputPart CreateImagePart(BinaryData imageBytes, string imageBytesMediaType);
         public static ModerationInputPart CreateImagePart(Uri imageUri);
         public static ModerationInputPart CreateTextPart(string text);
@@ -4068,29 +4063,13 @@ namespace OpenAI.Moderations {
         [Experimental("OPENAI001")]
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
-    [Experimental("OPENAI001")]
-    public class ModerationTextPart : ModerationInputPart, IJsonModel<ModerationTextPart>, IPersistableModel<ModerationTextPart> {
-        public string Text { get; }
-        protected override ModerationInputPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override ModerationInputPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
     public static class OpenAIModerationsModelFactory {
         public static ModerationCategory ModerationCategory(bool flagged = false, float score = 0);
-        [Experimental("OPENAI001")]
-        public static ModerationImagePart ModerationImagePart(BinaryData imageBytes = null, string imageBytesMediaType = null);
-        [Experimental("OPENAI001")]
-        public static ModerationImagePart ModerationImagePart(Uri imageUri = null);
-        [Experimental("OPENAI001")]
-        public static ModerationInputPart ModerationInputPart(string kind = null);
         [Experimental("OPENAI001")]
         public static ModerationResult ModerationResult(bool flagged = false, ModerationCategory hate = null, ModerationCategory hateThreatening = null, ModerationCategory harassment = null, ModerationCategory harassmentThreatening = null, ModerationCategory selfHarm = null, ModerationCategory selfHarmIntent = null, ModerationCategory selfHarmInstructions = null, ModerationCategory sexual = null, ModerationCategory sexualMinors = null, ModerationCategory violence = null, ModerationCategory violenceGraphic = null, ModerationCategory illicit = null, ModerationCategory illicitViolent = null);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static ModerationResult ModerationResult(bool flagged, ModerationCategory hate, ModerationCategory hateThreatening, ModerationCategory harassment, ModerationCategory harassmentThreatening, ModerationCategory selfHarm, ModerationCategory selfHarmIntent, ModerationCategory selfHarmInstructions, ModerationCategory sexual, ModerationCategory sexualMinors, ModerationCategory violence, ModerationCategory violenceGraphic);
         public static ModerationResultCollection ModerationResultCollection(string id = null, string model = null, IEnumerable<ModerationResult> items = null);
-        [Experimental("OPENAI001")]
-        public static ModerationTextPart ModerationTextPart(string text = null);
     }
 }
 namespace OpenAI.Realtime {

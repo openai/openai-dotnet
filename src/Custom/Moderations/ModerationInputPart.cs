@@ -1,25 +1,29 @@
-﻿using System;
-using Microsoft.TypeSpec.Generator.Customizations;
+﻿using Microsoft.TypeSpec.Generator.Customizations;
+using System;
 
 namespace OpenAI.Moderations;
 
-/// <summary>
-///     A part of the moderation input.
-///     <list>
-///         <item>
-///             Call <see cref="CreateTextPart(string)"/> to create a <see cref="ModerationInputPart"/> for text.
-///         </item>
-///         <item>
-///             Call <see cref="CreateImagePart(Uri)"/> or
-///             <see cref="CreateImagePart(BinaryData, string)"/> to create a
-///             <see cref="ModerationInputPart"/> for an image.
-///         </item>
-///     </list>
-/// </summary>
 // CUSTOM: Renamed.
 [CodeGenType("CreateModerationRequestInput")]
-public abstract partial class ModerationInputPart
+public partial class ModerationInputPart
 {
+    // CUSTOM: Converted to public enum from internal extensible type.
+    [CodeGenMember("Type")]
+    internal InternalModerationInputPartType InternalType { get; set; }
+    public ModerationInputPartKind Kind
+    {
+        get => InternalType.ToString().ToModerationInputPartKind();
+        private set => InternalType = Kind.ToSerialString();
+    }
+
+    // CUSTOM: Exposed input text properties.
+    public string Text => (this as InternalModerationTextPart)?.InternalText;
+
+    // CUSTOM: Exposed input image properties.
+    public Uri ImageUri => (this as InternalModerationImagePart)?.ImageUrl?.ImageUri;
+    public BinaryData ImageBytes => (this as InternalModerationImagePart)?.ImageUrl?.ImageBytes;
+    public string ImageBytesMediaType => (this as InternalModerationImagePart)?.ImageUrl?.ImageBytesMediaType;
+
     /// <summary> Creates a new <see cref="ModerationInputPart"/> that encapsulates text. </summary>
     /// <param name="text"> The text. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="text"/> is null. </exception>
@@ -27,7 +31,7 @@ public abstract partial class ModerationInputPart
     {
         Argument.AssertNotNull(text, nameof(text));
 
-        return new ModerationTextPart(text: text);
+        return new InternalModerationTextPart(text);
     }
 
     /// <summary> Creates a new <see cref="ModerationInputPart"/> that encapsulates an image. </summary>
@@ -37,7 +41,7 @@ public abstract partial class ModerationInputPart
     {
         Argument.AssertNotNull(imageUri, nameof(imageUri));
 
-        return new ModerationImagePart(new InternalModerationImagePartImageUrl(imageUri));
+        return new InternalModerationImagePart(new InternalModerationImagePartImageUrl(imageUri));
     }
 
     /// <summary> Creates a new <see cref="ModerationInputPart"/> that encapsulates an image. </summary>
@@ -50,6 +54,6 @@ public abstract partial class ModerationInputPart
         Argument.AssertNotNull(imageBytes, nameof(imageBytes));
         Argument.AssertNotNullOrEmpty(imageBytesMediaType, nameof(imageBytesMediaType));
 
-        return new ModerationImagePart(new InternalModerationImagePartImageUrl(imageBytes, imageBytesMediaType));
+        return new InternalModerationImagePart(new InternalModerationImagePartImageUrl(imageBytes, imageBytesMediaType));
     }
 }
