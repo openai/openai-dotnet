@@ -72,23 +72,27 @@ public static partial class OpenAIModerationsModelFactory
             serializedAdditionalRawData: null);
     }
 
+    [Experimental("OPENAI001")]
     public static ModerationInputPart ModerationInputPart(string kind = default)
     {
 
         return new InternalUnknownCreateModerationRequestInput(kind.ToModerationInputPartKind(), additionalBinaryDataProperties: null);
     }
 
+    [Experimental("OPENAI001")]
     public static ModerationTextPart ModerationTextPart(string text = default)
     {
 
         return new ModerationTextPart(ModerationInputPartKind.Text, additionalBinaryDataProperties: null, text);
     }
 
+    [Experimental("OPENAI001")]
     public static ModerationImagePart ModerationImagePart(Uri imageUri = default)
     {
         return new ModerationImagePart(new InternalModerationImagePartImageUrl(imageUri));
     }
 
+    [Experimental("OPENAI001")]
     public static ModerationImagePart ModerationImagePart(BinaryData imageBytes = default, string imageBytesMediaType = default)
     {
         return new ModerationImagePart(new InternalModerationImagePartImageUrl(imageBytes, imageBytesMediaType));

@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace OpenAI.Moderations;
 
 /// <summary> A category of potentially harmful content as classified by the model. </summary>
@@ -17,5 +19,6 @@ public partial class ModerationCategory
     public float Score { get; }
 
     /// <summary> The kinds of inputs that the score is applicable to. </summary>
+    [Experimental("OPENAI001")]
     public ModerationApplicableInputKinds ApplicableInputKinds { get; }
 }

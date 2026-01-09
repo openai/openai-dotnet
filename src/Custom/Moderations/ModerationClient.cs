@@ -199,6 +199,7 @@ public partial class ModerationClient
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="inputParts"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="inputParts"/> is an empty collection, and was expected to be non-empty. </exception>
+    [Experimental("OPENAI001")]
     public virtual async Task<ClientResult<ModerationResult>> ClassifyModerationInputsAsync(IEnumerable<ModerationInputPart> inputParts, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(inputParts, nameof(inputParts));
@@ -216,6 +217,7 @@ public partial class ModerationClient
     /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="inputParts"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="inputParts"/> is an empty collection, and was expected to be non-empty. </exception>
+    [Experimental("OPENAI001")]
     public virtual ClientResult<ModerationResult> ClassifyModerationInputs(IEnumerable<ModerationInputPart> inputParts, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(inputParts, nameof(inputParts));
