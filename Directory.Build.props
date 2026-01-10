@@ -4,6 +4,7 @@
   <PropertyGroup>
     <ClientTargetFrameworks>net10.0;net8.0;netstandard2.0</ClientTargetFrameworks>
     <TestTargetFrameworks>net10.0;net9.0;net8.0</TestTargetFrameworks>
+    <SampleTargetFrameworks>net10.0</SampleTargetFrameworks>
   </PropertyGroup>
 
   <!-- Common Project Metadata -->
@@ -80,10 +81,13 @@
 
   <!--
     ==============================================================
-      OVERRIDES: Test Projects
+      OVERRIDES: Test and Sample Projects
     ==============================================================
   -->
-  <PropertyGroup Condition="'$(IsTestProject)' == 'true' or $(MSBuildProjectName.EndsWith('Tests'))">
+  <PropertyGroup Condition="'$(IsTestProject)' == 'true'
+    or $(MSBuildProjectName.EndsWith('Tests'))
+    or $(MSBuildProjectName.EndsWith('Examples'))
+    or $(MSBuildProjectName.EndsWith('Samples'))">
 
     <!--Versioning -->
     <Version>0.0.1-dev.1</Version>
