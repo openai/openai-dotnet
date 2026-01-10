@@ -2,6 +2,8 @@
 
   <!-- Custom Properties -->
   <PropertyGroup>
+    <RepositoryRoot>$(MSBuildThisFileDirectory)</RepositoryRoot>
+
     <ClientTargetFrameworks>net10.0;net8.0;netstandard2.0</ClientTargetFrameworks>
     <TestTargetFrameworks>net10.0;net9.0;net8.0</TestTargetFrameworks>
     <SampleTargetFrameworks>net10.0</SampleTargetFrameworks>
@@ -53,9 +55,9 @@
   <!-- Publishing -->
   <PropertyGroup>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageIcon>$(MSBuildThisFileDirectory)eng/OpenAI.png</PackageIcon>
+    <PackageIcon>$(RepositoryRoot)eng/OpenAI.png</PackageIcon>
     <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
-    <PackageReadmeFile>$(MSBuildThisFileDirectory)README.md</PackageReadmeFile>
+    <PackageReadmeFile>$(RepositoryRoot)README.md</PackageReadmeFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageTags>OpenAI;openai-dotnet;ChatGPT;Dall-E</PackageTags>
 
@@ -70,7 +72,7 @@
   <!-- Signing -->
   <PropertyGroup Condition="'$(Configuration)' != 'Unsigned'">
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)eng/OpenAI.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(RepositoryRoot)eng/OpenAI.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <!-- Build and Release Configuration -->
