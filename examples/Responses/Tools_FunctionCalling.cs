@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace OpenAI.Examples;
 
@@ -25,9 +26,7 @@ public partial class ResponseExamples
         // Call the weather API here.
         return $"31 {unit}";
     }
-    #endregion
 
-    #region
     private static readonly FunctionTool getCurrentLocationTool = ResponseTool.CreateFunctionTool(
         functionName: nameof(GetCurrentLocation),
         functionDescription: "Get the user's current location",
@@ -60,9 +59,9 @@ public partial class ResponseExamples
     #endregion
 
     [Test]
-    public void Example03_FunctionCalling()
+    public async Task Tools_FunctionCalling()
     {
-        ResponsesClient client = new(model: "gpt-5-mini", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         List<ResponseItem> inputItems =
         [
@@ -82,7 +81,7 @@ public partial class ResponseExamples
                 Tools = { getCurrentLocationTool, getCurrentWeatherTool },
             };
 
-            ResponseResult response = client.CreateResponse(options);
+            ResponseResult response = await client.CreateResponseAsync(options);
 
             inputItems.AddRange(response.OutputItems);
 

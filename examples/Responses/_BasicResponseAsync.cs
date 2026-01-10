@@ -12,7 +12,7 @@ namespace OpenAI.Examples;
 public partial class ResponseExamples
 {
     [Test]
-    public async Task Example01_SimpleResponseAsync()
+    public async Task _BasicResponseAsync()
     {
         ResponsesClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 

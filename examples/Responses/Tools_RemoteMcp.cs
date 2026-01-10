@@ -2,6 +2,7 @@
 using OpenAI.Responses;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace OpenAI.Examples;
 
@@ -11,9 +12,8 @@ namespace OpenAI.Examples;
 
 public partial class ResponseExamples
 {
-    [Ignore("Compilation-only example.")]
     [Test]
-    public void Example06_RemoteMcpAuthentication()
+    public async Task Tools_RemoteMcp()
     {
         List<ResponseItem> inputItems =
         [
@@ -23,16 +23,17 @@ public partial class ResponseExamples
         CreateResponseOptions options = new(inputItems)
         {
             Tools = {
-                new McpTool(serverLabel: "stripe", serverUri: new Uri("https://mcp.stripe.com"))
+                new McpTool(serverLabel: "dmcp", serverUri: new Uri("https://dmcp-server.deno.dev/sse"))
                 {
-                    AuthorizationToken = Environment.GetEnvironmentVariable("STRIPE_OAUTH_ACCESS_TOKEN"),
+                    ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
+                    ToolCallApprovalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
                 }
             }
         };
 
         ResponsesClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        ResponseResult response = client.CreateResponse(options);
+        ResponseResult response = await client.CreateResponseAsync(options);
 
         Console.WriteLine($"[ASSISTANT]: {response.GetOutputText()}");
     }

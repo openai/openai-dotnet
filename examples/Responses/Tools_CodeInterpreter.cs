@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace OpenAI.Examples;
 
@@ -15,7 +16,7 @@ namespace OpenAI.Examples;
 public partial class ResponseExamples
 {
     [Test]
-    public void Example10_CodeInterpreter()
+    public async Task Tools_CodeInterpreter()
     {
         ResponsesClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
@@ -32,7 +33,7 @@ public partial class ResponseExamples
             Tools = { codeInterpreterTool }
         };
 
-        ResponseResult response = client.CreateResponse(options);
+        ResponseResult response = await client.CreateResponseAsync(options);
 
         MessageResponseItem message = response.OutputItems
             .OfType<MessageResponseItem>()
@@ -48,7 +49,7 @@ public partial class ResponseExamples
 
         // Download the file from the container and save it.
         ContainerClient containerClient = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
-        BinaryData fileBytes = containerClient.DownloadContainerFile(containerFileCitation.ContainerId, containerFileCitation.FileId);
+        BinaryData fileBytes = await containerClient.DownloadContainerFileAsync(containerFileCitation.ContainerId, containerFileCitation.FileId);
         using FileStream stream = File.OpenWrite(containerFileCitation.Filename);
         fileBytes.ToStream().CopyTo(stream);
     }
