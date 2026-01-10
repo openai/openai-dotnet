@@ -21,6 +21,7 @@
 
   <!-- Test-Only Dependencies -->
   <ItemGroup Condition="'$(IsTestProject)' == 'true'">
+    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.1" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageVersion Include="NUnit" Version="4.4.0" />
     <PackageVersion Include="NUnit3TestAdapter" Version="6.1.0" />
@@ -31,6 +32,10 @@
 
     <!-- Development Feed Packages -->
     <PackageVersion Include="Microsoft.ClientModel.TestFramework" Version="1.0.0-alpha.20250919.1" />
-    <PackageVersion Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.1" />
+  </ItemGroup>
+
+  <!-- Generator-Only Dependencies -->
+  <ItemGroup Condition="'$(IsGeneratorProject)' == 'true' or $(MSBuildProjectName.EndsWith('Plugin'))">
+    <PackageVersion Include="Microsoft.TypeSpec.Generator.ClientModel" Version="1.0.0-alpha.20251223.2" />
   </ItemGroup>
 </Project>
