@@ -55,9 +55,9 @@
   <!-- Publishing -->
   <PropertyGroup>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageIcon>$(RepositoryRoot)eng/OpenAI.png</PackageIcon>
+    <PackageIcon>OpenAI.png</PackageIcon>
     <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
-    <PackageReadmeFile>$(RepositoryRoot)README.md</PackageReadmeFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageTags>OpenAI;openai-dotnet;ChatGPT;Dall-E</PackageTags>
 
