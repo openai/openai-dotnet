@@ -2,18 +2,19 @@
 using OpenAI.Responses;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace OpenAI.Examples;
 
 // This example uses experimental APIs which are subject to change. To use experimental APIs,
 // please acknowledge their experimental status by suppressing the corresponding warning.
 #pragma warning disable OPENAI001
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable SCME0001
 
 public partial class ResponseExamples
 {
     [Test]
-    public void Example07_InputAdditionalProperties()
+    public async Task JsonPatch_InputAdditionalProperties()
     {
         ResponsesClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
@@ -29,7 +30,7 @@ public partial class ResponseExamples
         options.Patch.Set("$.reasoning.effort"u8, "high");
         options.Patch.Set("$.text.verbosity"u8, "medium");
 
-        ResponseResult response = client.CreateResponse(options);
+        ResponseResult response = await client.CreateResponseAsync(options);
 
         Console.WriteLine($"[ASSISTANT]: {response.GetOutputText()}");
 
@@ -43,5 +44,5 @@ public partial class ResponseExamples
     }
 }
 
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+#pragma warning disable SCME0001
 #pragma warning restore OPENAI001

@@ -12,8 +12,9 @@ namespace OpenAI.Examples;
 
 public partial class ResponseExamples
 {
+    [Ignore("Compilation-only example.")]
     [Test]
-    public async Task Example05_RemoteMcpAsync()
+    public async Task Tools_RemoteMcpAuthentication()
     {
         List<ResponseItem> inputItems =
         [
@@ -23,10 +24,9 @@ public partial class ResponseExamples
         CreateResponseOptions options = new(inputItems)
         {
             Tools = {
-                new McpTool(serverLabel: "dmcp", serverUri: new Uri("https://dmcp-server.deno.dev/sse"))
+                new McpTool(serverLabel: "stripe", serverUri: new Uri("https://mcp.stripe.com"))
                 {
-                    ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
-                    ToolCallApprovalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
+                    AuthorizationToken = Environment.GetEnvironmentVariable("STRIPE_OAUTH_ACCESS_TOKEN"),
                 }
             }
         };
