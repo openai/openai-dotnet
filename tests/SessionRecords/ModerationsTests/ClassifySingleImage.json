@@ -25,9 +25,9 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9bb33078f9fd08e3-SEA",
+        "CF-RAY": "9bb800ffdd5eba33-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "1665",
+        "Content-Length": "1668",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -37,12 +37,12 @@
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "401",
+        "x-envoy-upstream-service-time": "270",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "modr-3827",
+        "id": "modr-1179",
         "model": "omni-moderation-latest",
         "results": [
           {
@@ -70,12 +70,12 @@
               "hate/threatening": 0.0,
               "illicit": 0.0,
               "illicit/violent": 0.0,
-              "self-harm/intent": 6.10885510164857e-6,
-              "self-harm/instructions": 3.6478537675800286e-6,
-              "self-harm": 0.000488645198734589,
+              "self-harm/intent": 0.00021228441957103978,
+              "self-harm/instructions": 3.7636447180974406e-6,
+              "self-harm": 0.0004938671167868664,
               "sexual/minors": 0.0,
-              "violence": 0.022846483170315107,
-              "violence/graphic": 0.000058840881855693875
+              "violence": 0.022998874100606907,
+              "violence/graphic": 0.00006263341581094202
             },
             "category_applied_input_types": {
               "harassment": [],

@@ -7,6 +7,3 @@ using Azure.ClientGenerator.Core;
 @@clientName(createModeration, "ClassifyText");
 
 @@clientLocation(createModeration, "Moderations");
-
-@@alternateType(CreateModerationResponseResultsCategories.illicit, boolean);
-@@alternateType(CreateModerationResponseResultsCategories.`illicit/violent`, boolean);

@@ -29,9 +29,9 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9bb330c83de208e3-SEA",
+        "CF-RAY": "9bb8018eaf2bba33-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "2074",
+        "Content-Length": "2073",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -41,12 +41,12 @@
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "405",
+        "x-envoy-upstream-service-time": "371",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "modr-8594",
+        "id": "modr-6659",
         "model": "omni-moderation-latest",
         "results": [
           {
@@ -67,16 +67,16 @@
               "violence/graphic": false
             },
             "category_scores": {
-              "harassment": 7.2543618230189156e-6,
+              "harassment": 7.368592981140821e-6,
               "harassment/threatening": 7.646537350121258e-7,
-              "sexual": 3.2192334497037803e-6,
-              "hate": 7.527989669055592e-7,
-              "hate/threatening": 5.368750039367665e-8,
-              "illicit": 2.97731143841062e-6,
-              "illicit/violent": 1.4064044342149064e-6,
-              "self-harm/intent": 2.355261854303796e-6,
-              "self-harm/instructions": 1.5534977545950122e-7,
-              "self-harm": 3.5913010679499402e-6,
+              "sexual": 3.120191139396651e-6,
+              "hate": 8.139692624947503e-7,
+              "hate/threatening": 5.896418079129242e-8,
+              "illicit": 3.120191139396651e-6,
+              "illicit/violent": 1.4285517650093407e-6,
+              "self-harm/intent": 2.3187477504664324e-6,
+              "self-harm/instructions": 1.4593762210768862e-7,
+              "self-harm": 3.822911232549001e-6,
               "sexual/minors": 8.059446204294678e-8,
               "violence": 9.761566060239504e-6,
               "violence/graphic": 1.1125607488784412e-6
