@@ -11,7 +11,7 @@
     <ProjectReference Include="common\OpenAI.Library.Plugin.Tests.Common.csproj" />
   </ItemGroup>
 
-  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Moq" />
     <PackageReference Include="NUnit" />
@@ -34,5 +34,4 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
 </Project>
