@@ -6,7 +6,7 @@
 
   <!-- Custom Properties -->
   <PropertyGroup>
-    <RepositoryRoot>$(MSBuildThisFileDirectory)</RepositoryRoot>
+    <RepositoryRoot>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)..'))</RepositoryRoot>
     <GeneratorTargetFrameworks>net10.0</GeneratorTargetFrameworks>
   </PropertyGroup>
 
