@@ -47,7 +47,7 @@ public class OpenAIFilesModelFactoryTests
         OpenAIFile openAIFileInfo = OpenAIFilesModelFactory.OpenAIFileInfo();
 
         Assert.That(openAIFileInfo.Id, Is.Null);
-        Assert.That(openAIFileInfo.SizeInBytes, Is.Null);
+        Assert.That(openAIFileInfo.SizeInBytes, Is.EqualTo(default(int)));
         Assert.That(openAIFileInfo.CreatedAt, Is.EqualTo(default(DateTimeOffset)));
         Assert.That(openAIFileInfo.Filename, Is.Null);
         Assert.That(openAIFileInfo.Purpose, Is.EqualTo(default(FilePurpose)));
@@ -64,7 +64,7 @@ public class OpenAIFilesModelFactoryTests
         OpenAIFile openAIFileInfo = OpenAIFilesModelFactory.OpenAIFileInfo(id: id);
 
         Assert.That(openAIFileInfo.Id, Is.EqualTo(id));
-        Assert.That(openAIFileInfo.SizeInBytes, Is.Null);
+        Assert.That(openAIFileInfo.SizeInBytes, Is.EqualTo(default(int)));
         Assert.That(openAIFileInfo.CreatedAt, Is.EqualTo(default(DateTimeOffset)));
         Assert.That(openAIFileInfo.Filename, Is.Null);
         Assert.That(openAIFileInfo.Purpose, Is.EqualTo(default(FilePurpose)));
@@ -98,7 +98,7 @@ public class OpenAIFilesModelFactoryTests
         OpenAIFile openAIFileInfo = OpenAIFilesModelFactory.OpenAIFileInfo(createdAt: createdAt);
 
         Assert.That(openAIFileInfo.Id, Is.Null);
-        Assert.That(openAIFileInfo.SizeInBytes, Is.Null);
+        Assert.That(openAIFileInfo.SizeInBytes, Is.EqualTo(default(int)));
         Assert.That(openAIFileInfo.CreatedAt, Is.EqualTo(createdAt));
         Assert.That(openAIFileInfo.Filename, Is.Null);
         Assert.That(openAIFileInfo.Purpose, Is.EqualTo(default(FilePurpose)));
@@ -115,7 +115,7 @@ public class OpenAIFilesModelFactoryTests
         OpenAIFile openAIFile = OpenAIFilesModelFactory.OpenAIFileInfo(filename: filename);
 
         Assert.That(openAIFile.Id, Is.Null);
-        Assert.That(openAIFile.SizeInBytes, Is.Null);
+        Assert.That(openAIFile.SizeInBytes, Is.EqualTo(default(int)));
         Assert.That(openAIFile.CreatedAt, Is.EqualTo(default(DateTimeOffset)));
         Assert.That(openAIFile.Filename, Is.EqualTo(filename));
         Assert.That(openAIFile.Purpose, Is.EqualTo(default(FilePurpose)));
@@ -132,7 +132,7 @@ public class OpenAIFilesModelFactoryTests
         OpenAIFile openAIFile = OpenAIFilesModelFactory.OpenAIFileInfo(purpose: purpose);
 
         Assert.That(openAIFile.Id, Is.Null);
-        Assert.That(openAIFile.SizeInBytes, Is.Null);
+        Assert.That(openAIFile.SizeInBytes, Is.EqualTo(default(int)));
         Assert.That(openAIFile.CreatedAt, Is.EqualTo(default(DateTimeOffset)));
         Assert.That(openAIFile.Filename, Is.Null);
         Assert.That(openAIFile.Purpose, Is.EqualTo(purpose));
@@ -149,7 +149,7 @@ public class OpenAIFilesModelFactoryTests
         OpenAIFile openAIFile = OpenAIFilesModelFactory.OpenAIFileInfo(status: status);
 
         Assert.That(openAIFile.Id, Is.Null);
-        Assert.That(openAIFile.SizeInBytes, Is.Null);
+        Assert.That(openAIFile.SizeInBytes, Is.EqualTo(default(int)));
         Assert.That(openAIFile.CreatedAt, Is.EqualTo(default(DateTimeOffset)));
         Assert.That(openAIFile.Filename, Is.Null);
         Assert.That(openAIFile.Purpose, Is.EqualTo(default(FilePurpose)));
@@ -166,7 +166,7 @@ public class OpenAIFilesModelFactoryTests
         OpenAIFile openAIFile = OpenAIFilesModelFactory.OpenAIFileInfo(statusDetails: statusDetails);
 
         Assert.That(openAIFile.Id, Is.Null);
-        Assert.That(openAIFile.SizeInBytes, Is.Null);
+        Assert.That(openAIFile.SizeInBytes, Is.EqualTo(default(int)));
         Assert.That(openAIFile.CreatedAt, Is.EqualTo(default(DateTimeOffset)));
         Assert.That(openAIFile.Filename, Is.Null);
         Assert.That(openAIFile.Purpose, Is.EqualTo(default(FilePurpose)));
