@@ -65,14 +65,14 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
 
             sampleFile = OpenAIFilesModelFactory.OpenAIFileInfo(
                 id: sampleFileId,
-                sizeInBytes: 123,
+                sizeInBytesLong: 123,
                 createdAt: Recording.Now,
                 filename: samplePath,
                 purpose: FilePurpose.FineTune);
 
             validationFile = OpenAIFilesModelFactory.OpenAIFileInfo(
                 id: validationFileId,
-                sizeInBytes: 123,
+                sizeInBytesLong: 123,
                 createdAt: Recording.Now,
                 filename: validationPath,
                 purpose: FilePurpose.FineTune);
