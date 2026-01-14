@@ -2883,7 +2883,7 @@ namespace OpenAI.Files {
         [EditorBrowsable(EditorBrowsableState.Never)]
         public int? SizeInBytes { get; }
         [Experimental("OPENAI001")]
-        public long? SizeInBytesLong { get; }
+        public long SizeInBytesLong { get; }
         [Obsolete("This property is obsolete. If this is a fine-tuning training file, it may take some time to process after it has been uploaded. While the file is processing, you can still create a fine-tuning job but it will not start until the file processing has completed.")]
         public FileStatus Status { get; }
         [Obsolete("This property is obsolete. For details on why a fine-tuning training file failed validation, see the `error` field on the fine-tuning job.")]
@@ -2942,9 +2942,13 @@ namespace OpenAI.Files {
         public virtual Task<ClientResult<OpenAIFile>> GetFileAsync(string fileId, CancellationToken cancellationToken = default);
         public virtual ClientResult<OpenAIFileCollection> GetFiles(FilePurpose purpose, CancellationToken cancellationToken = default);
         public virtual ClientResult GetFiles(string purpose, RequestOptions options);
+        [Experimental("OPENAI001")]
+        public virtual ClientResult GetFiles(string purpose, long? limit, string order, string after, RequestOptions options);
         public virtual ClientResult<OpenAIFileCollection> GetFiles(CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<OpenAIFileCollection>> GetFilesAsync(FilePurpose purpose, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GetFilesAsync(string purpose, RequestOptions options);
+        [Experimental("OPENAI001")]
+        public virtual Task<ClientResult> GetFilesAsync(string purpose, long? limit, string order, string after, RequestOptions options);
         public virtual Task<ClientResult<OpenAIFileCollection>> GetFilesAsync(CancellationToken cancellationToken = default);
         public virtual ClientResult<OpenAIFile> UploadFile(BinaryData file, string filename, FileUploadPurpose purpose);
         public virtual ClientResult UploadFile(BinaryContent content, string contentType, RequestOptions options = null);
@@ -2971,7 +2975,7 @@ namespace OpenAI.Files {
         public static FileDeletionResult FileDeletionResult(string fileId = null, bool deleted = false);
         public static OpenAIFileCollection OpenAIFileCollection(IEnumerable<OpenAIFile> items = null);
         [Experimental("OPENAI001")]
-        public static OpenAIFile OpenAIFileInfo(string id = null, int? sizeInBytes = null, DateTimeOffset createdAt = default, string filename = null, FilePurpose purpose = FilePurpose.Assistants, FileStatus status = FileStatus.Uploaded, string statusDetails = null, DateTimeOffset? expiresAt = null, long? sizeInBytesLong = null);
+        public static OpenAIFile OpenAIFileInfo(string id = null, DateTimeOffset createdAt = default, string filename = null, FilePurpose purpose = FilePurpose.Assistants, FileStatus status = FileStatus.Uploaded, string statusDetails = null, DateTimeOffset? expiresAt = null, long sizeInBytesLong = 0);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static OpenAIFile OpenAIFileInfo(string id, int? sizeInBytes, DateTimeOffset createdAt, string filename, FilePurpose purpose, FileStatus status, string statusDetails);
     }

@@ -41,3 +41,4 @@ internal partial class InternalUpload
 [CodeGenType("UploadPart")] internal partial class InternalUploadPart { }
 [CodeGenType("UploadPartObject")] internal readonly partial struct InternalUploadPartObject { }
 [CodeGenType("UploadStatus")] internal readonly partial struct InternalUploadStatus { }
+[CodeGenType("FileExpirationAfter")] internal readonly partial struct InternalFileExpirationAfter { }

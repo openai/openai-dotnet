@@ -8,7 +8,7 @@ namespace OpenAI.Files;
 [CodeGenType("ListFilesResponse")]
 [CodeGenSuppress("Data")]
 [CodeGenSuppress(nameof(OpenAIFileCollection))]
-[CodeGenSuppress(nameof(OpenAIFileCollection), typeof(string), typeof(string), typeof(bool))]
+[CodeGenSuppress(nameof(OpenAIFileCollection), typeof(string), typeof(string), typeof(string), typeof(bool))]
 [CodeGenSuppress(nameof(OpenAIFileCollection), typeof(string), typeof(string), typeof(string), typeof(bool), typeof(IDictionary<string, BinaryData>))]
 public partial class OpenAIFileCollection : ReadOnlyCollection<OpenAIFile>
 {

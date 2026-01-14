@@ -12,7 +12,7 @@ namespace OpenAI.Files
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal OpenAIFile(string id, long? sizeInBytesLong, DateTimeOffset createdAt, string filename, FilePurpose purpose, FileStatus status)
+        internal OpenAIFile(string id, long sizeInBytesLong, DateTimeOffset createdAt, string filename, FilePurpose purpose, FileStatus status)
         {
             Id = id;
             SizeInBytesLong = sizeInBytesLong;
@@ -22,7 +22,7 @@ namespace OpenAI.Files
             Status = status;
         }
 
-        internal OpenAIFile(string id, long? sizeInBytesLong, DateTimeOffset createdAt, DateTimeOffset? expiresAt, string filename, string @object, FilePurpose purpose, FileStatus status, string statusDetails, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal OpenAIFile(string id, long sizeInBytesLong, DateTimeOffset createdAt, DateTimeOffset? expiresAt, string filename, string @object, FilePurpose purpose, FileStatus status, string statusDetails, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Id = id;
             SizeInBytesLong = sizeInBytesLong;
