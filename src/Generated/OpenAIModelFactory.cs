@@ -358,39 +358,6 @@ namespace OpenAI
             return new DeleteContainerFileResponse(id, "container.file.deleted", true, additionalBinaryDataProperties: null);
         }
 
-        public static OpenAIFileCollection OpenAIFileCollection(IEnumerable<OpenAIFile> data = default, string @object = default, string firstId = default, string lastId = default, bool hasMore = default)
-        {
-            data ??= new ChangeTrackingList<OpenAIFile>();
-
-            return new OpenAIFileCollection(
-                data.ToList(),
-                @object,
-                firstId,
-                lastId,
-                hasMore,
-                serializedAdditionalRawData: null);
-        }
-
-        public static OpenAIFile OpenAIFile(string id = default, long? sizeInBytesLong = default, DateTimeOffset createdAt = default, DateTimeOffset? expiresAt = default, string filename = default, FilePurpose purpose = default, FileStatus status = default, string statusDetails = default)
-        {
-            return new OpenAIFile(
-                id,
-                sizeInBytesLong,
-                createdAt,
-                expiresAt,
-                filename,
-                "file",
-                purpose,
-                status,
-                statusDetails,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static FileDeletionResult FileDeletionResult(string fileId = default, bool deleted = default)
-        {
-            return new FileDeletionResult(fileId, "file", deleted, additionalBinaryDataProperties: null);
-        }
-
         public static HyperparametersForSupervised HyperparametersForSupervised(BinaryData batchSize = default, BinaryData learningRateMultiplier = default, BinaryData nEpochs = default)
         {
             return new HyperparametersForSupervised(batchSize, learningRateMultiplier, nEpochs, additionalBinaryDataProperties: null);
@@ -1216,6 +1183,21 @@ namespace OpenAI
             return new ItemRetrievedUpdate(RealtimeUpdateKind.ItemRetrieved, eventId, additionalBinaryDataProperties: null, item);
         }
 
+        public static OpenAIFile OpenAIFile(string id = default, long? sizeInBytesLong = default, DateTimeOffset createdAt = default, DateTimeOffset? expiresAt = default, string filename = default, FilePurpose purpose = default, FileStatus status = default, string statusDetails = default)
+        {
+            return new OpenAIFile(
+                id,
+                sizeInBytesLong,
+                createdAt,
+                expiresAt,
+                filename,
+                "file",
+                purpose,
+                status,
+                statusDetails,
+                additionalBinaryDataProperties: null);
+        }
+
         public static OpenAIEmbeddingCollection OpenAIEmbeddingCollection(IEnumerable<OpenAIEmbedding> items = default, string model = default, string @object = default, EmbeddingTokenUsage usage = default)
         {
             items ??= new ChangeTrackingList<OpenAIEmbedding>();
@@ -1231,6 +1213,24 @@ namespace OpenAI
         public static EmbeddingTokenUsage EmbeddingTokenUsage(int inputTokenCount = default, int totalTokenCount = default)
         {
             return new EmbeddingTokenUsage(inputTokenCount, totalTokenCount, default);
+        }
+
+        public static OpenAIFileCollection OpenAIFileCollection(IEnumerable<OpenAIFile> data = default, string @object = default, string firstId = default, string lastId = default, bool hasMore = default)
+        {
+            data ??= new ChangeTrackingList<OpenAIFile>();
+
+            return new OpenAIFileCollection(
+                data.ToList(),
+                @object,
+                firstId,
+                lastId,
+                hasMore,
+                serializedAdditionalRawData: null);
+        }
+
+        public static FileDeletionResult FileDeletionResult(string fileId = default, bool deleted = default)
+        {
+            return new FileDeletionResult(fileId, "file", deleted, additionalBinaryDataProperties: null);
         }
 
         public static ImageEditOptions ImageEditOptions(BinaryData image = default, string prompt = default, BinaryData mask = default, GeneratedImageBackground? background = default, InternalCreateImageEditRequestModel? model = default, long? n = default, GeneratedImageSize? size = default, GeneratedImageFormat? responseFormat = default, GeneratedImageFileFormat? outputFileFormat = default, int? outputCompressionFactor = default, string endUserId = default, ImageInputFidelity? inputFidelity = default, bool? stream = default, int? partialImages = default, GeneratedImageQuality? quality = default)

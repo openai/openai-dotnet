@@ -336,6 +336,7 @@ namespace OpenAI
     [ModelReaderWriterBuildable(typeof(InternalEvalRunStoredCompletionsDataContentSource))]
     [ModelReaderWriterBuildable(typeof(InternalEvalStoredCompletionsDataSourceConfigParams))]
     [ModelReaderWriterBuildable(typeof(InternalEvalStoredCompletionsDataSourceConfigResource))]
+    [ModelReaderWriterBuildable(typeof(InternalFileExpirationAfter))]
     [ModelReaderWriterBuildable(typeof(InternalFileSearchToolCallItemParam))]
     [ModelReaderWriterBuildable(typeof(InternalFileUploadOptions))]
     [ModelReaderWriterBuildable(typeof(InternalFineTuneReinforcementMethod))]

@@ -2521,9 +2521,11 @@ namespace OpenAI.Files {
         public virtual Task<ClientResult<OpenAIFile>> GetFileAsync(string fileId, CancellationToken cancellationToken = default);
         public virtual ClientResult<OpenAIFileCollection> GetFiles(FilePurpose purpose, CancellationToken cancellationToken = default);
         public virtual ClientResult GetFiles(string purpose, RequestOptions options);
+        public virtual ClientResult GetFiles(string purpose, long? limit, string order, string after, RequestOptions options);
         public virtual ClientResult<OpenAIFileCollection> GetFiles(CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<OpenAIFileCollection>> GetFilesAsync(FilePurpose purpose, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GetFilesAsync(string purpose, RequestOptions options);
+        public virtual Task<ClientResult> GetFilesAsync(string purpose, long? limit, string order, string after, RequestOptions options);
         public virtual Task<ClientResult<OpenAIFileCollection>> GetFilesAsync(CancellationToken cancellationToken = default);
         public virtual ClientResult<OpenAIFile> UploadFile(BinaryData file, string filename, FileUploadPurpose purpose);
         public virtual ClientResult UploadFile(BinaryContent content, string contentType, RequestOptions options = null);
