@@ -14,7 +14,7 @@ namespace OpenAI.Moderations
 
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 = PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
-        internal virtual PipelineMessage CreateClassifyTextRequest(BinaryContent content, RequestOptions options)
+        internal virtual PipelineMessage CreateClassifyInputsRequest(BinaryContent content, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);

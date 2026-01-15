@@ -33,7 +33,7 @@ namespace OpenAI.Moderations
             if (_additionalBinaryDataProperties?.ContainsKey("url") != true)
             {
                 writer.WritePropertyName("url"u8);
-                writer.WriteStringValue(InternalUrl);
+                writer.WriteStringValue(Url.AbsoluteUri);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -76,19 +76,19 @@ namespace OpenAI.Moderations
             {
                 return null;
             }
-            string internalUrl = default;
+            Uri url = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("url"u8))
                 {
-                    internalUrl = prop.Value.GetString();
+                    url = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString());
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalModerationImagePartImageUrl(internalUrl, additionalBinaryDataProperties);
+            return new InternalModerationImagePartImageUrl(url, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalModerationImagePartImageUrl>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

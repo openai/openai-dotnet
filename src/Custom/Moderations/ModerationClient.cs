@@ -19,8 +19,8 @@ namespace OpenAI.Moderations;
 /// <summary> The service client for OpenAI moderation operations. </summary>
 [CodeGenType("Moderations")]
 [CodeGenSuppress("ModerationClient", typeof(ClientPipeline), typeof(Uri))]
-[CodeGenSuppress("ClassifyTextAsync", typeof(ModerationOptions), typeof(CancellationToken))]
-[CodeGenSuppress("ClassifyText", typeof(ModerationOptions), typeof(CancellationToken))]
+[CodeGenSuppress("ClassifyInputsAsync", typeof(ModerationOptions), typeof(CancellationToken))]
+[CodeGenSuppress("ClassifyInputs", typeof(ModerationOptions), typeof(CancellationToken))]
 public partial class ModerationClient
 {
     private readonly string _model;
@@ -200,7 +200,7 @@ public partial class ModerationClient
     /// <exception cref="ArgumentNullException"> <paramref name="inputParts"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="inputParts"/> is an empty collection, and was expected to be non-empty. </exception>
     [Experimental("OPENAI001")]
-    public virtual async Task<ClientResult<ModerationResult>> ClassifyModerationInputsAsync(IEnumerable<ModerationInputPart> inputParts, CancellationToken cancellationToken = default)
+    public virtual async Task<ClientResult<ModerationResult>> ClassifyInputsAsync(IEnumerable<ModerationInputPart> inputParts, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(inputParts, nameof(inputParts));
 
@@ -208,7 +208,7 @@ public partial class ModerationClient
         CreateModerationOptions(inputParts, ref options);
 
         using BinaryContent content = options.ToBinaryContent(); ;
-        ClientResult result = await ClassifyTextAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        ClientResult result = await ClassifyInputsAsync(content, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue(((ModerationResultCollection)result).FirstOrDefault(), result.GetRawResponse());
     }
 
@@ -218,7 +218,7 @@ public partial class ModerationClient
     /// <exception cref="ArgumentNullException"> <paramref name="inputParts"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="inputParts"/> is an empty collection, and was expected to be non-empty. </exception>
     [Experimental("OPENAI001")]
-    public virtual ClientResult<ModerationResult> ClassifyModerationInputs(IEnumerable<ModerationInputPart> inputParts, CancellationToken cancellationToken = default)
+    public virtual ClientResult<ModerationResult> ClassifyInputs(IEnumerable<ModerationInputPart> inputParts, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNullOrEmpty(inputParts, nameof(inputParts));
 
@@ -226,7 +226,7 @@ public partial class ModerationClient
         CreateModerationOptions(inputParts, ref options);
 
         using BinaryContent content = options.ToBinaryContent();
-        ClientResult result = ClassifyText(content, cancellationToken.ToRequestOptions());
+        ClientResult result = ClassifyInputs(content, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(((ModerationResultCollection)result).FirstOrDefault(), result.GetRawResponse());
     }
 

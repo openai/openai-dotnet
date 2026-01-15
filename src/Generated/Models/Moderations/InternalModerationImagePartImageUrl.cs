@@ -11,11 +11,18 @@ namespace OpenAI.Moderations
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalModerationImagePartImageUrl(string internalUrl, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        public InternalModerationImagePartImageUrl(Uri url)
         {
-            InternalUrl = internalUrl;
+            Url = url;
+        }
+
+        internal InternalModerationImagePartImageUrl(Uri url, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        {
+            Url = url;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+
+        public Uri Url { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

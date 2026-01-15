@@ -9,12 +9,12 @@ namespace OpenAI.Moderations
 {
     internal partial class InternalModerationImagePart : ModerationInputPart
     {
-        internal InternalModerationImagePart(InternalModerationImagePartImageUrl imageUrl) : base(InternalModerationInputPartType.ImageUrl)
+        internal InternalModerationImagePart(InternalModerationImagePartImageUrl imageUrl) : base(ModerationInputPartKind.Image)
         {
             ImageUrl = imageUrl;
         }
 
-        internal InternalModerationImagePart(InternalModerationInputPartType internalType, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalModerationImagePartImageUrl imageUrl) : base(internalType, additionalBinaryDataProperties)
+        internal InternalModerationImagePart(ModerationInputPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalModerationImagePartImageUrl imageUrl) : base(kind, additionalBinaryDataProperties)
         {
             ImageUrl = imageUrl;
         }

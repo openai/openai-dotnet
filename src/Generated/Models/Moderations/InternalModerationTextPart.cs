@@ -9,12 +9,12 @@ namespace OpenAI.Moderations
 {
     internal partial class InternalModerationTextPart : ModerationInputPart
     {
-        public InternalModerationTextPart(string internalText) : base(InternalModerationInputPartType.Text)
+        public InternalModerationTextPart(string internalText) : base(ModerationInputPartKind.Text)
         {
             InternalText = internalText;
         }
 
-        internal InternalModerationTextPart(InternalModerationInputPartType internalType, IDictionary<string, BinaryData> additionalBinaryDataProperties, string internalText) : base(internalType, additionalBinaryDataProperties)
+        internal InternalModerationTextPart(ModerationInputPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string internalText) : base(kind, additionalBinaryDataProperties)
         {
             InternalText = internalText;
         }

@@ -1332,6 +1332,11 @@ namespace OpenAI
             return new ModelDeletionResult(modelId, deleted, @object, additionalBinaryDataProperties: null);
         }
 
+        public static ModerationInputPart ModerationInputPart(string kind = default)
+        {
+            return new InternalUnknownModerationInputPart(kind.ToModerationInputPartKind(), additionalBinaryDataProperties: null);
+        }
+
         public static ModerationResultCollection ModerationResultCollection(string id = default, string model = default, IEnumerable<ModerationResult> results = default)
         {
             results ??= new ChangeTrackingList<ModerationResult>();

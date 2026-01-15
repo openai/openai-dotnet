@@ -11,11 +11,11 @@ internal partial class InternalModerationCategories { }
 [CodeGenType("CreateModerationResponseResultsCategoryScores")]
 internal partial class InternalModerationCategoryScores { }
 
-[CodeGenType("CreateModerationRequestInputType")]
-internal readonly partial struct InternalModerationInputPartType { }
-
 [CodeGenType("ModerationImageURLInput")]
 internal partial class InternalModerationImagePart { }
+
+[CodeGenType("ModerationImageURLInputImageUrl")]
+internal partial class InternalModerationImagePartImageUrl { }
 
 [CodeGenType("UnknownCreateModerationRequestInput")]
 internal partial class InternalUnknownModerationInputPart { }

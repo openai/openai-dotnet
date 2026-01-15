@@ -12,7 +12,7 @@ namespace OpenAI.Moderations
 {
     internal partial class InternalModerationImagePart : ModerationInputPart, IJsonModel<InternalModerationImagePart>
     {
-        internal InternalModerationImagePart() : this(InternalModerationInputPartType.ImageUrl, null, null)
+        internal InternalModerationImagePart() : this(ModerationInputPartKind.Image, null, null)
         {
         }
 
@@ -57,14 +57,14 @@ namespace OpenAI.Moderations
             {
                 return null;
             }
-            InternalModerationInputPartType internalType = default;
+            ModerationInputPartKind kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             InternalModerationImagePartImageUrl imageUrl = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    internalType = new InternalModerationInputPartType(prop.Value.GetString());
+                    kind = prop.Value.GetString().ToModerationInputPartKind();
                     continue;
                 }
                 if (prop.NameEquals("image_url"u8))
@@ -75,7 +75,7 @@ namespace OpenAI.Moderations
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalModerationImagePart(internalType, additionalBinaryDataProperties, imageUrl);
+            return new InternalModerationImagePart(kind, additionalBinaryDataProperties, imageUrl);
         }
 
         BinaryData IPersistableModel<InternalModerationImagePart>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

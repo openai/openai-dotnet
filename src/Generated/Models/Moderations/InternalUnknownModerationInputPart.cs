@@ -9,7 +9,7 @@ namespace OpenAI.Moderations
 {
     internal partial class InternalUnknownModerationInputPart : ModerationInputPart
     {
-        internal InternalUnknownModerationInputPart(InternalModerationInputPartType internalType, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(internalType != default ? internalType : "unknown", additionalBinaryDataProperties)
+        internal InternalUnknownModerationInputPart(ModerationInputPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, additionalBinaryDataProperties)
         {
         }
     }

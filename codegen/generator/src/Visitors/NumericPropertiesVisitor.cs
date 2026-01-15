@@ -14,12 +14,16 @@ namespace OpenAILibraryPlugin.Visitors;
 /// </summary>
 public class NumericPropertiesVisitor : ScmLibraryVisitor
 {
+    // Add any long properties that should remain long here.
     private static readonly HashSet<string> _excludedLongProperties = new(StringComparer.OrdinalIgnoreCase)
     {
         "OpenAI.Chat.ChatCompletionOptions.Seed",
 
         "OpenAI.LegacyCompletions.InternalCreateCompletionRequest.Seed",
     };
+
+    // Add any double properties that should remain double here.
+    private static readonly HashSet<string> _excludedDoubleProperties = new(StringComparer.OrdinalIgnoreCase) { };
 
     protected override PropertyProvider? PreVisitProperty(InputProperty property, PropertyProvider? propertyProvider)
     {
@@ -31,7 +35,8 @@ public class NumericPropertiesVisitor : ScmLibraryVisitor
         }
 
         if (propertyProvider is not null
-            && propertyProvider.Type.Equals(typeof(double)))
+            && propertyProvider.Type.Equals(typeof(double))
+            && !_excludedDoubleProperties.Contains($"{propertyProvider.EnclosingType.Type.Namespace}.{propertyProvider.EnclosingType.Name}.{propertyProvider.Name}"))
         {
             propertyProvider.Update(type: new CSharpType(typeof(float), propertyProvider.Type.IsNullable));
         }
