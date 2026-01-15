@@ -40,8 +40,15 @@ namespace OpenAI.Files
             }
             if (_additionalBinaryDataProperties?.ContainsKey("bytes") != true)
             {
-                writer.WritePropertyName("bytes"u8);
-                writer.WriteNumberValue(SizeInBytesLong);
+                if (Optional.IsDefined(SizeInBytesLong))
+                {
+                    writer.WritePropertyName("bytes"u8);
+                    writer.WriteNumberValue(SizeInBytesLong.Value);
+                }
+                else
+                {
+                    writer.WriteNull("bytes"u8);
+                }
             }
             if (_additionalBinaryDataProperties?.ContainsKey("created_at") != true)
             {
@@ -121,7 +128,7 @@ namespace OpenAI.Files
                 return null;
             }
             string id = default;
-            long sizeInBytesLong = default;
+            long? sizeInBytesLong = default;
             DateTimeOffset createdAt = default;
             DateTimeOffset? expiresAt = default;
             string filename = default;
@@ -139,6 +146,11 @@ namespace OpenAI.Files
                 }
                 if (prop.NameEquals("bytes"u8))
                 {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        sizeInBytesLong = null;
+                        continue;
+                    }
                     sizeInBytesLong = prop.Value.GetInt64();
                     continue;
                 }

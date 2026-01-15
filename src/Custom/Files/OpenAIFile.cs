@@ -18,7 +18,7 @@ public partial class OpenAIFile
     /// <summary> The size of the file, in bytes. </summary> 
     [Experimental("OPENAI001")]
     [CodeGenMember("Bytes")]
-    public long SizeInBytesLong { get; }
+    public long? SizeInBytesLong { get; }
 
     /// <summary>
     /// <para>
@@ -32,7 +32,7 @@ public partial class OpenAIFile
     /// limitation and should always be used.
     /// </remarks>
     [EditorBrowsable(EditorBrowsableState.Never)]
-    public int? SizeInBytes => checked((int)SizeInBytesLong);
+    public int? SizeInBytes => SizeInBytesLong is null ? null : checked((int)SizeInBytesLong.Value);
 
     // CUSTOM: Added the Obsolete attribute.
     [Obsolete($"This property is obsolete. If this is a fine-tuning training file, it may take some time to process"

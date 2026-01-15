@@ -13,3 +13,5 @@ using Azure.ClientGenerator.Core;
 @@clientLocation(retrieveFile, "Files");
 @@clientLocation(downloadFile, "Files");
 @@clientLocation(deleteFile, "Files");
+
+@@alternateType(OpenAIFile.bytes, integer | null);

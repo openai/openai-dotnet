@@ -2883,7 +2883,7 @@ namespace OpenAI.Files {
         [EditorBrowsable(EditorBrowsableState.Never)]
         public int? SizeInBytes { get; }
         [Experimental("OPENAI001")]
-        public long SizeInBytesLong { get; }
+        public long? SizeInBytesLong { get; }
         [Obsolete("This property is obsolete. If this is a fine-tuning training file, it may take some time to process after it has been uploaded. While the file is processing, you can still create a fine-tuning job but it will not start until the file processing has completed.")]
         public FileStatus Status { get; }
         [Obsolete("This property is obsolete. For details on why a fine-tuning training file failed validation, see the `error` field on the fine-tuning job.")]
@@ -2975,7 +2975,7 @@ namespace OpenAI.Files {
         public static FileDeletionResult FileDeletionResult(string fileId = null, bool deleted = false);
         public static OpenAIFileCollection OpenAIFileCollection(IEnumerable<OpenAIFile> items = null);
         [Experimental("OPENAI001")]
-        public static OpenAIFile OpenAIFileInfo(string id = null, DateTimeOffset createdAt = default, string filename = null, FilePurpose purpose = FilePurpose.Assistants, FileStatus status = FileStatus.Uploaded, string statusDetails = null, DateTimeOffset? expiresAt = null, long sizeInBytesLong = 0);
+        public static OpenAIFile OpenAIFileInfo(string id = null, int? sizeInBytes = null, DateTimeOffset createdAt = default, string filename = null, FilePurpose purpose = FilePurpose.Assistants, FileStatus status = FileStatus.Uploaded, string statusDetails = null, DateTimeOffset? expiresAt = null, long? sizeInBytesLong = null);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static OpenAIFile OpenAIFileInfo(string id, int? sizeInBytes, DateTimeOffset createdAt, string filename, FilePurpose purpose, FileStatus status, string statusDetails);
     }

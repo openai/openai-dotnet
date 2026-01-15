@@ -24,7 +24,7 @@ public static partial class OpenAIFilesModelFactory
     public static OpenAIFile OpenAIFileInfo(string id, int? sizeInBytes, DateTimeOffset createdAt, string filename, FilePurpose purpose, FileStatus status, string statusDetails) =>
         OpenAIFileInfo(
             id: id,
-            sizeInBytesLong: sizeInBytes ?? default,
+            sizeInBytesLong: sizeInBytes,
             createdAt: createdAt,
             filename: filename,
             purpose: purpose,
@@ -33,7 +33,7 @@ public static partial class OpenAIFilesModelFactory
             expiresAt: default);
 
     [Experimental("OPENAI001")]
-    public static OpenAIFile OpenAIFileInfo(string id = null, DateTimeOffset createdAt = default, string filename = null, FilePurpose purpose = default, FileStatus status = default, string statusDetails = null, DateTimeOffset? expiresAt = null, long sizeInBytesLong = default)
+    public static OpenAIFile OpenAIFileInfo(string id = null, int? sizeInBytes = null, DateTimeOffset createdAt = default, string filename = null, FilePurpose purpose = default, FileStatus status = default, string statusDetails = null, DateTimeOffset? expiresAt = null, long? sizeInBytesLong = null)
     {
         return new OpenAIFile(
             id: id,
@@ -42,7 +42,7 @@ public static partial class OpenAIFilesModelFactory
             filename: filename,
             purpose: purpose,
             @object: "file",
-            sizeInBytesLong: sizeInBytesLong,
+            sizeInBytesLong: sizeInBytesLong ?? sizeInBytes,
             status: status,
             statusDetails: statusDetails,
             additionalBinaryDataProperties: null);

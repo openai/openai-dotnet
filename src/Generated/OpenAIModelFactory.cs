@@ -1183,7 +1183,7 @@ namespace OpenAI
             return new ItemRetrievedUpdate(RealtimeUpdateKind.ItemRetrieved, eventId, additionalBinaryDataProperties: null, item);
         }
 
-        public static OpenAIFile OpenAIFile(string id = default, long sizeInBytesLong = default, DateTimeOffset createdAt = default, DateTimeOffset? expiresAt = default, string filename = default, FilePurpose purpose = default, FileStatus status = default, string statusDetails = default)
+        public static OpenAIFile OpenAIFile(string id = default, long? sizeInBytesLong = default, DateTimeOffset createdAt = default, DateTimeOffset? expiresAt = default, string filename = default, FilePurpose purpose = default, FileStatus status = default, string statusDetails = default)
         {
             return new OpenAIFile(
                 id,
