@@ -1,0 +1,40 @@
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--
+    Code generation is intentionally not importing the root props file, as it
+    is isolated tooling and should not share settings with the main projects.
+  -->
+
+  <!-- Custom Properties -->
+  <PropertyGroup>
+    <RepositoryRoot>$([MSBuild]::NormalizeDirectory('$(MSBuildThisFileDirectory)..'))</RepositoryRoot>
+    <GeneratorTargetFrameworks>net10.0</GeneratorTargetFrameworks>
+  </PropertyGroup>
+
+  <!-- Common Project Metadata -->
+  <PropertyGroup>
+    <Product>The official code generation utilities for the OpenAI .NET library</Product>
+    <Copyright>Copyright (c) 2026 OpenAI (https://openai.com)</Copyright>
+    <Company>OpenAI</Company>
+    <Authors>$(Company)</Authors>
+    <RepositoryUrl>https://github.com/openai/openai-dotnet</RepositoryUrl>
+    <NeutralLanguage>en-US</NeutralLanguage>
+  </PropertyGroup>
+
+  <!-- Configuration -->
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <!--
+    ==============================================================
+      OVERRIDES: Generator Test Projects
+    ==============================================================
+  -->
+  <PropertyGroup Condition="'$(IsTestProject)' == 'true' or $(MSBuildProjectName.Contains('Tests'))">
+    <!-- Configuration -->
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+</Project>

@@ -133,4 +133,16 @@ public partial class OpenAIFileClient
     {
         return _internalUploadsClient.CancelUpload(uploadId, options);
     }
+
+    public virtual ClientResult GetFiles(string purpose, RequestOptions options)
+    {
+        using PipelineMessage message = CreateGetFilesRequest(purpose, null, null, null, options);
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+    }
+
+    public virtual async Task<ClientResult> GetFilesAsync(string purpose, RequestOptions options)
+    {
+        using PipelineMessage message = CreateGetFilesRequest(purpose, null, null, null, options);
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+    }
 }

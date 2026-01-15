@@ -27,7 +27,7 @@ public class ContentInnerCollectionDefinedVisitor : ScmLibraryVisitor
 
         List<MethodBodyStatement> statements = methodBodyStatements.ToList();
         VisitExplodedMethodBodyStatements(
-            statements,
+            (IList<MethodBodyStatement?>)statements,
             statement
                 => GetUpdatedIfStatement(
                     statement,
