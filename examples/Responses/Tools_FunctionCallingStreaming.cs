@@ -15,10 +15,10 @@ namespace OpenAI.Examples;
 
 public partial class ResponseExamples
 {
-    // See Example03_FunctionCalling.cs for the tool and function definitions.
+    // See the Tools_FunctionCalling.cs for the tool and function definitions.
 
     [Test]
-    public async Task Example04_FunctionCallingStreamingAsync()
+    public async Task Tools_FunctionCallingStreaming()
     {
         ResponsesClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
