@@ -6,24 +6,21 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "115",
+        "Content-Length": "77",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.8.0 (.NET 10.0.1; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.8.0 (.NET 8.0.23; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
-        "input": [
-          "I forgot to water my houseplants!",
-          "I am killing all my houseplants!"
-        ],
+        "input": "I am killing all my houseplants!",
         "model": "omni-moderation-latest"
       },
       "StatusCode": 200,
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9bb8017d19efba33-SEA",
+        "CF-RAY": "9be95be86fe0ad72-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "3844",
+        "Content-Length": "1960",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -33,88 +30,14 @@
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "120",
+        "x-envoy-upstream-service-time": "209",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "modr-7741",
+        "id": "modr-3895",
         "model": "omni-moderation-latest",
         "results": [
-          {
-            "flagged": false,
-            "categories": {
-              "harassment": false,
-              "harassment/threatening": false,
-              "sexual": false,
-              "hate": false,
-              "hate/threatening": false,
-              "illicit": false,
-              "illicit/violent": false,
-              "self-harm/intent": false,
-              "self-harm/instructions": false,
-              "self-harm": false,
-              "sexual/minors": false,
-              "violence": false,
-              "violence/graphic": false
-            },
-            "category_scores": {
-              "harassment": 0.00003682979260160596,
-              "harassment/threatening": 1.9525885208642222e-6,
-              "sexual": 3.024195853395102e-6,
-              "hate": 1.7231572752142392e-6,
-              "hate/threatening": 1.994729721527057e-7,
-              "illicit": 7.2543618230189156e-6,
-              "illicit/violent": 3.5913010679499402e-6,
-              "self-harm/intent": 0.0002128468589176327,
-              "self-harm/instructions": 1.816222403812674e-7,
-              "self-harm": 0.0000115017355457,
-              "sexual/minors": 1.994729721527057e-7,
-              "violence": 0.00001141223854434603,
-              "violence/graphic": 1.0783312222985275e-6
-            },
-            "category_applied_input_types": {
-              "harassment": [
-                "text"
-              ],
-              "harassment/threatening": [
-                "text"
-              ],
-              "sexual": [
-                "text"
-              ],
-              "hate": [
-                "text"
-              ],
-              "hate/threatening": [
-                "text"
-              ],
-              "illicit": [
-                "text"
-              ],
-              "illicit/violent": [
-                "text"
-              ],
-              "self-harm/intent": [
-                "text"
-              ],
-              "self-harm/instructions": [
-                "text"
-              ],
-              "self-harm": [
-                "text"
-              ],
-              "sexual/minors": [
-                "text"
-              ],
-              "violence": [
-                "text"
-              ],
-              "violence/graphic": [
-                "text"
-              ]
-            }
-          },
           {
             "flagged": true,
             "categories": {

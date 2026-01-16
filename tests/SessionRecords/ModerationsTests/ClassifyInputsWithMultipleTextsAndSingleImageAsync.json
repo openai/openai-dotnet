@@ -6,9 +6,9 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "161",
+        "Content-Length": "253",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.8.0 (.NET 10.0.1; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.8.0 (.NET 8.0.23; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "input": [
@@ -19,6 +19,12 @@
           {
             "type": "text",
             "text": "I am killing all my houseplants!"
+          },
+          {
+            "type": "image_url",
+            "image_url": {
+              "url": "https://avatars.githubusercontent.com/u/14957082"
+            }
           }
         ],
         "model": "omni-moderation-latest"
@@ -27,9 +33,9 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9bb800f49ac6ba33-SEA",
+        "CF-RAY": "9be95bd7fcdcad72-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "1963",
+        "Content-Length": "2078",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -39,12 +45,12 @@
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "237",
+        "x-envoy-upstream-service-time": "324",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "modr-8248",
+        "id": "modr-3009",
         "model": "omni-moderation-latest",
         "results": [
           {
@@ -65,19 +71,19 @@
               "violence/graphic": false
             },
             "category_scores": {
-              "harassment": 0.005637717601744608,
-              "harassment/threatening": 0.006228548393007852,
-              "sexual": 0.000010554685795431098,
-              "hate": 0.00003625900662832244,
-              "hate/threatening": 0.000024156629828672456,
-              "illicit": 0.016587864011909877,
-              "illicit/violent": 0.0001560889217847895,
-              "self-harm/intent": 0.11989852711857713,
-              "self-harm/instructions": 0.00025239543970775446,
-              "self-harm": 0.12245617464163228,
-              "sexual/minors": 1.2219076020491008e-6,
-              "violence": 0.20936831912049492,
-              "violence/graphic": 0.0015974764130775882
+              "harassment": 0.005051264115062889,
+              "harassment/threatening": 0.0059720808831882945,
+              "sexual": 0.000010889691002655445,
+              "hate": 0.000019110431587777674,
+              "hate/threatening": 0.000019110431587777674,
+              "illicit": 0.007654388532154921,
+              "illicit/violent": 0.00009850082967450695,
+              "self-harm/intent": 0.06797823774471122,
+              "self-harm/instructions": 0.0002568977071895318,
+              "self-harm": 0.09575779772409701,
+              "sexual/minors": 5.955139348629957e-7,
+              "violence": 0.35243513719586295,
+              "violence/graphic": 0.0016027432623528452
             },
             "category_applied_input_types": {
               "harassment": [
@@ -87,7 +93,8 @@
                 "text"
               ],
               "sexual": [
-                "text"
+                "text",
+                "image"
               ],
               "hate": [
                 "text"
@@ -102,22 +109,27 @@
                 "text"
               ],
               "self-harm/intent": [
-                "text"
+                "text",
+                "image"
               ],
               "self-harm/instructions": [
-                "text"
+                "text",
+                "image"
               ],
               "self-harm": [
-                "text"
+                "text",
+                "image"
               ],
               "sexual/minors": [
                 "text"
               ],
               "violence": [
-                "text"
+                "text",
+                "image"
               ],
               "violence/graphic": [
-                "text"
+                "text",
+                "image"
               ]
             }
           }

@@ -4,7 +4,6 @@ using OpenAI.Moderations;
 using OpenAI.Tests.Utility;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Threading.Tasks;
 using static OpenAI.Tests.TestHelpers;
 
@@ -18,7 +17,7 @@ public class ModerationsTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
-    public async Task ClassifySingleInput()
+    public async Task ClassifyTextWithSingleString()
     {
         ModerationClient client = GetProxiedOpenAIClient<ModerationClient>(TestScenario.Moderations);
 
@@ -32,7 +31,7 @@ public class ModerationsTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
-    public async Task ClassifyMultipleInputs()
+    public async Task ClassifyTextWithMultipleStrings()
     {
         ModerationClient client = GetProxiedOpenAIClient<ModerationClient>(TestScenario.Moderations);
 
@@ -58,7 +57,7 @@ public class ModerationsTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
-    public async Task ClassifySingleImage()
+    public async Task ClassifyInputsWithSingleImage()
     {
         ModerationClient client = GetProxiedOpenAIClient<ModerationClient>(TestScenario.Moderations);
 
@@ -76,7 +75,7 @@ public class ModerationsTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
-    public async Task ClassifyMultipleTexts()
+    public async Task ClassifyInputsWithMultipleTexts()
     {
         ModerationClient client = GetProxiedOpenAIClient<ModerationClient>(TestScenario.Moderations);
 
@@ -95,7 +94,7 @@ public class ModerationsTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
-    public async Task ClassifyTextAndImage()
+    public async Task ClassifyInputsWithTextAndImage()
     {
         ModerationClient client = GetProxiedOpenAIClient<ModerationClient>(TestScenario.Moderations);
 
@@ -114,7 +113,7 @@ public class ModerationsTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
-    public async Task ClassifyMultipleTextsAndSingleImage()
+    public async Task ClassifyInputsWithMultipleTextsAndSingleImage()
     {
         ModerationClient client = GetProxiedOpenAIClient<ModerationClient>(TestScenario.Moderations);
 

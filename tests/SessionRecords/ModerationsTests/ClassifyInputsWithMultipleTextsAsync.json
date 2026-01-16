@@ -6,21 +6,30 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "77",
+        "Content-Length": "161",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.8.0 (.NET 10.0.1; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.8.0 (.NET 8.0.23; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
-        "input": "I am killing all my houseplants!",
+        "input": [
+          {
+            "type": "text",
+            "text": "I forgot to water my houseplants!"
+          },
+          {
+            "type": "text",
+            "text": "I am killing all my houseplants!"
+          }
+        ],
         "model": "omni-moderation-latest"
       },
       "StatusCode": 200,
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9bb8018c8d7cba33-SEA",
+        "CF-RAY": "9be95bd6b9aead72-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "1960",
+        "Content-Length": "1962",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -30,12 +39,12 @@
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "126",
+        "x-envoy-upstream-service-time": "61",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "modr-3474",
+        "id": "modr-469",
         "model": "omni-moderation-latest",
         "results": [
           {
@@ -56,19 +65,19 @@
               "violence/graphic": false
             },
             "category_scores": {
-              "harassment": 0.0050681319405286316,
+              "harassment": 0.005637717601744608,
               "harassment/threatening": 0.006228548393007852,
-              "sexual": 4.1335397768930325e-6,
-              "hate": 0.00002305067219931397,
-              "hate/threatening": 0.000023413582477639402,
-              "illicit": 0.007630710887332989,
-              "illicit/violent": 0.001556509750687821,
-              "self-harm/intent": 0.00846215032366349,
-              "self-harm/instructions": 0.0002292575353938512,
-              "self-harm": 0.018531819836873024,
-              "sexual/minors": 5.422218970016178e-7,
-              "violence": 0.20017406978166777,
-              "violence/graphic": 0.0015759078905635787
+              "sexual": 0.000010554685795431098,
+              "hate": 0.00003625900662832244,
+              "hate/threatening": 0.000024156629828672456,
+              "illicit": 0.016587864011909877,
+              "illicit/violent": 0.0001560889217847895,
+              "self-harm/intent": 0.11989852711857713,
+              "self-harm/instructions": 0.00025239543970775446,
+              "self-harm": 0.12245617464163228,
+              "sexual/minors": 1.2219076020491008e-6,
+              "violence": 0.20936831912049492,
+              "violence/graphic": 0.0015974764130775882
             },
             "category_applied_input_types": {
               "harassment": [

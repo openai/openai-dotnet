@@ -7,6 +7,7 @@ namespace OpenAI.Moderations
 {
     public partial class ModerationClient
     {
+        // CUSTOM: Legacy. Retained for backward compatibility with previously GA'd API.
         public virtual ClientResult ClassifyText(BinaryContent content, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
@@ -15,6 +16,7 @@ namespace OpenAI.Moderations
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
+        /// CUSTOM: Legacy. Retained for backward compatibility with previously GA'd API.
         public virtual async Task<ClientResult> ClassifyTextAsync(BinaryContent content, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
