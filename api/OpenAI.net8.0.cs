@@ -3969,7 +3969,17 @@ namespace OpenAI.Models {
     }
 }
 namespace OpenAI.Moderations {
+    [Experimental("OPENAI001")]
+    [Flags]
+    public enum ModerationApplicableInputKinds {
+        None = 0,
+        Other = 1,
+        Text = 2,
+        Image = 4
+    }
     public class ModerationCategory {
+        [Experimental("OPENAI001")]
+        public ModerationApplicableInputKinds ApplicableInputKinds { get; }
         public bool Flagged { get; }
         public float Score { get; }
     }
@@ -3988,12 +3998,37 @@ namespace OpenAI.Moderations {
         [Experimental("OPENAI001")]
         public string Model { get; }
         public ClientPipeline Pipeline { get; }
+        [Experimental("OPENAI001")]
+        public virtual ClientResult ClassifyInputs(BinaryContent content, RequestOptions options = null);
+        [Experimental("OPENAI001")]
+        public virtual ClientResult<ModerationResult> ClassifyInputs(IEnumerable<ModerationInputPart> inputParts, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
+        public virtual Task<ClientResult> ClassifyInputsAsync(BinaryContent content, RequestOptions options = null);
+        [Experimental("OPENAI001")]
+        public virtual Task<ClientResult<ModerationResult>> ClassifyInputsAsync(IEnumerable<ModerationInputPart> inputParts, CancellationToken cancellationToken = default);
         public virtual ClientResult ClassifyText(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<ModerationResultCollection> ClassifyText(IEnumerable<string> inputs, CancellationToken cancellationToken = default);
         public virtual ClientResult<ModerationResult> ClassifyText(string input, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> ClassifyTextAsync(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<ModerationResultCollection>> ClassifyTextAsync(IEnumerable<string> inputs, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<ModerationResult>> ClassifyTextAsync(string input, CancellationToken cancellationToken = default);
+    }
+    [Experimental("OPENAI001")]
+    public class ModerationInputPart : IJsonModel<ModerationInputPart>, IPersistableModel<ModerationInputPart> {
+        public Uri ImageUri { get; }
+        public ModerationInputPartKind Kind { get; }
+        public string Text { get; }
+        public static ModerationInputPart CreateImagePart(Uri imageUri);
+        public static ModerationInputPart CreateTextPart(string text);
+        protected virtual ModerationInputPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual ModerationInputPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public enum ModerationInputPartKind {
+        Text = 0,
+        Image = 1
     }
     public class ModerationResult : IJsonModel<ModerationResult>, IPersistableModel<ModerationResult> {
         public bool Flagged { get; }

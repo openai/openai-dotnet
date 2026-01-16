@@ -1,12 +1,15 @@
 using Microsoft.TypeSpec.Generator.Customizations;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Moderations;
 
 /// <summary> The kinds of inputs that <see cref="ModerationCategory.Score"/> is applicable to. </summary>
+// CUSTOM: Renamed.
+[Experimental("OPENAI001")]
 [Flags]
-[CodeGenType("ModerationAppliedInputType")]
-internal enum ModerationApplicableInputKinds : int
+[CodeGenType("ModerationCategoryInputType")]
+public enum ModerationApplicableInputKinds : int
 {
     None = 0,
 

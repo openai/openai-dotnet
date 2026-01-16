@@ -786,18 +786,6 @@ namespace OpenAI
             return new MessageDeletionResult(messageId, deleted, "thread.message.deleted", additionalBinaryDataProperties: null);
         }
 
-        public static ModerationResultCollection ModerationResultCollection(string id = default, string model = default, IEnumerable<ModerationResult> results = default)
-        {
-            results ??= new ChangeTrackingList<ModerationResult>();
-
-            return new ModerationResultCollection(id, model, results.ToList());
-        }
-
-        public static ModerationResult ModerationResult(bool flagged = default)
-        {
-            return new ModerationResult(flagged, additionalBinaryDataProperties: null);
-        }
-
         public static ThreadCreationOptions ThreadCreationOptions(IEnumerable<MessageCreationOptions> internalMessages = default, ToolResources toolResources = default, IDictionary<string, string> metadata = default)
         {
             internalMessages ??= new ChangeTrackingList<MessageCreationOptions>();
@@ -1342,6 +1330,23 @@ namespace OpenAI
         public static ModelDeletionResult ModelDeletionResult(string modelId = default, bool deleted = default, string @object = default)
         {
             return new ModelDeletionResult(modelId, deleted, @object, additionalBinaryDataProperties: null);
+        }
+
+        public static ModerationInputPart ModerationInputPart(string kind = default)
+        {
+            return new InternalUnknownModerationInputPart(kind.ToModerationInputPartKind(), additionalBinaryDataProperties: null);
+        }
+
+        public static ModerationResultCollection ModerationResultCollection(string id = default, string model = default, IEnumerable<ModerationResult> results = default)
+        {
+            results ??= new ChangeTrackingList<ModerationResult>();
+
+            return new ModerationResultCollection(id, model, results.ToList());
+        }
+
+        public static ModerationResult ModerationResult(bool flagged = default)
+        {
+            return new ModerationResult(flagged, additionalBinaryDataProperties: null);
         }
 
         public static ChatFunctionChoice ChatFunctionChoice()
