@@ -12,11 +12,8 @@ public partial class McpToolCallApprovalPolicy
     // CUSTOM: Added to support the corresponding component of the union.
     public McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy globalPolicy)
     {
-        Argument.AssertNotNull(globalPolicy, nameof(globalPolicy));
-
         GlobalPolicy = globalPolicy;
     }
-
     // CUSTOM: Added to support the corresponding component of the union.
     public McpToolCallApprovalPolicy(CustomMcpToolCallApprovalPolicy customPolicy)
     {
