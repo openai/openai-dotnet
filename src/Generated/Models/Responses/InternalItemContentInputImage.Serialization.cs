@@ -39,7 +39,7 @@ namespace OpenAI.Responses
             if (Optional.IsDefined(ImageUrl) && !Patch.Contains("$.image_url"u8))
             {
                 writer.WritePropertyName("image_url"u8);
-                writer.WriteStringValue(ImageUrl);
+                writer.WriteStringValue(ImageUrl.AbsoluteUri);
             }
             if (Optional.IsDefined(FileId) && !Patch.Contains("$.file_id"u8))
             {
@@ -79,7 +79,7 @@ namespace OpenAI.Responses
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            string imageUrl = default;
+            Uri imageUrl = default;
             string fileId = default;
             ResponseImageDetailLevel? detail = default;
             foreach (var prop in element.EnumerateObject())
@@ -96,7 +96,7 @@ namespace OpenAI.Responses
                         imageUrl = null;
                         continue;
                     }
-                    imageUrl = prop.Value.GetString();
+                    imageUrl = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("file_id"u8))
