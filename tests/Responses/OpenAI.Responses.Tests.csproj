@@ -13,9 +13,6 @@
 
     <!-- Define constant to indicate this is the Responses-only test project -->
     <DefineConstants>$(DefineConstants);RESPONSES_ONLY</DefineConstants>
-
-    <!-- Disable default compile items since we explicitly include files from this directory -->
-    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' != 'Unsigned'">
@@ -27,23 +24,6 @@
     <!-- Reference only the OpenAI.Responses assembly to validate it works independently -->
     <ProjectReference Include="..\..\src\Responses\OpenAI.Responses.csproj" />
     <ProjectReference Include="..\..\src\Shared\OpenAI.Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- Include all test files from this folder -->
-    <Compile Include="ResponsesTests.cs" />
-    <Compile Include="ResponsesSmokeTests.cs" />
-    <Compile Include="ResponsesToolTests.cs" />
-    <Compile Include="ResponseStoreTests.cs" />
-    <Compile Include="TestHelpers.Responses.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <!-- Include local utility files specific to this test project (Responses-only versions) -->
-    <Compile Include="Utility\OpenAIRecordedTestBase.Responses.Only.cs" />
-    <Compile Include="Utility\OpenAITestEnvironment.Responses.Only.cs" />
-    <Compile Include="Utility\TestHelpers.Responses.Only.cs" />
-    <Compile Include="Utility\TestPipelinePolicy.cs" />
   </ItemGroup>
 
   <ItemGroup>
