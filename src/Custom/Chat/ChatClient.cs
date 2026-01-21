@@ -152,12 +152,12 @@ public partial class ChatClient
         }
 
         options ??= new();
-        CreateChatCompletionOptions(messages, ref options);
-        using OpenTelemetryScope scope = _telemetry.StartChatScope(options);
+        var clonedOptions = CreateChatCompletionOptions(messages, options);
+        using OpenTelemetryScope scope = _telemetry.StartChatScope(clonedOptions);
 
         try
         {
-            using BinaryContent content = options.ToBinaryContent();
+            using BinaryContent content = clonedOptions.ToBinaryContent();
 
             ClientResult result = await CompleteChatAsync(content, requestOptions).ConfigureAwait(false);
             ChatCompletion chatCompletion = (ChatCompletion)result;
@@ -182,12 +182,12 @@ public partial class ChatClient
         Argument.AssertNotNullOrEmpty(messages, nameof(messages));
 
         options ??= new();
-        CreateChatCompletionOptions(messages, ref options);
-        using OpenTelemetryScope scope = _telemetry.StartChatScope(options);
+        var clonedOptions = CreateChatCompletionOptions(messages, options);
+        using OpenTelemetryScope scope = _telemetry.StartChatScope(clonedOptions);
 
         try
         {
-            using BinaryContent content = options.ToBinaryContent();
+            using BinaryContent content = clonedOptions.ToBinaryContent();
             ClientResult result = CompleteChat(content, cancellationToken.ToRequestOptions());
             ChatCompletion chatCompletion = (ChatCompletion)result;
 
@@ -243,9 +243,9 @@ public partial class ChatClient
         }
 
         options ??= new();
-        CreateChatCompletionOptions(messages, ref options, stream: true);
+        var clonedOptions = CreateChatCompletionOptions(messages, options, stream: true);
 
-        using BinaryContent content = options.ToBinaryContent();
+        using BinaryContent content = clonedOptions.ToBinaryContent();
         return new AsyncSseUpdateCollection<StreamingChatCompletionUpdate>(
             async () => await CompleteChatAsync(content, requestOptions).ConfigureAwait(false),
             StreamingChatCompletionUpdate.DeserializeStreamingChatCompletionUpdate,
@@ -270,9 +270,9 @@ public partial class ChatClient
         Argument.AssertNotNull(messages, nameof(messages));
 
         options ??= new();
-        CreateChatCompletionOptions(messages, ref options, stream: true);
+        var clonedOptions = CreateChatCompletionOptions(messages, options, stream: true);
 
-        using BinaryContent content = options.ToBinaryContent();
+        using BinaryContent content = clonedOptions.ToBinaryContent();
         return new SseUpdateCollection<StreamingChatCompletionUpdate>(
             () => CompleteChat(content, cancellationToken.ToRequestOptions(streaming: true)),
             StreamingChatCompletionUpdate.DeserializeStreamingChatCompletionUpdate,
@@ -381,19 +381,24 @@ public partial class ChatClient
         return ClientResult.FromValue((ChatCompletionDeletionResult)result, result.GetRawResponse());
     }
 
-    private void CreateChatCompletionOptions(IEnumerable<ChatMessage> messages, ref ChatCompletionOptions options, bool stream = false)
+    private ChatCompletionOptions CreateChatCompletionOptions(IEnumerable<ChatMessage> messages, ChatCompletionOptions options, bool stream = false)
     {
-        options.Messages = messages.ToList();
-        options.Model = _model;
+        var clonedOptions = options.Clone();
+        foreach (var message in messages)
+        {
+            clonedOptions.Messages.Add(message);
+        }
+        clonedOptions.Model ??= _model;
         if (stream)
         {
-            options.Stream = true;
-            options.StreamOptions = s_includeUsageStreamOptions;
+            clonedOptions.Stream = true;
+            clonedOptions.StreamOptions = s_includeUsageStreamOptions;
         }
         else
         {
-            options.Stream = null;
-            options.StreamOptions = null;
+            clonedOptions.Stream = null;
+            clonedOptions.StreamOptions = null;
         }
+        return clonedOptions;
     }
 }
