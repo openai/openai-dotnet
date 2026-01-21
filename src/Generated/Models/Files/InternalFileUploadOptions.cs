@@ -12,12 +12,15 @@ namespace OpenAI.Files
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalFileUploadOptions(Stream @file, FileUploadPurpose purpose, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalFileUploadOptions(Stream @file, FileUploadPurpose purpose, InternalFileExpirationAfter? expiresAfter, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             File = @file;
             Purpose = purpose;
+            ExpiresAfter = expiresAfter;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+
+        internal InternalFileExpirationAfter? ExpiresAfter { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

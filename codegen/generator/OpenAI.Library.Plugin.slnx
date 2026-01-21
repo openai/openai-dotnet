@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="src/OpenAI.Library.Plugin.csproj" />
+  <Project Path="test/common/OpenAI.Library.Plugin.Tests.Common.csproj" />
+  <Project Path="test/OpenAI.Library.Plugin.Tests.csproj" />
+</Solution>

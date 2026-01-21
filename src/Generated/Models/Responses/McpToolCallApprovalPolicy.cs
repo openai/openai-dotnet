@@ -15,6 +15,10 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
+        internal McpToolCallApprovalPolicy()
+        {
+        }
+
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy? globalPolicy, CustomMcpToolCallApprovalPolicy customPolicy, in JsonPatch patch)
         {

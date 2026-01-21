@@ -1,0 +1,114 @@
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- Custom Properties -->
+  <PropertyGroup>
+    <RepositoryRoot>$(MSBuildThisFileDirectory)</RepositoryRoot>
+
+    <ClientTargetFrameworks>net10.0;net8.0;netstandard2.0</ClientTargetFrameworks>
+    <TestTargetFrameworks>net10.0;net9.0;net8.0</TestTargetFrameworks>
+    <SampleTargetFrameworks>net10.0</SampleTargetFrameworks>
+  </PropertyGroup>
+
+  <!-- Common Project Metadata -->
+  <PropertyGroup>
+    <Product>The official .NET library for OpenAI</Product>
+    <Copyright>Copyright (c) 2026 OpenAI (https://openai.com)</Copyright>
+    <Company>OpenAI</Company>
+    <Authors>$(Company)</Authors>
+    <RepositoryUrl>https://github.com/openai/openai-dotnet</RepositoryUrl>
+    <NeutralLanguage>en-US</NeutralLanguage>
+  </PropertyGroup>
+
+  <!-- Configuration -->
+  <PropertyGroup>
+    <Configurations>Debug;Release;Unsigned</Configurations>
+    <LangVersion>latest</LangVersion>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+    <!-- Embed source files that are not tracked by the source control manager in the PDB -->
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+
+    <!-- Disable missing XML documentation warnings -->
+    <NoWarn>$(NoWarn);1570;1573;1574;1591</NoWarn>
+
+    <!-- Disable obsolete warnings -->
+    <NoWarn>$(NoWarn);0618</NoWarn>
+
+    <!-- Disable unused fields warnings -->
+    <NoWarn>$(NoWarn);0169</NoWarn>
+
+    <!-- Disable warnings for experimental APIs -->
+    <NoWarn>$(NoWarn);OPENAI001;OPENAI002;OPENAICUA001;SCME0001</NoWarn>
+
+    <!-- Enable AOT for compatible target frameworks -->
+    <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">true</IsAotCompatible>
+  </PropertyGroup>
+
+  <!-- Versioning -->
+  <PropertyGroup>
+    <VersionPrefix>2.8.0</VersionPrefix>
+    <VersionSuffix></VersionSuffix>
+    <InformationalVersion>$(Version)</InformationalVersion>
+  </PropertyGroup>
+
+  <!-- Publishing -->
+  <PropertyGroup>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageIcon>OpenAI.png</PackageIcon>
+    <PackageProjectUrl>$(RepositoryUrl)</PackageProjectUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageTags>OpenAI;openai-dotnet;ChatGPT;Dall-E</PackageTags>
+
+    <!-- Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+
+    <!-- Create a .snupkg file in addition to the .nupkg file. -->
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <!-- Signing -->
+  <PropertyGroup Condition="'$(Configuration)' != 'Unsigned'">
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(RepositoryRoot)eng/OpenAI.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+  <!-- Build and Release Configuration -->
+  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+    <!-- Normalize stored file paths in symbols when in a CI build. -->
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <!--
+    ==============================================================
+      OVERRIDES: Test and Sample Projects
+    ==============================================================
+  -->
+  <PropertyGroup Condition="'$(IsTestProject)' == 'true'
+    or $(MSBuildProjectName.EndsWith('Tests'))
+    or $(MSBuildProjectName.EndsWith('Examples'))
+    or $(MSBuildProjectName.EndsWith('Samples'))">
+
+    <!--Versioning -->
+    <Version>0.0.1-dev.1</Version>
+    <InformationalVersion>$(Version)</InformationalVersion>
+
+    <!-- Build Configuration -->
+    <Configurations>Debug;Release</Configurations>
+    <IsAotCompatible>false</IsAotCompatible>
+    <IsTrimmable>false</IsTrimmable>
+
+    <!-- Signing and Publishing -->
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <SignAssembly>false</SignAssembly>
+    <IsPackable>false</IsPackable>
+
+    <!--
+      Reset the base ignores and reset to ignore XML doc comments
+      on test types and members and experimental APIs.
+    -->
+    <NoWarn>CS1591;OPENAI001;OPENAI002;OPENAICUA001;SCME0001</NoWarn>
+  </PropertyGroup>
+</Project>

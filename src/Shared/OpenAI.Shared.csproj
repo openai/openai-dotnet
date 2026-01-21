@@ -38,11 +38,6 @@
     <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">true</IsAotCompatible>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)' != 'Unsigned'">
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\OpenAI.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-
   <ItemGroup>
     <None Include="..\OpenAI.png" Pack="true" PackagePath="\" />
     <None Include="..\..\CHANGELOG.md" Pack="true" PackagePath="\" />
@@ -100,16 +95,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.ClientModel" Version="1.8.1" />
-    <PackageReference Include="System.Net.ServerSentEvents" Version="10.0.0" />
+    <PackageReference Include="System.ClientModel" />
+    <PackageReference Include="System.Net.ServerSentEvents" />
   </ItemGroup>
 
   <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="10.0.0" />
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
   </ItemGroup>
 
   <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">

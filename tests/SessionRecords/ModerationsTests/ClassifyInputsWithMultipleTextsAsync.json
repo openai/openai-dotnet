@@ -1,0 +1,131 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/moderations",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "161",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.8.0 (.NET 8.0.23; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "input": [
+          {
+            "type": "text",
+            "text": "I forgot to water my houseplants!"
+          },
+          {
+            "type": "text",
+            "text": "I am killing all my houseplants!"
+          }
+        ],
+        "model": "omni-moderation-latest"
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9be95bd6b9aead72-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "1962",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "61",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "modr-469",
+        "model": "omni-moderation-latest",
+        "results": [
+          {
+            "flagged": true,
+            "categories": {
+              "harassment": false,
+              "harassment/threatening": false,
+              "sexual": false,
+              "hate": false,
+              "hate/threatening": false,
+              "illicit": false,
+              "illicit/violent": false,
+              "self-harm/intent": false,
+              "self-harm/instructions": false,
+              "self-harm": false,
+              "sexual/minors": false,
+              "violence": true,
+              "violence/graphic": false
+            },
+            "category_scores": {
+              "harassment": 0.005637717601744608,
+              "harassment/threatening": 0.006228548393007852,
+              "sexual": 0.000010554685795431098,
+              "hate": 0.00003625900662832244,
+              "hate/threatening": 0.000024156629828672456,
+              "illicit": 0.016587864011909877,
+              "illicit/violent": 0.0001560889217847895,
+              "self-harm/intent": 0.11989852711857713,
+              "self-harm/instructions": 0.00025239543970775446,
+              "self-harm": 0.12245617464163228,
+              "sexual/minors": 1.2219076020491008e-6,
+              "violence": 0.20936831912049492,
+              "violence/graphic": 0.0015974764130775882
+            },
+            "category_applied_input_types": {
+              "harassment": [
+                "text"
+              ],
+              "harassment/threatening": [
+                "text"
+              ],
+              "sexual": [
+                "text"
+              ],
+              "hate": [
+                "text"
+              ],
+              "hate/threatening": [
+                "text"
+              ],
+              "illicit": [
+                "text"
+              ],
+              "illicit/violent": [
+                "text"
+              ],
+              "self-harm/intent": [
+                "text"
+              ],
+              "self-harm/instructions": [
+                "text"
+              ],
+              "self-harm": [
+                "text"
+              ],
+              "sexual/minors": [
+                "text"
+              ],
+              "violence": [
+                "text"
+              ],
+              "violence/graphic": [
+                "text"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

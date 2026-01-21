@@ -5,6 +5,7 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using OpenAI;
 
@@ -20,15 +21,17 @@ namespace OpenAI.Files
 
         public ClientPipeline Pipeline { get; }
 
-        public virtual ClientResult GetFiles(string purpose, RequestOptions options)
+        [Experimental("OPENAI001")]
+        public virtual ClientResult GetFiles(string purpose, long? limit, string order, string after, RequestOptions options)
         {
-            using PipelineMessage message = CreateGetFilesRequest(purpose, options);
+            using PipelineMessage message = CreateGetFilesRequest(purpose, limit, order, after, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> GetFilesAsync(string purpose, RequestOptions options)
+        [Experimental("OPENAI001")]
+        public virtual async Task<ClientResult> GetFilesAsync(string purpose, long? limit, string order, string after, RequestOptions options)
         {
-            using PipelineMessage message = CreateGetFilesRequest(purpose, options);
+            using PipelineMessage message = CreateGetFilesRequest(purpose, limit, order, after, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 

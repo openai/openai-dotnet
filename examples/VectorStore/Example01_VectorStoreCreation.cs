@@ -30,7 +30,7 @@ public partial class VectorStoreExamples
 
         store = PollVectorStore(client, store.Id);
 
-        Assert.AreEqual(VectorStoreStatus.Completed, store.Status);
+        Assert.That(store.Status, Is.EqualTo(VectorStoreStatus.Completed));
         Console.WriteLine($"Vector store {store.Id} is ready (status: {store.Status})");
     }
 

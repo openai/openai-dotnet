@@ -4,25 +4,25 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Moderations
 {
-    internal partial class InternalCreateModerationRequestInputImageUrl
+    [Experimental("OPENAI001")]
+    public partial class ModerationInputPart
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public InternalCreateModerationRequestInputImageUrl(string url)
+        private protected ModerationInputPart(ModerationInputPartKind kind)
         {
-            Url = url;
+            Kind = kind;
         }
 
-        internal InternalCreateModerationRequestInputImageUrl(string url, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ModerationInputPart(ModerationInputPartKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Url = url;
+            Kind = kind;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-
-        public string Url { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

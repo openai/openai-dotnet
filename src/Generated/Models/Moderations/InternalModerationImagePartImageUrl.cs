@@ -7,25 +7,22 @@ using System.Collections.Generic;
 
 namespace OpenAI.Moderations
 {
-    internal partial class InternalCreateModerationRequestInput3
+    internal partial class InternalModerationImagePartImageUrl
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public InternalCreateModerationRequestInput3(string text)
+        public InternalModerationImagePartImageUrl(Uri url)
         {
-            Text = text;
+            Url = url;
         }
 
-        internal InternalCreateModerationRequestInput3(string kind, string text, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalModerationImagePartImageUrl(Uri url, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Kind = kind;
-            Text = text;
+            Url = url;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        internal string Kind { get; } = "text";
-
-        public string Text { get; }
+        public Uri Url { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {
