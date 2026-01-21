@@ -25,7 +25,7 @@ public partial class ResponseExamples
                 new McpTool(serverLabel: "dmcp", serverUri: new Uri("https://dmcp-server.deno.dev/sse"))
                 {
                     ServerDescription = "A Dungeons and Dragons MCP server to assist with dice rolling.",
-                    ToolCallApprovalPolicy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.NeverRequireApproval)
+                    ToolCallApprovalPolicy = GlobalMcpToolCallApprovalPolicy.NeverRequireApproval // An implicit conversion is used here for convenience.
                 }
             }
         };

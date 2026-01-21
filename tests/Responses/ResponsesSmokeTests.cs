@@ -400,7 +400,7 @@ public partial class ResponsesSmokeTests
         else
         {
             // We construct a new instance. Later, we serialize it and confirm it was constructed correctly.
-            policy = new McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy.AlwaysRequireApproval);
+            policy = GlobalMcpToolCallApprovalPolicy.AlwaysRequireApproval;
         }
 
         BinaryData serializedPolicy = ModelReaderWriter.Write(policy);
@@ -440,7 +440,7 @@ public partial class ResponsesSmokeTests
         else
         {
             // We construct a new instance. Later, we serialize it and confirm it was constructed correctly.
-            CustomMcpToolCallApprovalPolicy customPolicy = new()
+            policy = new CustomMcpToolCallApprovalPolicy()
             {
                 ToolsAlwaysRequiringApproval = new McpToolFilter()
                 {
@@ -451,8 +451,6 @@ public partial class ResponsesSmokeTests
                     ToolNames = { neverApprovedToolName }
                 }
             };
-
-            policy = new McpToolCallApprovalPolicy(customPolicy);
         }
 
         BinaryData serializedPolicy = ModelReaderWriter.Write(policy);
