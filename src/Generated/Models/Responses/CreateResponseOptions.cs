@@ -59,7 +59,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
 
-        public IDictionary<string, string> Metadata { get; internal set; }
+        public IDictionary<string, string> Metadata { get; }
 
         public float? Temperature { get; set; }
 
