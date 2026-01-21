@@ -38,15 +38,10 @@
     <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">true</IsAotCompatible>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)' != 'Unsigned'">
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\OpenAI.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <None Include="..\OpenAI.png" Pack="true" PackagePath="\" />
-    <None Include="..\..\CHANGELOG.md" Pack="true" PackagePath="\" />
-    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+   <ItemGroup>
+    <None Include="$(RepositoryRoot)eng\OpenAI.png" Pack="true" PackagePath="\" />
+    <None Include="$(RepositoryRoot)CHANGELOG.md" Pack="true" PackagePath="\" />
+    <None Include="$(RepositoryRoot)README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
