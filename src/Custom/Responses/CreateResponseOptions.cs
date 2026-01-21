@@ -1,6 +1,7 @@
 using Microsoft.TypeSpec.Generator.Customizations;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 
 namespace OpenAI.Responses;
 
@@ -122,10 +123,46 @@ public partial class CreateResponseOptions
     [CodeGenMember("User")]
     public string EndUserId { get; set; }
 
-    internal CreateResponseOptions GetClone()
+    internal CreateResponseOptions Clone()
     {
-        CreateResponseOptions copiedOptions = (CreateResponseOptions)this.MemberwiseClone();
-        copiedOptions.Patch = _patch;
-        return copiedOptions;
+        var clone = new CreateResponseOptions();
+        foreach (var kvp in Metadata ?? Enumerable.Empty<KeyValuePair<string, string>>())
+        {
+            clone.Metadata[kvp.Key] = kvp.Value;
+        }
+        clone.Temperature = Temperature;
+        clone.TopLogProbabilityCount = TopLogProbabilityCount;
+        clone.TopP = TopP;
+        clone.EndUserId = EndUserId;
+        clone.SafetyIdentifier = SafetyIdentifier;
+        clone.ServiceTier = ServiceTier;
+        clone.PreviousResponseId = PreviousResponseId;
+        clone.Model = Model;
+        clone.ReasoningOptions = ReasoningOptions;
+        clone.BackgroundModeEnabled = BackgroundModeEnabled;
+        clone.MaxOutputTokenCount = MaxOutputTokenCount;
+        clone.MaxToolCallCount = MaxToolCallCount;
+        clone.Instructions = Instructions;
+        clone.TextOptions = TextOptions;
+        foreach (var tool in Tools)
+        {
+            clone.Tools.Add(tool);
+        }
+        clone.ToolChoice = ToolChoice;
+        clone.TruncationMode = TruncationMode;
+        foreach (var item in InputItems)
+        {
+            clone.InputItems.Add(item);
+        }
+        foreach (var item in IncludedProperties)
+        {
+            clone.IncludedProperties.Add(item);
+        }
+        clone.ParallelToolCallsEnabled = ParallelToolCallsEnabled;
+        clone.StoredOutputEnabled = StoredOutputEnabled;
+        clone.StreamingEnabled = StreamingEnabled;
+        clone.ConversationOptions = ConversationOptions;
+
+        return clone;
     }
 }
