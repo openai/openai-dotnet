@@ -13,8 +13,6 @@ namespace OpenAI.Images
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal IList<GeneratedImage> Data { get; }
-
         [Experimental("OPENAI001")]
         public ImageTokenUsage Usage { get; }
 

@@ -23,18 +23,23 @@ jobs:
     env:
       version_suffix_args: ${{ github.event_name == 'schedule' && format('/p:VersionSuffix="alpha.{0}"', github.run_number) || '' }}
     steps:
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.x'
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '9.x'
 
       - name: Setup .NET 8
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '8.x'
 
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
 
       - name: Restore tools
         run: dotnet tool restore --add-source https://pkgs.dev.azure.com/azure-sdk/public/_packaging/azure-sdk-for-net/nuget/v3/index.json
@@ -66,7 +71,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: ${{ !cancelled() }}
         with:
           name: build-artifacts
@@ -78,22 +83,22 @@ jobs:
     environment: release # Needed for OIDC subject for releases triggered on release being created.
     permissions:
       id-token: write # Required for requesting the JWT
-      
+
     steps:
     - name: Download build artifacts
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v7
       with:
         name: build-artifacts
         path: ${{ github.workspace }}/build-artifacts
-    
+
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v5
       with:
         dotnet-version: '9.x'
-  
+
     - name: Install Sign CLI tool
       run: dotnet tool install --tool-path . --prerelease sign
-    
+
     - name: 'Az CLI login'
       uses: azure/login@v2
       with:
@@ -113,23 +118,23 @@ jobs:
         --azure-credential-type "azure-cli"
         --azure-key-vault-url "https://sc-openaisdk.vault.azure.net/"
         --azure-key-vault-certificate "OpenAISDKSCCert"
-    
+
     - name: Upload signed artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: build-artifacts-signed
         path: ${{ github.workspace }}/build-artifacts
-        
+
   deploy:
     name: Publish package
     needs: sign
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v6
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: build-artifacts-signed
           path: ${{ github.workspace }}/build-artifacts
@@ -150,7 +155,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v5
         with:
           dotnet-version: '9.x'
 

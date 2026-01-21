@@ -1,7 +1,9 @@
-﻿namespace OpenAI.Responses;
+using Microsoft.TypeSpec.Generator.Customizations;
 
-// CUSTOM: Make public and use the correct namespace. 
-[CodeGenType("ResponseItemCollectionOptions")]
+namespace OpenAI.Responses;
+
+// CUSTOM: Renamed.
+[CodeGenType("DotNetResponseItemCollectionOptions")]
 public partial class ResponseItemCollectionOptions
 {
 }

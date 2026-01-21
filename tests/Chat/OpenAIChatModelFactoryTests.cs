@@ -1,8 +1,8 @@
-﻿using System;
+﻿using NUnit.Framework;
+using OpenAI.Chat;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
-using OpenAI.Chat;
 
 namespace OpenAI.Tests.Chat;
 

@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using OpenAI.Responses;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace OpenAI.Examples;
@@ -15,9 +16,14 @@ public partial class ResponseExamples
     [Test]
     public void Example08_OutputAdditionalProperties()
     {
-        OpenAIResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        ResponseCreationOptions options = new()
+        List<ResponseItem> inputItems =
+        [
+            ResponseItem.CreateUserMessageItem("Generate an image of gray tabby cat hugging an otter with an orange scarf."),
+        ];
+
+        CreateResponseOptions options = new(inputItems)
         {
             Tools =
             {
@@ -28,7 +34,7 @@ public partial class ResponseExamples
             }
         };
 
-        OpenAIResponse response = client.CreateResponse("Generate an image of gray tabby cat hugging an otter with an orange scarf", options);
+        ResponseResult response = client.CreateResponse(options);
         ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[1];
         BinaryData bytes = imageGenResponse.ImageResultBytes;
 

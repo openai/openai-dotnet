@@ -1,11 +1,8 @@
-using System.Diagnostics.CodeAnalysis;
+using Microsoft.TypeSpec.Generator.Customizations;
 
 namespace OpenAI.Images;
 
-// CUSTOM:
-// - Added Experimental attribute.
-// - Renamed.
-
+// CUSTOM: Renamed.
 [CodeGenType("CreateImageRequestModeration")]
 public readonly partial struct GeneratedImageModerationLevel
 {

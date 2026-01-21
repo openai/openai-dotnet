@@ -1,44 +1,62 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using System;
-using System.ClientModel;
-using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text.Json;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Images;
 
-/// <summary>
-/// Represents an image generation response payload that contains information for multiple generated images.
-/// </summary>
+/// <summary> A collection of generated images. </summary>
 [CodeGenType("ImagesResponse")]
 [CodeGenSuppress(nameof(GeneratedImageCollection), typeof(DateTimeOffset))]
-[CodeGenVisibility(nameof(Data), CodeGenVisibility.Internal)]
 public partial class GeneratedImageCollection : ReadOnlyCollection<GeneratedImage>
 {
-    // CUSTOM: Set the inherited Items property via the base constructor in favor of the intercepted Data property.
-    /// <summary> Initializes a new instance of <see cref="GeneratedImageCollection"/>. </summary>
-    /// <param name="data"></param>
-    /// <param name="usage"></param>
-    /// <param name="createdAt"></param>
-    /// <param name="additionalBinaryDataProperties"> Keeps track of any properties unknown to the library. </param>
-    internal GeneratedImageCollection(DateTimeOffset createdAt, IList<GeneratedImage> data, ImageTokenUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
-        : base([.. data])
+    // CUSTOM: Set the inherited Items property via the base constructor.
+    internal GeneratedImageCollection(DateTimeOffset createdAt, IList<GeneratedImage> items, GeneratedImageBackground? background, GeneratedImageFileFormat? outputFileFormat, GeneratedImageSize? size, GeneratedImageQuality? quality, ImageTokenUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        : base(items ?? new ChangeTrackingList<GeneratedImage>())
     {
-        Usage = usage;
         CreatedAt = createdAt;
-        SerializedAdditionalRawData = additionalBinaryDataProperties;
+        Background = background;
+        OutputFileFormat = outputFileFormat;
+        Size = size;
+        Quality = quality;
+        Usage = usage;
+        _additionalBinaryDataProperties = additionalBinaryDataProperties;
     }
 
-    // CUSTOM: Set the inherited Items property via the base constructor in favor of the intercepted Data property.
-    /// <summary> Initializes a new instance of <see cref="GeneratedImageCollection"/> for deserialization. </summary>
-    internal GeneratedImageCollection() : base([])
+    // CUSTOM: Call the base constructor.
+    internal GeneratedImageCollection() : this(default, null, default, default, default, default, null, null)
     {
     }
 
     // CUSTOM: Renamed.
-    /// <summary>
-    /// The timestamp at which the result images were generated.
-    /// </summary>
+    /// <summary> The timestamp at which the result images were generated. </summary>
     [CodeGenMember("Created")]
     public DateTimeOffset CreatedAt { get; }
+
+    // CUSTOM: Changed property type.
+    /// <summary> Allows to set transparency for the background of the generated image(s). </summary>
+    [Experimental("OPENAI001")]
+    [CodeGenMember("Background")]
+    public GeneratedImageBackground? Background { get; }
+
+    // CUSTOM:
+    // - Renamed.
+    // - Changed property type.
+    /// <summary> The format in which the generated images are returned. </summary>
+    [Experimental("OPENAI001")]
+    [CodeGenMember("OutputFormat")]
+    public GeneratedImageFileFormat? OutputFileFormat { get; }
+
+    // CUSTOM: Changed property type.
+    /// <summary> The quality of the image that will be generated. </summary>
+    [Experimental("OPENAI001")]
+    [CodeGenMember("Quality")]
+    public GeneratedImageQuality? Quality { get; }
+
+    // CUSTOM: Changed property type.
+    /// <summary> The size of the generated images. </summary>
+    [Experimental("OPENAI001")]
+    [CodeGenMember("Size")]
+    public GeneratedImageSize? Size { get; }
 }

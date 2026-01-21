@@ -1,10 +1,9 @@
-using System;
+using Microsoft.TypeSpec.Generator.Customizations;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace OpenAI.Moderations;
 
-[CodeGenType("CreateModerationResponseResultCategoryAppliedInputTypes")]
+[CodeGenType("CreateModerationResponseResultsCategoryAppliedInputTypes")]
 internal partial class InternalCreateModerationResponseResultCategoryAppliedInputTypes
 {
     // CUSTOM: normalize to List<string> for internal representation

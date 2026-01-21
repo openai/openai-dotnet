@@ -26,10 +26,10 @@ namespace OpenAI.Responses
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string Code { get; }
+        public string Code { get; set; }
 
-        public string Message { get; }
+        public string Message { get; set; }
 
-        public string Param { get; }
+        public string Param { get; set; }
     }
 }

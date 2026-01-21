@@ -1,11 +1,10 @@
-using System.Diagnostics.CodeAnalysis;
+using Microsoft.TypeSpec.Generator.Customizations;
 
 namespace OpenAI.Images;
 
 // CUSTOM:
-// - Added Experimental attribute.
 // - Renamed.
-
+// - Changed to extensible enum.
 [CodeGenType("CreateImageRequestBackground")]
 public readonly partial struct GeneratedImageBackground
 {

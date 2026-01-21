@@ -62,17 +62,12 @@ public partial class ResponseExamples
     [Test]
     public void Example03_FunctionCalling()
     {
-        OpenAIResponseClient client = new("gpt-5", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(model: "gpt-5-mini", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         List<ResponseItem> inputItems =
         [
             ResponseItem.CreateUserMessageItem("What's the weather like today for my current location?"),
         ];
-
-        ResponseCreationOptions options = new()
-        {
-            Tools = { getCurrentLocationTool, getCurrentWeatherTool },
-        };
 
         PrintMessageItems(inputItems.OfType<MessageResponseItem>());
 
@@ -81,7 +76,13 @@ public partial class ResponseExamples
         do
         {
             requiresAction = false;
-            OpenAIResponse response = client.CreateResponse(inputItems, options);
+
+            CreateResponseOptions options = new(inputItems)
+            {
+                Tools = { getCurrentLocationTool, getCurrentWeatherTool },
+            };
+
+            ResponseResult response = client.CreateResponse(options);
 
             inputItems.AddRange(response.OutputItems);
 

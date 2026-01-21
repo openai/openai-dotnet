@@ -1,6 +1,5 @@
 using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 using OpenAI.Files;
 using OpenAI.FineTuning;
 using OpenAI.Tests.Utility;
@@ -97,7 +96,6 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
         FineTuningClient client = GetTestClient();
         FineTuningJob ft = await client.FineTuneAsync("gpt-3.5-turbo", sampleFile.Id, false);
 
-        // Assert.AreEqual(0, ft.Hyperparameters.CycleCount);
         Assert.That(ft.Status.InProgress);
         Assert.That(ft.HasCompleted, Is.False);
 
@@ -240,7 +238,6 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
 
         Assert.That(secondJob.JobId, Is.Not.EqualTo(firstJob.JobId));
         // Can't assert that one was created after the next because they might be created at the same second.
-        // Assert.Greater(secondJob.CreatedAt, firstJob.CreatedAt, $"{firstJob}, {secondJob}");
     }
 
     /// Manual experiments show that there are always at least 2 events:

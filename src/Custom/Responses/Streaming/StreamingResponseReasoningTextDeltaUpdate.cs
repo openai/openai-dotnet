@@ -1,8 +1,10 @@
-﻿namespace OpenAI.Responses;
+using Microsoft.TypeSpec.Generator.Customizations;
+
+namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
 [CodeGenType("ResponseReasoningTextDeltaEvent")]
-public partial class StreamingResponseReasoningTextDeltaUpdate : StreamingResponseUpdate
+public partial class StreamingResponseReasoningTextDeltaUpdate
 {
 }
 

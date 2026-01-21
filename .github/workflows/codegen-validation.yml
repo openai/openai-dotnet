@@ -20,18 +20,18 @@ jobs:
   validate-codegen:
     name: Validate Code Generation
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '22.x'
-          
+
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           # Use the version specified in global.json
           global-json-file: global.json
@@ -41,14 +41,14 @@ jobs:
         run: |
           Write-Host "Running code generation validation..."
           ./scripts/Invoke-CodeGen.ps1 -Clean
-          
+
           if ($LASTEXITCODE -ne 0) {
             Write-Error "Code generation failed with exit code: $LASTEXITCODE"
             exit $LASTEXITCODE
           }
-          
+
           Write-Host "Code generation completed successfully!"
-          
+
       - name: Check for uncommitted changes
         run: |
           # Check if there are any changes to tracked files after code generation
@@ -60,7 +60,7 @@ jobs:
             git diff
             exit 1
           fi
-          
+
           # Also check for untracked files that might have been generated
           if [ -n "$(git ls-files --others --exclude-standard)" ]; then
             echo "::error::Code generation produced untracked files. Please review and commit them if they should be included."
@@ -68,18 +68,18 @@ jobs:
             git ls-files --others --exclude-standard
             exit 1
           fi
-          
+
           echo "No uncommitted changes detected - code generation is up to date!"
-      
+
       - name: Run codegen visitor tests
         run: dotnet test codegen/generator/test/
           --configuration Release
           --logger "trx;LogFilePrefix=codegen"
           --results-directory ${{github.workspace}}/artifacts/test-results
           ${{ env.version_suffix_args}}
-      
+
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: ${{ !cancelled() }}
         with:
           name: build-artifacts

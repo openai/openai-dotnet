@@ -1,6 +1,6 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace OpenAI.Responses;
@@ -28,6 +28,7 @@ public partial class ResponseContentPart
     // CUSTOM: Exposed input image properties.
     public string InputImageFileId => (this as InternalItemContentInputImage)?.FileId;
     public ResponseImageDetailLevel? InputImageDetailLevel => (this as InternalItemContentInputImage)?.Detail;
+    public string InputImageUrl => (this as InternalItemContentInputImage)?.ImageUrl;
 
     // CUSTOM: Exposed input file properties.
     public string InputFileId => (this as InternalItemContentInputFile)?.FileId;

@@ -1,16 +1,14 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using System;
-using System.ClientModel;
-using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text.Json;
 
 namespace OpenAI.Files;
 
 [CodeGenType("ListFilesResponse")]
 [CodeGenSuppress("Data")]
 [CodeGenSuppress(nameof(OpenAIFileCollection))]
-[CodeGenSuppress(nameof(OpenAIFileCollection), typeof(string), typeof(string), typeof(bool))]
+[CodeGenSuppress(nameof(OpenAIFileCollection), typeof(string), typeof(string), typeof(string), typeof(bool))]
 [CodeGenSuppress(nameof(OpenAIFileCollection), typeof(string), typeof(string), typeof(string), typeof(bool), typeof(IDictionary<string, BinaryData>))]
 public partial class OpenAIFileCollection : ReadOnlyCollection<OpenAIFile>
 {

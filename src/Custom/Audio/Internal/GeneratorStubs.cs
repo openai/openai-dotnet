@@ -1,3 +1,5 @@
+using Microsoft.TypeSpec.Generator.Customizations;
+
 namespace OpenAI.Audio;
 
 [CodeGenType("AudioResponseFormat")] internal readonly partial struct InternalAudioResponseFormat { }

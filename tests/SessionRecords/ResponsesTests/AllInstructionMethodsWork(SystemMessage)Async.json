@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "245",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini",
@@ -39,19 +39,19 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "980410084af3ba46-SEA",
+        "CF-RAY": "9a8434195d9de032-DFW",
         "Connection": "keep-alive",
-        "Content-Length": "1392",
+        "Content-Length": "1481",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 23:14:53 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "686",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "689",
+        "x-envoy-upstream-service-time": "2112",
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "150000000",
         "x-ratelimit-remaining-requests": "29999",
@@ -61,11 +61,14 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_0299eba013e54bff0068c9ef6ce8cc819389aea0a5bdf849de",
+        "id": "resp_071778fc33eb968e0069305b990680819e89aabb2c0b31dc03",
         "object": "response",
-        "created_at": 1758064492,
+        "created_at": 1764776857,
         "status": "completed",
         "background": false,
+        "billing": {
+          "payer": "developer"
+        },
         "error": null,
         "incomplete_details": null,
         "instructions": null,
@@ -74,7 +77,7 @@
         "model": "gpt-4o-mini-2024-07-18",
         "output": [
           {
-            "id": "msg_0299eba013e54bff0068c9ef6d38788193a39ece140726f24b",
+            "id": "msg_071778fc33eb968e0069305b99a748819e844991fcab2e5168",
             "type": "message",
             "status": "completed",
             "content": [
@@ -82,7 +85,7 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "Arr, matey! How be ye today?"
+                "text": "Arr, matey! How can I assist ye today?"
               }
             ],
             "role": "assistant"
@@ -91,6 +94,7 @@
         "parallel_tool_calls": true,
         "previous_response_id": null,
         "prompt_cache_key": null,
+        "prompt_cache_retention": null,
         "reasoning": {
           "effort": null,
           "summary": null
@@ -115,50 +119,53 @@
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 11,
+          "output_tokens": 13,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 37
+          "total_tokens": 39
         },
         "user": null,
         "metadata": {}
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/responses/resp_0299eba013e54bff0068c9ef6ce8cc819389aea0a5bdf849de",
+      "RequestUri": "https://api.openai.com/v1/responses/resp_071778fc33eb968e0069305b990680819e89aabb2c0b31dc03",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9804100d3ee2ba46-SEA",
+        "CF-RAY": "9a843429cfb3e032-DFW",
         "Connection": "keep-alive",
-        "Content-Length": "1392",
+        "Content-Length": "1481",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 23:14:53 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "153",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "157",
+        "x-envoy-upstream-service-time": "66",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_0299eba013e54bff0068c9ef6ce8cc819389aea0a5bdf849de",
+        "id": "resp_071778fc33eb968e0069305b990680819e89aabb2c0b31dc03",
         "object": "response",
-        "created_at": 1758064492,
+        "created_at": 1764776857,
         "status": "completed",
         "background": false,
+        "billing": {
+          "payer": "developer"
+        },
         "error": null,
         "incomplete_details": null,
         "instructions": null,
@@ -167,7 +174,7 @@
         "model": "gpt-4o-mini-2024-07-18",
         "output": [
           {
-            "id": "msg_0299eba013e54bff0068c9ef6d38788193a39ece140726f24b",
+            "id": "msg_071778fc33eb968e0069305b99a748819e844991fcab2e5168",
             "type": "message",
             "status": "completed",
             "content": [
@@ -175,7 +182,7 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "Arr, matey! How be ye today?"
+                "text": "Arr, matey! How can I assist ye today?"
               }
             ],
             "role": "assistant"
@@ -184,6 +191,7 @@
         "parallel_tool_calls": true,
         "previous_response_id": null,
         "prompt_cache_key": null,
+        "prompt_cache_retention": null,
         "reasoning": {
           "effort": null,
           "summary": null
@@ -208,49 +216,49 @@
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 11,
+          "output_tokens": 13,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 37
+          "total_tokens": 39
         },
         "user": null,
         "metadata": {}
       }
     },
     {
-      "RequestUri": "https://api.openai.com/v1/responses/resp_0299eba013e54bff0068c9ef6ce8cc819389aea0a5bdf849de/input_items",
+      "RequestUri": "https://api.openai.com/v1/responses/resp_071778fc33eb968e0069305b990680819e89aabb2c0b31dc03/input_items",
       "RequestMethod": "GET",
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
       },
       "RequestBody": null,
       "StatusCode": 200,
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9804100ed852ba46-SEA",
+        "CF-RAY": "9a84342e1acae032-DFW",
         "Connection": "keep-alive",
         "Content-Length": "778",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 23:14:54 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "190",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "195",
+        "x-envoy-upstream-service-time": "119",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
         "object": "list",
         "data": [
           {
-            "id": "msg_0299eba013e54bff0068c9ef6ceeb48193add63cb6b6ce29ae",
+            "id": "msg_071778fc33eb968e0069305b9909a4819e890b45fb5f678d20",
             "type": "message",
             "status": "completed",
             "content": [
@@ -262,7 +270,7 @@
             "role": "user"
           },
           {
-            "id": "msg_0299eba013e54bff0068c9ef6ceea88193b14b088d798b8068",
+            "id": "msg_071778fc33eb968e0069305b990994819e98cce31d4bb2dea7",
             "type": "message",
             "status": "completed",
             "content": [
@@ -274,9 +282,9 @@
             "role": "system"
           }
         ],
-        "first_id": "msg_0299eba013e54bff0068c9ef6ceeb48193add63cb6b6ce29ae",
+        "first_id": "msg_071778fc33eb968e0069305b9909a4819e890b45fb5f678d20",
         "has_more": false,
-        "last_id": "msg_0299eba013e54bff0068c9ef6ceea88193b14b088d798b8068"
+        "last_id": "msg_071778fc33eb968e0069305b990994819e98cce31d4bb2dea7"
       }
     }
   ],

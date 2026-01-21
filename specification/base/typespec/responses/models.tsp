@@ -52,7 +52,7 @@ model CreateResponse {
    * - [Conversation state](/docs/guides/conversation-state)
    * - [Function calling](/docs/guides/function-calling)
    */
-  input: string | (ImplicitUserMessage | ItemParam)[];
+  input?: string | (ImplicitUserMessage | ItemParam)[];
 
   @doc("""
     Specify additional output data to include in the model response. Currently

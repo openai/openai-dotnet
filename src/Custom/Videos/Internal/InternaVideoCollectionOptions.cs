@@ -1,4 +1,6 @@
-﻿namespace OpenAI.Videos;
+using Microsoft.TypeSpec.Generator.Customizations;
+
+namespace OpenAI.Videos;
 
 // CUSTOM:
 // - Renamed.

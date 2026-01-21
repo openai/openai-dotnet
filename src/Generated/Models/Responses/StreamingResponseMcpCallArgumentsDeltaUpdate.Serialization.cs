@@ -12,7 +12,7 @@ namespace OpenAI.Responses
 {
     public partial class StreamingResponseMcpCallArgumentsDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseMcpCallArgumentsDeltaUpdate>
     {
-        internal StreamingResponseMcpCallArgumentsDeltaUpdate() : this(InternalResponseStreamEventType.ResponseMcpCallArgumentsDelta, default, default, default, null, null)
+        public StreamingResponseMcpCallArgumentsDeltaUpdate() : this(InternalResponseStreamEventType.ResponseMcpCallArgumentsDelta, default, default, default, null, null)
         {
         }
 

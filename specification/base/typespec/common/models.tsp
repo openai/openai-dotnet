@@ -220,15 +220,16 @@ model ChatCompletionStreamOptions {
 }
 
 @doc("""
-  **o-series models only**
+  **Reasoning models only**
   
   Constrains effort on reasoning for
   [reasoning models](https://platform.openai.com/docs/guides/reasoning).
-  Currently supported values are `minimal`, `low`, `medium`, and `high`. Reducing
+  Currently supported values are `none`, `minimal`, `low`, `medium`, and `high`. Reducing
   reasoning effort can result in faster responses and fewer tokens used
   on reasoning in a response.
   """)
 union ReasoningEffort {
+  "none",
   "minimal",
   "low",
   "medium",
@@ -490,4 +491,13 @@ enum OrderEnum {
   asc,
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   desc,
+}
+
+/** Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1`. Unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`. */
+#suppress "@azure-tools/typespec-azure-core/no-enum" "Auto-suppressed warnings non-applicable rules during import."
+enum InputFidelity {
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  high,
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  low,
 }

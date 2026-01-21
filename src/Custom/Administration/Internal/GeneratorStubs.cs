@@ -1,3 +1,5 @@
+using Microsoft.TypeSpec.Generator.Customizations;
+
 namespace OpenAI.Administration;
 
 [CodeGenType("AuditLogActorServiceAccount")] internal partial class InternalAuditLogActorServiceAccount { }

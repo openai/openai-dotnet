@@ -1,3 +1,9 @@
+using Microsoft.TypeSpec.Generator.Customizations;
+
 namespace OpenAI.Responses;
 
-[CodeGenType("ResponseCodeInterpreterCallInterpretingEvent")] public partial class StreamingResponseCodeInterpreterCallInterpretingUpdate {}
+// CUSTOM: Renamed.
+[CodeGenType("ResponseCodeInterpreterCallInterpretingEvent")]
+public partial class StreamingResponseCodeInterpreterCallInterpretingUpdate
+{
+}

@@ -14,20 +14,6 @@ namespace OpenAI.Images
 
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 = PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
-        internal virtual PipelineMessage CreateGenerateImagesRequest(BinaryContent content, RequestOptions options)
-        {
-            ClientUriBuilder uri = new ClientUriBuilder();
-            uri.Reset(_endpoint);
-            uri.AppendPath("/images/generations", false);
-            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
-            PipelineRequest request = message.Request;
-            request.Headers.Set("Accept", "application/json");
-            request.Headers.Set("Content-Type", "application/json");
-            request.Content = content;
-            message.Apply(options);
-            return message;
-        }
-
         internal virtual PipelineMessage CreateGenerateImageEditsRequest(BinaryContent content, string contentType, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -35,8 +21,22 @@ namespace OpenAI.Images
             uri.AppendPath("/images/edits", false);
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;
-            request.Headers.Set("Accept", "application/json");
             request.Headers.Set("Content-Type", contentType);
+            request.Headers.Set("Accept", "application/json, text/event-stream");
+            request.Content = content;
+            message.Apply(options);
+            return message;
+        }
+
+        internal virtual PipelineMessage CreateGenerateImagesRequest(BinaryContent content, RequestOptions options)
+        {
+            ClientUriBuilder uri = new ClientUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/images/generations", false);
+            PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
+            PipelineRequest request = message.Request;
+            request.Headers.Set("Content-Type", "application/json");
+            request.Headers.Set("Accept", "application/json, text/event-stream");
             request.Content = content;
             message.Apply(options);
             return message;
@@ -49,8 +49,8 @@ namespace OpenAI.Images
             uri.AppendPath("/images/variations", false);
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;
-            request.Headers.Set("Accept", "application/json");
             request.Headers.Set("Content-Type", contentType);
+            request.Headers.Set("Accept", "application/json");
             request.Content = content;
             message.Apply(options);
             return message;

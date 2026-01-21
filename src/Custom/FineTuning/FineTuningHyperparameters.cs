@@ -1,5 +1,5 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 
 namespace OpenAI.FineTuning;

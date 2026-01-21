@@ -1,5 +1,4 @@
-﻿using Microsoft.ClientModel.TestFramework;
-using Microsoft.ClientModel.TestFramework.TestProxy.Admin;
+﻿using Microsoft.ClientModel.TestFramework.TestProxy.Admin;
 using NUnit.Framework;
 using OpenAI.Chat;
 using OpenAI.Tests.Utility;

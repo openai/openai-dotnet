@@ -1,4 +1,6 @@
-﻿namespace OpenAI.Conversations;
+using Microsoft.TypeSpec.Generator.Customizations;
+
+namespace OpenAI.Conversations;
 
 // CUSTOM:
 // - Renamed.

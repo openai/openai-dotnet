@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "178",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.6.0 (.NET 9.0.10; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
       },
       "RequestBody": {
         "model": "gpt-5-mini",
@@ -33,13 +33,13 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "99b02491e9df76b6-SEA",
+        "CF-RAY": "9a19bc549b432c4e-DFW",
         "Connection": "keep-alive",
-        "Content-Length": "2956",
+        "Content-Length": "2880",
         "Content-Type": "application/json",
-        "Date": "Fri, 07 Nov 2025 22:07:22 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "2177",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
@@ -49,7 +49,7 @@
         ],
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "2184",
+        "x-envoy-upstream-service-time": "1748",
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "180000000",
         "x-ratelimit-remaining-requests": "29999",
@@ -59,9 +59,9 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_07cbff89bf5e55ba01690e6d9807208194bda5ebcbea7be163",
+        "id": "resp_08037bb5092a263001691f52aca35881949d713d3056428b14",
         "object": "response",
-        "created_at": 1762553240,
+        "created_at": 1763660460,
         "status": "completed",
         "background": false,
         "billing": {
@@ -75,13 +75,13 @@
         "model": "gpt-5-mini-2025-08-07",
         "output": [
           {
-            "id": "rs_07cbff89bf5e55ba01690e6d98abf4819481e42d3e28e6d163",
+            "id": "rs_08037bb5092a263001691f52ace1108194b9ed81ef38ff65a1",
             "type": "reasoning",
-            "encrypted_content": "gAAAAABpDm2aQEXCBvdQpbBlVALEHaUBeR5o_0ncOcqvmIYFZxZbAGLT9AwS8YB_OYYAKEdKxKgvQ4M5lhZEIkHNm0tAbaHam2hysUH2eptd-4DzxqX5NL1MLNurlIr0isc064DwZxgtPG0-Q2dmUZEkuvs8RnWu9LjI-S2q3qxnFj4DrpOxd9TVD0Z67hvYgmqGvR4M6vtV9WOZd_anajrQ62zIajcK5zAiHYo9FvrkgRhSHkbkSSIXR1NSaz4IMSdk_WemWhQ2_7p8PyHG7MAutLKRboAFwiwboMsvLqX7O_pOOMVrSumDkKKpLetZ6LY49UZ8P_F8gOQ3NeDgGiP2meAR3dmKS2aeGQWXZ35Bv2ZxDodbzyLyvyaMrqM3Mq7326UrzYBhOzAktUHe0rzmqYRQzDn6FzdAWFBbDeKRQWyKcj5MFAgpdDZeN8In-5qOTGCSutnZe1zB6Z_h-ieJu9awEaY9z3Vb_rKmPmYnpVSqGtVqf0lnxHw5V8CuJDg-fSed67NlquoRTPybDjpoU9dKBfpKQmIIBBrXCxVetqsU7R54WCDJf6-bmYYb3SA1h2I8gPQTvkK8SFz0QLQKqWD57YwOomBllcCS6Z7k3D6pF40fKjBt82Vj7Du4jfqJ4iWQq4bRiCKcJiwKUsNoedT-Hn_re-Y900ki5FAMC9ATp6Oqc05MfY2QAWJd0m6hZjefg4sedtKnoZTVoU7mJZZYfeTZxiU9pCXfrjqfbPOYUVpZZt800UCea1UKy9OWHaRLa9BKfhBIM19ZzV9niSTeeb2_FSgYeIhNBl3uDBIZVWu5PPt3K8utTKwSXaw72OO_PsQpstzO-jPTgLzdpgI95To2Qyy8kiSqggg3yb1zKw9H2MgVUeRaPS00CEzmZptIT4tDKnFmSVCCintVU9bdt4NoLylycJk5HhVfEMVkZgax2fQCi2SKVLVa9ePdLt9tkwws3sH52JXS2VqAj8KxoD_l3bAG1ywmz0ceED7uRqsTaixQbR7u2O9Q7hkERiVWvkSQFEsvVBcBWMuf_zw_7jttB6AtCN_ji_q1mwhCDfO6WBv8jQv2MCDNDO459H7LAkJIn1iVn1Gi8fVMnRk0UfqxbkT_-UXB3AZfGOVvMuZC42GSoMJOErgc7hlehA350PAWBYhuYFlEbVufdGFPNdJZFgst0SoUYyeiZGnuHSatVkTmK2My92JBipoO9Mje_cu3eVe-2S-4KgDKGTaeqHkhrZxOFJ0u0NKPEHfhg2rhd0E2C-hu9NGvfPd9YqV_xX4AmihAohlm9l2ncATSza5_Gw==",
+            "encrypted_content": "gAAAAABpH1KuBotMZ3riqBIEu9VVX0za7WhZZmw-Zg9dy6uUjVWgs9R4WO9RE1r52ynplvC1dGGzp_FUdDyWkT9srIhOTnRWMYwph_E-VCnYMSwM3Y2h5Pok6-tkgGbXSNKp0XV1psXMniZ7adnVFWSQcW6ky8ue2kzReRslLBcg9BNbvi3-r3knJH6qYOwWdTVhscUqkRI5T6HRRsbDpvEzNbghnuYCTb7gT3ys6yWP_nm2TbZ0vmly3S7FDcyncy1QEN134jqYzId0y_TDnfwA2fN2c5KlDjt5-0eAphtKGiqNVHs7mVVOQF9f-USFZRYR9l8WWjvdTGQ6BVTIFttLsew6hvVvzud-ygrWDj51tAHw8kpmv1TInL_oubaG-KXUWiB5z8dwVr5_E0--tetNyojN51fICxK7Mbdj-F-AKIf4WxiXQsfbOPeMpwDkpdtRq3m-ExXw1gjFTZXqNn4J1DQcnbsDvX7vOZTQ524Rm9qoNJK9f_TYj-cXS3pgfba8keyG3CTwdANRy1ymG5m_kBFG2Sy5bHMysCTUSB4TXsnVvD5f_I2ShvkfHpeBVObmxJZehEWo77TL_zM5FmIkRmOicAneBz_dWfwcaIraEPi-9VxB7kppegBUf3HhVCv_XC3mcIHfmIUZbVLwzjDD-REAeLeFMVeHZY3SKpyHxvyVMcvmPH3nTdmybj4Ta-kD8LGQc6TGZCoEnZnYOShLsp5YLt_upIoAKD-qN9QDAD_iRYiNFbL9-XQspHZkO1Rl2aSADFW2MXphDzvdMN4nRtLXm_BT60Suzj5bjhxpbb0EQpsTnSx4K__6FxTmTydljuXwVrNK31lRBt47cc1W0F9Yow9HAUh-gZNDybReD1ztc9motsAOQ7tLlbwEWLtqoGwLyq4xVPLIFiYTjWK6m0YCZj5W-0QYH0vAmsWIc5WTHHhAKfb6jp_82ZeIzFucus2kC5P5w5IDScqCVdM8eYbu1hR1Nj_uBP0IgXE4MV8LCMyiuG5HGhQDLd3S4HfdPpAFwCGNg5CTIrfls__5xIPsTBJ-5R506jZIhS4YORnBCZlfme_AC-9-lAnaRDs72aD_lAJGFYir9FD-tz59yBklkVG6Le0JJU4YuFLm1TWLijKV2YAdJSGb9vrYa7gwB-XFLCEFuzKp70JCiiTGxJ2Zm2FjHgFaomF0cOvctVyQSt_4vYsGgXaegM0EkiZEd6iiQ90g",
             "summary": []
           },
           {
-            "id": "msg_07cbff89bf5e55ba01690e6d99e2b481949d691d49fec102f3",
+            "id": "msg_08037bb5092a263001691f52ae10c881948c31d274931c5efa",
             "type": "message",
             "status": "completed",
             "content": [
@@ -89,7 +89,7 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "Hello! How can I help you today?"
+                "text": "Hello! \uD83D\uDC4B How can I help you today?"
               }
             ],
             "role": "assistant"
@@ -123,11 +123,11 @@
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 79,
+          "output_tokens": 17,
           "output_tokens_details": {
-            "reasoning_tokens": 64
+            "reasoning_tokens": 0
           },
-          "total_tokens": 89
+          "total_tokens": 27
         },
         "user": null,
         "metadata": {}
@@ -139,9 +139,9 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "1950",
+        "Content-Length": "178",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.6.0 (.NET 9.0.10; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
       },
       "RequestBody": {
         "model": "gpt-5-mini",
@@ -155,36 +155,6 @@
                 "text": "Hello, world!"
               }
             ]
-          },
-          {
-            "type": "reasoning",
-            "id": "rs_07cbff89bf5e55ba01690e6d98abf4819481e42d3e28e6d163",
-            "encrypted_content": "gAAAAABpDm2aQEXCBvdQpbBlVALEHaUBeR5o_0ncOcqvmIYFZxZbAGLT9AwS8YB_OYYAKEdKxKgvQ4M5lhZEIkHNm0tAbaHam2hysUH2eptd-4DzxqX5NL1MLNurlIr0isc064DwZxgtPG0-Q2dmUZEkuvs8RnWu9LjI-S2q3qxnFj4DrpOxd9TVD0Z67hvYgmqGvR4M6vtV9WOZd_anajrQ62zIajcK5zAiHYo9FvrkgRhSHkbkSSIXR1NSaz4IMSdk_WemWhQ2_7p8PyHG7MAutLKRboAFwiwboMsvLqX7O_pOOMVrSumDkKKpLetZ6LY49UZ8P_F8gOQ3NeDgGiP2meAR3dmKS2aeGQWXZ35Bv2ZxDodbzyLyvyaMrqM3Mq7326UrzYBhOzAktUHe0rzmqYRQzDn6FzdAWFBbDeKRQWyKcj5MFAgpdDZeN8In-5qOTGCSutnZe1zB6Z_h-ieJu9awEaY9z3Vb_rKmPmYnpVSqGtVqf0lnxHw5V8CuJDg-fSed67NlquoRTPybDjpoU9dKBfpKQmIIBBrXCxVetqsU7R54WCDJf6-bmYYb3SA1h2I8gPQTvkK8SFz0QLQKqWD57YwOomBllcCS6Z7k3D6pF40fKjBt82Vj7Du4jfqJ4iWQq4bRiCKcJiwKUsNoedT-Hn_re-Y900ki5FAMC9ATp6Oqc05MfY2QAWJd0m6hZjefg4sedtKnoZTVoU7mJZZYfeTZxiU9pCXfrjqfbPOYUVpZZt800UCea1UKy9OWHaRLa9BKfhBIM19ZzV9niSTeeb2_FSgYeIhNBl3uDBIZVWu5PPt3K8utTKwSXaw72OO_PsQpstzO-jPTgLzdpgI95To2Qyy8kiSqggg3yb1zKw9H2MgVUeRaPS00CEzmZptIT4tDKnFmSVCCintVU9bdt4NoLylycJk5HhVfEMVkZgax2fQCi2SKVLVa9ePdLt9tkwws3sH52JXS2VqAj8KxoD_l3bAG1ywmz0ceED7uRqsTaixQbR7u2O9Q7hkERiVWvkSQFEsvVBcBWMuf_zw_7jttB6AtCN_ji_q1mwhCDfO6WBv8jQv2MCDNDO459H7LAkJIn1iVn1Gi8fVMnRk0UfqxbkT_-UXB3AZfGOVvMuZC42GSoMJOErgc7hlehA350PAWBYhuYFlEbVufdGFPNdJZFgst0SoUYyeiZGnuHSatVkTmK2My92JBipoO9Mje_cu3eVe-2S-4KgDKGTaeqHkhrZxOFJ0u0NKPEHfhg2rhd0E2C-hu9NGvfPd9YqV_xX4AmihAohlm9l2ncATSza5_Gw==",
-            "summary": []
-          },
-          {
-            "type": "message",
-            "id": "msg_07cbff89bf5e55ba01690e6d99e2b481949d691d49fec102f3",
-            "status": "completed",
-            "role": "assistant",
-            "content": [
-              {
-                "type": "output_text",
-                "text": "Hello! How can I help you today?",
-                "annotations": [],
-                "logprobs": []
-              }
-            ]
-          },
-          {
-            "type": "message",
-            "role": "user",
-            "content": [
-              {
-                "type": "input_text",
-                "text": "Say that again, but dramatically"
-              }
-            ]
           }
         ],
         "include": [
@@ -196,31 +166,31 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "99b024a50ad176b6-SEA",
+        "CF-RAY": "9a19bc621d452c4e-DFW",
         "Connection": "keep-alive",
-        "Content-Length": "4578",
+        "Content-Length": "3073",
         "Content-Type": "application/json",
-        "Date": "Fri, 07 Nov 2025 22:07:29 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "6432",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "7448",
+        "x-envoy-upstream-service-time": "3094",
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "180000000",
         "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "179999868",
+        "x-ratelimit-remaining-tokens": "180000000",
         "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_07cbff89bf5e55ba01690e6d9b822c819499e42323a3201a1e",
+        "id": "resp_03dd71feb063837d01691f52aea548819c87738b6266ccfa88",
         "object": "response",
-        "created_at": 1762553243,
+        "created_at": 1763660462,
         "status": "completed",
         "background": false,
         "billing": {
@@ -234,13 +204,13 @@
         "model": "gpt-5-mini-2025-08-07",
         "output": [
           {
-            "id": "rs_07cbff89bf5e55ba01690e6d9c3118819487265e8b51cbfc0d",
+            "id": "rs_03dd71feb063837d01691f52afe318819c9418fe4115fc0639",
             "type": "reasoning",
-            "encrypted_content": "gAAAAABpDm2hUYJU5H8T8_qGDmGp2dvU-V48JS9SnmzGl5G2UPCEczO4XYpcjECX7GApbdNwBVXazUpxdvb7hc_zwTq1x3Kyi0bQP4ksn2U9ZdTJzUVhzU1i1JUhMEdcNHT8FmL_ZozsOyqP_bsPgfTIsZOzZFTLFL_7LrNwGjEWKn4oioVfiVz0pNmrBaer9UBIHOy7zM57D2OqbNUyReih7nk5ClDwNRPtyS7btGHFd8X3QT7XrS96ndOCHQcqI3Qu4TsFH3DL61chab3tXnVobD5LCJX0vZCH4-MX7_q8aoNCP3Azx7hGCx4arnHgtEZ_cPBLd13tOQPAq8zfjwrfKNqMJq082Ao31CrGYj956WdAIgMOkVwU43KkAKay2CEFgu0kpcclwkEZI5zo7-lehl8DfUNAf3r3qfGYDV673-utFdkL_WVd__NUk5wyGb0FD8KDbLVy_HUR-DLgXVo3h1kHlVbJaX0Q9B_iTn4RRcrfYyo6Rhzq1H8vaZ2999-L6y1tUd1sLoyCGH4si8mUbimo7CpV9cRPtvouloZ0DEp7nHc5_-tJIcvpIvcS-UBY2KnW87qDty1HG7pT7PhvorOwwfQ4rd4yXBzBmTk5yxlLvT_4P8LCxhVsH_I2A6lgZlFzc-cO1a0-E6O7d4C7M-o1t3y-BJLcZMNFQnrm6h9jZF8t9UWGX-KyJ1AjgHBchsj5Ixu75mXf84E6nwk7o2tIOirki4ROYbgQVLzqEO51pavC4afHuwFJ-XJ7poUlWLr6FuOfvCEOcGzOslkuKAdV-HyCaOOIRHZSMdtPsVUu9I7-pZLRolYEsG4KsEEZZsdoSDRSP7DlSTvnAc2vzuRhWbugR3Yjei66uR7Q1GfRKkaHBkgh4LX8_fB3RtQ0WFLcq7amhmzNnWWQhQM3gjz0z3bkcY-86HHKg0vn5JveaeMYxXeH89CR1knPU7BkVtJWn8ABvOYXbpnuJROGImJ_Wt0h9U2H-TS9wofAkLtNzYleyOQPUhne4TAjmwcH09TamZIH4dV_WtnEGf_XjpFWVHmRgyYWc6r14s1XqpeTNC2GM4ldhOWiV5xayiP_47TA_TvqZ9P-N220HZkj3Syw5pqZPLFFh0dPehX_Ufus0C-xAZsRyJwl1OkAr1nPfeUc02tomcR5dUfnsTQzD6C_FJnmvxoIA8GefrAvud_w__8sl8WJvYJKzbjkCbBjazww1Ws65Y1UZFaKXktKBqa45WIUnMyKX836xf71CmS4U0-fNtI7ySwmw_orl21HjvqidsDSHfQjhvoUj0W4iub5YKMABeuUO0Lj_NFdUq-AZz5YnWrtIxYHwJFh_8-euzmUhAybijEKD0J8Zunz7kvuYuyvArO3tMDNhFs9AfhDSKeCVdpeoq6D_CtdVbSRTiF6cK2nx8pBKBcHCHkaLaO4avOt2Ex1wsgF5jI8Kfk7F58SU8LNePnD3LP4fVL4-952aUiYT9bgisa3-fsasfB0VdDWcgIuEscBiBu2c8_Jnz84ozW3-tPMmobOS_ZZrpwUC-0AeSGjWNfQfKxrhVEgEJ7b-eWLJC917f9_AGj3VQDOePF01ZPxjD-1DryR3hrGyqJNPGm39igbncx6KYFKlp2lAs0woq8Y7kcUMANmBW69O4FNhkLMF2eY5qYAu8rtqXAKmPW-wlnVrRudyszXOSOZcXj5uUwWHrl0sdZB7Y41bc7Jrp7XzGLYMl5ckNMQCZFKr8cD5QtM-KP2db_cM8O8SFS2IX-7QcBIg8fIe-9_itx0oL3yuzLaWITqJPt8LitrGOoyj-zJb1xo2FFl2kOa_89zyKZI5WZXlMEQAwoCVDX_d55toOjQxpQScsSLj8TTOLTFqSWuzPgLQ4Mfp_A0keo4mvbWs8GEBB0Hv9ZK2_yl-b-j_EsqYrsj5MslncoAF3foNFiZss4fp8CLfKV1sZSUvrdLtT-43yjuVE1upwsEaUxEZk0Z853O7S2R5D2o8HFilFP6RuwMtbCUBdsz44TnVchWfbMpkGpe9vrShf7NNanrAS42i-n4IWAjsS4gnyOtZll5z12MD0YHnS7Rm4mr-WzSsaA2W5LmwsqfEBgCIzBVS76L4Tc-PYx-oHQFQXWvZMJML9_UbZKhnv5prX7iCh8-lYier9wpQ6fH6kZZsKxn2LkoSTVtVzsfm10hv0rXo-RO5tl6PyoqFvNN4bfpuedGcEpHkBYf_7YBnFD5CIWIWUuoYqAfeuazT0HsorhP04gFlI0mGF0ZTNrnmSw_VsYuFQx3AXNGg-T74F8yxOh6-xXjoUQQKeRMEkV7RS6Oyi4Z2blQ7VGeqeft-4V86uKW-HBxzekI2lMTJFH_kr2ePG-yCLj2D_CPAQrQunXWXgImq-eIK5Of5IVaKIc0CoDlGtTTdSXxJPKmyaI6zqH9zQ4RMdGftSHeGh-z9TCEvASzDdOFrP-Hay-QAkyXhzJ-8XPH2NEe3VcaSGvh6L4z2LFBvqsckk5U9ui9u-OUF7NOlhE0lK1z7NPt_GXJvBFCFKy-mDO_T-4jPorHx_USk14LZpPV0GHQXiPNKobfQUM5HETGxKXq-kb3HIrplWOM2BgCPLqq9vo9_3TnY1qLUDfkbeRNvlkXcMxkTa2Q29s_0xePyKhk1D3RkpN8mtuh95prW3krr-7CgJbQA7aKbFRWWYPmO26XhoV4lNI6177geVKIS7ubu6PpgsP_4VRgSSUbgLw5rYnuFetWkLKEVC3akqwx8x6r8Yv2P8ogadgGTfTywNganHMtHFBbemja5hmWgh_NEEmyl1fzY75QkB7xoVuRh8WFGeTuK0SjhOg8KXXrSkDjiYGY3kUg9OqU7yKkWJ0b8HxVqCex_tC9pOg34GJCwJIjip2w",
+            "encrypted_content": "gAAAAABpH1KxresYm-Ohj33TllK0aGalixo5PzIV7W62kyAzvlClZjbMF80CvDkZJluk_F4O0Gsks9qar-OX0wexPEx2X3CC-OmT-FiTMQPOALYHhfd90PdyEvKDcIrMtHPD3j1movlnHYFQmWQQP_XqYh3wk847_nG5LBclOq7gTMqZ-P5qAAIGpJ2276ty5Rl63phZR3tH3JBVL_Gm_lvOYVTVKdfr-33Qr_WAMYYIDL1bp0CGv-HpiAhXEFegJKMoSWdgB_UW75E2paxgvBhysbMw6ucu623fA9YbYVHD00PynKIXZ7AC9kI6FhKvi49CgUaNAxRr5xW-gYBu8BNSsFwFnj7O77HXOzEmwjR0sxdEYK0QnfrrnwUDkVGL3ASMk0QLe0GxF7qwsFPuWMUAoTYrtaGsKRppa6IrBfT8IkrKB71g6KhQePQRZEmRol_UbChqsQ0UAzoO2MBxX6WsMMbiNpq8I2RJUhjt3_CzsqWPmIYi5FfEkbUhxpnNRf8L0JGXJXgOzbCz1lofTRJTDisisZQtPopQcGtNtxotqzs999NcpihGcfs6KwZUI9kpVNYUU-UMaJFJufbnnSw4cHEMvnQ5nTzjE6CU_nBWl_IbVqyxokQhMgyALdEn4YG7oNtoMSYl25b29v8wm1dAwI5iTr6hDWSYWp0E7wPIGZKjuxjvEgVzC6AdBMKwrTaweEVtrsZEhgjeZe1GSWqjRuYgRtHTI2Q7pSUglZPAtY-f4VhiVQYQE8bYDDYPnl2YBOJUGgbokn5i6NouqwQAxWStXNbRit7MUYPO1OXE0idcXKURxHUEyBmI7oahq2iImd-ADqs5xeITwhO92-OzjZAXuROgvaq36ojfCsnM4T7j8XIrxdagWBpVjY_TXDqh743fWOkpkuoCC9qbwpZK8U9Q08T4GmHQSZAT0t3w4fhaeZs3h-AoyR2YtXpmp3Jn7yDZB-DslfsvVWMBTnpmKUfGKeB2B7V6AFLx4gn7zrOR4WLyKu42ooQSZIfT4PIQfotAM4Ygn_wSakE6papLZCvr_gUZJF8x_vfu00RirJWrlxV6AO6BTD4PQDB-Uv_fQGlMI1T2CNu-AcutSbzU127XVtcKxfj1IfAyBaRAtY6S8xMePSczAQBmsdHO0CJuQatrvL8s0_9qvu50bMzg0GxDzdIEThQZST02rbBbHNnMM-o-0IeLjTvav3vYyth3fLgA9DvjmmVpvrRpj0U3o2mrErCh83FlvZbZL6oeiVgiWL5nbZnlMvpcbm01iZLsZ6AJV8l1svEc__Qnwc-MZAkS4YqcnJwIwQB00B93LcDphU2OcON1qtIfvn8bD8Nku6k7cIyLCEhnCV6Chn_Z5HgHOoXfs4qcimT56WZNtfYAd0YJjTwSDfBQZwiqQLTjbhJKLfGI",
             "summary": []
           },
           {
-            "id": "msg_07cbff89bf5e55ba01690e6da16bac81948555181ef0a2bdf6",
+            "id": "msg_03dd71feb063837d01691f52b163c8819c81a415910edce975",
             "type": "message",
             "status": "completed",
             "content": [
@@ -248,7 +218,7 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "(in a booming, theatrical voice) \"HELLOOO! How can I help you... TODAY?!\""
+                "text": "Hello! \uD83D\uDC4B How can I help you today?"
               }
             ],
             "role": "assistant"
@@ -278,15 +248,15 @@
         "top_p": 1.0,
         "truncation": "disabled",
         "usage": {
-          "input_tokens": 35,
+          "input_tokens": 10,
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 347,
+          "output_tokens": 81,
           "output_tokens_details": {
-            "reasoning_tokens": 320
+            "reasoning_tokens": 64
           },
-          "total_tokens": 382
+          "total_tokens": 91
         },
         "user": null,
         "metadata": {}

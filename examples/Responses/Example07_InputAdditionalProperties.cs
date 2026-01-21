@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using OpenAI.Responses;
 using System;
+using System.Collections.Generic;
 
 namespace OpenAI.Examples;
 
@@ -14,16 +15,21 @@ public partial class ResponseExamples
     [Test]
     public void Example07_InputAdditionalProperties()
     {
-        OpenAIResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+
+        List<ResponseItem> inputItems =
+        [
+            ResponseItem.CreateUserMessageItem("What is the answer to the ultimate question of life, the universe, and everything?"),
+        ];
 
         // Add extra request fields using Patch.
-        // Patch lets you set fields like `reasoning.effort` and `text.verbosity` that aren’t modeled on ResponseCreationOptions in the request payload.
+        // Patch lets you set fields like `reasoning.effort` and `text.verbosity` that aren’t modeled on CreateResponseOptions in the request payload.
         // See the API docs https://platform.openai.com/docs/api-reference/responses/create for supported additional fields.
-        ResponseCreationOptions options = new();
+        CreateResponseOptions options = new(inputItems);
         options.Patch.Set("$.reasoning.effort"u8, "high");
         options.Patch.Set("$.text.verbosity"u8, "medium");
 
-        OpenAIResponse response = client.CreateResponse("What is the answer to the ultimate question of life, the universe, and everything?", options);
+        ResponseResult response = client.CreateResponse(options);
 
         Console.WriteLine($"[ASSISTANT]: {response.GetOutputText()}");
 

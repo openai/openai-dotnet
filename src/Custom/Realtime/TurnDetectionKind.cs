@@ -1,4 +1,4 @@
-﻿using System;
+using Microsoft.TypeSpec.Generator.Customizations;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Realtime;
