@@ -633,7 +633,7 @@ public partial class ResponsesClient
     {
         CreateResponseOptions clonedOptions = userProvidedOptions is null
             ? new()
-            : userProvidedOptions.GetClone();
+            : userProvidedOptions.Clone();
 
         // If the model is null, use the default specified in the client.
         clonedOptions.Model ??= _model;

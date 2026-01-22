@@ -12,6 +12,7 @@ public class OpenAITestEnvironment : TestEnvironment
     {
         DevCertPath = Path.Combine(
             RepositoryRoot,
+            "tests",
             "Utility",
             "testproxy",
             "dotnet-devcert.pfx");
