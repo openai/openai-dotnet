@@ -4,6 +4,7 @@ using NUnit.Framework;
 using OpenAI.Files;
 using System;
 using System.ClientModel;
+using System.ClientModel.Primitives;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -385,6 +386,248 @@ public class FilesMockTests : ClientTestBase
         Assert.That(async () => await client.DeleteFileAsync("fileId", cancellationSource.Token),
                 Throws.InstanceOf<OperationCanceledException>());
     }
+
+#pragma warning disable OPENAI001
+    // Helper constant matching the one in OpenAIFileClient
+    private const int SecondsPerDay = 24 * 60 * 60;
+
+    [Test]
+    public async Task UploadFileWithOptionsIncludesExpiresAfter()
+    {
+        string capturedRequestContent = null;
+
+        OpenAIClientOptions clientOptions = GetClientOptionsWithMockResponse(200, """
+        {
+            "id": "returned_file_id",
+            "expires_at": 1704182400
+        }
+        """);
+        clientOptions.AddPolicy(new TestPipelinePolicy(message =>
+        {
+            if (message?.Request?.Content != null && capturedRequestContent == null)
+            {
+                using var stream = new MemoryStream();
+                message.Request.Content.WriteTo(stream, default);
+                stream.Position = 0;
+                using var reader = new StreamReader(stream);
+                capturedRequestContent = reader.ReadToEnd();
+            }
+        }),
+        PipelinePosition.PerCall);
+
+        OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential, clientOptions));
+        using var file = new MemoryStream(System.Text.Encoding.UTF8.GetBytes("test content"));
+
+        int expiresAfterDays = 7;
+        FileUploadOptions uploadOptions = new()
+        {
+            ExpiresAfterDays = expiresAfterDays
+        };
+
+        OpenAIFile fileInfo = await client.UploadFileAsync(file, "test.txt", FileUploadPurpose.Assistants, uploadOptions);
+
+        Assert.That(fileInfo.Id, Is.EqualTo("returned_file_id"));
+        Assert.That(capturedRequestContent, Does.Contain("expires_after"));
+        Assert.That(capturedRequestContent, Does.Contain("created_at"));
+        int expectedSeconds = expiresAfterDays * SecondsPerDay;
+        Assert.That(capturedRequestContent, Does.Contain(expectedSeconds.ToString()));
+    }
+
+    [Test]
+    public async Task UploadFileWithoutOptionsDoesNotIncludeExpiresAfter()
+    {
+        string capturedRequestContent = null;
+
+        OpenAIClientOptions clientOptions = GetClientOptionsWithMockResponse(200, """
+        {
+            "id": "returned_file_id"
+        }
+        """);
+        clientOptions.AddPolicy(new TestPipelinePolicy(message =>
+        {
+            if (message?.Request?.Content != null && capturedRequestContent == null)
+            {
+                using var stream = new MemoryStream();
+                message.Request.Content.WriteTo(stream, default);
+                stream.Position = 0;
+                using var reader = new StreamReader(stream);
+                capturedRequestContent = reader.ReadToEnd();
+            }
+        }),
+        PipelinePosition.PerCall);
+
+        OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential, clientOptions));
+        using var file = new MemoryStream(System.Text.Encoding.UTF8.GetBytes("test content"));
+
+        OpenAIFile fileInfo = await client.UploadFileAsync(file, "test.txt", FileUploadPurpose.Assistants);
+
+        Assert.That(fileInfo.Id, Is.EqualTo("returned_file_id"));
+        Assert.That(capturedRequestContent, Does.Not.Contain("expires_after"));
+    }
+
+    [Test]
+    [TestCaseSource(nameof(s_fileSourceKindSource))]
+    public async Task UploadFileWithOptionsSupportsAllSourceKinds(FileSourceKind fileSourceKind)
+    {
+        string capturedRequestContent = null;
+
+        OpenAIClientOptions clientOptions = GetClientOptionsWithMockResponse(200, """
+        {
+            "id": "returned_file_id",
+            "expires_at": 1704182400
+        }
+        """);
+        clientOptions.AddPolicy(new TestPipelinePolicy(message =>
+        {
+            if (message?.Request?.Content != null && capturedRequestContent == null)
+            {
+                using var stream = new MemoryStream();
+                message.Request.Content.WriteTo(stream, default);
+                stream.Position = 0;
+                using var reader = new StreamReader(stream);
+                capturedRequestContent = reader.ReadToEnd();
+            }
+        }),
+        PipelinePosition.PerCall);
+
+        OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential, clientOptions));
+        string filename = "images_dog_and_cat.png";
+        string path = Path.Combine("Assets", filename);
+
+        int expiresAfterDays = 30;
+        FileUploadOptions uploadOptions = new()
+        {
+            ExpiresAfterDays = expiresAfterDays
+        };
+
+        OpenAIFile fileInfo;
+        if (fileSourceKind == FileSourceKind.UsingStream)
+        {
+            using FileStream file = File.OpenRead(path);
+            fileInfo = await client.UploadFileAsync(file, filename, FileUploadPurpose.Assistants, uploadOptions);
+        }
+        else if (fileSourceKind == FileSourceKind.UsingFilePath)
+        {
+            fileInfo = await client.UploadFileAsync(path, FileUploadPurpose.Assistants, uploadOptions);
+        }
+        else if (fileSourceKind == FileSourceKind.UsingBinaryData)
+        {
+            using FileStream file = File.OpenRead(path);
+            BinaryData content = BinaryData.FromStream(file);
+            fileInfo = await client.UploadFileAsync(content, filename, FileUploadPurpose.Assistants, uploadOptions);
+        }
+        else
+        {
+            Assert.Fail("Invalid source kind.");
+            return;
+        }
+
+        Assert.That(fileInfo.Id, Is.EqualTo("returned_file_id"));
+        Assert.That(capturedRequestContent, Does.Contain("expires_after"));
+        Assert.That(capturedRequestContent, Does.Contain("created_at"));
+        int expectedSeconds = expiresAfterDays * SecondsPerDay;
+        Assert.That(capturedRequestContent, Does.Contain(expectedSeconds.ToString()));
+    }
+
+    [Test]
+    public async Task UploadFileWithNullOptionsDoesNotIncludeExpiresAfter()
+    {
+        string capturedRequestContent = null;
+
+        OpenAIClientOptions clientOptions = GetClientOptionsWithMockResponse(200, """
+        {
+            "id": "returned_file_id"
+        }
+        """);
+        clientOptions.AddPolicy(new TestPipelinePolicy(message =>
+        {
+            if (message?.Request?.Content != null && capturedRequestContent == null)
+            {
+                using var stream = new MemoryStream();
+                message.Request.Content.WriteTo(stream, default);
+                stream.Position = 0;
+                using var reader = new StreamReader(stream);
+                capturedRequestContent = reader.ReadToEnd();
+            }
+        }),
+        PipelinePosition.PerCall);
+
+        OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential, clientOptions));
+        using var file = new MemoryStream(System.Text.Encoding.UTF8.GetBytes("test content"));
+
+        OpenAIFile fileInfo = await client.UploadFileAsync(file, "test.txt", FileUploadPurpose.Assistants, null);
+
+        Assert.That(fileInfo.Id, Is.EqualTo("returned_file_id"));
+        Assert.That(capturedRequestContent, Does.Not.Contain("expires_after"));
+    }
+
+    [Test]
+    public async Task UploadFileWithOptionsAndNullExpiresAfterDaysDoesNotIncludeExpiresAfter()
+    {
+        string capturedRequestContent = null;
+
+        OpenAIClientOptions clientOptions = GetClientOptionsWithMockResponse(200, """
+        {
+            "id": "returned_file_id"
+        }
+        """);
+        clientOptions.AddPolicy(new TestPipelinePolicy(message =>
+        {
+            if (message?.Request?.Content != null && capturedRequestContent == null)
+            {
+                using var stream = new MemoryStream();
+                message.Request.Content.WriteTo(stream, default);
+                stream.Position = 0;
+                using var reader = new StreamReader(stream);
+                capturedRequestContent = reader.ReadToEnd();
+            }
+        }),
+        PipelinePosition.PerCall);
+
+        OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential, clientOptions));
+        using var file = new MemoryStream(System.Text.Encoding.UTF8.GetBytes("test content"));
+
+        FileUploadOptions uploadOptions = new()
+        {
+            ExpiresAfterDays = null
+        };
+
+        OpenAIFile fileInfo = await client.UploadFileAsync(file, "test.txt", FileUploadPurpose.Assistants, uploadOptions);
+
+        Assert.That(fileInfo.Id, Is.EqualTo("returned_file_id"));
+        Assert.That(capturedRequestContent, Does.Not.Contain("expires_after"));
+    }
+
+    [Test]
+    public void FileUploadOptionsDefaultsToNullExpiresAfterDays()
+    {
+        FileUploadOptions options = new();
+        Assert.That(options.ExpiresAfterDays, Is.Null);
+    }
+
+    [Test]
+    public void FileUploadOptionsThrowsOnInvalidExpiresAfterDays()
+    {
+        FileUploadOptions options = new();
+        Assert.That(() => options.ExpiresAfterDays = 0, Throws.TypeOf<ArgumentOutOfRangeException>());
+        Assert.That(() => options.ExpiresAfterDays = -1, Throws.TypeOf<ArgumentOutOfRangeException>());
+        Assert.That(() => options.ExpiresAfterDays = -100, Throws.TypeOf<ArgumentOutOfRangeException>());
+    }
+
+    [Test]
+    public void FileUploadOptionsAcceptsValidExpiresAfterDays()
+    {
+        FileUploadOptions options = new();
+        Assert.That(() => options.ExpiresAfterDays = 1, Throws.Nothing);
+        Assert.That(options.ExpiresAfterDays, Is.EqualTo(1));
+
+        Assert.That(() => options.ExpiresAfterDays = 365, Throws.Nothing);
+        Assert.That(options.ExpiresAfterDays, Is.EqualTo(365));
+
+        Assert.That(() => options.ExpiresAfterDays = null, Throws.Nothing);
+        Assert.That(options.ExpiresAfterDays, Is.Null);
+    }
+#pragma warning restore OPENAI001
 
     private OpenAIClientOptions GetClientOptionsWithMockResponse(int status, string content)
     {
