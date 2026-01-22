@@ -8,8 +8,6 @@ namespace OpenAI.Responses;
 [CodeGenType("CreateResponse")]
 public partial class CreateResponseOptions
 {
-    internal static readonly CreateResponseOptions Default = new CreateResponseOptions();
-
     // CUSTOM: Added as a convenience.
     public CreateResponseOptions(IEnumerable<ResponseItem> inputItems, string model = default) : this()
     {
