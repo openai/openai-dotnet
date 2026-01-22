@@ -632,7 +632,7 @@ public partial class ResponsesClient
     internal virtual CreateResponseOptions CreatePerCallOptions(CreateResponseOptions userProvidedOptions)
     {
         CreateResponseOptions clonedOptions = userProvidedOptions is null
-            ? new()
+            ? CreateResponseOptions.Default
             : userProvidedOptions.Clone();
 
         // If the model is null, use the default specified in the client.
