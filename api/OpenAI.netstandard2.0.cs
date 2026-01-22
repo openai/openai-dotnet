@@ -4362,6 +4362,8 @@ namespace OpenAI.Responses {
         public ref JsonPatch Patch { get; }
         protected virtual CodeInterpreterToolContainer JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public static implicit operator CodeInterpreterToolContainer(CodeInterpreterToolContainerConfiguration containerConfiguration);
+        public static implicit operator CodeInterpreterToolContainer(string containerId);
         protected virtual CodeInterpreterToolContainer PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }

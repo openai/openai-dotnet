@@ -25,7 +25,7 @@ public partial class ResponseExamples
             ResponseItem.CreateUserMessageItem("Create an Excel spreadsheet that contains the mathematical times tables from 1-12 and make it available for download."),
         ];
 
-        CodeInterpreterToolContainer container = new(CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration());
+        CodeInterpreterToolContainer container = CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration(); // An implicit conversion is used here for convenience.
         CodeInterpreterTool codeInterpreterTool = new(container);
 
         CreateResponseOptions options = new(inputItems)

@@ -9,13 +9,9 @@ namespace OpenAI.Responses;
 /// Represents a container for the code interpreter tool.
 /// </summary>
 [CodeGenType("DotNetCodeInterpreterToolContainer")]
+[CodeGenVisibility(nameof(CodeInterpreterToolContainer), CodeGenVisibility.Internal)]
 public partial class CodeInterpreterToolContainer
 {
-    // CUSTOM: Made internal.
-    internal CodeInterpreterToolContainer()
-    {
-    }
-
     // CUSTOM: Added to support the corresponding component of the union.
     /// <summary>
     /// Initializes a new instance of the <see cref="CodeInterpreterContainer"/> class.
@@ -23,6 +19,8 @@ public partial class CodeInterpreterToolContainer
     /// <param name="containerId">The ID of the container.</param>
     public CodeInterpreterToolContainer(string containerId)
     {
+        Argument.AssertNotNull(containerId, nameof(containerId));
+
         ContainerId = containerId;
     }
 
@@ -33,6 +31,8 @@ public partial class CodeInterpreterToolContainer
     /// <param name="containerConfiguration">The configuration of the container.</param>
     public CodeInterpreterToolContainer(CodeInterpreterToolContainerConfiguration containerConfiguration)
     {
+        Argument.AssertNotNull(containerConfiguration, nameof(containerConfiguration));
+
         ContainerConfiguration = containerConfiguration;
     }
 
@@ -45,4 +45,10 @@ public partial class CodeInterpreterToolContainer
     // - Removed setter.
     [CodeGenMember("Container")]
     public CodeInterpreterToolContainerConfiguration ContainerConfiguration { get; }
+
+    // CUSTOM: Added for convenience.
+    public static implicit operator CodeInterpreterToolContainer(string containerId) => new(containerId);
+
+    // CUSTOM: Added for convenience.
+    public static implicit operator CodeInterpreterToolContainer(CodeInterpreterToolContainerConfiguration containerConfiguration) => new(containerConfiguration);
 }
