@@ -82,8 +82,11 @@ if ($TargetFramework) {
     }
 }
 
-# Ensure api output directory exists
-if (-not (Test-Path $apiOutputDir)) {
+# Ensure api output directory exists and is clean
+if (Test-Path $apiOutputDir) {
+    Write-Host "Cleaning existing API output directory..." -ForegroundColor Cyan
+    Get-ChildItem -Path $apiOutputDir -File | Remove-Item -Force
+} else {
     New-Item -ItemType Directory -Path $apiOutputDir -Force | Out-Null
     Write-Host "Created output directory: $apiOutputDir"
 }
