@@ -86,7 +86,7 @@ if ($TargetFramework) {
 if (Test-Path $apiOutputDir) {
     Write-Host "Cleaning existing API output directory..." -ForegroundColor Cyan
     try {
-        Get-ChildItem -Path $apiOutputDir -Recurse | Remove-Item -Force -Recurse
+        Remove-Item -Path "$apiOutputDir\*" -Recurse -Force
     }
     catch {
         Write-Warning "Failed to clean some items in API output directory: $_"
