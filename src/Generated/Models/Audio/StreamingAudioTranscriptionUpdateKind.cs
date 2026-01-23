@@ -13,6 +13,7 @@ namespace OpenAI.Audio
     public readonly partial struct StreamingAudioTranscriptionUpdateKind : IEquatable<StreamingAudioTranscriptionUpdateKind>
     {
         private readonly string _value;
+        private const string TranscriptTextSegmentValue = "transcript.text.segment";
         private const string TranscriptTextDeltaValue = "transcript.text.delta";
         private const string TranscriptTextDoneValue = "transcript.text.done";
 
@@ -22,6 +23,8 @@ namespace OpenAI.Audio
 
             _value = value;
         }
+
+        public static StreamingAudioTranscriptionUpdateKind TranscriptTextSegment { get; } = new StreamingAudioTranscriptionUpdateKind(TranscriptTextSegmentValue);
 
         public static StreamingAudioTranscriptionUpdateKind TranscriptTextDelta { get; } = new StreamingAudioTranscriptionUpdateKind(TranscriptTextDeltaValue);
 

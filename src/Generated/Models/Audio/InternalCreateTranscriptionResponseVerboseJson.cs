@@ -21,19 +21,17 @@ namespace OpenAI.Audio
             Segments = new ChangeTrackingList<TranscribedSegment>();
         }
 
-        internal InternalCreateTranscriptionResponseVerboseJson(string task, string language, TimeSpan duration, string text, IReadOnlyList<TranscribedWord> words, IReadOnlyList<TranscribedSegment> segments, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalCreateTranscriptionResponseVerboseJson(string language, TimeSpan duration, string text, IReadOnlyList<TranscribedWord> words, IReadOnlyList<TranscribedSegment> segments, InternalTranscriptTextUsageDuration usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
-            Task = task;
             Language = language;
             Duration = duration;
             Text = text;
             Words = words ?? new ChangeTrackingList<TranscribedWord>();
             Segments = segments ?? new ChangeTrackingList<TranscribedSegment>();
+            Usage = usage;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-
-        public string Task { get; } = "transcribe";
 
         public string Language { get; }
 
@@ -44,6 +42,8 @@ namespace OpenAI.Audio
         public IReadOnlyList<TranscribedWord> Words { get; }
 
         public IReadOnlyList<TranscribedSegment> Segments { get; }
+
+        internal InternalTranscriptTextUsageDuration Usage { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

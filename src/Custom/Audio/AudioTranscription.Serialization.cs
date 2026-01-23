@@ -16,12 +16,12 @@ public partial class AudioTranscription
             contentType.StartsWith("text/plain", StringComparison.Ordinal))
         {
             return new AudioTranscription(
-                task: default,
                 language: null,
                 duration: null,
                 text: response.Content?.ToString(),
                 words: new ChangeTrackingList<TranscribedWord>(),
                 segments: new ChangeTrackingList<TranscribedSegment>(),
+                usage: null,
                 transcriptionTokenLogProbabilities: new ChangeTrackingList<AudioTokenLogProbabilityDetails>(),
                 additionalBinaryDataProperties: new Dictionary<string, BinaryData>());
         }

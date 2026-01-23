@@ -71,8 +71,6 @@ namespace OpenAI.Realtime;
 [Experimental("OPENAI002")][CodeGenType("RealtimeServerEventOutputAudioBufferCleared")] internal partial class InternalRealtimeServerEventOutputAudioBufferCleared { }
 [Experimental("OPENAI002")][CodeGenType("RealtimeServerEventOutputAudioBufferStarted")] internal partial class InternalRealtimeServerEventOutputAudioBufferStarted { }
 [Experimental("OPENAI002")][CodeGenType("RealtimeServerEventOutputAudioBufferStopped")] internal partial class InternalRealtimeServerEventOutputAudioBufferStopped { }
-[Experimental("OPENAI002")][CodeGenType("TranscriptTextDeltaEventLogprob")] internal partial class InternalTranscriptTextDeltaEventLogprob { }
-[Experimental("OPENAI002")][CodeGenType("TranscriptTextDoneEventLogprob")] internal partial class InternalTranscriptTextDoneEventLogprob { }
 [Experimental("OPENAI002")][CodeGenType("RealtimeTranscriptionSessionCreateRequestClientSecretExpiresAtAnchor")] internal readonly partial struct InternalRealtimeTranscriptionSessionCreateRequestClientSecretExpiresAtAnchor {}
 [Experimental("OPENAI002")][CodeGenType("VadConfigType")] internal readonly partial struct InternalVadConfigType {}
 [Experimental("OPENAI002")][CodeGenType("RealtimeTranscriptionSessionCreateRequestClientSecret")] internal partial class InternalRealtimeTranscriptionSessionCreateRequestClientSecret {}

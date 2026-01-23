@@ -21,8 +21,8 @@ namespace OpenAI.Audio
             uri.AppendPath("/audio/speech", false);
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;
-            request.Headers.Set("Accept", "application/octet-stream");
             request.Headers.Set("Content-Type", "application/json");
+            request.Headers.Set("Accept", "application/octet-stream, text/event-stream");
             request.Content = content;
             message.Apply(options);
             return message;
@@ -35,8 +35,8 @@ namespace OpenAI.Audio
             uri.AppendPath("/audio/transcriptions", false);
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;
-            request.Headers.Set("Accept", "application/json, text/event-stream");
             request.Headers.Set("Content-Type", contentType);
+            request.Headers.Set("Accept", "application/json, text/event-stream");
             request.Content = content;
             message.Apply(options);
             return message;
@@ -49,8 +49,8 @@ namespace OpenAI.Audio
             uri.AppendPath("/audio/translations", false);
             PipelineMessage message = Pipeline.CreateMessage(uri.ToUri(), "POST", PipelineMessageClassifier200);
             PipelineRequest request = message.Request;
-            request.Headers.Set("Accept", "application/json");
             request.Headers.Set("Content-Type", contentType);
+            request.Headers.Set("Accept", "application/json");
             request.Content = content;
             message.Apply(options);
             return message;

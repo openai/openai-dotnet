@@ -6,22 +6,22 @@ using System;
 using System.Collections.Generic;
 using OpenAI;
 
-namespace OpenAI.Realtime
+namespace OpenAI.Audio
 {
-    internal partial class InternalTranscriptTextDoneEventLogprob
+    internal partial class InternalTranscriptTextDoneEventLogprobs
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalTranscriptTextDoneEventLogprob() : this(null, default, null, null)
+        internal InternalTranscriptTextDoneEventLogprobs() : this(null, default, null, null)
         {
         }
 
-        internal InternalTranscriptTextDoneEventLogprob(string token, float? logprob, IList<int> bytes, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalTranscriptTextDoneEventLogprobs(string token, float? logprob, IList<long> bytes, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Token = token;
             Logprob = logprob;
-            Bytes = bytes ?? new ChangeTrackingList<int>();
+            Bytes = bytes ?? new ChangeTrackingList<long>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
@@ -29,7 +29,7 @@ namespace OpenAI.Realtime
 
         public float? Logprob { get; }
 
-        public IList<int> Bytes { get; }
+        public IList<long> Bytes { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

@@ -16,12 +16,12 @@ namespace OpenAI.Audio
         {
         }
 
-        internal InternalCreateTranscriptionResponseJsonLogprob(string token, float? logprob, IList<float> bytes, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalCreateTranscriptionResponseJsonLogprob(string token, float? logprob, IList<double> bytes, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Token = token;
             Logprob = logprob;
-            Bytes = bytes ?? new ChangeTrackingList<float>();
+            Bytes = bytes ?? new ChangeTrackingList<double>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
@@ -29,7 +29,7 @@ namespace OpenAI.Audio
 
         public float? Logprob { get; }
 
-        public IList<float> Bytes { get; }
+        public IList<double> Bytes { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

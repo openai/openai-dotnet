@@ -1194,6 +1194,7 @@ namespace OpenAI.Audio {
     }
     public class StreamingAudioTranscriptionTextDeltaUpdate : StreamingAudioTranscriptionUpdate, IJsonModel<StreamingAudioTranscriptionTextDeltaUpdate>, IPersistableModel<StreamingAudioTranscriptionTextDeltaUpdate> {
         public string Delta { get; }
+        public string SegmentId { get; }
         public IReadOnlyList<AudioTokenLogProbabilityDetails> TranscriptionTokenLogProbabilities { get; }
         protected override StreamingAudioTranscriptionUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -1203,6 +1204,17 @@ namespace OpenAI.Audio {
     public class StreamingAudioTranscriptionTextDoneUpdate : StreamingAudioTranscriptionUpdate, IJsonModel<StreamingAudioTranscriptionTextDoneUpdate>, IPersistableModel<StreamingAudioTranscriptionTextDoneUpdate> {
         public string Text { get; }
         public IReadOnlyList<AudioTokenLogProbabilityDetails> TranscriptionTokenLogProbabilities { get; }
+        protected override StreamingAudioTranscriptionUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override StreamingAudioTranscriptionUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class StreamingAudioTranscriptionTextSegmentUpdate : StreamingAudioTranscriptionUpdate, IJsonModel<StreamingAudioTranscriptionTextSegmentUpdate>, IPersistableModel<StreamingAudioTranscriptionTextSegmentUpdate> {
+        public TimeSpan End { get; }
+        public string Id { get; }
+        public string Speaker { get; }
+        public TimeSpan Start { get; }
+        public string Text { get; }
         protected override StreamingAudioTranscriptionUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override StreamingAudioTranscriptionUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -1218,6 +1230,7 @@ namespace OpenAI.Audio {
         public StreamingAudioTranscriptionUpdateKind(string value);
         public static StreamingAudioTranscriptionUpdateKind TranscriptTextDelta { get; }
         public static StreamingAudioTranscriptionUpdateKind TranscriptTextDone { get; }
+        public static StreamingAudioTranscriptionUpdateKind TranscriptTextSegment { get; }
         public readonly bool Equals(StreamingAudioTranscriptionUpdateKind other);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly bool Equals(object obj);

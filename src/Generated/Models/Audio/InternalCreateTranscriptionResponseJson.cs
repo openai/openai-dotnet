@@ -18,17 +18,20 @@ namespace OpenAI.Audio
             Logprobs = new ChangeTrackingList<InternalCreateTranscriptionResponseJsonLogprob>();
         }
 
-        internal InternalCreateTranscriptionResponseJson(string text, IList<InternalCreateTranscriptionResponseJsonLogprob> logprobs, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalCreateTranscriptionResponseJson(string text, IList<InternalCreateTranscriptionResponseJsonLogprob> logprobs, InternalCreateTranscriptionResponseJsonUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Text = text;
             Logprobs = logprobs ?? new ChangeTrackingList<InternalCreateTranscriptionResponseJsonLogprob>();
+            Usage = usage;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public string Text { get; }
 
         internal IList<InternalCreateTranscriptionResponseJsonLogprob> Logprobs { get; }
+
+        internal InternalCreateTranscriptionResponseJsonUsage Usage { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

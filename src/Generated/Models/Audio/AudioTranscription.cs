@@ -22,15 +22,15 @@ namespace OpenAI.Audio
             TranscriptionTokenLogProbabilities = new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
         }
 
-        internal AudioTranscription(string task, string language, TimeSpan? duration, string text, IReadOnlyList<TranscribedWord> words, IReadOnlyList<TranscribedSegment> segments, IReadOnlyList<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal AudioTranscription(string language, TimeSpan? duration, string text, IReadOnlyList<TranscribedWord> words, IReadOnlyList<TranscribedSegment> segments, InternalTranscriptTextUsageDuration usage, IReadOnlyList<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
-            Task = task;
             Language = language;
             Duration = duration;
             Text = text;
             Words = words ?? new ChangeTrackingList<TranscribedWord>();
             Segments = segments ?? new ChangeTrackingList<TranscribedSegment>();
+            Usage = usage;
             TranscriptionTokenLogProbabilities = transcriptionTokenLogProbabilities ?? new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
@@ -42,6 +42,8 @@ namespace OpenAI.Audio
         public IReadOnlyList<TranscribedWord> Words { get; }
 
         public IReadOnlyList<TranscribedSegment> Segments { get; }
+
+        internal InternalTranscriptTextUsageDuration Usage { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

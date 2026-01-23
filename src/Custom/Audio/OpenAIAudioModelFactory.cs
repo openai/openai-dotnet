@@ -29,8 +29,8 @@ public static partial class OpenAIAudioModelFactory
             text: text,
             words: words.ToList(),
             segments: segments.ToList(),
-            task: "transcribe",
             duration: duration,
+            usage: null,
             transcriptionTokenLogProbabilities: transcriptionTokenLogProbabilities.ToList(),
             additionalBinaryDataProperties: null);
     }
@@ -45,7 +45,6 @@ public static partial class OpenAIAudioModelFactory
             language: language,
             text: text,
             segments: segments.ToList(),
-            task: "translate",
             duration: duration,
             additionalBinaryDataProperties: null);
     }
