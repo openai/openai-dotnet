@@ -11,24 +11,24 @@
     <GenAPIOutputDirectory>$(RepositoryRoot)api\</GenAPIOutputDirectory>
   </PropertyGroup>
 
-  <!-- Import GenAPI Task package when generating API -->
-  <ItemGroup Condition="'$(GeneratingApi)' == 'true'">
+  <!-- Import GenAPI Task package when exporting API -->
+  <ItemGroup Condition="'$(ExportingApi)' == 'true'">
     <PackageReference Include="Microsoft.DotNet.GenAPI.Task" PrivateAssets="All" />
   </ItemGroup>
 
   <!--
-    GenerateApi target: Generates the public API surface for the OpenAI library.
+    ExportApi target: Generates the public API surface for the OpenAI library.
     
     Usage:
-      dotnet build src/OpenAI.csproj -t:GenerateApi -c Release -p:GeneratingApi=true
-      dotnet build src/OpenAI.csproj -t:GenerateApi -c Release -p:GeneratingApi=true -p:TargetFramework=net8.0
+      dotnet build src/OpenAI.csproj -t:ExportApi -c Release -p:ExportingApi=true
+      dotnet build src/OpenAI.csproj -t:ExportApi -c Release -p:ExportingApi=true -p:TargetFramework=net8.0
     
     Outputs to:
       api/OpenAI.<TargetFramework>.cs
       
     Target frameworks are determined by $(ClientTargetFrameworks) in Directory.Build.props.
   -->
-  <Target Name="GenerateApi"
+  <Target Name="ExportApi"
           DependsOnTargets="Build"
           Condition="'$(MSBuildProjectName)' == 'OpenAI' and '$(TargetFramework)' != ''">
 
