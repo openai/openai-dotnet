@@ -87,10 +87,8 @@ Write-Host ""
 $frameworks = $clientTargetFrameworks -split ";"
 foreach ($framework in $frameworks) {
     Write-Host "  Generating API for $framework..." -ForegroundColor Yellow
-    
     $frameworkBuildArgs = $buildArgs + @("-p:TargetFramework=$framework")
     & dotnet @frameworkBuildArgs
-    
     if ($LASTEXITCODE -ne 0) {
         Write-Error "GenAPI failed for $framework with exit code $LASTEXITCODE"
         exit $LASTEXITCODE
