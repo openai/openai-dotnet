@@ -1,0 +1,175 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "245",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI.Shared/2.8.0 (.NET 8.0.16; Darwin 25.2.0 Darwin Kernel Version 25.2.0: Tue Nov 18 21:08:48 PST 2025; root:xnu-12377.61.12~1/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "tools": [
+          {
+            "type": "web_search"
+          }
+        ],
+        "tool_choice": {
+          "type": "web_search_preview"
+        },
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Searching the internet, what's the weather like in Seattle?"
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9ba54a0affe06c57-DFW",
+        "Connection": "keep-alive",
+        "Content-Length": "5126",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "3184",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_03e512b0d08dfa8200695e9c8c0a5881a3a631bd5f2019aa92",
+        "object": "response",
+        "created_at": 1767808140,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "completed_at": 1767808143,
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4o-mini-2024-07-18",
+        "output": [
+          {
+            "id": "ws_03e512b0d08dfa8200695e9c8c187881a3854cfc2e83f20656",
+            "type": "web_search_call",
+            "status": "completed",
+            "action": {
+              "type": "search",
+              "query": "Searching the internet, what's the weather like in Seattle?"
+            }
+          },
+          {
+            "id": "msg_03e512b0d08dfa8200695e9c8d180881a3b2b081c255f757e5",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [
+                  {
+                    "type": "url_citation",
+                    "end_index": 1161,
+                    "start_index": 1025,
+                    "title": "January is Seattle's gloomiest month",
+                    "url": "https://www.axios.com/local/seattle/2026/01/06/seattle-january-darkest-month-cloud-cover-sunlight-gloom?utm_source=openai"
+                  },
+                  {
+                    "type": "url_citation",
+                    "end_index": 1451,
+                    "start_index": 1333,
+                    "title": "Seattle Weather in January 2026 | United States Averages | Weather-2-Visit",
+                    "url": "https://www.weather2visit.com/north-america/united-states/seattle-january.htm?utm_source=openai"
+                  },
+                  {
+                    "type": "url_citation",
+                    "end_index": 1732,
+                    "start_index": 1613,
+                    "title": "Winter Weather Advisory 01/06/2026 07:51 Washington | GovOneStop",
+                    "url": "https://www.govonestop.com/alert/winter-weather-advisory-01062026-0751-washington?utm_source=openai"
+                  }
+                ],
+                "logprobs": [],
+                "text": "As of 9:49\u202FAM PST on Wednesday, January 7, 2026, in Seattle, Washington, the weather is cloudy with a temperature of 41°F (5°C).\n\n## Weather for Seattle, WA:\nCurrent Conditions: Cloudy, 41°F (5°C)\n\nDaily Forecast:\n* Wednesday, January 7: Low: 34°F (1°C), High: 43°F (6°C), Description: Breezy with on-and-off rain and drizzle\n* Thursday, January 8: Low: 41°F (5°C), High: 45°F (7°C), Description: Cloudy with a passing shower or two\n* Friday, January 9: Low: 37°F (3°C), High: 52°F (11°C), Description: Cloudy\n* Saturday, January 10: Low: 42°F (6°C), High: 51°F (11°C), Description: Mostly cloudy\n* Sunday, January 11: Low: 44°F (7°C), High: 52°F (11°C), Description: Periods of rain and drizzle early in the morning; cloudy\n* Monday, January 12: Low: 49°F (9°C), High: 56°F (13°C), Description: Occasional rain and drizzle\n* Tuesday, January 13: Low: 46°F (8°C), High: 56°F (14°C), Description: Sun and areas of high clouds\n\n\nJanuary is Seattle's gloomiest month, with overcast or mostly cloudy skies about 71% of the time. ([axios.com](https://www.axios.com/local/seattle/2026/01/06/seattle-january-darkest-month-cloud-cover-sunlight-gloom?utm_source=openai)) The city typically experiences cool and wet conditions during this month, with average high temperatures around 45°F (7°C) and average low temperatures around 35°F (2°C). ([weather2visit.com](https://www.weather2visit.com/north-america/united-states/seattle-january.htm?utm_source=openai))\n\nA Winter Weather Advisory was issued on January 6, 2026, for the Olympic Mountains, expecting snow accumulations of 6 to 12 inches and wind gusts up to 40 mph. ([govonestop.com](https://www.govonestop.com/alert/winter-weather-advisory-01062026-0751-washington?utm_source=openai))\n\nPlease exercise caution if traveling in the area, as conditions can change rapidly. "
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "prompt_cache_retention": null,
+        "reasoning": {
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "auto",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": {
+          "type": "web_search_preview"
+        },
+        "tools": [
+          {
+            "type": "web_search",
+            "filters": null,
+            "search_context_size": "medium",
+            "user_location": {
+              "type": "approximate",
+              "city": null,
+              "country": "US",
+              "region": null,
+              "timezone": null
+            }
+          }
+        ],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 8508,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 531,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 9039
+        },
+        "user": null,
+        "metadata": {}
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

@@ -12,7 +12,6 @@ using OpenAI.Images;
 using OpenAI.Models;
 using OpenAI.Moderations;
 using OpenAI.Realtime;
-using OpenAI.Responses;
 using OpenAI.VectorStores;
 using System;
 using System.ClientModel;
@@ -27,53 +26,177 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Tests;
 
-internal static class TestHelpers
+internal static partial class TestHelpers
 {
-    public enum TestScenario
+    public partial class TestScenario
     {
-        Assistants,
-        Audio_TTS,
-        Audio_Whisper,
-        Audio_Gpt_4o_Mini_Transcribe,
-        Batch,
-        Chat,
-        Containers,
-        Conversations,
-        Embeddings,
-        Files,
-        FineTuning,
-        Images,
-        LegacyCompletions,
-        Models,
-        Moderations,
-        Realtime,
-        Responses,
-        VectorStores,
-        TopLevel,
+        public string ModelId { get; }
+
+        public TestScenario(string modelId)
+        {
+            ModelId = modelId;
+        }
+
+        public virtual object CreateClient(string model, ApiKeyCredential credential, OpenAIClientOptions options)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static readonly TestScenario Assistants = new AssistantsScenario();
+        public static readonly TestScenario Audio_TTS = new AudioTTSScenario();
+        public static readonly TestScenario Audio_Whisper = new AudioWhisperScenario();
+        public static readonly TestScenario Audio_Gpt_4o_Mini_Transcribe = new AudioGpt4oMiniTranscribeScenario();
+        public static readonly TestScenario Batch = new BatchScenario();
+        public static readonly TestScenario Chat = new ChatScenario();
+        public static readonly TestScenario Containers = new ContainersScenario();
+        public static readonly TestScenario Conversations = new ConversationsScenario();
+        public static readonly TestScenario Embeddings = new EmbeddingsScenario();
+        public static readonly TestScenario Files = new FilesScenario();
+        public static readonly TestScenario FineTuning = new FineTuningScenario();
+        public static readonly TestScenario Images = new ImagesScenario();
+        public static readonly TestScenario LegacyCompletions = new LegacyCompletionsScenario();
+        public static readonly TestScenario Models = new ModelsScenario();
+        public static readonly TestScenario Moderations = new ModerationsScenario();
+        public static readonly TestScenario Realtime = new RealtimeScenario();
+        public static readonly TestScenario VectorStores = new VectorStoresScenario();
+        public static readonly TestScenario TopLevel = new TopLevelScenario();
+
+        private class AssistantsScenario : TestScenario
+        {
+            public AssistantsScenario() : base(null) { }
+            public override object CreateClient(string model, ApiKeyCredential credential, OpenAIClientOptions options)
+#pragma warning disable OPENAI001
+                => new AssistantClient(credential, options);
+#pragma warning restore OPENAI001
+        }
+
+        private class AudioTTSScenario : TestScenario
+        {
+            public AudioTTSScenario() : base("tts-1") { }
+            public override object CreateClient(string model, ApiKeyCredential credential, OpenAIClientOptions options)
+                => new AudioClient(model, credential, options);
+        }
+
+        private class AudioWhisperScenario : TestScenario
+        {
+            public AudioWhisperScenario() : base("whisper-1") { }
+            public override object CreateClient(string model, ApiKeyCredential credential, OpenAIClientOptions options)
+                => new AudioClient(model, credential, options);
+        }
+
+        private class AudioGpt4oMiniTranscribeScenario : TestScenario
+        {
+            public AudioGpt4oMiniTranscribeScenario() : base("gpt-4o-mini-transcribe") { }
+            public override object CreateClient(string model, ApiKeyCredential credential, OpenAIClientOptions options)
+                => new AudioClient(model, credential, options);
+        }
+
+        private class BatchScenario : TestScenario
+        {
+            public BatchScenario() : base(null) { }
+            public override object CreateClient(string model, ApiKeyCredential credential, OpenAIClientOptions options)
+                => new BatchClient(credential, options);
+        }
+
+        private class ChatScenario : TestScenario
+        {
+            public ChatScenario() : base("gpt-4o-mini") { }
+            public override object CreateClient(string model, ApiKeyCredential credential, OpenAIClientOptions options)
+                => new ChatClient(model, credential, options);
+        }
+
+        private class ContainersScenario : TestScenario
+        {
+            public ContainersScenario() : base("gpt-4o-mini") { }
+            public override object CreateClient(string model, ApiKeyCredential credential, OpenAIClientOptions options)
+#pragma warning disable OPENAI001
+                => new ContainerClient(credential, options);
+#pragma warning restore OPENAI001
+        }
+
+        private class ConversationsScenario : TestScenario
+        {
+            public ConversationsScenario() : base(null) { }
+            public override object CreateClient(string model, ApiKeyCredential credential, OpenAIClientOptions options)
+#pragma warning disable OPENAI001
+                => new ConversationClient(credential, options);
+#pragma warning restore OPENAI001
+        }
+
+        private class EmbeddingsScenario : TestScenario
+        {
+            public EmbeddingsScenario() : base("text-embedding-3-small") { }
+            public override object CreateClient(string model, ApiKeyCredential credential, OpenAIClientOptions options)
+                => new EmbeddingClient(model, credential, options);
+        }
+
+        private class FilesScenario : TestScenario
+        {
+            public FilesScenario() : base(null) { }
+            public override object CreateClient(string model, ApiKeyCredential credential, OpenAIClientOptions options)
+                => new OpenAIFileClient(credential, options);
+        }
+
+        private class FineTuningScenario : TestScenario
+        {
+            public FineTuningScenario() : base(null) { }
+            public override object CreateClient(string model, ApiKeyCredential credential, OpenAIClientOptions options)
+                => new FineTuningClient(credential, options);
+        }
+
+        private class ImagesScenario : TestScenario
+        {
+            public ImagesScenario() : base("gpt-image-1") { }
+            public override object CreateClient(string model, ApiKeyCredential credential, OpenAIClientOptions options)
+                => new ImageClient(model, credential, options);
+        }
+
+        private class LegacyCompletionsScenario : TestScenario
+        {
+            public LegacyCompletionsScenario() : base(null) { }
+        }
+
+        private class ModelsScenario : TestScenario
+        {
+            public ModelsScenario() : base(null) { }
+            public override object CreateClient(string model, ApiKeyCredential credential, OpenAIClientOptions options)
+                => new OpenAIModelClient(credential, options);
+        }
+
+        private class ModerationsScenario : TestScenario
+        {
+            public ModerationsScenario() : base("omni-moderation-latest") { }
+            public override object CreateClient(string model, ApiKeyCredential credential, OpenAIClientOptions options)
+                => new ModerationClient(model, credential, options);
+        }
+
+        private class RealtimeScenario : TestScenario
+        {
+            public RealtimeScenario() : base("gpt-realtime") { }
+            public override object CreateClient(string model, ApiKeyCredential credential, OpenAIClientOptions options)
+#pragma warning disable OPENAI002
+                => new RealtimeClient(credential, options);
+#pragma warning restore OPENAI002
+        }
+
+        private class VectorStoresScenario : TestScenario
+        {
+            public VectorStoresScenario() : base(null) { }
+            public override object CreateClient(string model, ApiKeyCredential credential, OpenAIClientOptions options)
+#pragma warning disable OPENAI001
+                => new VectorStoreClient(credential, options);
+#pragma warning restore OPENAI001
+        }
+
+        private class TopLevelScenario : TestScenario
+        {
+            public TopLevelScenario() : base(null) { }
+            public override object CreateClient(string model, ApiKeyCredential credential, OpenAIClientOptions options)
+                => new OpenAIClient(credential, options);
+        }
     }
 
-    public static string GetModelForScenario(TestScenario testScenario) => testScenario switch
-    {
-        TestScenario.Assistants => null,
-        TestScenario.Audio_TTS => "tts-1",
-        TestScenario.Audio_Whisper => "whisper-1",
-        TestScenario.Audio_Gpt_4o_Mini_Transcribe => "gpt-4o-mini-transcribe",
-        TestScenario.Batch => null,
-        TestScenario.Chat => "gpt-4o-mini",
-        TestScenario.Embeddings => "text-embedding-3-small",
-        TestScenario.Files => null,
-        TestScenario.FineTuning => null,
-        TestScenario.Images => "gpt-image-1",
-        TestScenario.Models => null,
-        TestScenario.Moderations => "omni-moderation-latest",
-        TestScenario.VectorStores => null,
-        TestScenario.TopLevel => null,
-        TestScenario.Realtime => "gpt-realtime",
-        TestScenario.Responses => "gpt-4o-mini",
-        TestScenario.Containers => "gpt-4o-mini",
-        TestScenario.Conversations => null,
-        _ => throw new NotImplementedException(),
-    };
+    public static string GetModelForScenario(TestScenario testScenario) => testScenario.ModelId;
 
     public static OpenAIClient GetTestTopLevelClient() => GetTestClient<OpenAIClient>(TestScenario.TopLevel);
 
@@ -96,40 +219,7 @@ internal static class TestHelpers
         }
 
         string model = overrideModel ?? GetModelForScenario(scenario);
-        object clientObject = scenario switch
-        {
-#pragma warning disable OPENAI001
-            TestScenario.Assistants => new AssistantClient(credential, options),
-#pragma warning restore OPENAI001
-            TestScenario.Audio_TTS => new AudioClient(model, credential, options),
-            TestScenario.Audio_Whisper => new AudioClient(model, credential, options),
-            TestScenario.Audio_Gpt_4o_Mini_Transcribe => new AudioClient(model, credential, options),
-            TestScenario.Batch => new BatchClient(credential, options),
-            TestScenario.Chat => new ChatClient(model, credential, options),
-#pragma warning disable OPENAI001
-            TestScenario.Containers => new ContainerClient(credential, options),
-#pragma warning restore OPENAI001
-#pragma warning disable OPENAI001
-            TestScenario.Conversations => new ConversationClient(credential, options),
-#pragma warning restore OPENAI001
-            TestScenario.Embeddings => new EmbeddingClient(model, credential, options),
-            TestScenario.Files => new OpenAIFileClient(credential, options),
-            TestScenario.FineTuning => new FineTuningClient(credential, options),
-            TestScenario.Images => new ImageClient(model, credential, options),
-            TestScenario.Models => new OpenAIModelClient(credential, options),
-            TestScenario.Moderations => new ModerationClient(model, credential, options),
-#pragma warning disable OPENAI001
-            TestScenario.VectorStores => new VectorStoreClient(credential, options),
-#pragma warning restore OPENAI001
-            TestScenario.TopLevel => new OpenAIClient(credential, options),
-#pragma warning disable OPENAI002
-            TestScenario.Realtime => new RealtimeClient(credential, options),
-#pragma warning restore
-#pragma warning disable OPENAI003
-            TestScenario.Responses => new ResponsesClient(model, credential, options),
-#pragma warning restore
-            _ => throw new NotImplementedException(),
-        };
+        object clientObject = scenario.CreateClient(model, credential, options);
         return (T)clientObject;
     }
 

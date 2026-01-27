@@ -213,6 +213,22 @@ function Invoke-GenAPI {
         Write-Output ""
     }
 
+    # Internal project references (e.g. OpenAI.Shared)
+    $assemblyDir = Split-Path -Parent $AssemblyPath
+    $openAiSharedPath = Join-Path $assemblyDir "OpenAI.Shared.dll"
+    if (Test-Path $openAiSharedPath) {
+        Write-Output "  * OpenAI.Shared:"
+        Write-Output "    $($openAiSharedPath)"
+        Write-Output ""
+    }
+    
+    $openAiPath = Join-Path $assemblyDir "OpenAI.dll"
+    if (Test-Path $openAiPath) {
+        Write-Output "  * OpenAI:"
+        Write-Output "    $($openAiPath)"
+        Write-Output ""
+    }
+
     Write-Output "  NOTE: If any of the above are empty, tool output may be inaccurate."
     Write-Output ""
 
@@ -230,6 +246,14 @@ function Invoke-GenAPI {
     if ($systemMemoryDataRef) { $genapiArgs += @("--assembly-reference", $systemMemoryDataRef) }
     if ($systemDiagnosticsDiagnosticSourceRef) { $genapiArgs += @("--assembly-reference", $systemDiagnosticsDiagnosticSourceRef) }
     if ($microsoftBclAsyncInterfacesRef) { $genapiArgs += @("--assembly-reference", $microsoftBclAsyncInterfacesRef) }
+    
+    # Add sibling assemblies as references if they differ from the main assembly
+    if ((Test-Path $openAiSharedPath) -and ($AssemblyPath -ne $openAiSharedPath)) { 
+        $genapiArgs += @("--assembly-reference", $openAiSharedPath) 
+    }
+    if ((Test-Path $openAiPath) -and ($AssemblyPath -ne $openAiPath)) { 
+        $genapiArgs += @("--assembly-reference", $openAiPath) 
+    }
 
     & genapi @genapiArgs
 
@@ -293,23 +317,55 @@ function Invoke-GenAPI {
     $content = $content -creplace ".*private.*dummy.*`n", ""
     $content = $content -creplace " { throw null; }", ";"
     $content = $content -creplace " { }", ";"
+    $content = $content -creplace "new\[\];", "new Type[0]"
     $content = $content -creplace "Diagnostics.CodeAnalysis.Experimental", "Experimental"
     $content = $content -creplace "Diagnostics.CodeAnalysis.SetsRequiredMembers", "SetsRequiredMembers"
+
+    # Manually back-fill OpenAIClientOptions from OpenAI.Shared if we are generating OpenAI
+    if ($AssemblyPath -match "OpenAI.dll$") {
+        $sharedApiPath = $Destination -replace "OpenAI\.","OpenAI.Shared."
+        if (Test-Path $sharedApiPath) {
+             $content = $content -replace '\[assembly: Runtime.CompilerServices.TypeForwardedTo\(typeof\(OpenAI.OpenAIClientOptions\)\)\]\r?\n?', ''
+             $sharedContent = Get-Content $sharedApiPath -Raw
+             if ($sharedContent -match '(?ms)(    public class OpenAIClientOptions : ClientPipelineOptions \{.*?\n    \})') {
+                 $optionsClass = $matches[1]
+                 $content = $content -replace 'namespace OpenAI \{', "namespace OpenAI {`n$optionsClass"
+             }
+        }
+    }
 
     Set-Content -Path $Destination -Value $content -NoNewline
 }
 
 $repoRootPath = Join-Path $PSScriptRoot .. -Resolve
-$projectPath = Join-Path $repoRootPath "src\OpenAI.csproj"
+$solutionPath = Join-Path $repoRootPath "OpenAI.sln"
 
-Invoke-DotNetBuild -ProjectPath $projectPath
+Invoke-DotNetBuild -ProjectPath $solutionPath
 
-$targetFramework = "netstandard2.0"
-$assemblyPath = Join-Path $repoRootPath "src\bin\Debug\$($targetFramework)\OpenAI.dll"
-$destination = Join-Path $repoRootPath "api\OpenAI.$($targetFramework).cs"
-Invoke-GenAPI -TargetFramework $targetFramework -AssemblyPath $assemblyPath -Destination $destination
+$projects = @(
+    @{
+        Name = "OpenAI.Shared"
+        AssemblyPath = "src\Shared\bin\Debug"
+    },
+    @{
+        Name = "OpenAI"
+        AssemblyPath = "src\bin\Debug"
+    },
+    @{
+        Name = "OpenAI.Responses"
+        AssemblyPath = "src\Responses\bin\Debug"
+    }
+)
 
-$targetFramework = "net8.0"
-$assemblyPath = Join-Path $repoRootPath "src\bin\Debug\$($targetFramework)\OpenAI.dll"
-$destination = Join-Path $repoRootPath "api\OpenAI.$($targetFramework).cs"
-Invoke-GenAPI -TargetFramework $targetFramework -AssemblyPath $assemblyPath -Destination $destination
+foreach ($project in $projects) {
+    foreach ($targetFramework in @("netstandard2.0", "net8.0")) {
+        $assemblyPath = Join-Path $repoRootPath "$($project.AssemblyPath)\$($targetFramework)\$($project.Name).dll"
+        $destination = Join-Path $repoRootPath "api\$($project.Name).$($targetFramework).cs"
+        
+        if (Test-Path $assemblyPath) {
+            Invoke-GenAPI -TargetFramework $targetFramework -AssemblyPath $assemblyPath -Destination $destination
+        } else {
+            Write-Warning "Assembly not found: $assemblyPath"
+        }
+    }
+}
