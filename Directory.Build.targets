@@ -24,9 +24,6 @@
     
     Outputs to:
       api/OpenAI.<TargetFramework>.cs
-      
-    Target frameworks are determined by $(ClientTargetFrameworks) in Directory.Build.props.
-    The target automatically handles all target frameworks without requiring a loop.
   -->
   
   <!-- Outer build target: Dispatches to inner builds for each target framework -->
@@ -38,9 +35,7 @@
     
     <MSBuild Projects="$(MSBuildProjectFile)"
              Targets="ExportApiInner"
-             Properties="TargetFramework=%(_ExportApiTargetFramework.Identity);ExportingApi=true">
-      <Output TaskParameter="TargetOutputs" ItemName="_ExportApiOutputs" />
-    </MSBuild>
+             Properties="TargetFramework=%(_ExportApiTargetFramework.Identity);ExportingApi=true" />
   </Target>
 
   <!-- Inner build target: Runs for each specific target framework -->

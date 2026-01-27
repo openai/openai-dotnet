@@ -7,15 +7,12 @@
     representing the public API contract of the OpenAI library. The output files
     are placed in the 'api' folder at the repository root.
 
-    API files are generated for all target frameworks defined in
-    ClientTargetFrameworks (Directory.Build.props) using the Release configuration.
-
 .EXAMPLE
     .\Export-Api.ps1
-    Generates API for all target frameworks using Release configuration.
+    Generates API for all target frameworks defined in
+    ClientTargetFrameworks (Directory.Build.props) using the Release configuration.
 
 .NOTES
-    Target frameworks are determined by ClientTargetFrameworks in Directory.Build.props.
     Outputs are written to api/OpenAI.<TargetFramework>.cs
 #>
 
@@ -25,16 +22,15 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-# Configuration is always Release
-$Configuration = "Release"
+$configuration = "Release"
 
 # Resolve paths
-$repoRoot = Join-Path $PSScriptRoot ".." -Resolve
-$projectPath = Join-Path $repoRoot "src" "OpenAI.csproj"
-$apiOutputDir = Join-Path $repoRoot "api"
+$repoRootPath = Join-Path $PSScriptRoot ".." -Resolve
+$projectPath = Join-Path $repoRootPath "src" "OpenAI.csproj"
+$outputDirectory = Join-Path $repoRootPath "api"
 
 # Get ClientTargetFrameworks from Directory.Build.props
-$propsPath = Join-Path $repoRoot "Directory.Build.props"
+$propsPath = Join-Path $repoRootPath "Directory.Build.props"
 $clientTargetFrameworks = ""
 if (Test-Path $propsPath) {
     $propsContent = Get-Content $propsPath -Raw
@@ -48,25 +44,23 @@ if (-not $clientTargetFrameworks) {
     exit 1
 }
 
-Write-Host "OpenAI .NET API Generator" -ForegroundColor Cyan
-Write-Host "=========================" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "Target Frameworks: $clientTargetFrameworks" -ForegroundColor Green
-Write-Host "Configuration: $Configuration"
+Write-Host "Configuration: $configuration"
 Write-Host ""
 
-# Ensure api output directory exists and is clean
-if (Test-Path $apiOutputDir) {
-    Write-Host "Cleaning existing API output directory..." -ForegroundColor Cyan
+# Ensure output directory exists and is clean
+if (Test-Path $outputDirectory) {
+    Write-Host "Cleaning existing output directory..." -ForegroundColor Cyan
     try {
-        Get-ChildItem -Path $apiOutputDir -Force | Remove-Item -Recurse -Force
+        Get-ChildItem -Path $outputDirectory -Force | Remove-Item -Recurse -Force
     }
     catch {
-        Write-Warning "Failed to clean some items in API output directory: $_"
+        Write-Warning "Failed to clean some items in output directory: $_"
     }
 } else {
-    New-Item -ItemType Directory -Path $apiOutputDir -Force | Out-Null
-    Write-Host "Created output directory: $apiOutputDir"
+    New-Item -ItemType Directory -Path $outputDirectory -Force | Out-Null
+    Write-Host "Created output directory: $outputDirectory"
 }
 
 # Build the dotnet command arguments
@@ -74,11 +68,11 @@ $buildArgs = @(
     "build"
     $projectPath
     "-t:ExportApi"
-    "-c:$Configuration"
+    "-c:$configuration"
     "-p:ExportingApi=true"
 )
 
-Write-Host "Output Directory: $apiOutputDir"
+Write-Host "Output Directory: $outputDirectory"
 Write-Host ""
 Write-Host "Running GenAPI for all target frameworks..." -ForegroundColor Cyan
 Write-Host ""
@@ -94,7 +88,7 @@ Write-Host ""
 Write-Host "Cleaning up generated files..." -ForegroundColor Cyan
 
 # Clean up each generated file
-Get-ChildItem -Path $apiOutputDir -Filter "OpenAI.*.cs" | ForEach-Object {
+Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
     Write-Host "  Cleaning $($_.Name)..."
     
     $content = Get-Content $_.FullName -Raw
@@ -104,37 +98,43 @@ Get-ChildItem -Path $apiOutputDir -Filter "OpenAI.*.cs" | ForEach-Object {
     $content = $content -creplace '\r?\n\r?\n', "`n"
     $content = $content -creplace '\r?\n *{', " {"
 
-    # Remove fully-qualified names.
-    $content = $content -creplace "System\.ComponentModel\.", ""
-    $content = $content -creplace "System\.ClientModel.Primitives\.", ""
-    $content = $content -creplace "System\.ClientModel\.", ""
-    $content = $content -creplace "System\.Collections\.Generic\.", ""
-    $content = $content -creplace "System\.Collections\.", ""
-    $content = $content -creplace "System\.Threading.Tasks\.", ""
-    $content = $content -creplace "System\.Threading\.", ""
-    $content = $content -creplace "System\.Text.Json\.", ""
-    $content = $content -creplace "System\.Text\.", ""
-    $content = $content -creplace "System\.IO\.", ""
-    $content = $content -creplace "System\.", ""
-    $content = $content -creplace "Assistants\.", ""
-    $content = $content -creplace "Audio\.", ""
-    $content = $content -creplace "Batch\.", ""
-    $content = $content -creplace "Chat\.", ""
-    $content = $content -creplace "Common\.", ""
-    $content = $content -creplace "Containers\.", ""
-    $content = $content -creplace "Conversations\.", ""
-    $content = $content -creplace "Embeddings\.", ""
-    $content = $content -creplace "Evals\.", ""
-    $content = $content -creplace "Files\.", ""
-    $content = $content -creplace "FineTuning\.", ""
-    $content = $content -creplace "Graders\.", ""
-    $content = $content -creplace "Images\.", ""
-    $content = $content -creplace "Models\.", ""
-    $content = $content -creplace "Moderations\.", ""
-    $content = $content -creplace "Realtime\.", ""
-    $content = $content -creplace "Responses\.", ""
-    $content = $content -creplace "VectorStores\.", ""
-    $content = $content -creplace "Videos\.", ""
+    # Remove fully-qualified System namespace prefixes.
+    @(
+        "System\.ComponentModel\.",
+        "System\.ClientModel\.Primitives\.",
+        "System\.ClientModel\.",
+        "System\.Collections\.Generic\.",
+        "System\.Collections\.",
+        "System\.Threading\.Tasks\.",
+        "System\.Threading\.",
+        "System\.Text\.Json\.",
+        "System\.Text\.",
+        "System\.IO\.",
+        "System\."
+    ) | ForEach-Object { $content = $content -creplace $_, "" }
+
+    # Remove OpenAI sub-namespace prefixes.
+    @(
+        "Assistants",
+        "Audio",
+        "Batch",
+        "Chat",
+        "Common",
+        "Containers",
+        "Conversations",
+        "Embeddings",
+        "Evals",
+        "Files",
+        "FineTuning",
+        "Graders",
+        "Images",
+        "Models",
+        "Moderations",
+        "Realtime",
+        "Responses",
+        "VectorStores",
+        "Videos"
+    ) | ForEach-Object { $content = $content -creplace "$_\.", "" }
 
     # Remove Diagnostics.DebuggerStepThrough attribute.
     $content = $content -creplace ".*Diagnostics.DebuggerStepThrough.*\n", ""
@@ -165,6 +165,7 @@ Write-Host ""
 
 # List generated files
 Write-Host "Generated files:" -ForegroundColor Cyan
-Get-ChildItem -Path $apiOutputDir -Filter "OpenAI.*.cs" | ForEach-Object {
+Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
     Write-Host "  - $($_.Name)"
 }
+Write-Host ""
