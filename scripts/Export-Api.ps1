@@ -7,29 +7,12 @@
     representing the public API contract of the OpenAI library. The output files
     are placed in the 'api' folder at the repository root.
 
-    By default, API files are generated for all target frameworks defined in
-    ClientTargetFrameworks (Directory.Build.props). You can optionally specify
-    a single target framework using the -TargetFramework parameter.
-
-.PARAMETER TargetFramework
-    Optional. The target framework to generate API for (e.g., net10.0, net8.0, netstandard2.0).
-    Must be a valid framework from ClientTargetFrameworks in Directory.Build.props.
-    If not specified, generates API for all target frameworks.
-
-.PARAMETER Configuration
-    Optional. The build configuration to use. Defaults to 'Release'.
+    API files are generated for all target frameworks defined in
+    ClientTargetFrameworks (Directory.Build.props) using the Release configuration.
 
 .EXAMPLE
-    .\Generate-Api.ps1
+    .\Export-Api.ps1
     Generates API for all target frameworks using Release configuration.
-
-.EXAMPLE
-    .\Generate-Api.ps1 -TargetFramework net8.0
-    Generates API for net8.0 only.
-
-.EXAMPLE
-    .\Generate-Api.ps1 -Configuration Debug
-    Generates API for all target frameworks using Debug configuration.
 
 .NOTES
     Target frameworks are determined by ClientTargetFrameworks in Directory.Build.props.
@@ -38,15 +21,12 @@
 
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory = $false)]
-    [string]$TargetFramework,
-
-    [Parameter(Mandatory = $false)]
-    [ValidateSet("Debug", "Release")]
-    [string]$Configuration = "Release"
 )
 
 $ErrorActionPreference = "Stop"
+
+# Configuration is always Release
+$Configuration = "Release"
 
 # Resolve paths
 $repoRoot = Join-Path $PSScriptRoot ".." -Resolve
@@ -68,19 +48,12 @@ if (-not $clientTargetFrameworks) {
     exit 1
 }
 
-$supportedFrameworks = $clientTargetFrameworks -split ";"
-
 Write-Host "OpenAI .NET API Generator" -ForegroundColor Cyan
 Write-Host "=========================" -ForegroundColor Cyan
 Write-Host ""
-
-# Validate TargetFramework if provided
-if ($TargetFramework) {
-    if ($TargetFramework -notin $supportedFrameworks) {
-        Write-Error "TargetFramework '$TargetFramework' is not valid. Supported frameworks: $clientTargetFrameworks"
-        exit 1
-    }
-}
+Write-Host "Target Frameworks: $clientTargetFrameworks" -ForegroundColor Green
+Write-Host "Configuration: $Configuration"
+Write-Host ""
 
 # Ensure api output directory exists and is clean
 if (Test-Path $apiOutputDir) {
@@ -105,28 +78,21 @@ $buildArgs = @(
     "-p:ExportingApi=true"
 )
 
-if ($TargetFramework) {
-    Write-Host "Target Framework: $TargetFramework" -ForegroundColor Yellow
-    Write-Host "Note: Generating for a single TFM will produce partial API output." -ForegroundColor Yellow
-    Write-Host ""
-    $buildArgs += "-p:TargetFramework=$TargetFramework"
-} else {
-    Write-Host "Target Frameworks: $clientTargetFrameworks" -ForegroundColor Green
-    Write-Host ""
-}
-
-Write-Host "Configuration: $Configuration"
 Write-Host "Output Directory: $apiOutputDir"
 Write-Host ""
 Write-Host "Running GenAPI..." -ForegroundColor Cyan
 Write-Host ""
 
-# Execute the build
-& dotnet @buildArgs
-
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "GenAPI failed with exit code $LASTEXITCODE"
-    exit $LASTEXITCODE
+# Build for each target framework
+$frameworks = $clientTargetFrameworks -split ";"
+foreach ($framework in $frameworks) {
+    Write-Host "  Generating API for $framework..." -ForegroundColor Yellow
+    $frameworkBuildArgs = $buildArgs + @("-p:TargetFramework=$framework")
+    & dotnet @frameworkBuildArgs
+    if ($LASTEXITCODE -ne 0) {
+        Write-Error "GenAPI failed for $framework with exit code $LASTEXITCODE"
+        exit $LASTEXITCODE
+    }
 }
 
 Write-Host ""
