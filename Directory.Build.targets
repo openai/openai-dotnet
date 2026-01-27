@@ -21,14 +21,30 @@
     
     Usage:
       dotnet build src/OpenAI.csproj -t:ExportApi -c Release -p:ExportingApi=true
-      dotnet build src/OpenAI.csproj -t:ExportApi -c Release -p:ExportingApi=true -p:TargetFramework=net8.0
     
     Outputs to:
       api/OpenAI.<TargetFramework>.cs
       
     Target frameworks are determined by $(ClientTargetFrameworks) in Directory.Build.props.
+    The target automatically handles all target frameworks without requiring a loop.
   -->
+  
+  <!-- Outer build target: Dispatches to inner builds for each target framework -->
   <Target Name="ExportApi"
+          Condition="'$(MSBuildProjectName)' == 'OpenAI' and '$(TargetFramework)' == '' and '$(TargetFrameworks)' != ''">
+    <ItemGroup>
+      <_ExportApiTargetFramework Include="$(TargetFrameworks)" />
+    </ItemGroup>
+    
+    <MSBuild Projects="$(MSBuildProjectFile)"
+             Targets="ExportApiInner"
+             Properties="TargetFramework=%(_ExportApiTargetFramework.Identity);ExportingApi=true">
+      <Output TaskParameter="TargetOutputs" ItemName="_ExportApiOutputs" />
+    </MSBuild>
+  </Target>
+
+  <!-- Inner build target: Runs for each specific target framework -->
+  <Target Name="ExportApiInner"
           DependsOnTargets="Build"
           Condition="'$(MSBuildProjectName)' == 'OpenAI' and '$(TargetFramework)' != ''">
 
