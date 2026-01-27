@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "141",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
       },
       "RequestBody": {
         "messages": [
@@ -25,19 +25,19 @@
         "Access-Control-Expose-Headers": "X-Request-ID",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801cf1a2e9e98e5-SEA",
+        "CF-RAY": "9aad8f145be8863c-DFW",
         "Connection": "keep-alive",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 16:41:08 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "6383",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Transfer-Encoding": "chunked",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "6415",
+        "x-envoy-upstream-service-time": "5328",
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-requests": "1000",
         "x-ratelimit-limit-tokens": "3000000",
@@ -48,34 +48,34 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-bdb255a4-d0de-4da1-af27-398e7c679586",
+        "id": "chatcmpl-b21706e9-8859-4eee-b01e-8aa87cde257e",
         "object": "chat.completion",
-        "created": 1758040861,
+        "created": 1765210499,
         "model": "gpt-4o-search-preview-2025-03-11",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "As of September 16, 2025, one notable positive news story is the successful completion of a four-day workweek trial in Scotland. The trial, conducted at two government agencies—Accountant in Bankruptcy (AiB) and South of Scotland Enterprise (SSE)—involved 259 employees reducing their workweek to 32 hours without any loss of pay. The results were overwhelmingly positive, with 98% of staff at SSE reporting a significant boost in morale and motivation, and mental health scores at AiB improving by 18.4%. Additionally, productivity increased at both organizations, demonstrating the potential benefits of a shorter workweek in the public sector. ([positive.news](https://www.positive.news/society/good-news-stories-from-week-36-of-2025/?utm_source=openai))\n\nIn other uplifting news, the University of Sussex announced the launch of the UK's first undergraduate degree in climate justice, sustainability, and development, set to begin in 2026. This program aims to equip students with the knowledge and skills to address pressing environmental challenges and drive meaningful change. ([positive.news](https://www.positive.news/society/good-news-stories-from-week-09-of-2025/?utm_source=openai))\n\nThese developments highlight ongoing efforts to improve work-life balance and address environmental issues through education and policy initiatives. ",
+              "content": "On December 8, 2025, a significant positive development in rail transportation occurred with the extension of the Buffalo Metro Rail to the DL&W Terminal. This expansion enhances public transit options in Buffalo, New York, providing residents and visitors with improved access to the city's waterfront and surrounding areas. ([en.wikipedia.org](https://en.wikipedia.org/wiki/2025_in_rail_transport?utm_source=openai))\n\nAdditionally, the European rail network saw a notable advancement with the opening of a new train line connecting the capitals of Lithuania, Latvia, and Estonia. This development facilitates easier and more efficient travel between Vilnius, Riga, and Tallinn, promoting regional connectivity and tourism. ([positive.news](https://www.positive.news/society/good-news-stories-from-week-08-of-2025/?utm_source=openai))\n\nThese developments reflect ongoing efforts to enhance public transportation infrastructure, offering more sustainable and convenient travel options for communities. ",
               "refusal": null,
               "annotations": [
                 {
                   "type": "url_citation",
                   "url_citation": {
-                    "end_index": 757,
-                    "start_index": 647,
-                    "title": "What went right this week: the good news that matters - Positive News",
-                    "url": "https://www.positive.news/society/good-news-stories-from-week-36-of-2025/?utm_source=openai"
+                    "end_index": 418,
+                    "start_index": 326,
+                    "title": "2025 in rail transport",
+                    "url": "https://en.wikipedia.org/wiki/2025_in_rail_transport?utm_source=openai"
                   }
                 },
                 {
                   "type": "url_citation",
                   "url_citation": {
-                    "end_index": 1194,
-                    "start_index": 1084,
-                    "title": "What went right this week: the sceptic-defying green economy, plus more - Positive News",
-                    "url": "https://www.positive.news/society/good-news-stories-from-week-09-of-2025/?utm_source=openai"
+                    "end_index": 835,
+                    "start_index": 725,
+                    "title": "What went right this week: how to stop politicians lying, plus more - Positive News",
+                    "url": "https://www.positive.news/society/good-news-stories-from-week-08-of-2025/?utm_source=openai"
                   }
                 }
               ]
@@ -85,8 +85,8 @@
         ],
         "usage": {
           "prompt_tokens": 9,
-          "completion_tokens": 274,
-          "total_tokens": 283,
+          "completion_tokens": 188,
+          "total_tokens": 197,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0
