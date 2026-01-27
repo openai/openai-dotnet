@@ -80,19 +80,14 @@ $buildArgs = @(
 
 Write-Host "Output Directory: $apiOutputDir"
 Write-Host ""
-Write-Host "Running GenAPI..." -ForegroundColor Cyan
+Write-Host "Running GenAPI for all target frameworks..." -ForegroundColor Cyan
 Write-Host ""
 
-# Build for each target framework
-$frameworks = $clientTargetFrameworks -split ";"
-foreach ($framework in $frameworks) {
-    Write-Host "  Generating API for $framework..." -ForegroundColor Yellow
-    $frameworkBuildArgs = $buildArgs + @("-p:TargetFramework=$framework")
-    & dotnet @frameworkBuildArgs
-    if ($LASTEXITCODE -ne 0) {
-        Write-Error "GenAPI failed for $framework with exit code $LASTEXITCODE"
-        exit $LASTEXITCODE
-    }
+# Run a single build command - the MSBuild target handles all frameworks
+& dotnet @buildArgs
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "GenAPI failed with exit code $LASTEXITCODE"
+    exit $LASTEXITCODE
 }
 
 Write-Host ""
