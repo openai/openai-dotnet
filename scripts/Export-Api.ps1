@@ -98,8 +98,9 @@ Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
     $content = $content -creplace '\r?\n\r?\n', "`n"
     $content = $content -creplace '\r?\n *{', " {"
 
-    # Remove fully-qualified System namespace prefixes.
+    # Remove fully-qualified namespace prefixes.
     @(
+        "Diagnostics\.CodeAnalysis\.",
         "System\.ComponentModel\.",
         "System\.ClientModel\.Primitives\.",
         "System\.ClientModel\.",
@@ -110,7 +111,7 @@ Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
         "System\.Text\.Json\.",
         "System\.Text\.",
         "System\.IO\.",
-        "System\."
+        "System\." # System must be last to avoid partial matches
     ) | ForEach-Object { $content = $content -creplace $_, "" }
 
     # Remove OpenAI sub-namespace prefixes.
@@ -136,25 +137,23 @@ Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
         "Videos"
     ) | ForEach-Object { $content = $content -creplace "$_\.", "" }
 
+    # Remove non-public APIs.
+    $content = $content -creplace "  * internal.*`n", ""
+    $content = $content -creplace ".*private.*dummy.*`n", ""
+
     # Remove Diagnostics.DebuggerStepThrough attribute.
     $content = $content -creplace ".*Diagnostics.DebuggerStepThrough.*\n", ""
 
     # Remove ModelReaderWriterBuildable attributes.
     $content = $content -creplace '\[ModelReaderWriterBuildable\(typeof\([^\)]+\)\)\]\s*', ''
 
-    # Remove internal APIs.
-    $content = $content -creplace "  * internal.*`n", ""
-
     # Remove IJsonModel/IPersistableModel interface method entries.
     $content = $content -creplace "        .*(IJsonModel|IPersistableModel).*`n", ""
 
     # Other cosmetic simplifications.
     $content = $content -creplace "partial class", "class"
-    $content = $content -creplace ".*private.*dummy.*`n", ""
     $content = $content -creplace " { throw null; }", ";"
     $content = $content -creplace " { }", ";"
-    $content = $content -creplace "Diagnostics.CodeAnalysis.Experimental", "Experimental"
-    $content = $content -creplace "Diagnostics.CodeAnalysis.SetsRequiredMembers", "SetsRequiredMembers"
 
     Set-Content -Path $_.FullName -Value $content -NoNewline
 }
