@@ -1364,16 +1364,16 @@ namespace OpenAI
             return new InternalUnknownCreateTranscriptionResponseStreamEvent(new StreamingAudioTranscriptionUpdateKind(kind), additionalBinaryDataProperties: null);
         }
 
-        public static StreamingAudioTranscriptionTextSegmentUpdate StreamingAudioTranscriptionTextSegmentUpdate(string id = default, TimeSpan start = default, TimeSpan end = default, string text = default, string speaker = default)
+        public static StreamingAudioTranscriptionTextSegmentUpdate StreamingAudioTranscriptionTextSegmentUpdate(string segmentId = default, TimeSpan startTime = default, TimeSpan endTime = default, string text = default, string speakerLabel = default)
         {
             return new StreamingAudioTranscriptionTextSegmentUpdate(
                 StreamingAudioTranscriptionUpdateKind.TranscriptTextSegment,
                 additionalBinaryDataProperties: null,
-                id,
-                start,
-                end,
+                segmentId,
+                startTime,
+                endTime,
                 text,
-                speaker);
+                speakerLabel);
         }
 
         public static StreamingAudioTranscriptionTextDeltaUpdate StreamingAudioTranscriptionTextDeltaUpdate(string delta = default, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default, string segmentId = default)

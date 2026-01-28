@@ -12,7 +12,12 @@ public partial class AudioTranslation
         if (response?.Headers?.TryGetValue("Content-Type", out string contentType) == true &&
             contentType.StartsWith("text/plain", StringComparison.Ordinal))
         {
-            return new AudioTranslation(language: null, text: response.Content?.ToString(), segments: null, duration: null, additionalBinaryDataProperties: null);
+            return new AudioTranslation(
+                language: null,
+                text: response.Content?.ToString(),
+                segments: null,
+                duration: null,
+                additionalBinaryDataProperties: null);
         }
 
         using var document = JsonDocument.Parse(response.Content);

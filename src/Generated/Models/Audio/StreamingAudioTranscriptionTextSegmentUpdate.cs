@@ -11,32 +11,24 @@ namespace OpenAI.Audio
     [Experimental("OPENAI001")]
     public partial class StreamingAudioTranscriptionTextSegmentUpdate : StreamingAudioTranscriptionUpdate
     {
-        internal StreamingAudioTranscriptionTextSegmentUpdate(string id, TimeSpan start, TimeSpan end, string text, string speaker) : base(StreamingAudioTranscriptionUpdateKind.TranscriptTextSegment)
+        internal StreamingAudioTranscriptionTextSegmentUpdate(string segmentId, TimeSpan startTime, TimeSpan endTime, string text, string speakerLabel) : base(StreamingAudioTranscriptionUpdateKind.TranscriptTextSegment)
         {
-            Id = id;
-            Start = start;
-            End = end;
+            SegmentId = segmentId;
+            StartTime = startTime;
+            EndTime = endTime;
             Text = text;
-            Speaker = speaker;
+            SpeakerLabel = speakerLabel;
         }
 
-        internal StreamingAudioTranscriptionTextSegmentUpdate(StreamingAudioTranscriptionUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string id, TimeSpan start, TimeSpan end, string text, string speaker) : base(kind, additionalBinaryDataProperties)
+        internal StreamingAudioTranscriptionTextSegmentUpdate(StreamingAudioTranscriptionUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string segmentId, TimeSpan startTime, TimeSpan endTime, string text, string speakerLabel) : base(kind, additionalBinaryDataProperties)
         {
-            Id = id;
-            Start = start;
-            End = end;
+            SegmentId = segmentId;
+            StartTime = startTime;
+            EndTime = endTime;
             Text = text;
-            Speaker = speaker;
+            SpeakerLabel = speakerLabel;
         }
-
-        public string Id { get; }
-
-        public TimeSpan Start { get; }
-
-        public TimeSpan End { get; }
 
         public string Text { get; }
-
-        public string Speaker { get; }
     }
 }

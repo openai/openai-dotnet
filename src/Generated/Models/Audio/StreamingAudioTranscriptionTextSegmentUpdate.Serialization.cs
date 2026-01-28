@@ -34,17 +34,17 @@ namespace OpenAI.Audio
             if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
             {
                 writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(Id);
+                writer.WriteStringValue(SegmentId);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("start") != true)
             {
                 writer.WritePropertyName("start"u8);
-                writer.WriteNumberValue(Start.TotalSeconds);
+                writer.WriteNumberValue(StartTime.TotalSeconds);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("end") != true)
             {
                 writer.WritePropertyName("end"u8);
-                writer.WriteNumberValue(End.TotalSeconds);
+                writer.WriteNumberValue(EndTime.TotalSeconds);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
             {
@@ -54,7 +54,7 @@ namespace OpenAI.Audio
             if (_additionalBinaryDataProperties?.ContainsKey("speaker") != true)
             {
                 writer.WritePropertyName("speaker"u8);
-                writer.WriteStringValue(Speaker);
+                writer.WriteStringValue(SpeakerLabel);
             }
         }
 
@@ -79,11 +79,11 @@ namespace OpenAI.Audio
             }
             StreamingAudioTranscriptionUpdateKind kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            string id = default;
-            TimeSpan start = default;
-            TimeSpan end = default;
+            string segmentId = default;
+            TimeSpan startTime = default;
+            TimeSpan endTime = default;
             string text = default;
-            string speaker = default;
+            string speakerLabel = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -93,17 +93,17 @@ namespace OpenAI.Audio
                 }
                 if (prop.NameEquals("id"u8))
                 {
-                    id = prop.Value.GetString();
+                    segmentId = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("start"u8))
                 {
-                    start = TimeSpan.FromSeconds(prop.Value.GetDouble());
+                    startTime = TimeSpan.FromSeconds(prop.Value.GetDouble());
                     continue;
                 }
                 if (prop.NameEquals("end"u8))
                 {
-                    end = TimeSpan.FromSeconds(prop.Value.GetDouble());
+                    endTime = TimeSpan.FromSeconds(prop.Value.GetDouble());
                     continue;
                 }
                 if (prop.NameEquals("text"u8))
@@ -113,7 +113,7 @@ namespace OpenAI.Audio
                 }
                 if (prop.NameEquals("speaker"u8))
                 {
-                    speaker = prop.Value.GetString();
+                    speakerLabel = prop.Value.GetString();
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
@@ -122,11 +122,11 @@ namespace OpenAI.Audio
             return new StreamingAudioTranscriptionTextSegmentUpdate(
                 kind,
                 additionalBinaryDataProperties,
-                id,
-                start,
-                end,
+                segmentId,
+                startTime,
+                endTime,
                 text,
-                speaker);
+                speakerLabel);
         }
 
         BinaryData IPersistableModel<StreamingAudioTranscriptionTextSegmentUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

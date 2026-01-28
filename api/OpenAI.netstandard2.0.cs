@@ -1210,10 +1210,10 @@ namespace OpenAI.Audio {
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class StreamingAudioTranscriptionTextSegmentUpdate : StreamingAudioTranscriptionUpdate, IJsonModel<StreamingAudioTranscriptionTextSegmentUpdate>, IPersistableModel<StreamingAudioTranscriptionTextSegmentUpdate> {
-        public TimeSpan End { get; }
-        public string Id { get; }
-        public string Speaker { get; }
-        public TimeSpan Start { get; }
+        public TimeSpan EndTime { get; }
+        public string SegmentId { get; }
+        public string SpeakerLabel { get; }
+        public TimeSpan StartTime { get; }
         public string Text { get; }
         protected override StreamingAudioTranscriptionUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
