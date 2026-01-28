@@ -4071,8 +4071,14 @@ namespace OpenAI.Realtime {
         public RealtimeClient(string apiKey);
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
-        public event EventHandler<BinaryData> OnReceivingCommand { add; remove; }
-        public event EventHandler<BinaryData> OnSendingCommand { add; remove; }
+        public event EventHandler<BinaryData> OnReceivingCommand {
+            add;
+            remove;
+        }
+        public event EventHandler<BinaryData> OnSendingCommand {
+            add;
+            remove;
+        }
         public virtual ClientResult CreateEphemeralToken(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult> CreateEphemeralTokenAsync(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult CreateEphemeralTranscriptionToken(BinaryContent content, RequestOptions options = null);
