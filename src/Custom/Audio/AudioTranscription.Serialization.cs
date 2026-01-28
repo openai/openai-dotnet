@@ -30,6 +30,10 @@ public partial class AudioTranscription
         return DeserializeAudioTranscription(document.RootElement, null);
     }
 
+    // CUSTOM: The explicit operator is not auto-generated because the response type
+    // has been customized in the specification (DotNetCombinedJsonTranscriptionResponse).
+    // Auto-generation only occurs for root output types that directly match the operation's
+    // response schema without customization.
     [Experimental("OPENAI001")]
     public static explicit operator AudioTranscription(ClientResult result)
     {
