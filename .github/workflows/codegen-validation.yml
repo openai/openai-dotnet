@@ -13,6 +13,9 @@ on:
       - 'package-lock.json'
       - '.github/workflows/codegen-validation.yml'
       - 'scripts/Invoke-CodeGen.ps1'
+      - 'scripts/Export-Api.ps1'
+      - 'api/**'
+      - 'Directory.Build.targets'
     types: [opened, reopened, synchronize]
   workflow_dispatch:
 
@@ -84,3 +87,54 @@ jobs:
         with:
           name: build-artifacts
           path: ${{github.workspace}}/artifacts
+
+  validate-api-export:
+    name: Validate API Export
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          # Use the version specified in global.json
+          global-json-file: global.json
+
+      - name: Run Export-Api Script
+        shell: pwsh
+        run: |
+          Write-Host "Running API export validation..."
+          ./scripts/Export-Api.ps1
+
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "API export failed with exit code: $LASTEXITCODE"
+            exit $LASTEXITCODE
+          }
+
+          Write-Host "API export completed successfully!"
+
+      - name: Check for uncommitted changes
+        run: |
+          API_ERROR_MSG="API export produced changes. Please run './scripts/Export-Api.ps1' locally and commit the results."
+
+          # Check if there are any changes to tracked files after API export
+          if ! git diff --quiet; then
+            echo "::error::$API_ERROR_MSG"
+            echo "Changed files:"
+            git diff --name-only
+            echo "Diff details:"
+            git diff
+            exit 1
+          fi
+
+          # Also check for untracked files that might have been generated
+          if [ -n "$(git ls-files --others --exclude-standard)" ]; then
+            echo "::error::$API_ERROR_MSG"
+            echo "Untracked files:"
+            git ls-files --others --exclude-standard
+            exit 1
+          fi
+
+          echo "No uncommitted changes detected - API export is up to date!"
