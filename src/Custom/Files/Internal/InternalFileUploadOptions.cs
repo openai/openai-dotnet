@@ -1,4 +1,5 @@
 using Microsoft.TypeSpec.Generator.Customizations;
+using System.ClientModel.Primitives;
 using System.IO;
 
 namespace OpenAI.Files;
@@ -37,6 +38,12 @@ internal partial class InternalFileUploadOptions
         content.Add(file, "file", filename);
 
         content.Add(Purpose.ToString(), "purpose");
+
+        if (ExpiresAfter.HasValue)
+        {
+            string expiresAfterJson = ModelReaderWriter.Write(ExpiresAfter.Value, ModelReaderWriterOptions.Json, OpenAIContext.Default).ToString();
+            content.Add(expiresAfterJson, "expires_after");
+        }
 
         return content;
     }

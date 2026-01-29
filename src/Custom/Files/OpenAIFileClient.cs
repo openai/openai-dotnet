@@ -118,12 +118,38 @@ public partial class OpenAIFileClient
         Argument.AssertNotNull(file, nameof(file));
         Argument.AssertNotNullOrEmpty(filename, nameof(filename));
 
-        InternalFileUploadOptions options = new()
+        InternalFileUploadOptions internalOptions = new()
         {
             Purpose = purpose
         };
 
-        using MultiPartFormDataBinaryContent content = options.ToMultipartContent(file, filename);
+        using MultiPartFormDataBinaryContent content = internalOptions.ToMultipartContent(file, filename);
+        ClientResult result = await UploadFileAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+        return ClientResult.FromValue((OpenAIFile)result, result.GetRawResponse());
+    }
+
+    /// <summary> Uploads a file that can be used across various operations. </summary>
+    /// <remarks> Individual files can be up to 512 MB, and the size of all files uploaded by one organization can be up to 100 GB. </remarks>
+    /// <param name="file"> The file stream to upload. </param>
+    /// <param name="filename">
+    ///     The filename associated with the file stream. The filename's extension (for example: .json) will be used to
+    ///     validate the file format. The request may fail if the filename's extension and the actual file format do
+    ///     not match.
+    /// </param>
+    /// <param name="purpose"> The intended purpose of the uploaded file. </param>
+    /// <param name="options"> Additional options for the file upload. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="file"/> or <paramref name="filename"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="filename"/> is an empty string, and was expected to be non-empty. </exception>
+    [Experimental("OPENAI001")]
+    public virtual async Task<ClientResult<OpenAIFile>> UploadFileAsync(Stream file, string filename, FileUploadPurpose purpose, FileUploadOptions options, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(file, nameof(file));
+        Argument.AssertNotNullOrEmpty(filename, nameof(filename));
+
+        InternalFileUploadOptions internalOptions = CreateInternalUploadOptions(purpose, options);
+
+        using MultiPartFormDataBinaryContent content = internalOptions.ToMultipartContent(file, filename);
         ClientResult result = await UploadFileAsync(content, content.ContentType, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
         return ClientResult.FromValue((OpenAIFile)result, result.GetRawResponse());
     }
@@ -145,12 +171,38 @@ public partial class OpenAIFileClient
         Argument.AssertNotNull(file, nameof(file));
         Argument.AssertNotNullOrEmpty(filename, nameof(filename));
 
-        InternalFileUploadOptions options = new()
+        InternalFileUploadOptions internalOptions = new()
         {
             Purpose = purpose
         };
 
-        using MultiPartFormDataBinaryContent content = options.ToMultipartContent(file, filename);
+        using MultiPartFormDataBinaryContent content = internalOptions.ToMultipartContent(file, filename);
+        ClientResult result = UploadFile(content, content.ContentType, cancellationToken.ToRequestOptions());
+        return ClientResult.FromValue((OpenAIFile)result, result.GetRawResponse());
+    }
+
+    /// <summary> Uploads a file that can be used across various operations. </summary>
+    /// <remarks> Individual files can be up to 512 MB, and the size of all files uploaded by one organization can be up to 100 GB. </remarks>
+    /// <param name="file"> The file stream to upload. </param>
+    /// <param name="filename">
+    ///     The filename associated with the file stream. The filename's extension (for example: .json) will be used to
+    ///     validate the file format. The request may fail if the filename's extension and the actual file format do
+    ///     not match.
+    /// </param>
+    /// <param name="purpose"> The intended purpose of the uploaded file. </param>
+    /// <param name="options"> Additional options for the file upload. </param>
+    /// <param name="cancellationToken"> A token that can be used to cancel this method call. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="file"/> or <paramref name="filename"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="filename"/> is an empty string, and was expected to be non-empty. </exception>
+    [Experimental("OPENAI001")]
+    public virtual ClientResult<OpenAIFile> UploadFile(Stream file, string filename, FileUploadPurpose purpose, FileUploadOptions options, CancellationToken cancellationToken = default)
+    {
+        Argument.AssertNotNull(file, nameof(file));
+        Argument.AssertNotNullOrEmpty(filename, nameof(filename));
+
+        InternalFileUploadOptions internalOptions = CreateInternalUploadOptions(purpose, options);
+
+        using MultiPartFormDataBinaryContent content = internalOptions.ToMultipartContent(file, filename);
         ClientResult result = UploadFile(content, content.ContentType, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue((OpenAIFile)result, result.GetRawResponse());
     }
@@ -183,6 +235,27 @@ public partial class OpenAIFileClient
     ///     not match.
     /// </param>
     /// <param name="purpose"> The intended purpose of the uploaded file. </param>
+    /// <param name="options"> Additional options for the file upload. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="file"/> or <paramref name="filename"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="filename"/> is an empty string, and was expected to be non-empty. </exception>
+    [Experimental("OPENAI001")]
+    public virtual Task<ClientResult<OpenAIFile>> UploadFileAsync(BinaryData file, string filename, FileUploadPurpose purpose, FileUploadOptions options)
+    {
+        Argument.AssertNotNull(file, nameof(file));
+        Argument.AssertNotNullOrEmpty(filename, nameof(filename));
+
+        return UploadFileAsync(file?.ToStream(), filename, purpose, options);
+    }
+
+    /// <summary> Uploads a file that can be used across various operations. </summary>
+    /// <remarks> Individual files can be up to 512 MB, and the size of all files uploaded by one organization can be up to 100 GB. </remarks>
+    /// <param name="file"> The file bytes to upload. </param>
+    /// <param name="filename">
+    ///     The filename associated with the file bytes. The filename's extension (for example: .json) will be used to
+    ///     validate the file format. The request may fail if the filename's extension and the actual file format do
+    ///     not match.
+    /// </param>
+    /// <param name="purpose"> The intended purpose of the uploaded file. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="file"/> or <paramref name="filename"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="filename"/> is an empty string, and was expected to be non-empty. </exception>
     public virtual ClientResult<OpenAIFile> UploadFile(BinaryData file, string filename, FileUploadPurpose purpose)
@@ -191,6 +264,27 @@ public partial class OpenAIFileClient
         Argument.AssertNotNullOrEmpty(filename, nameof(filename));
 
         return UploadFile(file?.ToStream(), filename, purpose);
+    }
+
+    /// <summary> Uploads a file that can be used across various operations. </summary>
+    /// <remarks> Individual files can be up to 512 MB, and the size of all files uploaded by one organization can be up to 100 GB. </remarks>
+    /// <param name="file"> The file bytes to upload. </param>
+    /// <param name="filename">
+    ///     The filename associated with the file bytes. The filename's extension (for example: .json) will be used to
+    ///     validate the file format. The request may fail if the filename's extension and the actual file format do
+    ///     not match.
+    /// </param>
+    /// <param name="purpose"> The intended purpose of the uploaded file. </param>
+    /// <param name="options"> Additional options for the file upload. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="file"/> or <paramref name="filename"/> is null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="filename"/> is an empty string, and was expected to be non-empty. </exception>
+    [Experimental("OPENAI001")]
+    public virtual ClientResult<OpenAIFile> UploadFile(BinaryData file, string filename, FileUploadPurpose purpose, FileUploadOptions options)
+    {
+        Argument.AssertNotNull(file, nameof(file));
+        Argument.AssertNotNullOrEmpty(filename, nameof(filename));
+
+        return UploadFile(file?.ToStream(), filename, purpose, options);
     }
 
     /// <summary> Uploads a file that can be used across various operations. </summary>
@@ -219,6 +313,26 @@ public partial class OpenAIFileClient
     ///     not match.
     /// </param>
     /// <param name="purpose"> The intended purpose of the uploaded file. </param>
+    /// <param name="options"> Additional options for the file upload. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="filePath"/> was null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="filePath"/> is an empty string, and was expected to be non-empty. </exception>
+    [Experimental("OPENAI001")]
+    public virtual async Task<ClientResult<OpenAIFile>> UploadFileAsync(string filePath, FileUploadPurpose purpose, FileUploadOptions options)
+    {
+        Argument.AssertNotNullOrEmpty(filePath, nameof(filePath));
+
+        using FileStream stream = File.OpenRead(filePath);
+        return await UploadFileAsync(stream, filePath, purpose, options).ConfigureAwait(false);
+    }
+
+    /// <summary> Uploads a file that can be used across various operations. </summary>
+    /// <remarks> Individual files can be up to 512 MB, and the size of all files uploaded by one organization can be up to 100 GB. </remarks>
+    /// <param name="filePath">
+    ///     The path of the file to upload. The provided file path's extension (for example: .json) will be used to
+    ///     validate the file format. The request may fail if the file path's extension and the actual file format do
+    ///     not match.
+    /// </param>
+    /// <param name="purpose"> The intended purpose of the uploaded file. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="filePath"/> was null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="filePath"/> is an empty string, and was expected to be non-empty. </exception>
     public virtual ClientResult<OpenAIFile> UploadFile(string filePath, FileUploadPurpose purpose)
@@ -227,6 +341,26 @@ public partial class OpenAIFileClient
 
         using FileStream stream = File.OpenRead(filePath);
         return UploadFile(stream, filePath, purpose);
+    }
+
+    /// <summary> Uploads a file that can be used across various operations. </summary>
+    /// <remarks> Individual files can be up to 512 MB, and the size of all files uploaded by one organization can be up to 100 GB. </remarks>
+    /// <param name="filePath">
+    ///     The path of the file to upload. The provided file path's extension (for example: .json) will be used to
+    ///     validate the file format. The request may fail if the file path's extension and the actual file format do
+    ///     not match.
+    /// </param>
+    /// <param name="purpose"> The intended purpose of the uploaded file. </param>
+    /// <param name="options"> Additional options for the file upload. </param>
+    /// <exception cref="ArgumentNullException"> <paramref name="filePath"/> was null. </exception>
+    /// <exception cref="ArgumentException"> <paramref name="filePath"/> is an empty string, and was expected to be non-empty. </exception>
+    [Experimental("OPENAI001")]
+    public virtual ClientResult<OpenAIFile> UploadFile(string filePath, FileUploadPurpose purpose, FileUploadOptions options)
+    {
+        Argument.AssertNotNullOrEmpty(filePath, nameof(filePath));
+
+        using FileStream stream = File.OpenRead(filePath);
+        return UploadFile(stream, filePath, purpose, options);
     }
 
     /// <summary> Gets basic information about each of the files belonging to the user's organization. </summary>
@@ -339,5 +473,28 @@ public partial class OpenAIFileClient
 
         ClientResult result = DownloadFile(fileId, cancellationToken.ToRequestOptions());
         return ClientResult.FromValue(result.GetRawResponse().Content, result.GetRawResponse());
+    }
+
+    // CUSTOM: Helper constant for converting days to seconds
+    private const int SecondsPerDay = 24 * 60 * 60;
+
+    // CUSTOM: Helper constant for the expiration anchor (always "created_at" per OpenAI spec)
+    private const string ExpirationAnchor = "created_at";
+
+    // CUSTOM: Helper method to create internal upload options from public options
+    private static InternalFileUploadOptions CreateInternalUploadOptions(FileUploadPurpose purpose, FileUploadOptions options)
+    {
+        InternalFileUploadOptions internalOptions = new()
+        {
+            Purpose = purpose
+        };
+
+        if (options?.ExpiresAfterDays != null)
+        {
+            int expirationSeconds = options.ExpiresAfterDays.Value * SecondsPerDay;
+            internalOptions.ExpiresAfter = new InternalFileExpirationAfter(ExpirationAnchor, expirationSeconds);
+        }
+
+        return internalOptions;
     }
 }

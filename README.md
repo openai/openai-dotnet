@@ -766,6 +766,21 @@ OpenAIFile salesFile = fileClient.UploadFile(
     FileUploadPurpose.Assistants);
 ```
 
+> **Note:** You can optionally specify when the file should automatically expire and be deleted by using the `FileUploadOptions` class:
+>
+> ```csharp
+> FileUploadOptions uploadOptions = new()
+> {
+>     ExpiresAfterDays = 7  // File will be deleted 7 days after creation
+> };
+>
+> OpenAIFile tempFile = fileClient.UploadFile(
+>     document,
+>     "temp_file.json",
+>     FileUploadPurpose.Assistants,
+>     uploadOptions);
+> ```
+
 Create a new assistant using an instance of the `AssistantCreationOptions` class to customize it. Here, we use:
 
 - A friendly `Name` for the assistant, as will display in the Playground

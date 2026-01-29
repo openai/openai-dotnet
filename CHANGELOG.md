@@ -1,5 +1,13 @@
 # Release History
 
+## Unreleased
+
+### Features Added
+
+- OpenAI.Files:
+  - Added the `FileUploadOptions` class with the `ExpiresAfterDays` property, which enables users to specify the number of days after which an uploaded file will automatically expire and be deleted.
+  - Added new overloads of `UploadFile` and `UploadFileAsync` methods on `OpenAIFileClient` that accept `FileUploadOptions` to allow specifying file expiration settings.
+
 ## 2.8.0 (2025-12-11)
 
 ### Features Added
