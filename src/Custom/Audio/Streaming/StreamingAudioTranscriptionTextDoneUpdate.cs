@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace OpenAI.Audio;
 
 // CUSTOM: Added Experimental attribute.
-[CodeGenType("TranscriptTextDoneEvent")]
+[CodeGenType("DotNetTranscriptTextDoneEvent")]
 public partial class StreamingAudioTranscriptionTextDoneUpdate
 {
     // CUSTOM: Rename; make readonly; apply shared audio logprobs type

@@ -16,6 +16,7 @@ namespace OpenAI.Audio
         private const string SrtValue = "srt";
         private const string VerboseJsonValue = "verbose_json";
         private const string VttValue = "vtt";
+        private const string DiarizedJsonValue = "diarized_json";
 
         public AudioTranscriptionFormat(string value)
         {
