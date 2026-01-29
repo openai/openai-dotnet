@@ -17,6 +17,7 @@
   <!-- Build-only Dependencies -->
   <ItemGroup>
     <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+    <PackageVersion Include="Microsoft.DotNet.GenAPI.Task" Version="10.0.300-preview.0.26072.115" PrivateAssets="All" />
   </ItemGroup>
 
   <!-- Test-Only Dependencies -->

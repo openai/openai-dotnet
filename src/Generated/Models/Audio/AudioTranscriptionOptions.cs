@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using OpenAI;
-using OpenAI.Realtime;
 
 namespace OpenAI.Audio
 {
@@ -13,7 +12,7 @@ namespace OpenAI.Audio
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal AudioTranscriptionOptions(BinaryData @file, InternalCreateTranscriptionRequestModel model, string language, string prompt, AudioTranscriptionFormat? responseFormat, float? temperature, IList<InternalTranscriptionInclude> internalInclude, IList<BinaryData> internalTimestampGranularities, bool? stream, InternalVadConfig chunkingStrategy, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal AudioTranscriptionOptions(BinaryData @file, InternalCreateTranscriptionRequestModel model, string language, string prompt, AudioTranscriptionFormat? responseFormat, float? temperature, IList<InternalTranscriptionInclude> internalInclude, IList<BinaryData> internalTimestampGranularities, bool? stream, BinaryData chunkingStrategy, IList<string> knownSpeakerNames, IList<string> knownSpeakerReferences, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             File = @file;
@@ -26,6 +25,8 @@ namespace OpenAI.Audio
             InternalTimestampGranularities = internalTimestampGranularities ?? new ChangeTrackingList<BinaryData>();
             Stream = stream;
             ChunkingStrategy = chunkingStrategy;
+            KnownSpeakerNames = knownSpeakerNames ?? new ChangeTrackingList<string>();
+            KnownSpeakerReferences = knownSpeakerReferences ?? new ChangeTrackingList<string>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
@@ -36,8 +37,6 @@ namespace OpenAI.Audio
         public AudioTranscriptionFormat? ResponseFormat { get; set; }
 
         public float? Temperature { get; set; }
-
-        internal InternalVadConfig ChunkingStrategy { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

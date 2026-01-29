@@ -14,7 +14,7 @@ namespace OpenAI.Audio
 {
     public partial class AudioTranslation : IJsonModel<AudioTranslation>
     {
-        internal AudioTranslation() : this(null, null, default, null, null, null)
+        internal AudioTranslation() : this(null, default, null, null, null)
         {
         }
 
@@ -32,11 +32,6 @@ namespace OpenAI.Audio
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(AudioTranslation)} does not support writing '{format}' format.");
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("task") != true)
-            {
-                writer.WritePropertyName("task"u8);
-                writer.WriteStringValue(Task);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("language") != true)
             {
@@ -106,7 +101,6 @@ namespace OpenAI.Audio
             {
                 return null;
             }
-            string task = default;
             string language = default;
             TimeSpan? duration = default;
             string text = default;
@@ -114,11 +108,6 @@ namespace OpenAI.Audio
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("task"u8))
-                {
-                    task = prop.Value.GetString();
-                    continue;
-                }
                 if (prop.NameEquals("language"u8))
                 {
                     language = prop.Value.GetString();
@@ -151,13 +140,7 @@ namespace OpenAI.Audio
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new AudioTranslation(
-                task,
-                language,
-                duration,
-                text,
-                segments ?? new ChangeTrackingList<TranscribedSegment>(),
-                additionalBinaryDataProperties);
+            return new AudioTranslation(language, duration, text, segments ?? new ChangeTrackingList<TranscribedSegment>(), additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<AudioTranslation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

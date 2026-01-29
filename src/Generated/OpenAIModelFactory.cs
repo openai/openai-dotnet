@@ -125,59 +125,6 @@ namespace OpenAI
             return new AssistantDeletionResult(assistantId, deleted, "assistant.deleted", additionalBinaryDataProperties: null);
         }
 
-        public static TranscribedWord TranscribedWord(string word = default, TimeSpan startTime = default, TimeSpan endTime = default)
-        {
-            return new TranscribedWord(word, startTime, endTime, additionalBinaryDataProperties: null);
-        }
-
-        public static TranscribedSegment TranscribedSegment(int id = default, int seekOffset = default, TimeSpan startTime = default, TimeSpan endTime = default, string text = default, ReadOnlyMemory<int> tokenIds = default, float temperature = default, float averageLogProbability = default, float compressionRatio = default, float noSpeechProbability = default)
-        {
-            return new TranscribedSegment(
-                id,
-                seekOffset,
-                startTime,
-                endTime,
-                text,
-                tokenIds,
-                temperature,
-                averageLogProbability,
-                compressionRatio,
-                noSpeechProbability,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static StreamingAudioTranscriptionUpdate StreamingAudioTranscriptionUpdate(string kind = default)
-        {
-            return new InternalUnknownCreateTranscriptionResponseStreamEvent(new StreamingAudioTranscriptionUpdateKind(kind), additionalBinaryDataProperties: null);
-        }
-
-        public static StreamingAudioTranscriptionTextDeltaUpdate StreamingAudioTranscriptionTextDeltaUpdate(string delta = default, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default)
-        {
-            transcriptionTokenLogProbabilities ??= new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
-
-            return new StreamingAudioTranscriptionTextDeltaUpdate(StreamingAudioTranscriptionUpdateKind.TranscriptTextDelta, additionalBinaryDataProperties: null, delta, transcriptionTokenLogProbabilities.ToList());
-        }
-
-        public static StreamingAudioTranscriptionTextDoneUpdate StreamingAudioTranscriptionTextDoneUpdate(string text = default, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default)
-        {
-            transcriptionTokenLogProbabilities ??= new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
-
-            return new StreamingAudioTranscriptionTextDoneUpdate(StreamingAudioTranscriptionUpdateKind.TranscriptTextDone, additionalBinaryDataProperties: null, text, transcriptionTokenLogProbabilities.ToList());
-        }
-
-        public static AudioTranslation AudioTranslation(string language = default, TimeSpan? duration = default, string text = default, IEnumerable<TranscribedSegment> segments = default)
-        {
-            segments ??= new ChangeTrackingList<TranscribedSegment>();
-
-            return new AudioTranslation(
-                "translate",
-                language,
-                duration,
-                text,
-                segments.ToList(),
-                additionalBinaryDataProperties: null);
-        }
-
         public static ChatOutputAudio ChatOutputAudio(string id = default, DateTimeOffset expiresAt = default, BinaryData audioBytes = default, string transcript = default)
         {
             return new ChatOutputAudio(id, expiresAt, audioBytes, transcript, default);
@@ -1186,6 +1133,34 @@ namespace OpenAI
                 additionalBinaryDataProperties: null);
         }
 
+        public static TranscribedWord TranscribedWord(string word = default, TimeSpan startTime = default, TimeSpan endTime = default)
+        {
+            return new TranscribedWord(word, startTime, endTime, additionalBinaryDataProperties: null);
+        }
+
+        public static TranscribedSegment TranscribedSegment(int id = default, int seekOffset = default, TimeSpan startTime = default, TimeSpan endTime = default, string text = default, ReadOnlyMemory<int> tokenIds = default, float temperature = default, float averageLogProbability = default, float compressionRatio = default, float noSpeechProbability = default)
+        {
+            return new TranscribedSegment(
+                id,
+                seekOffset,
+                startTime,
+                endTime,
+                text,
+                tokenIds,
+                temperature,
+                averageLogProbability,
+                compressionRatio,
+                noSpeechProbability,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static AudioTranslation AudioTranslation(string language = default, TimeSpan? duration = default, string text = default, IEnumerable<TranscribedSegment> segments = default)
+        {
+            segments ??= new ChangeTrackingList<TranscribedSegment>();
+
+            return new AudioTranslation(language, duration, text, segments.ToList(), additionalBinaryDataProperties: null);
+        }
+
         public static OpenAIEmbeddingCollection OpenAIEmbeddingCollection(IEnumerable<OpenAIEmbedding> items = default, string model = default, string @object = default, EmbeddingTokenUsage usage = default)
         {
             items ??= new ChangeTrackingList<OpenAIEmbedding>();
@@ -1384,21 +1359,28 @@ namespace OpenAI
             return new AudioTokenLogProbabilityDetails(token, logProbability, utf8Bytes, additionalBinaryDataProperties: null);
         }
 
-        public static AudioTranscription AudioTranscription(string language = default, TimeSpan? duration = default, string text = default, IEnumerable<TranscribedWord> words = default, IEnumerable<TranscribedSegment> segments = default, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default)
+        public static StreamingAudioTranscriptionUpdate StreamingAudioTranscriptionUpdate(string kind = default)
         {
-            words ??= new ChangeTrackingList<TranscribedWord>();
-            segments ??= new ChangeTrackingList<TranscribedSegment>();
+            return new InternalUnknownCreateTranscriptionResponseStreamEvent(new StreamingAudioTranscriptionUpdateKind(kind), additionalBinaryDataProperties: null);
+        }
+
+        public static StreamingAudioTranscriptionTextSegmentUpdate StreamingAudioTranscriptionTextSegmentUpdate(string segmentId = default, TimeSpan startTime = default, TimeSpan endTime = default, string text = default, string speakerLabel = default)
+        {
+            return new StreamingAudioTranscriptionTextSegmentUpdate(
+                StreamingAudioTranscriptionUpdateKind.TranscriptTextSegment,
+                additionalBinaryDataProperties: null,
+                segmentId,
+                startTime,
+                endTime,
+                text,
+                speakerLabel);
+        }
+
+        public static StreamingAudioTranscriptionTextDeltaUpdate StreamingAudioTranscriptionTextDeltaUpdate(string delta = default, IEnumerable<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default, string segmentId = default)
+        {
             transcriptionTokenLogProbabilities ??= new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
 
-            return new AudioTranscription(
-                "transcribe",
-                language,
-                duration,
-                text,
-                words.ToList(),
-                segments.ToList(),
-                transcriptionTokenLogProbabilities.ToList(),
-                additionalBinaryDataProperties: null);
+            return new StreamingAudioTranscriptionTextDeltaUpdate(StreamingAudioTranscriptionUpdateKind.TranscriptTextDelta, additionalBinaryDataProperties: null, delta, transcriptionTokenLogProbabilities.ToList(), segmentId);
         }
 
         public static BatchCollectionOptions BatchCollectionOptions(string afterId = default, int? pageSizeLimit = default)

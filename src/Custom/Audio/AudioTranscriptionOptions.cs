@@ -26,6 +26,18 @@ public partial class AudioTranscriptionOptions
     [CodeGenMember("Stream")]
     internal bool? Stream { get; set; }
 
+    // CUSTOM: Made internal
+    [CodeGenMember("ChunkingStrategy")]
+    internal BinaryData ChunkingStrategy { get; set; }
+
+    // CUSTOM: Made internal
+    [CodeGenMember("KnownSpeakerNames")]
+    internal IList<string> KnownSpeakerNames { get; }
+
+    // CUSTOM: Made internal
+    [CodeGenMember("KnownSpeakerReferences")]
+    internal IList<string> KnownSpeakerReferences { get; }
+
     // CUSTOM: Made public now that there are no required properties.
     /// <summary> Initializes a new instance of <see cref="AudioTranscriptionOptions"/>. </summary>
     public AudioTranscriptionOptions()

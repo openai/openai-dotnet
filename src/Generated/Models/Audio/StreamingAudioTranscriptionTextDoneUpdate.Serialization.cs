@@ -12,7 +12,7 @@ namespace OpenAI.Audio
 {
     public partial class StreamingAudioTranscriptionTextDoneUpdate : StreamingAudioTranscriptionUpdate, IJsonModel<StreamingAudioTranscriptionTextDoneUpdate>
     {
-        internal StreamingAudioTranscriptionTextDoneUpdate() : this(StreamingAudioTranscriptionUpdateKind.TranscriptTextDone, null, null, null)
+        internal StreamingAudioTranscriptionTextDoneUpdate() : this(StreamingAudioTranscriptionUpdateKind.TranscriptTextDone, null, null, null, null)
         {
         }
 
@@ -46,6 +46,11 @@ namespace OpenAI.Audio
                 }
                 writer.WriteEndArray();
             }
+            if (Optional.IsDefined(Usage) && _additionalBinaryDataProperties?.ContainsKey("usage") != true)
+            {
+                writer.WritePropertyName("usage"u8);
+                writer.WriteObjectValue(Usage, options);
+            }
         }
 
         StreamingAudioTranscriptionTextDoneUpdate IJsonModel<StreamingAudioTranscriptionTextDoneUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StreamingAudioTranscriptionTextDoneUpdate)JsonModelCreateCore(ref reader, options);
@@ -71,6 +76,7 @@ namespace OpenAI.Audio
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string text = default;
             IReadOnlyList<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default;
+            InternalTranscriptTextUsageTokens usage = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -97,10 +103,19 @@ namespace OpenAI.Audio
                     transcriptionTokenLogProbabilities = array;
                     continue;
                 }
+                if (prop.NameEquals("usage"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    usage = InternalTranscriptTextUsageTokens.DeserializeInternalTranscriptTextUsageTokens(prop.Value, options);
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new StreamingAudioTranscriptionTextDoneUpdate(kind, additionalBinaryDataProperties, text, transcriptionTokenLogProbabilities ?? new ChangeTrackingList<AudioTokenLogProbabilityDetails>());
+            return new StreamingAudioTranscriptionTextDoneUpdate(kind, additionalBinaryDataProperties, text, transcriptionTokenLogProbabilities ?? new ChangeTrackingList<AudioTokenLogProbabilityDetails>(), usage);
         }
 
         BinaryData IPersistableModel<StreamingAudioTranscriptionTextDoneUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

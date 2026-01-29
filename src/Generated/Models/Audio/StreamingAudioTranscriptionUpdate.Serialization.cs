@@ -80,6 +80,8 @@ namespace OpenAI.Audio
             {
                 switch (discriminator.GetString())
                 {
+                    case "transcript.text.segment":
+                        return StreamingAudioTranscriptionTextSegmentUpdate.DeserializeStreamingAudioTranscriptionTextSegmentUpdate(element, options);
                     case "transcript.text.delta":
                         return StreamingAudioTranscriptionTextDeltaUpdate.DeserializeStreamingAudioTranscriptionTextDeltaUpdate(element, options);
                     case "transcript.text.done":

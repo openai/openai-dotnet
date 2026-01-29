@@ -20,10 +20,9 @@ namespace OpenAI.Audio
             Segments = new ChangeTrackingList<TranscribedSegment>();
         }
 
-        internal AudioTranslation(string task, string language, TimeSpan? duration, string text, IReadOnlyList<TranscribedSegment> segments, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal AudioTranslation(string language, TimeSpan? duration, string text, IReadOnlyList<TranscribedSegment> segments, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
-            Task = task;
             Language = language;
             Duration = duration;
             Text = text;

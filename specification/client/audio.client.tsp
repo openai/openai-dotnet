@@ -9,6 +9,10 @@ using Azure.ClientGenerator.Core;
 
 @@visibility(CreateTranslationResponseVerboseJson.segments, Lifecycle.Read);
 
-@@clientName(Audio.createSpeech, "GenerateSpeech");
-@@clientName(Audio.createTranscription, "TranscribeAudio");
-@@clientName(Audio.createTranslation, "TranslateAudio");
+@@clientName(createSpeech, "GenerateSpeech");
+@@clientName(createTranscription, "TranscribeAudio");
+@@clientName(createTranslation, "TranslateAudio");
+
+@@clientLocation(createSpeech, "Audio");
+@@clientLocation(createTranscription, "Audio");
+@@clientLocation(createTranslation, "Audio");

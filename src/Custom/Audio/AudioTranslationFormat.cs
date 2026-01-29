@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace OpenAI.Audio;
 
 /// <summary> The format of the transcription. </summary>
-[CodeGenType("TranslationAudioResponseFormat")]
+[CodeGenType("CreateTranslationRequestResponseFormat")]
 public readonly partial struct AudioTranslationFormat
 {
     // CUSTOM: Hide from browsing as this is equivalent to Simple

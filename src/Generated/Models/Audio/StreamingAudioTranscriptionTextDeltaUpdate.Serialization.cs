@@ -12,7 +12,7 @@ namespace OpenAI.Audio
 {
     public partial class StreamingAudioTranscriptionTextDeltaUpdate : StreamingAudioTranscriptionUpdate, IJsonModel<StreamingAudioTranscriptionTextDeltaUpdate>
     {
-        internal StreamingAudioTranscriptionTextDeltaUpdate() : this(StreamingAudioTranscriptionUpdateKind.TranscriptTextDelta, null, null, null)
+        internal StreamingAudioTranscriptionTextDeltaUpdate() : this(StreamingAudioTranscriptionUpdateKind.TranscriptTextDelta, null, null, null, null)
         {
         }
 
@@ -46,6 +46,11 @@ namespace OpenAI.Audio
                 }
                 writer.WriteEndArray();
             }
+            if (Optional.IsDefined(SegmentId) && _additionalBinaryDataProperties?.ContainsKey("segment_id") != true)
+            {
+                writer.WritePropertyName("segment_id"u8);
+                writer.WriteStringValue(SegmentId);
+            }
         }
 
         StreamingAudioTranscriptionTextDeltaUpdate IJsonModel<StreamingAudioTranscriptionTextDeltaUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (StreamingAudioTranscriptionTextDeltaUpdate)JsonModelCreateCore(ref reader, options);
@@ -71,6 +76,7 @@ namespace OpenAI.Audio
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string delta = default;
             IReadOnlyList<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default;
+            string segmentId = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -97,10 +103,15 @@ namespace OpenAI.Audio
                     transcriptionTokenLogProbabilities = array;
                     continue;
                 }
+                if (prop.NameEquals("segment_id"u8))
+                {
+                    segmentId = prop.Value.GetString();
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new StreamingAudioTranscriptionTextDeltaUpdate(kind, additionalBinaryDataProperties, delta, transcriptionTokenLogProbabilities ?? new ChangeTrackingList<AudioTokenLogProbabilityDetails>());
+            return new StreamingAudioTranscriptionTextDeltaUpdate(kind, additionalBinaryDataProperties, delta, transcriptionTokenLogProbabilities ?? new ChangeTrackingList<AudioTokenLogProbabilityDetails>(), segmentId);
         }
 
         BinaryData IPersistableModel<StreamingAudioTranscriptionTextDeltaUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
