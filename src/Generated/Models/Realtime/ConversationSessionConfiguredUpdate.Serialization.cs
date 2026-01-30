@@ -31,6 +31,11 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(ConversationSessionConfiguredUpdate)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
+            if (_additionalBinaryDataProperties?.ContainsKey("event_id") != true)
+            {
+                writer.WritePropertyName("event_id"u8);
+                writer.WriteStringValue(EventId);
+            }
             if (_additionalBinaryDataProperties?.ContainsKey("session") != true)
             {
                 writer.WritePropertyName("session"u8);
@@ -58,8 +63,8 @@ namespace OpenAI.Realtime
                 return null;
             }
             RealtimeUpdateKind kind = default;
-            string eventId = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            string eventId = default;
             InternalRealtimeResponseSession internalSession = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -81,7 +86,7 @@ namespace OpenAI.Realtime
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new ConversationSessionConfiguredUpdate(kind, eventId, additionalBinaryDataProperties, internalSession);
+            return new ConversationSessionConfiguredUpdate(kind, additionalBinaryDataProperties, eventId, internalSession);
         }
 
         BinaryData IPersistableModel<ConversationSessionConfiguredUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

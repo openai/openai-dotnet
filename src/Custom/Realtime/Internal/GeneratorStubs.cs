@@ -132,3 +132,28 @@ namespace OpenAI.Realtime;
 [CodeGenType("RealtimeSessionCreateTranscriptionRequest")] internal partial class InternalRealtimeSessionCreateTranscriptionRequest {}
 [CodeGenType("RealtimeSessionCreateRealtimeResponse")] internal partial class InternalRealtimeSessionCreateRealtimeResponse {}
 [CodeGenType("RealtimeSessionCreateTranscriptionResponse")] internal partial class InternalRealtimeSessionCreateTranscriptionResponse {}
+
+// Session update discriminated union types (from custom.tsp)
+// Note: RealtimeSessionType, RealtimeRequestSessionBase, and RealtimeSessionAudio* types must be public 
+// because public types extend them. They are defined in the public GeneratorStubs.cs file
+[CodeGenType("UnknownRealtimeRequestSessionBase")] internal partial class InternalUnknownRealtimeRequestSessionBase {}
+[CodeGenType("RealtimeTranscriptionRequestSession")] internal partial class InternalRealtimeTranscriptionRequestSession {}
+[CodeGenType("RealtimeTranscriptionSessionAudioConfiguration")] internal partial class InternalRealtimeTranscriptionSessionAudioConfiguration {}
+[CodeGenType("RealtimeTranscriptionSessionAudioInputConfiguration")] internal partial class InternalRealtimeTranscriptionSessionAudioInputConfiguration {}
+
+// Session updated response discriminated union types
+[CodeGenType("RealtimeSessionUpdatedResponseUnionType")] internal readonly partial struct InternalRealtimeSessionUpdatedResponseUnionType {}
+[CodeGenType("RealtimeSessionUpdatedResponseUnion")] internal partial class InternalRealtimeSessionUpdatedResponseUnion {}
+[CodeGenType("UnknownRealtimeSessionUpdatedResponseUnion")] internal partial class InternalUnknownRealtimeSessionUpdatedResponseUnion {}
+[CodeGenType("RealtimeSessionUpdatedRealtimeResponse")] internal partial class InternalRealtimeSessionUpdatedRealtimeResponse {}
+[CodeGenType("RealtimeSessionUpdatedRealtimeResponseObject")] internal readonly partial struct InternalRealtimeSessionUpdatedRealtimeResponseObject {}
+[CodeGenType("RealtimeSessionUpdatedTranscriptionResponse")] internal partial class InternalRealtimeSessionUpdatedTranscriptionResponse {}
+[CodeGenType("RealtimeSessionUpdatedTranscriptionResponseObject")] internal readonly partial struct InternalRealtimeSessionUpdatedTranscriptionResponseObject {}
+[CodeGenType("RealtimeSessionUpdatedTranscriptionResponseModality")] internal readonly partial struct InternalRealtimeSessionUpdatedTranscriptionResponseModality {}
+[CodeGenType("RealtimeSessionUpdatedTranscriptionResponseInputAudioTranscriptionModel")] internal readonly partial struct InternalRealtimeSessionUpdatedTranscriptionResponseInputAudioTranscriptionModel {}
+[CodeGenType("RealtimeSessionUpdatedTranscriptionResponseInputAudioTranscription")] internal partial class InternalRealtimeSessionUpdatedTranscriptionResponseInputAudioTranscription {}
+[CodeGenType("RealtimeSessionUpdatedTranscriptionResponseTurnDetectionType")] internal readonly partial struct InternalRealtimeSessionUpdatedTranscriptionResponseTurnDetectionType {}
+[CodeGenType("RealtimeSessionUpdatedTranscriptionResponseTurnDetectionEagerness")] internal readonly partial struct InternalRealtimeSessionUpdatedTranscriptionResponseTurnDetectionEagerness {}
+[CodeGenType("RealtimeSessionUpdatedTranscriptionResponseInputAudioNoiseReductionType")] internal readonly partial struct InternalRealtimeSessionUpdatedTranscriptionResponseInputAudioNoiseReductionType {}
+[CodeGenType("RealtimeSessionUpdatedTranscriptionResponseTurnDetection1")] internal partial class InternalRealtimeSessionUpdatedTranscriptionResponseTurnDetection1 {}
+[CodeGenType("RealtimeSessionUpdatedTranscriptionResponseInputAudioNoiseReduction1")] internal partial class InternalRealtimeSessionUpdatedTranscriptionResponseInputAudioNoiseReduction1 {}

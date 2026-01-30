@@ -1026,7 +1026,7 @@ namespace OpenAI
 
         public static RealtimeRequestSessionBase RealtimeRequestSessionBase(string kind = default)
         {
-            return new UnknownRealtimeRequestSessionBase(new RealtimeSessionType(kind), additionalBinaryDataProperties: null);
+            return new InternalUnknownRealtimeRequestSessionBase(new RealtimeSessionType(kind), additionalBinaryDataProperties: null);
         }
 
         public static RealtimeSessionAudioConfiguration RealtimeSessionAudioConfiguration(RealtimeSessionAudioInputConfiguration input = default, RealtimeSessionAudioOutputConfiguration output = default)
@@ -1062,23 +1062,6 @@ namespace OpenAI
         public static ConversationFunctionTool ConversationFunctionTool(string name = default, string description = default, BinaryData parameters = default)
         {
             return new ConversationFunctionTool(default, additionalBinaryDataProperties: null, name, description, parameters);
-        }
-
-        public static RealtimeTranscriptionRequestSession RealtimeTranscriptionRequestSession(RealtimeTranscriptionSessionAudioConfiguration audio = default, IEnumerable<string> include = default)
-        {
-            include ??= new ChangeTrackingList<string>();
-
-            return new RealtimeTranscriptionRequestSession(RealtimeSessionType.Transcription, additionalBinaryDataProperties: null, audio, include.ToList());
-        }
-
-        public static RealtimeTranscriptionSessionAudioConfiguration RealtimeTranscriptionSessionAudioConfiguration(RealtimeTranscriptionSessionAudioInputConfiguration input = default)
-        {
-            return new RealtimeTranscriptionSessionAudioConfiguration(input, additionalBinaryDataProperties: null);
-        }
-
-        public static RealtimeTranscriptionSessionAudioInputConfiguration RealtimeTranscriptionSessionAudioInputConfiguration(RealtimeAudioFormat? format = default, InputTranscriptionOptions transcription = default, InputNoiseReductionOptions noiseReduction = default, TurnDetectionOptions turnDetection = default)
-        {
-            return new RealtimeTranscriptionSessionAudioInputConfiguration(format, transcription, noiseReduction, turnDetection, additionalBinaryDataProperties: null);
         }
 
         public static ConversationContentPart ConversationContentPart(string kind = default)

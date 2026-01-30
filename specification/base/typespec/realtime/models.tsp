@@ -477,20 +477,22 @@ model RealtimeServerEventSessionCreated extends RealtimeServerEvent {
   session: RealtimeResponseSession;
 }
 
-// Tool customization (apply_discriminator): apply discriminated type
-@doc("""
-  Returned when a session is updated with a `session.update` event, unless
-  there is an error.
-  """)
 model RealtimeServerEventSessionUpdated extends RealtimeServerEvent {
-  @doc("""
-    The event type, must be `session.updated`.
-    """)
-  type: RealtimeServerEventType.session_updated;
+  /** The unique ID of the server event. */
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+  event_id: string;
 
-  // Tool customization: apply discriminated session union type
+  /** The event type, must be `session.updated`. */
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+  @extension("x-stainless-const", true)
+  type: "session.updated";
+
+  // Tool customization: use discriminated union instead of raw union type
+  /** The session configuration. */
   session: RealtimeSessionUpdatedResponseUnion;
 }
+
+
 
 // Tool customization: establish base for enriched request/response split models
 /** Realtime session object configuration. */
@@ -2120,6 +2122,17 @@ model RealtimeTranscriptionSessionCreateRequest {
   };
 }
 
+#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+model RealtimeTranscriptionSessionCreateResponseClientSecret {
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  value: string;
+
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+  @encode(DateTimeKnownEncoding.unixTimestamp, integer)
+  expires_at: utcDateTime;
+}
+
 /**
  * A new Realtime transcription session configuration.
  *
@@ -2128,26 +2141,17 @@ model RealtimeTranscriptionSessionCreateRequest {
  * property is not present when a session is updated via the WebSocket API.
  */
 model RealtimeTranscriptionSessionCreateResponse {
-  /**
-   * Ephemeral key returned by the API. Only present when the session is
-   * created on the server via REST API.
-   */
-  client_secret: {
-    /**
-     * Ephemeral key usable in client environments to authenticate connections
-     * to the Realtime API. Use this in client-side environments rather than
-     * a standard API token, which should only be used server-side.
-     */
-    value: string;
+  /** Unique identifier for the transcription session. */
+  id: string;
 
-    // Tool customization: 'created' and fields ending in '_at' are Unix encoded utcDateTime
-    /**
-     * Timestamp for when the token expires. Currently, all tokens expire
-     * after one minute.
-     */
-    @encode("unixTimestamp", int32)
-    expires_at: utcDateTime;
-  };
+  /** The object type, which is always `realtime.transcription_session`. */
+  object: "realtime.transcription_session";
+
+  /**
+   * The set of modalities the model can respond with. To disable audio,
+   * set this to ["text"].
+   */
+  client_secret: RealtimeTranscriptionSessionCreateResponseClientSecret;
 
   /**
    * The set of modalities the model can respond with. To disable audio,
@@ -2182,37 +2186,6 @@ model RealtimeTranscriptionSessionCreateResponse {
     prompt?: string;
   };
 
-  @doc("""
-    Configuration for turn detection. Can be set to `null` to turn off. Server
-    VAD means that the model will detect the start and end of speech based on
-    audio volume and respond at the end of user speech.
-    """)
-  turn_detection?: {
-    @doc("""
-      Type of turn detection, only `server_vad` is currently supported.
-      """)
-    type?: string;
-
-    /**
-     * Activation threshold for VAD (0.0 to 1.0), this defaults to 0.5. A
-     * higher threshold will require louder audio to activate the model, and
-     * thus might perform better in noisy environments.
-     */
-    threshold?: float32;
-
-    /**
-     * Amount of audio to include before the VAD detected speech (in
-     * milliseconds). Defaults to 300ms.
-     */
-    prefix_padding_ms?: int32;
-
-    /**
-     * Duration of silence to detect speech stop (in milliseconds). Defaults
-     * to 500ms. With shorter values the model will respond more quickly,
-     * but may jump in on short pauses from the user.
-     */
-    silence_duration_ms?: int32;
-  };
 }
 
 /**
@@ -2345,22 +2318,117 @@ model RealtimeSessionUpdatedResponseUnion {
 
 /**
  * Session updated response for a realtime session.
+ * This model includes the session configuration details from RealtimeResponseSession.
  */
 model RealtimeSessionUpdatedRealtimeResponse extends RealtimeSessionUpdatedResponseUnion {
   /** The type of session. */
   type: "realtime";
 
-  ...RealtimeResponseSession;
+  /** The object type. */
+  object?: "realtime.session";
+  
+  /** The session ID. */
+  id?: string;
+  
+  /** The model used for the session. */
+  `model`?: string;
+  
+  /** The modalities for the session. */
+  modalities?: RealtimeModality[];
+  
+  /** The instructions for the session. */
+  instructions?: string;
+  
+  /** The voice for the session. */
+  voice?: VoiceIdsShared;
+  
+  /** The input audio format. */
+  input_audio_format?: RealtimeAudioFormat;
+  
+  /** The output audio format. */
+  output_audio_format?: RealtimeAudioFormat;
+  
+  /** Configuration for input audio transcription. */
+  input_audio_transcription?: RealtimeAudioInputTranscriptionSettings | null;
+  
+  /** Configuration for turn detection. */
+  turn_detection?: RealtimeTurnDetection | null;
+  
+  /** Configuration for input audio noise reduction. */
+  input_audio_noise_reduction?: RealtimeAudioNoiseReduction | null;
+  
+  /** The speed of the model's spoken response. */
+  speed?: float32;
+  
+  /** Tracing configuration for the session. */
+  tracing?: "auto" | RealtimeTracingConfig | null;
+  
+  /** The tools available for the session. */
+  tools?: RealtimeTool[];
+  
+  /** The tool choice for the session. */
+  tool_choice?: RealtimeToolChoice;
+  
+  /** The temperature for the session. */
+  temperature?: float32;
+  
+  /** The max output tokens for the session. */
+  max_output_tokens?: int32 | "inf" | null;
+  
+  /** Timestamp for when the session expires. */
+  @encode("unixTimestamp", int32)
+  expires_at?: utcDateTime;
 }
 
 /**
  * Session updated response for a transcription session.
+ * This model includes the session configuration details from the transcription session.
  */
 model RealtimeSessionUpdatedTranscriptionResponse extends RealtimeSessionUpdatedResponseUnion {
   /** The type of session. */
   type: "transcription";
 
-  ...RealtimeTranscriptionSessionCreateResponse;
+  /** Unique identifier for the transcription session. */
+  id?: string;
+
+  /** The object type. */
+  object?: "realtime.transcription_session";
+
+  /** The set of modalities for the session. */
+  modalities?: ("text" | "audio")[];
+
+  /** The format of input audio. */
+  input_audio_format?: string;
+
+  /** Configuration of the transcription model. */
+  input_audio_transcription?: {
+    /** The model to use for transcription. */
+    `model`?: "gpt-4o-transcribe" | "gpt-4o-mini-transcribe" | "whisper-1";
+    /** The language of the input audio. */
+    language?: string;
+    /** An optional text to guide the model's style. */
+    prompt?: string;
+  };
+  
+  /** Configuration for turn detection. */
+  turn_detection?: {
+    /** Type of turn detection. */
+    type?: "server_vad" | "semantic_vad";
+    /** The eagerness of the model to respond. */
+    eagerness?: "low" | "medium" | "high" | "auto";
+    /** Activation threshold for VAD (0.0 to 1.0). */
+    threshold?: float32;
+    /** Amount of audio to include before the VAD detected speech (in milliseconds). */
+    prefix_padding_ms?: int32;
+    /** Duration of silence to detect speech stop (in milliseconds). */
+    silence_duration_ms?: int32;
+  } | null;
+  
+  /** Configuration for input audio noise reduction. */
+  input_audio_noise_reduction?: {
+    /** Type of noise reduction. */
+    type?: "near_field" | "far_field";
+  } | null;
 }
 
 /**
