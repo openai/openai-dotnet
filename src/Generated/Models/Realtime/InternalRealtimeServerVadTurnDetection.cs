@@ -9,15 +9,16 @@ namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeServerVadTurnDetection : TurnDetectionOptions
     {
-        public InternalRealtimeServerVadTurnDetection() : this(TurnDetectionKind.ServerVoiceActivityDetection, default, default, null, default, default, default)
+        public InternalRealtimeServerVadTurnDetection() : this(TurnDetectionKind.ServerVoiceActivityDetection, default, default, null, default, default, default, default)
         {
         }
 
-        internal InternalRealtimeServerVadTurnDetection(TurnDetectionKind kind, bool? responseCreationEnabled, bool? responseInterruptionEnabled, IDictionary<string, BinaryData> additionalBinaryDataProperties, float? threshold, TimeSpan? prefixPaddingMs, TimeSpan? silenceDurationMs) : base(kind, responseCreationEnabled, responseInterruptionEnabled, additionalBinaryDataProperties)
+        internal InternalRealtimeServerVadTurnDetection(TurnDetectionKind kind, bool? responseCreationEnabled, bool? responseInterruptionEnabled, IDictionary<string, BinaryData> additionalBinaryDataProperties, float? threshold, TimeSpan? prefixPaddingMs, TimeSpan? silenceDurationMs, TimeSpan? idleTimeoutMs) : base(kind, responseCreationEnabled, responseInterruptionEnabled, additionalBinaryDataProperties)
         {
             Threshold = threshold;
             PrefixPaddingMs = prefixPaddingMs;
             SilenceDurationMs = silenceDurationMs;
+            IdleTimeoutMs = idleTimeoutMs;
         }
 
         public float? Threshold { get; set; }
@@ -25,5 +26,7 @@ namespace OpenAI.Realtime
         public TimeSpan? PrefixPaddingMs { get; set; }
 
         public TimeSpan? SilenceDurationMs { get; set; }
+
+        public TimeSpan? IdleTimeoutMs { get; set; }
     }
 }

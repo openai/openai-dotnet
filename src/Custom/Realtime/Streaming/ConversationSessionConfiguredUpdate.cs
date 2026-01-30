@@ -35,5 +35,6 @@ public partial class ConversationSessionConfiguredUpdate
     public IReadOnlyList<ConversationTool> Tools => [ .. _internalSession.Tools ];
     public ConversationToolChoice ToolChoice => ConversationToolChoice.FromBinaryData(_internalSession.ToolChoice);
     public float Temperature => _internalSession.Temperature;
-    public ConversationMaxTokensChoice MaxOutputTokens => _internalSession.MaxResponseOutputTokens;
+    // Customization: API changed from max_response_output_tokens to max_output_tokens
+    public ConversationMaxTokensChoice MaxOutputTokens => _internalSession.MaxOutputTokens;
 }

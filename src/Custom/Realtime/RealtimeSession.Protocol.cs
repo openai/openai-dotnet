@@ -26,7 +26,6 @@ public partial class RealtimeSession
 
         ClientWebSocket clientWebSocket = new();
         clientWebSocket.Options.AddSubProtocol("realtime");
-        clientWebSocket.Options.SetRequestHeader("openai-beta", $"realtime=v1");
         clientWebSocket.Options.SetRequestHeader("Authorization", $"Bearer {dangerousCredential}");
 
         if (headers is not null)

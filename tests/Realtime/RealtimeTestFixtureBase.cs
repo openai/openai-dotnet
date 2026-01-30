@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using OpenAI.Realtime;
 using OpenAI.Tests.Utility;
 using System;
@@ -20,7 +21,7 @@ public class RealtimeTestFixtureBase : OpenAIRecordedTestBase
     public CancellationToken CancellationToken => CancellationTokenSource?.Token ?? default;
     public RequestOptions CancellationOptions => new() { CancellationToken = CancellationToken };
 
-    public RealtimeTestFixtureBase(bool isAsync) : base(isAsync)
+    public RealtimeTestFixtureBase(bool isAsync, RecordedTestMode mode = RecordedTestMode.Playback) : base(isAsync, mode)
     {
         CancellationTokenSource = new();
         if (!Debugger.IsAttached)

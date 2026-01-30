@@ -1024,19 +1024,34 @@ namespace OpenAI
             return new FileFromStoreRemovalResult(fileId, removed, "vector_store.file.deleted", additionalBinaryDataProperties: null);
         }
 
+        public static RealtimeRequestSessionBase RealtimeRequestSessionBase(string kind = default)
+        {
+            return new UnknownRealtimeRequestSessionBase(new RealtimeSessionType(kind), additionalBinaryDataProperties: null);
+        }
+
+        public static RealtimeSessionAudioConfiguration RealtimeSessionAudioConfiguration(RealtimeSessionAudioInputConfiguration input = default, RealtimeSessionAudioOutputConfiguration output = default)
+        {
+            return new RealtimeSessionAudioConfiguration(input, output, additionalBinaryDataProperties: null);
+        }
+
+        public static RealtimeSessionAudioInputConfiguration RealtimeSessionAudioInputConfiguration(RealtimeAudioFormat? format = default, InputTranscriptionOptions transcription = default, InputNoiseReductionOptions noiseReduction = default, TurnDetectionOptions turnDetection = default)
+        {
+            return new RealtimeSessionAudioInputConfiguration(format, transcription, noiseReduction, turnDetection, additionalBinaryDataProperties: null);
+        }
+
         public static InputTranscriptionOptions InputTranscriptionOptions(InputTranscriptionModel? model = default, string language = default, string prompt = default)
         {
             return new InputTranscriptionOptions(model, language, prompt, additionalBinaryDataProperties: null);
         }
 
-        public static TurnDetectionOptions TurnDetectionOptions(string kind = default, bool? responseCreationEnabled = default, bool? responseInterruptionEnabled = default)
-        {
-            return new UnknownRealtimeTurnDetection(kind.ToTurnDetectionKind(), responseCreationEnabled, responseInterruptionEnabled, additionalBinaryDataProperties: null);
-        }
-
         public static InputNoiseReductionOptions InputNoiseReductionOptions(string kind = default)
         {
             return new InternalUnknownRealtimeAudioNoiseReduction(kind.ToInputNoiseReductionKind(), additionalBinaryDataProperties: null);
+        }
+
+        public static TurnDetectionOptions TurnDetectionOptions(string kind = default, bool? responseCreationEnabled = default, bool? responseInterruptionEnabled = default)
+        {
+            return new UnknownRealtimeTurnDetection(kind.ToTurnDetectionKind(), responseCreationEnabled, responseInterruptionEnabled, additionalBinaryDataProperties: null);
         }
 
         public static ConversationTool ConversationTool(string kind = default)
@@ -1047,6 +1062,23 @@ namespace OpenAI
         public static ConversationFunctionTool ConversationFunctionTool(string name = default, string description = default, BinaryData parameters = default)
         {
             return new ConversationFunctionTool(default, additionalBinaryDataProperties: null, name, description, parameters);
+        }
+
+        public static RealtimeTranscriptionRequestSession RealtimeTranscriptionRequestSession(RealtimeTranscriptionSessionAudioConfiguration audio = default, IEnumerable<string> include = default)
+        {
+            include ??= new ChangeTrackingList<string>();
+
+            return new RealtimeTranscriptionRequestSession(RealtimeSessionType.Transcription, additionalBinaryDataProperties: null, audio, include.ToList());
+        }
+
+        public static RealtimeTranscriptionSessionAudioConfiguration RealtimeTranscriptionSessionAudioConfiguration(RealtimeTranscriptionSessionAudioInputConfiguration input = default)
+        {
+            return new RealtimeTranscriptionSessionAudioConfiguration(input, additionalBinaryDataProperties: null);
+        }
+
+        public static RealtimeTranscriptionSessionAudioInputConfiguration RealtimeTranscriptionSessionAudioInputConfiguration(RealtimeAudioFormat? format = default, InputTranscriptionOptions transcription = default, InputNoiseReductionOptions noiseReduction = default, TurnDetectionOptions turnDetection = default)
+        {
+            return new RealtimeTranscriptionSessionAudioInputConfiguration(format, transcription, noiseReduction, turnDetection, additionalBinaryDataProperties: null);
         }
 
         public static ConversationContentPart ConversationContentPart(string kind = default)
@@ -1169,6 +1201,31 @@ namespace OpenAI
         public static ItemRetrievedUpdate ItemRetrievedUpdate(string eventId = default, RealtimeItem item = default)
         {
             return new ItemRetrievedUpdate(RealtimeUpdateKind.ItemRetrieved, eventId, additionalBinaryDataProperties: null, item);
+        }
+
+        public static RealtimeCreateClientSecretRequest RealtimeCreateClientSecretRequest(RealtimeCreateClientSecretRequestExpiresAfter expiresAfter = default, RealtimeSessionCreateRequestUnion session = default)
+        {
+            return new RealtimeCreateClientSecretRequest(expiresAfter, session, additionalBinaryDataProperties: null);
+        }
+
+        public static RealtimeCreateClientSecretRequestExpiresAfter RealtimeCreateClientSecretRequestExpiresAfter(RealtimeCreateClientSecretRequestExpiresAfterAnchor? anchor = default, int? seconds = default)
+        {
+            return new RealtimeCreateClientSecretRequestExpiresAfter(anchor, seconds, additionalBinaryDataProperties: null);
+        }
+
+        public static RealtimeSessionCreateRequestUnion RealtimeSessionCreateRequestUnion(string kind = default)
+        {
+            return new UnknownRealtimeSessionCreateRequestUnion(new RealtimeSessionCreateRequestUnionType(kind), additionalBinaryDataProperties: null);
+        }
+
+        public static RealtimeCreateClientSecretResponse RealtimeCreateClientSecretResponse(string value = default, DateTimeOffset expiresAt = default, RealtimeSessionCreateResponseUnion session = default)
+        {
+            return new RealtimeCreateClientSecretResponse(value, expiresAt, session, additionalBinaryDataProperties: null);
+        }
+
+        public static RealtimeSessionCreateResponseUnion RealtimeSessionCreateResponseUnion(string kind = default)
+        {
+            return new UnknownRealtimeSessionCreateResponseUnion(new RealtimeSessionCreateResponseUnionType(kind), additionalBinaryDataProperties: null);
         }
 
         public static OpenAIFile OpenAIFile(string id = default, long? sizeInBytesLong = default, DateTimeOffset createdAt = default, DateTimeOffset? expiresAt = default, string filename = default, FilePurpose purpose = default, FileStatus status = default, string statusDetails = default)

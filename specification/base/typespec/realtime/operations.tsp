@@ -11,35 +11,37 @@ namespace OpenAI;
 interface Realtime {
   @summary("Starts a real-time session for conversation or transcription.")
   startRealtimeSession(
-    ...RealtimeBetaHeader,
     @body requestMessages: RealtimeClientEvent[],
   ): RealtimeServerEvent[];
 
+  /** Create a Realtime client secret with an associated session configuration. */
+  #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/response-schema-problem" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/use-standard-operations" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+  @summary("Create client secret")
   @post
-  @route("sessions")
-  @operationId("create-realtime-session")
-  @summary("""
-    Create an ephemeral API token for use in client-side applications with the Realtime API. Can be configured with the same session parameters as the session.update client event.
-    
-    It responds with a session object, plus a client_secret key which contains a usable ephemeral API token that can be used to authenticate browser clients for the Realtime API.
-    """)
-  createEphemeralToken(
-    @body request: RealtimeSessionCreateRequest,
-  ): RealtimeSessionCreateResponse | ErrorResponse;
+  @route("/client_secrets")
+  @tag("Realtime")
+  `create-realtime-client-secret`(
+    /** Create a client secret with the given session configuration. */
+    @body
+    body: RealtimeCreateClientSecretRequest,
+  ): RealtimeCreateClientSecretResponse | {
+    @maxValue(499)
+    @minValue(400)
+    @statusCode
+    statusCode: int32;
 
-  @post
-  @route("transcription_sessions")
-  @operationId("create-realtime-transcription-session")
-  @summary("""
-    Create an ephemeral API token for use in client-side applications with the Realtime API specifically for realtime transcriptions. Can be configured with the same session parameters as the transcription_session.update client event.
-    
-    It responds with a session object, plus a client_secret key which contains a usable ephemeral API token that can be used to authenticate browser clients for the Realtime API.
-    """)
-  createEphemeralTranscriptionToken(
-    @body request: RealtimeTranscriptionSessionCreateRequest,
-  ): RealtimeTranscriptionSessionCreateResponse | ErrorResponse;
+    @body
+    body: Error;
+  } | {
+    @maxValue(599)
+    @minValue(500)
+    @statusCode
+    statusCode: int32;
+
+    @body
+    body: Error;
+  };
 }
-
-alias RealtimeBetaHeader = {
-  @header("OpenAI-Beta") openAIBeta: "realtime=v1";
-};

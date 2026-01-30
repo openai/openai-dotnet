@@ -59,14 +59,27 @@ public class RealtimeSmokeTests : ClientTestBase
         ConversationSessionOptions options = new()
         {
             ContentModalities = RealtimeContentModalities.Text,
-            InputAudioFormat = RealtimeAudioFormat.G711Alaw,
-            InputTranscriptionOptions = new InputTranscriptionOptions()
+            Audio = new RealtimeSessionAudioConfiguration()
             {
-                Model = "whisper-1",
+                Input = new RealtimeSessionAudioInputConfiguration()
+                {
+                    Format = RealtimeAudioFormat.G711Alaw,
+                    Transcription = new InputTranscriptionOptions()
+                    {
+                        Model = "whisper-1",
+                    },
+                    TurnDetection = TurnDetectionOptions.CreateServerVoiceActivityTurnDetectionOptions(
+                        detectionThreshold: 0.42f,
+                        prefixPaddingDuration: TimeSpan.FromMilliseconds(234),
+                        silenceDuration: TimeSpan.FromMilliseconds(345)),
+                },
+                Output = new RealtimeSessionAudioOutputConfiguration()
+                {
+                    Format = RealtimeAudioFormat.G711Ulaw,
+                },
             },
             Instructions = "test instructions",
             MaxOutputTokens = 42,
-            OutputAudioFormat = RealtimeAudioFormat.G711Ulaw,
             Temperature = 0.42f,
             ToolChoice = ConversationToolChoice.CreateFunctionToolChoice("test-function"),
             Tools =
@@ -81,39 +94,35 @@ public class RealtimeSmokeTests : ClientTestBase
                         }
                         """)),
             },
-            TurnDetectionOptions = TurnDetectionOptions.CreateServerVoiceActivityTurnDetectionOptions(
-                           detectionThreshold: 0.42f,
-                           prefixPaddingDuration: TimeSpan.FromMilliseconds(234),
-                            silenceDuration: TimeSpan.FromMilliseconds(345)),
             Voice = ConversationVoice.Echo,
         };
         BinaryData serializedOptions = ModelReaderWriter.Write(options);
         JsonNode jsonNode = JsonNode.Parse(serializedOptions.ToString());
-        Assert.That(jsonNode["modalities"]?.AsArray()?.ToList(), Has.Count.EqualTo(1));
-        Assert.That(jsonNode["modalities"].AsArray().First().GetValue<string>(), Is.EqualTo("text"));
-        Assert.That(jsonNode["input_audio_format"]?.GetValue<string>(), Is.EqualTo("g711_alaw"));
-        Assert.That(jsonNode["input_audio_transcription"]?["model"]?.GetValue<string>(), Is.EqualTo("whisper-1"));
+        Assert.That(jsonNode["output_modalities"]?.AsArray()?.ToList(), Has.Count.EqualTo(1));
+        Assert.That(jsonNode["output_modalities"].AsArray().First().GetValue<string>(), Is.EqualTo("text"));
+        Assert.That(jsonNode["audio"]?["input"]?["format"]?.GetValue<string>(), Is.EqualTo("g711_alaw"));
+        Assert.That(jsonNode["audio"]?["input"]?["transcription"]?["model"]?.GetValue<string>(), Is.EqualTo("whisper-1"));
         Assert.That(jsonNode["instructions"]?.GetValue<string>(), Is.EqualTo("test instructions"));
-        Assert.That(jsonNode["max_response_output_tokens"]?.GetValue<int>(), Is.EqualTo(42));
-        Assert.That(jsonNode["output_audio_format"]?.GetValue<string>(), Is.EqualTo("g711_ulaw"));
+        Assert.That(jsonNode["max_output_tokens"]?.GetValue<int>(), Is.EqualTo(42));
+        Assert.That(jsonNode["audio"]?["output"]?["format"]?.GetValue<string>(), Is.EqualTo("g711_ulaw"));
         Assert.That(jsonNode["temperature"]?.GetValue<float>(), Is.EqualTo(0.42f));
         Assert.That(jsonNode["tools"]?.AsArray()?.ToList(), Has.Count.EqualTo(1));
         Assert.That(jsonNode["tools"].AsArray().First()["name"]?.GetValue<string>(), Is.EqualTo("test-function-tool-name"));
         Assert.That(jsonNode["tools"].AsArray().First()["description"]?.GetValue<string>(), Is.EqualTo("description of test function tool"));
         Assert.That(jsonNode["tools"].AsArray().First()["parameters"]?["type"]?.GetValue<string>(), Is.EqualTo("object"));
         Assert.That(jsonNode["tool_choice"]?["function"]?["name"]?.GetValue<string>(), Is.EqualTo("test-function"));
-        Assert.That(jsonNode["turn_detection"]?["threshold"]?.GetValue<float>(), Is.EqualTo(0.42f));
-        Assert.That(jsonNode["turn_detection"]?["prefix_padding_ms"]?.GetValue<int>(), Is.EqualTo(234));
-        Assert.That(jsonNode["turn_detection"]?["silence_duration_ms"]?.GetValue<int>(), Is.EqualTo(345));
+        Assert.That(jsonNode["audio"]?["input"]?["turn_detection"]?["threshold"]?.GetValue<float>(), Is.EqualTo(0.42f));
+        Assert.That(jsonNode["audio"]?["input"]?["turn_detection"]?["prefix_padding_ms"]?.GetValue<int>(), Is.EqualTo(234));
+        Assert.That(jsonNode["audio"]?["input"]?["turn_detection"]?["silence_duration_ms"]?.GetValue<int>(), Is.EqualTo(345));
         Assert.That(jsonNode["voice"]?.GetValue<string>(), Is.EqualTo("echo"));
         ConversationSessionOptions deserializedOptions = ModelReaderWriter.Read<ConversationSessionOptions>(serializedOptions);
         Assert.That(deserializedOptions.ContentModalities.HasFlag(RealtimeContentModalities.Text));
         Assert.That(deserializedOptions.ContentModalities.HasFlag(RealtimeContentModalities.Audio), Is.False);
-        Assert.That(deserializedOptions.InputAudioFormat, Is.EqualTo(RealtimeAudioFormat.G711Alaw));
-        Assert.That(deserializedOptions.InputTranscriptionOptions?.Model, Is.EqualTo(InputTranscriptionModel.Whisper1));
+        Assert.That(deserializedOptions.Audio?.Input?.Format, Is.EqualTo(RealtimeAudioFormat.G711Alaw));
+        Assert.That(deserializedOptions.Audio?.Input?.Transcription?.Model, Is.EqualTo(InputTranscriptionModel.Whisper1));
         Assert.That(deserializedOptions.Instructions, Is.EqualTo("test instructions"));
         Assert.That(deserializedOptions.MaxOutputTokens.NumericValue, Is.EqualTo(42));
-        Assert.That(deserializedOptions.OutputAudioFormat, Is.EqualTo(RealtimeAudioFormat.G711Ulaw));
+        Assert.That(deserializedOptions.Audio?.Output?.Format, Is.EqualTo(RealtimeAudioFormat.G711Ulaw));
         Assert.That(deserializedOptions.Tools, Has.Count.EqualTo(1));
         Assert.That(deserializedOptions.Tools[0].Kind, Is.EqualTo(ConversationToolKind.Function));
         Assert.That((deserializedOptions.Tools[0] as ConversationFunctionTool)?.Name, Is.EqualTo("test-function-tool-name"));
@@ -121,7 +130,7 @@ public class RealtimeSmokeTests : ClientTestBase
         Assert.That((deserializedOptions.Tools[0] as ConversationFunctionTool)?.Parameters?.ToString(), Does.Contain("properties"));
         Assert.That(deserializedOptions.ToolChoice?.Kind, Is.EqualTo(ConversationToolChoiceKind.Function));
         Assert.That(deserializedOptions.ToolChoice?.FunctionName, Is.EqualTo("test-function"));
-        Assert.That(deserializedOptions.TurnDetectionOptions?.Kind, Is.EqualTo(TurnDetectionKind.ServerVoiceActivityDetection));
+        Assert.That(deserializedOptions.Audio?.Input?.TurnDetection?.Kind, Is.EqualTo(TurnDetectionKind.ServerVoiceActivityDetection));
         Assert.That(deserializedOptions.Voice, Is.EqualTo(ConversationVoice.Echo));
 
         ConversationSessionOptions emptyOptions = new();
@@ -139,7 +148,7 @@ public class RealtimeSmokeTests : ClientTestBase
         // Implicit omission
         ConversationSessionOptions options = new() { };
         BinaryData serializedOptions = ModelReaderWriter.Write(options);
-        Assert.That(serializedOptions.ToString(), Does.Not.Contain("max_response_output_tokens"));
+        Assert.That(serializedOptions.ToString(), Does.Not.Contain("max_output_tokens"));
 
         // Explicit omission
         options = new()
@@ -147,7 +156,7 @@ public class RealtimeSmokeTests : ClientTestBase
             MaxOutputTokens = null
         };
         serializedOptions = ModelReaderWriter.Write(options);
-        Assert.That(serializedOptions.ToString(), Does.Not.Contain("max_response_output_tokens"));
+        Assert.That(serializedOptions.ToString(), Does.Not.Contain("max_output_tokens"));
 
         // Explicit default (null)
         options = new()
@@ -155,7 +164,7 @@ public class RealtimeSmokeTests : ClientTestBase
             MaxOutputTokens = ConversationMaxTokensChoice.CreateDefaultMaxTokensChoice()
         };
         serializedOptions = ModelReaderWriter.Write(options);
-        Assert.That(serializedOptions.ToString(), Does.Contain(@"""max_response_output_tokens"":null"));
+        Assert.That(serializedOptions.ToString(), Does.Contain(@"""max_output_tokens"":null"));
 
         // Numeric literal
         options = new()
@@ -163,7 +172,7 @@ public class RealtimeSmokeTests : ClientTestBase
             MaxOutputTokens = 42,
         };
         serializedOptions = ModelReaderWriter.Write(options);
-        Assert.That(serializedOptions.ToString(), Does.Contain(@"""max_response_output_tokens"":42"));
+        Assert.That(serializedOptions.ToString(), Does.Contain(@"""max_output_tokens"":42"));
 
         // Numeric by factory
         options = new()
@@ -171,7 +180,7 @@ public class RealtimeSmokeTests : ClientTestBase
             MaxOutputTokens = ConversationMaxTokensChoice.CreateNumericMaxTokensChoice(42)
         };
         serializedOptions = ModelReaderWriter.Write(options);
-        Assert.That(serializedOptions.ToString(), Does.Contain(@"""max_response_output_tokens"":42"));
+        Assert.That(serializedOptions.ToString(), Does.Contain(@"""max_output_tokens"":42"));
     }
 
     [Test]

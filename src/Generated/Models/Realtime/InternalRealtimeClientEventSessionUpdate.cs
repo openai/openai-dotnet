@@ -4,21 +4,22 @@
 
 using System;
 using System.Collections.Generic;
+using OpenAI;
 
 namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeClientEventSessionUpdate : InternalRealtimeClientEvent
     {
-        public InternalRealtimeClientEventSessionUpdate(ConversationSessionOptions session) : base(InternalRealtimeClientEventType.SessionUpdate)
+        public InternalRealtimeClientEventSessionUpdate(RealtimeRequestSessionBase session) : base(InternalRealtimeClientEventType.SessionUpdate)
         {
             Session = session;
         }
 
-        internal InternalRealtimeClientEventSessionUpdate(InternalRealtimeClientEventType kind, string eventId, IDictionary<string, BinaryData> additionalBinaryDataProperties, ConversationSessionOptions session) : base(kind, eventId, additionalBinaryDataProperties)
+        internal InternalRealtimeClientEventSessionUpdate(InternalRealtimeClientEventType kind, string eventId, IDictionary<string, BinaryData> additionalBinaryDataProperties, RealtimeRequestSessionBase session) : base(kind, eventId, additionalBinaryDataProperties)
         {
             Session = session;
         }
 
-        public ConversationSessionOptions Session { get; }
+        public RealtimeRequestSessionBase Session { get; }
     }
 }

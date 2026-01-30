@@ -70,8 +70,10 @@ model RealtimeClientEventSessionUpdate extends RealtimeClientEvent {
     """)
   type: RealtimeClientEventType.session_update;
 
-  // Tool customization: apply enriched request-specific model
-  session: RealtimeRequestSession;
+  /**
+   * Update the Realtime session. Choose either a realtime session or a transcription session.
+   */
+  session: RealtimeRequestSessionBase;
 }
 
 // Tool customization: establish custom, enriched discriminated type hierarchy
@@ -91,10 +93,10 @@ model RealtimeResponse {
   object?: "realtime.response";
 
   @doc("""
-    The final status of the response (`completed`, `cancelled`, `failed`, or
-    `incomplete`).
+    The final status of the response (`completed`, `cancelled`, `failed`,
+    `incomplete`, or `in_progress`).
     """)
-  status?: "completed" | "cancelled" | "failed" | "incomplete";
+  status?: "completed" | "cancelled" | "failed" | "incomplete" | "in_progress";
 
   /** Additional details about the status. */
   status_details?: {
@@ -486,8 +488,8 @@ model RealtimeServerEventSessionUpdated extends RealtimeServerEvent {
     """)
   type: RealtimeServerEventType.session_updated;
 
-  // Tool customization: apply enriched response-specific model
-  session: RealtimeResponseSession;
+  // Tool customization: apply discriminated session union type
+  session: RealtimeSessionUpdatedResponseUnion;
 }
 
 // Tool customization: establish base for enriched request/response split models
@@ -928,10 +930,10 @@ model RealtimeServerEventResponseContentPartDone extends RealtimeServerEvent {
 }
 
 // Tool customization (apply_discriminator): apply discriminated type
-/** Returned when the text value of a "text" content part is updated. */
+/** Returned when the text value of an "output_text" content part is updated. */
 model RealtimeServerEventResponseTextDelta extends RealtimeServerEvent {
   @doc("""
-    The event type, must be `response.text.delta`.
+    The event type, must be `response.output_text.delta`.
     """)
   type: RealtimeServerEventType.response_text_delta;
 
@@ -953,12 +955,12 @@ model RealtimeServerEventResponseTextDelta extends RealtimeServerEvent {
 
 // Tool customization (apply_discriminator): apply discriminated type
 /**
- * Returned when the text value of a "text" content part is done streaming. Also
+ * Returned when the text value of an "output_text" content part is done streaming. Also
  * emitted when a Response is interrupted, incomplete, or cancelled.
  */
 model RealtimeServerEventResponseTextDone extends RealtimeServerEvent {
   @doc("""
-    The event type, must be `response.text.done`.
+    The event type, must be `response.output_text.done`.
     """)
   type: RealtimeServerEventType.response_text_done;
 
@@ -983,7 +985,7 @@ model RealtimeServerEventResponseTextDone extends RealtimeServerEvent {
 model RealtimeServerEventResponseAudioTranscriptDelta
   extends RealtimeServerEvent {
   @doc("""
-    The event type, must be `response.audio_transcript.delta`.
+    The event type, must be `response.output_audio_transcript.delta`.
     """)
   type: RealtimeServerEventType.response_audio_transcript_delta;
 
@@ -1012,7 +1014,7 @@ model RealtimeServerEventResponseAudioTranscriptDelta
 model RealtimeServerEventResponseAudioTranscriptDone
   extends RealtimeServerEvent {
   @doc("""
-    The event type, must be `response.audio_transcript.done`.
+    The event type, must be `response.output_audio_transcript.done`.
     """)
   type: RealtimeServerEventType.response_audio_transcript_done;
 
@@ -1036,7 +1038,7 @@ model RealtimeServerEventResponseAudioTranscriptDone
 /** Returned when the model-generated audio is updated. */
 model RealtimeServerEventResponseAudioDelta extends RealtimeServerEvent {
   @doc("""
-    The event type, must be `response.audio.delta`.
+    The event type, must be `response.output_audio.delta`.
     """)
   type: RealtimeServerEventType.response_audio_delta;
 
@@ -1065,7 +1067,7 @@ model RealtimeServerEventResponseAudioDelta extends RealtimeServerEvent {
  */
 model RealtimeServerEventResponseAudioDone extends RealtimeServerEvent {
   @doc("""
-    The event type, must be `response.audio.done`.
+    The event type, must be `response.output_audio.done`.
     """)
   type: RealtimeServerEventType.response_audio_done;
 
@@ -1151,6 +1153,241 @@ model RealtimeServerEventRateLimitsUpdated extends RealtimeServerEvent {
   // Tool customization: use custom type for rate limit items (applying encoded duration)
   /** List of rate limit information. */
   rate_limits: RealtimeServerEventRateLimitsUpdatedRateLimitsItem[];
+}
+
+// Tool customization (apply_discriminator): apply discriminated type
+@doc("""
+  **SIP Only:** Returned when a DTMF event is received. A DTMF event is a message that
+  represents a telephone keypad press (0–9, *, #, A–D). The `event` property
+  is the keypad that the user pressed. The `received_at` is the UTC Unix Timestamp
+  that the server received the event.
+  """)
+model RealtimeServerEventInputAudioBufferDtmfEventReceived
+  extends RealtimeServerEvent {
+  @doc("""
+    The event type, must be `input_audio_buffer.dtmf_event_received`.
+    """)
+  type: RealtimeServerEventType.input_audio_buffer_dtmf_event_received;
+
+  /** The telephone keypad that was pressed by the user. */
+  event: string;
+
+  /** The Unix timestamp when the DTMF event was received. */
+  @encode("unixTimestamp", int32)
+  received_at: utcDateTime;
+}
+
+// Tool customization (apply_discriminator): apply discriminated type
+@doc("""
+  Returned when the server detects a timeout when `server_vad` mode is enabled with an
+  `idle_timeout_ms` configured. This event can happen if there is no audio from the user
+  for more than `idle_timeout_ms` milliseconds. This might be a good opportunity to prompt
+  the user for something relevant to the conversation or a prompt to continue speaking.
+  """)
+model RealtimeServerEventInputAudioBufferTimeoutTriggered
+  extends RealtimeServerEvent {
+  @doc("""
+    The event type, must be `input_audio_buffer.timeout_triggered`.
+    """)
+  type: RealtimeServerEventType.input_audio_buffer_timeout_triggered;
+
+  @doc("""
+    Millisecond offset of audio written to the input audio buffer that was after
+    the playback time of the last model response.
+    """)
+  audio_start_ms: int32;
+
+  @doc("""
+    Millisecond offset of audio written to the input audio buffer at the time
+    the timeout was triggered.
+    """)
+  audio_end_ms: int32;
+
+  /** The ID of the user message item that will be created. */
+  item_id: string;
+}
+
+// Tool customization (apply_discriminator): apply discriminated type
+@doc("""
+  Returned when an input audio transcription segment is identified for an item.
+  This is used for diarization and segmentation of the input audio transcription.
+  """)
+model RealtimeServerEventConversationItemInputAudioTranscriptionSegment
+  extends RealtimeServerEvent {
+  @doc("""
+    The event type, must be `conversation.item.input_audio_transcription.segment`.
+    """)
+  type: RealtimeServerEventType.conversation_item_input_audio_transcription_segment;
+
+  /** The ID of the item. */
+  item_id: string;
+
+  /** The index of the content part containing the audio. */
+  content_index: int32;
+
+  /** The transcribed text for the segment. */
+  text: string;
+
+  /** The unique ID of the segment. */
+  id: string;
+
+  /** The speaker identifier for the segment. */
+  speaker?: string;
+
+  /** Start time of the segment in seconds. */
+  start: float32;
+
+  /** End time of the segment in seconds. */
+  end: float32;
+}
+
+// Tool customization (apply_discriminator): apply discriminated type
+/** Returned when listing MCP tools is in progress for an item. */
+model RealtimeServerEventMCPListToolsInProgress extends RealtimeServerEvent {
+  @doc("""
+    The event type, must be `mcp_list_tools.in_progress`.
+    """)
+  type: RealtimeServerEventType.mcp_list_tools_in_progress;
+
+  /** The ID of the MCP list tools item. */
+  item_id: string;
+}
+
+// Tool customization (apply_discriminator): apply discriminated type
+/** Returned when listing MCP tools has completed for an item. */
+model RealtimeServerEventMCPListToolsCompleted extends RealtimeServerEvent {
+  @doc("""
+    The event type, must be `mcp_list_tools.completed`.
+    """)
+  type: RealtimeServerEventType.mcp_list_tools_completed;
+
+  /** The ID of the MCP list tools item. */
+  item_id: string;
+}
+
+// Tool customization (apply_discriminator): apply discriminated type
+/** Returned when listing MCP tools has failed for an item. */
+model RealtimeServerEventMCPListToolsFailed extends RealtimeServerEvent {
+  @doc("""
+    The event type, must be `mcp_list_tools.failed`.
+    """)
+  type: RealtimeServerEventType.mcp_list_tools_failed;
+
+  /** The ID of the MCP list tools item. */
+  item_id: string;
+
+  /** Details of the error. */
+  error: RealtimeMCPError;
+}
+
+// Tool customization (apply_discriminator): apply discriminated type
+/** Returned when the model-generated MCP tool call arguments are updated. */
+model RealtimeServerEventResponseMCPCallArgumentsDelta extends RealtimeServerEvent {
+  @doc("""
+    The event type, must be `response.mcp_call_arguments.delta`.
+    """)
+  type: RealtimeServerEventType.response_mcp_call_arguments_delta;
+
+  /** The ID of the response. */
+  response_id: string;
+
+  /** The ID of the MCP tool call item. */
+  item_id: string;
+
+  /** The index of the output item in the response. */
+  output_index: int32;
+
+  /** The arguments delta as a JSON string. */
+  delta: string;
+}
+
+// Tool customization (apply_discriminator): apply discriminated type
+/** Returned when MCP tool call arguments are finalized during response generation. */
+model RealtimeServerEventResponseMCPCallArgumentsDone extends RealtimeServerEvent {
+  @doc("""
+    The event type, must be `response.mcp_call_arguments.done`.
+    """)
+  type: RealtimeServerEventType.response_mcp_call_arguments_done;
+
+  /** The ID of the response. */
+  response_id: string;
+
+  /** The ID of the MCP tool call item. */
+  item_id: string;
+
+  /** The index of the output item in the response. */
+  output_index: int32;
+
+  /** The final JSON-encoded arguments string. */
+  arguments: string;
+}
+
+// Tool customization (apply_discriminator): apply discriminated type
+/** Returned when an MCP tool call is in progress. */
+model RealtimeServerEventResponseMCPCallInProgress extends RealtimeServerEvent {
+  @doc("""
+    The event type, must be `response.mcp_call.in_progress`.
+    """)
+  type: RealtimeServerEventType.response_mcp_call_in_progress;
+
+  /** The ID of the response. */
+  response_id: string;
+
+  /** The index of the output item in the response. */
+  output_index: int32;
+
+  /** The ID of the MCP tool call item. */
+  item_id: string;
+}
+
+// Tool customization (apply_discriminator): apply discriminated type
+/** Returned when an MCP tool call has completed successfully. */
+model RealtimeServerEventResponseMCPCallCompleted extends RealtimeServerEvent {
+  @doc("""
+    The event type, must be `response.mcp_call.completed`.
+    """)
+  type: RealtimeServerEventType.response_mcp_call_completed;
+
+  /** The ID of the response. */
+  response_id: string;
+
+  /** The index of the output item in the response. */
+  output_index: int32;
+
+  /** The ID of the MCP tool call item. */
+  item_id: string;
+}
+
+// Tool customization (apply_discriminator): apply discriminated type
+/** Returned when an MCP tool call has failed. */
+model RealtimeServerEventResponseMCPCallFailed extends RealtimeServerEvent {
+  @doc("""
+    The event type, must be `response.mcp_call.failed`.
+    """)
+  type: RealtimeServerEventType.response_mcp_call_failed;
+
+  /** The ID of the response. */
+  response_id: string;
+
+  /** The index of the output item in the response. */
+  output_index: int32;
+
+  /** The ID of the MCP tool call item. */
+  item_id: string;
+
+  /** Details of the error. */
+  error: RealtimeMCPError;
+}
+
+// Tool customization (apply_discriminator): apply discriminated type
+/** Returned when a transcription session is created. */
+model RealtimeServerEventTranscriptionSessionCreated extends RealtimeServerEvent {
+  @doc("""
+    The event type, must be `transcription_session.created`.
+    """)
+  type: RealtimeServerEventType.transcription_session_created;
+
+  session: RealtimeTranscriptionSessionCreateResponse;
 }
 
 /** Create a new Realtime response with these parameters */
@@ -1246,12 +1483,21 @@ model RealtimeSessionCreateRequest {
 
   /** The Realtime model used for this session. */
   `model`?:
+    | string
+    | "gpt-realtime"
+    | "gpt-realtime-2025-08-28"
     | "gpt-4o-realtime-preview"
     | "gpt-4o-realtime-preview-2024-10-01"
     | "gpt-4o-realtime-preview-2024-12-17"
     | "gpt-4o-realtime-preview-2025-06-03"
     | "gpt-4o-mini-realtime-preview"
-    | "gpt-4o-mini-realtime-preview-2024-12-17";
+    | "gpt-4o-mini-realtime-preview-2024-12-17"
+    | "gpt-realtime-mini"
+    | "gpt-realtime-mini-2025-10-06"
+    | "gpt-realtime-mini-2025-12-15"
+    | "gpt-audio-mini"
+    | "gpt-audio-mini-2025-10-06"
+    | "gpt-audio-mini-2025-12-15";
 
   @doc("""
     The default system instructions (i.e. system message) prepended to model calls. This field allows the client to guide the model on desired responses. The model can be instructed on response content and format, (e.g. "be extremely succinct", "act friendly", "here are examples of good responses") and on audio behavior (e.g. "talk quickly", "inject emotion into your voice", "laugh frequently"). The instructions are not guaranteed to be followed by the model, but they provide guidance to the model on the desired behavior.
@@ -1967,4 +2213,189 @@ model RealtimeTranscriptionSessionCreateResponse {
      */
     silence_duration_ms?: int32;
   };
+}
+
+/**
+ * The anchor point from which client secret expiration is calculated.
+ */
+union RealtimeCreateClientSecretRequestExpiresAfterAnchor {
+  string,
+  /** Expiration is calculated from the time the client secret is created. */
+  created_at: "created_at",
+}
+
+/**
+ * Configuration for the client secret expiration.
+ */
+model RealtimeCreateClientSecretRequestExpiresAfter {
+  /**
+   * The anchor point from which the expiration is calculated.
+   */
+  anchor?: RealtimeCreateClientSecretRequestExpiresAfterAnchor;
+
+  /**
+   * The number of seconds after the anchor point when the client secret expires.
+   */
+  seconds?: integer;
+}
+
+/**
+ * The type of session to create.
+ */
+union RealtimeSessionCreateRequestUnionType {
+  string,
+  /** A real-time conversation session. */
+  realtime: "realtime",
+  /** A transcription session. */
+  transcription: "transcription",
+}
+
+/**
+ * Base model for a session creation request.
+ */
+@discriminator("type")
+model RealtimeSessionCreateRequestUnion {
+  /** The type of session to create. */
+  type: RealtimeSessionCreateRequestUnionType;
+}
+
+/**
+ * Request to create a session with a realtime configuration.
+ */
+model RealtimeSessionCreateRealtimeRequest extends RealtimeSessionCreateRequestUnion {
+  /** The type of session. */
+  type: "realtime";
+
+  /** The realtime session configuration. */
+  session?: RealtimeRequestSession;
+}
+
+/**
+ * Request to create a session with a transcription configuration.
+ */
+model RealtimeSessionCreateTranscriptionRequest extends RealtimeSessionCreateRequestUnion {
+  /** The type of session. */
+  type: "transcription";
+
+  /** The transcription session configuration. */
+  session?: RealtimeTranscriptionSessionCreateRequest;
+}
+
+/**
+ * The type of session that was created.
+ */
+union RealtimeSessionCreateResponseUnionType {
+  string,
+  /** A real-time conversation session. */
+  realtime: "realtime",
+  /** A transcription session. */
+  transcription: "transcription",
+}
+
+/**
+ * Base model for a session creation response.
+ */
+@discriminator("type")
+model RealtimeSessionCreateResponseUnion {
+  /** The type of session that was created. */
+  type: RealtimeSessionCreateResponseUnionType;
+}
+
+/**
+ * Response for a realtime session.
+ */
+model RealtimeSessionCreateRealtimeResponse extends RealtimeSessionCreateResponseUnion {
+  /** The type of session. */
+  type: "realtime";
+
+  /** The realtime session details. */
+  session?: RealtimeResponseSession;
+}
+
+/**
+ * Response for a transcription session.
+ */
+model RealtimeSessionCreateTranscriptionResponse extends RealtimeSessionCreateResponseUnion {
+  /** The type of session. */
+  type: "transcription";
+
+  /** The transcription session details. */
+  session?: RealtimeTranscriptionSessionCreateResponse;
+}
+
+/**
+ * The type of session that was updated.
+ */
+union RealtimeSessionUpdatedResponseUnionType {
+  string,
+  /** A real-time conversation session. */
+  realtime: "realtime",
+  /** A transcription session. */
+  transcription: "transcription",
+}
+
+/**
+ * Base model for session updated response.
+ */
+@discriminator("type")
+model RealtimeSessionUpdatedResponseUnion {
+  /** The type of session that was updated. */
+  type: RealtimeSessionUpdatedResponseUnionType;
+}
+
+/**
+ * Session updated response for a realtime session.
+ */
+model RealtimeSessionUpdatedRealtimeResponse extends RealtimeSessionUpdatedResponseUnion {
+  /** The type of session. */
+  type: "realtime";
+
+  ...RealtimeResponseSession;
+}
+
+/**
+ * Session updated response for a transcription session.
+ */
+model RealtimeSessionUpdatedTranscriptionResponse extends RealtimeSessionUpdatedResponseUnion {
+  /** The type of session. */
+  type: "transcription";
+
+  ...RealtimeTranscriptionSessionCreateResponse;
+}
+
+/**
+ * Request to create a Realtime client secret with an associated session configuration.
+ * The request can specify either a realtime or a transcription session configuration.
+ */
+@summary("Realtime client secret creation request")
+model RealtimeCreateClientSecretRequest {
+  @doc("""
+    Configuration for the client secret expiration. Expiration refers to the time after which
+    a client secret will no longer be valid for creating sessions. The session itself may
+    continue after that time once started. A secret can be used to create multiple sessions
+    until it expires.
+    """)
+  @summary("Client secret expiration")
+  expires_after?: RealtimeCreateClientSecretRequestExpiresAfter;
+
+  /**
+   * Session configuration to use for the client secret. Choose either a realtime
+   * session or a transcription session.
+   */
+  session?: RealtimeSessionCreateRequestUnion;
+}
+
+/**
+ * Response containing the Realtime client secret and session details.
+ */
+model RealtimeCreateClientSecretResponse {
+  /** The generated client secret value. */
+  value: string;
+
+  /** Expiration timestamp for the client secret, in seconds since epoch. */
+  @encode("unixTimestamp", int64)
+  expires_at: utcDateTime;
+
+  /** The session configuration for either a realtime or transcription session. */
+  session: RealtimeSessionCreateResponseUnion;
 }

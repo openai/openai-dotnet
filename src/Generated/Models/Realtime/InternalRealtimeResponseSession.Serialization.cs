@@ -12,7 +12,7 @@ namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeResponseSession : IJsonModel<InternalRealtimeResponseSession>
     {
-        internal InternalRealtimeResponseSession() : this(null, null, null, null, null, default, default, default, null, null, null, null, null, default, null, null)
+        internal InternalRealtimeResponseSession() : this(null, null, null, null, null, default, default, default, null, null, null, default, null, null, null, default, default, null, null)
         {
         }
 
@@ -97,6 +97,23 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("input_audio_noise_reduction"u8);
                 writer.WriteObjectValue(InputAudioNoiseReduction, options);
             }
+            if (Optional.IsDefined(Speed) && _additionalBinaryDataProperties?.ContainsKey("speed") != true)
+            {
+                writer.WritePropertyName("speed"u8);
+                writer.WriteNumberValue(Speed.Value);
+            }
+            if (Optional.IsDefined(Tracing) && _additionalBinaryDataProperties?.ContainsKey("tracing") != true)
+            {
+                writer.WritePropertyName("tracing"u8);
+#if NET6_0_OR_GREATER
+                writer.WriteRawValue(Tracing);
+#else
+                using (JsonDocument document = JsonDocument.Parse(Tracing))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
+#endif
+            }
             if (_additionalBinaryDataProperties?.ContainsKey("tools") != true)
             {
                 writer.WritePropertyName("tools"u8);
@@ -124,15 +141,20 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("temperature"u8);
                 writer.WriteNumberValue(Temperature);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("max_response_output_tokens") != true)
+            if (Optional.IsDefined(ExpiresAt) && _additionalBinaryDataProperties?.ContainsKey("expires_at") != true)
             {
-                if (Optional.IsDefined(_maxResponseOutputTokens))
+                writer.WritePropertyName("expires_at"u8);
+                writer.WriteNumberValue(ExpiresAt.Value, "U");
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("max_output_tokens") != true)
+            {
+                if (Optional.IsDefined(_maxOutputTokens))
                 {
-                    writer.WritePropertyName("max_response_output_tokens"u8);
+                    writer.WritePropertyName("max_output_tokens"u8);
 #if NET6_0_OR_GREATER
-                    writer.WriteRawValue(_maxResponseOutputTokens);
+                    writer.WriteRawValue(_maxOutputTokens);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(_maxResponseOutputTokens))
+                    using (JsonDocument document = JsonDocument.Parse(_maxOutputTokens))
                     {
                         JsonSerializer.Serialize(writer, document.RootElement);
                     }
@@ -140,7 +162,7 @@ namespace OpenAI.Realtime
                 }
                 else
                 {
-                    writer.WriteNull("max_response_output_tokens"u8);
+                    writer.WriteNull("max_output_tokens"u8);
                 }
             }
             // Plugin customization: remove options.Format != "W" check
@@ -195,10 +217,13 @@ namespace OpenAI.Realtime
             InputTranscriptionOptions inputAudioTranscription = default;
             TurnDetectionOptions turnDetection = default;
             InputNoiseReductionOptions inputAudioNoiseReduction = default;
+            float? speed = default;
+            BinaryData tracing = default;
             IList<ConversationTool> tools = default;
             BinaryData toolChoice = default;
             float temperature = default;
-            BinaryData maxResponseOutputTokens = default;
+            DateTimeOffset? expiresAt = default;
+            BinaryData maxOutputTokens = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -267,6 +292,25 @@ namespace OpenAI.Realtime
                     inputAudioNoiseReduction = InputNoiseReductionOptions.DeserializeInputNoiseReductionOptions(prop.Value, options);
                     continue;
                 }
+                if (prop.NameEquals("speed"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    speed = prop.Value.GetSingle();
+                    continue;
+                }
+                if (prop.NameEquals("tracing"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        tracing = null;
+                        continue;
+                    }
+                    tracing = BinaryData.FromString(prop.Value.GetRawText());
+                    continue;
+                }
                 if (prop.NameEquals("tools"u8))
                 {
                     List<ConversationTool> array = new List<ConversationTool>();
@@ -287,14 +331,23 @@ namespace OpenAI.Realtime
                     temperature = prop.Value.GetSingle();
                     continue;
                 }
-                if (prop.NameEquals("max_response_output_tokens"u8))
+                if (prop.NameEquals("expires_at"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
-                        maxResponseOutputTokens = null;
                         continue;
                     }
-                    maxResponseOutputTokens = BinaryData.FromString(prop.Value.GetRawText());
+                    expiresAt = DateTimeOffset.FromUnixTimeSeconds(prop.Value.GetInt64());
+                    continue;
+                }
+                if (prop.NameEquals("max_output_tokens"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        maxOutputTokens = null;
+                        continue;
+                    }
+                    maxOutputTokens = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
@@ -312,10 +365,13 @@ namespace OpenAI.Realtime
                 inputAudioTranscription,
                 turnDetection,
                 inputAudioNoiseReduction,
+                speed,
+                tracing,
                 tools,
                 toolChoice,
                 temperature,
-                maxResponseOutputTokens,
+                expiresAt,
+                maxOutputTokens,
                 additionalBinaryDataProperties);
         }
 

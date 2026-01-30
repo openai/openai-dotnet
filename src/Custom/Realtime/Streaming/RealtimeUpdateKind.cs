@@ -195,4 +195,62 @@ public enum RealtimeUpdateKind
     /// </summary>
     [CodeGenMember("Error")]
     Error,
+    /// <summary>
+    /// The <c>conversation.item.input_audio_transcription.segment</c> server event.
+    /// </summary>
+    [CodeGenMember("ConversationItemInputAudioTranscriptionSegment")]
+    InputTranscriptionSegment,
+    /// <summary>
+    /// The <c>input_audio_buffer.timeout_triggered</c> server event.
+    /// </summary>
+    [CodeGenMember("InputAudioBufferTimeoutTriggered")]
+    InputAudioBufferTimeoutTriggered,
+    /// <summary>
+    /// The <c>input_audio_buffer.dtmf_event_received</c> server event.
+    /// </summary>
+    /// <remarks>
+    /// This server event type is only used by SIP.
+    /// </remarks>
+    [CodeGenMember("InputAudioBufferDtmfEventReceived")]
+    InputAudioBufferDtmfEventReceived,
+    /// <summary>
+    /// The <c>mcp_list_tools.in_progress</c> server event.
+    /// </summary>
+    [CodeGenMember("McpListToolsInProgress")]
+    McpListToolsInProgress,
+    /// <summary>
+    /// The <c>mcp_list_tools.completed</c> server event.
+    /// </summary>
+    [CodeGenMember("McpListToolsCompleted")]
+    McpListToolsCompleted,
+    /// <summary>
+    /// The <c>mcp_list_tools.failed</c> server event.
+    /// </summary>
+    [CodeGenMember("McpListToolsFailed")]
+    McpListToolsFailed,
+    /// <summary>
+    /// The <c>response.mcp_call_arguments.delta</c> server event.
+    /// </summary>
+    [CodeGenMember("ResponseMcpCallArgumentsDelta")]
+    ResponseMcpCallArgumentsDelta,
+    /// <summary>
+    /// The <c>response.mcp_call_arguments.done</c> server event.
+    /// </summary>
+    [CodeGenMember("ResponseMcpCallArgumentsDone")]
+    ResponseMcpCallArgumentsDone,
+    /// <summary>
+    /// The <c>response.mcp_call.in_progress</c> server event.
+    /// </summary>
+    [CodeGenMember("ResponseMcpCallInProgress")]
+    ResponseMcpCallInProgress,
+    /// <summary>
+    /// The <c>response.mcp_call.completed</c> server event.
+    /// </summary>
+    [CodeGenMember("ResponseMcpCallCompleted")]
+    ResponseMcpCallCompleted,
+    /// <summary>
+    /// The <c>response.mcp_call.failed</c> server event.
+    /// </summary>
+    [CodeGenMember("ResponseMcpCallFailed")]
+    ResponseMcpCallFailed,
 }

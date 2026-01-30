@@ -91,6 +91,14 @@ namespace OpenAI.Realtime
                         return InternalRealtimeRequestFunctionCallItem.DeserializeInternalRealtimeRequestFunctionCallItem(element, options);
                     case "function_call_output":
                         return InternalRealtimeRequestFunctionCallOutputItem.DeserializeInternalRealtimeRequestFunctionCallOutputItem(element, options);
+                    case "mcp_call":
+                        return InternalRealtimeRequestMCPCallItem.DeserializeInternalRealtimeRequestMCPCallItem(element, options);
+                    case "mcp_list_tools":
+                        return InternalRealtimeRequestMCPListToolsItem.DeserializeInternalRealtimeRequestMCPListToolsItem(element, options);
+                    case "mcp_approval_request":
+                        return InternalRealtimeRequestMCPApprovalRequestItem.DeserializeInternalRealtimeRequestMCPApprovalRequestItem(element, options);
+                    case "mcp_approval_response":
+                        return InternalRealtimeRequestMCPApprovalResponseItem.DeserializeInternalRealtimeRequestMCPApprovalResponseItem(element, options);
                 }
             }
             return UnknownRealtimeRequestItem.DeserializeUnknownRealtimeRequestItem(element, options);
