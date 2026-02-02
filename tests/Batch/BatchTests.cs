@@ -11,7 +11,6 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Batch;
 
@@ -19,9 +18,7 @@ namespace OpenAI.Tests.Batch;
 [TestFixture(true)]
 [TestFixture(false)]
 public class BatchTests : OpenAIRecordedTestBase
-{
-    private BatchClient GetTestClient() => GetProxiedOpenAIClient<BatchClient>(TestScenario.Batch);
-    private static readonly DateTimeOffset s_2024 = new(2024, 01, 01, 0, 0, 0, TimeSpan.Zero);
+{    private static readonly DateTimeOffset s_2024 = new(2024, 01, 01, 0, 0, 0, TimeSpan.Zero);
 
     public BatchTests(bool isAsync) : base(isAsync)
     {
@@ -31,7 +28,7 @@ public class BatchTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ListBatchesProtocol()
     {
-        BatchClient client = GetTestClient();
+        BatchClient client = GetProxiedOpenAIClient<BatchClient>();
         AsyncCollectionResult batches = client.GetBatchesAsync(after: null, limit: null, options: null);
 
         int pageCount = 0;
@@ -59,7 +56,7 @@ public class BatchTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ListBatchesAsync_WithOptions_PageSizeLimitAndItems()
     {
-        BatchClient client = GetTestClient();
+        BatchClient client = GetProxiedOpenAIClient<BatchClient>();
         BatchCollectionOptions options = new()
         {
             PageSizeLimit = 2,
@@ -75,7 +72,7 @@ public class BatchTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ListBatchesAsync_WithOptions_AfterIdStartsFromNextPage()
     {
-        BatchClient client = GetTestClient();
+        BatchClient client = GetProxiedOpenAIClient<BatchClient>();
 
         // First fetch: get the first page and capture ids + last_id
         BatchCollectionOptions firstOptions = new()
@@ -98,7 +95,7 @@ public class BatchTests : OpenAIRecordedTestBase
     [RecordedTest]
     public void ListBatchesAsync_HonorsCancellationToken()
     {
-        BatchClient client = GetTestClient();
+        BatchClient client = GetProxiedOpenAIClient<BatchClient>();
         var cts = new System.Threading.CancellationTokenSource();
         cts.Cancel();
 
@@ -119,11 +116,11 @@ public class BatchTests : OpenAIRecordedTestBase
         streamWriter.Flush();
         testFileStream.Position = 0;
 
-        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
         OpenAIFile inputFile = await fileClient.UploadFileAsync(testFileStream, "test-batch-file", FileUploadPurpose.Batch);
         Assert.That(inputFile.Id, Is.Not.Null.And.Not.Empty);
 
-        BatchClient client = GetTestClient();
+        BatchClient client = GetProxiedOpenAIClient<BatchClient>();
         BinaryContent content = BinaryContent.Create(BinaryData.FromObjectAsJson(new
         {
             input_file_id = inputFile.Id,
@@ -180,11 +177,11 @@ public class BatchTests : OpenAIRecordedTestBase
         streamWriter.Flush();
         testFileStream.Position = 0;
 
-        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
         OpenAIFile inputFile = await fileClient.UploadFileAsync(testFileStream, "test-batch-file", FileUploadPurpose.Batch);
         Assert.That(inputFile.Id, Is.Not.Null.And.Not.Empty);
 
-        BatchClient client = GetTestClient();
+        BatchClient client = GetProxiedOpenAIClient<BatchClient>();
         BinaryContent content = BinaryContent.Create(BinaryData.FromObjectAsJson(new
         {
             input_file_id = inputFile.Id,

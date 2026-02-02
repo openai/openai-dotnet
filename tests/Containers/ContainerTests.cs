@@ -7,7 +7,6 @@ using System.ClientModel;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Containers;
 
@@ -15,9 +14,6 @@ namespace OpenAI.Tests.Containers;
 public class ContainerTests : OpenAIRecordedTestBase
 {
     private static string _testContainerId;
-
-    private ContainerClient GetTestClient() => GetProxiedOpenAIClient<ContainerClient>(TestScenario.Containers);
-
     public ContainerTests(bool isAsync) : base(isAsync)
     {
     }
@@ -31,7 +27,7 @@ public class ContainerTests : OpenAIRecordedTestBase
             return;
         }
 
-        ContainerClient client = GetTestClient<ContainerClient>(TestScenario.Containers);
+        ContainerClient client = TestEnvironment.GetTestClient<ContainerClient>();
 
         // Create a test container that will be used by all tests
         ContainerResource result = await client.CreateContainerAsync(new CreateContainerBody($"test-container-{Guid.NewGuid():N}"));
@@ -63,7 +59,7 @@ public class ContainerTests : OpenAIRecordedTestBase
             return;
         }
 
-        ContainerClient client = GetTestClient();
+        ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
         try
         {
@@ -91,7 +87,7 @@ public class ContainerTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CanEnumerateContainers()
     {
-        ContainerClient client = GetTestClient();
+        ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
         if (string.IsNullOrEmpty(_testContainerId))
         {
@@ -137,7 +133,7 @@ public class ContainerTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CanEnumerateContainerFiles()
     {
-        ContainerClient client = GetTestClient();
+        ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
         if (string.IsNullOrEmpty(_testContainerId))
         {
@@ -176,7 +172,7 @@ public class ContainerTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CanEnumerateContainersWithDefaultOptions()
     {
-        ContainerClient client = GetTestClient();
+        ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
         if (string.IsNullOrEmpty(_testContainerId))
         {
@@ -216,7 +212,7 @@ public class ContainerTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CanEnumerateContainerFilesWithDefaultOptions()
     {
-        ContainerClient client = GetTestClient();
+        ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
         if (string.IsNullOrEmpty(_testContainerId))
         {
@@ -248,7 +244,7 @@ public class ContainerTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CanEnumerateContainersWithCancellation()
     {
-        ContainerClient client = GetTestClient();
+        ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
         if (string.IsNullOrEmpty(_testContainerId))
         {
@@ -293,7 +289,7 @@ public class ContainerTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CanEnumerateContainerFilesWithCancellation()
     {
-        ContainerClient client = GetTestClient();
+        ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
         if (string.IsNullOrEmpty(_testContainerId))
         {
@@ -338,7 +334,7 @@ public class ContainerTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ContainerCollectionOptionsCanBeConfigured()
     {
-        ContainerClient client = GetTestClient();
+        ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
         if (string.IsNullOrEmpty(_testContainerId))
         {
@@ -389,7 +385,7 @@ public class ContainerTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ContainerFileCollectionOptionsCanBeConfigured()
     {
-        ContainerClient client = GetTestClient();
+        ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
         if (string.IsNullOrEmpty(_testContainerId))
         {
@@ -442,7 +438,7 @@ public class ContainerTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CanGetContainer()
     {
-        ContainerClient client = GetTestClient();
+        ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
         if (string.IsNullOrEmpty(_testContainerId))
         {
@@ -461,7 +457,7 @@ public class ContainerTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CanGetContainerWithCancellation()
     {
-        ContainerClient client = GetTestClient();
+        ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
         if (string.IsNullOrEmpty(_testContainerId))
         {
@@ -485,7 +481,7 @@ public class ContainerTests : OpenAIRecordedTestBase
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            ContainerClient client = GetTestClient();
+            ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
             if (string.IsNullOrEmpty(_testContainerId))
             {
@@ -543,7 +539,7 @@ public class ContainerTests : OpenAIRecordedTestBase
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            ContainerClient client = GetTestClient();
+            ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
             if (string.IsNullOrEmpty(_testContainerId))
             {
@@ -607,7 +603,7 @@ public class ContainerTests : OpenAIRecordedTestBase
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            ContainerClient client = GetTestClient();
+            ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
             if (string.IsNullOrEmpty(_testContainerId))
             {
@@ -667,7 +663,7 @@ public class ContainerTests : OpenAIRecordedTestBase
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            ContainerClient client = GetTestClient();
+            ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
             if (string.IsNullOrEmpty(_testContainerId))
             {
@@ -706,7 +702,7 @@ public class ContainerTests : OpenAIRecordedTestBase
     [RecordedTest]
     public void CreateContainerFileValidatesParameters()
     {
-        ContainerClient client = GetTestClient();
+        ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
         if (string.IsNullOrEmpty(_testContainerId))
         {
@@ -721,10 +717,10 @@ public class ContainerTests : OpenAIRecordedTestBase
         // Test null/empty container ID
         var testFormData = new MultiPartFormDataBinaryContent();
         testFormData.Add("test", "file", "test.txt", "text/plain");
-        
-        Assert.ThrowsAsync<ArgumentNullException>(async () => 
+
+        Assert.ThrowsAsync<ArgumentNullException>(async () =>
             await client.CreateContainerFileAsync(null, testFormData, testFormData.ContentType));
-        Assert.ThrowsAsync<ArgumentException>(async () => 
+        Assert.ThrowsAsync<ArgumentException>(async () =>
             await client.CreateContainerFileAsync("", testFormData, testFormData.ContentType));
 
         Console.WriteLine("Parameter validation tests passed");
@@ -733,25 +729,25 @@ public class ContainerTests : OpenAIRecordedTestBase
     [RecordedTest]
     public void GetContainerFileValidatesParameters()
     {
-        ContainerClient client = GetTestClient();
+        ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
         // Test null/empty container ID and file ID
-        Assert.ThrowsAsync<ArgumentNullException>(async () => 
+        Assert.ThrowsAsync<ArgumentNullException>(async () =>
             await client.GetContainerFileAsync(null, "file123"));
-        Assert.ThrowsAsync<ArgumentException>(async () => 
+        Assert.ThrowsAsync<ArgumentException>(async () =>
             await client.GetContainerFileAsync("", "file123"));
-        Assert.ThrowsAsync<ArgumentNullException>(async () => 
+        Assert.ThrowsAsync<ArgumentNullException>(async () =>
             await client.GetContainerFileAsync("container123", null));
-        Assert.ThrowsAsync<ArgumentException>(async () => 
+        Assert.ThrowsAsync<ArgumentException>(async () =>
             await client.GetContainerFileAsync("container123", ""));
 
-        Assert.ThrowsAsync<ArgumentNullException>(async () => 
+        Assert.ThrowsAsync<ArgumentNullException>(async () =>
             await client.DownloadContainerFileAsync(null, "file123"));
-        Assert.ThrowsAsync<ArgumentException>(async () => 
+        Assert.ThrowsAsync<ArgumentException>(async () =>
             await client.DownloadContainerFileAsync("", "file123"));
-        Assert.ThrowsAsync<ArgumentNullException>(async () => 
+        Assert.ThrowsAsync<ArgumentNullException>(async () =>
             await client.DownloadContainerFileAsync("container123", null));
-        Assert.ThrowsAsync<ArgumentException>(async () => 
+        Assert.ThrowsAsync<ArgumentException>(async () =>
             await client.DownloadContainerFileAsync("container123", ""));
 
         Console.WriteLine("Parameter validation tests passed for GetContainerFile methods");
@@ -760,16 +756,16 @@ public class ContainerTests : OpenAIRecordedTestBase
     [RecordedTest]
     public void DeleteContainerFileValidatesParameters()
     {
-        ContainerClient client = GetTestClient();
+        ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
         // Test null/empty container ID and file ID
-        Assert.ThrowsAsync<ArgumentNullException>(async () => 
+        Assert.ThrowsAsync<ArgumentNullException>(async () =>
             await client.DeleteContainerFileAsync(null, "file123"));
-        Assert.ThrowsAsync<ArgumentException>(async () => 
+        Assert.ThrowsAsync<ArgumentException>(async () =>
             await client.DeleteContainerFileAsync("", "file123"));
-        Assert.ThrowsAsync<ArgumentNullException>(async () => 
+        Assert.ThrowsAsync<ArgumentNullException>(async () =>
             await client.DeleteContainerFileAsync("container123", null));
-        Assert.ThrowsAsync<ArgumentException>(async () => 
+        Assert.ThrowsAsync<ArgumentException>(async () =>
             await client.DeleteContainerFileAsync("container123", ""));
 
         Console.WriteLine("Parameter validation tests passed for DeleteContainerFile methods");
@@ -778,12 +774,12 @@ public class ContainerTests : OpenAIRecordedTestBase
     [RecordedTest]
     public void GetContainerValidatesParameters()
     {
-        ContainerClient client = GetTestClient();
+        ContainerClient client = GetProxiedOpenAIClient<ContainerClient>();
 
         // Test null/empty container ID
-        Assert.ThrowsAsync<ArgumentNullException>(async () => 
+        Assert.ThrowsAsync<ArgumentNullException>(async () =>
             await client.GetContainerAsync(null));
-        Assert.ThrowsAsync<ArgumentException>(async () => 
+        Assert.ThrowsAsync<ArgumentException>(async () =>
             await client.GetContainerAsync(""));
 
         Console.WriteLine("Parameter validation tests passed for GetContainer methods");

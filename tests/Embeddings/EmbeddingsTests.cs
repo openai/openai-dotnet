@@ -6,7 +6,6 @@ using System;
 using System.ClientModel;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Embeddings;
 
@@ -103,7 +102,7 @@ public class EmbeddingsTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task BadOptions()
     {
-        EmbeddingClient client = GetTestClient();
+        EmbeddingClient client = GetProxiedOpenAIClient<EmbeddingClient>();
 
         EmbeddingGenerationOptions options = new()
         {
@@ -130,7 +129,7 @@ public class EmbeddingsTests : OpenAIRecordedTestBase
     [TestCase(EmbeddingsInputKind.UsingIntegers)]
     public async Task GenerateMultipleEmbeddingsWithBadOptions(EmbeddingsInputKind embeddingsInputKind)
     {
-        EmbeddingClient client = GetTestClient();
+        EmbeddingClient client = GetProxiedOpenAIClient<EmbeddingClient>();
 
         EmbeddingGenerationOptions options = new()
         {
@@ -162,7 +161,7 @@ public class EmbeddingsTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task EmbeddingFromStringAndEmbeddingFromTokenIdsAreEqual()
     {
-        EmbeddingClient client = GetTestClient();
+        EmbeddingClient client = GetProxiedOpenAIClient<EmbeddingClient>();
 
         List<string> input1 = new List<string> { "Hello, world!" };
         List<ReadOnlyMemory<int>> input2 = new List<ReadOnlyMemory<int>> { new[] { 9906, 11, 1917, 0 } };
@@ -178,7 +177,4 @@ public class EmbeddingsTests : OpenAIRecordedTestBase
         {
             Assert.That(vector1.Span[i], Is.EqualTo(vector2.Span[i]).Within(0.0005));
         }
-    }
-
-    private EmbeddingClient GetTestClient() => GetProxiedOpenAIClient<EmbeddingClient>(TestScenario.Embeddings);
-}
+    }}

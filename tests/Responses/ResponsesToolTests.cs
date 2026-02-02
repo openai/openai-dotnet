@@ -13,7 +13,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Responses;
 
@@ -45,7 +44,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         };
 
-        ResponsesClient client = GetTestClient(overrideModel: "gpt-5");
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>("gpt-5");
 
         ResponseResult response = await client.CreateResponseAsync(options);
         Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
@@ -98,7 +97,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             StreamingEnabled = true,
         };
 
-        ResponsesClient client = GetTestClient(overrideModel: "gpt-5");
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>("gpt-5");
 
         AsyncCollectionResult<StreamingResponseUpdate> responseUpdates = client.CreateResponseStreamingAsync(options);
 
@@ -212,7 +211,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         };
 
-        ResponsesClient client = GetTestClient(overrideModel: "gpt-5");
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>("gpt-5");
 
         ResponseResult response = await client.CreateResponseAsync(options);
         Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
@@ -253,7 +252,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         };
 
-        ResponsesClient client = GetTestClient(overrideModel: "gpt-5");
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>("gpt-5");
 
         ResponseResult response1 = await client.CreateResponseAsync(options);
         Assert.That(response1.OutputItems, Has.Count.GreaterThan(0));
@@ -298,7 +297,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         };
 
-        ResponsesClient client = GetTestClient(overrideModel: "gpt-5");
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>("gpt-5");
 
         ResponseResult response = await client.CreateResponseAsync(options);
         Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
@@ -339,7 +338,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         };
 
-        ResponsesClient client = GetTestClient(overrideModel: "gpt-5");
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>("gpt-5");
 
         ResponseResult response = await client.CreateResponseAsync(options);
         Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
@@ -351,7 +350,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task FileSearch()
     {
-        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
         OpenAIFile testFile = await fileClient.UploadFileAsync(
             BinaryData.FromString("""
                     Travis's favorite food is pizza.
@@ -360,7 +359,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             FileUploadPurpose.UserData);
         Validate(testFile);
 
-        VectorStoreClient vscClient = GetProxiedOpenAIClient<VectorStoreClient>(TestScenario.VectorStores);
+        VectorStoreClient vscClient = GetProxiedOpenAIClient<VectorStoreClient>();
         VectorStore vectorStore = await vscClient.CreateVectorStoreAsync(
             new VectorStoreCreationOptions()
             {
@@ -373,7 +372,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             await Task.Delay(TimeSpan.FromSeconds(5));
         }
 
-        ResponsesClient client = GetTestClient();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         ResponseResult response = await client.CreateResponseAsync(
             new CreateResponseOptions([ResponseItem.CreateUserMessageItem("Using the file search tool, what's Travis's favorite food?")])
@@ -408,7 +407,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CodeInterpreterToolWithoutFileIds()
     {
-        ResponsesClient client = GetTestClient();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new CodeInterpreterToolContainer(CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration()));
         CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem("Calculate the factorial of 5 using Python code.")])
@@ -438,7 +437,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CodeInterpreterToolWithEmptyFileIds()
     {
-        ResponsesClient client = GetTestClient();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new(new AutomaticCodeInterpreterToolContainerConfiguration()));
         CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem("Generate a simple chart using matplotlib. Ensure you emit debug logging and include any resulting log file output.")])
@@ -469,8 +468,8 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CodeInterpreterToolWithContainerIdFromContainerApi()
     {
-        ContainerClient containerClient = GetProxiedOpenAIClient<ContainerClient>(TestScenario.Containers);
-        ResponsesClient client = GetTestClient();
+        ContainerClient containerClient = GetProxiedOpenAIClient<ContainerClient>();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         // Create a container first using the Containers API
         CreateContainerBody containerBody = new("test-container-for-code-interpreter");
@@ -524,8 +523,8 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CodeInterpreterToolWithUploadedFileIds()
     {
-        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
-        ResponsesClient client = GetTestClient();
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         // Create some test files to upload
         string csvContent = "name,age,city\nAlice,30,New York\nBob,25,Los Angeles\nCharlie,35,Chicago";
@@ -541,7 +540,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             Validate(csvFile);
             fileIds.Add(csvFile.Id);
 
-            // Upload Python file  
+            // Upload Python file
             using Stream pythonStream = BinaryData.FromString(pythonContent).ToStream();
             OpenAIFile pythonFile = await fileClient.UploadFileAsync(pythonStream, "test_script.py", FileUploadPurpose.Assistants);
             Validate(pythonFile);
@@ -586,7 +585,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CodeInterpreterToolStreaming()
     {
-        ResponsesClient client = GetTestClient();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new CodeInterpreterToolContainer(new AutomaticCodeInterpreterToolContainerConfiguration()));
         CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem("Calculate the factorial of 5 using Python code and show me the code step by step.")])
@@ -620,8 +619,8 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CodeInterpreterToolStreamingWithFiles()
     {
-        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
-        ResponsesClient client = GetTestClient();
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         // Create test CSV data
         string csvContent = "x,y\n1,2\n2,4\n3,6\n4,8\n5,10";
@@ -685,7 +684,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ComputerToolWithScreenshotRoundTrip()
     {
-        ResponsesClient client = GetTestClient("computer-use-preview-2025-03-11");
+        ResponsesClient client = TestEnvironment.GetTestClient<ResponsesClient>("computer-use-preview-2025-03-11");
         ResponseTool computerTool = ResponseTool.CreateComputerTool(ComputerToolEnvironment.Windows, 1024, 768);
         CreateResponseOptions responseOptions = new(
             [
@@ -748,7 +747,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ImageGenToolWorks()
     {
-        ResponsesClient client = GetTestClient();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         CreateResponseOptions options = new(
             [ResponseItem.CreateUserMessageItem("Generate an image of gray tabby cat hugging an otter with an orange scarf")])
@@ -786,7 +785,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ImageGenToolStreaming()
     {
-        ResponsesClient client = GetTestClient();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         const string message = "Draw a gorgeous image of a river made of white owl feathers, snaking its way through a serene winter landscape";
 
@@ -872,7 +871,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ImageGenToolInputMaskWithImageBytes()
     {
-        ResponsesClient client = GetTestClient(options: new() { NetworkTimeout = TimeSpan.FromMinutes(5) });
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>(options: new() { NetworkTimeout = TimeSpan.FromMinutes(5) });
 
         string imagePath = Path.Combine("Assets", "images_empty_room.png");
         string imageMediaType = "image/png";
@@ -924,7 +923,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ImageGenToolInputMaskWithImageUri()
     {
-        ResponsesClient client = GetTestClient(options: new() { NetworkTimeout = TimeSpan.FromMinutes(5) });
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>(options: new() { NetworkTimeout = TimeSpan.FromMinutes(5) });
 
         Uri imageUri = new("https://github.com/openai/openai-dotnet/blob/db6328accdd7927f19915cdc5412eb841f2447c1/tests/Assets/images_empty_room.png?raw=true");
         Uri maskUri = new("https://github.com/openai/openai-dotnet/blob/db6328accdd7927f19915cdc5412eb841f2447c1/tests/Assets/images_empty_room_with_mask.png?raw=true");
@@ -968,9 +967,9 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [Category("MPFD")]
     public async Task ImageGenToolInputMaskWithFileId()
     {
-        ResponsesClient client = GetTestClient(options: new() { NetworkTimeout = TimeSpan.FromMinutes(5) });
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>(options: new() { NetworkTimeout = TimeSpan.FromMinutes(5) });
 
-        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
 
         string imageFilename = "images_empty_room.png";
         string imagePath = Path.Combine("Assets", imageFilename);
@@ -1037,7 +1036,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task WebSearchCall()
     {
-        ResponsesClient client = GetTestClient();
+        ResponsesClient client = TestEnvironment.GetTestClient<ResponsesClient>();
         ResponseResult response = await client.CreateResponseAsync(
             new CreateResponseOptions([ResponseItem.CreateUserMessageItem("Searching the internet, what's the weather like in Seattle?")])
             {
@@ -1064,7 +1063,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task WebSearchCallPreview()
     {
-        ResponsesClient client = GetTestClient();
+        ResponsesClient client = TestEnvironment.GetTestClient<ResponsesClient>();
         ResponseResult response = await client.CreateResponseAsync(
             new CreateResponseOptions([ResponseItem.CreateUserMessageItem("What was a positive news story from today?")])
             {
@@ -1091,7 +1090,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task WebSearchCallStreaming()
     {
-        ResponsesClient client = GetTestClient();
+        ResponsesClient client = TestEnvironment.GetTestClient<ResponsesClient>();
 
         const string message = "Searching the internet, what's the weather like in San Francisco?";
 
@@ -1226,6 +1225,4 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         }
     }
-
-    private ResponsesClient GetTestClient(string overrideModel = null, OpenAIClientOptions options = null) => GetProxiedOpenAIClient<ResponsesClient>(TestScenario.Responses, overrideModel, options: options);
 }

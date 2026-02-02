@@ -6,7 +6,6 @@ using System;
 using System.ClientModel;
 using System.Linq;
 using System.Threading.Tasks;
-using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Models;
 
@@ -20,7 +19,7 @@ public class ModelsTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ListModels()
     {
-        OpenAIModelClient client = GetProxiedOpenAIClient<OpenAIModelClient>(TestScenario.Models);
+        OpenAIModelClient client = GetProxiedOpenAIClient<OpenAIModelClient>();
 
         OpenAIModelCollection allModels = await client.GetModelsAsync();
 
@@ -40,7 +39,7 @@ public class ModelsTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetModelInfo()
     {
-        OpenAIModelClient client = GetProxiedOpenAIClient<OpenAIModelClient>(TestScenario.Models);
+        OpenAIModelClient client = GetProxiedOpenAIClient<OpenAIModelClient>();
         string modelId = "gpt-4o-mini";
 
         OpenAIModel model = await client.GetModelAsync(modelId);
@@ -56,7 +55,7 @@ public class ModelsTests : OpenAIRecordedTestBase
     [RecordedTest]
     public void GetModelCanParseServiceError()
     {
-        OpenAIModelClient client = GetProxiedOpenAIClient<OpenAIModelClient>(TestScenario.Models);
+        OpenAIModelClient client = GetProxiedOpenAIClient<OpenAIModelClient>();
         ClientResultException ex = null;
 
         ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GetModelAsync("fake_id"));
@@ -67,7 +66,7 @@ public class ModelsTests : OpenAIRecordedTestBase
     [RecordedTest]
     public void DeleteModelCanParseServiceError()
     {
-        OpenAIModelClient client = GetProxiedOpenAIClient<OpenAIModelClient>(TestScenario.Models);
+        OpenAIModelClient client = GetProxiedOpenAIClient<OpenAIModelClient>();
         ClientResultException ex = null;
 
         ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.DeleteModelAsync("fake_id"));

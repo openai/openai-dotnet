@@ -1,14 +1,15 @@
-﻿using NUnit.Framework;
-using OpenAI.Chat;
-using System;
-using System.ClientModel;
+﻿using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.IO;
+using NUnit.Framework;
+using OpenAI.Chat;
 
 namespace OpenAI.Tests.Miscellaneous;
 
 public class UserAgentTests
 {
+    private static readonly OpenAITestEnvironment TestEnvironment = new();
+
     [Test]
     public void DefaultUserAgentStringWorks() => UserAgentStringWorks(useApplicationId: false);
 
@@ -17,21 +18,21 @@ public class UserAgentTests
 
     private void UserAgentStringWorks(bool useApplicationId)
     {
-        ApiKeyCredential mockKeyCredential = new("no-real-key-needed");
         string userAgent = null;
         TestPipelinePolicy policy = new((m) =>
         {
             _ = m?.Request?.Headers?.TryGetValue("User-Agent", out userAgent);
         });
 
-        OpenAIClientOptions options = useApplicationId ? new()
-        {
-            UserAgentApplicationId = "test-application-id",
-        } : new();
+        OpenAIClientOptions options = useApplicationId
+            ? new() { UserAgentApplicationId = "test-application-id",}
+            : new();
+
         options.AddPolicy(policy, PipelinePosition.BeforeTransport);
 
-        ChatClient client = new("no-real-model-needed", new ApiKeyCredential(Environment.GetEnvironmentVariable("OPENAI_API_KEY") ?? "api-key"), options);
-        RequestOptions noThrowOptions = new() { ErrorOptions = ClientErrorBehaviors.NoThrow, };
+        ChatClient client = TestEnvironment.GetTestClient<ChatClient>(options: options);
+        RequestOptions noThrowOptions = new() { ErrorOptions = ClientErrorBehaviors.NoThrow };
+
         using BinaryContent emptyContent = BinaryContent.Create(new MemoryStream());
         _ = client.CompleteChat(emptyContent, noThrowOptions);
 
@@ -41,6 +42,7 @@ public class UserAgentTests
         {
             Assert.That(userAgent, Does.Contain("test-application-id"));
         }
+
         Assert.That(userAgent, Does.Contain("OpenAI/"));
     }
 }
