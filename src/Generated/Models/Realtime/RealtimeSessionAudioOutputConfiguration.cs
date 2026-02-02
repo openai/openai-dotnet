@@ -18,17 +18,13 @@ namespace OpenAI.Realtime
         {
         }
 
-        internal RealtimeSessionAudioOutputConfiguration(RealtimeAudioFormat? format, InternalVoiceIdsShared? voice, float? speed, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal RealtimeSessionAudioOutputConfiguration(InternalRealtimeAudioFormats internalFormat, InternalVoiceIdsShared? internalVoice, float? speed, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Format = format;
-            Voice = voice;
+            InternalFormat = internalFormat;
+            InternalVoice = internalVoice;
             Speed = speed;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-
-        public RealtimeAudioFormat? Format { get; set; }
-
-        internal InternalVoiceIdsShared? Voice { get; set; }
 
         public float? Speed { get; set; }
 

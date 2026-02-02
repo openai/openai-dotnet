@@ -21,10 +21,11 @@ public class RealtimeSmokeTests : ClientTestBase
     {
         foreach((ConversationToolChoice toolChoice, string expected) in new (ConversationToolChoice, string)[]
         {
-            (null, "{}"),
-            (ConversationToolChoice.CreateNoneToolChoice(), @"{""tool_choice"":""none""}"),
-            (ConversationToolChoice.CreateAutoToolChoice(), @"{""tool_choice"":""auto""}"),
-            (ConversationToolChoice.CreateRequiredToolChoice(), @"{""tool_choice"":""required""}"),
+            // GA format: empty options now serialize with "type":"realtime" and "max_output_tokens":null
+            (null, @"""type"":""realtime"""),
+            (ConversationToolChoice.CreateNoneToolChoice(), @"""tool_choice"":""none"""),
+            (ConversationToolChoice.CreateAutoToolChoice(), @"""tool_choice"":""auto"""),
+            (ConversationToolChoice.CreateRequiredToolChoice(), @"""tool_choice"":""required"""),
             (ConversationToolChoice.CreateFunctionToolChoice("foo"), @"""function"":{""name"":""foo""")
         })
         {
@@ -76,6 +77,7 @@ public class RealtimeSmokeTests : ClientTestBase
                 Output = new RealtimeSessionAudioOutputConfiguration()
                 {
                     Format = RealtimeAudioFormat.G711Ulaw,
+                    Voice = ConversationVoice.Echo,
                 },
             },
             Instructions = "test instructions",
@@ -94,17 +96,18 @@ public class RealtimeSmokeTests : ClientTestBase
                         }
                         """)),
             },
-            Voice = ConversationVoice.Echo,
         };
         BinaryData serializedOptions = ModelReaderWriter.Write(options);
         JsonNode jsonNode = JsonNode.Parse(serializedOptions.ToString());
         Assert.That(jsonNode["output_modalities"]?.AsArray()?.ToList(), Has.Count.EqualTo(1));
         Assert.That(jsonNode["output_modalities"].AsArray().First().GetValue<string>(), Is.EqualTo("text"));
-        Assert.That(jsonNode["audio"]?["input"]?["format"]?.GetValue<string>(), Is.EqualTo("g711_alaw"));
+        // GA format: audio format is now an object with "type" discriminator
+        Assert.That(jsonNode["audio"]?["input"]?["format"]?["type"]?.GetValue<string>(), Is.EqualTo("audio/pcma"));
         Assert.That(jsonNode["audio"]?["input"]?["transcription"]?["model"]?.GetValue<string>(), Is.EqualTo("whisper-1"));
         Assert.That(jsonNode["instructions"]?.GetValue<string>(), Is.EqualTo("test instructions"));
         Assert.That(jsonNode["max_output_tokens"]?.GetValue<int>(), Is.EqualTo(42));
-        Assert.That(jsonNode["audio"]?["output"]?["format"]?.GetValue<string>(), Is.EqualTo("g711_ulaw"));
+        // GA format: audio format is now an object with "type" discriminator
+        Assert.That(jsonNode["audio"]?["output"]?["format"]?["type"]?.GetValue<string>(), Is.EqualTo("audio/pcmu"));
         Assert.That(jsonNode["temperature"]?.GetValue<float>(), Is.EqualTo(0.42f));
         Assert.That(jsonNode["tools"]?.AsArray()?.ToList(), Has.Count.EqualTo(1));
         Assert.That(jsonNode["tools"].AsArray().First()["name"]?.GetValue<string>(), Is.EqualTo("test-function-tool-name"));
@@ -114,7 +117,8 @@ public class RealtimeSmokeTests : ClientTestBase
         Assert.That(jsonNode["audio"]?["input"]?["turn_detection"]?["threshold"]?.GetValue<float>(), Is.EqualTo(0.42f));
         Assert.That(jsonNode["audio"]?["input"]?["turn_detection"]?["prefix_padding_ms"]?.GetValue<int>(), Is.EqualTo(234));
         Assert.That(jsonNode["audio"]?["input"]?["turn_detection"]?["silence_duration_ms"]?.GetValue<int>(), Is.EqualTo(345));
-        Assert.That(jsonNode["voice"]?.GetValue<string>(), Is.EqualTo("echo"));
+        // GA format: voice is now inside audio.output
+        Assert.That(jsonNode["audio"]?["output"]?["voice"]?.GetValue<string>(), Is.EqualTo("echo"));
         ConversationSessionOptions deserializedOptions = ModelReaderWriter.Read<ConversationSessionOptions>(serializedOptions);
         Assert.That(deserializedOptions.ContentModalities.HasFlag(RealtimeContentModalities.Text));
         Assert.That(deserializedOptions.ContentModalities.HasFlag(RealtimeContentModalities.Audio), Is.False);
@@ -131,7 +135,8 @@ public class RealtimeSmokeTests : ClientTestBase
         Assert.That(deserializedOptions.ToolChoice?.Kind, Is.EqualTo(ConversationToolChoiceKind.Function));
         Assert.That(deserializedOptions.ToolChoice?.FunctionName, Is.EqualTo("test-function"));
         Assert.That(deserializedOptions.Audio?.Input?.TurnDetection?.Kind, Is.EqualTo(TurnDetectionKind.ServerVoiceActivityDetection));
-        Assert.That(deserializedOptions.Voice, Is.EqualTo(ConversationVoice.Echo));
+        // GA format: voice is now inside Audio.Output
+        Assert.That(deserializedOptions.Audio?.Output?.Voice, Is.EqualTo(ConversationVoice.Echo));
 
         ConversationSessionOptions emptyOptions = new();
         Assert.That(emptyOptions.ContentModalities.HasFlag(RealtimeContentModalities.Audio), Is.False);
@@ -145,18 +150,19 @@ public class RealtimeSmokeTests : ClientTestBase
     [Test]
     public void MaxTokensSerializationWorks()
     {
+        // GA format: max_output_tokens is always serialized (as null for default)
         // Implicit omission
         ConversationSessionOptions options = new() { };
         BinaryData serializedOptions = ModelReaderWriter.Write(options);
-        Assert.That(serializedOptions.ToString(), Does.Not.Contain("max_output_tokens"));
+        Assert.That(serializedOptions.ToString(), Does.Contain(@"""max_output_tokens"":null"));
 
-        // Explicit omission
+        // Explicit omission (null)
         options = new()
         {
             MaxOutputTokens = null
         };
         serializedOptions = ModelReaderWriter.Write(options);
-        Assert.That(serializedOptions.ToString(), Does.Not.Contain("max_output_tokens"));
+        Assert.That(serializedOptions.ToString(), Does.Contain(@"""max_output_tokens"":null"));
 
         // Explicit default (null)
         options = new()
@@ -186,6 +192,7 @@ public class RealtimeSmokeTests : ClientTestBase
     [Test]
     public void TurnDetectionSerializationWorks()
     {
+        // GA format: turn_detection is now inside audio.input
         // Implicit omission
         ConversationSessionOptions sessionOptions = new();
         BinaryData serializedOptions = ModelReaderWriter.Write(sessionOptions);
@@ -193,32 +200,50 @@ public class RealtimeSmokeTests : ClientTestBase
 
         sessionOptions = new()
         {
-            TurnDetectionOptions = TurnDetectionOptions.CreateDisabledTurnDetectionOptions(),
+            Audio = new RealtimeSessionAudioConfiguration()
+            {
+                Input = new RealtimeSessionAudioInputConfiguration()
+                {
+                    TurnDetection = TurnDetectionOptions.CreateDisabledTurnDetectionOptions(),
+                },
+            },
         };
         serializedOptions = ModelReaderWriter.Write(sessionOptions);
         Assert.That(serializedOptions.ToString(), Does.Contain(@"""turn_detection"":null"));
 
         sessionOptions = new()
         {
-            TurnDetectionOptions = TurnDetectionOptions.CreateServerVoiceActivityTurnDetectionOptions(
-                detectionThreshold: 0.42f)
+            Audio = new RealtimeSessionAudioConfiguration()
+            {
+                Input = new RealtimeSessionAudioInputConfiguration()
+                {
+                    TurnDetection = TurnDetectionOptions.CreateServerVoiceActivityTurnDetectionOptions(
+                        detectionThreshold: 0.42f)
+                },
+            },
         };
         serializedOptions = ModelReaderWriter.Write(sessionOptions);
         JsonNode serializedNode = JsonNode.Parse(serializedOptions);
-        Assert.That(serializedNode["turn_detection"]?["type"]?.GetValue<string>(), Is.EqualTo("server_vad"));
-        Assert.That(serializedNode["turn_detection"]?["threshold"]?.GetValue<float>(), Is.EqualTo(0.42f));
+        Assert.That(serializedNode["audio"]?["input"]?["turn_detection"]?["type"]?.GetValue<string>(), Is.EqualTo("server_vad"));
+        Assert.That(serializedNode["audio"]?["input"]?["turn_detection"]?["threshold"]?.GetValue<float>(), Is.EqualTo(0.42f));
 
         sessionOptions = new()
         {
-            TurnDetectionOptions = TurnDetectionOptions.CreateSemanticVoiceActivityTurnDetectionOptions(
-                SemanticEagernessLevel.Medium, true, true)
+            Audio = new RealtimeSessionAudioConfiguration()
+            {
+                Input = new RealtimeSessionAudioInputConfiguration()
+                {
+                    TurnDetection = TurnDetectionOptions.CreateSemanticVoiceActivityTurnDetectionOptions(
+                        SemanticEagernessLevel.Medium, true, true)
+                },
+            },
         };
         serializedOptions = ModelReaderWriter.Write(sessionOptions);
         serializedNode = JsonNode.Parse(serializedOptions);
-        Assert.That(serializedNode["turn_detection"]?["type"]?.GetValue<string>(), Is.EqualTo("semantic_vad"));
-        Assert.That(serializedNode["turn_detection"]?["eagerness"]?.GetValue<string>(), Is.EqualTo("medium"));
-        Assert.That(serializedNode["turn_detection"]?["create_response"]?.GetValue<bool>(), Is.EqualTo(true));
-        Assert.That(serializedNode["turn_detection"]?["interrupt_response"]?.GetValue<bool>(), Is.EqualTo(true));
+        Assert.That(serializedNode["audio"]?["input"]?["turn_detection"]?["type"]?.GetValue<string>(), Is.EqualTo("semantic_vad"));
+        Assert.That(serializedNode["audio"]?["input"]?["turn_detection"]?["eagerness"]?.GetValue<string>(), Is.EqualTo("medium"));
+        Assert.That(serializedNode["audio"]?["input"]?["turn_detection"]?["create_response"]?.GetValue<bool>(), Is.EqualTo(true));
+        Assert.That(serializedNode["audio"]?["input"]?["turn_detection"]?["interrupt_response"]?.GetValue<bool>(), Is.EqualTo(true));
     }
 
     [Test]

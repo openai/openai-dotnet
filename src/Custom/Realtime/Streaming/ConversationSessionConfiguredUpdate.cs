@@ -14,27 +14,30 @@ namespace OpenAI.Realtime;
 public partial class ConversationSessionConfiguredUpdate
 {
     [CodeGenMember("Session")]
-    internal readonly InternalRealtimeResponseSession _internalSession;
+    internal readonly InternalRealtimeSessionGA _internalSession;
 
     public string SessionId => _internalSession.Id;
 
     public string Model => _internalSession.Model;
 
     public RealtimeContentModalities ContentModalities
-        => RealtimeContentModalitiesExtensions.FromInternalModalities(_internalSession.Modalities);
+        => RealtimeContentModalitiesExtensions.FromInternalModalities(_internalSession.OutputModalities);
 
     public string Instructions => _internalSession.Instructions;
 
-    public ConversationVoice Voice => _internalSession.Voice;
+    public ConversationVoice Voice
+        => _internalSession.Audio?.Output?.Voice is { } voice ? new ConversationVoice(voice.ToString()) : default;
 
-    public RealtimeAudioFormat InputAudioFormat => _internalSession.InputAudioFormat;
-    public RealtimeAudioFormat OutputAudioFormat => _internalSession.OutputAudioFormat;
+    public RealtimeAudioFormat InputAudioFormat
+        => _internalSession.Audio?.Input?.Format ?? default;
+    public RealtimeAudioFormat OutputAudioFormat
+        => _internalSession.Audio?.Output?.Format ?? default;
 
-    public InputTranscriptionOptions InputTranscriptionOptions => _internalSession.InputAudioTranscription;
-    public TurnDetectionOptions TurnDetectionOptions => _internalSession.TurnDetection;
+    public InputTranscriptionOptions InputTranscriptionOptions => _internalSession.Audio?.Input?.Transcription;
+    public TurnDetectionOptions TurnDetectionOptions => _internalSession.Audio?.Input?.TurnDetection;
     public IReadOnlyList<ConversationTool> Tools => [ .. _internalSession.Tools ];
     public ConversationToolChoice ToolChoice => ConversationToolChoice.FromBinaryData(_internalSession.ToolChoice);
-    public float Temperature => _internalSession.Temperature;
+    public float Temperature => _internalSession.Temperature ?? default;
     // Customization: API changed from max_response_output_tokens to max_output_tokens
-    public ConversationMaxTokensChoice MaxOutputTokens => _internalSession.MaxOutputTokens;
+    public ConversationMaxTokensChoice MaxOutputTokens => ConversationMaxTokensChoice.FromBinaryData(_internalSession.MaxOutputTokens);
 }

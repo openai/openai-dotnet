@@ -95,8 +95,8 @@ model RealtimeSessionAudioConfiguration {
  * Configuration for input audio in a realtime session.
  */
 model RealtimeSessionAudioInputConfiguration {
-  /** The format of input audio. Options are `pcm16`, `g711_ulaw`, or `g711_alaw`. */
-  format?: RealtimeAudioFormat = RealtimeAudioFormat.pcm16;
+  /** The format of input audio. GA format with type discriminator and optional rate for PCM. */
+  format?: RealtimeAudioFormats;
   
   /** Configuration for input audio transcription. */
   transcription?: RealtimeAudioInputTranscriptionSettings | null;
@@ -112,8 +112,8 @@ model RealtimeSessionAudioInputConfiguration {
  * Configuration for output audio in a realtime session.
  */
 model RealtimeSessionAudioOutputConfiguration {
-  /** The format of output audio. Options are `pcm16`, `g711_ulaw`, or `g711_alaw`. */
-  format?: RealtimeAudioFormat = RealtimeAudioFormat.pcm16;
+  /** The format of output audio. GA format with type discriminator and optional rate for PCM. */
+  format?: RealtimeAudioFormats;
   
   /** The voice the model uses to respond. */
   voice?: VoiceIdsShared;
@@ -153,8 +153,8 @@ model RealtimeTranscriptionSessionAudioConfiguration {
  * Configuration for input audio in a transcription session.
  */
 model RealtimeTranscriptionSessionAudioInputConfiguration {
-  /** The format of input audio. Options are `pcm16`, `g711_ulaw`, or `g711_alaw`. */
-  format?: RealtimeAudioFormat = RealtimeAudioFormat.pcm16;
+  /** The format of input audio. GA format with type discriminator and optional rate for PCM. */
+  format?: RealtimeAudioFormats;
   
   /** Configuration for input audio transcription. */
   transcription?: RealtimeAudioInputTranscriptionSettings | null;
@@ -164,6 +164,102 @@ model RealtimeTranscriptionSessionAudioInputConfiguration {
   
   /** Configuration for turn detection. */
   turn_detection?: RealtimeTurnDetection | null;
+}
+
+/**
+ * Base model for session responses in session.created and session.updated events.
+ * Discriminated by the `type` field.
+ */
+@discriminator("type")
+model RealtimeSessionResponseBase {
+  /** The type of session. */
+  type: RealtimeSessionType;
+}
+
+/**
+ * A Realtime session configuration (GA response type).
+ * Used in session.created and session.updated events for realtime sessions.
+ */
+model RealtimeSessionGA extends RealtimeSessionResponseBase {
+  /** The type of session. Always `realtime` for the Realtime API. */
+  type: RealtimeSessionType.realtime;
+  
+  /** The object type. Always `realtime.session`. */
+  object?: "realtime.session";
+  
+  /** Unique identifier for the session that looks like `sess_1234567890abcdef`. */
+  id?: string;
+  
+  /** The Realtime model used for this session. */
+  `model`?: string;
+  
+  /**
+   * The set of modalities the model can respond with. It defaults to ["audio"], indicating
+   * that the model will respond with audio plus a transcript. ["text"] can be used to make
+   * the model respond with text only.
+   */
+  output_modalities?: RealtimeModality[];
+  
+  /**
+   * The default system instructions prepended to model calls.
+   */
+  instructions?: string;
+  
+  /** Configuration for input and output audio. */
+  audio?: RealtimeSessionAudioConfiguration;
+  
+  /**
+   * Additional fields to include in server outputs.
+   * - `item.input_audio_transcription.logprobs`: Include logprobs for input audio transcription.
+   */
+  include?: ("item.input_audio_transcription.logprobs")[];
+  
+  /** Configuration options for tracing. Set to null to disable tracing. */
+  tracing?: "auto" | RealtimeTracingConfig | null;
+  
+  /** Tools available to the model. */
+  tools?: RealtimeTool[];
+  
+  /** How the model chooses tools. */
+  tool_choice?: RealtimeToolChoice;
+  
+  /** Sampling temperature for the model. */
+  temperature?: float32;
+  
+  /** Maximum number of output tokens for a single assistant response. */
+  max_output_tokens?: int32 | "inf";
+  
+  /** Timestamp for when the session expires. */
+  @encode("unixTimestamp", int32)
+  expires_at?: utcDateTime;
+}
+
+/**
+ * A Realtime transcription session configuration (GA response type).
+ * Used in session.created and session.updated events for transcription sessions.
+ */
+model RealtimeTranscriptionSessionGA extends RealtimeSessionResponseBase {
+  /** The type of session. Always `transcription` for transcription sessions. */
+  type: RealtimeSessionType.transcription;
+  
+  /** The object type. Always `realtime.transcription_session`. */
+  object?: "realtime.transcription_session";
+  
+  /** Unique identifier for the session that looks like `sess_1234567890abcdef`. */
+  id?: string;
+  
+  /** Expiration timestamp for the session, in seconds since epoch. */
+  @encode("unixTimestamp", int32)
+  expires_at?: utcDateTime;
+  
+  /**
+   * Additional fields to include in server outputs.
+   * - `item.input_audio_transcription.logprobs`: Include logprobs for input audio transcription.
+   */
+  include?: ("item.input_audio_transcription.logprobs")[];
+  
+  /** Configuration for input audio for the session. */
+  audio?: RealtimeTranscriptionSessionAudioConfiguration;
 }
 
 model RealtimeResponseSession {
@@ -191,6 +287,55 @@ model RealtimeResponseSession {
   /** Timestamp for when the session expires. */
   @encode("unixTimestamp", int32)
   expires_at?: utcDateTime;
+}
+
+/**
+ * Union type for the audio formats type discriminator.
+ */
+union RealtimeAudioFormatsType {
+  string,
+  /** PCM audio format. */
+  audio_pcm: "audio/pcm",
+  /** G.711 μ-law audio format. */
+  audio_pcmu: "audio/pcmu",
+  /** G.711 A-law audio format. */
+  audio_pcma: "audio/pcma",
+}
+
+/**
+ * Base model for audio formats with discriminator.
+ * This is the GA format for audio configuration.
+ */
+@discriminator("type")
+model RealtimeAudioFormats {
+  /** The type of audio format. */
+  type: RealtimeAudioFormatsType;
+}
+
+/**
+ * PCM audio format configuration.
+ */
+model RealtimeAudioFormatsPcm extends RealtimeAudioFormats {
+  /** The type of audio format. Must be "audio/pcm". */
+  type: RealtimeAudioFormatsType.audio_pcm;
+  /** The sample rate for PCM audio. Defaults to 24000. */
+  rate?: 24000;
+}
+
+/**
+ * G.711 μ-law audio format configuration.
+ */
+model RealtimeAudioFormatsPcmu extends RealtimeAudioFormats {
+  /** The type of audio format. Must be "audio/pcmu". */
+  type: RealtimeAudioFormatsType.audio_pcmu;
+}
+
+/**
+ * G.711 A-law audio format configuration.
+ */
+model RealtimeAudioFormatsPcma extends RealtimeAudioFormats {
+  /** The type of audio format. Must be "audio/pcma". */
+  type: RealtimeAudioFormatsType.audio_pcma;
 }
 
 union RealtimeAudioFormat {

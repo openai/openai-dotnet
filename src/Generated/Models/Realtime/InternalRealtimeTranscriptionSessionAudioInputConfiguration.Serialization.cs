@@ -29,7 +29,7 @@ namespace OpenAI.Realtime
             if (Optional.IsDefined(Format) && _additionalBinaryDataProperties?.ContainsKey("format") != true)
             {
                 writer.WritePropertyName("format"u8);
-                writer.WriteStringValue(Format.Value.ToString());
+                writer.WriteObjectValue(Format, options);
             }
             if (Optional.IsDefined(Transcription) && _additionalBinaryDataProperties?.ContainsKey("transcription") != true)
             {
@@ -87,7 +87,7 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            RealtimeAudioFormat? format = default;
+            InternalRealtimeAudioFormats format = default;
             InputTranscriptionOptions transcription = default;
             InputNoiseReductionOptions noiseReduction = default;
             TurnDetectionOptions turnDetection = default;
@@ -100,7 +100,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    format = new RealtimeAudioFormat(prop.Value.GetString());
+                    format = InternalRealtimeAudioFormats.DeserializeInternalRealtimeAudioFormats(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("transcription"u8))

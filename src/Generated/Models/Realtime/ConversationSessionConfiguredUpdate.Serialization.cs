@@ -65,7 +65,7 @@ namespace OpenAI.Realtime
             RealtimeUpdateKind kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string eventId = default;
-            InternalRealtimeResponseSession internalSession = default;
+            InternalRealtimeSessionGA internalSession = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -80,7 +80,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("session"u8))
                 {
-                    internalSession = InternalRealtimeResponseSession.DeserializeInternalRealtimeResponseSession(prop.Value, options);
+                    internalSession = InternalRealtimeSessionGA.DeserializeInternalRealtimeSessionGA(prop.Value, options);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

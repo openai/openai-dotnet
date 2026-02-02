@@ -1034,11 +1034,6 @@ namespace OpenAI
             return new RealtimeSessionAudioConfiguration(input, output, additionalBinaryDataProperties: null);
         }
 
-        public static RealtimeSessionAudioInputConfiguration RealtimeSessionAudioInputConfiguration(RealtimeAudioFormat? format = default, InputTranscriptionOptions transcription = default, InputNoiseReductionOptions noiseReduction = default, TurnDetectionOptions turnDetection = default)
-        {
-            return new RealtimeSessionAudioInputConfiguration(format, transcription, noiseReduction, turnDetection, additionalBinaryDataProperties: null);
-        }
-
         public static InputTranscriptionOptions InputTranscriptionOptions(InputTranscriptionModel? model = default, string language = default, string prompt = default)
         {
             return new InputTranscriptionOptions(model, language, prompt, additionalBinaryDataProperties: null);

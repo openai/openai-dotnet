@@ -473,8 +473,9 @@ model RealtimeServerEventSessionCreated extends RealtimeServerEvent {
     """)
   type: RealtimeServerEventType.session_created;
 
-  // Tool customization: apply enriched response-specific model
-  session: RealtimeResponseSession;
+  // Tool customization: use discriminated union (RealtimeSessionGA | RealtimeTranscriptionSessionGA)
+  /** The session configuration. */
+  session: RealtimeSessionResponseBase;
 }
 
 model RealtimeServerEventSessionUpdated extends RealtimeServerEvent {
@@ -487,9 +488,9 @@ model RealtimeServerEventSessionUpdated extends RealtimeServerEvent {
   @extension("x-stainless-const", true)
   type: "session.updated";
 
-  // Tool customization: use discriminated union instead of raw union type
+  // Tool customization: use discriminated union (RealtimeSessionGA | RealtimeTranscriptionSessionGA)
   /** The session configuration. */
-  session: RealtimeSessionUpdatedResponseUnion;
+  session: RealtimeSessionResponseBase;
 }
 
 
@@ -2294,141 +2295,6 @@ model RealtimeSessionCreateTranscriptionResponse extends RealtimeSessionCreateRe
 
   /** The transcription session details. */
   session?: RealtimeTranscriptionSessionCreateResponse;
-}
-
-/**
- * The type of session that was updated.
- */
-union RealtimeSessionUpdatedResponseUnionType {
-  string,
-  /** A real-time conversation session. */
-  realtime: "realtime",
-  /** A transcription session. */
-  transcription: "transcription",
-}
-
-/**
- * Base model for session updated response.
- */
-@discriminator("type")
-model RealtimeSessionUpdatedResponseUnion {
-  /** The type of session that was updated. */
-  type: RealtimeSessionUpdatedResponseUnionType;
-}
-
-/**
- * Session updated response for a realtime session.
- * This model includes the session configuration details from RealtimeResponseSession.
- */
-model RealtimeSessionUpdatedRealtimeResponse extends RealtimeSessionUpdatedResponseUnion {
-  /** The type of session. */
-  type: "realtime";
-
-  /** The object type. */
-  object?: "realtime.session";
-  
-  /** The session ID. */
-  id?: string;
-  
-  /** The model used for the session. */
-  `model`?: string;
-  
-  /** The modalities for the session. */
-  modalities?: RealtimeModality[];
-  
-  /** The instructions for the session. */
-  instructions?: string;
-  
-  /** The voice for the session. */
-  voice?: VoiceIdsShared;
-  
-  /** The input audio format. */
-  input_audio_format?: RealtimeAudioFormat;
-  
-  /** The output audio format. */
-  output_audio_format?: RealtimeAudioFormat;
-  
-  /** Configuration for input audio transcription. */
-  input_audio_transcription?: RealtimeAudioInputTranscriptionSettings | null;
-  
-  /** Configuration for turn detection. */
-  turn_detection?: RealtimeTurnDetection | null;
-  
-  /** Configuration for input audio noise reduction. */
-  input_audio_noise_reduction?: RealtimeAudioNoiseReduction | null;
-  
-  /** The speed of the model's spoken response. */
-  speed?: float32;
-  
-  /** Tracing configuration for the session. */
-  tracing?: "auto" | RealtimeTracingConfig | null;
-  
-  /** The tools available for the session. */
-  tools?: RealtimeTool[];
-  
-  /** The tool choice for the session. */
-  tool_choice?: RealtimeToolChoice;
-  
-  /** The temperature for the session. */
-  temperature?: float32;
-  
-  /** The max output tokens for the session. */
-  max_output_tokens?: int32 | "inf" | null;
-  
-  /** Timestamp for when the session expires. */
-  @encode("unixTimestamp", int32)
-  expires_at?: utcDateTime;
-}
-
-/**
- * Session updated response for a transcription session.
- * This model includes the session configuration details from the transcription session.
- */
-model RealtimeSessionUpdatedTranscriptionResponse extends RealtimeSessionUpdatedResponseUnion {
-  /** The type of session. */
-  type: "transcription";
-
-  /** Unique identifier for the transcription session. */
-  id?: string;
-
-  /** The object type. */
-  object?: "realtime.transcription_session";
-
-  /** The set of modalities for the session. */
-  modalities?: ("text" | "audio")[];
-
-  /** The format of input audio. */
-  input_audio_format?: string;
-
-  /** Configuration of the transcription model. */
-  input_audio_transcription?: {
-    /** The model to use for transcription. */
-    `model`?: "gpt-4o-transcribe" | "gpt-4o-mini-transcribe" | "whisper-1";
-    /** The language of the input audio. */
-    language?: string;
-    /** An optional text to guide the model's style. */
-    prompt?: string;
-  };
-  
-  /** Configuration for turn detection. */
-  turn_detection?: {
-    /** Type of turn detection. */
-    type?: "server_vad" | "semantic_vad";
-    /** The eagerness of the model to respond. */
-    eagerness?: "low" | "medium" | "high" | "auto";
-    /** Activation threshold for VAD (0.0 to 1.0). */
-    threshold?: float32;
-    /** Amount of audio to include before the VAD detected speech (in milliseconds). */
-    prefix_padding_ms?: int32;
-    /** Duration of silence to detect speech stop (in milliseconds). */
-    silence_duration_ms?: int32;
-  } | null;
-  
-  /** Configuration for input audio noise reduction. */
-  input_audio_noise_reduction?: {
-    /** Type of noise reduction. */
-    type?: "near_field" | "far_field";
-  } | null;
 }
 
 /**

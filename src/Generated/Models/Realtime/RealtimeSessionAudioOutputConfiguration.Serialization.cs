@@ -27,15 +27,15 @@ namespace OpenAI.Realtime
             {
                 throw new FormatException($"The model {nameof(RealtimeSessionAudioOutputConfiguration)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Format) && _additionalBinaryDataProperties?.ContainsKey("format") != true)
+            if (Optional.IsDefined(InternalFormat) && _additionalBinaryDataProperties?.ContainsKey("format") != true)
             {
                 writer.WritePropertyName("format"u8);
-                writer.WriteStringValue(Format.Value.ToString());
+                writer.WriteObjectValue(InternalFormat, options);
             }
-            if (Optional.IsDefined(Voice) && _additionalBinaryDataProperties?.ContainsKey("voice") != true)
+            if (Optional.IsDefined(InternalVoice) && _additionalBinaryDataProperties?.ContainsKey("voice") != true)
             {
                 writer.WritePropertyName("voice"u8);
-                writer.WriteStringValue(Voice.Value.ToString());
+                writer.WriteStringValue(InternalVoice.Value.ToString());
             }
             if (Optional.IsDefined(Speed) && _additionalBinaryDataProperties?.ContainsKey("speed") != true)
             {
@@ -83,8 +83,8 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            RealtimeAudioFormat? format = default;
-            InternalVoiceIdsShared? voice = default;
+            InternalRealtimeAudioFormats internalFormat = default;
+            InternalVoiceIdsShared? internalVoice = default;
             float? speed = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -95,7 +95,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    format = new RealtimeAudioFormat(prop.Value.GetString());
+                    internalFormat = InternalRealtimeAudioFormats.DeserializeInternalRealtimeAudioFormats(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("voice"u8))
@@ -104,7 +104,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    voice = new InternalVoiceIdsShared(prop.Value.GetString());
+                    internalVoice = new InternalVoiceIdsShared(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("speed"u8))
@@ -119,7 +119,7 @@ namespace OpenAI.Realtime
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new RealtimeSessionAudioOutputConfiguration(format, voice, speed, additionalBinaryDataProperties);
+            return new RealtimeSessionAudioOutputConfiguration(internalFormat, internalVoice, speed, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<RealtimeSessionAudioOutputConfiguration>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

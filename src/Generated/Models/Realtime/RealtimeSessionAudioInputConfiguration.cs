@@ -17,16 +17,14 @@ namespace OpenAI.Realtime
         {
         }
 
-        internal RealtimeSessionAudioInputConfiguration(RealtimeAudioFormat? format, InputTranscriptionOptions transcription, InputNoiseReductionOptions noiseReduction, TurnDetectionOptions turnDetection, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal RealtimeSessionAudioInputConfiguration(InternalRealtimeAudioFormats internalFormat, InputTranscriptionOptions transcription, InputNoiseReductionOptions noiseReduction, TurnDetectionOptions turnDetection, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            Format = format;
+            InternalFormat = internalFormat;
             Transcription = transcription;
             NoiseReduction = noiseReduction;
             TurnDetection = turnDetection;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-
-        public RealtimeAudioFormat? Format { get; set; }
 
         public InputTranscriptionOptions Transcription { get; set; }
 

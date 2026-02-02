@@ -27,16 +27,6 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(ConversationSessionOptions)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (Optional.IsCollectionDefined(OutputModalities) && _additionalBinaryDataProperties?.ContainsKey("output_modalities") != true)
-            {
-                writer.WritePropertyName("output_modalities"u8);
-                writer.WriteStartArray();
-                foreach (InternalRealtimeRequestSessionModality item in OutputModalities)
-                {
-                    writer.WriteStringValue(item.ToString());
-                }
-                writer.WriteEndArray();
-            }
             if (Optional.IsDefined(Instructions) && _additionalBinaryDataProperties?.ContainsKey("instructions") != true)
             {
                 writer.WritePropertyName("instructions"u8);
@@ -99,6 +89,16 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("max_output_tokens"u8);
                 writer.WriteObjectValue(MaxOutputTokens, options);
             }
+            if (Optional.IsCollectionDefined(_internalModalities) && _additionalBinaryDataProperties?.ContainsKey("output_modalities") != true)
+            {
+                writer.WritePropertyName("output_modalities"u8);
+                writer.WriteStartArray();
+                foreach (InternalRealtimeRequestSessionModality item in _internalModalities)
+                {
+                    writer.WriteStringValue(item.ToString());
+                }
+                writer.WriteEndArray();
+            }
             if (Optional.IsDefined(_internalToolChoice) && _additionalBinaryDataProperties?.ContainsKey("tool_choice") != true)
             {
                 writer.WritePropertyName("tool_choice"u8);
@@ -134,7 +134,6 @@ namespace OpenAI.Realtime
             }
             RealtimeSessionType kind = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            IList<InternalRealtimeRequestSessionModality> outputModalities = default;
             string instructions = default;
             InternalRealtimeRequestSessionModel? model = default;
             RealtimeSessionAudioConfiguration audio = default;
@@ -143,26 +142,13 @@ namespace OpenAI.Realtime
             IList<ConversationTool> tools = default;
             float? temperature = default;
             ConversationMaxTokensChoice maxOutputTokens = default;
+            IList<InternalRealtimeRequestSessionModality> internalModalities = default;
             BinaryData internalToolChoice = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
                 {
                     kind = new RealtimeSessionType(prop.Value.GetString());
-                    continue;
-                }
-                if (prop.NameEquals("output_modalities"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    List<InternalRealtimeRequestSessionModality> array = new List<InternalRealtimeRequestSessionModality>();
-                    foreach (var item in prop.Value.EnumerateArray())
-                    {
-                        array.Add(new InternalRealtimeRequestSessionModality(item.GetString()));
-                    }
-                    outputModalities = array;
                     continue;
                 }
                 if (prop.NameEquals("instructions"u8))
@@ -251,6 +237,20 @@ namespace OpenAI.Realtime
                     maxOutputTokens = ConversationMaxTokensChoice.DeserializeConversationMaxTokensChoice(prop.Value, options);
                     continue;
                 }
+                if (prop.NameEquals("output_modalities"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    List<InternalRealtimeRequestSessionModality> array = new List<InternalRealtimeRequestSessionModality>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        array.Add(new InternalRealtimeRequestSessionModality(item.GetString()));
+                    }
+                    internalModalities = array;
+                    continue;
+                }
                 if (prop.NameEquals("tool_choice"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -266,7 +266,6 @@ namespace OpenAI.Realtime
             return new ConversationSessionOptions(
                 kind,
                 additionalBinaryDataProperties,
-                outputModalities ?? new ChangeTrackingList<InternalRealtimeRequestSessionModality>(),
                 instructions,
                 model,
                 audio,
@@ -275,6 +274,7 @@ namespace OpenAI.Realtime
                 tools ?? new ChangeTrackingList<ConversationTool>(),
                 temperature,
                 maxOutputTokens,
+                internalModalities,
                 internalToolChoice);
         }
 

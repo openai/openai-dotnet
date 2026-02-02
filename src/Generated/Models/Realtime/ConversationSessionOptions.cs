@@ -12,14 +12,13 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class ConversationSessionOptions : RealtimeRequestSessionBase
     {
-        public ConversationSessionOptions() : this(RealtimeSessionType.Realtime, null, null, null, default, null, null, null, null, default, null, null)
+        public ConversationSessionOptions() : this(RealtimeSessionType.Realtime, null, null, default, null, null, null, null, default, null, null, null)
         {
         }
 
-        internal ConversationSessionOptions(RealtimeSessionType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<InternalRealtimeRequestSessionModality> outputModalities, string instructions, InternalRealtimeRequestSessionModel? model, RealtimeSessionAudioConfiguration audio, IList<string> include, BinaryData tracing, IList<ConversationTool> tools, float? temperature, ConversationMaxTokensChoice maxOutputTokens, BinaryData internalToolChoice) : base(kind, additionalBinaryDataProperties)
+        internal ConversationSessionOptions(RealtimeSessionType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string instructions, InternalRealtimeRequestSessionModel? model, RealtimeSessionAudioConfiguration audio, IList<string> include, BinaryData tracing, IList<ConversationTool> tools, float? temperature, ConversationMaxTokensChoice maxOutputTokens, IList<InternalRealtimeRequestSessionModality> internalModalities, BinaryData internalToolChoice) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
-            OutputModalities = outputModalities ?? new ChangeTrackingList<InternalRealtimeRequestSessionModality>();
             Instructions = instructions;
             Model = model;
             Audio = audio;
@@ -28,10 +27,9 @@ namespace OpenAI.Realtime
             Tools = tools ?? new ChangeTrackingList<ConversationTool>();
             Temperature = temperature;
             MaxOutputTokens = maxOutputTokens;
+            _internalModalities = internalModalities ?? new ChangeTrackingList<InternalRealtimeRequestSessionModality>();
             _internalToolChoice = internalToolChoice;
         }
-
-        internal IList<InternalRealtimeRequestSessionModality> OutputModalities { get; }
 
         public string Instructions { get; set; }
 

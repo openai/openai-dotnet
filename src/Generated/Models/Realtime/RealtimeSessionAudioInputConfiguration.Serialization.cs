@@ -26,10 +26,10 @@ namespace OpenAI.Realtime
             {
                 throw new FormatException($"The model {nameof(RealtimeSessionAudioInputConfiguration)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(Format) && _additionalBinaryDataProperties?.ContainsKey("format") != true)
+            if (Optional.IsDefined(InternalFormat) && _additionalBinaryDataProperties?.ContainsKey("format") != true)
             {
                 writer.WritePropertyName("format"u8);
-                writer.WriteStringValue(Format.Value.ToString());
+                writer.WriteObjectValue(InternalFormat, options);
             }
             if (Optional.IsDefined(Transcription) && _additionalBinaryDataProperties?.ContainsKey("transcription") != true)
             {
@@ -87,7 +87,7 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            RealtimeAudioFormat? format = default;
+            InternalRealtimeAudioFormats internalFormat = default;
             InputTranscriptionOptions transcription = default;
             InputNoiseReductionOptions noiseReduction = default;
             TurnDetectionOptions turnDetection = default;
@@ -100,7 +100,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    format = new RealtimeAudioFormat(prop.Value.GetString());
+                    internalFormat = InternalRealtimeAudioFormats.DeserializeInternalRealtimeAudioFormats(prop.Value, options);
                     continue;
                 }
                 if (prop.NameEquals("transcription"u8))
@@ -136,7 +136,7 @@ namespace OpenAI.Realtime
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new RealtimeSessionAudioInputConfiguration(format, transcription, noiseReduction, turnDetection, additionalBinaryDataProperties);
+            return new RealtimeSessionAudioInputConfiguration(internalFormat, transcription, noiseReduction, turnDetection, additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<RealtimeSessionAudioInputConfiguration>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

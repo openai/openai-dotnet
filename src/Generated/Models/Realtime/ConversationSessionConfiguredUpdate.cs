@@ -11,13 +11,13 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class ConversationSessionConfiguredUpdate : RealtimeUpdate
     {
-        internal ConversationSessionConfiguredUpdate(string eventId, InternalRealtimeResponseSession internalSession) : base(RealtimeUpdateKind.SessionConfigured)
+        internal ConversationSessionConfiguredUpdate(string eventId, InternalRealtimeSessionGA internalSession) : base(RealtimeUpdateKind.SessionConfigured)
         {
             _eventId = eventId;
             _internalSession = internalSession;
         }
 
-        internal ConversationSessionConfiguredUpdate(RealtimeUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string eventId, InternalRealtimeResponseSession internalSession) : base(kind, eventId, additionalBinaryDataProperties)
+        internal ConversationSessionConfiguredUpdate(RealtimeUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string eventId, InternalRealtimeSessionGA internalSession) : base(kind, eventId, additionalBinaryDataProperties)
         {
             _internalSession = internalSession;
         }

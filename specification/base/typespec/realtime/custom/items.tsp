@@ -1,4 +1,5 @@
 import "./content_parts.tsp";
+import "../../responses/models.tsp";
 
 using TypeSpec.OpenAPI;
 
@@ -30,7 +31,8 @@ model RealtimeRequestUserMessageItem extends RealtimeRequestMessageItem {
 
 model RealtimeRequestAssistantMessageItem extends RealtimeRequestMessageItem {
   role: RealtimeMessageRole.assistant;
-  content: RealtimeRequestTextContentPart[];
+  /** For assistant messages, use output_text content type (GA format). */
+  content: (RealtimeResponseTextContentPart | RealtimeResponseAudioContentPart)[];
 }
 
 model RealtimeRequestFunctionCallItem extends RealtimeConversationRequestItem {

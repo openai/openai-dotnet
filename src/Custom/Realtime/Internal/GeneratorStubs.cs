@@ -141,19 +141,19 @@ namespace OpenAI.Realtime;
 [CodeGenType("RealtimeTranscriptionSessionAudioConfiguration")] internal partial class InternalRealtimeTranscriptionSessionAudioConfiguration {}
 [CodeGenType("RealtimeTranscriptionSessionAudioInputConfiguration")] internal partial class InternalRealtimeTranscriptionSessionAudioInputConfiguration {}
 
-// Session updated response discriminated union types
-[CodeGenType("RealtimeSessionUpdatedResponseUnionType")] internal readonly partial struct InternalRealtimeSessionUpdatedResponseUnionType {}
-[CodeGenType("RealtimeSessionUpdatedResponseUnion")] internal partial class InternalRealtimeSessionUpdatedResponseUnion {}
-[CodeGenType("UnknownRealtimeSessionUpdatedResponseUnion")] internal partial class InternalUnknownRealtimeSessionUpdatedResponseUnion {}
-[CodeGenType("RealtimeSessionUpdatedRealtimeResponse")] internal partial class InternalRealtimeSessionUpdatedRealtimeResponse {}
-[CodeGenType("RealtimeSessionUpdatedRealtimeResponseObject")] internal readonly partial struct InternalRealtimeSessionUpdatedRealtimeResponseObject {}
-[CodeGenType("RealtimeSessionUpdatedTranscriptionResponse")] internal partial class InternalRealtimeSessionUpdatedTranscriptionResponse {}
-[CodeGenType("RealtimeSessionUpdatedTranscriptionResponseObject")] internal readonly partial struct InternalRealtimeSessionUpdatedTranscriptionResponseObject {}
-[CodeGenType("RealtimeSessionUpdatedTranscriptionResponseModality")] internal readonly partial struct InternalRealtimeSessionUpdatedTranscriptionResponseModality {}
-[CodeGenType("RealtimeSessionUpdatedTranscriptionResponseInputAudioTranscriptionModel")] internal readonly partial struct InternalRealtimeSessionUpdatedTranscriptionResponseInputAudioTranscriptionModel {}
-[CodeGenType("RealtimeSessionUpdatedTranscriptionResponseInputAudioTranscription")] internal partial class InternalRealtimeSessionUpdatedTranscriptionResponseInputAudioTranscription {}
-[CodeGenType("RealtimeSessionUpdatedTranscriptionResponseTurnDetectionType")] internal readonly partial struct InternalRealtimeSessionUpdatedTranscriptionResponseTurnDetectionType {}
-[CodeGenType("RealtimeSessionUpdatedTranscriptionResponseTurnDetectionEagerness")] internal readonly partial struct InternalRealtimeSessionUpdatedTranscriptionResponseTurnDetectionEagerness {}
-[CodeGenType("RealtimeSessionUpdatedTranscriptionResponseInputAudioNoiseReductionType")] internal readonly partial struct InternalRealtimeSessionUpdatedTranscriptionResponseInputAudioNoiseReductionType {}
-[CodeGenType("RealtimeSessionUpdatedTranscriptionResponseTurnDetection1")] internal partial class InternalRealtimeSessionUpdatedTranscriptionResponseTurnDetection1 {}
-[CodeGenType("RealtimeSessionUpdatedTranscriptionResponseInputAudioNoiseReduction1")] internal partial class InternalRealtimeSessionUpdatedTranscriptionResponseInputAudioNoiseReduction1 {}
+// Session response discriminated union types (GA types for session.created and session.updated)
+[CodeGenType("RealtimeSessionResponseBase")] internal partial class InternalRealtimeSessionResponseBase {}
+[CodeGenType("UnknownRealtimeSessionResponseBase")] internal partial class InternalUnknownRealtimeSessionResponseBase {}
+[CodeGenType("RealtimeSessionGA")] internal partial class InternalRealtimeSessionGA {}
+[CodeGenType("RealtimeSessionGAObject")] internal readonly partial struct InternalRealtimeSessionGAObject {}
+[CodeGenType("RealtimeTranscriptionSessionGA")] internal partial class InternalRealtimeTranscriptionSessionGA {}
+[CodeGenType("RealtimeTranscriptionSessionGAObject")] internal readonly partial struct InternalRealtimeTranscriptionSessionGAObject {}
+
+// Audio formats discriminated union types (GA audio format model)
+[CodeGenType("RealtimeAudioFormatsType")] internal readonly partial struct InternalRealtimeAudioFormatsType {}
+[CodeGenType("RealtimeAudioFormats")] internal partial class InternalRealtimeAudioFormats {}
+[CodeGenType("UnknownRealtimeAudioFormats")] internal partial class InternalUnknownRealtimeAudioFormats {}
+[CodeGenType("RealtimeAudioFormatsPcm")] internal partial class InternalRealtimeAudioFormatsPcm {}
+[CodeGenType("RealtimeAudioFormatsPcmu")] internal partial class InternalRealtimeAudioFormatsPcmu {}
+[CodeGenType("RealtimeAudioFormatsPcma")] internal partial class InternalRealtimeAudioFormatsPcma {}
+[CodeGenType("RealtimeAudioFormatsPcmRate")] internal readonly partial struct InternalRealtimeAudioFormatsPcmRate {}
