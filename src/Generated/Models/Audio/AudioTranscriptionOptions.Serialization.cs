@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
-using OpenAI.Realtime;
 
 namespace OpenAI.Audio
 {
@@ -59,9 +58,9 @@ namespace OpenAI.Audio
                 writer.WritePropertyName("temperature"u8);
                 writer.WriteNumberValue(Temperature.Value);
             }
-            if (Optional.IsCollectionDefined(InternalInclude) && _additionalBinaryDataProperties?.ContainsKey("include[]") != true)
+            if (Optional.IsCollectionDefined(InternalInclude) && _additionalBinaryDataProperties?.ContainsKey("include") != true)
             {
-                writer.WritePropertyName("include[]"u8);
+                writer.WritePropertyName("include"u8);
                 writer.WriteStartArray();
                 foreach (InternalTranscriptionInclude item in InternalInclude)
                 {
@@ -69,9 +68,9 @@ namespace OpenAI.Audio
                 }
                 writer.WriteEndArray();
             }
-            if (Optional.IsCollectionDefined(InternalTimestampGranularities) && _additionalBinaryDataProperties?.ContainsKey("timestamp_granularities[]") != true)
+            if (Optional.IsCollectionDefined(InternalTimestampGranularities) && _additionalBinaryDataProperties?.ContainsKey("timestamp_granularities") != true)
             {
-                writer.WritePropertyName("timestamp_granularities[]"u8);
+                writer.WritePropertyName("timestamp_granularities"u8);
                 writer.WriteStartArray();
                 foreach (BinaryData item in InternalTimestampGranularities)
                 {
@@ -99,7 +98,44 @@ namespace OpenAI.Audio
             if (Optional.IsDefined(ChunkingStrategy) && _additionalBinaryDataProperties?.ContainsKey("chunking_strategy") != true)
             {
                 writer.WritePropertyName("chunking_strategy"u8);
-                writer.WriteObjectValue(ChunkingStrategy, options);
+#if NET6_0_OR_GREATER
+                writer.WriteRawValue(ChunkingStrategy);
+#else
+                using (JsonDocument document = JsonDocument.Parse(ChunkingStrategy))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
+#endif
+            }
+            if (Optional.IsCollectionDefined(KnownSpeakerNames) && _additionalBinaryDataProperties?.ContainsKey("known_speaker_names") != true)
+            {
+                writer.WritePropertyName("known_speaker_names"u8);
+                writer.WriteStartArray();
+                foreach (string item in KnownSpeakerNames)
+                {
+                    if (item == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
+                    writer.WriteStringValue(item);
+                }
+                writer.WriteEndArray();
+            }
+            if (Optional.IsCollectionDefined(KnownSpeakerReferences) && _additionalBinaryDataProperties?.ContainsKey("known_speaker_references") != true)
+            {
+                writer.WritePropertyName("known_speaker_references"u8);
+                writer.WriteStartArray();
+                foreach (string item in KnownSpeakerReferences)
+                {
+                    if (item == null)
+                    {
+                        writer.WriteNullValue();
+                        continue;
+                    }
+                    writer.WriteStringValue(item);
+                }
+                writer.WriteEndArray();
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -152,7 +188,9 @@ namespace OpenAI.Audio
             IList<InternalTranscriptionInclude> internalInclude = default;
             IList<BinaryData> internalTimestampGranularities = default;
             bool? stream = default;
-            InternalVadConfig chunkingStrategy = default;
+            BinaryData chunkingStrategy = default;
+            IList<string> knownSpeakerNames = default;
+            IList<string> knownSpeakerReferences = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -194,7 +232,7 @@ namespace OpenAI.Audio
                     temperature = prop.Value.GetSingle();
                     continue;
                 }
-                if (prop.NameEquals("include[]"u8))
+                if (prop.NameEquals("include"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
@@ -208,7 +246,7 @@ namespace OpenAI.Audio
                     internalInclude = array;
                     continue;
                 }
-                if (prop.NameEquals("timestamp_granularities[]"u8))
+                if (prop.NameEquals("timestamp_granularities"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
@@ -246,7 +284,49 @@ namespace OpenAI.Audio
                         chunkingStrategy = null;
                         continue;
                     }
-                    chunkingStrategy = InternalVadConfig.DeserializeInternalVadConfig(prop.Value, options);
+                    chunkingStrategy = BinaryData.FromString(prop.Value.GetRawText());
+                    continue;
+                }
+                if (prop.NameEquals("known_speaker_names"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    List<string> array = new List<string>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        if (item.ValueKind == JsonValueKind.Null)
+                        {
+                            array.Add(null);
+                        }
+                        else
+                        {
+                            array.Add(item.GetString());
+                        }
+                    }
+                    knownSpeakerNames = array;
+                    continue;
+                }
+                if (prop.NameEquals("known_speaker_references"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    List<string> array = new List<string>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        if (item.ValueKind == JsonValueKind.Null)
+                        {
+                            array.Add(null);
+                        }
+                        else
+                        {
+                            array.Add(item.GetString());
+                        }
+                    }
+                    knownSpeakerReferences = array;
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
@@ -263,6 +343,8 @@ namespace OpenAI.Audio
                 internalTimestampGranularities ?? new ChangeTrackingList<BinaryData>(),
                 stream,
                 chunkingStrategy,
+                knownSpeakerNames ?? new ChangeTrackingList<string>(),
+                knownSpeakerReferences ?? new ChangeTrackingList<string>(),
                 additionalBinaryDataProperties);
         }
 

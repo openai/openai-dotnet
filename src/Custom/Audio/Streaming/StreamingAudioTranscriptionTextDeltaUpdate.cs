@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace OpenAI.Audio;
 
 // CUSTOM: Added Experimental attribute.
-[CodeGenType("TranscriptTextDeltaEvent")]
+[CodeGenType("DotNetTranscriptTextDeltaEvent")]
 public partial class StreamingAudioTranscriptionTextDeltaUpdate
 {
     // CUSTOM: Rename; make readonly
