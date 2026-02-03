@@ -10,6 +10,69 @@
     <None Include="$(RepositoryRoot)eng\OpenAI.png" Pack="true" PackagePath="\" />
     <None Include="$(RepositoryRoot)CHANGELOG.md" Pack="true" PackagePath="\" />
     <None Include="$(RepositoryRoot)README.md" Pack="true" PackagePath="\" />
+<<<<<<< HEAD
+=======
+    <InternalsVisibleTo Include="OpenAI.Tests" Condition="'$(Configuration)' != 'Unsigned'">
+      <PublicKey>0024000004800000940000000602000000240000525341310004000001000100b197326f2e5bfe2e2a49eb2a05bee871c55cc894325b3775159732ad816c4f304916e7f154295486f8ccabefa3c19b059d51cd19987cc2d31a3195d6203ad0948662f51cc61cc3eb535fc852dfe5159318c734b163f7d1387f1112e1ffe10f83aae7b809c4e36cf2025da5d1aed6b67e1556883d8778eeb63131c029555166de</PublicKey>
+    </InternalsVisibleTo>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Shared\**" />
+    <EmbeddedResource Remove="Shared\**" />
+    <None Remove="Shared\**" />
+
+    <Compile Remove="Responses\**" />
+    <EmbeddedResource Remove="Responses\**" />
+    <None Remove="Responses\**" />
+
+    <!-- Remove files included in OpenAI.Shared -->
+    <Compile Remove="Generated\Internal\**" />
+    <Compile Remove="Generated\OpenAIClientOptions.cs" />
+    <Compile Remove="Utility\**" />
+    <Compile Include="Utility\Telemetry\**" />
+    <Compile Include="Utility\CustomSerializationHelpers.cs" />
+    <Compile Include="Custom\Internal\ClientPipelineExtensions.cs" />
+    <Compile Include="Generated\Internal\ClientPipelineExtensions.cs" />
+    <Compile Include="Custom\OpenAIError.cs" />
+
+    <!-- Remove Custom files generally, then include back the ones NOT in Shared -->
+    <Compile Remove="Custom\**" />
+
+    <!-- Include Feature folders (excluded from Shared) -->
+    <Compile Include="Custom\Administration\**" />
+    <Compile Include="Custom\Assistants\**" />
+    <Compile Include="Custom\Audio\**" />
+    <Compile Include="Custom\Batch\**" />
+    <Compile Include="Custom\Chat\**" />
+    <Compile Include="Custom\Containers\**" />
+    <Compile Include="Custom\Conversations\**" />
+    <Compile Include="Custom\Embeddings\**" />
+    <Compile Include="Custom\Evals\**" />
+    <Compile Include="Custom\Files\**" />
+    <Compile Include="Custom\FineTuning\**" />
+    <Compile Include="Custom\Graders\**" />
+    <Compile Include="Custom\Images\**" />
+    <Compile Include="Custom\LegacyCompletions\**" />
+    <Compile Include="Custom\Models\**" />
+    <Compile Include="Custom\Moderations\**" />
+    <Compile Include="Custom\Realtime\**" />
+    <Compile Include="Custom\Responses\**" />
+    <Compile Include="Custom\VectorStores\**" />
+    <Compile Include="Custom\Videos\**" />
+    <Compile Include="Custom\Replacements\**" />
+
+    <!-- Include specific files not in feature folders but needed (and excluded from Shared) -->
+    <Compile Include="Custom\OpenAIClient.cs" />
+    <Compile Include="Custom\OpenAIModelFactory.cs" />
+    <Compile Include="Custom\OpenAIContext.cs" />
+    <Compile Include="Custom\OpenAIError.cs" />
+    <Compile Include="Custom\TypeForwarding.cs" />
+    <Compile Include="Custom\Internal\ClientPipelineExtensions.cs" />
+    <Compile Include="Custom\Internal\InternalFunctionDefinition.cs" />
+    <Compile Include="Custom\Common\Internal\InternalResponseFormatJsonSchemaJsonSchema.cs" />
+    <Compile Include="Custom\Common\FileSearchRanker.cs" />
+>>>>>>> de4b0a31 (remove Shared project)
   </ItemGroup>
 
   <ItemGroup>

@@ -22,7 +22,6 @@
   <ItemGroup>
     <!-- Reference only the OpenAI.Responses assembly to validate it works independently -->
     <ProjectReference Include="..\..\src\Responses\OpenAI.Responses.csproj" />
-    <ProjectReference Include="..\..\src\Shared\OpenAI.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

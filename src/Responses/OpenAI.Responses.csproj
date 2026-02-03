@@ -25,11 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Shared\OpenAI.Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.ClientModel" Version="1.8.1" />
+    <PackageReference Include="System.ClientModel" />
   </ItemGroup>
 
   <ItemGroup>
