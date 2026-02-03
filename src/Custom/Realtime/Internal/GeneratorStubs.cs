@@ -16,7 +16,7 @@ namespace OpenAI.Realtime;
 [Experimental("OPENAI002")][CodeGenType("RealtimeClientEventInputAudioBufferCommit")] internal partial class InternalRealtimeClientEventInputAudioBufferCommit { }
 [Experimental("OPENAI002")][CodeGenType("RealtimeClientEventResponseCancel")] internal partial class InternalRealtimeClientEventResponseCancel { }
 [Experimental("OPENAI002")][CodeGenType("RealtimeClientEventSessionUpdate")] internal partial class InternalRealtimeClientEventSessionUpdate { }
-[Experimental("OPENAI002")][CodeGenType("RealtimeClientEventTranscriptionSessionUpdate")] internal partial class InternalRealtimeClientEventTranscriptionSessionUpdate {}
+// InternalRealtimeClientEventTranscriptionSessionUpdate is defined in InternalRealtimeClientEventTranscriptionSessionUpdate.Serialization.cs with custom serialization
 [Experimental("OPENAI002")][CodeGenType("RealtimeClientEventType")] internal readonly partial struct InternalRealtimeClientEventType { }
 [Experimental("OPENAI002")][CodeGenType("RealtimeConversationResponseItemObject")] internal readonly partial struct InternalRealtimeConversationResponseItemObject { }
 [Experimental("OPENAI002")][CodeGenType("RealtimeItemType")] internal readonly partial struct InternalRealtimeItemType { }

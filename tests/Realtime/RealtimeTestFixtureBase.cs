@@ -17,12 +17,19 @@ namespace OpenAI.Tests.Realtime;
 [Category("Conversation")]
 public class RealtimeTestFixtureBase : OpenAIRecordedTestBase
 {
-    public CancellationTokenSource CancellationTokenSource { get; }
+    public CancellationTokenSource CancellationTokenSource { get; private set; }
     public CancellationToken CancellationToken => CancellationTokenSource?.Token ?? default;
     public RequestOptions CancellationOptions => new() { CancellationToken = CancellationToken };
 
     public RealtimeTestFixtureBase(bool isAsync, RecordedTestMode mode = RecordedTestMode.Playback) : base(isAsync, mode)
     {
+    }
+
+    [SetUp]
+    public void SetUpCancellationToken()
+    {
+        // Create a fresh CancellationTokenSource for each test to ensure each test
+        // gets its own 15-second timeout, not a shared one from the fixture constructor
         CancellationTokenSource = new();
         if (!Debugger.IsAttached)
         {
@@ -30,13 +37,36 @@ public class RealtimeTestFixtureBase : OpenAIRecordedTestBase
         }
     }
 
+    [TearDown]
+    public void TearDownCancellationToken()
+    {
+        CancellationTokenSource?.Dispose();
+        CancellationTokenSource = null;
+    }
+
     public static string GetTestModel() => GetModelForScenario(TestScenario.Realtime);
 
     public RealtimeClient GetTestClient(bool excludeDumpPolicy = false)
     {
-        RealtimeClient client = GetProxiedOpenAIClient<RealtimeClient>(
-            scenario: TestScenario.Realtime,
-            excludeDumpPolicy: excludeDumpPolicy);
+        // WebSocket connections cannot go through the test proxy, so for Live mode tests
+        // we create a direct client instead of using GetProxiedOpenAIClient.
+        // The proxy only works with HTTP/HTTPS requests, not WebSocket connections.
+        RealtimeClient client;
+        if (Mode == RecordedTestMode.Live)
+        {
+            // Create a direct client without proxy for live WebSocket tests
+            client = GetTestClient<RealtimeClient>(
+                scenario: TestScenario.Realtime,
+                excludeDumpPolicy: excludeDumpPolicy,
+                credential: GetTestApiKeyCredential());
+        }
+        else
+        {
+            // Use proxied client for playback mode (recordings)
+            client = GetProxiedOpenAIClient<RealtimeClient>(
+                scenario: TestScenario.Realtime,
+                excludeDumpPolicy: excludeDumpPolicy);
+        }
 
         client.OnSendingCommand += (_, data) => PrintMessageData(data, "> ");
         client.OnReceivingCommand += (_, data) => PrintMessageData(data, "  < ");
