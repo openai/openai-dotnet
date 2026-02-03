@@ -3652,6 +3652,7 @@ namespace OpenAI.Realtime {
     }
     public class ConversationSessionConfiguredUpdate : RealtimeUpdate, IJsonModel<ConversationSessionConfiguredUpdate>, IPersistableModel<ConversationSessionConfiguredUpdate> {
         public RealtimeContentModalities ContentModalities { get; }
+        public new string EventId { get; }
         public RealtimeAudioFormat InputAudioFormat { get; }
         public InputTranscriptionOptions InputTranscriptionOptions { get; }
         public string Instructions { get; }
@@ -3669,23 +3670,25 @@ namespace OpenAI.Realtime {
         protected override RealtimeUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
-    public class ConversationSessionOptions : IJsonModel<ConversationSessionOptions>, IPersistableModel<ConversationSessionOptions> {
+    public class ConversationSessionOptions : RealtimeRequestSessionBase, IJsonModel<ConversationSessionOptions>, IPersistableModel<ConversationSessionOptions> {
+        public ConversationSessionOptions();
+        public RealtimeSessionAudioConfiguration Audio { get; set; }
         public RealtimeContentModalities ContentModalities { get; set; }
-        public RealtimeAudioFormat? InputAudioFormat { get; set; }
+        public IList<string> Include { get; }
         public InputNoiseReductionOptions InputNoiseReductionOptions { get; set; }
         public InputTranscriptionOptions InputTranscriptionOptions { get; set; }
         public string Instructions { get; set; }
         public ConversationMaxTokensChoice MaxOutputTokens { get; set; }
-        public RealtimeAudioFormat? OutputAudioFormat { get; set; }
         public float? Temperature { get; set; }
         public ConversationToolChoice ToolChoice { get; set; }
         public IList<ConversationTool> Tools { get; }
+        public BinaryData Tracing { get; set; }
         public TurnDetectionOptions TurnDetectionOptions { get; set; }
         public ConversationVoice? Voice { get; set; }
-        protected virtual ConversationSessionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual ConversationSessionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+        protected override RealtimeRequestSessionBase JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeRequestSessionBase PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class ConversationSessionStartedUpdate : RealtimeUpdate, IJsonModel<ConversationSessionStartedUpdate>, IPersistableModel<ConversationSessionStartedUpdate> {
         public RealtimeContentModalities ContentModalities { get; }
@@ -3712,6 +3715,7 @@ namespace OpenAI.Realtime {
         public static ConversationStatus Completed { get; }
         public static ConversationStatus Failed { get; }
         public static ConversationStatus Incomplete { get; }
+        public static ConversationStatus InProgress { get; }
         public readonly bool Equals(ConversationStatus other);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly bool Equals(object obj);
@@ -3770,6 +3774,7 @@ namespace OpenAI.Realtime {
     public readonly partial struct ConversationToolKind : IEquatable<ConversationToolKind> {
         public ConversationToolKind(string value);
         public static ConversationToolKind Function { get; }
+        public static ConversationToolKind Mcp { get; }
         public readonly bool Equals(ConversationToolKind other);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly bool Equals(object obj);
@@ -3882,6 +3887,10 @@ namespace OpenAI.Realtime {
     }
     public readonly partial struct InputTranscriptionModel : IEquatable<InputTranscriptionModel> {
         public InputTranscriptionModel(string value);
+        public static InputTranscriptionModel Gpt4oMiniTranscribe { get; }
+        public static InputTranscriptionModel Gpt4oMiniTranscribe20251215 { get; }
+        public static InputTranscriptionModel Gpt4oTranscribe { get; }
+        public static InputTranscriptionModel Gpt4oTranscribeDiarize { get; }
         public static InputTranscriptionModel Whisper1 { get; }
         public readonly bool Equals(InputTranscriptionModel other);
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -4060,10 +4069,10 @@ namespace OpenAI.Realtime {
         public ClientPipeline Pipeline { get; }
         public event EventHandler<BinaryData> OnReceivingCommand { add; remove; }
         public event EventHandler<BinaryData> OnSendingCommand { add; remove; }
-        public virtual ClientResult CreateEphemeralToken(BinaryContent content, RequestOptions options = null);
-        public virtual Task<ClientResult> CreateEphemeralTokenAsync(BinaryContent content, RequestOptions options = null);
-        public virtual ClientResult CreateEphemeralTranscriptionToken(BinaryContent content, RequestOptions options = null);
-        public virtual Task<ClientResult> CreateEphemeralTranscriptionTokenAsync(BinaryContent content, RequestOptions options = null);
+        public virtual ClientResult<RealtimeCreateClientSecretResponse> CreateRealtimeClientSecret(RealtimeCreateClientSecretRequest body, CancellationToken cancellationToken = default);
+        public virtual ClientResult CreateRealtimeClientSecret(BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult<RealtimeCreateClientSecretResponse>> CreateRealtimeClientSecretAsync(RealtimeCreateClientSecretRequest body, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult> CreateRealtimeClientSecretAsync(BinaryContent content, RequestOptions options = null);
         public RealtimeSession StartConversationSession(string model, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<RealtimeSession> StartConversationSessionAsync(string model, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
         public RealtimeSession StartSession(string model, string intent, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
@@ -4076,6 +4085,47 @@ namespace OpenAI.Realtime {
         Default = 0,
         Text = 1,
         Audio = 2
+    }
+    public class RealtimeCreateClientSecretRequest : IJsonModel<RealtimeCreateClientSecretRequest>, IPersistableModel<RealtimeCreateClientSecretRequest> {
+        public RealtimeCreateClientSecretRequestExpiresAfter ExpiresAfter { get; set; }
+        public RealtimeSessionCreateRequestUnion Session { get; set; }
+        protected virtual RealtimeCreateClientSecretRequest JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public static implicit operator BinaryContent(RealtimeCreateClientSecretRequest realtimeCreateClientSecretRequest);
+        protected virtual RealtimeCreateClientSecretRequest PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeCreateClientSecretRequestExpiresAfter : IJsonModel<RealtimeCreateClientSecretRequestExpiresAfter>, IPersistableModel<RealtimeCreateClientSecretRequestExpiresAfter> {
+        public RealtimeCreateClientSecretRequestExpiresAfterAnchor? Anchor { get; set; }
+        public int? Seconds { get; set; }
+        protected virtual RealtimeCreateClientSecretRequestExpiresAfter JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeCreateClientSecretRequestExpiresAfter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct RealtimeCreateClientSecretRequestExpiresAfterAnchor : IEquatable<RealtimeCreateClientSecretRequestExpiresAfterAnchor> {
+        public RealtimeCreateClientSecretRequestExpiresAfterAnchor(string value);
+        public static RealtimeCreateClientSecretRequestExpiresAfterAnchor CreatedAt { get; }
+        public readonly bool Equals(RealtimeCreateClientSecretRequestExpiresAfterAnchor other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeCreateClientSecretRequestExpiresAfterAnchor left, RealtimeCreateClientSecretRequestExpiresAfterAnchor right);
+        public static implicit operator RealtimeCreateClientSecretRequestExpiresAfterAnchor(string value);
+        public static implicit operator RealtimeCreateClientSecretRequestExpiresAfterAnchor?(string value);
+        public static bool operator !=(RealtimeCreateClientSecretRequestExpiresAfterAnchor left, RealtimeCreateClientSecretRequestExpiresAfterAnchor right);
+        public override readonly string ToString();
+    }
+    public class RealtimeCreateClientSecretResponse : IJsonModel<RealtimeCreateClientSecretResponse>, IPersistableModel<RealtimeCreateClientSecretResponse> {
+        public DateTimeOffset ExpiresAt { get; }
+        public RealtimeSessionCreateResponseUnion Session { get; }
+        public string Value { get; }
+        protected virtual RealtimeCreateClientSecretResponse JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public static explicit operator RealtimeCreateClientSecretResponse(ClientResult result);
+        protected virtual RealtimeCreateClientSecretResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class RealtimeErrorUpdate : RealtimeUpdate, IJsonModel<RealtimeErrorUpdate>, IPersistableModel<RealtimeErrorUpdate> {
         public string ErrorCode { get; }
@@ -4102,6 +4152,12 @@ namespace OpenAI.Realtime {
         protected virtual RealtimeItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual RealtimeItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeRequestSessionBase : IJsonModel<RealtimeRequestSessionBase>, IPersistableModel<RealtimeRequestSessionBase> {
+        protected virtual RealtimeRequestSessionBase JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeRequestSessionBase PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class RealtimeSession : IDisposable {
@@ -4147,9 +4203,93 @@ namespace OpenAI.Realtime {
         public virtual void TruncateItem(string itemId, int contentPartIndex, TimeSpan audioDuration, CancellationToken cancellationToken = default);
         public virtual Task TruncateItemAsync(string itemId, int contentPartIndex, TimeSpan audioDuration, CancellationToken cancellationToken = default);
     }
+    public class RealtimeSessionAudioConfiguration : IJsonModel<RealtimeSessionAudioConfiguration>, IPersistableModel<RealtimeSessionAudioConfiguration> {
+        public RealtimeSessionAudioInputConfiguration Input { get; set; }
+        public RealtimeSessionAudioOutputConfiguration Output { get; set; }
+        protected virtual RealtimeSessionAudioConfiguration JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeSessionAudioConfiguration PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeSessionAudioInputConfiguration : IJsonModel<RealtimeSessionAudioInputConfiguration>, IPersistableModel<RealtimeSessionAudioInputConfiguration> {
+        public RealtimeAudioFormat? Format { get; set; }
+        public InputNoiseReductionOptions NoiseReduction { get; set; }
+        public InputTranscriptionOptions Transcription { get; set; }
+        public TurnDetectionOptions TurnDetection { get; set; }
+        protected virtual RealtimeSessionAudioInputConfiguration JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeSessionAudioInputConfiguration PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeSessionAudioOutputConfiguration : IJsonModel<RealtimeSessionAudioOutputConfiguration>, IPersistableModel<RealtimeSessionAudioOutputConfiguration> {
+        public RealtimeAudioFormat? Format { get; set; }
+        public float? Speed { get; set; }
+        public ConversationVoice? Voice { get; set; }
+        protected virtual RealtimeSessionAudioOutputConfiguration JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeSessionAudioOutputConfiguration PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeSessionCreateRequestUnion : IJsonModel<RealtimeSessionCreateRequestUnion>, IPersistableModel<RealtimeSessionCreateRequestUnion> {
+        protected virtual RealtimeSessionCreateRequestUnion JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeSessionCreateRequestUnion PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct RealtimeSessionCreateRequestUnionType : IEquatable<RealtimeSessionCreateRequestUnionType> {
+        public RealtimeSessionCreateRequestUnionType(string value);
+        public static RealtimeSessionCreateRequestUnionType Realtime { get; }
+        public static RealtimeSessionCreateRequestUnionType Transcription { get; }
+        public readonly bool Equals(RealtimeSessionCreateRequestUnionType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeSessionCreateRequestUnionType left, RealtimeSessionCreateRequestUnionType right);
+        public static implicit operator RealtimeSessionCreateRequestUnionType(string value);
+        public static implicit operator RealtimeSessionCreateRequestUnionType?(string value);
+        public static bool operator !=(RealtimeSessionCreateRequestUnionType left, RealtimeSessionCreateRequestUnionType right);
+        public override readonly string ToString();
+    }
+    public class RealtimeSessionCreateResponseUnion : IJsonModel<RealtimeSessionCreateResponseUnion>, IPersistableModel<RealtimeSessionCreateResponseUnion> {
+        protected virtual RealtimeSessionCreateResponseUnion JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeSessionCreateResponseUnion PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct RealtimeSessionCreateResponseUnionType : IEquatable<RealtimeSessionCreateResponseUnionType> {
+        public RealtimeSessionCreateResponseUnionType(string value);
+        public static RealtimeSessionCreateResponseUnionType Realtime { get; }
+        public static RealtimeSessionCreateResponseUnionType Transcription { get; }
+        public readonly bool Equals(RealtimeSessionCreateResponseUnionType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeSessionCreateResponseUnionType left, RealtimeSessionCreateResponseUnionType right);
+        public static implicit operator RealtimeSessionCreateResponseUnionType(string value);
+        public static implicit operator RealtimeSessionCreateResponseUnionType?(string value);
+        public static bool operator !=(RealtimeSessionCreateResponseUnionType left, RealtimeSessionCreateResponseUnionType right);
+        public override readonly string ToString();
+    }
     public class RealtimeSessionOptions {
         public IDictionary<string, string> Headers { get; }
         public string QueryString { get; set; }
+    }
+    public readonly partial struct RealtimeSessionType : IEquatable<RealtimeSessionType> {
+        public RealtimeSessionType(string value);
+        public static RealtimeSessionType Realtime { get; }
+        public static RealtimeSessionType Transcription { get; }
+        public readonly bool Equals(RealtimeSessionType other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeSessionType left, RealtimeSessionType right);
+        public static implicit operator RealtimeSessionType(string value);
+        public static implicit operator RealtimeSessionType?(string value);
+        public static bool operator !=(RealtimeSessionType left, RealtimeSessionType right);
+        public override readonly string ToString();
     }
     public class RealtimeUpdate : IJsonModel<RealtimeUpdate>, IPersistableModel<RealtimeUpdate> {
         public string EventId { get; }
@@ -4197,7 +4337,18 @@ namespace OpenAI.Realtime {
         OutputAudioBufferStopped = 32,
         TranscriptionSessionStarted = 33,
         TranscriptionSessionConfigured = 34,
-        Error = 35
+        Error = 35,
+        InputTranscriptionSegment = 36,
+        InputAudioBufferTimeoutTriggered = 37,
+        InputAudioBufferDtmfEventReceived = 38,
+        McpListToolsInProgress = 39,
+        McpListToolsCompleted = 40,
+        McpListToolsFailed = 41,
+        ResponseMcpCallArgumentsDelta = 42,
+        ResponseMcpCallArgumentsDone = 43,
+        ResponseMcpCallInProgress = 44,
+        ResponseMcpCallCompleted = 45,
+        ResponseMcpCallFailed = 46
     }
     public readonly partial struct ResponseConversationSelection : IEquatable<ResponseConversationSelection> {
         public ResponseConversationSelection(string value);
