@@ -11,7 +11,7 @@ Thank you for your interest in contributing to the OpenAI .NET library! This gui
 | `docs/` | Guides and documentation. |
 | `examples/` | Usage examples organized by feature area (Chat, Audio, Images, Assistants, etc.). |
 | `scripts/` | PowerShell scripts for development workflows (code generation, API export, testing). |
-| `specification/` | TypeSpec definitions — `main.tsp` imports from `base/` (shared definitions) and `client/` (client customizations). |
+| `specification/` | TypeSpec definitions from which the client library is generated — `base/` contains the base API definitions and `client/` contains client-specific customizations. |
 | `src/` | Library source code — `Generated/` contains generated code, `Custom/` contains hand-written customizations, and `Utility/` contains helper classes. |
 | `tests/` | NUnit tests with `SessionRecords/` for recorded playback mode. |
 
