@@ -31,37 +31,49 @@ Build the library from the repository root:
 dotnet build OpenAI.slnx
 ```
 
-For a release build:
-
-```bash
-dotnet build OpenAI.slnx -c Release
-```
-
 ## Running Tests
 
-### Recorded Mode (Default)
+Tests use the [Microsoft.ClientModel.TestFramework](https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/core/Microsoft.ClientModel.TestFramework/README.md) and can run in three modes:
 
-Tests run against pre-recorded session data by default, so no API key is required:
+| Mode | Description |
+|------|-------------|
+| **Playback** | Tests run against pre-recorded session data in `tests/SessionRecords/`. No API key required. This is the default mode. |
+| **Record** | Tests run against the live OpenAI API and record HTTP interactions for later playback. |
+| **Live** | Tests run against the live OpenAI API without recording. |
+
+### Running Tests in Playback Mode (Default)
 
 ```bash
 dotnet test OpenAI.slnx
 ```
 
-### Live Mode
+### Running Tests in Record or Live Mode
 
-To run tests against the live OpenAI API, set the `OPENAI_API_KEY` environment variable:
+Set the `OPENAI_API_KEY` environment variable and the test mode:
 
 ```bash
 # PowerShell
 $env:OPENAI_API_KEY = "your-api-key"
+$env:SYSTEM_CLIENTMODEL_TEST_MODE = "Record"  # or "Live"
 
 # Bash
 export OPENAI_API_KEY="your-api-key"
+export SYSTEM_CLIENTMODEL_TEST_MODE="Record"  # or "Live"
 ```
 
-Then run the tests. The test framework will use the live API and can record new session data into `tests/SessionRecords/`.
+Then run the tests:
+
+```bash
+dotnet test OpenAI.slnx
+```
+
+### Sanitization
+
+When recording tests, sensitive data such as API keys and other secrets are automatically sanitized before being saved to session files. This ensures that session recordings can be safely committed to the repository. Always verify that new recordings do not contain sensitive information before committing.
 
 ## Code Generation
+
+> **⚠️ Important:** Files in `src/Generated/` are automatically generated and will be overwritten during code generation. To customize behavior, add or modify files in `src/Custom/` instead.
 
 The library is generated from [TypeSpec](https://typespec.io/) definitions located in the `specification/` folder. The base API definitions are in `specification/base/`, and client-specific customizations are in `specification/client/`.
 
@@ -77,8 +89,6 @@ This script:
 1. Installs npm dependencies (`npm ci`)
 2. Builds the TypeSpec emitter and generator in `codegen/`
 3. Compiles the TypeSpec specification and generates C# code into `src/Generated/`
-
-**Note:** Any modifications to files in `src/Generated/` will be overwritten on the next code generation. To customize behavior, add or modify files in `src/Custom/` instead.
 
 ## API Surface and Compatibility
 
@@ -129,5 +139,5 @@ Before submitting a pull request, please ensure:
 - [ ] All tests pass (`dotnet test OpenAI.slnx`)
 - [ ] If you modified the public API, run `./scripts/Export-Api.ps1` and commit the updated `api/` files
 - [ ] If you modified code snippets, run `./scripts/Update-Snippets.ps1` and commit any updated documentation
-- [ ] If you regenerated code, include the regenerated files in a separate commit for easier review
+- [ ] If you regenerated code, include the regenerated files in the same commit as the changes that caused them (TypeSpec or custom code changes)
 - [ ] Consider running `./scripts/Test-ApiCompatibility.ps1` and `./scripts/Test-AotCompatibility.ps1` to verify compatibility
