@@ -431,7 +431,8 @@ public class RealtimeTests : RealtimeTestFixtureBase
         ConversationSessionOptions options = new()
         {
             Instructions = "Call provided tools if appropriate for the user's input.",
-            ContentModalities = RealtimeContentModalities.Text | RealtimeContentModalities.Audio,
+            ContentModalities = RealtimeContentModalities.Audio,
+            MaxOutputTokens = 4096,
             Tools = { getWeatherTool },
             Audio = new RealtimeSessionAudioConfiguration()
             {
@@ -499,7 +500,6 @@ public class RealtimeTests : RealtimeTestFixtureBase
             if (update is ConversationSessionConfiguredUpdate sessionConfiguredUpdate)
             {
                 // Verify our configured modalities are applied
-                Assert.That(sessionConfiguredUpdate.ContentModalities.HasFlag(RealtimeContentModalities.Text), Is.True);
                 Assert.That(sessionConfiguredUpdate.ContentModalities.HasFlag(RealtimeContentModalities.Audio), Is.True);
             }
 
