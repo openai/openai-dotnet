@@ -54,11 +54,11 @@ Set the `OPENAI_API_KEY` environment variable and the test mode:
 ```bash
 # PowerShell
 $env:OPENAI_API_KEY = "your-api-key"
-$env:SYSTEM_CLIENTMODEL_TEST_MODE = "Record"  # or "Live"
+$env:CLIENTMODEL_TEST_MODE = "Record"  # or "Live"
 
 # Bash
 export OPENAI_API_KEY="your-api-key"
-export SYSTEM_CLIENTMODEL_TEST_MODE="Record"  # or "Live"
+export CLIENTMODEL_TEST_MODE="Record"  # or "Live"
 ```
 
 Then run the tests:
@@ -66,8 +66,6 @@ Then run the tests:
 ```bash
 dotnet test OpenAI.slnx
 ```
-
-### Sanitization
 
 When recording tests, sensitive data such as API keys and other secrets are automatically sanitized before being saved to session files. This ensures that session recordings can be safely committed to the repository. Always verify that new recordings do not contain sensitive information before committing.
 
@@ -140,4 +138,3 @@ Before submitting a pull request, please ensure:
 - [ ] If you modified the public API, run `./scripts/Export-Api.ps1` and commit the updated `api/` files
 - [ ] If you modified code snippets, run `./scripts/Update-Snippets.ps1` and commit any updated documentation
 - [ ] If you regenerated code, include the regenerated files in the same commit as the changes that caused them (TypeSpec or custom code changes)
-- [ ] Consider running `./scripts/Test-ApiCompatibility.ps1` and `./scripts/Test-AotCompatibility.ps1` to verify compatibility
