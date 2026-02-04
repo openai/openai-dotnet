@@ -2,9 +2,6 @@
   <Project Path="examples/OpenAI.Examples.csproj" />
   <Project Path="src/OpenAI.csproj" />
   <Project Path="tests/OpenAI.Tests.csproj" />
-<<<<<<< HEAD
-=======
   <Project Path="src/Responses/OpenAI.Responses.csproj" />
   <Project Path="tests/Responses/OpenAI.Responses.Tests.csproj" />
->>>>>>> de4b0a31 (remove Shared project)
 </Solution>

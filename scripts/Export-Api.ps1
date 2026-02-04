@@ -1,97 +1,57 @@
 <#
 .SYNOPSIS
-    Generates the public API surface for the OpenAI .NET library using GenAPI.
+    Cross-platform API export script for OpenAI .NET SDK.
 
 .DESCRIPTION
-    This script invokes the MSBuild GenerateApi target to produce C# source files
-    representing the public API contract of the OpenAI library. The output files
-    are placed in the 'api' folder at the repository root.
-
-.EXAMPLE
-    .\Export-Api.ps1
-    Generates API for all target frameworks defined in
-    ClientTargetFrameworks (Directory.Build.props) using the Release configuration.
-
-.NOTES
-    Outputs are written to api/OpenAI.<TargetFramework>.cs
+    This script supports Windows, macOS, and Linux environments. It automatically detects the current platform
+    and uses the appropriate paths for .NET and NuGet packages.
+    
+    Generates API files for both OpenAI and OpenAI.Responses assemblies.
 #>
 
-[CmdletBinding()]
-param(
-)
+function Invoke-DotNetBuild {
+    param(
+        [Parameter(Mandatory = $true)]
+        [string]$ProjectPath
+    )
 
-$ErrorActionPreference = "Stop"
-
-$configuration = "Release"
-
-# Resolve paths
-$repoRootPath = Join-Path $PSScriptRoot ".." -Resolve
-$projectPath = Join-Path $repoRootPath "src" "OpenAI.csproj"
-$outputDirectory = Join-Path $repoRootPath "api"
-
-# Get ClientTargetFrameworks from Directory.Build.props
-$propsPath = Join-Path $repoRootPath "Directory.Build.props"
-$clientTargetFrameworks = ""
-if (Test-Path $propsPath) {
-    $propsContent = Get-Content $propsPath -Raw
-    if ($propsContent -match '<ClientTargetFrameworks>([^<]+)</ClientTargetFrameworks>') {
-        $clientTargetFrameworks = $Matches[1]
-    }
+    Write-Output "Building $($ProjectPath)..."
+    Write-Output ""
+    & dotnet build $ProjectPath
+    Write-Output ""
 }
 
-if (-not $clientTargetFrameworks) {
-    Write-Error "Could not find ClientTargetFrameworks in Directory.Build.props"
-    exit 1
-}
+function Invoke-GenAPI {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$TargetFramework,
 
-Write-Host ""
-Write-Host "Target Frameworks: $clientTargetFrameworks" -ForegroundColor Green
-Write-Host "Configuration: $configuration"
-Write-Host ""
+        [Parameter(Mandatory = $true)]
+        [string]$AssemblyPath,
 
-# Ensure output directory exists and is clean
-if (Test-Path $outputDirectory) {
-    Write-Host "Cleaning existing output directory..." -ForegroundColor Cyan
-    try {
-        Get-ChildItem -Path $outputDirectory -Force | Remove-Item -Recurse -Force
-    }
-    catch {
-        Write-Warning "Failed to clean some items in output directory: $_"
-    }
-} else {
-    New-Item -ItemType Directory -Path $outputDirectory -Force | Out-Null
-    Write-Host "Created output directory: $outputDirectory"
-}
+        [Parameter(Mandatory = $true)]
+        [string]$Destination
+    )
 
-# Build the dotnet command arguments
-$buildArgs = @(
-    "build"
-    $projectPath
-    "-t:ExportApi"
-    "-c:$configuration"
-    "-p:ExportingApi=true"
-)
+    Write-Output "Generating $($Destination)..."
+    Write-Output ""
 
-Write-Host "Output Directory: $outputDirectory"
-Write-Host ""
-Write-Host "Running GenAPI for all target frameworks..." -ForegroundColor Cyan
-Write-Host ""
+    Write-Output "  Detected platform paths:"
+    Write-Output ""
 
-# Run a single build command - the MSBuild target handles all frameworks
-& dotnet @buildArgs
-if ($LASTEXITCODE -ne 0) {
-    Write-Error "GenAPI failed with exit code $LASTEXITCODE"
-    exit $LASTEXITCODE
-}
-
-Write-Host ""
-Write-Host "Cleaning up generated files..." -ForegroundColor Cyan
-
-# Clean up each generated file
-Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
-    Write-Host "  Cleaning $($_.Name)..."
+    # Set platform-specific paths using PowerShell automatic variables (PowerShell 6.0+)
+    # Fall back to manual detection for older PowerShell versions
+    $isWindowsPlatform = $false
+    $isMacOSPlatform = $false
     
-    $content = Get-Content $_.FullName -Raw
+    if (Get-Variable -Name "IsWindows" -ErrorAction SilentlyContinue) {
+        $isWindowsPlatform = $IsWindows
+        $isMacOSPlatform = $IsMacOS
+    } else {
+        # Fallback for Windows PowerShell 5.1 and earlier
+        $isWindowsPlatform = [System.Environment]::OSVersion.Platform -eq [System.PlatformID]::Win32NT
+        $isMacOSPlatform = [System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::OSX)
+    }
 
     if ($isWindowsPlatform) {
         $dotnetPacksPath = Join-Path $env:ProgramFiles "dotnet\packs\Microsoft.NETCore.App.Ref"
@@ -115,12 +75,15 @@ Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
     Write-Output "  Assembly reference paths:"
     Write-Output ""
 
+    # Determine target framework folder name for reference assemblies
+    $netRefFolder = if ($TargetFramework -eq "net10.0") { "net10.0" } elseif ($TargetFramework -eq "net8.0") { "net8.0" } else { "net8.0" }
+
     # .NET
     $netRef = $null
     if (Test-Path $dotnetPacksPath) {
         $netRef = Get-ChildItem -Recurse `
             -Path $dotnetPacksPath `
-            -Include "net8.0" | Select-Object -Last 1
+            -Include $netRefFolder | Select-Object -Last 1
     }
     
     # If not found in primary location, try alternative locations
@@ -138,7 +101,7 @@ Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
         
         foreach ($altPath in $alternativePaths) {
             if (Test-Path $altPath) {
-                $netRef = Get-ChildItem -Recurse -Path $altPath -Include "net8.0" | Select-Object -Last 1
+                $netRef = Get-ChildItem -Recurse -Path $altPath -Include $netRefFolder | Select-Object -Last 1
                 if ($netRef) { break }
             }
         }
@@ -148,15 +111,21 @@ Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
     Write-Output "    $($netRef)"
     Write-Output ""
 
+    # Determine NuGet package target framework folder
+    $nugetTfm = if ($TargetFramework -eq "netstandard2.0") { "netstandard2.0" } else { "net8.0" }
+
     # System.ClientModel
-    $systemClientModelPath = Join-Path $nugetPackagesPath "system.clientmodel\1.8.1"
+    $systemClientModelPath = Join-Path $nugetPackagesPath "system.clientmodel"
     $systemClientModelRef = $null
     if (Test-Path $systemClientModelPath) {
-        $systemClientModelRef = Get-ChildItem `
-            -Path $systemClientModelPath `
-            -Include $(($TargetFramework -eq "netstandard2.0") ? "netstandard2.0" : "net8.0") `
-            -Recurse |
-                Select-Object -Last 1
+        $latestVersion = Get-ChildItem -Path $systemClientModelPath -Directory | Sort-Object Name -Descending | Select-Object -First 1
+        if ($latestVersion) {
+            $systemClientModelRef = Get-ChildItem `
+                -Path $latestVersion.FullName `
+                -Include $nugetTfm `
+                -Recurse |
+                    Select-Object -Last 1
+        }
     }
 
     Write-Output "  * System.ClientModel:"
@@ -164,14 +133,17 @@ Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
     Write-Output ""
 
     # System.Net.ServerSentEvents
-    $systemNetServerSentEventsPath = Join-Path $nugetPackagesPath "system.net.serversentevents\9.0.9"
+    $systemNetServerSentEventsPath = Join-Path $nugetPackagesPath "system.net.serversentevents"
     $systemNetServerSentEventsRef = $null
     if (Test-Path $systemNetServerSentEventsPath) {
-        $systemNetServerSentEventsRef = Get-ChildItem `
-            -Path $systemNetServerSentEventsPath `
-            -Include $(($TargetFramework -eq "netstandard2.0") ? "netstandard2.0" : "net8.0") `
-            -Recurse |
-                Select-Object -Last 1
+        $latestVersion = Get-ChildItem -Path $systemNetServerSentEventsPath -Directory | Sort-Object Name -Descending | Select-Object -First 1
+        if ($latestVersion) {
+            $systemNetServerSentEventsRef = Get-ChildItem `
+                -Path $latestVersion.FullName `
+                -Include $nugetTfm `
+                -Recurse |
+                    Select-Object -Last 1
+        }
     }
 
     Write-Output "  * System.Net.ServerSentEvents:"
@@ -179,14 +151,17 @@ Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
     Write-Output ""
 
     # Microsoft.Extensions.Logging.Abstractions
-    $microsoftExtensionsLoggingAbstractionsPath = Join-Path $nugetPackagesPath "microsoft.extensions.logging.abstractions\8.0.3"
+    $microsoftExtensionsLoggingAbstractionsPath = Join-Path $nugetPackagesPath "microsoft.extensions.logging.abstractions"
     $microsoftExtensionsLoggingAbstractionsRef = $null
     if (Test-Path $microsoftExtensionsLoggingAbstractionsPath) {
-        $microsoftExtensionsLoggingAbstractionsRef = Get-ChildItem `
-            -Path $microsoftExtensionsLoggingAbstractionsPath `
-            -Include  $(($TargetFramework -eq "netstandard2.0") ? "netstandard2.0" : "net8.0") `
-            -Recurse |
-                Select-Object -Last 1
+        $latestVersion = Get-ChildItem -Path $microsoftExtensionsLoggingAbstractionsPath -Directory | Sort-Object Name -Descending | Select-Object -First 1
+        if ($latestVersion) {
+            $microsoftExtensionsLoggingAbstractionsRef = Get-ChildItem `
+                -Path $latestVersion.FullName `
+                -Include $nugetTfm `
+                -Recurse |
+                    Select-Object -Last 1
+        }
     }
 
     Write-Output "  * Microsoft.Extensions.Logging.Abstractions:"
@@ -194,14 +169,17 @@ Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
     Write-Output ""
 
     # Microsoft.Extensions.DependencyInjection.Abstractions
-    $microsoftExtensionsDependencyInjectionAbstractionsPath = Join-Path $nugetPackagesPath "microsoft.extensions.dependencyinjection.abstractions\8.0.2"
+    $microsoftExtensionsDependencyInjectionAbstractionsPath = Join-Path $nugetPackagesPath "microsoft.extensions.dependencyinjection.abstractions"
     $microsoftExtensionsDependencyInjectionAbstractionsRef = $null
     if (Test-Path $microsoftExtensionsDependencyInjectionAbstractionsPath) {
-        $microsoftExtensionsDependencyInjectionAbstractionsRef = Get-ChildItem `
-            -Path $microsoftExtensionsDependencyInjectionAbstractionsPath `
-            -Include  $(($TargetFramework -eq "netstandard2.0") ? "netstandard2.0" : "net8.0") `
-            -Recurse |
-                Select-Object -Last 1
+        $latestVersion = Get-ChildItem -Path $microsoftExtensionsDependencyInjectionAbstractionsPath -Directory | Sort-Object Name -Descending | Select-Object -First 1
+        if ($latestVersion) {
+            $microsoftExtensionsDependencyInjectionAbstractionsRef = Get-ChildItem `
+                -Path $latestVersion.FullName `
+                -Include $nugetTfm `
+                -Recurse |
+                    Select-Object -Last 1
+        }
     }
 
     Write-Output "  * Microsoft.Extensions.DependencyInjection.Abstractions:"
@@ -209,30 +187,39 @@ Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
     Write-Output ""
 
     # System.Memory.Data
-    $systemMemoryDataPath = Join-Path $nugetPackagesPath "system.memory.data\8.0.1"
+    $systemMemoryDataPath = Join-Path $nugetPackagesPath "system.memory.data"
     $systemMemoryDataRef = $null
     if (Test-Path $systemMemoryDataPath) {
-        $systemMemoryDataRef = Get-ChildItem `
-            -Path $systemMemoryDataPath `
-            -Include  $(($TargetFramework -eq "netstandard2.0") ? "netstandard2.0" : "net6.0") `
-            -Recurse |
-                Select-Object -Last 1
+        $latestVersion = Get-ChildItem -Path $systemMemoryDataPath -Directory | Sort-Object Name -Descending | Select-Object -First 1
+        if ($latestVersion) {
+            $memoryDataTfm = if ($TargetFramework -eq "netstandard2.0") { "netstandard2.0" } else { "net6.0" }
+            $systemMemoryDataRef = Get-ChildItem `
+                -Path $latestVersion.FullName `
+                -Include $memoryDataTfm `
+                -Recurse |
+                    Select-Object -Last 1
+        }
     }
 
     Write-Output "  * System.Memory.Data:"
     Write-Output "    $($systemMemoryDataRef)"
     Write-Output ""
 
+    $systemDiagnosticsDiagnosticSourceRef = $null
+    $microsoftBclAsyncInterfacesRef = $null
+
     if ($TargetFramework -eq "netstandard2.0") {
         # System.Diagnostics.DiagnosticSource
-        $systemDiagnosticsDiagnosticSourcePath = Join-Path $nugetPackagesPath "system.diagnostics.diagnosticsource\8.0.1"
-        $systemDiagnosticsDiagnosticSourceRef = $null
+        $systemDiagnosticsDiagnosticSourcePath = Join-Path $nugetPackagesPath "system.diagnostics.diagnosticsource"
         if (Test-Path $systemDiagnosticsDiagnosticSourcePath) {
-            $systemDiagnosticsDiagnosticSourceRef = Get-ChildItem `
-                -Path $systemDiagnosticsDiagnosticSourcePath `
-                -Include $(($TargetFramework -eq "netstandard2.0") ? "netstandard2.0" : "net5.0") `
-                -Recurse |
-                    Select-Object -Last 1
+            $latestVersion = Get-ChildItem -Path $systemDiagnosticsDiagnosticSourcePath -Directory | Sort-Object Name -Descending | Select-Object -First 1
+            if ($latestVersion) {
+                $systemDiagnosticsDiagnosticSourceRef = Get-ChildItem `
+                    -Path $latestVersion.FullName `
+                    -Include "netstandard2.0" `
+                    -Recurse |
+                        Select-Object -Last 1
+            }
         }
 
         Write-Output "  * System.Diagnostics.DiagnosticSource:"
@@ -240,14 +227,16 @@ Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
         Write-Output ""
 
         # Microsoft.Bcl.AsyncInterfaces
-        $microsoftBclAsyncInterfacesPath = Join-Path $nugetPackagesPath "microsoft.bcl.asyncinterfaces\8.0.0"
-        $microsoftBclAsyncInterfacesRef = $null
+        $microsoftBclAsyncInterfacesPath = Join-Path $nugetPackagesPath "microsoft.bcl.asyncinterfaces"
         if (Test-Path $microsoftBclAsyncInterfacesPath) {
-            $microsoftBclAsyncInterfacesRef = Get-ChildItem `
-                -Path $microsoftBclAsyncInterfacesPath `
-                -Include "netstandard2.0" `
-                -Recurse |
-                    Select-Object -Last 1
+            $latestVersion = Get-ChildItem -Path $microsoftBclAsyncInterfacesPath -Directory | Sort-Object Name -Descending | Select-Object -First 1
+            if ($latestVersion) {
+                $microsoftBclAsyncInterfacesRef = Get-ChildItem `
+                    -Path $latestVersion.FullName `
+                    -Include "netstandard2.0" `
+                    -Recurse |
+                        Select-Object -Last 1
+            }
         }
 
         Write-Output "  * Microsoft.Bcl.AsyncInterfaces:"
@@ -255,19 +244,20 @@ Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
         Write-Output ""
     }
 
-    # Internal project references (e.g. OpenAI.Shared)
+    # Internal project references (sibling assemblies)
     $assemblyDir = Split-Path -Parent $AssemblyPath
-    $openAiSharedPath = Join-Path $assemblyDir "OpenAI.Shared.dll"
-    if (Test-Path $openAiSharedPath) {
-        Write-Output "  * OpenAI.Shared:"
-        Write-Output "    $($openAiSharedPath)"
-        Write-Output ""
-    }
     
     $openAiPath = Join-Path $assemblyDir "OpenAI.dll"
     if (Test-Path $openAiPath) {
         Write-Output "  * OpenAI:"
         Write-Output "    $($openAiPath)"
+        Write-Output ""
+    }
+
+    $openAiResponsesPath = Join-Path $assemblyDir "OpenAI.Responses.dll"
+    if (Test-Path $openAiResponsesPath) {
+        Write-Output "  * OpenAI.Responses:"
+        Write-Output "    $($openAiResponsesPath)"
         Write-Output ""
     }
 
@@ -290,11 +280,11 @@ Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
     if ($microsoftBclAsyncInterfacesRef) { $genapiArgs += @("--assembly-reference", $microsoftBclAsyncInterfacesRef) }
     
     # Add sibling assemblies as references if they differ from the main assembly
-    if ((Test-Path $openAiSharedPath) -and ($AssemblyPath -ne $openAiSharedPath)) { 
-        $genapiArgs += @("--assembly-reference", $openAiSharedPath) 
-    }
     if ((Test-Path $openAiPath) -and ($AssemblyPath -ne $openAiPath)) { 
         $genapiArgs += @("--assembly-reference", $openAiPath) 
+    }
+    if ((Test-Path $openAiResponsesPath) -and ($AssemblyPath -ne $openAiResponsesPath)) { 
+        $genapiArgs += @("--assembly-reference", $openAiResponsesPath) 
     }
 
     & genapi @genapiArgs
@@ -369,46 +359,35 @@ Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
     $content = $content -creplace "Diagnostics.CodeAnalysis.Experimental", "Experimental"
     $content = $content -creplace "Diagnostics.CodeAnalysis.SetsRequiredMembers", "SetsRequiredMembers"
 
-    # Manually back-fill OpenAIClientOptions from OpenAI.Shared if we are generating OpenAI
-    if ($AssemblyPath -match "OpenAI.dll$") {
-        $sharedApiPath = $Destination -replace "OpenAI\.","OpenAI.Shared."
-        if (Test-Path $sharedApiPath) {
-             $content = $content -replace '\[assembly: Runtime.CompilerServices.TypeForwardedTo\(typeof\(OpenAI.OpenAIClientOptions\)\)\]\r?\n?', ''
-             $sharedContent = Get-Content $sharedApiPath -Raw
-             if ($sharedContent -match '(?ms)(    public class OpenAIClientOptions : ClientPipelineOptions \{.*?\n    \})') {
-                 $optionsClass = $matches[1]
-                 $content = $content -replace 'namespace OpenAI \{', "namespace OpenAI {`n$optionsClass"
-             }
-        }
-    }
-
     Set-Content -Path $Destination -Value $content -NoNewline
 }
 
+# Main execution
 $repoRootPath = Join-Path $PSScriptRoot .. -Resolve
-$solutionPath = Join-Path $repoRootPath "OpenAI.sln"
 
+# Build the solution
+$solutionPath = Join-Path $repoRootPath "OpenAI.slnx"
 Invoke-DotNetBuild -ProjectPath $solutionPath
 
+# Define projects and their assembly paths
 $projects = @(
     @{
-        Name = "OpenAI.Shared"
-        AssemblyPath = "src\Shared\bin\Debug"
-    },
-    @{
         Name = "OpenAI"
-        AssemblyPath = "src\bin\Debug"
+        AssemblyPath = "src/bin/Debug"
     },
     @{
         Name = "OpenAI.Responses"
-        AssemblyPath = "src\Responses\bin\Debug"
+        AssemblyPath = "src/Responses/bin/Debug"
     }
 )
 
+# Target frameworks should match ClientTargetFrameworks from Directory.Build.props
+$targetFrameworks = @("netstandard2.0", "net8.0", "net10.0")
+
 foreach ($project in $projects) {
-    foreach ($targetFramework in @("netstandard2.0", "net8.0")) {
-        $assemblyPath = Join-Path $repoRootPath "$($project.AssemblyPath)\$($targetFramework)\$($project.Name).dll"
-        $destination = Join-Path $repoRootPath "api\$($project.Name).$($targetFramework).cs"
+    foreach ($targetFramework in $targetFrameworks) {
+        $assemblyPath = Join-Path $repoRootPath "$($project.AssemblyPath)/$($targetFramework)/$($project.Name).dll"
+        $destination = Join-Path $repoRootPath "api/$($project.Name).$($targetFramework).cs"
         
         if (Test-Path $assemblyPath) {
             Invoke-GenAPI -TargetFramework $targetFramework -AssemblyPath $assemblyPath -Destination $destination
@@ -417,3 +396,6 @@ foreach ($project in $projects) {
         }
     }
 }
+
+Write-Output ""
+Write-Output "API export complete!"

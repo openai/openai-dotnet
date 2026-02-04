@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net10.0;net9.0;net8.0</TargetFrameworks>
+    <IsTestProject>true</IsTestProject>
     <LangVersion>latest</LangVersion>
     <RootNamespace>OpenAI.Tests</RootNamespace>
 
@@ -12,11 +13,6 @@
 
     <!-- Define constant to indicate this is the Responses-only test project -->
     <DefineConstants>$(DefineConstants);RESPONSES_ONLY</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)' != 'Unsigned'">
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\src\OpenAI.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -35,7 +31,7 @@
 
   <!-- Conditionally include packages built into the latest runtime -->
   <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net10.0')) == 'false'">
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
   </ItemGroup>
 
   <ItemGroup>

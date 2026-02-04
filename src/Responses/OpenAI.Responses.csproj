@@ -13,11 +13,6 @@
     <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">true</IsAotCompatible>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)' != 'Unsigned'">
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\OpenAI.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-
   <ItemGroup>
     <None Include="$(RepositoryRoot)eng\OpenAI.png" Pack="true" PackagePath="\" />
     <None Include="$(RepositoryRoot)CHANGELOG.md" Pack="true" PackagePath="\" />
@@ -29,12 +24,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Include="..\Generated\Internal\**\*.cs" Link="Generated\Internal\%(RecursiveDir)%(Filename)%(Extension)" />
     <Compile Include="..\Generated\Models\Responses\**\*.cs" Link="Generated\Models\Responses\%(RecursiveDir)%(Filename)%(Extension)" />
     <Compile Include="..\Custom\Responses\**\*.cs" Link="Custom\Responses\%(RecursiveDir)%(Filename)%(Extension)" />
     <Compile Include="..\Generated\ResponsesClient.cs" Link="Generated\ResponsesClient.cs" />
     <Compile Include="..\Generated\ResponsesClient.RestClient.cs" Link="Generated\ResponsesClient.RestClient.cs" />
     <Compile Include="..\Custom\Internal\ClientPipelineExtensions.cs" Link="Custom\Internal\ClientPipelineExtensions.cs" />
-    <Compile Include="..\Generated\Internal\ClientPipelineExtensions.cs" Link="Generated\Internal\ClientPipelineExtensions.cs" />
+    <Compile Include="..\Custom\Internal\CancellationTokenExtensions.cs" Link="Custom\Internal\CancellationTokenExtensions.cs" />
+    <Compile Include="..\Custom\Internal\TelemetryDetails.cs" Link="Custom\Internal\TelemetryDetails.cs" />
     <Compile Include="..\Custom\OpenAIError.cs" Link="Custom\OpenAIError.cs" />
     <Compile Include="..\Generated\Models\Internal\OpenAIErrorResponse.cs" Link="Generated\Models\Internal\OpenAIErrorResponse.cs" />
     <Compile Include="..\Generated\Models\Internal\OpenAIErrorResponse.Serialization.cs" Link="Generated\Models\Internal\OpenAIErrorResponse.Serialization.cs" />
@@ -42,7 +39,15 @@
     <Compile Include="..\Generated\Models\Internal\OpenAIError.Serialization.cs" Link="Generated\Models\Internal\OpenAIError.Serialization.cs" />
     <Compile Include="..\Generated\CollectionResults\ResponsesClient*.cs" Link="Generated\CollectionResults\%(Filename)%(Extension)" />
     <Compile Include="..\Custom\OpenAIContext.cs" Link="Custom\OpenAIContext.cs" />
-    <Compile Include="..\Utility\CustomSerializationHelpers.cs" Link="Utility\CustomSerializationHelpers.cs" />
+    <Compile Include="..\Custom\OpenAIClientOptions.cs" Link="Custom\OpenAIClientOptions.cs" />
+    <Compile Include="..\Generated\OpenAIClientOptions.cs" Link="Generated\OpenAIClientOptions.cs" />
+    <Compile Include="..\Utility\*.cs" Link="Utility\%(Filename)%(Extension)" />
+    <Compile Include="..\Utility\Polyfill\*.cs" Link="Utility\Polyfill\%(Filename)%(Extension)" />
+    <Compile Include="..\Utility\CodeGen\*.cs" Link="Utility\CodeGen\%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Net.ServerSentEvents" />
   </ItemGroup>
 
 </Project>

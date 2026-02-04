@@ -10,10 +10,11 @@ public class OpenAITestEnvironment : TestEnvironment
 {
     static OpenAITestEnvironment()
     {
-        // RepositoryRoot resolves to tests/ directory (parent of Responses/)
-        // Same path as the original OpenAI.Tests project
+        // RepositoryRoot resolves to the repository root directory
+        // The testproxy folder is under tests/Utility/
         DevCertPath = Path.Combine(
             RepositoryRoot,
+            "tests",
             "Utility",
             "testproxy",
             "dotnet-devcert.pfx");

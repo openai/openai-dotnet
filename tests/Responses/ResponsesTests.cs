@@ -1118,5 +1118,9 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             """),
         strictModeEnabled: false);
 
+#if RESPONSES_ONLY
     private new ResponsesClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<ResponsesClient>(TestScenario.Responses, overrideModel);
+#else
+    private ResponsesClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<ResponsesClient>(TestScenario.Responses, overrideModel);
+#endif
 }

@@ -2,11 +2,16 @@
   <PropertyGroup>
     <TargetFrameworks>$(TestTargetFrameworks)</TargetFrameworks>
     <IsTestProject>true</IsTestProject>
-  </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)' != 'Unsigned'">
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\src\OpenAI.snk</AssemblyOriginatorKeyFile>
+    <!-- 
+      Exclude Responses subproject build artifacts and utility files.
+      The Responses/Utility files are standalone copies designed for the separate 
+      OpenAI.Responses.Tests project. The main test project has its own utilities.
+    -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);Responses/OpenAI.Responses.Tests.csproj;Responses/bin/**;Responses/obj/**;Responses/Utility/**</DefaultItemExcludes>
+
+    <!-- Re-enable signing for InternalsVisibleTo compatibility -->
+    <SignAssembly Condition="'$(Configuration)' != 'Unsigned'">true</SignAssembly>
   </PropertyGroup>
 
   <ItemGroup>
