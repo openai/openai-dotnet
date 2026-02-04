@@ -313,3 +313,17 @@ $targetFramework = "net8.0"
 $assemblyPath = Join-Path $repoRootPath "src\bin\Debug\$($targetFramework)\OpenAI.dll"
 $destination = Join-Path $repoRootPath "api\OpenAI.$($targetFramework).cs"
 Invoke-GenAPI -TargetFramework $targetFramework -AssemblyPath $assemblyPath -Destination $destination
+
+$responsesProjectPath = Join-Path $repoRootPath "src\Responses\OpenAI.Responses.csproj"
+
+Invoke-DotNetBuild -ProjectPath $responsesProjectPath
+
+$targetFramework = "netstandard2.0"
+$assemblyPath = Join-Path $repoRootPath "src\Responses\bin\Debug\$($targetFramework)\OpenAI.Responses.dll"
+$destination = Join-Path $repoRootPath "api\OpenAI.Responses.$($targetFramework).cs"
+Invoke-GenAPI -TargetFramework $targetFramework -AssemblyPath $assemblyPath -Destination $destination
+
+$targetFramework = "net8.0"
+$assemblyPath = Join-Path $repoRootPath "src\Responses\bin\Debug\$($targetFramework)\OpenAI.Responses.dll"
+$destination = Join-Path $repoRootPath "api\OpenAI.Responses.$($targetFramework).cs"
+Invoke-GenAPI -TargetFramework $targetFramework -AssemblyPath $assemblyPath -Destination $destination
