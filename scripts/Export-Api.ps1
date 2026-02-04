@@ -5,8 +5,6 @@
 .DESCRIPTION
     This script supports Windows, macOS, and Linux environments. It automatically detects the current platform
     and uses the appropriate paths for .NET and NuGet packages.
-    
-    Generates API files for both OpenAI and OpenAI.Responses assemblies.
 #>
 
 function Invoke-DotNetBuild {
@@ -75,15 +73,12 @@ function Invoke-GenAPI {
     Write-Output "  Assembly reference paths:"
     Write-Output ""
 
-    # Determine target framework folder name for reference assemblies
-    $netRefFolder = if ($TargetFramework -eq "net10.0") { "net10.0" } elseif ($TargetFramework -eq "net8.0") { "net8.0" } else { "net8.0" }
-
     # .NET
     $netRef = $null
     if (Test-Path $dotnetPacksPath) {
         $netRef = Get-ChildItem -Recurse `
             -Path $dotnetPacksPath `
-            -Include $netRefFolder | Select-Object -Last 1
+            -Include "net8.0" | Select-Object -Last 1
     }
     
     # If not found in primary location, try alternative locations
@@ -101,7 +96,7 @@ function Invoke-GenAPI {
         
         foreach ($altPath in $alternativePaths) {
             if (Test-Path $altPath) {
-                $netRef = Get-ChildItem -Recurse -Path $altPath -Include $netRefFolder | Select-Object -Last 1
+                $netRef = Get-ChildItem -Recurse -Path $altPath -Include "net8.0" | Select-Object -Last 1
                 if ($netRef) { break }
             }
         }
@@ -111,21 +106,15 @@ function Invoke-GenAPI {
     Write-Output "    $($netRef)"
     Write-Output ""
 
-    # Determine NuGet package target framework folder
-    $nugetTfm = if ($TargetFramework -eq "netstandard2.0") { "netstandard2.0" } else { "net8.0" }
-
     # System.ClientModel
-    $systemClientModelPath = Join-Path $nugetPackagesPath "system.clientmodel"
+    $systemClientModelPath = Join-Path $nugetPackagesPath "system.clientmodel\1.8.1"
     $systemClientModelRef = $null
     if (Test-Path $systemClientModelPath) {
-        $latestVersion = Get-ChildItem -Path $systemClientModelPath -Directory | Sort-Object Name -Descending | Select-Object -First 1
-        if ($latestVersion) {
-            $systemClientModelRef = Get-ChildItem `
-                -Path $latestVersion.FullName `
-                -Include $nugetTfm `
-                -Recurse |
-                    Select-Object -Last 1
-        }
+        $systemClientModelRef = Get-ChildItem `
+            -Path $systemClientModelPath `
+            -Include $(($TargetFramework -eq "netstandard2.0") ? "netstandard2.0" : "net8.0") `
+            -Recurse |
+                Select-Object -Last 1
     }
 
     Write-Output "  * System.ClientModel:"
@@ -133,17 +122,14 @@ function Invoke-GenAPI {
     Write-Output ""
 
     # System.Net.ServerSentEvents
-    $systemNetServerSentEventsPath = Join-Path $nugetPackagesPath "system.net.serversentevents"
+    $systemNetServerSentEventsPath = Join-Path $nugetPackagesPath "system.net.serversentevents\9.0.9"
     $systemNetServerSentEventsRef = $null
     if (Test-Path $systemNetServerSentEventsPath) {
-        $latestVersion = Get-ChildItem -Path $systemNetServerSentEventsPath -Directory | Sort-Object Name -Descending | Select-Object -First 1
-        if ($latestVersion) {
-            $systemNetServerSentEventsRef = Get-ChildItem `
-                -Path $latestVersion.FullName `
-                -Include $nugetTfm `
-                -Recurse |
-                    Select-Object -Last 1
-        }
+        $systemNetServerSentEventsRef = Get-ChildItem `
+            -Path $systemNetServerSentEventsPath `
+            -Include $(($TargetFramework -eq "netstandard2.0") ? "netstandard2.0" : "net8.0") `
+            -Recurse |
+                Select-Object -Last 1
     }
 
     Write-Output "  * System.Net.ServerSentEvents:"
@@ -151,17 +137,14 @@ function Invoke-GenAPI {
     Write-Output ""
 
     # Microsoft.Extensions.Logging.Abstractions
-    $microsoftExtensionsLoggingAbstractionsPath = Join-Path $nugetPackagesPath "microsoft.extensions.logging.abstractions"
+    $microsoftExtensionsLoggingAbstractionsPath = Join-Path $nugetPackagesPath "microsoft.extensions.logging.abstractions\8.0.3"
     $microsoftExtensionsLoggingAbstractionsRef = $null
     if (Test-Path $microsoftExtensionsLoggingAbstractionsPath) {
-        $latestVersion = Get-ChildItem -Path $microsoftExtensionsLoggingAbstractionsPath -Directory | Sort-Object Name -Descending | Select-Object -First 1
-        if ($latestVersion) {
-            $microsoftExtensionsLoggingAbstractionsRef = Get-ChildItem `
-                -Path $latestVersion.FullName `
-                -Include $nugetTfm `
-                -Recurse |
-                    Select-Object -Last 1
-        }
+        $microsoftExtensionsLoggingAbstractionsRef = Get-ChildItem `
+            -Path $microsoftExtensionsLoggingAbstractionsPath `
+            -Include  $(($TargetFramework -eq "netstandard2.0") ? "netstandard2.0" : "net8.0") `
+            -Recurse |
+                Select-Object -Last 1
     }
 
     Write-Output "  * Microsoft.Extensions.Logging.Abstractions:"
@@ -169,17 +152,14 @@ function Invoke-GenAPI {
     Write-Output ""
 
     # Microsoft.Extensions.DependencyInjection.Abstractions
-    $microsoftExtensionsDependencyInjectionAbstractionsPath = Join-Path $nugetPackagesPath "microsoft.extensions.dependencyinjection.abstractions"
+    $microsoftExtensionsDependencyInjectionAbstractionsPath = Join-Path $nugetPackagesPath "microsoft.extensions.dependencyinjection.abstractions\8.0.2"
     $microsoftExtensionsDependencyInjectionAbstractionsRef = $null
     if (Test-Path $microsoftExtensionsDependencyInjectionAbstractionsPath) {
-        $latestVersion = Get-ChildItem -Path $microsoftExtensionsDependencyInjectionAbstractionsPath -Directory | Sort-Object Name -Descending | Select-Object -First 1
-        if ($latestVersion) {
-            $microsoftExtensionsDependencyInjectionAbstractionsRef = Get-ChildItem `
-                -Path $latestVersion.FullName `
-                -Include $nugetTfm `
-                -Recurse |
-                    Select-Object -Last 1
-        }
+        $microsoftExtensionsDependencyInjectionAbstractionsRef = Get-ChildItem `
+            -Path $microsoftExtensionsDependencyInjectionAbstractionsPath `
+            -Include  $(($TargetFramework -eq "netstandard2.0") ? "netstandard2.0" : "net8.0") `
+            -Recurse |
+                Select-Object -Last 1
     }
 
     Write-Output "  * Microsoft.Extensions.DependencyInjection.Abstractions:"
@@ -187,39 +167,30 @@ function Invoke-GenAPI {
     Write-Output ""
 
     # System.Memory.Data
-    $systemMemoryDataPath = Join-Path $nugetPackagesPath "system.memory.data"
+    $systemMemoryDataPath = Join-Path $nugetPackagesPath "system.memory.data\8.0.1"
     $systemMemoryDataRef = $null
     if (Test-Path $systemMemoryDataPath) {
-        $latestVersion = Get-ChildItem -Path $systemMemoryDataPath -Directory | Sort-Object Name -Descending | Select-Object -First 1
-        if ($latestVersion) {
-            $memoryDataTfm = if ($TargetFramework -eq "netstandard2.0") { "netstandard2.0" } else { "net6.0" }
-            $systemMemoryDataRef = Get-ChildItem `
-                -Path $latestVersion.FullName `
-                -Include $memoryDataTfm `
-                -Recurse |
-                    Select-Object -Last 1
-        }
+        $systemMemoryDataRef = Get-ChildItem `
+            -Path $systemMemoryDataPath `
+            -Include  $(($TargetFramework -eq "netstandard2.0") ? "netstandard2.0" : "net6.0") `
+            -Recurse |
+                Select-Object -Last 1
     }
 
     Write-Output "  * System.Memory.Data:"
     Write-Output "    $($systemMemoryDataRef)"
     Write-Output ""
 
-    $systemDiagnosticsDiagnosticSourceRef = $null
-    $microsoftBclAsyncInterfacesRef = $null
-
     if ($TargetFramework -eq "netstandard2.0") {
         # System.Diagnostics.DiagnosticSource
-        $systemDiagnosticsDiagnosticSourcePath = Join-Path $nugetPackagesPath "system.diagnostics.diagnosticsource"
+        $systemDiagnosticsDiagnosticSourcePath = Join-Path $nugetPackagesPath "system.diagnostics.diagnosticsource\8.0.1"
+        $systemDiagnosticsDiagnosticSourceRef = $null
         if (Test-Path $systemDiagnosticsDiagnosticSourcePath) {
-            $latestVersion = Get-ChildItem -Path $systemDiagnosticsDiagnosticSourcePath -Directory | Sort-Object Name -Descending | Select-Object -First 1
-            if ($latestVersion) {
-                $systemDiagnosticsDiagnosticSourceRef = Get-ChildItem `
-                    -Path $latestVersion.FullName `
-                    -Include "netstandard2.0" `
-                    -Recurse |
-                        Select-Object -Last 1
-            }
+            $systemDiagnosticsDiagnosticSourceRef = Get-ChildItem `
+                -Path $systemDiagnosticsDiagnosticSourcePath `
+                -Include $(($TargetFramework -eq "netstandard2.0") ? "netstandard2.0" : "net5.0") `
+                -Recurse |
+                    Select-Object -Last 1
         }
 
         Write-Output "  * System.Diagnostics.DiagnosticSource:"
@@ -227,37 +198,18 @@ function Invoke-GenAPI {
         Write-Output ""
 
         # Microsoft.Bcl.AsyncInterfaces
-        $microsoftBclAsyncInterfacesPath = Join-Path $nugetPackagesPath "microsoft.bcl.asyncinterfaces"
+        $microsoftBclAsyncInterfacesPath = Join-Path $nugetPackagesPath "microsoft.bcl.asyncinterfaces\8.0.0"
+        $microsoftBclAsyncInterfacesRef = $null
         if (Test-Path $microsoftBclAsyncInterfacesPath) {
-            $latestVersion = Get-ChildItem -Path $microsoftBclAsyncInterfacesPath -Directory | Sort-Object Name -Descending | Select-Object -First 1
-            if ($latestVersion) {
-                $microsoftBclAsyncInterfacesRef = Get-ChildItem `
-                    -Path $latestVersion.FullName `
-                    -Include "netstandard2.0" `
-                    -Recurse |
-                        Select-Object -Last 1
-            }
+            $microsoftBclAsyncInterfacesRef = Get-ChildItem `
+                -Path $microsoftBclAsyncInterfacesPath `
+                -Include "netstandard2.0" `
+                -Recurse |
+                    Select-Object -Last 1
         }
 
         Write-Output "  * Microsoft.Bcl.AsyncInterfaces:"
         Write-Output "    $($microsoftBclAsyncInterfacesRef)"
-        Write-Output ""
-    }
-
-    # Internal project references (sibling assemblies)
-    $assemblyDir = Split-Path -Parent $AssemblyPath
-    
-    $openAiPath = Join-Path $assemblyDir "OpenAI.dll"
-    if (Test-Path $openAiPath) {
-        Write-Output "  * OpenAI:"
-        Write-Output "    $($openAiPath)"
-        Write-Output ""
-    }
-
-    $openAiResponsesPath = Join-Path $assemblyDir "OpenAI.Responses.dll"
-    if (Test-Path $openAiResponsesPath) {
-        Write-Output "  * OpenAI.Responses:"
-        Write-Output "    $($openAiResponsesPath)"
         Write-Output ""
     }
 
@@ -278,14 +230,6 @@ function Invoke-GenAPI {
     if ($systemMemoryDataRef) { $genapiArgs += @("--assembly-reference", $systemMemoryDataRef) }
     if ($systemDiagnosticsDiagnosticSourceRef) { $genapiArgs += @("--assembly-reference", $systemDiagnosticsDiagnosticSourceRef) }
     if ($microsoftBclAsyncInterfacesRef) { $genapiArgs += @("--assembly-reference", $microsoftBclAsyncInterfacesRef) }
-    
-    # Add sibling assemblies as references if they differ from the main assembly
-    if ((Test-Path $openAiPath) -and ($AssemblyPath -ne $openAiPath)) { 
-        $genapiArgs += @("--assembly-reference", $openAiPath) 
-    }
-    if ((Test-Path $openAiResponsesPath) -and ($AssemblyPath -ne $openAiResponsesPath)) { 
-        $genapiArgs += @("--assembly-reference", $openAiResponsesPath) 
-    }
 
     & genapi @genapiArgs
 
@@ -299,48 +243,37 @@ function Invoke-GenAPI {
     $content = $content -creplace '\r?\n\r?\n', "`n"
     $content = $content -creplace '\r?\n *{', " {"
 
-    # Remove fully-qualified namespace prefixes.
-    @(
-        "Diagnostics\.CodeAnalysis\.",
-        "System\.ComponentModel\.",
-        "System\.ClientModel\.Primitives\.",
-        "System\.ClientModel\.",
-        "System\.Collections\.Generic\.",
-        "System\.Collections\.",
-        "System\.Threading\.Tasks\.",
-        "System\.Threading\.",
-        "System\.Text\.Json\.",
-        "System\.Text\.",
-        "System\.IO\.",
-        "System\." # System must be last to avoid partial matches
-    ) | ForEach-Object { $content = $content -creplace $_, "" }
-
-    # Remove OpenAI sub-namespace prefixes.
-    @(
-        "Assistants",
-        "Audio",
-        "Batch",
-        "Chat",
-        "Common",
-        "Containers",
-        "Conversations",
-        "Embeddings",
-        "Evals",
-        "Files",
-        "FineTuning",
-        "Graders",
-        "Images",
-        "Models",
-        "Moderations",
-        "Realtime",
-        "Responses",
-        "VectorStores",
-        "Videos"
-    ) | ForEach-Object { $content = $content -creplace "$_\.", "" }
-
-    # Remove non-public APIs.
-    $content = $content -creplace "  * internal.*`n", ""
-    $content = $content -creplace ".*private.*dummy.*`n", ""
+    # Remove fully-qualified names.
+    $content = $content -creplace "System\.ComponentModel\.", ""
+    $content = $content -creplace "System\.ClientModel.Primitives\.", ""
+    $content = $content -creplace "System\.ClientModel\.", ""
+    $content = $content -creplace "System\.Collections\.Generic\.", ""
+    $content = $content -creplace "System\.Collections\.", ""
+    $content = $content -creplace "System\.Threading.Tasks\.", ""
+    $content = $content -creplace "System\.Threading\.", ""
+    $content = $content -creplace "System\.Text.Json\.", ""
+    $content = $content -creplace "System\.Text\.", ""
+    $content = $content -creplace "System\.IO\.", ""
+    $content = $content -creplace "System\.", ""
+    $content = $content -creplace "Assistants\.", ""
+    $content = $content -creplace "Audio\.", ""
+    $content = $content -creplace "Batch\.", ""
+    $content = $content -creplace "Chat\.", ""
+    $content = $content -creplace "Common\.", ""
+    $content = $content -creplace "Containers\.", ""
+    $content = $content -creplace "Conversations\.", ""
+    $content = $content -creplace "Embeddings\.", ""
+    $content = $content -creplace "Evals\.", ""
+    $content = $content -creplace "Files\.", ""
+    $content = $content -creplace "FineTuning\.", ""
+    $content = $content -creplace "Graders\.", ""
+    $content = $content -creplace "Images\.", ""
+    $content = $content -creplace "Models\.", ""
+    $content = $content -creplace "Moderations\.", ""
+    $content = $content -creplace "Realtime\.", ""
+    $content = $content -creplace "Responses\.", ""
+    $content = $content -creplace "VectorStores\.", ""
+    $content = $content -creplace "Videos\.", ""
 
     # Remove Diagnostics.DebuggerStepThrough attribute.
     $content = $content -creplace ".*Diagnostics.DebuggerStepThrough.*\n", ""
@@ -348,54 +281,62 @@ function Invoke-GenAPI {
     # Remove ModelReaderWriterBuildable attributes.
     $content = $content -creplace '\[ModelReaderWriterBuildable\(typeof\([^\)]+\)\)\]\s*', ''
 
+    # Remove internal APIs.
+    $content = $content -creplace "  * internal.*`n", ""
+
     # Remove IJsonModel/IPersistableModel interface method entries.
     $content = $content -creplace "        .*(IJsonModel|IPersistableModel).*`n", ""
+    # $content = $content -creplace "        protected (virtual|override) .* (Json|Persistable)Model(Create|Write)Core.*`n", ""
 
     # Other cosmetic simplifications.
     $content = $content -creplace "partial class", "class"
+    $content = $content -creplace ".*private.*dummy.*`n", ""
     $content = $content -creplace " { throw null; }", ";"
     $content = $content -creplace " { }", ";"
-    $content = $content -creplace "new\[\];", "new Type[0]"
     $content = $content -creplace "Diagnostics.CodeAnalysis.Experimental", "Experimental"
     $content = $content -creplace "Diagnostics.CodeAnalysis.SetsRequiredMembers", "SetsRequiredMembers"
 
     Set-Content -Path $Destination -Value $content -NoNewline
 }
 
-# Main execution
 $repoRootPath = Join-Path $PSScriptRoot .. -Resolve
 
-# Build the solution
-$solutionPath = Join-Path $repoRootPath "OpenAI.slnx"
-Invoke-DotNetBuild -ProjectPath $solutionPath
+# Build and export OpenAI
+$projectPath = Join-Path $repoRootPath "src\OpenAI.csproj"
 
-# Define projects and their assembly paths
-$projects = @(
-    @{
-        Name = "OpenAI"
-        AssemblyPath = "src/bin/Debug"
-    },
-    @{
-        Name = "OpenAI.Responses"
-        AssemblyPath = "src/Responses/bin/Debug"
-    }
-)
+Invoke-DotNetBuild -ProjectPath $projectPath
 
-# Target frameworks should match ClientTargetFrameworks from Directory.Build.props
-$targetFrameworks = @("netstandard2.0", "net8.0", "net10.0")
+$targetFramework = "netstandard2.0"
+$assemblyPath = Join-Path $repoRootPath "src\bin\Debug\$($targetFramework)\OpenAI.dll"
+$destination = Join-Path $repoRootPath "api\OpenAI.$($targetFramework).cs"
+Invoke-GenAPI -TargetFramework $targetFramework -AssemblyPath $assemblyPath -Destination $destination
 
-foreach ($project in $projects) {
-    foreach ($targetFramework in $targetFrameworks) {
-        $assemblyPath = Join-Path $repoRootPath "$($project.AssemblyPath)/$($targetFramework)/$($project.Name).dll"
-        $destination = Join-Path $repoRootPath "api/$($project.Name).$($targetFramework).cs"
-        
-        if (Test-Path $assemblyPath) {
-            Invoke-GenAPI -TargetFramework $targetFramework -AssemblyPath $assemblyPath -Destination $destination
-        } else {
-            Write-Warning "Assembly not found: $assemblyPath"
-        }
-    }
-}
+$targetFramework = "net8.0"
+$assemblyPath = Join-Path $repoRootPath "src\bin\Debug\$($targetFramework)\OpenAI.dll"
+$destination = Join-Path $repoRootPath "api\OpenAI.$($targetFramework).cs"
+Invoke-GenAPI -TargetFramework $targetFramework -AssemblyPath $assemblyPath -Destination $destination
 
-Write-Output ""
-Write-Output "API export complete!"
+$targetFramework = "net10.0"
+$assemblyPath = Join-Path $repoRootPath "src\bin\Debug\$($targetFramework)\OpenAI.dll"
+$destination = Join-Path $repoRootPath "api\OpenAI.$($targetFramework).cs"
+Invoke-GenAPI -TargetFramework $targetFramework -AssemblyPath $assemblyPath -Destination $destination
+
+# Build and export OpenAI.Responses
+$responsesProjectPath = Join-Path $repoRootPath "src\Responses\OpenAI.Responses.csproj"
+
+Invoke-DotNetBuild -ProjectPath $responsesProjectPath
+
+$targetFramework = "netstandard2.0"
+$assemblyPath = Join-Path $repoRootPath "src\Responses\bin\Debug\$($targetFramework)\OpenAI.Responses.dll"
+$destination = Join-Path $repoRootPath "api\OpenAI.Responses.$($targetFramework).cs"
+Invoke-GenAPI -TargetFramework $targetFramework -AssemblyPath $assemblyPath -Destination $destination
+
+$targetFramework = "net8.0"
+$assemblyPath = Join-Path $repoRootPath "src\Responses\bin\Debug\$($targetFramework)\OpenAI.Responses.dll"
+$destination = Join-Path $repoRootPath "api\OpenAI.Responses.$($targetFramework).cs"
+Invoke-GenAPI -TargetFramework $targetFramework -AssemblyPath $assemblyPath -Destination $destination
+
+$targetFramework = "net10.0"
+$assemblyPath = Join-Path $repoRootPath "src\Responses\bin\Debug\$($targetFramework)\OpenAI.Responses.dll"
+$destination = Join-Path $repoRootPath "api\OpenAI.Responses.$($targetFramework).cs"
+Invoke-GenAPI -TargetFramework $targetFramework -AssemblyPath $assemblyPath -Destination $destination
