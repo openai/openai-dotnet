@@ -21,14 +21,16 @@
     
     Usage:
       dotnet build src/OpenAI.csproj -t:ExportApi -c Release -p:ExportingApi=true
+      dotnet build src/Responses/OpenAI.Responses.csproj -t:ExportApi -c Release -p:ExportingApi=true
     
     Outputs to:
       api/OpenAI.<TargetFramework>.cs
+      api/OpenAI.Responses.<TargetFramework>.cs
   -->
   
   <!-- Outer build target: Dispatches to inner builds for each target framework -->
   <Target Name="ExportApi"
-          Condition="'$(MSBuildProjectName)' == 'OpenAI' and '$(TargetFramework)' == '' and '$(TargetFrameworks)' != ''">
+          Condition="('$(MSBuildProjectName)' == 'OpenAI' or '$(MSBuildProjectName)' == 'OpenAI.Responses') and '$(TargetFramework)' == '' and '$(TargetFrameworks)' != ''">
     <ItemGroup>
       <_ExportApiTargetFramework Include="$(TargetFrameworks)" />
     </ItemGroup>
@@ -41,15 +43,15 @@
   <!-- Inner build target: Runs for each specific target framework -->
   <Target Name="ExportApiInner"
           DependsOnTargets="Build"
-          Condition="'$(MSBuildProjectName)' == 'OpenAI' and '$(TargetFramework)' != ''">
+          Condition="('$(MSBuildProjectName)' == 'OpenAI' or '$(MSBuildProjectName)' == 'OpenAI.Responses') and '$(TargetFramework)' != ''">
 
     <!-- Run GenAPI task -->
     <GenAPITask Assemblies="$(TargetPath)"
                 AssemblyReferences="@(ReferencePath)"
-                OutputPath="$(GenAPIOutputDirectory)OpenAI.$(TargetFramework).cs" />
+                OutputPath="$(GenAPIOutputDirectory)$(MSBuildProjectName).$(TargetFramework).cs" />
 
     <Message Importance="high"
-             Text="Generated API surface: $(GenAPIOutputDirectory)OpenAI.$(TargetFramework).cs" />
+             Text="Generated API surface: $(GenAPIOutputDirectory)$(MSBuildProjectName).$(TargetFramework).cs" />
   </Target>
 
 </Project>
