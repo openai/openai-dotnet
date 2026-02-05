@@ -1,0 +1,257 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "273",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI.Shared/2.8.0 (.NET 8.0.16; Darwin 25.2.0 Darwin Kernel Version 25.2.0: Tue Nov 18 21:08:48 PST 2025; root:xnu-12377.61.12~1/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "co1"
+              }
+            ]
+          },
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "co2"
+              }
+            ]
+          },
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "co3"
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9ba566a9ec526c57-DFW",
+        "Connection": "keep-alive",
+        "Content-Length": "1686",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "1274",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999960",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_093d256af68ac68b00695ea1205bf8819faca9acd87f82487d",
+        "object": "response",
+        "created_at": 1767809312,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "completed_at": 1767809313,
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4o-mini-2024-07-18",
+        "output": [
+          {
+            "id": "msg_093d256af68ac68b00695ea1209bf0819f9795dfbb75ea5be3",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "It seems like you might be referencing something specific with \"co1,\" \"co2,\" and \"co3.\" Could you clarify what you need help with? Whether it's about chemistry, coding, or something else, I'm here to assist!"
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "prompt_cache_retention": null,
+        "reasoning": {
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 21,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 49,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 70
+        },
+        "user": null,
+        "metadata": {}
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/responses/resp_093d256af68ac68b00695ea1205bf8819faca9acd87f82487d/input_items?limit=2&order=desc",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI.Shared/2.8.0 (.NET 8.0.16; Darwin 25.2.0 Darwin Kernel Version 25.2.0: Tue Nov 18 21:08:48 PST 2025; root:xnu-12377.61.12~1/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9ba566b25cee6c57-DFW",
+        "Connection": "keep-alive",
+        "Content-Length": "725",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "61",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "msg_093d256af68ac68b00695ea1205f94819fa850995a36907412",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "co3"
+              }
+            ],
+            "role": "user"
+          },
+          {
+            "id": "msg_093d256af68ac68b00695ea1205f8c819fa0cfb0739ff8e1e7",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "co2"
+              }
+            ],
+            "role": "user"
+          }
+        ],
+        "first_id": "msg_093d256af68ac68b00695ea1205f94819fa850995a36907412",
+        "has_more": true,
+        "last_id": "msg_093d256af68ac68b00695ea1205f8c819fa0cfb0739ff8e1e7"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/responses/resp_093d256af68ac68b00695ea1205bf8819faca9acd87f82487d/input_items?limit=2&order=desc&after=msg_093d256af68ac68b00695ea1205f8c819fa0cfb0739ff8e1e7",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI.Shared/2.8.0 (.NET 8.0.16; Darwin 25.2.0 Darwin Kernel Version 25.2.0: Tue Nov 18 21:08:48 PST 2025; root:xnu-12377.61.12~1/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9ba566b34dc16c57-DFW",
+        "Connection": "keep-alive",
+        "Content-Length": "464",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "279",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "msg_093d256af68ac68b00695ea1205f7c819f8bfda68348c78457",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "co1"
+              }
+            ],
+            "role": "user"
+          }
+        ],
+        "first_id": "msg_093d256af68ac68b00695ea1205f7c819f8bfda68348c78457",
+        "has_more": false,
+        "last_id": "msg_093d256af68ac68b00695ea1205f7c819f8bfda68348c78457"
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

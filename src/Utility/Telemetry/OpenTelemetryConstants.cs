@@ -1,4 +1,4 @@
-﻿namespace OpenAI.Telemetry;
+namespace OpenAI.Telemetry;
 
 internal class OpenTelemetryConstants
 {

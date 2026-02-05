@@ -27,6 +27,7 @@ $configuration = "Release"
 # Resolve paths
 $repoRootPath = Join-Path $PSScriptRoot ".." -Resolve
 $projectPath = Join-Path $repoRootPath "src" "OpenAI.csproj"
+$responsesProjectPath = Join-Path $repoRootPath "src" "Responses" "OpenAI.Responses.csproj"
 $outputDirectory = Join-Path $repoRootPath "api"
 
 # Get ClientTargetFrameworks from Directory.Build.props
@@ -74,7 +75,7 @@ $buildArgs = @(
 
 Write-Host "Output Directory: $outputDirectory"
 Write-Host ""
-Write-Host "Running GenAPI for all target frameworks..." -ForegroundColor Cyan
+Write-Host "Running GenAPI for OpenAI..." -ForegroundColor Cyan
 Write-Host ""
 
 # Run a single build command - the MSBuild target handles all frameworks
@@ -84,11 +85,30 @@ if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
 
+# Build OpenAI.Responses
+$responsesBuildArgs = @(
+    "build"
+    $responsesProjectPath
+    "-t:ExportApi"
+    "-c:$configuration"
+    "-p:ExportingApi=true"
+)
+
+Write-Host ""
+Write-Host "Running GenAPI for OpenAI.Responses..." -ForegroundColor Cyan
+Write-Host ""
+
+& dotnet @responsesBuildArgs
+if ($LASTEXITCODE -ne 0) {
+    Write-Error "GenAPI failed for OpenAI.Responses with exit code $LASTEXITCODE"
+    exit $LASTEXITCODE
+}
+
 Write-Host ""
 Write-Host "Cleaning up generated files..." -ForegroundColor Cyan
 
 # Clean up each generated file
-Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
+Get-ChildItem -Path $outputDirectory -Filter "OpenAI*.cs" | ForEach-Object {
     Write-Host "  Cleaning $($_.Name)..."
     
     $content = Get-Content $_.FullName -Raw
@@ -163,7 +183,7 @@ Write-Host ""
 
 # List generated files
 Write-Host "Generated files:" -ForegroundColor Cyan
-Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
+Get-ChildItem -Path $outputDirectory -Filter "OpenAI*.cs" | ForEach-Object {
     Write-Host "  - $($_.Name)"
 }
 Write-Host ""

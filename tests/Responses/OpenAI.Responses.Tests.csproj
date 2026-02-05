@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net10.0;net9.0;net8.0</TargetFrameworks>
+    <IsTestProject>true</IsTestProject>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>OpenAI.Tests</RootNamespace>
+
+    <!--Ignore XML doc comments on test types and members-->
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+
+    <!-- OPENAI001 - Ignore experimental warnings-->
+    <NoWarn>$(NoWarn);OPENAI001;OPENAI002;SCME0001;</NoWarn>
+
+    <!-- Define constant to indicate this is the Responses-only test project -->
+    <DefineConstants>$(DefineConstants);RESPONSES_ONLY</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Reference only the OpenAI.Responses assembly to validate it works independently -->
+    <ProjectReference Include="..\..\src\Responses\OpenAI.Responses.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.ClientModel.TestFramework" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Moq" />
+    <PackageReference Include="NUnit" />
+    <PackageReference Include="NUnit3TestAdapter" />
+    <PackageReference Include="System.Linq.AsyncEnumerable" />
+  </ItemGroup>
+
+  <!-- Conditionally include packages built into the latest runtime -->
+  <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net10.0')) == 'false'">
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
+      <_Parameter1>SourcePath</_Parameter1>
+      <_Parameter2>$(MSBuildProjectDirectory)</_Parameter2>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\Assets\*">
+      <Link>Assets\%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+</Project>

@@ -9,6 +9,7 @@
     <Compile Remove="aspnet-core/**" />
     <Content Remove="aspnet-core/**" />
     <None Remove="aspnet-core/**" />
+    <Compile Remove="Responses/**" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\src\OpenAI.csproj" />

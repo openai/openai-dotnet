@@ -1,0 +1,203 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "348",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI.Shared/2.8.0 (.NET 8.0.16; Darwin 25.2.0 Darwin Kernel Version 25.2.0: Tue Nov 18 21:08:48 PST 2025; root:xnu-12377.61.12~1/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": {
+        "model": "gpt-5",
+        "tools": [
+          {
+            "type": "mcp",
+            "server_label": "dmcp",
+            "server_url": "https://dmcp-server.deno.dev/sse",
+            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
+            "require_approval": {
+              "never": {
+                "tool_names": [
+                  "roll"
+                ]
+              }
+            }
+          }
+        ],
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Roll 2d4+1"
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9ba69e689b82f825-DFW",
+        "Connection": "keep-alive",
+        "Content-Length": "3252",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "7825",
+        "x-ratelimit-limit-requests": "15000",
+        "x-ratelimit-limit-tokens": "40000000",
+        "x-ratelimit-remaining-requests": "14999",
+        "x-ratelimit-remaining-tokens": "39999838",
+        "x-ratelimit-reset-requests": "4ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_0aed21bfded28a8700695ed3019574819d81eba535610e4c0e",
+        "object": "response",
+        "created_at": 1767822081,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "completed_at": 1767822089,
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-5-2025-08-07",
+        "output": [
+          {
+            "id": "mcpl_0aed21bfded28a8700695ed301bed8819d9f8d41f867d451b6",
+            "type": "mcp_list_tools",
+            "server_label": "dmcp",
+            "tools": [
+              {
+                "annotations": {
+                  "read_only": false
+                },
+                "description": "\n  Given a string of text describing a dice roll in \n  Dungeons and Dragons, provide a result of the roll.\n\n  Example input: 2d6 + 1d4\n  Example output: 14\n",
+                "input_schema": {
+                  "$schema": "https://json-schema.org/draft/2020-12/schema",
+                  "type": "object",
+                  "properties": {
+                    "diceRollExpression": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "diceRollExpression"
+                  ],
+                  "additionalProperties": false
+                },
+                "name": "roll"
+              }
+            ]
+          },
+          {
+            "id": "rs_0aed21bfded28a8700695ed30291d8819db256a6185cd08a72",
+            "type": "reasoning",
+            "summary": []
+          },
+          {
+            "id": "mcp_0aed21bfded28a8700695ed3085908819db7bfaae01e189892",
+            "type": "mcp_call",
+            "status": "completed",
+            "approval_request_id": null,
+            "arguments": "{\"diceRollExpression\":\"2d4+1\"}",
+            "error": null,
+            "name": "roll",
+            "output": "5",
+            "server_label": "dmcp"
+          },
+          {
+            "id": "msg_0aed21bfded28a8700695ed3091b18819db7bf9e3675f32392",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "You rolled: 5"
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "prompt_cache_retention": null,
+        "reasoning": {
+          "effort": "medium",
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [
+          {
+            "type": "mcp",
+            "allowed_tools": null,
+            "headers": null,
+            "require_approval": {
+              "always": null,
+              "never": {
+                "read_only": null,
+                "tool_names": [
+                  "roll"
+                ]
+              }
+            },
+            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
+            "server_label": "dmcp",
+            "server_url": "https://dmcp-server.deno.dev/sse"
+          }
+        ],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 407,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 164,
+          "output_tokens_details": {
+            "reasoning_tokens": 128
+          },
+          "total_tokens": 571
+        },
+        "user": null,
+        "metadata": {}
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}
