@@ -868,6 +868,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(imageGenItemId, Is.Not.Null.And.Not.Empty);
     }
 
+#if NET10_0_OR_GREATER
     [RecordedTest]
     public async Task ImageGenToolInputMaskWithImageBytes()
     {
@@ -918,6 +919,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(imageGenResponse.Status, Is.EqualTo(ImageGenerationCallStatus.Completed));
         Assert.That(imageGenResponse.ImageResultBytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
+#endif
 
     [RecordedTest]
     public async Task ImageGenToolInputMaskWithImageUri()

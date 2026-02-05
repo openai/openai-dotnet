@@ -444,6 +444,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response, Is.Not.Null);
     }
 
+#if NET10_0_OR_GREATER
     [RecordedTest]
     public async Task ImageInputWorks()
     {
@@ -466,6 +467,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Console.WriteLine(response.GetOutputText());
         Assert.That(response.GetOutputText().ToLowerInvariant(), Does.Contain("dog").Or.Contain("cat").IgnoreCase);
     }
+#endif
 
     [RecordedTest]
     public async Task FileInputFromIdWorks()
