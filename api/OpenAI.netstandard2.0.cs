@@ -2301,8 +2301,8 @@ namespace OpenAI.Conversations {
         public virtual Task<ClientResult> GetConversationAsync(string conversationId, RequestOptions options = null);
         public virtual ClientResult GetConversationItem(string conversationId, string itemId, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
         public virtual Task<ClientResult> GetConversationItemAsync(string conversationId, string itemId, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
-        public virtual CollectionResult GetConversationItems(string conversationId, long? limit = null, string order = null, string after = null, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
-        public virtual AsyncCollectionResult GetConversationItemsAsync(string conversationId, long? limit = null, string order = null, string after = null, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
+        public virtual CollectionResult GetConversationItems(string conversationId, int? limit = null, string order = null, string after = null, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
+        public virtual AsyncCollectionResult GetConversationItemsAsync(string conversationId, int? limit = null, string order = null, string after = null, IEnumerable<IncludedConversationItemProperty> include = null, RequestOptions options = null);
         public virtual ClientResult UpdateConversation(string conversationId, BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult> UpdateConversationAsync(string conversationId, BinaryContent content, RequestOptions options = null);
     }
@@ -2534,11 +2534,11 @@ namespace OpenAI.Files {
         public virtual Task<ClientResult<OpenAIFile>> GetFileAsync(string fileId, CancellationToken cancellationToken = default);
         public virtual ClientResult<OpenAIFileCollection> GetFiles(FilePurpose purpose, CancellationToken cancellationToken = default);
         public virtual ClientResult GetFiles(string purpose, RequestOptions options);
-        public virtual ClientResult GetFiles(string purpose, long? limit, string order, string after, RequestOptions options);
+        public virtual ClientResult GetFiles(string purpose, int? limit, string order, string after, RequestOptions options);
         public virtual ClientResult<OpenAIFileCollection> GetFiles(CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<OpenAIFileCollection>> GetFilesAsync(FilePurpose purpose, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> GetFilesAsync(string purpose, RequestOptions options);
-        public virtual Task<ClientResult> GetFilesAsync(string purpose, long? limit, string order, string after, RequestOptions options);
+        public virtual Task<ClientResult> GetFilesAsync(string purpose, int? limit, string order, string after, RequestOptions options);
         public virtual Task<ClientResult<OpenAIFileCollection>> GetFilesAsync(CancellationToken cancellationToken = default);
         public virtual ClientResult<OpenAIFile> UploadFile(BinaryData file, string filename, FileUploadPurpose purpose);
         public virtual ClientResult UploadFile(BinaryContent content, string contentType, RequestOptions options = null);
@@ -6296,6 +6296,7 @@ namespace OpenAI.VectorStores {
     }
     public class VectorStoreCreationOptions : IJsonModel<VectorStoreCreationOptions>, IPersistableModel<VectorStoreCreationOptions> {
         public FileChunkingStrategy ChunkingStrategy { get; set; }
+        public string Description { get; set; }
         public VectorStoreExpirationPolicy ExpirationPolicy { get; set; }
         public IList<string> FileIds { get; }
         public IDictionary<string, string> Metadata { get; }
@@ -6493,7 +6494,7 @@ namespace OpenAI.Videos {
         public virtual Task<ClientResult> DownloadVideoAsync(string videoId, string variant = null, RequestOptions options = null);
         public virtual ClientResult GetVideo(string videoId, RequestOptions options = null);
         public virtual Task<ClientResult> GetVideoAsync(string videoId, RequestOptions options = null);
-        public virtual CollectionResult GetVideos(long? limit = null, string order = null, string after = null, RequestOptions options = null);
-        public virtual AsyncCollectionResult GetVideosAsync(long? limit = null, string order = null, string after = null, RequestOptions options = null);
+        public virtual CollectionResult GetVideos(int? limit = null, string order = null, string after = null, RequestOptions options = null);
+        public virtual AsyncCollectionResult GetVideosAsync(int? limit = null, string order = null, string after = null, RequestOptions options = null);
     }
 }

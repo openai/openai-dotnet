@@ -14,7 +14,7 @@ namespace OpenAI.Files
 
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 = PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
-        internal virtual PipelineMessage CreateGetFilesRequest(string purpose, long? limit, string order, string after, RequestOptions options)
+        internal virtual PipelineMessage CreateGetFilesRequest(string purpose, int? limit, string order, string after, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);

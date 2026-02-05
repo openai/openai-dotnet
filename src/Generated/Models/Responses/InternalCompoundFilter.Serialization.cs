@@ -4,14 +4,14 @@
 
 using System;
 using System.ClientModel.Primitives;
+using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
-    [PersistableModelProxy(typeof(InternalUnknownCompoundFilter))]
-    internal abstract partial class InternalCompoundFilter : IJsonModel<InternalCompoundFilter>
+    internal partial class InternalCompoundFilter : IJsonModel<InternalCompoundFilter>
     {
         internal InternalCompoundFilter() : this(default, null, default)
         {
@@ -80,6 +80,8 @@ namespace OpenAI.Responses
                 Patch.WriteTo(writer, "$.filters"u8);
                 writer.WriteEndArray();
             }
+
+            Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
@@ -102,17 +104,38 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            if (element.TryGetProperty("type"u8, out JsonElement discriminator))
+            InternalCompoundFilterType kind = default;
+            IList<BinaryData> filters = default;
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            foreach (var prop in element.EnumerateObject())
             {
-                switch (discriminator.GetString())
+                if (prop.NameEquals("type"u8))
                 {
-                    case "and":
-                        return InternalCompoundFilterAnd.DeserializeInternalCompoundFilterAnd(element, data, options);
-                    case "or":
-                        return InternalCompoundFilterOr.DeserializeInternalCompoundFilterOr(element, data, options);
+                    kind = new InternalCompoundFilterType(prop.Value.GetString());
+                    continue;
                 }
+                if (prop.NameEquals("filters"u8))
+                {
+                    List<BinaryData> array = new List<BinaryData>();
+                    foreach (var item in prop.Value.EnumerateArray())
+                    {
+                        if (item.ValueKind == JsonValueKind.Null)
+                        {
+                            array.Add(null);
+                        }
+                        else
+                        {
+                            array.Add(BinaryData.FromString(item.GetRawText()));
+                        }
+                    }
+                    filters = array;
+                    continue;
+                }
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return InternalUnknownCompoundFilter.DeserializeInternalUnknownCompoundFilter(element, data, options);
+            return new InternalCompoundFilter(kind, filters, patch);
         }
 
         BinaryData IPersistableModel<InternalCompoundFilter>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

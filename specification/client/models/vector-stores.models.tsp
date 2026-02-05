@@ -58,6 +58,14 @@ union VectorStoreFileCollectionOrder {
   Descending: "desc",
 }
 
+union ListVectorStoreFilesFilter {
+  string,
+  "in_progress",
+  "completed",
+  "failed",
+  "cancelled",
+}
+
 @access(Access.public)
 @usage(Usage.input)
 model VectorStoreFileCollectionOptions {
@@ -67,4 +75,8 @@ model VectorStoreFileCollectionOptions {
   ...VectorStoreFileCollectionOrderQueryParameter,
 
   @query filter?: ListVectorStoreFilesFilter;
+}
+
+enum VectorStoreExpirationAnchor {
+  last_active_at,
 }

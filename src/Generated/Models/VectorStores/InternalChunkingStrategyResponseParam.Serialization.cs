@@ -80,10 +80,10 @@ namespace OpenAI.VectorStores
             {
                 switch (discriminator.GetString())
                 {
-                    case "other":
-                        return InternalOtherChunkingStrategyResponseParam.DeserializeInternalOtherChunkingStrategyResponseParam(element, options);
                     case "static":
                         return InternalStaticChunkingStrategyResponseParam.DeserializeInternalStaticChunkingStrategyResponseParam(element, options);
+                    case "other":
+                        return InternalOtherChunkingStrategyResponseParam.DeserializeInternalOtherChunkingStrategyResponseParam(element, options);
                 }
             }
             return InternalUnknownChunkingStrategyResponseParam.DeserializeInternalUnknownChunkingStrategyResponseParam(element, options);
