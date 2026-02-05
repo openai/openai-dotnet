@@ -31,7 +31,7 @@ public partial class McpToolCallApprovalPolicy
     public CustomMcpToolCallApprovalPolicy CustomPolicy { get; }
 
     // CUSTOM: Added for convenience.
-    public static implicit operator McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy globalPolicy) => globalPolicy == default ? null : new(globalPolicy);
+    public static implicit operator McpToolCallApprovalPolicy(GlobalMcpToolCallApprovalPolicy globalPolicy) => new(globalPolicy);
 
     // CUSTOM: Added for convenience.
     public static implicit operator McpToolCallApprovalPolicy(CustomMcpToolCallApprovalPolicy customPolicy) => customPolicy is null ? null : new(customPolicy);
