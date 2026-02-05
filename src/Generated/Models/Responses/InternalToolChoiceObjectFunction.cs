@@ -2,9 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
-using OpenAI;
+using System.ClientModel.Primitives;
 
 namespace OpenAI.Responses
 {
@@ -12,15 +10,15 @@ namespace OpenAI.Responses
     {
         public InternalToolChoiceObjectFunction(string name) : base(InternalToolChoiceObjectType.Function)
         {
-            Argument.AssertNotNull(name, nameof(name));
-
             Name = name;
         }
 
-        internal InternalToolChoiceObjectFunction(InternalToolChoiceObjectType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string name) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalToolChoiceObjectFunction(InternalToolChoiceObjectType kind, in JsonPatch patch, string name) : base(kind, patch)
         {
             Name = name;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Name { get; set; }
     }

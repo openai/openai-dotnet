@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeServerVadTurnDetection : IJsonModel<InternalRealtimeServerVadTurnDetection>
+    internal partial class InternalRealtimeServerVadTurnDetection : TurnDetectionOptions, IJsonModel<InternalRealtimeServerVadTurnDetection>
     {
         void IJsonModel<InternalRealtimeServerVadTurnDetection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -149,7 +149,7 @@ namespace OpenAI.Realtime
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalRealtimeServerVadTurnDetection(document.RootElement, options);
                     }

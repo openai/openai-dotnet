@@ -158,7 +158,7 @@ namespace OpenAI.LegacyCompletions
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalCreateCompletionResponseChoice(document.RootElement, options);
                     }

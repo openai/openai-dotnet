@@ -1,0 +1,108 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "141",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "What was a positive news story from today?"
+          }
+        ],
+        "model": "gpt-4o-search-preview",
+        "web_search_options": {}
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9aad8f145be8863c-DFW",
+        "Connection": "keep-alive",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "5328",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-limit-tokens": "3000000",
+        "x-ratelimit-remaining-requests": "999",
+        "x-ratelimit-remaining-tokens": "2999987",
+        "x-ratelimit-reset-requests": "60ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "chatcmpl-b21706e9-8859-4eee-b01e-8aa87cde257e",
+        "object": "chat.completion",
+        "created": 1765210499,
+        "model": "gpt-4o-search-preview-2025-03-11",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "On December 8, 2025, a significant positive development in rail transportation occurred with the extension of the Buffalo Metro Rail to the DL&W Terminal. This expansion enhances public transit options in Buffalo, New York, providing residents and visitors with improved access to the city's waterfront and surrounding areas. ([en.wikipedia.org](https://en.wikipedia.org/wiki/2025_in_rail_transport?utm_source=openai))\n\nAdditionally, the European rail network saw a notable advancement with the opening of a new train line connecting the capitals of Lithuania, Latvia, and Estonia. This development facilitates easier and more efficient travel between Vilnius, Riga, and Tallinn, promoting regional connectivity and tourism. ([positive.news](https://www.positive.news/society/good-news-stories-from-week-08-of-2025/?utm_source=openai))\n\nThese developments reflect ongoing efforts to enhance public transportation infrastructure, offering more sustainable and convenient travel options for communities. ",
+              "refusal": null,
+              "annotations": [
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "end_index": 418,
+                    "start_index": 326,
+                    "title": "2025 in rail transport",
+                    "url": "https://en.wikipedia.org/wiki/2025_in_rail_transport?utm_source=openai"
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "end_index": 835,
+                    "start_index": 725,
+                    "title": "What went right this week: how to stop politicians lying, plus more - Positive News",
+                    "url": "https://www.positive.news/society/good-news-stories-from-week-08-of-2025/?utm_source=openai"
+                  }
+                }
+              ]
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 9,
+          "completion_tokens": 188,
+          "total_tokens": 197,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "system_fingerprint": ""
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

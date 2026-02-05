@@ -1,3 +1,4 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using System;
 
 namespace OpenAI.Chat;
@@ -60,6 +61,6 @@ public partial class ChatToolCall
             id: id,
             kind: ChatToolCallKind.Function,
             function: function,
-            additionalBinaryDataProperties: null);
+            patch: default);
     }
 }

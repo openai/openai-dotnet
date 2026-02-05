@@ -4,20 +4,28 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Internal
 {
-    internal partial class InternalResponseFormatJsonSchema : IJsonModel<InternalResponseFormatJsonSchema>
+    internal partial class InternalResponseFormatJsonSchema : InternalResponseFormat, IJsonModel<InternalResponseFormatJsonSchema>
     {
-        internal InternalResponseFormatJsonSchema() : this(InternalResponseFormatType.JsonSchema, null, null)
+        internal InternalResponseFormatJsonSchema() : this(InternalResponseFormatType.JsonSchema, default, null)
         {
         }
 
         void IJsonModel<InternalResponseFormatJsonSchema>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -31,11 +39,15 @@ namespace OpenAI.Internal
                 throw new FormatException($"The model {nameof(InternalResponseFormatJsonSchema)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("json_schema") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.json_schema"u8))
             {
                 writer.WritePropertyName("json_schema"u8);
                 writer.WriteObjectValue(JsonSchema, options);
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalResponseFormatJsonSchema IJsonModel<InternalResponseFormatJsonSchema>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalResponseFormatJsonSchema)JsonModelCreateCore(ref reader, options);
@@ -48,17 +60,19 @@ namespace OpenAI.Internal
                 throw new FormatException($"The model {nameof(InternalResponseFormatJsonSchema)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalResponseFormatJsonSchema(document.RootElement, options);
+            return DeserializeInternalResponseFormatJsonSchema(document.RootElement, null, options);
         }
 
-        internal static InternalResponseFormatJsonSchema DeserializeInternalResponseFormatJsonSchema(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalResponseFormatJsonSchema DeserializeInternalResponseFormatJsonSchema(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalResponseFormatType kind = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             InternalResponseFormatJsonSchemaJsonSchema jsonSchema = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -69,13 +83,12 @@ namespace OpenAI.Internal
                 }
                 if (prop.NameEquals("json_schema"u8))
                 {
-                    jsonSchema = InternalResponseFormatJsonSchemaJsonSchema.DeserializeInternalResponseFormatJsonSchemaJsonSchema(prop.Value, options);
+                    jsonSchema = InternalResponseFormatJsonSchemaJsonSchema.DeserializeInternalResponseFormatJsonSchemaJsonSchema(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalResponseFormatJsonSchema(kind, additionalBinaryDataProperties, jsonSchema);
+            return new InternalResponseFormatJsonSchema(kind, patch, jsonSchema);
         }
 
         BinaryData IPersistableModel<InternalResponseFormatJsonSchema>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -100,9 +113,9 @@ namespace OpenAI.Internal
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalResponseFormatJsonSchema(document.RootElement, options);
+                        return DeserializeInternalResponseFormatJsonSchema(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalResponseFormatJsonSchema)} does not support reading '{options.Format}' format.");
@@ -110,5 +123,33 @@ namespace OpenAI.Internal
         }
 
         string IPersistableModel<InternalResponseFormatJsonSchema>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("json_schema"u8))
+            {
+                return JsonSchema.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("json_schema"u8.Length)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("json_schema"u8))
+            {
+                JsonSchema.Patch.Set([.. "$"u8, .. local.Slice("json_schema"u8.Length)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

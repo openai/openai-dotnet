@@ -1,0 +1,295 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/assistants",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "138",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o",
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "description": "Gets the user's current weather",
+              "name": "get_current_weather"
+            }
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "996e2d193e4f08e3-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "612",
+        "Content-Type": "application/json",
+        "Date": "Thu, 30 Oct 2025 21:58:50 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "2170",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Set-Cookie": [
+          "Sanitized",
+          "Sanitized"
+        ],
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "2388",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "asst_BFMmpHsel3a7MuFuKKY9i5uG",
+        "object": "assistant",
+        "created_at": 1761861530,
+        "name": null,
+        "description": null,
+        "model": "gpt-4o",
+        "instructions": null,
+        "tools": [
+          {
+            "type": "function",
+            "function": {
+              "name": "get_current_weather",
+              "description": "Gets the user's current weather",
+              "parameters": {
+                "type": "object",
+                "properties": {}
+              },
+              "strict": false
+            }
+          }
+        ],
+        "top_p": 1.0,
+        "temperature": 1.0,
+        "reasoning_effort": null,
+        "tool_resources": {},
+        "metadata": {},
+        "response_format": "auto"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/runs",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "152",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "assistant_id": "asst_BFMmpHsel3a7MuFuKKY9i5uG",
+        "thread": {
+          "messages": [
+            {
+              "role": "user",
+              "content": "What should I wear outside right now?"
+            }
+          ]
+        },
+        "stream": true
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "996e2d294f7808e3-SEA",
+        "Connection": "keep-alive",
+        "Content-Type": "text/event-stream; charset=utf-8",
+        "Date": "Thu, 30 Oct 2025 21:58:52 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "851",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "862",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": [
+        "event: thread.created\n",
+        "data: {\"id\":\"thread_6oUGUBxLwhyApwhYBhWjHI5f\",\"object\":\"thread\",\"created_at\":1761861531,\"metadata\":{},\"tool_resources\":{\"code_interpreter\":{\"file_ids\":[]}}}\n\n",
+        "event: thread.run.created\n",
+        "data: {\"id\":\"run_oyfV44CrJXYJkvb2qsd80LvJ\",\"object\":\"thread.run\",\"created_at\":1761861531,\"assistant_id\":\"asst_BFMmpHsel3a7MuFuKKY9i5uG\",\"thread_id\":\"thread_6oUGUBxLwhyApwhYBhWjHI5f\",\"status\":\"queued\",\"started_at\":null,\"expires_at\":1761862131,\"cancelled_at\":null,\"failed_at\":null,\"completed_at\":null,\"required_action\":null,\"last_error\":null,\"model\":\"gpt-4o\",\"instructions\":null,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"get_current_weather\",\"description\":\"Gets the user's current weather\",\"parameters\":{\"type\":\"object\",\"properties\":{}},\"strict\":false}}],\"tool_resources\":{\"code_interpreter\":{\"file_ids\":[]}},\"metadata\":{},\"temperature\":1.0,\"top_p\":1.0,\"reasoning_effort\":null,\"max_completion_tokens\":null,\"max_prompt_tokens\":null,\"truncation_strategy\":{\"type\":\"auto\",\"last_messages\":null},\"incomplete_details\":null,\"usage\":null,\"response_format\":\"auto\",\"tool_choice\":\"auto\",\"parallel_tool_calls\":true}\n\n",
+        "event: thread.run.queued\n",
+        "data: {\"id\":\"run_oyfV44CrJXYJkvb2qsd80LvJ\",\"object\":\"thread.run\",\"created_at\":1761861531,\"assistant_id\":\"asst_BFMmpHsel3a7MuFuKKY9i5uG\",\"thread_id\":\"thread_6oUGUBxLwhyApwhYBhWjHI5f\",\"status\":\"queued\",\"started_at\":null,\"expires_at\":1761862131,\"cancelled_at\":null,\"failed_at\":null,\"completed_at\":null,\"required_action\":null,\"last_error\":null,\"model\":\"gpt-4o\",\"instructions\":null,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"get_current_weather\",\"description\":\"Gets the user's current weather\",\"parameters\":{\"type\":\"object\",\"properties\":{}},\"strict\":false}}],\"tool_resources\":{\"code_interpreter\":{\"file_ids\":[]}},\"metadata\":{},\"temperature\":1.0,\"top_p\":1.0,\"reasoning_effort\":null,\"max_completion_tokens\":null,\"max_prompt_tokens\":null,\"truncation_strategy\":{\"type\":\"auto\",\"last_messages\":null},\"incomplete_details\":null,\"usage\":null,\"response_format\":\"auto\",\"tool_choice\":\"auto\",\"parallel_tool_calls\":true}\n\n",
+        "event: thread.run.in_progress\n",
+        "data: {\"id\":\"run_oyfV44CrJXYJkvb2qsd80LvJ\",\"object\":\"thread.run\",\"created_at\":1761861531,\"assistant_id\":\"asst_BFMmpHsel3a7MuFuKKY9i5uG\",\"thread_id\":\"thread_6oUGUBxLwhyApwhYBhWjHI5f\",\"status\":\"in_progress\",\"started_at\":1761861532,\"expires_at\":1761862131,\"cancelled_at\":null,\"failed_at\":null,\"completed_at\":null,\"required_action\":null,\"last_error\":null,\"model\":\"gpt-4o\",\"instructions\":null,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"get_current_weather\",\"description\":\"Gets the user's current weather\",\"parameters\":{\"type\":\"object\",\"properties\":{}},\"strict\":false}}],\"tool_resources\":{\"code_interpreter\":{\"file_ids\":[]}},\"metadata\":{},\"temperature\":1.0,\"top_p\":1.0,\"reasoning_effort\":null,\"max_completion_tokens\":null,\"max_prompt_tokens\":null,\"truncation_strategy\":{\"type\":\"auto\",\"last_messages\":null},\"incomplete_details\":null,\"usage\":null,\"response_format\":\"auto\",\"tool_choice\":\"auto\",\"parallel_tool_calls\":true}\n\n",
+        "event: thread.run.step.created\n",
+        "data: {\"id\":\"step_9c9pSsTIsCYc1KeHEI6Ba34s\",\"object\":\"thread.run.step\",\"created_at\":1761861533,\"run_id\":\"run_oyfV44CrJXYJkvb2qsd80LvJ\",\"assistant_id\":\"asst_BFMmpHsel3a7MuFuKKY9i5uG\",\"thread_id\":\"thread_6oUGUBxLwhyApwhYBhWjHI5f\",\"type\":\"tool_calls\",\"status\":\"in_progress\",\"cancelled_at\":null,\"completed_at\":null,\"expires_at\":1761862131,\"failed_at\":null,\"last_error\":null,\"step_details\":{\"type\":\"tool_calls\",\"tool_calls\":[]},\"usage\":null}\n\n",
+        "event: thread.run.step.in_progress\n",
+        "data: {\"id\":\"step_9c9pSsTIsCYc1KeHEI6Ba34s\",\"object\":\"thread.run.step\",\"created_at\":1761861533,\"run_id\":\"run_oyfV44CrJXYJkvb2qsd80LvJ\",\"assistant_id\":\"asst_BFMmpHsel3a7MuFuKKY9i5uG\",\"thread_id\":\"thread_6oUGUBxLwhyApwhYBhWjHI5f\",\"type\":\"tool_calls\",\"status\":\"in_progress\",\"cancelled_at\":null,\"completed_at\":null,\"expires_at\":1761862131,\"failed_at\":null,\"last_error\":null,\"step_details\":{\"type\":\"tool_calls\",\"tool_calls\":[]},\"usage\":null}\n\n",
+        "event: thread.run.step.delta\n",
+        "data: {\"id\":\"step_9c9pSsTIsCYc1KeHEI6Ba34s\",\"object\":\"thread.run.step.delta\",\"delta\":{\"step_details\":{\"type\":\"tool_calls\",\"tool_calls\":[{\"index\":0,\"id\":\"call_xyFYaEeyocjyE6jN64QTcxip\",\"type\":\"function\",\"function\":{\"name\":\"get_current_weather\",\"arguments\":\"\",\"output\":null}}]}}}\n\n",
+        "event: thread.run.step.delta\n",
+        "data: {\"id\":\"step_9c9pSsTIsCYc1KeHEI6Ba34s\",\"object\":\"thread.run.step.delta\",\"delta\":{\"step_details\":{\"type\":\"tool_calls\",\"tool_calls\":[{\"index\":0,\"type\":\"function\",\"function\":{\"arguments\":\"{}\"}}]}}}\n\n",
+        "event: thread.run.requires_action\n",
+        "data: {\"id\":\"run_oyfV44CrJXYJkvb2qsd80LvJ\",\"object\":\"thread.run\",\"created_at\":1761861531,\"assistant_id\":\"asst_BFMmpHsel3a7MuFuKKY9i5uG\",\"thread_id\":\"thread_6oUGUBxLwhyApwhYBhWjHI5f\",\"status\":\"requires_action\",\"started_at\":1761861532,\"expires_at\":1761862131,\"cancelled_at\":null,\"failed_at\":null,\"completed_at\":null,\"required_action\":{\"type\":\"submit_tool_outputs\",\"submit_tool_outputs\":{\"tool_calls\":[{\"id\":\"call_xyFYaEeyocjyE6jN64QTcxip\",\"type\":\"function\",\"function\":{\"name\":\"get_current_weather\",\"arguments\":\"{}\"}}]}},\"last_error\":null,\"model\":\"gpt-4o\",\"instructions\":null,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"get_current_weather\",\"description\":\"Gets the user's current weather\",\"parameters\":{\"type\":\"object\",\"properties\":{}},\"strict\":false}}],\"tool_resources\":{\"code_interpreter\":{\"file_ids\":[]}},\"metadata\":{},\"temperature\":1.0,\"top_p\":1.0,\"reasoning_effort\":null,\"max_completion_tokens\":null,\"max_prompt_tokens\":null,\"truncation_strategy\":{\"type\":\"auto\",\"last_messages\":null},\"incomplete_details\":null,\"usage\":null,\"response_format\":\"auto\",\"tool_choice\":\"auto\",\"parallel_tool_calls\":true}\n\n",
+        "event: done\n",
+        "data: [DONE]\n\n"
+      ]
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_6oUGUBxLwhyApwhYBhWjHI5f/runs/run_oyfV44CrJXYJkvb2qsd80LvJ/submit_tool_outputs",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "107",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "tool_outputs": [
+          {
+            "tool_call_id": "call_xyFYaEeyocjyE6jN64QTcxip",
+            "output": "warm and sunny"
+          }
+        ],
+        "stream": true
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "996e2d3c4a4c08e3-SEA",
+        "Connection": "keep-alive",
+        "Content-Type": "text/event-stream; charset=utf-8",
+        "Date": "Thu, 30 Oct 2025 21:58:54 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "279",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "308",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": [
+        "event: thread.run.step.completed\n",
+        "data: {\"id\":\"step_9c9pSsTIsCYc1KeHEI6Ba34s\",\"object\":\"thread.run.step\",\"created_at\":1761861533,\"run_id\":\"run_oyfV44CrJXYJkvb2qsd80LvJ\",\"assistant_id\":\"asst_BFMmpHsel3a7MuFuKKY9i5uG\",\"thread_id\":\"thread_6oUGUBxLwhyApwhYBhWjHI5f\",\"type\":\"tool_calls\",\"status\":\"completed\",\"cancelled_at\":null,\"completed_at\":1761861534,\"expires_at\":1761862131,\"failed_at\":null,\"last_error\":null,\"step_details\":{\"type\":\"tool_calls\",\"tool_calls\":[{\"id\":\"call_xyFYaEeyocjyE6jN64QTcxip\",\"type\":\"function\",\"function\":{\"name\":\"get_current_weather\",\"arguments\":\"{}\",\"output\":\"warm and sunny\"}}]},\"usage\":{\"prompt_tokens\":260,\"completion_tokens\":12,\"total_tokens\":272,\"prompt_token_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0}}}\n\n",
+        "event: thread.run.queued\n",
+        "data: {\"id\":\"run_oyfV44CrJXYJkvb2qsd80LvJ\",\"object\":\"thread.run\",\"created_at\":1761861531,\"assistant_id\":\"asst_BFMmpHsel3a7MuFuKKY9i5uG\",\"thread_id\":\"thread_6oUGUBxLwhyApwhYBhWjHI5f\",\"status\":\"queued\",\"started_at\":1761861532,\"expires_at\":1761862131,\"cancelled_at\":null,\"failed_at\":null,\"completed_at\":null,\"required_action\":null,\"last_error\":null,\"model\":\"gpt-4o\",\"instructions\":null,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"get_current_weather\",\"description\":\"Gets the user's current weather\",\"parameters\":{\"type\":\"object\",\"properties\":{}},\"strict\":false}}],\"tool_resources\":{\"code_interpreter\":{\"file_ids\":[]}},\"metadata\":{},\"temperature\":1.0,\"top_p\":1.0,\"reasoning_effort\":null,\"max_completion_tokens\":null,\"max_prompt_tokens\":null,\"truncation_strategy\":{\"type\":\"auto\",\"last_messages\":null},\"incomplete_details\":null,\"usage\":null,\"response_format\":\"auto\",\"tool_choice\":\"auto\",\"parallel_tool_calls\":true}\n\n",
+        "event: thread.run.in_progress\n",
+        "data: {\"id\":\"run_oyfV44CrJXYJkvb2qsd80LvJ\",\"object\":\"thread.run\",\"created_at\":1761861531,\"assistant_id\":\"asst_BFMmpHsel3a7MuFuKKY9i5uG\",\"thread_id\":\"thread_6oUGUBxLwhyApwhYBhWjHI5f\",\"status\":\"in_progress\",\"started_at\":1761861535,\"expires_at\":1761862131,\"cancelled_at\":null,\"failed_at\":null,\"completed_at\":null,\"required_action\":null,\"last_error\":null,\"model\":\"gpt-4o\",\"instructions\":null,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"get_current_weather\",\"description\":\"Gets the user's current weather\",\"parameters\":{\"type\":\"object\",\"properties\":{}},\"strict\":false}}],\"tool_resources\":{\"code_interpreter\":{\"file_ids\":[]}},\"metadata\":{},\"temperature\":1.0,\"top_p\":1.0,\"reasoning_effort\":null,\"max_completion_tokens\":null,\"max_prompt_tokens\":null,\"truncation_strategy\":{\"type\":\"auto\",\"last_messages\":null},\"incomplete_details\":null,\"usage\":null,\"response_format\":\"auto\",\"tool_choice\":\"auto\",\"parallel_tool_calls\":true}\n\n",
+        "event: thread.run.step.created\n",
+        "data: {\"id\":\"step_Ou0TFVL8JOSRggWUqsOvtr70\",\"object\":\"thread.run.step\",\"created_at\":1761861535,\"run_id\":\"run_oyfV44CrJXYJkvb2qsd80LvJ\",\"assistant_id\":\"asst_BFMmpHsel3a7MuFuKKY9i5uG\",\"thread_id\":\"thread_6oUGUBxLwhyApwhYBhWjHI5f\",\"type\":\"message_creation\",\"status\":\"in_progress\",\"cancelled_at\":null,\"completed_at\":null,\"expires_at\":1761862131,\"failed_at\":null,\"last_error\":null,\"step_details\":{\"type\":\"message_creation\",\"message_creation\":{\"message_id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\"}},\"usage\":null}\n\n",
+        "event: thread.run.step.in_progress\n",
+        "data: {\"id\":\"step_Ou0TFVL8JOSRggWUqsOvtr70\",\"object\":\"thread.run.step\",\"created_at\":1761861535,\"run_id\":\"run_oyfV44CrJXYJkvb2qsd80LvJ\",\"assistant_id\":\"asst_BFMmpHsel3a7MuFuKKY9i5uG\",\"thread_id\":\"thread_6oUGUBxLwhyApwhYBhWjHI5f\",\"type\":\"message_creation\",\"status\":\"in_progress\",\"cancelled_at\":null,\"completed_at\":null,\"expires_at\":1761862131,\"failed_at\":null,\"last_error\":null,\"step_details\":{\"type\":\"message_creation\",\"message_creation\":{\"message_id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\"}},\"usage\":null}\n\n",
+        "event: thread.message.created\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message\",\"created_at\":1761861535,\"assistant_id\":\"asst_BFMmpHsel3a7MuFuKKY9i5uG\",\"thread_id\":\"thread_6oUGUBxLwhyApwhYBhWjHI5f\",\"run_id\":\"run_oyfV44CrJXYJkvb2qsd80LvJ\",\"status\":\"in_progress\",\"incomplete_details\":null,\"incomplete_at\":null,\"completed_at\":null,\"role\":\"assistant\",\"content\":[],\"attachments\":[],\"metadata\":{}}\n\n",
+        "event: thread.message.in_progress\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message\",\"created_at\":1761861535,\"assistant_id\":\"asst_BFMmpHsel3a7MuFuKKY9i5uG\",\"thread_id\":\"thread_6oUGUBxLwhyApwhYBhWjHI5f\",\"run_id\":\"run_oyfV44CrJXYJkvb2qsd80LvJ\",\"status\":\"in_progress\",\"incomplete_details\":null,\"incomplete_at\":null,\"completed_at\":null,\"role\":\"assistant\",\"content\":[],\"attachments\":[],\"metadata\":{}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\"Since\",\"annotations\":[]}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" it's\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" warm\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" and\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" sunny\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" outside\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\",\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" you\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" should\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" consider\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" wearing\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" lightweight\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\",\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" breathable\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" clothing\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" such\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" as\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" a\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" t\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\"-shirt\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\",\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" shorts\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\",\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" or\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" a\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" light\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" dress\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\".\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" Don't\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" forget\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" sunglasses\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" and\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" sunscreen\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" to\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" protect\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" yourself\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" from\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" the\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" sun\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\"!\"}}]}}\n\n",
+        "event: thread.message.completed\n",
+        "data: {\"id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\",\"object\":\"thread.message\",\"created_at\":1761861535,\"assistant_id\":\"asst_BFMmpHsel3a7MuFuKKY9i5uG\",\"thread_id\":\"thread_6oUGUBxLwhyApwhYBhWjHI5f\",\"run_id\":\"run_oyfV44CrJXYJkvb2qsd80LvJ\",\"status\":\"completed\",\"incomplete_details\":null,\"incomplete_at\":null,\"completed_at\":1761861536,\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":{\"value\":\"Since it's warm and sunny outside, you should consider wearing lightweight, breathable clothing such as a t-shirt, shorts, or a light dress. Don't forget sunglasses and sunscreen to protect yourself from the sun!\",\"annotations\":[]}}],\"attachments\":[],\"metadata\":{}}\n\n",
+        "event: thread.run.step.completed\n",
+        "data: {\"id\":\"step_Ou0TFVL8JOSRggWUqsOvtr70\",\"object\":\"thread.run.step\",\"created_at\":1761861535,\"run_id\":\"run_oyfV44CrJXYJkvb2qsd80LvJ\",\"assistant_id\":\"asst_BFMmpHsel3a7MuFuKKY9i5uG\",\"thread_id\":\"thread_6oUGUBxLwhyApwhYBhWjHI5f\",\"type\":\"message_creation\",\"status\":\"completed\",\"cancelled_at\":null,\"completed_at\":1761861536,\"expires_at\":1761862131,\"failed_at\":null,\"last_error\":null,\"step_details\":{\"type\":\"message_creation\",\"message_creation\":{\"message_id\":\"msg_kSkj4ryQchn1MSwL3I2N0uWV\"}},\"usage\":{\"prompt_tokens\":284,\"completion_tokens\":42,\"total_tokens\":326,\"prompt_token_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0}}}\n\n",
+        "event: thread.run.completed\n",
+        "data: {\"id\":\"run_oyfV44CrJXYJkvb2qsd80LvJ\",\"object\":\"thread.run\",\"created_at\":1761861531,\"assistant_id\":\"asst_BFMmpHsel3a7MuFuKKY9i5uG\",\"thread_id\":\"thread_6oUGUBxLwhyApwhYBhWjHI5f\",\"status\":\"completed\",\"started_at\":1761861535,\"expires_at\":null,\"cancelled_at\":null,\"failed_at\":null,\"completed_at\":1761861536,\"required_action\":null,\"last_error\":null,\"model\":\"gpt-4o\",\"instructions\":null,\"tools\":[{\"type\":\"function\",\"function\":{\"name\":\"get_current_weather\",\"description\":\"Gets the user's current weather\",\"parameters\":{\"type\":\"object\",\"properties\":{}},\"strict\":false}}],\"tool_resources\":{\"code_interpreter\":{\"file_ids\":[]}},\"metadata\":{},\"temperature\":1.0,\"top_p\":1.0,\"reasoning_effort\":null,\"max_completion_tokens\":null,\"max_prompt_tokens\":null,\"truncation_strategy\":{\"type\":\"auto\",\"last_messages\":null},\"incomplete_details\":null,\"usage\":{\"prompt_tokens\":544,\"completion_tokens\":54,\"total_tokens\":598,\"prompt_token_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0}},\"response_format\":\"auto\",\"tool_choice\":\"auto\",\"parallel_tool_calls\":true}\n\n",
+        "event: done\n",
+        "data: [DONE]\n\n"
+      ]
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

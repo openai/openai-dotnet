@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class UnknownRealtimeRequestItem : IJsonModel<RealtimeItem>
+    internal partial class UnknownRealtimeRequestItem : RealtimeItem, IJsonModel<RealtimeItem>
     {
         internal UnknownRealtimeRequestItem() : this(default, null, null)
         {
@@ -95,7 +95,7 @@ namespace OpenAI.Realtime
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeRealtimeItem(document.RootElement, options);
                     }

@@ -2,32 +2,36 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace OpenAI.Responses
 {
     [Experimental("OPENAI001")]
     public partial class CustomMcpToolCallApprovalPolicy
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
         public CustomMcpToolCallApprovalPolicy()
         {
         }
 
-        internal CustomMcpToolCallApprovalPolicy(McpToolFilter toolsAlwaysRequiringApproval, McpToolFilter toolsNeverRequiringApproval, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal CustomMcpToolCallApprovalPolicy(McpToolFilter toolsAlwaysRequiringApproval, McpToolFilter toolsNeverRequiringApproval, in JsonPatch patch)
         {
             ToolsAlwaysRequiringApproval = toolsAlwaysRequiringApproval;
             ToolsNeverRequiringApproval = toolsNeverRequiringApproval;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
+        [JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
     }
 }

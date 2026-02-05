@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Graders
 {
-    public partial class GraderTextSimilarity : IJsonModel<GraderTextSimilarity>
+    public partial class GraderTextSimilarity : Grader, IJsonModel<GraderTextSimilarity>
     {
         internal GraderTextSimilarity() : this(GraderType.TextSimilarity, null, null, null, null, default)
         {
@@ -139,7 +139,7 @@ namespace OpenAI.Graders
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeGraderTextSimilarity(document.RootElement, options);
                     }

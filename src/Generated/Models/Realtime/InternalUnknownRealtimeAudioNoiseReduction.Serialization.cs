@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalUnknownRealtimeAudioNoiseReduction : IJsonModel<InputNoiseReductionOptions>
+    internal partial class InternalUnknownRealtimeAudioNoiseReduction : InputNoiseReductionOptions, IJsonModel<InputNoiseReductionOptions>
     {
         internal InternalUnknownRealtimeAudioNoiseReduction() : this(default, null)
         {
@@ -89,7 +89,7 @@ namespace OpenAI.Realtime
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInputNoiseReductionOptions(document.RootElement, options);
                     }

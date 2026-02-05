@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    public partial class ItemTruncatedUpdate : IJsonModel<ItemTruncatedUpdate>
+    public partial class ItemTruncatedUpdate : RealtimeUpdate, IJsonModel<ItemTruncatedUpdate>
     {
         internal ItemTruncatedUpdate() : this(RealtimeUpdateKind.ItemTruncated, null, null, null, default, default)
         {
@@ -134,7 +134,7 @@ namespace OpenAI.Realtime
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeItemTruncatedUpdate(document.RootElement, options);
                     }

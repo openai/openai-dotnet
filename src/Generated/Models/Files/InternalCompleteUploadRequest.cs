@@ -15,8 +15,6 @@ namespace OpenAI.Files
 
         public InternalCompleteUploadRequest(IEnumerable<string> partIds)
         {
-            Argument.AssertNotNull(partIds, nameof(partIds));
-
             PartIds = partIds.ToList();
         }
 

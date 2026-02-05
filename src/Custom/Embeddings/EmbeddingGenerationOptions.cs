@@ -1,8 +1,10 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using System;
 using System.ClientModel;
 
 namespace OpenAI.Embeddings;
 
+// CUSTOM: Renamed.
 [CodeGenType("CreateEmbeddingRequest")]
 [CodeGenVisibility(nameof(EmbeddingGenerationOptions), CodeGenVisibility.Public)]
 [CodeGenSuppress(nameof(EmbeddingGenerationOptions), typeof(BinaryData), typeof(InternalCreateEmbeddingRequestModel))]

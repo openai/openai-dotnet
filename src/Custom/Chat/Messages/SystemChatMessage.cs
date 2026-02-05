@@ -1,3 +1,4 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using System.Collections.Generic;
 
 namespace OpenAI.Chat;
@@ -21,7 +22,7 @@ public partial class SystemChatMessage : ChatMessage
     ///     The collection of content items associated with the message.
     /// </param>
     public SystemChatMessage(IEnumerable<ChatMessageContentPart> contentParts)
-        : this(content: new(contentParts), role: ChatMessageRole.System, participantName: null, additionalBinaryDataProperties: null)
+        : this(content: new(contentParts), role: ChatMessageRole.System, participantName: null, patch: default)
     { }
 
     /// <summary>
@@ -32,7 +33,7 @@ public partial class SystemChatMessage : ChatMessage
     ///     The collection of content items associated with the message.
     /// </param>
     public SystemChatMessage(params ChatMessageContentPart[] contentParts)
-        : this(content: new(contentParts), role: ChatMessageRole.System, participantName: null, additionalBinaryDataProperties: null)
+        : this(content: new(contentParts), role: ChatMessageRole.System, participantName: null, patch: default)
     {
         Argument.AssertNotNullOrEmpty(contentParts, nameof(contentParts));
     }
@@ -42,7 +43,7 @@ public partial class SystemChatMessage : ChatMessage
     /// </summary>
     /// <param name="content"> The text content of the message. </param>
     public SystemChatMessage(string content)
-        : this(content: new([content]), role: ChatMessageRole.System, participantName: null, additionalBinaryDataProperties: null)
+        : this(content: new([content]), role: ChatMessageRole.System, participantName: null, patch: default)
     {
         Argument.AssertNotNull(content, nameof(content));
     }

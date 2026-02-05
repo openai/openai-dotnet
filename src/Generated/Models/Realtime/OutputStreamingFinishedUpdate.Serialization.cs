@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    public partial class OutputStreamingFinishedUpdate : IJsonModel<OutputStreamingFinishedUpdate>
+    public partial class OutputStreamingFinishedUpdate : RealtimeUpdate, IJsonModel<OutputStreamingFinishedUpdate>
     {
         internal OutputStreamingFinishedUpdate() : this(RealtimeUpdateKind.ItemStreamingFinished, null, null, null, default, null)
         {
@@ -134,7 +134,7 @@ namespace OpenAI.Realtime
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeOutputStreamingFinishedUpdate(document.RootElement, options);
                     }

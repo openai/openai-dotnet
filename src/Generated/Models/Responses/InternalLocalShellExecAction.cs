@@ -2,28 +2,30 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text.Json.Serialization;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
     internal partial class InternalLocalShellExecAction
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
         public InternalLocalShellExecAction(IEnumerable<string> command, IDictionary<string, string> env)
         {
             // Plugin customization: ensure initialization of collections
-            Argument.AssertNotNull(command, nameof(command));
-            Argument.AssertNotNull(env, nameof(env));
-
             Command = command.ToList();
             Env = env ?? new ChangeTrackingDictionary<string, string>();
         }
 
-        internal InternalLocalShellExecAction(string kind, IList<string> command, int? timeoutMs, string workingDirectory, IDictionary<string, string> env, string user, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalLocalShellExecAction(string kind, IList<string> command, int? timeoutMs, string workingDirectory, IDictionary<string, string> env, string user, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Kind = kind;
@@ -32,8 +34,14 @@ namespace OpenAI.Responses
             WorkingDirectory = workingDirectory;
             Env = env ?? new ChangeTrackingDictionary<string, string>();
             User = user;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        [JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         public string Kind { get; } = "exec";
 
@@ -46,11 +54,5 @@ namespace OpenAI.Responses
         public IDictionary<string, string> Env { get; }
 
         public string User { get; set; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
     }
 }

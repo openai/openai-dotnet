@@ -3,15 +3,20 @@
 #nullable disable
 
 using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text.Json.Serialization;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
     internal abstract partial class InternalCompoundFilter
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
         private protected InternalCompoundFilter(InternalCompoundFilterType kind, IEnumerable<BinaryData> filters)
         {
@@ -19,22 +24,23 @@ namespace OpenAI.Responses
             Filters = filters.ToList();
         }
 
-        internal InternalCompoundFilter(InternalCompoundFilterType kind, IList<BinaryData> filters, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalCompoundFilter(InternalCompoundFilterType kind, IList<BinaryData> filters, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Kind = kind;
             Filters = filters ?? new ChangeTrackingList<BinaryData>();
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        [JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         internal InternalCompoundFilterType Kind { get; set; }
 
         public IList<BinaryData> Filters { get; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
     }
 }

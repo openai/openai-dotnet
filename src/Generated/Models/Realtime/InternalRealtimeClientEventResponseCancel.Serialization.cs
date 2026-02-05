@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeClientEventResponseCancel : IJsonModel<InternalRealtimeClientEventResponseCancel>
+    internal partial class InternalRealtimeClientEventResponseCancel : InternalRealtimeClientEvent, IJsonModel<InternalRealtimeClientEventResponseCancel>
     {
         void IJsonModel<InternalRealtimeClientEventResponseCancel>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -102,7 +102,7 @@ namespace OpenAI.Realtime
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalRealtimeClientEventResponseCancel(document.RootElement, options);
                     }

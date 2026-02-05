@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Linq;
 using OpenAI;
@@ -13,16 +13,17 @@ namespace OpenAI.Responses
     {
         internal InternalComputerActionDrag(IEnumerable<InternalCoordinate> path) : base(ComputerCallActionKind.Drag)
         {
-            Argument.AssertNotNull(path, nameof(path));
-
             Path = path.ToList();
         }
 
-        internal InternalComputerActionDrag(ComputerCallActionKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<InternalCoordinate> path) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalComputerActionDrag(ComputerCallActionKind kind, in JsonPatch patch, IList<InternalCoordinate> path) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             Path = path ?? new ChangeTrackingList<InternalCoordinate>();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         internal IList<InternalCoordinate> Path { get; }
     }

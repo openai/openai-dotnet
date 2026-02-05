@@ -1,4 +1,4 @@
-using System;
+using Microsoft.TypeSpec.Generator.Customizations;
 
 namespace OpenAI.Responses;
 
@@ -6,7 +6,4 @@ namespace OpenAI.Responses;
 [CodeGenType("ResponseFunctionCallArgumentsDoneEvent")]
 public partial class StreamingResponseFunctionCallArgumentsDoneUpdate
 {
-    // CUSTOM: Renamed.
-    [CodeGenMember("Arguments")]
-    public BinaryData FunctionArguments { get; }
 }

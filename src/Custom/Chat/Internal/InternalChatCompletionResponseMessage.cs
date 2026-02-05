@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+using Microsoft.TypeSpec.Generator.Customizations;
+using System.Collections.Generic;
 
 namespace OpenAI.Chat;
 

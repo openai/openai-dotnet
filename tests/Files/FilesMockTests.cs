@@ -1,6 +1,7 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.ClientModel.TestFramework;
+using Microsoft.ClientModel.TestFramework.Mocks;
+using NUnit.Framework;
 using OpenAI.Files;
-using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.IO;
@@ -10,12 +11,10 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Tests.Files;
 
-[TestFixture(true)]
-[TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("Files")]
 [Category("Smoke")]
-public class FilesMockTests : SyncAsyncTestBase
+public class FilesMockTests : ClientTestBase
 {
     private static readonly ApiKeyCredential s_fakeCredential = new ApiKeyCredential("key");
 
@@ -61,12 +60,9 @@ public class FilesMockTests : SyncAsyncTestBase
             "id": "returned_file_id"
         }
         """);
-        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential, clientOptions);
+        OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential, clientOptions));
 
-        OpenAIFile fileInfo = IsAsync
-            ? await client.GetFileAsync("file_id")
-            : client.GetFile("file_id");
-
+        OpenAIFile fileInfo = await client.GetFileAsync("file_id");
         Assert.That(fileInfo.Id, Is.EqualTo("returned_file_id"));
     }
 
@@ -78,12 +74,9 @@ public class FilesMockTests : SyncAsyncTestBase
             "created_at": 1704096000
         }
         """);
-        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential, clientOptions);
+        OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential, clientOptions));
 
-        OpenAIFile fileInfo = IsAsync
-            ? await client.GetFileAsync("file_id")
-            : client.GetFile("file_id");
-
+        OpenAIFile fileInfo = await client.GetFileAsync("file_id");
         Assert.That(fileInfo.CreatedAt.ToUnixTimeSeconds(), Is.EqualTo(1704096000));
     }
 
@@ -96,11 +89,8 @@ public class FilesMockTests : SyncAsyncTestBase
             "purpose": "{{purpose.stringValue}}"
         }
         """);
-        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential, clientOptions);
-
-        OpenAIFile fileInfo = IsAsync
-            ? await client.GetFileAsync("file_id")
-            : client.GetFile("file_id");
+        OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential, clientOptions));
+        OpenAIFile fileInfo = await client.GetFileAsync("file_id");
 
         Assert.That(fileInfo.Purpose, Is.EqualTo(purpose.expectedValue));
     }
@@ -116,12 +106,8 @@ public class FilesMockTests : SyncAsyncTestBase
             "status": "{{status.stringValue}}"
         }
         """);
-        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential, clientOptions);
-
-        OpenAIFile fileInfo = IsAsync
-            ? await client.GetFileAsync("file_id")
-            : client.GetFile("file_id");
-
+        OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential, clientOptions));
+        OpenAIFile fileInfo = await client.GetFileAsync("file_id");
         Assert.That(fileInfo.Status, Is.EqualTo(status.expectedValue));
     }
 #pragma warning restore CS0618
@@ -135,12 +121,8 @@ public class FilesMockTests : SyncAsyncTestBase
             "status_details": "This is definitely an error."
         }
         """);
-        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential, clientOptions);
-
-        OpenAIFile fileInfo = IsAsync
-            ? await client.GetFileAsync("file_id")
-            : client.GetFile("file_id");
-
+        OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential, clientOptions));
+        OpenAIFile fileInfo = await client.GetFileAsync("file_id");
         Assert.That(fileInfo.StatusDetails, Is.EqualTo("This is definitely an error."));
     }
 #pragma warning restore CS0618
@@ -148,20 +130,12 @@ public class FilesMockTests : SyncAsyncTestBase
     [Test]
     public void GetFileRespectsTheCancellationToken()
     {
-        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential);
+        OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential));
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
 
-        if (IsAsync)
-        {
-            Assert.That(async () => await client.GetFileAsync("fileId", cancellationSource.Token),
+        Assert.That(async () => await client.GetFileAsync("fileId", cancellationSource.Token),
                 Throws.InstanceOf<OperationCanceledException>());
-        }
-        else
-        {
-            Assert.That(() => client.GetFile("fileId", cancellationSource.Token),
-                Throws.InstanceOf<OperationCanceledException>());
-        }
     }
 
     [Test]
@@ -259,21 +233,13 @@ public class FilesMockTests : SyncAsyncTestBase
     [Test]
     public void UploadFileRespectsTheCancellationToken()
     {
-        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential);
+        OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential));
         using var stream = new MemoryStream(Array.Empty<byte>());
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
 
-        if (IsAsync)
-        {
-            Assert.That(async () => await client.UploadFileAsync(stream, "filename.txt", FileUploadPurpose.Assistants, cancellationSource.Token),
+        Assert.That(async () => await client.UploadFileAsync(stream, "filename.txt", FileUploadPurpose.Assistants, cancellationSource.Token),
                 Throws.InstanceOf<OperationCanceledException>());
-        }
-        else
-        {
-            Assert.That(() => client.UploadFile(stream, "filename.txt", FileUploadPurpose.Assistants, cancellationSource.Token),
-                Throws.InstanceOf<OperationCanceledException>());
-        }
     }
 
     [Test]
@@ -289,11 +255,9 @@ public class FilesMockTests : SyncAsyncTestBase
             ]
         }
         """);
-        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential, clientOptions);
+        OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential, clientOptions));
 
-        OpenAIFileCollection fileInfoCollection = IsAsync
-            ? await client.GetFilesAsync(FilePurpose.Assistants)
-            : client.GetFiles(FilePurpose.Assistants);
+        OpenAIFileCollection fileInfoCollection = await client.GetFilesAsync(FilePurpose.Assistants);
         OpenAIFile fileInfo = fileInfoCollection.Single();
 
         Assert.That(fileInfo.Id, Is.EqualTo("returned_file_id"));
@@ -312,11 +276,9 @@ public class FilesMockTests : SyncAsyncTestBase
             ]
         }
         """);
-        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential, clientOptions);
+        OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential, clientOptions));
 
-        OpenAIFileCollection fileInfoCollection = IsAsync
-            ? await client.GetFilesAsync(FilePurpose.Assistants)
-            : client.GetFiles(FilePurpose.Assistants);
+        OpenAIFileCollection fileInfoCollection = await client.GetFilesAsync(FilePurpose.Assistants);
         OpenAIFile fileInfo = fileInfoCollection.Single();
 
         Assert.That(fileInfo.CreatedAt.ToUnixTimeSeconds(), Is.EqualTo(1704096000));
@@ -336,11 +298,9 @@ public class FilesMockTests : SyncAsyncTestBase
             ]
         }
         """);
-        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential, clientOptions);
+        OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential, clientOptions));
 
-        OpenAIFileCollection fileInfoCollection = IsAsync
-            ? await client.GetFilesAsync(FilePurpose.Assistants)
-            : client.GetFiles(FilePurpose.Assistants);
+        OpenAIFileCollection fileInfoCollection = await client.GetFilesAsync(FilePurpose.Assistants);
         OpenAIFile fileInfo = fileInfoCollection.Single();
 
         Assert.That(fileInfo.Purpose, Is.EqualTo(purpose.expectedValue));
@@ -361,11 +321,9 @@ public class FilesMockTests : SyncAsyncTestBase
             ]
         }
         """);
-        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential, clientOptions);
+        OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential, clientOptions));
 
-        OpenAIFileCollection fileInfoCollection = IsAsync
-            ? await client.GetFilesAsync(FilePurpose.Assistants)
-            : client.GetFiles(FilePurpose.Assistants);
+        OpenAIFileCollection fileInfoCollection = await client.GetFilesAsync(FilePurpose.Assistants);
         OpenAIFile fileInfo = fileInfoCollection.Single();
 
         Assert.That(fileInfo.Status, Is.EqualTo(status.expectedValue));
@@ -386,11 +344,9 @@ public class FilesMockTests : SyncAsyncTestBase
             ]
         }
         """);
-        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential, clientOptions);
+        OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential, clientOptions));
 
-        OpenAIFileCollection fileInfoCollection = IsAsync
-            ? await client.GetFilesAsync(FilePurpose.Assistants)
-            : client.GetFiles(FilePurpose.Assistants);
+        OpenAIFileCollection fileInfoCollection = await client.GetFilesAsync(FilePurpose.Assistants);
         OpenAIFile fileInfo = fileInfoCollection.Single();
 
         Assert.That(fileInfo.StatusDetails, Is.EqualTo("This is definitely an error."));
@@ -400,74 +356,52 @@ public class FilesMockTests : SyncAsyncTestBase
     [Test]
     public void GetFilesRespectsTheCancellationToken()
     {
-        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential);
+        OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential));
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
 
-        if (IsAsync)
-        {
-            Assert.That(async () => await client.GetFilesAsync(FilePurpose.Assistants, cancellationSource.Token),
-                Throws.InstanceOf<OperationCanceledException>());
-        }
-        else
-        {
-            Assert.That(() => client.GetFiles(FilePurpose.Assistants, cancellationSource.Token),
-                Throws.InstanceOf<OperationCanceledException>());
-        }
+        Assert.That(async () => await client.GetFilesAsync(FilePurpose.Assistants, cancellationSource.Token),
+            Throws.InstanceOf<OperationCanceledException>());
     }
 
     [Test]
     public void DownloadFileRespectsTheCancellationToken()
     {
-        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential);
+        OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential));
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
 
-        if (IsAsync)
-        {
-            Assert.That(async () => await client.DownloadFileAsync("fileId", cancellationSource.Token),
+        Assert.That(async () => await client.DownloadFileAsync("fileId", cancellationSource.Token),
                 Throws.InstanceOf<OperationCanceledException>());
-        }
-        else
-        {
-            Assert.That(() => client.DownloadFile("fileId", cancellationSource.Token),
-                Throws.InstanceOf<OperationCanceledException>());
-        }
     }
 
     [Test]
     public void DeleteFileRespectsTheCancellationToken()
     {
-        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential);
+        OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential));
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
 
-        if (IsAsync)
-        {
-            Assert.That(async () => await client.DeleteFileAsync("fileId", cancellationSource.Token),
+        Assert.That(async () => await client.DeleteFileAsync("fileId", cancellationSource.Token),
                 Throws.InstanceOf<OperationCanceledException>());
-        }
-        else
-        {
-            Assert.That(() => client.DeleteFile("fileId", cancellationSource.Token),
-                Throws.InstanceOf<OperationCanceledException>());
-        }
     }
 
     private OpenAIClientOptions GetClientOptionsWithMockResponse(int status, string content)
     {
-        MockPipelineResponse response = new MockPipelineResponse(status);
-        response.SetContent(content);
+        MockPipelineResponse response = new MockPipelineResponse(status).WithContent(content);
 
         return new OpenAIClientOptions()
         {
-            Transport = new MockPipelineTransport(response)
+            Transport = new MockPipelineTransport(_ => response)
+            {
+                ExpectSyncPipeline = !IsAsync
+            }
         };
     }
 
     private async ValueTask<OpenAIFile> InvokeUploadFileSyncOrAsync(OpenAIClientOptions clientOptions, FileSourceKind fileSourceKind)
     {
-        OpenAIFileClient client = new OpenAIFileClient(s_fakeCredential, clientOptions);
+        OpenAIFileClient client = CreateProxyFromClient(new OpenAIFileClient(s_fakeCredential, clientOptions));
         string filename = "images_dog_and_cat.png";
         string path = Path.Combine("Assets", filename);
 
@@ -475,24 +409,18 @@ public class FilesMockTests : SyncAsyncTestBase
         {
             using FileStream file = File.OpenRead(path);
 
-            return IsAsync
-                ? await client.UploadFileAsync(file, filename, purpose: FileUploadPurpose.Assistants)
-                : client.UploadFile(file, filename, purpose: FileUploadPurpose.Assistants);
+            return await client.UploadFileAsync(file, filename, purpose: FileUploadPurpose.Assistants);
         }
         else if (fileSourceKind == FileSourceKind.UsingFilePath)
         {
-            return IsAsync
-                ? await client.UploadFileAsync(path, purpose: FileUploadPurpose.Assistants)
-                : client.UploadFile(path, purpose: FileUploadPurpose.Assistants);
+            return await client.UploadFileAsync(path, purpose: FileUploadPurpose.Assistants);
         }
         else if (fileSourceKind == FileSourceKind.UsingBinaryData)
         {
             using FileStream file = File.OpenRead(path);
             BinaryData content = BinaryData.FromStream(file);
 
-            return IsAsync
-                ? await client.UploadFileAsync(content, filename, purpose: FileUploadPurpose.Assistants)
-                : client.UploadFile(content, filename, purpose: FileUploadPurpose.Assistants);
+            return await client.UploadFileAsync(content, filename, purpose: FileUploadPurpose.Assistants);
         }
 
         Assert.Fail("Invalid source kind.");

@@ -1,0 +1,117 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/chat/completions",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "141",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "What was a positive news story from today?"
+          }
+        ],
+        "model": "gpt-4o-search-preview",
+        "web_search_options": {}
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Expose-Headers": "X-Request-ID",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9aad8dc4fc05e5bd-DFW",
+        "Connection": "keep-alive",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "5561",
+        "x-openai-proxy-wasm": "v0.1",
+        "x-ratelimit-limit-requests": "1000",
+        "x-ratelimit-limit-tokens": "3000000",
+        "x-ratelimit-remaining-requests": "999",
+        "x-ratelimit-remaining-tokens": "2999987",
+        "x-ratelimit-reset-requests": "60ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "chatcmpl-7417c159-fac8-4c70-92dd-faa22e0e3b37",
+        "object": "chat.completion",
+        "created": 1765210446,
+        "model": "gpt-4o-search-preview-2025-03-11",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "On December 8, 2025, the Buffalo Metro Rail in New York extended its service to the DL&W Terminal, enhancing public transportation options in the region. ([en.wikipedia.org](https://en.wikipedia.org/wiki/2025_in_rail_transport?utm_source=openai))\n\nAdditionally, the Northwoods Policy Network (NPN) officially launched in Northern Wisconsin. As a registered 501(c)(3) organization, NPN aims to strengthen the region through policy innovation, community engagement, and economic development. Their mission focuses on amplifying the voices of residents and addressing challenges unique to rural communities. ([drydenwire.com](https://drydenwire.com/news/morning-headlines-monday-dec-8-2025/?utm_source=openai))\n\nIn the realm of health, a study revealed that intermittent calorie restriction leads to significant changes in both the gut and the brain, offering new insights into tackling obesity. Researchers observed that participants not only lost weight but also experienced shifts in brain activity and gut bacteria composition, suggesting potential new avenues for maintaining a healthy weight. ([drydenwire.com](https://drydenwire.com/news/morning-headlines-monday-dec-8-2025/?utm_source=openai))\n\nThese developments highlight progress in transportation, community engagement, and health research on this day. ",
+              "refusal": null,
+              "annotations": [
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "end_index": 246,
+                    "start_index": 154,
+                    "title": "2025 in rail transport",
+                    "url": "https://en.wikipedia.org/wiki/2025_in_rail_transport?utm_source=openai"
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "end_index": 707,
+                    "start_index": 605,
+                    "title": "Morning Headlines - Monday, Dec. 8, 2025 | Recent News | DrydenWire.com",
+                    "url": "https://drydenwire.com/news/morning-headlines-monday-dec-8-2025/?utm_source=openai"
+                  }
+                },
+                {
+                  "type": "url_citation",
+                  "url_citation": {
+                    "end_index": 1198,
+                    "start_index": 1096,
+                    "title": "Morning Headlines - Monday, Dec. 8, 2025 | Recent News | DrydenWire.com",
+                    "url": "https://drydenwire.com/news/morning-headlines-monday-dec-8-2025/?utm_source=openai"
+                  }
+                }
+              ]
+            },
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 9,
+          "completion_tokens": 263,
+          "total_tokens": 272,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "system_fingerprint": ""
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalMessageContentTextAnnotationsFilePathObject : IJsonModel<InternalMessageContentTextAnnotationsFilePathObject>
+    internal partial class InternalMessageContentTextAnnotationsFilePathObject : InternalMessageContentTextObjectAnnotation, IJsonModel<InternalMessageContentTextAnnotationsFilePathObject>
     {
         internal InternalMessageContentTextAnnotationsFilePathObject() : this(InternalMessageContentTextAnnotationType.FilePath, null, null, null, default, default)
         {
@@ -139,7 +139,7 @@ namespace OpenAI.Assistants
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalMessageContentTextAnnotationsFilePathObject(document.RootElement, options);
                     }

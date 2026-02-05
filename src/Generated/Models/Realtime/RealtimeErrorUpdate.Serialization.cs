@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    public partial class RealtimeErrorUpdate : IJsonModel<RealtimeErrorUpdate>
+    public partial class RealtimeErrorUpdate : RealtimeUpdate, IJsonModel<RealtimeErrorUpdate>
     {
         internal RealtimeErrorUpdate() : this(RealtimeUpdateKind.Error, null, null, null)
         {
@@ -106,7 +106,7 @@ namespace OpenAI.Realtime
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeRealtimeErrorUpdate(document.RootElement, options);
                     }

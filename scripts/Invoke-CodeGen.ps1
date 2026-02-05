@@ -16,7 +16,10 @@ param(
     [string]$LocalRepositoryPath,
 
     [Parameter(Mandatory = $false)]
-    [switch]$Force
+    [switch]$Force,
+
+    [Parameter(Mandatory = $false)]
+    [switch]$Clean
 )
 
 function Invoke-ScriptWithLogging {
@@ -29,7 +32,12 @@ function Invoke-ScriptWithLogging {
     $scriptString = $Script | Out-String
     Write-Host "--------------------------------------------------------------------------------`n> $scriptString"
     & $Script
+    $exitCode = $LASTEXITCODE
     Write-Host ""
+
+    if ($exitCode -ne 0) {
+        throw "Command failed with exit code $exitCode"
+    }
 }
 
 
@@ -292,6 +300,14 @@ try {
     }
 
     Write-ElapsedTime "npm ci complete"
+
+    if ($Clean) {
+        Invoke-ScriptWithLogging { npm run clean -w $codegenFolderPath }
+        if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+        }
+        Write-ElapsedTime "npm run clean complete"
+    }
 
     Invoke-ScriptWithLogging { npm run build -w $codegenFolderPath }
     if ($LASTEXITCODE -ne 0) {

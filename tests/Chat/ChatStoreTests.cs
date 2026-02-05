@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using OpenAI.Chat;
 using OpenAI.Tests.Utility;
 using System;
@@ -10,19 +11,16 @@ using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Chat;
 
-[TestFixture(true)]
-[TestFixture(false)]
-[Parallelizable(ParallelScope.All)]
-[Category("StoredChat")]
-public class ChatStoreToolTests : SyncAsyncTestBase
+[Category("Chat")]
+[Category("ChatStore")]
+public class ChatStoreTests : OpenAIRecordedTestBase
 {
-    private const int s_delayInMilliseconds = 5000;
-
-    public ChatStoreToolTests(bool isAsync) : base(isAsync)
+    public ChatStoreTests(bool isAsync) : base(isAsync)
     {
+        TestTimeoutInSeconds = 30;
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ChatMetadata()
     {
         ChatClient client = GetTestClient();
@@ -48,7 +46,7 @@ public class ChatStoreToolTests : SyncAsyncTestBase
         Assert.That(count, Is.GreaterThan(0));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionsWithPagination()
     {
         ChatClient client = GetTestClient();
@@ -105,7 +103,7 @@ public class ChatStoreToolTests : SyncAsyncTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionsWithAfterIdPagination()
     {
         ChatClient client = GetTestClient();
@@ -165,7 +163,7 @@ public class ChatStoreToolTests : SyncAsyncTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionsWithOrderFiltering()
     {
         ChatClient client = GetTestClient();
@@ -237,7 +235,8 @@ public class ChatStoreToolTests : SyncAsyncTestBase
         }
     }
 
-    [Test]
+    [LiveOnly(Reason = "Temp while sorting out flakiness in playback")]
+    [RecordedTest]
     public async Task GetChatCompletionsWithMetadataFiltering()
     {
         ChatClient client = GetTestClient();
@@ -302,7 +301,7 @@ public class ChatStoreToolTests : SyncAsyncTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionsWithModelFiltering()
     {
         ChatClient client = GetTestClient();
@@ -346,7 +345,7 @@ public class ChatStoreToolTests : SyncAsyncTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionsWithEmptyOptions()
     {
         ChatClient client = GetTestClient();
@@ -383,7 +382,8 @@ public class ChatStoreToolTests : SyncAsyncTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [Test]
+    [LiveOnly(Reason ="Temp while sorting out flakiness in playback")]
+    [RecordedTest]
     public async Task GetChatCompletionsWithCombinedFilters()
     {
         ChatClient client = GetTestClient();
@@ -434,7 +434,7 @@ public class ChatStoreToolTests : SyncAsyncTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task StoredChatCompletionsWork()
     {
         ChatClient client = GetTestClient();
@@ -448,7 +448,7 @@ public class ChatStoreToolTests : SyncAsyncTestBase
             [new UserChatMessage("Say `this is a test`.")],
             options);
 
-        await RetryWithExponentialBackoffAsync(async () =>
+        await TestHelpers.RetryWithExponentialBackoffAsync(async () =>
         {
 
             ChatCompletion storedCompletion = await client.GetChatCompletionAsync(completion.Id);
@@ -469,7 +469,8 @@ public class ChatStoreToolTests : SyncAsyncTestBase
         });
     }
 
-    [Test]
+    [LiveOnly(Reason = "Temp while sorting out flakiness in playback")]
+    [RecordedTest]
     public async Task UpdateChatCompletionWorks()
     {
         ChatClient client = GetTestClient();
@@ -511,7 +512,7 @@ public class ChatStoreToolTests : SyncAsyncTestBase
         });
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionsValidatesCollectionEnumeration()
     {
         ChatClient client = GetTestClient();
@@ -566,7 +567,7 @@ public class ChatStoreToolTests : SyncAsyncTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionsHandlesLargeLimits()
     {
         ChatClient client = GetTestClient();
@@ -607,7 +608,7 @@ public class ChatStoreToolTests : SyncAsyncTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionsWithMinimalLimits()
     {
         ChatClient client = GetTestClient();
@@ -648,7 +649,7 @@ public class ChatStoreToolTests : SyncAsyncTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionMessagesWithBasicUsage()
     {
         ChatClient client = GetTestClient();
@@ -672,7 +673,7 @@ public class ChatStoreToolTests : SyncAsyncTestBase
             {
                 messageCount++;
                 Assert.That(message.Id, Is.Not.Null.And.Not.Empty);
-                Assert.AreEqual("Basic messages test: Say 'Hello, this is a test message.'", message.Content);
+                Assert.That(message.Content, Is.EqualTo("Basic messages test: Say 'Hello, this is a test message.'"));
 
                 if (messageCount >= 5) break; // Prevent infinite loop
             }
@@ -688,18 +689,21 @@ public class ChatStoreToolTests : SyncAsyncTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionMessagesWithPagination()
     {
         ChatClient client = GetTestClient();
 
         // Create completion with multiple messages (conversation with tool calls)
+        // and one with multiple content parts
         List<ChatMessage> conversationMessages = new()
         {
             new UserChatMessage("What's the weather like today? Use the weather tool."),
             new UserChatMessage("Name something I could do outside in this weather."),
             new UserChatMessage("Name something else I could do outside in this weather."),
-            new UserChatMessage("Name something yet another thing I could do outside in this weather.")
+            new UserChatMessage([
+                ChatMessageContentPart.CreateTextPart("Whose logo is this?: "),
+                ChatMessageContentPart.CreateImagePart(new Uri("https://upload.wikimedia.org/wikipedia/commons/c/c3/Openai.png"))]),
         };
 
         // Add function definition to trigger more back-and-forth
@@ -741,15 +745,26 @@ public class ChatStoreToolTests : SyncAsyncTestBase
                 PageSizeLimit = 2
             };
 
+            bool foundContentParts = false;
+
             await foreach (var message in client.GetChatCompletionMessagesAsync(completion.Id, options))
             {
                 totalMessages++;
                 lastMessageId = message.Id;
+
+                // Check if the message contains any content parts
+                if (message.ContentParts.Count > 0)
+                {
+                    foundContentParts = true;
+                    Assert.That(message.ContentParts[0].Text, Is.EqualTo("Whose logo is this?: "));
+                    Assert.That(message.ContentParts[1].ImageBytes, Is.Not.Null);
+                }
                 Assert.That(message.Id, Is.Not.Null.And.Not.Empty);
 
                 if (totalMessages >= 4) break; // Get a few pages worth
             }
 
+            Assert.That(foundContentParts, Is.True);
             Assert.That(totalMessages, Is.GreaterThan(3));
             Assert.That(lastMessageId, Is.Not.Null);
         });
@@ -762,7 +777,7 @@ public class ChatStoreToolTests : SyncAsyncTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionMessagesWithAfterIdPagination()
     {
         ChatClient client = GetTestClient();
@@ -819,7 +834,7 @@ public class ChatStoreToolTests : SyncAsyncTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionMessagesWithOrderFiltering()
     {
         ChatClient client = GetTestClient();
@@ -878,7 +893,7 @@ public class ChatStoreToolTests : SyncAsyncTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionMessagesWithCancellationToken()
     {
         ChatClient client = GetTestClient();
@@ -930,7 +945,7 @@ public class ChatStoreToolTests : SyncAsyncTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetChatCompletionMessagesWithCombinedOptions()
     {
         ChatClient client = GetTestClient();
@@ -981,8 +996,10 @@ public class ChatStoreToolTests : SyncAsyncTestBase
         catch { /* Ignore cleanup errors */ }
     }
 
-    private static ChatClient GetTestClient(string overrideModel = null)
-        => GetTestClient<ChatClient>(
+    private const int s_delayInMilliseconds = 5000;
+
+    private ChatClient GetTestClient(string overrideModel = null)
+        => GetProxiedOpenAIClient<ChatClient>(
             scenario: TestScenario.Chat,
             overrideModel: overrideModel);
 }

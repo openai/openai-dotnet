@@ -2,9 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
-using OpenAI;
+using System.ClientModel.Primitives;
 
 namespace OpenAI.Responses
 {
@@ -12,21 +10,19 @@ namespace OpenAI.Responses
     {
         public InternalMCPApprovalRequestItemParam(string serverLabel, string name, string arguments) : base(InternalItemType.McpApprovalRequest)
         {
-            Argument.AssertNotNull(serverLabel, nameof(serverLabel));
-            Argument.AssertNotNull(name, nameof(name));
-            Argument.AssertNotNull(arguments, nameof(arguments));
-
             ServerLabel = serverLabel;
             Name = name;
             Arguments = arguments;
         }
 
-        internal InternalMCPApprovalRequestItemParam(InternalItemType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string serverLabel, string name, string arguments) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalMCPApprovalRequestItemParam(InternalItemType kind, in JsonPatch patch, string serverLabel, string name, string arguments) : base(kind, patch)
         {
             ServerLabel = serverLabel;
             Name = name;
             Arguments = arguments;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ServerLabel { get; }
 

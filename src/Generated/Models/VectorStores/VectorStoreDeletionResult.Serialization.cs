@@ -136,7 +136,7 @@ namespace OpenAI.VectorStores
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeVectorStoreDeletionResult(document.RootElement, options);
                     }
@@ -149,8 +149,8 @@ namespace OpenAI.VectorStores
 
         public static explicit operator VectorStoreDeletionResult(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
+            PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
             return DeserializeVectorStoreDeletionResult(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

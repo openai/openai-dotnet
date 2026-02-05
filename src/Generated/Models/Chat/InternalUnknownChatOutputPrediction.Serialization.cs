@@ -4,20 +4,28 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Chat
 {
-    internal partial class InternalUnknownChatOutputPrediction : IJsonModel<ChatOutputPrediction>
+    internal partial class InternalUnknownChatOutputPrediction : ChatOutputPrediction, IJsonModel<ChatOutputPrediction>
     {
-        internal InternalUnknownChatOutputPrediction() : this(default, null)
+        internal InternalUnknownChatOutputPrediction() : this(default, default)
         {
         }
 
         void IJsonModel<ChatOutputPrediction>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -31,6 +39,10 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(ChatOutputPrediction)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         ChatOutputPrediction IJsonModel<ChatOutputPrediction>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -43,17 +55,19 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(ChatOutputPrediction)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeChatOutputPrediction(document.RootElement, options);
+            return DeserializeChatOutputPrediction(document.RootElement, null, options);
         }
 
-        internal static InternalUnknownChatOutputPrediction DeserializeInternalUnknownChatOutputPrediction(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalUnknownChatOutputPrediction DeserializeInternalUnknownChatOutputPrediction(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalChatOutputPredictionKind kind = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -61,10 +75,9 @@ namespace OpenAI.Chat
                     kind = new InternalChatOutputPredictionKind(prop.Value.GetString());
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalUnknownChatOutputPrediction(kind, additionalBinaryDataProperties);
+            return new InternalUnknownChatOutputPrediction(kind, patch);
         }
 
         BinaryData IPersistableModel<ChatOutputPrediction>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -89,9 +102,9 @@ namespace OpenAI.Chat
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeChatOutputPrediction(document.RootElement, options);
+                        return DeserializeChatOutputPrediction(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ChatOutputPrediction)} does not support reading '{options.Format}' format.");

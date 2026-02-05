@@ -2,9 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
-using OpenAI;
+using System.ClientModel.Primitives;
 
 namespace OpenAI.Responses
 {
@@ -12,18 +10,17 @@ namespace OpenAI.Responses
     {
         public InternalItemContentOutputAudio(string data, string transcript) : base(InternalItemContentType.OutputAudio)
         {
-            Argument.AssertNotNull(data, nameof(data));
-            Argument.AssertNotNull(transcript, nameof(transcript));
-
             Data = data;
             Transcript = transcript;
         }
 
-        internal InternalItemContentOutputAudio(InternalItemContentType internalType, IDictionary<string, BinaryData> additionalBinaryDataProperties, string data, string transcript) : base(internalType, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalItemContentOutputAudio(InternalItemContentType internalType, in JsonPatch patch, string data, string transcript) : base(internalType, patch)
         {
             Data = data;
             Transcript = transcript;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Data { get; set; }
 

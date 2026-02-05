@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.FineTuning
 {
-    public partial class WeightsAndBiasesIntegration : IJsonModel<WeightsAndBiasesIntegration>
+    public partial class WeightsAndBiasesIntegration : FineTuningIntegration, IJsonModel<WeightsAndBiasesIntegration>
     {
         internal WeightsAndBiasesIntegration() : this(InternalCreateFineTuningJobRequestIntegrationType.Wandb, null, null)
         {
@@ -100,7 +100,7 @@ namespace OpenAI.FineTuning
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeWeightsAndBiasesIntegration(document.RootElement, options);
                     }

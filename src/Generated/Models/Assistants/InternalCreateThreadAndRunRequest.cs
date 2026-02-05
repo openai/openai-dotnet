@@ -14,8 +14,6 @@ namespace OpenAI.Assistants
 
         public InternalCreateThreadAndRunRequest(string assistantId)
         {
-            Argument.AssertNotNull(assistantId, nameof(assistantId));
-
             AssistantId = assistantId;
             Tools = new ChangeTrackingList<ToolDefinition>();
             Metadata = new ChangeTrackingDictionary<string, string>();

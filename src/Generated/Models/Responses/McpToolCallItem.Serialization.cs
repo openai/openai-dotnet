@@ -4,20 +4,28 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class McpToolCallItem : IJsonModel<McpToolCallItem>
+    public partial class McpToolCallItem : ResponseItem, IJsonModel<McpToolCallItem>
     {
-        internal McpToolCallItem() : this(InternalItemType.McpCall, null, null, null, null, null, null, null)
+        internal McpToolCallItem() : this(InternalItemType.McpCall, null, default, null, null, null, null, null)
         {
         }
 
         void IJsonModel<McpToolCallItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -31,27 +39,28 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(McpToolCallItem)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("server_label") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.server_label"u8))
             {
                 writer.WritePropertyName("server_label"u8);
                 writer.WriteStringValue(ServerLabel);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
+            if (!Patch.Contains("$.name"u8))
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(ToolName);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("arguments") != true)
+            if (!Patch.Contains("$.arguments"u8))
             {
                 writer.WritePropertyName("arguments"u8);
                 SerializeToolArgumentsValue(writer, options);
             }
-            if (Optional.IsDefined(ToolOutput) && _additionalBinaryDataProperties?.ContainsKey("output") != true)
+            if (Optional.IsDefined(ToolOutput) && !Patch.Contains("$.output"u8))
             {
                 writer.WritePropertyName("output"u8);
                 writer.WriteStringValue(ToolOutput);
             }
-            if (Optional.IsDefined(Error) && _additionalBinaryDataProperties?.ContainsKey("error") != true)
+            if (Optional.IsDefined(Error) && !Patch.Contains("$.error"u8))
             {
                 writer.WritePropertyName("error"u8);
 #if NET6_0_OR_GREATER
@@ -63,6 +72,9 @@ namespace OpenAI.Responses
                 }
 #endif
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         McpToolCallItem IJsonModel<McpToolCallItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (McpToolCallItem)JsonModelCreateCore(ref reader, options);
@@ -75,10 +87,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(McpToolCallItem)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeMcpToolCallItem(document.RootElement, options);
+            return DeserializeMcpToolCallItem(document.RootElement, null, options);
         }
 
-        internal static McpToolCallItem DeserializeMcpToolCallItem(JsonElement element, ModelReaderWriterOptions options)
+        internal static McpToolCallItem DeserializeMcpToolCallItem(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -86,7 +98,9 @@ namespace OpenAI.Responses
             }
             InternalItemType kind = default;
             string id = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string serverLabel = default;
             string toolName = default;
             BinaryData toolArguments = default;
@@ -133,18 +147,18 @@ namespace OpenAI.Responses
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {
+                        error = null;
                         continue;
                     }
                     error = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new McpToolCallItem(
                 kind,
                 id,
-                additionalBinaryDataProperties,
+                patch,
                 serverLabel,
                 toolName,
                 toolArguments,
@@ -174,9 +188,9 @@ namespace OpenAI.Responses
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeMcpToolCallItem(document.RootElement, options);
+                        return DeserializeMcpToolCallItem(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(McpToolCallItem)} does not support reading '{options.Format}' format.");

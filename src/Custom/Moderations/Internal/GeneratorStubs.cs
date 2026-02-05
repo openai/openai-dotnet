@@ -1,25 +1,21 @@
+using Microsoft.TypeSpec.Generator.Customizations;
+
 namespace OpenAI.Moderations;
 
 [CodeGenType("CreateModerationRequestModel")]
 internal readonly partial struct InternalCreateModerationRequestModel { }
 
-[CodeGenType("CreateModerationRequestInput2")]
-internal partial class InternalCreateModerationRequestInput2 { }
-
-[CodeGenType("CreateModerationRequestInput2Type")]
-internal readonly partial struct InternalCreateModerationRequestInput2Type { }
-
-[CodeGenType("CreateModerationRequestInput3")]
-internal partial class InternalCreateModerationRequestInput3 { }
-
-[CodeGenType("CreateModerationRequestInput3Type")]
-internal readonly partial struct InternalCreateModerationRequestInput3Type { }
-
-[CodeGenType("CreateModerationRequestInputImageUrl")]
-internal partial class InternalCreateModerationRequestInputImageUrl { }
-
-[CodeGenType("CreateModerationResponseResultCategories")]
+[CodeGenType("CreateModerationResponseResultsCategories")]
 internal partial class InternalModerationCategories { }
 
-[CodeGenType("CreateModerationResponseResultCategoryScores")]
+[CodeGenType("CreateModerationResponseResultsCategoryScores")]
 internal partial class InternalModerationCategoryScores { }
+
+[CodeGenType("ModerationImageURLInput")]
+internal partial class InternalModerationImagePart { }
+
+[CodeGenType("ModerationImageURLInputImageUrl")]
+internal partial class InternalModerationImagePartImageUrl { }
+
+[CodeGenType("UnknownCreateModerationRequestInput")]
+internal partial class InternalUnknownModerationInputPart { }

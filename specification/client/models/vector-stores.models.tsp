@@ -1,4 +1,5 @@
 import "../../base/typespec/vector-stores/main.tsp";
+import "./common.models.tsp";
 import "@azure-tools/typespec-client-generator-core";
 
 using Azure.ClientGenerator.Core;
@@ -37,12 +38,11 @@ model DotNetCombinedOtherChunkingStrategyParam
 @access(Access.public)
 @usage(Usage.input)
 model VectorStoreCollectionOptions {
-  ...CollectionAfterQueryParameter,
-  ...CollectionBeforeQueryParameter,
-  ...CollectionLimitQueryParameter,
+  ...DotNetCollectionAfterQueryParameter,
+  ...DotNetCollectionBeforeQueryParameter,
+  ...DotNetCollectionLimitQueryParameter,
   ...PageOrderQueryParameter,
 }
-
 
 alias VectorStoreFileCollectionOrderQueryParameter = {
   /**
@@ -61,9 +61,9 @@ union VectorStoreFileCollectionOrder {
 @access(Access.public)
 @usage(Usage.input)
 model VectorStoreFileCollectionOptions {
-  ...CollectionAfterQueryParameter,
-  ...CollectionBeforeQueryParameter,
-  ...CollectionLimitQueryParameter,
+  ...DotNetCollectionAfterQueryParameter,
+  ...DotNetCollectionBeforeQueryParameter,
+  ...DotNetCollectionLimitQueryParameter,
   ...VectorStoreFileCollectionOrderQueryParameter,
 
   @query filter?: ListVectorStoreFilesFilter;

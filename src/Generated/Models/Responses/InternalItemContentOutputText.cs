@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Linq;
 using OpenAI;
@@ -13,21 +13,21 @@ namespace OpenAI.Responses
     {
         public InternalItemContentOutputText(string internalText, IEnumerable<ResponseMessageAnnotation> annotations) : base(InternalItemContentType.OutputText)
         {
-            Argument.AssertNotNull(internalText, nameof(internalText));
-            Argument.AssertNotNull(annotations, nameof(annotations));
-
             InternalText = internalText;
             Annotations = annotations.ToList();
             Logprobs = new ChangeTrackingList<InternalLogProb>();
         }
 
-        internal InternalItemContentOutputText(InternalItemContentType internalType, IDictionary<string, BinaryData> additionalBinaryDataProperties, string internalText, IList<ResponseMessageAnnotation> annotations, IList<InternalLogProb> logprobs) : base(internalType, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalItemContentOutputText(InternalItemContentType internalType, in JsonPatch patch, string internalText, IList<ResponseMessageAnnotation> annotations, IList<InternalLogProb> logprobs) : base(internalType, patch)
         {
             // Plugin customization: ensure initialization of collections
             InternalText = internalText;
             Annotations = annotations ?? new ChangeTrackingList<ResponseMessageAnnotation>();
             Logprobs = logprobs ?? new ChangeTrackingList<InternalLogProb>();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public IList<ResponseMessageAnnotation> Annotations { get; }
 

@@ -2,9 +2,11 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using OpenAI;
 
 namespace OpenAI.Chat
@@ -12,19 +14,21 @@ namespace OpenAI.Chat
     [Experimental("OPENAI001")]
     public partial class ChatCompletionMessageListDatum
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
-        internal ChatCompletionMessageListDatum(string content, string refusal, ChatMessageRole role, string id)
+        internal ChatCompletionMessageListDatum(string content, string refusal, string id)
         {
             Content = content;
             Refusal = refusal;
             ToolCalls = new ChangeTrackingList<ChatToolCall>();
             Annotations = new ChangeTrackingList<ChatMessageAnnotation>();
-            Role = role;
+            ContentParts = new ChangeTrackingList<ChatMessageContentPart>();
             Id = id;
         }
 
-        internal ChatCompletionMessageListDatum(string content, string refusal, IReadOnlyList<ChatToolCall> toolCalls, IReadOnlyList<ChatMessageAnnotation> annotations, ChatMessageRole role, InternalChatCompletionResponseMessageFunctionCall functionCall, ChatOutputAudio outputAudio, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal ChatCompletionMessageListDatum(string content, string refusal, IReadOnlyList<ChatToolCall> toolCalls, IReadOnlyList<ChatMessageAnnotation> annotations, ChatMessageRole role, InternalChatCompletionResponseMessageFunctionCall functionCall, ChatOutputAudio outputAudio, IList<ChatMessageContentPart> contentParts, string id, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Content = content;
@@ -34,9 +38,17 @@ namespace OpenAI.Chat
             Role = role;
             FunctionCall = functionCall;
             OutputAudio = outputAudio;
+            ContentParts = contentParts ?? new ChangeTrackingList<ChatMessageContentPart>();
             Id = id;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        [JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         public string Content { get; }
 
@@ -48,12 +60,8 @@ namespace OpenAI.Chat
 
         internal InternalChatCompletionResponseMessageFunctionCall FunctionCall { get; }
 
-        public string Id { get; }
+        public IList<ChatMessageContentPart> ContentParts { get; }
 
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
+        public string Id { get; }
     }
 }

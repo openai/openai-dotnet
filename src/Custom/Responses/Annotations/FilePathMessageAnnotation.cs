@@ -1,7 +1,8 @@
-﻿namespace OpenAI.Responses;
+using Microsoft.TypeSpec.Generator.Customizations;
 
-// CUSTOM:
-// - Renamed.
+namespace OpenAI.Responses;
+
+// CUSTOM: Renamed.
 [CodeGenType("AnnotationFilePath")]
 public partial class FilePathMessageAnnotation
 {

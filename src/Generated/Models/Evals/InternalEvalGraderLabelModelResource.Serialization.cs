@@ -11,7 +11,7 @@ using OpenAI.Graders;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalGraderLabelModelResource : IJsonModel<InternalEvalGraderLabelModelResource>
+    internal partial class InternalEvalGraderLabelModelResource : InternalEvalGraderResource, IJsonModel<InternalEvalGraderLabelModelResource>
     {
         internal InternalEvalGraderLabelModelResource() : this(GraderType.LabelModel, null, null, null, null, null, null)
         {
@@ -206,7 +206,7 @@ namespace OpenAI.Evals
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalEvalGraderLabelModelResource(document.RootElement, options);
                     }

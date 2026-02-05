@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalCompletionsRunDataSourceParams : IJsonModel<InternalEvalCompletionsRunDataSourceParams>
+    internal partial class InternalEvalCompletionsRunDataSourceParams : InternalEvalRunDataSourceParams, IJsonModel<InternalEvalCompletionsRunDataSourceParams>
     {
         internal InternalEvalCompletionsRunDataSourceParams() : this(InternalEvalRunDataSourceType.Completions, null, null, null, null, null)
         {
@@ -161,7 +161,7 @@ namespace OpenAI.Evals
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalEvalCompletionsRunDataSourceParams(document.RootElement, options);
                     }

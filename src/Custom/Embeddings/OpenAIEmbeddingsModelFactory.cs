@@ -28,7 +28,7 @@ public static partial class OpenAIEmbeddingsModelFactory
             model,
             "list",
             usage,
-            serializedAdditionalRawData: null);
+            patch: default);
     }
 
     /// <summary> Initializes a new instance of <see cref="OpenAI.Embeddings.EmbeddingTokenUsage"/>. </summary>
@@ -38,6 +38,6 @@ public static partial class OpenAIEmbeddingsModelFactory
         return new EmbeddingTokenUsage(
             inputTokenCount,
             totalTokenCount,
-            additionalBinaryDataProperties: null);
+            patch: default);
     }
 }

@@ -40,7 +40,7 @@ namespace OpenAI.Audio
             {
                 writer.WritePropertyName("bytes"u8);
                 writer.WriteStartArray();
-                foreach (float item in Bytes)
+                foreach (double item in Bytes)
                 {
                     writer.WriteNumberValue(item);
                 }
@@ -89,7 +89,7 @@ namespace OpenAI.Audio
             }
             string token = default;
             float? logprob = default;
-            IList<float> bytes = default;
+            IList<double> bytes = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -113,10 +113,10 @@ namespace OpenAI.Audio
                     {
                         continue;
                     }
-                    List<float> array = new List<float>();
+                    List<double> array = new List<double>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(item.GetSingle());
+                        array.Add(item.GetDouble());
                     }
                     bytes = array;
                     continue;
@@ -124,7 +124,7 @@ namespace OpenAI.Audio
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalCreateTranscriptionResponseJsonLogprob(token, logprob, bytes ?? new ChangeTrackingList<float>(), additionalBinaryDataProperties);
+            return new InternalCreateTranscriptionResponseJsonLogprob(token, logprob, bytes ?? new ChangeTrackingList<double>(), additionalBinaryDataProperties);
         }
 
         BinaryData IPersistableModel<InternalCreateTranscriptionResponseJsonLogprob>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -149,7 +149,7 @@ namespace OpenAI.Audio
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalCreateTranscriptionResponseJsonLogprob(document.RootElement, options);
                     }

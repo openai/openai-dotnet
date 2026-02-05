@@ -1,8 +1,10 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using OpenAI.Assistants;
 using OpenAI.Audio;
 using OpenAI.Batch;
 using OpenAI.Chat;
 using OpenAI.Containers;
+using OpenAI.Conversations;
 using OpenAI.Embeddings;
 using OpenAI.Evals;
 using OpenAI.Files;
@@ -14,6 +16,7 @@ using OpenAI.Moderations;
 using OpenAI.Realtime;
 using OpenAI.Responses;
 using OpenAI.VectorStores;
+using OpenAI.Videos;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
@@ -38,6 +41,7 @@ namespace OpenAI;
 [CodeGenSuppress("_cachedChatClient")]
 [CodeGenSuppress("_cachedLegacyCompletionClient")]
 [CodeGenSuppress("_cachedContainerClient")]
+[CodeGenSuppress("_cachedConversationClient")]
 [CodeGenSuppress("_cachedEmbeddingClient")]
 [CodeGenSuppress("_cachedEvaluationClient")]
 [CodeGenSuppress("_cachedOpenAIFileClient")]
@@ -47,8 +51,9 @@ namespace OpenAI;
 [CodeGenSuppress("_cachedOpenAIModelClient")]
 [CodeGenSuppress("_cachedModerationClient")]
 [CodeGenSuppress("_cachedRealtimeClient")]
-[CodeGenSuppress("_cachedOpenAIResponseClient")]
+[CodeGenSuppress("_cachedResponsesClient")]
 [CodeGenSuppress("_cachedVectorStoreClient")]
+[CodeGenSuppress("_cachedVideoClient")]
 [CodeGenSuppress("_cachedInternalAssistantMessageClient")]
 [CodeGenSuppress("_cachedInternalAssistantRunClient")]
 [CodeGenSuppress("_cachedInternalAssistantThreadClient")]
@@ -59,6 +64,7 @@ namespace OpenAI;
 [CodeGenSuppress("GetChatClient")]
 [CodeGenSuppress("GetLegacyCompletionClient")]
 [CodeGenSuppress("GetContainerClient")]
+[CodeGenSuppress("GetConversationClient")]
 [CodeGenSuppress("GetEmbeddingClient")]
 [CodeGenSuppress("GetEvaluationClient")]
 [CodeGenSuppress("GetOpenAIFileClient")]
@@ -68,8 +74,9 @@ namespace OpenAI;
 [CodeGenSuppress("GetOpenAIModelClient")]
 [CodeGenSuppress("GetModerationClient")]
 [CodeGenSuppress("GetRealtimeClient")]
-[CodeGenSuppress("GetOpenAIResponseClient")]
+[CodeGenSuppress("GetResponsesClient")]
 [CodeGenSuppress("GetVectorStoreClient")]
+[CodeGenSuppress("GetVideoClient")]
 [CodeGenSuppress("GetInternalAssistantMessageClient")]
 [CodeGenSuppress("GetInternalAssistantRunClient")]
 [CodeGenSuppress("GetInternalAssistantThreadClient")]
@@ -210,6 +217,22 @@ public partial class OpenAIClient
     public virtual ChatClient GetChatClient(string model) => new(Pipeline, model, _options);
 
     /// <summary>
+    /// Gets a new instance of <see cref="ContainerClient"/> that reuses the client configuration details provided to
+    /// the <see cref="OpenAIClient"/> instance.
+    /// </summary>
+    /// <returns></returns>
+    [Experimental("OPENAI001")]
+    public virtual ContainerClient GetContainerClient() => new(Pipeline, _options);
+
+    /// <summary>
+    /// Gets a new instance of <see cref="ConversationClient"/> that reuses the client configuration details provided to
+    /// the <see cref="OpenAIClient"/> instance.
+    /// </summary>
+    /// <returns></returns>
+    [Experimental("OPENAI001")]
+    public virtual ConversationClient GetConversationClient() => new(Pipeline, _options);
+
+    /// <summary>
     /// Gets a new instance of <see cref="EmbeddingClient"/> that reuses the client configuration details provided to
     /// the <see cref="OpenAIClient"/> instance.
     /// </summary>
@@ -250,6 +273,14 @@ public partial class OpenAIClient
     /// <returns> A new <see cref="FineTuningClient"/>. </returns>
     [Experimental("OPENAI001")]
     public virtual FineTuningClient GetFineTuningClient() => new(Pipeline, _options);
+
+    /// <summary>
+    /// Gets a new instance of <see cref="GraderClient"/> that reuses the client configuration details provided to
+    /// the <see cref="OpenAIClient"/> instance.
+    /// </summary>
+    /// <returns></returns>
+    [Experimental("OPENAI001")]
+    public virtual GraderClient GetGraderClient() => new(Pipeline, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="ImageClient"/> that reuses the client configuration details provided to
@@ -302,16 +333,16 @@ public partial class OpenAIClient
     public virtual RealtimeClient GetRealtimeClient() => new(_keyCredential, _options);
 
     /// <summary>
-    /// Gets a new instance of <see cref="OpenAIResponseClient"/> that reuses the client configuration details provided to
+    /// Gets a new instance of <see cref="ResponsesClient"/> that reuses the client configuration details provided to
     /// the <see cref="OpenAIClient"/> instance.
     /// </summary>
     /// <remarks>
-    /// This method is functionally equivalent to using the <see cref="OpenAIResponseClient"/> constructor directly with
+    /// This method is functionally equivalent to using the <see cref="ResponsesClient"/> constructor directly with
     /// the same configuration details.
     /// </remarks>
-    /// <returns> A new <see cref="OpenAIResponseClient"/>. </returns>
+    /// <returns> A new <see cref="ResponsesClient"/>. </returns>
     [Experimental("OPENAI001")]
-    public virtual OpenAIResponseClient GetOpenAIResponseClient(string model) => new(Pipeline, model, _options);
+    public virtual ResponsesClient GetResponsesClient(string model) => new(Pipeline, model, _options);
 
     /// <summary>
     /// Gets a new instance of <see cref="VectorStoreClient"/> that reuses the client configuration details provided to
@@ -326,20 +357,12 @@ public partial class OpenAIClient
     public virtual VectorStoreClient GetVectorStoreClient() => new(Pipeline, _options);
 
     /// <summary>
-    /// Gets a new instance of <see cref="GraderClient"/> that reuses the client configuration details provided to
+    /// Gets a new instance of <see cref="VideoClient"/> that reuses the client configuration details provided to
     /// the <see cref="OpenAIClient"/> instance.
     /// </summary>
     /// <returns></returns>
     [Experimental("OPENAI001")]
-    public virtual GraderClient GetGraderClient() => new(Pipeline, _options);
-
-    /// <summary>
-    /// Gets a new instance of <see cref="ContainerClient"/> that reuses the client configuration details provided to
-    /// the <see cref="OpenAIClient"/> instance.
-    /// </summary>
-    /// <returns></returns>
-    [Experimental("OPENAI001")]
-    public virtual ContainerClient GetContainerClient() => new(Pipeline, _options);
+    public virtual VideoClient GetVideoClient() => new(Pipeline, _options);
 
     internal static AuthenticationPolicy CreateApiKeyAuthenticationPolicy(ApiKeyCredential credential)
     {

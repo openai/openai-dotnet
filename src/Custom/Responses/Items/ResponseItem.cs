@@ -1,3 +1,4 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -10,9 +11,9 @@ namespace OpenAI.Responses;
 [CodeGenType("ItemResource")]
 public partial class ResponseItem
 {
-    // CUSTOM: Specify read-only semantics for ID
+    // CUSTOM: Added setter because this is required in output scenarios and optional in input scenarios.
     [CodeGenMember("Id")]
-    public string Id { get; internal set; }
+    public string Id { get; set; }
 
     public static MessageResponseItem CreateUserMessageItem(IEnumerable<ResponseContentPart> contentParts)
     {
@@ -116,9 +117,9 @@ public partial class ResponseItem
         return new ReferenceResponseItem(id);
     }
 
-    public static McpToolCallApprovalRequestItem CreateMcpApprovalRequestItem(string serverLabel, string name, BinaryData arguments)
+    public static McpToolCallApprovalRequestItem CreateMcpApprovalRequestItem(string id, string serverLabel, string name, BinaryData arguments)
     {
-        return new McpToolCallApprovalRequestItem(serverLabel, name, arguments);
+        return new McpToolCallApprovalRequestItem(id, serverLabel, name, arguments);
     }
 
     public static McpToolCallApprovalResponseItem CreateMcpApprovalResponseItem(string approvalRequestId, bool approved)

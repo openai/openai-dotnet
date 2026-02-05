@@ -4,8 +4,8 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -19,6 +19,14 @@ namespace OpenAI.Chat
 
         void IJsonModel<ChatTokenTopLogProbabilityDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -32,53 +40,47 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(ChatTokenTopLogProbabilityDetails)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("token") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.token"u8))
             {
                 writer.WritePropertyName("token"u8);
                 writer.WriteStringValue(Token);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("logprob") != true)
+            if (!Patch.Contains("$.logprob"u8))
             {
                 writer.WritePropertyName("logprob"u8);
                 writer.WriteNumberValue(LogProbability);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("bytes") != true)
+            if (Patch.Contains("$.bytes"u8))
             {
-                if (Optional.IsDefined(Utf8Bytes))
+                if (!Patch.IsRemoved("$.bytes"u8))
                 {
                     writer.WritePropertyName("bytes"u8);
-                    writer.WriteStartArray();
-                    foreach (byte item in Utf8Bytes.Value.Span)
-                    {
-                        writer.WriteNumberValue(item);
-                    }
-                    writer.WriteEndArray();
-                }
-                else
-                {
-                    writer.WriteNull("bytes"u8);
+                    writer.WriteRawValue(Patch.GetJson("$.bytes"u8));
                 }
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
+            else if (Optional.IsDefined(Utf8Bytes))
             {
-                foreach (var item in _additionalBinaryDataProperties)
+                writer.WritePropertyName("bytes"u8);
+                writer.WriteStartArray();
+                for (int i = 0; i < Utf8Bytes.Value.Span.Length; i++)
                 {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.bytes[{i}]")))
                     {
                         continue;
                     }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
+                    writer.WriteNumberValue(Utf8Bytes.Value.Span[i]);
                 }
+                Patch.WriteTo(writer, "$.bytes"u8);
+                writer.WriteEndArray();
             }
+            else
+            {
+                writer.WriteNull("bytes"u8);
+            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         ChatTokenTopLogProbabilityDetails IJsonModel<ChatTokenTopLogProbabilityDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -92,10 +94,10 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(ChatTokenTopLogProbabilityDetails)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeChatTokenTopLogProbabilityDetails(document.RootElement, options);
+            return DeserializeChatTokenTopLogProbabilityDetails(document.RootElement, null, options);
         }
 
-        internal static ChatTokenTopLogProbabilityDetails DeserializeChatTokenTopLogProbabilityDetails(JsonElement element, ModelReaderWriterOptions options)
+        internal static ChatTokenTopLogProbabilityDetails DeserializeChatTokenTopLogProbabilityDetails(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -104,7 +106,9 @@ namespace OpenAI.Chat
             string token = default;
             float logProbability = default;
             ReadOnlyMemory<byte>? utf8Bytes = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("token"u8))
@@ -133,10 +137,9 @@ namespace OpenAI.Chat
                     utf8Bytes = new ReadOnlyMemory<byte>(array);
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ChatTokenTopLogProbabilityDetails(token, logProbability, utf8Bytes, additionalBinaryDataProperties);
+            return new ChatTokenTopLogProbabilityDetails(token, logProbability, utf8Bytes, patch);
         }
 
         BinaryData IPersistableModel<ChatTokenTopLogProbabilityDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -163,9 +166,9 @@ namespace OpenAI.Chat
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeChatTokenTopLogProbabilityDetails(document.RootElement, options);
+                        return DeserializeChatTokenTopLogProbabilityDetails(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ChatTokenTopLogProbabilityDetails)} does not support reading '{options.Format}' format.");

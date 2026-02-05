@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Assistants
 {
@@ -12,9 +11,6 @@ namespace OpenAI.Assistants
     {
         internal InternalMessageContentTextAnnotationsFileCitationObject(string text, InternalMessageContentTextAnnotationsFileCitationObjectFileCitation fileCitation, int startIndex, int endIndex) : base(InternalMessageContentTextAnnotationType.FileCitation)
         {
-            Argument.AssertNotNull(text, nameof(text));
-            Argument.AssertNotNull(fileCitation, nameof(fileCitation));
-
             Text = text;
             FileCitation = fileCitation;
             StartIndex = startIndex;

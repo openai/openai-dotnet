@@ -6,6 +6,7 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -13,12 +14,20 @@ namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionMessageList : IJsonModel<InternalChatCompletionMessageList>
     {
-        internal InternalChatCompletionMessageList() : this(null, null, null, null, default, null)
+        internal InternalChatCompletionMessageList() : this(null, null, null, null, default, default)
         {
         }
 
         void IJsonModel<InternalChatCompletionMessageList>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -31,56 +40,53 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(InternalChatCompletionMessageList)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.object"u8))
             {
                 writer.WritePropertyName("object"u8);
                 writer.WriteStringValue(Object);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("data") != true)
+            if (Patch.Contains("$.data"u8))
+            {
+                if (!Patch.IsRemoved("$.data"u8))
+                {
+                    writer.WritePropertyName("data"u8);
+                    writer.WriteRawValue(Patch.GetJson("$.data"u8));
+                }
+            }
+            else
             {
                 writer.WritePropertyName("data"u8);
                 writer.WriteStartArray();
-                foreach (ChatCompletionMessageListDatum item in Data)
+                for (int i = 0; i < Data.Count; i++)
                 {
-                    writer.WriteObjectValue(item, options);
+                    if (Data[i].Patch.IsRemoved("$"u8))
+                    {
+                        continue;
+                    }
+                    writer.WriteObjectValue(Data[i], options);
                 }
+                Patch.WriteTo(writer, "$.data"u8);
                 writer.WriteEndArray();
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("first_id") != true)
+            if (!Patch.Contains("$.first_id"u8))
             {
                 writer.WritePropertyName("first_id"u8);
                 writer.WriteStringValue(FirstId);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("last_id") != true)
+            if (!Patch.Contains("$.last_id"u8))
             {
                 writer.WritePropertyName("last_id"u8);
                 writer.WriteStringValue(LastId);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("has_more") != true)
+            if (!Patch.Contains("$.has_more"u8))
             {
                 writer.WritePropertyName("has_more"u8);
                 writer.WriteBooleanValue(HasMore);
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalChatCompletionMessageList IJsonModel<InternalChatCompletionMessageList>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -93,21 +99,23 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(InternalChatCompletionMessageList)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalChatCompletionMessageList(document.RootElement, options);
+            return DeserializeInternalChatCompletionMessageList(document.RootElement, null, options);
         }
 
-        internal static InternalChatCompletionMessageList DeserializeInternalChatCompletionMessageList(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalChatCompletionMessageList DeserializeInternalChatCompletionMessageList(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             string @object = default;
-            IList<ChatCompletionMessageListDatum> data = default;
+            IList<ChatCompletionMessageListDatum> data0 = default;
             string firstId = default;
             string lastId = default;
             bool hasMore = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("object"u8))
@@ -120,9 +128,9 @@ namespace OpenAI.Chat
                     List<ChatCompletionMessageListDatum> array = new List<ChatCompletionMessageListDatum>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ChatCompletionMessageListDatum.DeserializeChatCompletionMessageListDatum(item, options));
+                        array.Add(ChatCompletionMessageListDatum.DeserializeChatCompletionMessageListDatum(item, item.GetUtf8Bytes(), options));
                     }
-                    data = array;
+                    data0 = array;
                     continue;
                 }
                 if (prop.NameEquals("first_id"u8))
@@ -140,16 +148,15 @@ namespace OpenAI.Chat
                     hasMore = prop.Value.GetBoolean();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new InternalChatCompletionMessageList(
                 @object,
-                data,
+                data0,
                 firstId,
                 lastId,
                 hasMore,
-                additionalBinaryDataProperties);
+                patch);
         }
 
         BinaryData IPersistableModel<InternalChatCompletionMessageList>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -174,9 +181,9 @@ namespace OpenAI.Chat
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalChatCompletionMessageList(document.RootElement, options);
+                        return DeserializeInternalChatCompletionMessageList(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalChatCompletionMessageList)} does not support reading '{options.Format}' format.");
@@ -187,9 +194,50 @@ namespace OpenAI.Chat
 
         public static explicit operator InternalChatCompletionMessageList(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
-            return DeserializeInternalChatCompletionMessageList(document.RootElement, ModelSerializationExtensions.WireOptions);
+            PipelineResponse response = result.GetRawResponse();
+            BinaryData data = response.Content;
+            using JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeInternalChatCompletionMessageList(document.RootElement, data, ModelSerializationExtensions.WireOptions);
         }
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("data"u8))
+            {
+                int propertyLength = "data"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                return Data[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("data"u8))
+            {
+                int propertyLength = "data"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                Data[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

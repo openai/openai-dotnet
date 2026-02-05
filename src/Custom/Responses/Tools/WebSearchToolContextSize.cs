@@ -1,7 +1,9 @@
+using Microsoft.TypeSpec.Generator.Customizations;
+
 namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
-[CodeGenType("WebSearchPreviewToolSearchContextSize")]
+[CodeGenType("SearchContextSize")]
 public readonly partial struct WebSearchToolContextSize
 {
 }

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalUnknownMessageContent : IJsonModel<MessageContent>
+    internal partial class InternalUnknownMessageContent : MessageContent, IJsonModel<MessageContent>
     {
         internal InternalUnknownMessageContent() : this(default, null)
         {
@@ -89,7 +89,7 @@ namespace OpenAI.Assistants
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeMessageContent(document.RootElement, options);
                     }

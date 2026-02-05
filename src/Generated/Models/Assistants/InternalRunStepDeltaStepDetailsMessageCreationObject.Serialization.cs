@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalRunStepDeltaStepDetailsMessageCreationObject : IJsonModel<InternalRunStepDeltaStepDetailsMessageCreationObject>
+    internal partial class InternalRunStepDeltaStepDetailsMessageCreationObject : InternalRunStepDeltaStepDetails, IJsonModel<InternalRunStepDeltaStepDetailsMessageCreationObject>
     {
         void IJsonModel<InternalRunStepDeltaStepDetailsMessageCreationObject>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -100,7 +100,7 @@ namespace OpenAI.Assistants
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalRunStepDeltaStepDetailsMessageCreationObject(document.RootElement, options);
                     }

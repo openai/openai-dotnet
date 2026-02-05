@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class UnknownRealtimeTurnDetection : IJsonModel<TurnDetectionOptions>
+    internal partial class UnknownRealtimeTurnDetection : TurnDetectionOptions, IJsonModel<TurnDetectionOptions>
     {
         internal UnknownRealtimeTurnDetection() : this(default, default, default, null)
         {
@@ -109,7 +109,7 @@ namespace OpenAI.Realtime
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeTurnDetectionOptions(document.RootElement, options);
                     }

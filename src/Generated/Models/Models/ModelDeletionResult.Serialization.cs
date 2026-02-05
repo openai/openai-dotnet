@@ -141,7 +141,7 @@ namespace OpenAI.Models
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeModelDeletionResult(document.RootElement, options);
                     }
@@ -155,8 +155,8 @@ namespace OpenAI.Models
         [Experimental("OPENAI001")]
         public static explicit operator ModelDeletionResult(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
+            PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
             return DeserializeModelDeletionResult(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

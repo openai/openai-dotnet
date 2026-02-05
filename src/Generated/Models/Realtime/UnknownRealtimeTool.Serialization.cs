@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class UnknownRealtimeTool : IJsonModel<ConversationTool>
+    internal partial class UnknownRealtimeTool : ConversationTool, IJsonModel<ConversationTool>
     {
         internal UnknownRealtimeTool() : this(default, null)
         {
@@ -89,7 +89,7 @@ namespace OpenAI.Realtime
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeConversationTool(document.RootElement, options);
                     }

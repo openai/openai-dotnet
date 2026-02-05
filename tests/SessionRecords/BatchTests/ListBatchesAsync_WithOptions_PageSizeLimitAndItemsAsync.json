@@ -1,0 +1,479 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/batches?limit=2",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Darwin 25.0.0 Darwin Kernel Version 25.0.0: Wed Sep 17 21:42:08 PDT 2025; root:xnu-12377.1.9~141/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9954870a6cb6473e-DFW",
+        "Connection": "keep-alive",
+        "Content-Length": "2271",
+        "Content-Type": "application/json",
+        "Date": "Mon, 27 Oct 2025 19:16:22 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "121",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "124",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "batch_68ffc504f298819087e3b6ceebbf8c01",
+            "object": "batch",
+            "endpoint": "/v1/chat/completions",
+            "model": null,
+            "errors": null,
+            "input_file_id": "file-UhJJA9PC5RLmaAr67Z9V1b",
+            "completion_window": "24h",
+            "status": "cancelling",
+            "output_file_id": null,
+            "error_file_id": null,
+            "created_at": 1761592580,
+            "in_progress_at": null,
+            "expires_at": 1761678980,
+            "finalizing_at": null,
+            "completed_at": null,
+            "failed_at": null,
+            "expired_at": null,
+            "cancelling_at": 1761592581,
+            "cancelled_at": null,
+            "request_counts": {
+              "total": 0,
+              "completed": 0,
+              "failed": 0
+            },
+            "usage": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "total_tokens": 0,
+              "input_tokens_details": {
+                "cached_tokens": 0
+              },
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            },
+            "metadata": {
+              "testMetadataKey": "test metadata value"
+            }
+          },
+          {
+            "id": "batch_68ffc503138c8190a5feae51d273996d",
+            "object": "batch",
+            "endpoint": "/v1/chat/completions",
+            "model": null,
+            "errors": null,
+            "input_file_id": "file-USXeivEfatETkgCf5wDjCF",
+            "completion_window": "24h",
+            "status": "validating",
+            "output_file_id": null,
+            "error_file_id": null,
+            "created_at": 1761592579,
+            "in_progress_at": null,
+            "expires_at": 1761678979,
+            "finalizing_at": null,
+            "completed_at": null,
+            "failed_at": null,
+            "expired_at": null,
+            "cancelling_at": null,
+            "cancelled_at": null,
+            "request_counts": {
+              "total": 0,
+              "completed": 0,
+              "failed": 0
+            },
+            "usage": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "total_tokens": 0,
+              "input_tokens_details": {
+                "cached_tokens": 0
+              },
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            },
+            "metadata": {
+              "testMetadataKey": "test metadata value"
+            }
+          }
+        ],
+        "first_id": "batch_68ffc504f298819087e3b6ceebbf8c01",
+        "last_id": "batch_68ffc503138c8190a5feae51d273996d",
+        "has_more": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/batches?after=batch_68ffc503138c8190a5feae51d273996d&limit=2",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Darwin 25.0.0 Darwin Kernel Version 25.0.0: Wed Sep 17 21:42:08 PDT 2025; root:xnu-12377.1.9~141/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9954870b8db4473e-DFW",
+        "Connection": "keep-alive",
+        "Content-Length": "2276",
+        "Content-Type": "application/json",
+        "Date": "Mon, 27 Oct 2025 19:16:23 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "324",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "328",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "batch_68ffc5019e20819088144b8c8b5f179d",
+            "object": "batch",
+            "endpoint": "/v1/chat/completions",
+            "model": null,
+            "errors": null,
+            "input_file_id": "file-GLDuh3rgbq9PfZUCc6mXzC",
+            "completion_window": "24h",
+            "status": "validating",
+            "output_file_id": null,
+            "error_file_id": null,
+            "created_at": 1761592577,
+            "in_progress_at": null,
+            "expires_at": 1761678977,
+            "finalizing_at": null,
+            "completed_at": null,
+            "failed_at": null,
+            "expired_at": null,
+            "cancelling_at": null,
+            "cancelled_at": null,
+            "request_counts": {
+              "total": 0,
+              "completed": 0,
+              "failed": 0
+            },
+            "usage": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "total_tokens": 0,
+              "input_tokens_details": {
+                "cached_tokens": 0
+              },
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            },
+            "metadata": {
+              "testMetadataKey": "test metadata value"
+            }
+          },
+          {
+            "id": "batch_68d9d3ce694081909d4371748dd7761b",
+            "object": "batch",
+            "endpoint": "/v1/chat/completions",
+            "model": null,
+            "errors": null,
+            "input_file_id": "file-KSMcqbwJYq6hNQ3wGKFF2Z",
+            "completion_window": "24h",
+            "status": "cancelled",
+            "output_file_id": null,
+            "error_file_id": null,
+            "created_at": 1759105998,
+            "in_progress_at": null,
+            "expires_at": 1759192398,
+            "finalizing_at": null,
+            "completed_at": null,
+            "failed_at": null,
+            "expired_at": null,
+            "cancelling_at": 1759105998,
+            "cancelled_at": 1759106604,
+            "request_counts": {
+              "total": 0,
+              "completed": 0,
+              "failed": 0
+            },
+            "usage": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "total_tokens": 0,
+              "input_tokens_details": {
+                "cached_tokens": 0
+              },
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            },
+            "metadata": {
+              "testMetadataKey": "test metadata value"
+            }
+          }
+        ],
+        "first_id": "batch_68ffc5019e20819088144b8c8b5f179d",
+        "last_id": "batch_68d9d3ce694081909d4371748dd7761b",
+        "has_more": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/batches?limit=2",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Darwin 25.0.0 Darwin Kernel Version 25.0.0: Wed Sep 17 21:42:08 PDT 2025; root:xnu-12377.1.9~141/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9954870df807473e-DFW",
+        "Connection": "keep-alive",
+        "Content-Length": "2271",
+        "Content-Type": "application/json",
+        "Date": "Mon, 27 Oct 2025 19:16:23 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "118",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "121",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "batch_68ffc504f298819087e3b6ceebbf8c01",
+            "object": "batch",
+            "endpoint": "/v1/chat/completions",
+            "model": null,
+            "errors": null,
+            "input_file_id": "file-UhJJA9PC5RLmaAr67Z9V1b",
+            "completion_window": "24h",
+            "status": "cancelling",
+            "output_file_id": null,
+            "error_file_id": null,
+            "created_at": 1761592580,
+            "in_progress_at": null,
+            "expires_at": 1761678980,
+            "finalizing_at": null,
+            "completed_at": null,
+            "failed_at": null,
+            "expired_at": null,
+            "cancelling_at": 1761592581,
+            "cancelled_at": null,
+            "request_counts": {
+              "total": 0,
+              "completed": 0,
+              "failed": 0
+            },
+            "usage": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "total_tokens": 0,
+              "input_tokens_details": {
+                "cached_tokens": 0
+              },
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            },
+            "metadata": {
+              "testMetadataKey": "test metadata value"
+            }
+          },
+          {
+            "id": "batch_68ffc503138c8190a5feae51d273996d",
+            "object": "batch",
+            "endpoint": "/v1/chat/completions",
+            "model": null,
+            "errors": null,
+            "input_file_id": "file-USXeivEfatETkgCf5wDjCF",
+            "completion_window": "24h",
+            "status": "validating",
+            "output_file_id": null,
+            "error_file_id": null,
+            "created_at": 1761592579,
+            "in_progress_at": null,
+            "expires_at": 1761678979,
+            "finalizing_at": null,
+            "completed_at": null,
+            "failed_at": null,
+            "expired_at": null,
+            "cancelling_at": null,
+            "cancelled_at": null,
+            "request_counts": {
+              "total": 0,
+              "completed": 0,
+              "failed": 0
+            },
+            "usage": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "total_tokens": 0,
+              "input_tokens_details": {
+                "cached_tokens": 0
+              },
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            },
+            "metadata": {
+              "testMetadataKey": "test metadata value"
+            }
+          }
+        ],
+        "first_id": "batch_68ffc504f298819087e3b6ceebbf8c01",
+        "last_id": "batch_68ffc503138c8190a5feae51d273996d",
+        "has_more": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/batches?after=batch_68ffc503138c8190a5feae51d273996d&limit=2",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Darwin 25.0.0 Darwin Kernel Version 25.0.0: Wed Sep 17 21:42:08 PDT 2025; root:xnu-12377.1.9~141/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9954870f495e473e-DFW",
+        "Connection": "keep-alive",
+        "Content-Length": "2276",
+        "Content-Type": "application/json",
+        "Date": "Mon, 27 Oct 2025 19:16:23 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "331",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "337",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "batch_68ffc5019e20819088144b8c8b5f179d",
+            "object": "batch",
+            "endpoint": "/v1/chat/completions",
+            "model": null,
+            "errors": null,
+            "input_file_id": "file-GLDuh3rgbq9PfZUCc6mXzC",
+            "completion_window": "24h",
+            "status": "validating",
+            "output_file_id": null,
+            "error_file_id": null,
+            "created_at": 1761592577,
+            "in_progress_at": null,
+            "expires_at": 1761678977,
+            "finalizing_at": null,
+            "completed_at": null,
+            "failed_at": null,
+            "expired_at": null,
+            "cancelling_at": null,
+            "cancelled_at": null,
+            "request_counts": {
+              "total": 0,
+              "completed": 0,
+              "failed": 0
+            },
+            "usage": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "total_tokens": 0,
+              "input_tokens_details": {
+                "cached_tokens": 0
+              },
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            },
+            "metadata": {
+              "testMetadataKey": "test metadata value"
+            }
+          },
+          {
+            "id": "batch_68d9d3ce694081909d4371748dd7761b",
+            "object": "batch",
+            "endpoint": "/v1/chat/completions",
+            "model": null,
+            "errors": null,
+            "input_file_id": "file-KSMcqbwJYq6hNQ3wGKFF2Z",
+            "completion_window": "24h",
+            "status": "cancelled",
+            "output_file_id": null,
+            "error_file_id": null,
+            "created_at": 1759105998,
+            "in_progress_at": null,
+            "expires_at": 1759192398,
+            "finalizing_at": null,
+            "completed_at": null,
+            "failed_at": null,
+            "expired_at": null,
+            "cancelling_at": 1759105998,
+            "cancelled_at": 1759106604,
+            "request_counts": {
+              "total": 0,
+              "completed": 0,
+              "failed": 0
+            },
+            "usage": {
+              "input_tokens": 0,
+              "output_tokens": 0,
+              "total_tokens": 0,
+              "input_tokens_details": {
+                "cached_tokens": 0
+              },
+              "output_tokens_details": {
+                "reasoning_tokens": 0
+              }
+            },
+            "metadata": {
+              "testMetadataKey": "test metadata value"
+            }
+          }
+        ],
+        "first_id": "batch_68ffc5019e20819088144b8c8b5f179d",
+        "last_id": "batch_68d9d3ce694081909d4371748dd7761b",
+        "has_more": true
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

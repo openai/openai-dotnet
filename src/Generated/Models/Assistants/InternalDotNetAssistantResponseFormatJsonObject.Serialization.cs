@@ -11,7 +11,7 @@ using OpenAI.Internal;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalDotNetAssistantResponseFormatJsonObject : IJsonModel<InternalDotNetAssistantResponseFormatJsonObject>
+    internal partial class InternalDotNetAssistantResponseFormatJsonObject : AssistantResponseFormat, IJsonModel<InternalDotNetAssistantResponseFormatJsonObject>
     {
         void IJsonModel<InternalDotNetAssistantResponseFormatJsonObject>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -86,7 +86,7 @@ namespace OpenAI.Assistants
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalDotNetAssistantResponseFormatJsonObject(document.RootElement, options);
                     }

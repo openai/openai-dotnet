@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeAudioNearFieldNoiseReduction : IJsonModel<InternalRealtimeAudioNearFieldNoiseReduction>
+    internal partial class InternalRealtimeAudioNearFieldNoiseReduction : InputNoiseReductionOptions, IJsonModel<InternalRealtimeAudioNearFieldNoiseReduction>
     {
         void IJsonModel<InternalRealtimeAudioNearFieldNoiseReduction>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -85,7 +85,7 @@ namespace OpenAI.Realtime
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalRealtimeAudioNearFieldNoiseReduction(document.RootElement, options);
                     }

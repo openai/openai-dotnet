@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalMessageContentTextObject : IJsonModel<InternalMessageContentTextObject>
+    internal partial class InternalMessageContentTextObject : MessageContent, IJsonModel<InternalMessageContentTextObject>
     {
         internal InternalMessageContentTextObject() : this(InternalMessageContentType.Text, null, null)
         {
@@ -57,7 +57,7 @@ namespace OpenAI.Assistants
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalMessageContentTextObject(document.RootElement, options);
                     }

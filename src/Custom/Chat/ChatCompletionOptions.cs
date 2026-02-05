@@ -1,9 +1,9 @@
-using OpenAI.Internal;
+using Microsoft.TypeSpec.Generator.Customizations;
 using System;
 using System.ClientModel;
-using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading;
 
 namespace OpenAI.Chat;
@@ -215,4 +215,44 @@ public partial class ChatCompletionOptions
     public ChatOutputPrediction OutputPrediction { get; set; }
 
     internal BinaryContent ToBinaryContent() => BinaryContent.Create(this, ModelSerializationExtensions.WireOptions);
+
+    internal ChatCompletionOptions Clone()
+    {
+        // Copy the values of the properties to a new instance of ChatCompletionOptions. For collection properties, create a new list and add the items from the original list.
+        var clone = new ChatCompletionOptions();
+        clone.Model = Model;
+        clone.N = N;
+        clone.Stream = Stream;
+        clone.StreamOptions = StreamOptions;
+        clone.IncludeLogProbabilities = IncludeLogProbabilities;
+        clone.TopLogProbabilityCount = TopLogProbabilityCount;
+        foreach (var s in StopSequences) clone.StopSequences.Add(s);
+        foreach (var l in LogitBiases) clone.LogitBiases[l.Key] = l.Value;
+        clone.ToolChoice = ToolChoice;
+        clone.FunctionChoice = FunctionChoice;
+        clone.AllowParallelToolCalls = AllowParallelToolCalls;
+        clone.EndUserId = EndUserId;
+        clone._deprecatedMaxTokens = _deprecatedMaxTokens;
+        clone.MaxOutputTokenCount = MaxOutputTokenCount;
+        foreach (var f in Functions) clone.Functions.Add(f);
+        foreach (var m in Metadata) clone.Metadata[m.Key] = m.Value;
+        clone.StoredOutputEnabled = StoredOutputEnabled;
+        clone.ReasoningEffortLevel = ReasoningEffortLevel;
+        clone.InternalModalities = _internalModalities?.ToList();
+        clone.ResponseModalities = _responseModalities;
+        clone.ResponseFormat = ResponseFormat;
+        clone.AudioOptions = AudioOptions;
+        clone.OutputPrediction = OutputPrediction;
+        clone.Messages = Messages?.Select(m => m).ToList();
+        foreach (var t in Tools) clone.Tools.Add(t);
+        clone.Temperature = Temperature;
+        clone.TopP = TopP;
+        clone.SafetyIdentifier = SafetyIdentifier;
+        clone.ServiceTier = ServiceTier;
+        clone.FrequencyPenalty = FrequencyPenalty;
+        clone.PresencePenalty = PresencePenalty;
+        clone.WebSearchOptions = WebSearchOptions;
+        clone.Seed = Seed;
+        return clone;
+    }
 }

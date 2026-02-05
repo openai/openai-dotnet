@@ -1,5 +1,5 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Linq;
 
@@ -56,7 +56,7 @@ public partial class ComputerCallAction
     {
         return new InternalComputerActionClick(
             kind: ComputerCallActionKind.Click,
-            additionalBinaryDataProperties: null,
+            patch: default,
             button: clickMouseButton,
             x: clickCoordinates.X,
             y: clickCoordinates.Y);
@@ -66,7 +66,7 @@ public partial class ComputerCallAction
     {
         return new InternalComputerActionDoubleClick(
             kind: ComputerCallActionKind.DoubleClick,
-            additionalBinaryDataProperties: null,
+            patch: default,
             x: doubleClickCoordinates.X,
             y: doubleClickCoordinates.Y);
     }
@@ -75,7 +75,7 @@ public partial class ComputerCallAction
     {
         return new InternalComputerActionDrag(
             kind: ComputerCallActionKind.Drag,
-            additionalBinaryDataProperties: null,
+            patch: default,
             path: dragPath.Select(item => new InternalCoordinate(item.X, item.Y)).ToList());
     }
 
@@ -83,7 +83,7 @@ public partial class ComputerCallAction
     {
         return new InternalComputerActionKeyPress(
             kind: ComputerCallActionKind.KeyPress,
-            additionalBinaryDataProperties: null,
+            patch: default,
             keys: keyCodes);
     }
 
@@ -91,7 +91,7 @@ public partial class ComputerCallAction
     {
         return new InternalComputerActionMove(
             kind: ComputerCallActionKind.Move,
-            additionalBinaryDataProperties: null,
+            patch: default,
             x: moveCoordinates.X,
             y: moveCoordinates.Y);
     }
@@ -100,14 +100,14 @@ public partial class ComputerCallAction
     {
         return new InternalComputerActionScreenshot(
             kind: ComputerCallActionKind.Screenshot,
-            additionalBinaryDataProperties: null);
+            patch: default);
     }
 
     public static ComputerCallAction CreateScrollAction(Point scrollCoordinates, int horizontalOffset, int verticalOffset)
     {
         return new InternalComputerActionScroll(
             kind: ComputerCallActionKind.Scroll,
-            additionalBinaryDataProperties: null,
+            patch: default,
             x: scrollCoordinates.X,
             y: scrollCoordinates.Y,
             scrollX: horizontalOffset,
@@ -118,7 +118,7 @@ public partial class ComputerCallAction
     {
         return new InternalComputerActionTypeKeys(
             kind: ComputerCallActionKind.Type,
-            additionalBinaryDataProperties: null,
+            patch: default,
             text: typeText);
     }
 
@@ -126,6 +126,6 @@ public partial class ComputerCallAction
     {
         return new InternalComputerActionWait(
             kind: ComputerCallActionKind.Wait,
-            additionalBinaryDataProperties: null);
+            patch: default);
     }
 }

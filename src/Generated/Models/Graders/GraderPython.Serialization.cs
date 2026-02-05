@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Graders
 {
-    public partial class GraderPython : IJsonModel<GraderPython>
+    public partial class GraderPython : Grader, IJsonModel<GraderPython>
     {
         internal GraderPython() : this(GraderType.Python, null, null, null, null)
         {
@@ -122,7 +122,7 @@ namespace OpenAI.Graders
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeGraderPython(document.RootElement, options);
                     }

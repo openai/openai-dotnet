@@ -11,7 +11,7 @@ using OpenAI.Evals;
 
 namespace OpenAI.Graders
 {
-    public partial class GraderScoreModel : IJsonModel<GraderScoreModel>
+    public partial class GraderScoreModel : Grader, IJsonModel<GraderScoreModel>
     {
         internal GraderScoreModel() : this(GraderType.ScoreModel, null, null, null, null, null, null)
         {
@@ -187,7 +187,7 @@ namespace OpenAI.Graders
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeGraderScoreModel(document.RootElement, options);
                     }

@@ -4,20 +4,28 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalComputerActionScroll : IJsonModel<InternalComputerActionScroll>
+    internal partial class InternalComputerActionScroll : ComputerCallAction, IJsonModel<InternalComputerActionScroll>
     {
-        internal InternalComputerActionScroll() : this(ComputerCallActionKind.Scroll, null, default, default, default, default)
+        internal InternalComputerActionScroll() : this(ComputerCallActionKind.Scroll, default, default, default, default, default)
         {
         }
 
         void IJsonModel<InternalComputerActionScroll>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -31,26 +39,30 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalComputerActionScroll)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("x") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.x"u8))
             {
                 writer.WritePropertyName("x"u8);
                 writer.WriteNumberValue(X);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("y") != true)
+            if (!Patch.Contains("$.y"u8))
             {
                 writer.WritePropertyName("y"u8);
                 writer.WriteNumberValue(Y);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("scroll_x") != true)
+            if (!Patch.Contains("$.scroll_x"u8))
             {
                 writer.WritePropertyName("scroll_x"u8);
                 writer.WriteNumberValue(ScrollX);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("scroll_y") != true)
+            if (!Patch.Contains("$.scroll_y"u8))
             {
                 writer.WritePropertyName("scroll_y"u8);
                 writer.WriteNumberValue(ScrollY);
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalComputerActionScroll IJsonModel<InternalComputerActionScroll>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalComputerActionScroll)JsonModelCreateCore(ref reader, options);
@@ -63,17 +75,19 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalComputerActionScroll)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalComputerActionScroll(document.RootElement, options);
+            return DeserializeInternalComputerActionScroll(document.RootElement, null, options);
         }
 
-        internal static InternalComputerActionScroll DeserializeInternalComputerActionScroll(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalComputerActionScroll DeserializeInternalComputerActionScroll(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             ComputerCallActionKind kind = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             int x = default;
             int y = default;
             int scrollX = default;
@@ -105,12 +119,11 @@ namespace OpenAI.Responses
                     scrollY = prop.Value.GetInt32();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new InternalComputerActionScroll(
                 kind,
-                additionalBinaryDataProperties,
+                patch,
                 x,
                 y,
                 scrollX,
@@ -139,9 +152,9 @@ namespace OpenAI.Responses
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalComputerActionScroll(document.RootElement, options);
+                        return DeserializeInternalComputerActionScroll(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalComputerActionScroll)} does not support reading '{options.Format}' format.");

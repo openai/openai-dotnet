@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalRunStepDetailsToolCallsFileSearchObject : IJsonModel<InternalRunStepDetailsToolCallsFileSearchObject>
+    internal partial class InternalRunStepDetailsToolCallsFileSearchObject : RunStepToolCall, IJsonModel<InternalRunStepDetailsToolCallsFileSearchObject>
     {
         internal InternalRunStepDetailsToolCallsFileSearchObject() : this(RunStepToolCallKind.FileSearch, null, null, null)
         {
@@ -106,7 +106,7 @@ namespace OpenAI.Assistants
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalRunStepDetailsToolCallsFileSearchObject(document.RootElement, options);
                     }

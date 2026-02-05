@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.VectorStores
 {
-    internal partial class InternalUnknownDotNetCombinedChunkingStrategyParam : IJsonModel<FileChunkingStrategy>
+    internal partial class InternalUnknownDotNetCombinedChunkingStrategyParam : FileChunkingStrategy, IJsonModel<FileChunkingStrategy>
     {
         internal InternalUnknownDotNetCombinedChunkingStrategyParam() : this(default, null)
         {
@@ -89,7 +89,7 @@ namespace OpenAI.VectorStores
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeFileChunkingStrategy(document.RootElement, options);
                     }

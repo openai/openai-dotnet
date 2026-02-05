@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeResponseFunctionCallItem : IJsonModel<InternalRealtimeResponseFunctionCallItem>
+    internal partial class InternalRealtimeResponseFunctionCallItem : InternalRealtimeResponseItem, IJsonModel<InternalRealtimeResponseFunctionCallItem>
     {
         internal InternalRealtimeResponseFunctionCallItem() : this(null, InternalRealtimeItemType.FunctionCall, null, null, null, null, null, default)
         {
@@ -158,7 +158,7 @@ namespace OpenAI.Realtime
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalRealtimeResponseFunctionCallItem(document.RootElement, options);
                     }

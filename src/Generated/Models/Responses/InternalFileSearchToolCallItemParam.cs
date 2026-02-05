@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Linq;
 using OpenAI;
@@ -13,18 +13,19 @@ namespace OpenAI.Responses
     {
         public InternalFileSearchToolCallItemParam(IEnumerable<string> queries) : base(InternalItemType.FileSearchCall)
         {
-            Argument.AssertNotNull(queries, nameof(queries));
-
             Queries = queries.ToList();
             Results = new ChangeTrackingList<FileSearchCallResult>();
         }
 
-        internal InternalFileSearchToolCallItemParam(InternalItemType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<string> queries, IList<FileSearchCallResult> results) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalFileSearchToolCallItemParam(InternalItemType kind, in JsonPatch patch, IList<string> queries, IList<FileSearchCallResult> results) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             Queries = queries ?? new ChangeTrackingList<string>();
             Results = results ?? new ChangeTrackingList<FileSearchCallResult>();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public IList<string> Queries { get; }
 

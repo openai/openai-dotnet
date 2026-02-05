@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using OpenAI;
 
 namespace OpenAI.Responses
 {
@@ -13,18 +14,24 @@ namespace OpenAI.Responses
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public ResponseItemCollectionOptions()
+        public ResponseItemCollectionOptions(string responseId)
         {
+            Argument.AssertNotNull(responseId, nameof(responseId));
+
+            ResponseId = responseId;
         }
 
-        internal ResponseItemCollectionOptions(string afterId, string beforeId, int? pageSizeLimit, ResponseItemCollectionOrder? order, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal ResponseItemCollectionOptions(string responseId, string afterId, string beforeId, int? pageSizeLimit, ResponseItemCollectionOrder? order, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
+            ResponseId = responseId;
             AfterId = afterId;
             BeforeId = beforeId;
             PageSizeLimit = pageSizeLimit;
             Order = order;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+
+        public string ResponseId { get; }
 
         public string AfterId { get; set; }
 

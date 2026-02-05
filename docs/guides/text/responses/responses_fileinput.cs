@@ -5,21 +5,21 @@
 #:package OpenAI@2.*
 #:property PublishAot=false
 
+using System.ClientModel;
 using OpenAI.Responses;
 using OpenAI.Files;
-using System.ClientModel;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-OpenAIResponseClient client = new("gpt-4.1", key);
+ResponsesClient client = new(model: "gpt-5.2", apiKey: key);
 
 // Upload a PDF we will reference in the variables
 OpenAIFileClient files = new(key);
 OpenAIFile file = files.UploadFile("draconomicon.pdf", FileUploadPurpose.UserData);
 
-OpenAIResponse response = (OpenAIResponse)client.CreateResponse(
+ResponseResult response = (ResponseResult)client.CreateResponse(
     BinaryContent.Create(BinaryData.FromObjectAsJson(
     new {
-        model = "gpt-4.1",
+        model = "gpt-5.2",
         prompt = new {
             id = "pmpt_abc123",
             variables = new {
@@ -32,4 +32,5 @@ OpenAIResponse response = (OpenAIResponse)client.CreateResponse(
         }
     }
 )));
+
 Console.WriteLine(response.GetOutputText());

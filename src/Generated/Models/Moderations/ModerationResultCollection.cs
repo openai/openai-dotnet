@@ -4,10 +4,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace OpenAI.Moderations
 {
-    public partial class ModerationResultCollection
+    public partial class ModerationResultCollection : ReadOnlyCollection<ModerationResult>
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 

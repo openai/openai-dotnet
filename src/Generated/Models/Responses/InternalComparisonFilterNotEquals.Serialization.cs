@@ -4,20 +4,28 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalComparisonFilterNotEquals : IJsonModel<InternalComparisonFilterNotEquals>
+    internal partial class InternalComparisonFilterNotEquals : InternalComparisonFilter, IJsonModel<InternalComparisonFilterNotEquals>
     {
-        internal InternalComparisonFilterNotEquals() : this(InternalComparisonFilterType.Ne, null, null, null)
+        internal InternalComparisonFilterNotEquals() : this(InternalComparisonFilterType.Ne, null, null, default)
         {
         }
 
         void IJsonModel<InternalComparisonFilterNotEquals>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -31,6 +39,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalComparisonFilterNotEquals)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalComparisonFilterNotEquals IJsonModel<InternalComparisonFilterNotEquals>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalComparisonFilterNotEquals)JsonModelCreateCore(ref reader, options);
@@ -43,10 +55,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalComparisonFilterNotEquals)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalComparisonFilterNotEquals(document.RootElement, options);
+            return DeserializeInternalComparisonFilterNotEquals(document.RootElement, null, options);
         }
 
-        internal static InternalComparisonFilterNotEquals DeserializeInternalComparisonFilterNotEquals(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalComparisonFilterNotEquals DeserializeInternalComparisonFilterNotEquals(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -55,7 +67,9 @@ namespace OpenAI.Responses
             InternalComparisonFilterType kind = default;
             string key = default;
             BinaryData value = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -73,10 +87,9 @@ namespace OpenAI.Responses
                     value = BinaryData.FromString(prop.Value.GetRawText());
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalComparisonFilterNotEquals(kind, key, value, additionalBinaryDataProperties);
+            return new InternalComparisonFilterNotEquals(kind, key, value, patch);
         }
 
         BinaryData IPersistableModel<InternalComparisonFilterNotEquals>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -101,9 +114,9 @@ namespace OpenAI.Responses
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalComparisonFilterNotEquals(document.RootElement, options);
+                        return DeserializeInternalComparisonFilterNotEquals(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalComparisonFilterNotEquals)} does not support reading '{options.Format}' format.");

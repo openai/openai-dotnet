@@ -4,7 +4,6 @@
 
 using System;
 using System.ComponentModel;
-using OpenAI;
 
 namespace OpenAI.Audio
 {
@@ -14,11 +13,11 @@ namespace OpenAI.Audio
         private const string Whisper1Value = "whisper-1";
         private const string Gpt4oTranscribeValue = "gpt-4o-transcribe";
         private const string Gpt4oMiniTranscribeValue = "gpt-4o-mini-transcribe";
+        private const string Gpt4oMiniTranscribe20251215Value = "gpt-4o-mini-transcribe-2025-12-15";
+        private const string Gpt4oTranscribeDiarizeValue = "gpt-4o-transcribe-diarize";
 
         public InternalCreateTranscriptionRequestModel(string value)
         {
-            Argument.AssertNotNull(value, nameof(value));
-
             _value = value;
         }
 
@@ -27,6 +26,10 @@ namespace OpenAI.Audio
         internal static InternalCreateTranscriptionRequestModel Gpt4oTranscribe { get; } = new InternalCreateTranscriptionRequestModel(Gpt4oTranscribeValue);
 
         internal static InternalCreateTranscriptionRequestModel Gpt4oMiniTranscribe { get; } = new InternalCreateTranscriptionRequestModel(Gpt4oMiniTranscribeValue);
+
+        internal static InternalCreateTranscriptionRequestModel Gpt4oMiniTranscribe20251215 { get; } = new InternalCreateTranscriptionRequestModel(Gpt4oMiniTranscribe20251215Value);
+
+        internal static InternalCreateTranscriptionRequestModel Gpt4oTranscribeDiarize { get; } = new InternalCreateTranscriptionRequestModel(Gpt4oTranscribeDiarizeValue);
 
         public static bool operator ==(InternalCreateTranscriptionRequestModel left, InternalCreateTranscriptionRequestModel right) => left.Equals(right);
 

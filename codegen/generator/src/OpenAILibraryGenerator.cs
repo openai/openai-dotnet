@@ -1,4 +1,3 @@
-using System;
 using System.ComponentModel.Composition;
 using Microsoft.TypeSpec.Generator;
 using Microsoft.TypeSpec.Generator.ClientModel;
@@ -16,23 +15,26 @@ namespace OpenAILibraryPlugin
         protected override void Configure()
         {
             base.Configure();
+            // This should be first, as it recomputes the type
+            AddVisitor(new NonAbstractPublicTypesVisitor());
+            AddVisitor(new NumericPropertiesVisitor());
             AddVisitor(new ConstructorFixupVisitor());
             AddVisitor(new KindRenameVisitor());
             AddVisitor(new VisibilityVisitor());
             AddVisitor(new ContentInnerCollectionDefinedVisitor());
-            AddVisitor(new NonAbstractPublicTypesVisitor());
             AddVisitor(new PageOrderRemovalVisitor(this));
             AddVisitor(new OmittedTypesVisitor());
             AddVisitor(new InvariantFormatAdditionalPropertiesVisitor());
             AddVisitor(new OpenAILibraryVisitor());
             AddVisitor(new VirtualMessageCreationVisitor());
             AddVisitor(new ProhibitedNamespaceVisitor());
-            AddVisitor(new ImplicitConversionToBinaryContentVisitor());
             AddVisitor(new ModelSerializationVisitor());
             AddVisitor(new ExperimentalAttributeVisitor());
             AddVisitor(new ModelDirectoryVisitor());
             AddVisitor(new PaginationVisitor());
             AddVisitor(new MetadataQueryParamVisitor());
+            AddVisitor(new ProtocolModelVisitor());
+			AddVisitor(new ItemsPropertyVisitor());
         }
     }
 }

@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Evals
 {
@@ -14,8 +13,6 @@ namespace OpenAI.Evals
 
         public InternalEvalCompletionsRunDataSourceParamsInputMessages2(string itemReference)
         {
-            Argument.AssertNotNull(itemReference, nameof(itemReference));
-
             ItemReference = itemReference;
         }
 
@@ -26,7 +23,7 @@ namespace OpenAI.Evals
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string Kind { get; } = "item_reference";
+        internal string Kind { get; } = "item_reference";
 
         public string ItemReference { get; }
 

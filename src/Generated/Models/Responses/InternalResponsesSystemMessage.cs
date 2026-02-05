@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Linq;
 using OpenAI;
@@ -13,15 +13,16 @@ namespace OpenAI.Responses
     {
         public InternalResponsesSystemMessage(IEnumerable<ResponseContentPart> internalContent) : base(InternalResponsesMessageRole.System)
         {
-            Argument.AssertNotNull(internalContent, nameof(internalContent));
-
             InternalContent = internalContent.ToList();
         }
 
-        internal InternalResponsesSystemMessage(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, MessageStatus? status, InternalResponsesMessageRole internalRole, IList<ResponseContentPart> internalContent) : base(kind, id, additionalBinaryDataProperties, status, internalRole)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalResponsesSystemMessage(InternalItemType kind, string id, in JsonPatch patch, MessageStatus? status, InternalResponsesMessageRole internalRole, IList<ResponseContentPart> internalContent) : base(kind, id, patch, status, internalRole)
         {
             // Plugin customization: ensure initialization of collections
             InternalContent = internalContent ?? new ChangeTrackingList<ResponseContentPart>();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

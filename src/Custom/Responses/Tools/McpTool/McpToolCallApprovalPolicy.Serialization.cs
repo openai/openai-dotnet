@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.Text.Json;
 
 namespace OpenAI.Responses;
@@ -26,11 +25,11 @@ public partial class McpToolCallApprovalPolicy
         {
             throw new FormatException($"The model {nameof(McpToolCallApprovalPolicy)} does not support writing '{format}' format.");
         }
-        if (Optional.IsDefined(GlobalPolicy) && _additionalBinaryDataProperties?.ContainsKey("global_policy") != true)
+        if (Optional.IsDefined(GlobalPolicy) && _patch.Contains("$.global_policy"u8) != true)
         {
             writer.WriteStringValue(GlobalPolicy.Value.ToString());
         }
-        if (Optional.IsDefined(CustomPolicy) && _additionalBinaryDataProperties?.ContainsKey("custom_policy") != true)
+        if (Optional.IsDefined(CustomPolicy) && _patch.Contains("$.custom_policy"u8) != true)
         {
             writer.WriteObjectValue(CustomPolicy, options);
         }
@@ -39,7 +38,7 @@ public partial class McpToolCallApprovalPolicy
     // CUSTOM:
     // - Edited to deserialize a string value into a GlobalPolicy component.
     // - Edited to deserialize an object value into a CustomPolicy component.
-    internal static McpToolCallApprovalPolicy DeserializeMcpToolCallApprovalPolicy(JsonElement element, ModelReaderWriterOptions options)
+    internal static McpToolCallApprovalPolicy DeserializeMcpToolCallApprovalPolicy(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
     {
         if (element.ValueKind == JsonValueKind.Null)
         {
@@ -48,7 +47,9 @@ public partial class McpToolCallApprovalPolicy
 
         GlobalMcpToolCallApprovalPolicy? globalPolicy = default;
         CustomMcpToolCallApprovalPolicy customPolicy = default;
-        IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         if (element.ValueKind == JsonValueKind.String)
         {
@@ -56,9 +57,9 @@ public partial class McpToolCallApprovalPolicy
         }
         else
         {
-            customPolicy = CustomMcpToolCallApprovalPolicy.DeserializeCustomMcpToolCallApprovalPolicy(element, options);
+            customPolicy = CustomMcpToolCallApprovalPolicy.DeserializeCustomMcpToolCallApprovalPolicy(element, element.GetUtf8Bytes(), options);
         }
 
-        return new McpToolCallApprovalPolicy(globalPolicy, customPolicy, additionalBinaryDataProperties);
+        return new McpToolCallApprovalPolicy(globalPolicy, customPolicy, patch);
     }
 }

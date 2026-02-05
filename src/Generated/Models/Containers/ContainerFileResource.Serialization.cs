@@ -188,7 +188,7 @@ namespace OpenAI.Containers
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeContainerFileResource(document.RootElement, options);
                     }
@@ -201,8 +201,8 @@ namespace OpenAI.Containers
 
         public static explicit operator ContainerFileResource(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
+            PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
             return DeserializeContainerFileResource(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

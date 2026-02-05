@@ -52,7 +52,7 @@ model CreateResponse {
    * - [Conversation state](/docs/guides/conversation-state)
    * - [Function calling](/docs/guides/function-calling)
    */
-  input: string | (ImplicitUserMessage | ItemParam)[];
+  input?: string | (ImplicitUserMessage | ItemParam)[];
 
   @doc("""
     Specify additional output data to include in the model response. Currently
@@ -87,6 +87,25 @@ model CreateResponse {
    * for more information.
    */
   stream?: boolean | null = false;
+
+  /** The conversation that this response belongs to.
+   *  Items from this conversation are prepended to input_items for this response request.
+   *  Input items and output items from this response are automatically added to this conversation after this response completes. */
+  conversation?: ConversationParam | null;
+}
+
+/**The conversation that this response belongs to. Items from this conversation are prepended to `input_items` for this response request.
+Input items and output items from this response are automatically added to this conversation after this response completes.*/
+union ConversationParam {
+  string,
+  `ConversationParam-2`,
+}
+
+/** The conversation that this response belongs to. */
+@summary("Conversation object")
+model `ConversationParam-2` {
+  /** The unique ID of the conversation. */
+  id: string;
 }
 
 model Response {
@@ -149,6 +168,9 @@ model Response {
 
   /** Whether to allow the model to run tool calls in parallel. */
   parallel_tool_calls: boolean = true;
+
+  /** The conversation that this response belongs to. Input items and output items from this response are automatically added to this conversation. */
+  conversation?: `ConversationParam-2` | null;
 }
 
 model ResponseProperties {
@@ -177,6 +199,9 @@ model ResponseProperties {
 
   /** An upper bound for the number of tokens that can be generated for a response, including visible output tokens and [reasoning tokens](/docs/guides/reasoning). */
   max_output_tokens?: int32 | null;
+
+  /** The maximum number of total calls to built-in tools that can be processed in a response. This maximum number applies across all built-in tool calls, not per individual tool. Any further attempts to call a tool by the model will be ignored. */
+  max_tool_calls?: int32 | null;
 
   @doc("""
     Inserts a system (or developer) message as the first item in the model's context.
@@ -459,6 +484,7 @@ union ToolType {
   file_search: "file_search",
   function: "function",
   computer_use_preview: "computer_use_preview",
+  web_search: "web_search",
   web_search_preview: "web_search_preview",
   mcp: "mcp",
   code_interpreter: "code_interpreter",
@@ -613,7 +639,31 @@ model WebSearchPreviewTool extends Tool {
   @doc("""
     High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default.
     """)
-  search_context_size?: "low" | "medium" | "high";
+  search_context_size?: SearchContextSize;
+}
+
+// Tool customization (apply_discriminator): Apply discriminated type base for tools
+/** This tool searches the web for relevant results to use in a response. Learn more about the [web search tool](https://platform.openai.com/docs/guides/tools-web-search). */
+model WebSearchTool extends Tool {
+  /** The type of the web search tool. One of `web_search` or `web_search_2025_08_26`. */
+  type: ToolType.web_search;
+
+  filters?: WebSearchToolFilters | null;
+  
+  user_location?: Location | null;
+
+  /** High level guidance for the amount of context window space to use for the search. One of `low`, `medium`, or `high`. `medium` is the default. */
+  search_context_size?: SearchContextSize;
+}
+
+enum SearchContextSize {
+  low,
+  medium,
+  high,
+}
+
+model WebSearchToolFilters {
+  allowed_domains?: string[] | null;
 }
 
 // Tool customization: Establish a discriminated base for location approximation
@@ -1064,6 +1114,9 @@ model AnnotationFileCitation extends Annotation {
 
   /** The index of the file in the list of files. */
   index: int32;
+
+  /** The filename of the file cited. */
+  filename: string;
 }
 
 // Tool customization (apply_discriminator): Apply discriminated base type, rename for consistency and clarity
@@ -1089,11 +1142,11 @@ model AnnotationUrlCitation extends Annotation {
 }
 
 /** A citation for a container file used to generate a model response. */
-model ContainerFileCitationBody {
+model ContainerFileCitationBody extends Annotation {
   @doc("""
     The type of the container file citation. Always `container_file_citation`.
     """)
-  type: "container_file_citation" = "container_file_citation";
+  type: AnnotationType.container_file_citation;
 
   /** The ID of the container file. */
   container_id: string;
@@ -1106,6 +1159,9 @@ model ContainerFileCitationBody {
 
   /** The index of the last character of the container file citation in the message. */
   end_index: int32;
+
+  /** The filename of the container file cited. */
+  filename: string;
 }
 
 // Tool customization (apply_discriminator): Apply discriminated base type, rename for consistency and clarity
@@ -1340,6 +1396,8 @@ union ResponseStreamEventType {
   response_reasoning_done: "response.reasoning.done",
   response_reasoning_summary_delta: "response.reasoning_summary.delta",
   response_reasoning_summary_done: "response.reasoning_summary.done",
+  response_reasoning_text_delta: "response.reasoning_text.delta",
+  response_reasoning_text_done: "response.reasoning_text.done",
 }
 @discriminator("type")
 model ResponseStreamEvent {
@@ -1748,6 +1806,44 @@ model ResponseReasoningSummaryTextDoneEvent extends ResponseStreamEvent {
 }
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
+/** Emitted when a delta is added to a reasoning text. */
+model ResponseReasoningTextDeltaEvent extends ResponseStreamEvent {
+  /** The type of the event. Always `response.reasoning_text.delta`. */
+  type: ResponseStreamEventType.response_reasoning_text_delta;
+
+  /** The ID of the item this reasoning text delta is associated with. */
+  item_id: string;
+
+  /** The index of the output item this reasoning text delta is associated with. */
+  output_index: int32;
+
+  /** The index of the reasoning content part this delta is associated with. */
+  content_index: int32;
+
+  /** The text delta that was added to the reasoning content. */
+  delta: string;
+}
+
+// Tool customization: Remove shared sequence_number property that was moved to the common parent
+/** Emitted when a reasoning text is completed. */
+model ResponseReasoningTextDoneEvent extends ResponseStreamEvent {
+  /** The type of the event. Always `response.reasoning_text.done`. */
+  type: ResponseStreamEventType.response_reasoning_text_done;
+
+  /** The ID of the item this reasoning text is associated with. */
+  item_id: string;
+
+  /** The index of the output item this reasoning text is associated with. */
+  output_index: int32;
+
+  /** The index of the reasoning content part. */
+  content_index: int32;
+
+  /** The full text of the completed reasoning content. */
+  text: string;
+}
+
+// Tool customization: Remove shared sequence_number property that was moved to the common parent
 /** Emitted when a web search call is completed. */
 model ResponseWebSearchCallCompletedEvent extends ResponseStreamEvent {
   @doc("""
@@ -1858,11 +1954,9 @@ model CodeInterpreterTool extends Tool {
  * Configuration for a code interpreter container. Optionally specify the IDs
  * of the files to run the code on.
  */
-model CodeInterpreterToolAuto {
-  @doc("""
-    Always `auto`.
-    """)
-  type: "auto";
+model CodeInterpreterToolAuto extends CodeInterpreterContainerConfiguration {
+  @doc("Always `auto`.")
+  type: CodeInterpreterContainerConfigurationType.auto;
 
   /** An optional list of uploaded files to make available to your code. */
   file_ids?: string[];
@@ -1918,6 +2012,13 @@ model ImageGenTool extends Tool {
   background?: "transparent" | "opaque" | "auto" = "auto";
 
   @doc("""
+    Control how much effort the model will exert to match the style and features,
+    especially facial features, of input images. This parameter is only supported
+    for `gpt-image-1`. Supports `high` and `low`. Defaults to `low`.
+    """)
+  input_fidelity?: "low" | "high" = "low";
+
+  @doc("""
     Optional mask for inpainting. Contains `image_url`
     (string, optional) and `file_id` (string, optional).
     """)
@@ -1939,7 +2040,8 @@ model ImageGenTool extends Tool {
 /** An image generation request made by the model. */
 alias ImageGenToolCallItemBase = {
   /** The generated image encoded in base64. */
-  result: string | null;
+  @encode("base64", string)
+  result: bytes | null;
 };
 
 @@doc(ImageGenToolCallItemResource,
@@ -2104,6 +2206,7 @@ alias MCPListToolsItemBase = {
     
     """
 );
+
 /** A tool available on an MCP server. */
 model MCPListToolsTool {
   /** The name of the tool. */
@@ -2130,42 +2233,74 @@ model MCPTool extends Tool {
     """)
   type: ToolType.mcp;
 
-  /** A label for this MCP server, used to identify it in tool calls. */
+ /** A label for this MCP server, used to identify it in tool calls. */
   server_label: string;
 
-  /** The URL for the MCP server. */
-  server_url: string;
+  /**The URL for the MCP server. One of `server_url` or `connector_id` must be
+  provided.*/
+  server_url?: string;
 
-  /**
-   * Optional HTTP headers to send to the MCP server. Use for authentication
-   * or other purposes.
-   */
+  /**Identifier for service connectors, like those available in ChatGPT. One of
+  `server_url` or `connector_id` must be provided. Learn more about service
+  connectors [here](https://platform.openai.com/docs/guides/tools-remote-mcp#connectors).
+
+  Currently supported `connector_id` values are:
+
+  - Dropbox: `connector_dropbox`
+  - Gmail: `connector_gmail`
+  - Google Calendar: `connector_googlecalendar`
+  - Google Drive: `connector_googledrive`
+  - Microsoft Teams: `connector_microsoftteams`
+  - Outlook Calendar: `connector_outlookcalendar`
+  - Outlook Email: `connector_outlookemail`
+  - SharePoint: `connector_sharepoint`*/
+  connector_id?:
+    | "connector_dropbox"
+    | "connector_gmail"
+    | "connector_googlecalendar"
+    | "connector_googledrive"
+    | "connector_microsoftteams"
+    | "connector_outlookcalendar"
+    | "connector_outlookemail"
+    | "connector_sharepoint";
+
+  /**An OAuth access token that can be used with a remote MCP server, either
+  with a custom MCP server URL or a service connector. Your application
+  must handle the OAuth authorization flow and provide the token here.*/
+  authorization?: string;
+
+  /** Optional description of the MCP server, used to provide more context. */
+  server_description?: string;
+
+  /**Optional HTTP headers to send to the MCP server. Use for authentication
+  or other purposes.*/
   headers?: Record<string> | null;
 
   /** List of allowed tool names or a filter object. */
-  allowed_tools?: string[] | {
-    /** List of allowed tool names. */
-    tool_names?: string[];
-  } | null;
+  allowed_tools?: string[] | MCPToolFilter | null;
 
   /** Specify which of the MCP server's tools require approval. */
   require_approval?:
     | {
-        /** A list of tools that always require approval. */
-        always?: {
-          /** List of tools that require approval. */
-          tool_names?: string[];
-        };
-
-        /** A list of tools that never require approval. */
-        `never`?: {
-          /** List of tools that do not require approval. */
-          tool_names?: string[];
-        };
+        always?: MCPToolFilter;
+        `never`?: MCPToolFilter;
       }
     | "always"
     | "never"
-    | null = "always";
+    | null;
+}
+
+/** A filter object to specify which tools are allowed. */
+@summary("MCP tool filter")
+model MCPToolFilter {
+  /** List of allowed tool names. */
+  @summary("MCP allowed tools")
+  tool_names?: string[];
+
+  /**Indicates whether or not a tool modifies data or is read-only. If an
+  MCP server is [annotated with `readOnlyHint`](https://modelcontextprotocol.io/specification/2025-06-18/schema#toolannotations-readonlyhint),
+  it will match this filter.*/
+  read_only?: boolean;
 }
 
 // Tool customization: Rename to supply base for split input/output models
@@ -2254,7 +2389,8 @@ model ResponseImageGenCallPartialImageEvent extends ResponseStreamEvent {
   partial_image_index: int32;
 
   /** Base64-encoded partial image data, suitable for rendering as an image. */
-  partial_image_b64: string;
+  @encode("base64", string)
+  partial_image_b64: bytes;
 }
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
@@ -2270,7 +2406,7 @@ model ResponseMCPCallArgumentsDeltaEvent extends ResponseStreamEvent {
   item_id: string;
 
   /** The partial update to the arguments for the MCP tool call. */
-  delta: unknown;
+  delta: string;
 }
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
@@ -2285,8 +2421,8 @@ model ResponseMCPCallArgumentsDoneEvent extends ResponseStreamEvent {
   /** The unique identifier of the MCP tool call item being processed. */
   item_id: string;
 
-  /** The finalized arguments for the MCP tool call. */
-  arguments: unknown;
+  /** A JSON string containing the finalized arguments for the MCP tool call. */
+  arguments: string;
 }
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
@@ -2294,6 +2430,12 @@ model ResponseMCPCallArgumentsDoneEvent extends ResponseStreamEvent {
 model ResponseMCPCallCompletedEvent extends ResponseStreamEvent {
   /** The type of the event. Always 'response.mcp_call.completed'. */
   type: ResponseStreamEventType.response_mcp_call_completed;
+
+  /** The ID of the MCP tool call item that completed. */
+  item_id: string;
+
+  /** The index of the output item that completed. */
+  output_index: int32;
 }
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
@@ -2301,6 +2443,12 @@ model ResponseMCPCallCompletedEvent extends ResponseStreamEvent {
 model ResponseMCPCallFailedEvent extends ResponseStreamEvent {
   /** The type of the event. Always 'response.mcp_call.failed'. */
   type: ResponseStreamEventType.response_mcp_call_failed;
+
+  /** The ID of the MCP tool call item that failed. */
+  item_id: string;
+
+  /** The index of the output item that failed. */
+  output_index: int32;
 }
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
@@ -2321,6 +2469,12 @@ model ResponseMCPCallInProgressEvent extends ResponseStreamEvent {
 model ResponseMCPListToolsCompletedEvent extends ResponseStreamEvent {
   /** The type of the event. Always 'response.mcp_list_tools.completed'. */
   type: ResponseStreamEventType.response_mcp_list_tools_completed;
+
+  /** The ID of the MCP tool call item that produced this output. */
+  item_id: string;
+
+  /** The index of the output item that was processed. */
+  output_index: int32;
 }
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
@@ -2328,6 +2482,12 @@ model ResponseMCPListToolsCompletedEvent extends ResponseStreamEvent {
 model ResponseMCPListToolsFailedEvent extends ResponseStreamEvent {
   /** The type of the event. Always 'response.mcp_list_tools.failed'. */
   type: ResponseStreamEventType.response_mcp_list_tools_failed;
+
+  /** The ID of the MCP tool call item that failed. */
+  item_id: string;
+
+  /** The index of the output item that failed. */
+  output_index: int32;
 }
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
@@ -2335,6 +2495,12 @@ model ResponseMCPListToolsFailedEvent extends ResponseStreamEvent {
 model ResponseMCPListToolsInProgressEvent extends ResponseStreamEvent {
   /** The type of the event. Always 'response.mcp_list_tools.in_progress'. */
   type: ResponseStreamEventType.response_mcp_list_tools_in_progress;
+
+  /** The ID of the MCP tool call item that is being processed. */
+  item_id: string;
+
+  /** The index of the output item that is being processed. */
+  output_index: int32;
 }
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
@@ -2445,25 +2611,20 @@ model ResponseReasoningSummaryDoneEvent extends ResponseStreamEvent {
   text: string;
 }
 
-/** The output of a code interpreter tool call that is a file. */
-model CodeInterpreterFileOutput {
-  @doc("""
-    The type of the code interpreter file output. Always `files`.
-    """)
-  type: "files";
+model CodeInterpreterToolLogsOutput extends CodeInterpreterToolOutput {
+  @doc("The type of the output. Always 'logs'.")
+  type: CodeInterpreterToolOutputType.logs;
 
-  files: CodeInterpreterFileOutputFile[];
+  @doc("The logs output from the code interpreter.")
+  logs: string;
 }
 
-/** The output of a code interpreter tool call that is text. */
-model CodeInterpreterTextOutput {
-  @doc("""
-    The type of the code interpreter text output. Always `logs`.
-    """)
-  type: "logs";
+model CodeInterpreterToolImageOutput extends CodeInterpreterToolOutput {
+  @doc("The type of the output. Always 'image'.")
+  type: CodeInterpreterToolOutputType.image;
 
-  /** The logs of the code interpreter tool call. */
-  logs: string;
+  @doc("The URL of the image output from the code interpreter.")
+  url: url;
 }
 
 // Tool customization: Rename to supply base for split input/output models
@@ -2475,8 +2636,8 @@ alias CodeInterpreterToolCallItemBase = {
   /** The code to run. */
   code: string;
 
-  /** The results of the code interpreter tool call. */
-  results: CodeInterpreterToolOutput[];
+  /** The outputs of the code interpreter tool call. */
+  outputs?: CodeInterpreterToolOutput[];
 };
 
 @@doc(CodeInterpreterToolCallItemResource,
@@ -2492,10 +2653,6 @@ alias CodeInterpreterToolCallItemBase = {
     """
 );
 /** The output of a code interpreter tool. */
-union CodeInterpreterToolOutput {
-  CodeInterpreterTextOutput,
-  CodeInterpreterFileOutput,
-}
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
 /** Emitted when there is a partial audio response. */
@@ -2550,6 +2707,9 @@ model ResponseCodeInterpreterCallCodeDeltaEvent extends ResponseStreamEvent {
   /** The index of the output item that the code interpreter call is in progress. */
   output_index: int32;
 
+  /** The unique identifier of the code interpreter tool call item. */
+  item_id: string;
+
   /** The partial code snippet added by the code interpreter. */
   delta: string;
 }
@@ -2564,6 +2724,9 @@ model ResponseCodeInterpreterCallCodeDoneEvent extends ResponseStreamEvent {
 
   /** The index of the output item that the code interpreter call is in progress. */
   output_index: int32;
+
+  /** The unique identifier of the code interpreter tool call item. */
+  item_id: string;
 
   /** The final code snippet output by the code interpreter. */
   code: string;
@@ -2580,8 +2743,8 @@ model ResponseCodeInterpreterCallCompletedEvent extends ResponseStreamEvent {
   /** The index of the output item that the code interpreter call is in progress. */
   output_index: int32;
 
-  // Tool customization: Use split resource type
-  code_interpreter_call: CodeInterpreterToolCallItemResource;
+  /** The unique identifier of the code interpreter tool call item. */
+  item_id: string;
 }
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
@@ -2595,8 +2758,8 @@ model ResponseCodeInterpreterCallInProgressEvent extends ResponseStreamEvent {
   /** The index of the output item that the code interpreter call is in progress. */
   output_index: int32;
 
-  // Tool customization: Use split resource type
-  code_interpreter_call: CodeInterpreterToolCallItemResource;
+  /** The unique identifier of the code interpreter tool call item. */
+  item_id: string;
 }
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
@@ -2610,8 +2773,8 @@ model ResponseCodeInterpreterCallInterpretingEvent extends ResponseStreamEvent {
   /** The index of the output item that the code interpreter call is in progress. */
   output_index: int32;
 
-  // Tool customization: Use split resource type
-  code_interpreter_call: CodeInterpreterToolCallItemResource;
+  /** The unique identifier of the code interpreter tool call item. */
+  item_id: string;
 }
 
 /** The top log probability of a token. */

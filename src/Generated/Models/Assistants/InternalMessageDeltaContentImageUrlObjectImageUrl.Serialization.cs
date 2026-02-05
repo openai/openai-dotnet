@@ -88,7 +88,7 @@ namespace OpenAI.Assistants
                     {
                         continue;
                     }
-                    url = new Uri(prop.Value.GetString());
+                    url = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("detail"u8))
@@ -124,7 +124,7 @@ namespace OpenAI.Assistants
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalMessageDeltaContentImageUrlObjectImageUrl(document.RootElement, options);
                     }

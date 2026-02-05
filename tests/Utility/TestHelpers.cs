@@ -4,6 +4,7 @@ using OpenAI.Audio;
 using OpenAI.Batch;
 using OpenAI.Chat;
 using OpenAI.Containers;
+using OpenAI.Conversations;
 using OpenAI.Embeddings;
 using OpenAI.Files;
 using OpenAI.FineTuning;
@@ -19,8 +20,8 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 [assembly: LevelOfParallelism(8)]
 
@@ -37,6 +38,7 @@ internal static class TestHelpers
         Batch,
         Chat,
         Containers,
+        Conversations,
         Embeddings,
         Files,
         FineTuning,
@@ -63,12 +65,13 @@ internal static class TestHelpers
         TestScenario.FineTuning => null,
         TestScenario.Images => "gpt-image-1",
         TestScenario.Models => null,
-        TestScenario.Moderations => "text-moderation-stable",
+        TestScenario.Moderations => "omni-moderation-latest",
         TestScenario.VectorStores => null,
         TestScenario.TopLevel => null,
-        TestScenario.Realtime => "gpt-4o-realtime-preview-2024-10-01",
+        TestScenario.Realtime => "gpt-realtime",
         TestScenario.Responses => "gpt-4o-mini",
         TestScenario.Containers => "gpt-4o-mini",
+        TestScenario.Conversations => null,
         _ => throw new NotImplementedException(),
     };
 
@@ -81,10 +84,11 @@ internal static class TestHelpers
         TestScenario scenario,
         string overrideModel = null,
         bool excludeDumpPolicy = false,
-        OpenAIClientOptions options = default)
+        OpenAIClientOptions options = default,
+        ApiKeyCredential credential = default)
     {
         options ??= new();
-        ApiKeyCredential credential = GetTestApiKeyCredential();
+        credential ??= GetTestApiKeyCredential();
 
         if (!excludeDumpPolicy)
         {
@@ -105,6 +109,9 @@ internal static class TestHelpers
 #pragma warning disable OPENAI001
             TestScenario.Containers => new ContainerClient(credential, options),
 #pragma warning restore OPENAI001
+#pragma warning disable OPENAI001
+            TestScenario.Conversations => new ConversationClient(credential, options),
+#pragma warning restore OPENAI001
             TestScenario.Embeddings => new EmbeddingClient(model, credential, options),
             TestScenario.Files => new OpenAIFileClient(credential, options),
             TestScenario.FineTuning => new FineTuningClient(credential, options),
@@ -119,11 +126,37 @@ internal static class TestHelpers
             TestScenario.Realtime => new RealtimeClient(credential, options),
 #pragma warning restore
 #pragma warning disable OPENAI003
-            TestScenario.Responses => new OpenAIResponseClient(model, credential, options),
+            TestScenario.Responses => new ResponsesClient(model, credential, options),
 #pragma warning restore
             _ => throw new NotImplementedException(),
         };
         return (T)clientObject;
+    }
+
+    public static async Task RetryWithExponentialBackoffAsync(Func<Task> action, int maxRetries = 5, int initialWaitMs = 750)
+    {
+        int waitDuration = initialWaitMs;
+        int retryCount = 0;
+        bool successful = false;
+
+        while (retryCount < maxRetries && !successful)
+        {
+            try
+            {
+                await action();
+                successful = true;
+            }
+            catch (ClientResultException ex) when (ex.Status == 404)
+            {
+                await Task.Delay(waitDuration);
+                waitDuration *= 2;
+                retryCount++;
+                if (retryCount >= maxRetries)
+                {
+                    throw;
+                }
+            }
+        }
     }
 
     private static PipelinePolicy GetDumpPolicy()

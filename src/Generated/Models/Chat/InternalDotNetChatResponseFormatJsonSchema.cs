@@ -2,9 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
-using OpenAI;
+using System.ClientModel.Primitives;
 using OpenAI.Internal;
 
 namespace OpenAI.Chat
@@ -13,15 +11,16 @@ namespace OpenAI.Chat
     {
         internal InternalDotNetChatResponseFormatJsonSchema(InternalDotNetChatResponseFormatJsonSchemaJsonSchema jsonSchema) : base(InternalResponseFormatType.JsonSchema)
         {
-            Argument.AssertNotNull(jsonSchema, nameof(jsonSchema));
-
             JsonSchema = jsonSchema;
         }
 
-        internal InternalDotNetChatResponseFormatJsonSchema(InternalResponseFormatType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalDotNetChatResponseFormatJsonSchemaJsonSchema jsonSchema) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalDotNetChatResponseFormatJsonSchema(InternalResponseFormatType kind, in JsonPatch patch, InternalDotNetChatResponseFormatJsonSchemaJsonSchema jsonSchema) : base(kind, patch)
         {
             JsonSchema = jsonSchema;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         internal InternalDotNetChatResponseFormatJsonSchemaJsonSchema JsonSchema { get; set; }
     }

@@ -173,7 +173,7 @@ namespace OpenAI.Batch
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalCreateBatchRequest(document.RootElement, options);
                     }

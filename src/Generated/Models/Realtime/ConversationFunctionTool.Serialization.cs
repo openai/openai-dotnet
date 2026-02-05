@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    public partial class ConversationFunctionTool : IJsonModel<ConversationFunctionTool>
+    public partial class ConversationFunctionTool : ConversationTool, IJsonModel<ConversationFunctionTool>
     {
         internal ConversationFunctionTool() : this(ConversationToolKind.Function, null, null, null, null)
         {
@@ -133,7 +133,7 @@ namespace OpenAI.Realtime
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeConversationFunctionTool(document.RootElement, options);
                     }

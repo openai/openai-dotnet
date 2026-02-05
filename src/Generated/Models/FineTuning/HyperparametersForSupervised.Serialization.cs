@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.FineTuning
 {
-    public partial class HyperparametersForSupervised : IJsonModel<HyperparametersForSupervised>
+    public partial class HyperparametersForSupervised : MethodHyperparameters, IJsonModel<HyperparametersForSupervised>
     {
         void IJsonModel<HyperparametersForSupervised>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -164,7 +164,7 @@ namespace OpenAI.FineTuning
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeHyperparametersForSupervised(document.RootElement, options);
                     }

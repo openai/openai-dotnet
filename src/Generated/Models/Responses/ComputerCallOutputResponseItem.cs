@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
@@ -22,14 +22,17 @@ namespace OpenAI.Responses
             Output = output;
         }
 
-        internal ComputerCallOutputResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, ComputerCallOutputStatus? status, string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, ComputerCallOutput output) : base(kind, id, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal ComputerCallOutputResponseItem(InternalItemType kind, string id, in JsonPatch patch, ComputerCallOutputStatus? status, string callId, IList<ComputerCallSafetyCheck> acknowledgedSafetyChecks, ComputerCallOutput output) : base(kind, id, patch)
         {
             // Plugin customization: ensure initialization of collections
             Status = status;
             CallId = callId;
             AcknowledgedSafetyChecks = acknowledgedSafetyChecks ?? new ChangeTrackingList<ComputerCallSafetyCheck>();
             Output = output;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string CallId { get; set; }
 

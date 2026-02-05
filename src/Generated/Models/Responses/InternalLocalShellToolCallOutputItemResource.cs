@@ -2,9 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
-using OpenAI;
+using System.ClientModel.Primitives;
 
 namespace OpenAI.Responses
 {
@@ -12,17 +10,17 @@ namespace OpenAI.Responses
     {
         internal InternalLocalShellToolCallOutputItemResource(InternalLocalShellToolCallOutputItemResourceStatus status, string output) : base(InternalItemType.LocalShellCallOutput)
         {
-            Argument.AssertNotNull(output, nameof(output));
-
             Status = status;
             Output = output;
         }
 
-        internal InternalLocalShellToolCallOutputItemResource(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalLocalShellToolCallOutputItemResourceStatus status, string output) : base(kind, id, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalLocalShellToolCallOutputItemResource(InternalItemType kind, string id, in JsonPatch patch, InternalLocalShellToolCallOutputItemResourceStatus status, string output) : base(kind, id, patch)
         {
             Status = status;
             Output = output;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         internal InternalLocalShellToolCallOutputItemResourceStatus Status { get; set; }
 

@@ -1,91 +1,36 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Description>
-    The official .NET library for the OpenAI service API.
-    </Description>
-    <AssemblyTitle>SDK Code Generation OpenAI</AssemblyTitle>
-    <PackageTags>OpenAI;openai-dotnet;ChatGPT;Dall-E</PackageTags>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Copyright>Copyright (c) 2024 OpenAI (https://openai.com)</Copyright>
+    <Description>The official .NET library for the OpenAI service API.</Description>
+    <AssemblyTitle>OpenAI client library for .NET</AssemblyTitle>
 
-    <VersionPrefix>2.4.0</VersionPrefix>
-    <VersionSuffix></VersionSuffix>
-
-    <TargetFrameworks>net8.0;netstandard2.0</TargetFrameworks>
-    <LangVersion>latest</LangVersion>
-
-    <!-- Generate an XML documentation file for the project. -->
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-
-    <!-- Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <PackageIcon>OpenAI.png</PackageIcon>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-
-    <!-- Create a .snupkg file in addition to the .nupkg file. -->
-    <IncludeSymbols>true</IncludeSymbols>
-    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-
-    <!-- Embed source files that are not tracked by the source control manager in the PDB -->
-    <EmbedUntrackedSources>true</EmbedUntrackedSources>
-
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-
-    <!-- Disable missing XML documentation warnings -->
-    <NoWarn>$(NoWarn),1570,1573,1574,1591</NoWarn>
-
-    <!-- Disable obsolete warnings -->
-    <NoWarn>$(NoWarn),0618</NoWarn>
-
-    <!-- Disable unused fields warnings -->
-    <NoWarn>$(NoWarn),0169</NoWarn>
-
-    <!-- Disable warnings for experimental APIs -->
-    <NoWarn>$(NoWarn),OPENAI001;OPENAI002;OPENAICUA001</NoWarn>
-
-    <Configurations>Debug;Release;Unsigned</Configurations>
-
-    <IsTrimmable Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">true</IsTrimmable>
-    <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">true</IsAotCompatible>
+    <TargetFrameworks>$(ClientTargetFrameworks)</TargetFrameworks>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)' != 'Unsigned'">
-    <!-- Sign the assembly with the specified key file. -->
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>OpenAI.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
+  <ItemGroup>
+    <None Include="$(RepositoryRoot)eng\OpenAI.png" Pack="true" PackagePath="\" />
+    <None Include="$(RepositoryRoot)CHANGELOG.md" Pack="true" PackagePath="\" />
+    <None Include="$(RepositoryRoot)README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.ClientModel" />
+    <PackageReference Include="System.Net.ServerSentEvents" />
+  </ItemGroup>
+
+  <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net8.0'))">
+    <PackageReference Include="System.Diagnostics.DiagnosticSource" />
+  </ItemGroup>
+
+  <!-- Build-only dependencies -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" />
+  </ItemGroup>
+
+  <!-- LEGACY: Azure OpenAI bridge-->
   <ItemGroup>
     <InternalsVisibleTo Include="Azure.AI.OpenAI" Condition="'$(Configuration)' != 'Unsigned'">
       <PublicKey>0024000004800000940000000602000000240000525341310004000001000100097ad52abbeaa2e1a1982747cc0106534f65cfea6707eaed696a3a63daea80de2512746801a7e47f88e7781e71af960d89ba2e25561f70b0e2dbc93319e0af1961a719ccf5a4d28709b2b57a5d29b7c09dc8d269a490ebe2651c4b6e6738c27c5fb2c02469fe9757f0a3479ac310d6588a50a28d7dd431b907fd325e18b9e8ed</PublicKey>
     </InternalsVisibleTo>
     <InternalsVisibleTo Include="Azure.AI.OpenAI" Condition="'$(Configuration)' == 'Unsigned'" />
-  </ItemGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <!-- Allow use of unsafe code, for System.Net.ServerSentEvents polyfill on netstandard2.0
-         TODO https://github.com/openai/openai-dotnet/issues/41: Remove once polyfill for
-         System.Net.ServerSentEvents is removed in favor of referencing the package -->
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
-    <!-- Normalize stored file paths in symbols when in a CI build. -->
-    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
-  </PropertyGroup>
-  <ItemGroup>
-    <None Include="OpenAI.png" Pack="true" PackagePath="\" />
-    <None Include="..\CHANGELOG.md" Pack="true" PackagePath="\" />
-    <None Include="..\README.md" Pack="true" PackagePath="\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
-    <PackageReference Include="System.ClientModel" Version="1.6.1" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.9" />
-  </ItemGroup>
-
-  <ItemGroup Condition="!$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="8.0.1" />
   </ItemGroup>
 </Project>

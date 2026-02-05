@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 using OpenAI.Internal;
@@ -15,6 +15,14 @@ namespace OpenAI.Chat
     {
         void IJsonModel<ChatWebSearchOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -27,36 +35,20 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(ChatWebSearchOptions)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(UserLocation) && _additionalBinaryDataProperties?.ContainsKey("user_location") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Optional.IsDefined(UserLocation) && !Patch.Contains("$.user_location"u8))
             {
                 writer.WritePropertyName("user_location"u8);
                 writer.WriteObjectValue(UserLocation, options);
             }
-            if (Optional.IsDefined(SearchContextSize) && _additionalBinaryDataProperties?.ContainsKey("search_context_size") != true)
+            if (Optional.IsDefined(SearchContextSize) && !Patch.Contains("$.search_context_size"u8))
             {
                 writer.WritePropertyName("search_context_size"u8);
                 writer.WriteStringValue(SearchContextSize.Value.ToString());
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         ChatWebSearchOptions IJsonModel<ChatWebSearchOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -69,10 +61,10 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(ChatWebSearchOptions)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeChatWebSearchOptions(document.RootElement, options);
+            return DeserializeChatWebSearchOptions(document.RootElement, null, options);
         }
 
-        internal static ChatWebSearchOptions DeserializeChatWebSearchOptions(JsonElement element, ModelReaderWriterOptions options)
+        internal static ChatWebSearchOptions DeserializeChatWebSearchOptions(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -80,7 +72,9 @@ namespace OpenAI.Chat
             }
             InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1 userLocation = default;
             InternalWebSearchContextSize? searchContextSize = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("user_location"u8))
@@ -90,7 +84,7 @@ namespace OpenAI.Chat
                         userLocation = null;
                         continue;
                     }
-                    userLocation = InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1.DeserializeInternalCreateChatCompletionRequestWebSearchOptionsUserLocation1(prop.Value, options);
+                    userLocation = InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1.DeserializeInternalCreateChatCompletionRequestWebSearchOptionsUserLocation1(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("search_context_size"u8))
@@ -102,10 +96,9 @@ namespace OpenAI.Chat
                     searchContextSize = new InternalWebSearchContextSize(prop.Value.GetString());
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ChatWebSearchOptions(userLocation, searchContextSize, additionalBinaryDataProperties);
+            return new ChatWebSearchOptions(userLocation, searchContextSize, patch);
         }
 
         BinaryData IPersistableModel<ChatWebSearchOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -130,9 +123,9 @@ namespace OpenAI.Chat
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeChatWebSearchOptions(document.RootElement, options);
+                        return DeserializeChatWebSearchOptions(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ChatWebSearchOptions)} does not support reading '{options.Format}' format.");
@@ -140,5 +133,33 @@ namespace OpenAI.Chat
         }
 
         string IPersistableModel<ChatWebSearchOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("user_location"u8))
+            {
+                return UserLocation.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("user_location"u8.Length)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("user_location"u8))
+            {
+                UserLocation.Patch.Set([.. "$"u8, .. local.Slice("user_location"u8.Length)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

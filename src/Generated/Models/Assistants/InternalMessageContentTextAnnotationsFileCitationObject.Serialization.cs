@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalMessageContentTextAnnotationsFileCitationObject : IJsonModel<InternalMessageContentTextAnnotationsFileCitationObject>
+    internal partial class InternalMessageContentTextAnnotationsFileCitationObject : InternalMessageContentTextObjectAnnotation, IJsonModel<InternalMessageContentTextAnnotationsFileCitationObject>
     {
         internal InternalMessageContentTextAnnotationsFileCitationObject() : this(InternalMessageContentTextAnnotationType.FileCitation, null, null, null, default, default)
         {
@@ -139,7 +139,7 @@ namespace OpenAI.Assistants
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalMessageContentTextAnnotationsFileCitationObject(document.RootElement, options);
                     }

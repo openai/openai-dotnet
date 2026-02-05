@@ -5,6 +5,7 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -12,12 +13,20 @@ namespace OpenAI.Responses
 {
     internal partial class InternalLogProb : IJsonModel<InternalLogProb>
     {
-        internal InternalLogProb() : this(null, default, null, null, null)
+        internal InternalLogProb() : this(null, default, null, null, default)
         {
         }
 
         void IJsonModel<InternalLogProb>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -30,56 +39,66 @@ namespace OpenAI.Responses
             {
                 throw new FormatException($"The model {nameof(InternalLogProb)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("token") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.token"u8))
             {
                 writer.WritePropertyName("token"u8);
                 writer.WriteStringValue(Token);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("logprob") != true)
+            if (!Patch.Contains("$.logprob"u8))
             {
                 writer.WritePropertyName("logprob"u8);
                 writer.WriteNumberValue(Logprob);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("bytes") != true)
+            if (Patch.Contains("$.bytes"u8))
+            {
+                if (!Patch.IsRemoved("$.bytes"u8))
+                {
+                    writer.WritePropertyName("bytes"u8);
+                    writer.WriteRawValue(Patch.GetJson("$.bytes"u8));
+                }
+            }
+            else
             {
                 writer.WritePropertyName("bytes"u8);
                 writer.WriteStartArray();
-                foreach (int item in Bytes)
+                for (int i = 0; i < Bytes.Count; i++)
                 {
-                    writer.WriteNumberValue(item);
-                }
-                writer.WriteEndArray();
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("top_logprobs") != true)
-            {
-                writer.WritePropertyName("top_logprobs"u8);
-                writer.WriteStartArray();
-                foreach (InternalTopLogProb item in TopLogprobs)
-                {
-                    writer.WriteObjectValue(item, options);
-                }
-                writer.WriteEndArray();
-            }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.bytes[{i}]")))
                     {
                         continue;
                     }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
+                    writer.WriteNumberValue(Bytes[i]);
+                }
+                Patch.WriteTo(writer, "$.bytes"u8);
+                writer.WriteEndArray();
+            }
+            if (Patch.Contains("$.top_logprobs"u8))
+            {
+                if (!Patch.IsRemoved("$.top_logprobs"u8))
+                {
+                    writer.WritePropertyName("top_logprobs"u8);
+                    writer.WriteRawValue(Patch.GetJson("$.top_logprobs"u8));
                 }
             }
+            else
+            {
+                writer.WritePropertyName("top_logprobs"u8);
+                writer.WriteStartArray();
+                for (int i = 0; i < TopLogprobs.Count; i++)
+                {
+                    if (TopLogprobs[i].Patch.IsRemoved("$"u8))
+                    {
+                        continue;
+                    }
+                    writer.WriteObjectValue(TopLogprobs[i], options);
+                }
+                Patch.WriteTo(writer, "$.top_logprobs"u8);
+                writer.WriteEndArray();
+            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalLogProb IJsonModel<InternalLogProb>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -92,10 +111,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalLogProb)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalLogProb(document.RootElement, options);
+            return DeserializeInternalLogProb(document.RootElement, null, options);
         }
 
-        internal static InternalLogProb DeserializeInternalLogProb(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalLogProb DeserializeInternalLogProb(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -105,7 +124,9 @@ namespace OpenAI.Responses
             float logprob = default;
             IList<int> bytes = default;
             IList<InternalTopLogProb> topLogprobs = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("token"u8))
@@ -133,15 +154,14 @@ namespace OpenAI.Responses
                     List<InternalTopLogProb> array = new List<InternalTopLogProb>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(InternalTopLogProb.DeserializeInternalTopLogProb(item, options));
+                        array.Add(InternalTopLogProb.DeserializeInternalTopLogProb(item, item.GetUtf8Bytes(), options));
                     }
                     topLogprobs = array;
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalLogProb(token, logprob, bytes, topLogprobs, additionalBinaryDataProperties);
+            return new InternalLogProb(token, logprob, bytes, topLogprobs, patch);
         }
 
         BinaryData IPersistableModel<InternalLogProb>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -166,9 +186,9 @@ namespace OpenAI.Responses
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalLogProb(document.RootElement, options);
+                        return DeserializeInternalLogProb(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalLogProb)} does not support reading '{options.Format}' format.");
@@ -176,5 +196,45 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<InternalLogProb>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("top_logprobs"u8))
+            {
+                int propertyLength = "top_logprobs"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                return TopLogprobs[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("top_logprobs"u8))
+            {
+                int propertyLength = "top_logprobs"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                TopLogprobs[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

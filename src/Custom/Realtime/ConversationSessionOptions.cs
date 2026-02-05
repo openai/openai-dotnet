@@ -1,8 +1,7 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using System;
-using System.Collections.Generic;
 using System.ClientModel.Primitives;
-using System.Diagnostics.CodeAnalysis;
-using OpenAI.Internal;
+using System.Collections.Generic;
 
 namespace OpenAI.Realtime;
 
@@ -33,7 +32,7 @@ public partial class ConversationSessionOptions
         set
         {
             _internalToolChoice = value is not null
-                ? ModelReaderWriter.Write(value)
+                ? ModelReaderWriter.Write(value, ModelReaderWriterOptions.Json, OpenAIContext.Default)
                 : null;
         }
     }
@@ -46,7 +45,7 @@ public partial class ConversationSessionOptions
         get => ConversationMaxTokensChoice.FromBinaryData(_maxResponseOutputTokens);
         set
         {
-            _maxResponseOutputTokens = value == null ? null : ModelReaderWriter.Write(value);
+            _maxResponseOutputTokens = value == null ? null : ModelReaderWriter.Write(value, ModelReaderWriterOptions.Json, OpenAIContext.Default);
         }
     }
 

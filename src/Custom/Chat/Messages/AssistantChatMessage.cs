@@ -1,3 +1,4 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -24,7 +25,7 @@ public partial class AssistantChatMessage : ChatMessage
         : this(
               content: new ChatMessageContent(contentParts),
               role: ChatMessageRole.Assistant,
-              additionalBinaryDataProperties: null,
+              patch: default,
               refusal: null,
               participantName: null,
               toolCalls: null,
@@ -45,7 +46,7 @@ public partial class AssistantChatMessage : ChatMessage
         : this(
               content: new ChatMessageContent(contentParts),
               role: ChatMessageRole.Assistant,
-              additionalBinaryDataProperties: null,
+              patch: default,
               refusal: null,
               participantName: null,
               toolCalls: null,
@@ -64,7 +65,7 @@ public partial class AssistantChatMessage : ChatMessage
         : this(
               content: new ChatMessageContent([content]),
               role: ChatMessageRole.Assistant,
-              additionalBinaryDataProperties: null,
+              patch: default,
               refusal: null,
               participantName: null,
               toolCalls: null,
@@ -83,7 +84,7 @@ public partial class AssistantChatMessage : ChatMessage
          : this(
               content: null,
               role: ChatMessageRole.Assistant,
-              additionalBinaryDataProperties: null,
+              patch: default,
               refusal: null,
               participantName: null,
               toolCalls: null,
@@ -108,7 +109,7 @@ public partial class AssistantChatMessage : ChatMessage
          : this(
               content: null,
               role: ChatMessageRole.Assistant,
-              additionalBinaryDataProperties: null,
+              patch: default,
               refusal: null,
               participantName: null,
               toolCalls: null,
@@ -128,7 +129,7 @@ public partial class AssistantChatMessage : ChatMessage
          : this(
               content: null,
               role: ChatMessageRole.Assistant,
-              additionalBinaryDataProperties: null,
+              patch: default,
               refusal: null,
               participantName: null,
               toolCalls: null,
@@ -156,7 +157,7 @@ public partial class AssistantChatMessage : ChatMessage
         : this(
               content: chatCompletion?.Content,
               role: ChatMessageRole.Assistant,
-              additionalBinaryDataProperties: null,
+              patch: default,
               refusal: chatCompletion?.Refusal,
               participantName: null,
               toolCalls: null,

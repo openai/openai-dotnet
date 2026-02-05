@@ -1,5 +1,5 @@
-﻿using NUnit.Framework;
-using OpenAI.Chat;
+﻿using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using OpenAI.Responses;
 using OpenAI.Tests.Utility;
 using System;
@@ -12,22 +12,18 @@ namespace OpenAI.Tests.Responses;
 
 #pragma warning disable OPENAICUA001
 
-[TestFixture(true)]
-[TestFixture(false)]
-[Parallelizable(ParallelScope.Fixtures)]
 [Category("Responses")]
-public partial class ResponseStoreTests : SyncAsyncTestBase
+[Category("ResponsesStore")]
+public partial class ResponseStoreTests : OpenAIRecordedTestBase
 {
     public ResponseStoreTests(bool isAsync) : base(isAsync)
     {
     }
 
-    private static OpenAIResponseClient GetTestClient(string overrideModel = null) => GetTestClient<OpenAIResponseClient>(TestScenario.Responses, overrideModel);
-
-    [Test]
-    public async Task GetInputItemsWithPagination()
+    [RecordedTest]
+    public async Task GetInputItemsCollectionPage()
     {
-        OpenAIResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         // Create a response with multiple input items
         List<ResponseItem> inputItems = new()
@@ -38,10 +34,51 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
             ResponseItem.CreateUserMessageItem("Item 4")
         };
 
-        OpenAIResponse response = await client.CreateResponseAsync(inputItems);
+        ResponseResult response = await client.CreateResponseAsync(inputItems);
 
         // Paginate through input items with a small page size
-        var options = new ResponseItemCollectionOptions()
+        var options = new ResponseItemCollectionOptions(response.Id)
+        {
+            PageSizeLimit = 2
+        };
+
+        ResponseItemCollectionPage page1 = await client.GetResponseInputItemCollectionPageAsync(options);
+
+        Assert.That(page1.Data, Is.Not.Null);
+        Assert.That(page1.Data, Has.Count.EqualTo(2));
+        Assert.That(page1.FirstId, Is.Not.Null.And.Not.Empty);
+        Assert.That(page1.LastId, Is.Not.Null.And.Not.Empty);
+        Assert.That(page1.HasMore, Is.True);
+
+        options.AfterId = page1.LastId;
+
+        ResponseItemCollectionPage page2 = await client.GetResponseInputItemCollectionPageAsync(options);
+
+        Assert.That(page2.Data, Is.Not.Null);
+        Assert.That(page2.Data, Has.Count.EqualTo(2));
+        Assert.That(page2.FirstId, Is.Not.Null.And.Not.Empty);
+        Assert.That(page2.LastId, Is.Not.Null.And.Not.Empty);
+        Assert.That(page2.HasMore, Is.False);
+    }
+
+    [RecordedTest]
+    public async Task GetInputItemsWithPagination()
+    {
+        ResponsesClient client = GetTestClient();
+
+        // Create a response with multiple input items
+        List<ResponseItem> inputItems = new()
+        {
+            ResponseItem.CreateUserMessageItem("Item 1"),
+            ResponseItem.CreateUserMessageItem("Item 2"),
+            ResponseItem.CreateUserMessageItem("Item 3"),
+            ResponseItem.CreateUserMessageItem("Item 4")
+        };
+
+        ResponseResult response = await client.CreateResponseAsync(inputItems);
+
+        // Paginate through input items with a small page size
+        var options = new ResponseItemCollectionOptions(response.Id)
         {
             PageSizeLimit = 2
         };
@@ -49,7 +86,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         int totalCount = 0;
         string lastId = null;
 
-        await foreach (ResponseItem item in client.GetInputItemsAsync(response.Id, options))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(options))
         {
             totalCount++;
             lastId = item.Id;
@@ -61,10 +98,41 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         Assert.That(lastId, Is.Not.Null);
     }
 
-    [Test]
+    [RecordedTest]
+    public async Task GetInputItemsWithPaginationNoOptions()
+    {
+        ResponsesClient client = GetTestClient();
+
+        // Create a response with multiple input items
+        List<ResponseItem> inputItems = new()
+        {
+            ResponseItem.CreateUserMessageItem("Item 1"),
+            ResponseItem.CreateUserMessageItem("Item 2"),
+            ResponseItem.CreateUserMessageItem("Item 3"),
+            ResponseItem.CreateUserMessageItem("Item 4")
+        };
+
+        ResponseResult response = await client.CreateResponseAsync(inputItems);
+
+        int totalCount = 0;
+        string lastId = null;
+
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(response.Id))
+        {
+            Assert.That(item.Id, Is.Not.Null.And.Not.Empty);
+
+            totalCount++;
+            lastId = item.Id;
+        }
+
+        Assert.That(totalCount, Is.EqualTo(4));
+        Assert.That(lastId, Is.Not.Null);
+    }
+
+    [RecordedTest]
     public async Task GetInputItemsWithMultiPartPagination()
     {
-        OpenAIResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         string filePath = Path.Join("Assets", "files_travis_favorite_food.pdf");
 
@@ -81,10 +149,10 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
             ResponseItem.CreateUserMessageItem("Item 4")
         };
 
-        OpenAIResponse response = await client.CreateResponseAsync(inputItems);
+        ResponseResult response = await client.CreateResponseAsync(inputItems);
 
         // Paginate through input items with a small page size
-        var options = new ResponseItemCollectionOptions()
+        var options = new ResponseItemCollectionOptions(response.Id)
         {
             PageSizeLimit = 2,
             Order = ResponseItemCollectionOrder.Ascending
@@ -94,7 +162,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         string lastId = null;
         bool hasMultipleContentParts = false;
 
-        await foreach (ResponseItem item in client.GetInputItemsAsync(response.Id, options))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(options))
         {
             totalCount++;
             lastId = item.Id;
@@ -110,13 +178,13 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
 
         Assert.That(totalCount, Is.GreaterThanOrEqualTo(2));
         Assert.That(lastId, Is.Not.Null);
-        Assert.IsTrue(hasMultipleContentParts, "Expected at least one message with multiple content parts.");
+        Assert.That(hasMultipleContentParts, "Expected at least one message with multiple content parts.");
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetInputItemsWithAfterIdPagination()
     {
-        OpenAIResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         // Ensure multiple input items exist to paginate
         List<ResponseItem> inputItems = new()
@@ -126,10 +194,10 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
             ResponseItem.CreateUserMessageItem("C")
         };
 
-        OpenAIResponse response = await client.CreateResponseAsync(inputItems);
+        ResponseResult response = await client.CreateResponseAsync(inputItems);
 
         string afterId = null;
-        await foreach (ResponseItem first in client.GetInputItemsAsync(response.Id))
+        await foreach (ResponseItem first in client.GetResponseInputItemsAsync(new ResponseItemCollectionOptions(response.Id)))
         {
             afterId = first.Id;
             break;
@@ -138,13 +206,13 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         Assert.That(afterId, Is.Not.Null);
 
         int count = 0;
-        var options = new ResponseItemCollectionOptions()
+        var options = new ResponseItemCollectionOptions(response.Id)
         {
             AfterId = afterId,
             PageSizeLimit = 2
         };
 
-        await foreach (ResponseItem item in client.GetInputItemsAsync(response.Id, options))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(options))
         {
             count++;
             Assert.That(item.Id, Is.Not.EqualTo(afterId));
@@ -154,10 +222,10 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         Assert.That(count, Is.GreaterThanOrEqualTo(0));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetInputItemsWithOrderFiltering()
     {
-        OpenAIResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
         // Create inputs in a defined sequence
         List<ResponseItem> inputItems = new()
@@ -166,31 +234,31 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
             ResponseItem.CreateUserMessageItem("Second")
         };
 
-        OpenAIResponse response = await client.CreateResponseAsync(inputItems);
+        ResponseResult response = await client.CreateResponseAsync(inputItems);
 
         // Ascending
-        var ascOptions = new ResponseItemCollectionOptions()
+        var ascOptions = new ResponseItemCollectionOptions(response.Id)
         {
             Order = ResponseItemCollectionOrder.Ascending,
             PageSizeLimit = 5
         };
 
         var asc = new List<ResponseItem>();
-        await foreach (ResponseItem item in client.GetInputItemsAsync(response.Id, ascOptions))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(ascOptions))
         {
             asc.Add(item);
             if (asc.Count >= 2) break;
         }
 
         // Descending
-        var descOptions = new ResponseItemCollectionOptions()
+        var descOptions = new ResponseItemCollectionOptions(response.Id)
         {
             Order = ResponseItemCollectionOrder.Descending,
             PageSizeLimit = 5
         };
 
         var desc = new List<ResponseItem>();
-        await foreach (ResponseItem item in client.GetInputItemsAsync(response.Id, descOptions))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(descOptions))
         {
             desc.Add(item);
             if (desc.Count >= 2) break;
@@ -200,25 +268,25 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         Assert.That(desc, Has.Count.GreaterThan(0));
         Assert.That(asc[0].Id, Is.Not.Null.And.Not.Empty);
         Assert.That(desc[0].Id, Is.Not.Null.And.Not.Empty);
-        Assert.AreNotEqual(asc[0].Id, desc[0].Id);
+        Assert.That(asc[0].Id, Is.Not.EqualTo(desc[0].Id));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetInputItemsHandlesLargeLimits()
     {
-        OpenAIResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
-        OpenAIResponse response = await client.CreateResponseAsync(
+        ResponseResult response = await client.CreateResponseAsync(
             [
                 ResponseItem.CreateUserMessageItem("alpha"),
                 ResponseItem.CreateUserMessageItem("beta"),
                 ResponseItem.CreateUserMessageItem("gamma"),
             ]);
 
-        var options = new ResponseItemCollectionOptions() { PageSizeLimit = 100 };
+        var options = new ResponseItemCollectionOptions(response.Id) { PageSizeLimit = 100 };
 
         int count = 0;
-        await foreach (ResponseItem item in client.GetInputItemsAsync(response.Id, options))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(options))
         {
             count++;
             Assert.That(item.Id, Is.Not.Null.And.Not.Empty);
@@ -228,22 +296,22 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         Assert.That(count, Is.GreaterThan(0));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetInputItemsWithMinimalLimits()
     {
-        OpenAIResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
-        OpenAIResponse response = await client.CreateResponseAsync(
+        ResponseResult response = await client.CreateResponseAsync(
             [
                 ResponseItem.CreateUserMessageItem("x"),
                 ResponseItem.CreateUserMessageItem("y"),
                 ResponseItem.CreateUserMessageItem("z"),
             ]);
 
-        var options = new ResponseItemCollectionOptions() { PageSizeLimit = 1 };
+        var options = new ResponseItemCollectionOptions(response.Id) { PageSizeLimit = 1 };
 
         int count = 0;
-        await foreach (ResponseItem item in client.GetInputItemsAsync(response.Id, options))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(options))
         {
             count++;
             Assert.That(item.Id, Is.Not.Null.And.Not.Empty);
@@ -253,12 +321,12 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         Assert.That(count, Is.GreaterThan(0));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetInputItemsWithCancellationToken()
     {
-        OpenAIResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
-        OpenAIResponse response = await client.CreateResponseAsync(
+        ResponseResult response = await client.CreateResponseAsync(
             [
                 ResponseItem.CreateUserMessageItem("ct1"),
                 ResponseItem.CreateUserMessageItem("ct2"),
@@ -270,7 +338,7 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         try
         {
             int count = 0;
-            await foreach (ResponseItem item in client.GetInputItemsAsync(response.Id, cancellationToken: cts.Token))
+            await foreach (ResponseItem item in client.GetResponseInputItemsAsync(new ResponseItemCollectionOptions(response.Id), cancellationToken: cts.Token))
             {
                 count++;
                 Assert.That(item.Id, Is.Not.Null.And.Not.Empty);
@@ -289,12 +357,12 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetInputItemsWithCombinedOptions()
     {
-        OpenAIResponseClient client = GetTestClient();
+        ResponsesClient client = GetTestClient();
 
-        OpenAIResponse response = await client.CreateResponseAsync(
+        ResponseResult response = await client.CreateResponseAsync(
             [
                 ResponseItem.CreateUserMessageItem("co1"),
                 ResponseItem.CreateUserMessageItem("co2"),
@@ -303,14 +371,14 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
 
         using var cts = new System.Threading.CancellationTokenSource(TimeSpan.FromSeconds(30));
 
-        var options = new ResponseItemCollectionOptions()
+        var options = new ResponseItemCollectionOptions(response.Id)
         {
             PageSizeLimit = 2,
             Order = ResponseItemCollectionOrder.Descending
         };
 
         var items = new List<ResponseItem>();
-        await foreach (ResponseItem item in client.GetInputItemsAsync(response.Id, options, cts.Token))
+        await foreach (ResponseItem item in client.GetResponseInputItemsAsync(options, cts.Token))
         {
             items.Add(item);
             Assert.That(item.Id, Is.Not.Null.And.Not.Empty);
@@ -319,4 +387,6 @@ public partial class ResponseStoreTests : SyncAsyncTestBase
 
         Assert.That(items, Has.Count.GreaterThan(0));
     }
+
+    private ResponsesClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<ResponsesClient>(TestScenario.Responses, overrideModel);
 }

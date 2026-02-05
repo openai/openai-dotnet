@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class UnknownRunStepObjectStepDetails : IJsonModel<RunStepDetails>
+    internal partial class UnknownRunStepObjectStepDetails : RunStepDetails, IJsonModel<RunStepDetails>
     {
         internal UnknownRunStepObjectStepDetails() : this(default, null)
         {
@@ -89,7 +89,7 @@ namespace OpenAI.Assistants
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeRunStepDetails(document.RootElement, options);
                     }

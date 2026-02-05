@@ -1,5 +1,154 @@
 # Release History
 
+## 2.8.0 (2025-12-11)
+
+### Features Added
+
+- OpenAI.Chat:
+  - Added the `SafetyIdentifier` property to `ChatCompletionOptions`, which enables users to specify a stable identifier that can be used to help detect end-users of their application that may be violating OpenAI's usage policies.
+- OpenAI.Responses:
+  - Added the `SafetyIdentifier` property to `CreateResponseOptions` and `ResponseResult`, which enables users to specify a stable identifier that can be used to help detect end-users of their application that may be violating OpenAI's usage policies.
+  - Added the `ConversationOptions` property to `CreateResponseOptions` and `ResponseResult`, which enables users to automatically manage the state of a conversation in a multi-turn interaction by persisting state and sharing context across subsequent responses, rather than having to chain multiple response items together.
+  - Added the `MaxToolCallCount` property to `CreateResponseOptions` and `ResponseResult`, which enables users to set the maximum number of total calls to built-in tools that can be processed in a response. This maximum number applies across all built-in tool calls, not per individual tool. Any further attempts to call a tool by the model will be ignored.
+  - Added the `TopLogProbabilityCount` property to `CreateResponseOptions` and `ResponseResult`, which enables users to specify the number of most likely tokens to return at each token position, each with an associated log probability.
+  - Added the `IncludedProperties` property to `CreateResponseOptions`, which enables users to specify additional output data to be included in the model response.
+  - Added a setter to the `Id` property of `ResponseItem`.
+  - Added a setter to the `Status` property of the types derived from `ResponseItem`.
+
+### Breaking Changes in Preview APIs
+
+- OpenAI.Responses:
+  - Until now, this feature area has been marked as experimental via the `[Experimental]` attribute. As we prepare to stabilize it and remove its experimental designation, we are cleaning up the APIs to better align them with the service REST APIs, as well as to offer more flexibility and improve usability. See our [examples](https://github.com/openai/openai-dotnet/tree/main/examples/Responses) for helpful references on how to use the updated APIs.
+    - The `OpenAIResponseClient` class has been renamed to `ResponsesClient`.
+    - The `ResponseCreationOptions` class has been renamedto `CreateResponseOptions`.
+    - The `OpenAIResponse` class has been renamed to `ResponseResult`.
+    - When calling the `CreateResponse`, `CreateResponseAsync`, `CreateResponseStreaming` and `CreateResponseStreamingAsync` methods of the `ResponsesClient` with a `CreateResponseOptions` argument, the input items must now be specified via the new `InputItems` property of `CreateResponseOptions`.
+    - When calling the `CreateResponseStreaming` and `CreateResponseStreamingAsync` methods of the `ResponsesClient` with a `CreateResponseOptions` argument, the `StreamingEnabled` property of `CreateResponseOptions` must be set to `true`.
+    - The `OpenAIResponsesModelFactory` class used for mocking output models (e.g., `ResponseResult`, `ResponseTokenUsage`, etc.) has been removed in favor of adding setters to the properties of these models.
+
+## 2.7.0 (2025-11-13)
+
+### Acknowledgments
+
+Thank you to our developer community members who helped to make the OpenAI client library better with their contributions to this release:
+
+- Benjamin Pinter _([GitHub](https://github.com/BenjaminDavidPinter))_
+
+### Features Added
+
+- OpenAI.Responses:
+  - Enabled support for stable web search via the `WebSearchTool` class, with a separate `WebSearchPreviewTool` class for preview web search features.
+  - Added `Filename` property to `FileCitationMessageAnnotation` to provide the name of the cited file.
+  - Exposed reasoning streaming events, including:
+    - `StreamingResponseReasoningTextDeltaUpdate` and `StreamingResponseReasoningTextDoneUpdate` for reasoning text events.
+    - `StreamingResponseReasoningSummaryPartAddedUpdate` and `StreamingResponseReasoningSummaryPartDoneUpdate` for reasoning summary part events.
+    - `StreamingResponseReasoningSummaryTextDeltaUpdate` and `StreamingResponseReasoningSummaryTextDoneUpdate` for reasoning summary text events.
+
+### Bugs Fixed
+
+- OpenAI.Assistants:
+  - Fixed an issue with custom serialization for `MessageCreationAttachment` that prevented proper handling of file attachments in message creation. _(A community contribution, courtesy of [BenjaminDavidPinter](https://github.com/BenjaminDavidPinter))_
+- OpenAI.Responses:
+  - Fixed the generated serialization name of `partial_image_b64` in `StreamingResponseImageGenerationCallPartialImageUpdate` to ensure correct serialization of partial image data in streaming responses.
+  - Fixed serialization issues with `Patch` properties by adding the `JsonIgnore` attribute, preventing `System.InvalidOperationException` when using `JsonSerializer` without the custom converter.
+
+### Other Changes
+
+- Updated the `System.ClientModel` dependency to version 1.8.1 to adopt bug fixes for JSON Patch.  For more context, see the [System.ClientModel ChangeLog](https://github.com/Azure/azure-sdk-for-net/blob/System.ClientModel_1.8.1/sdk/core/System.ClientModel/CHANGELOG.md)
+
+## 2.6.0 (2025-10-31)
+
+### Acknowledgments
+
+Thank you to our developer community members who helped to make the OpenAI client library better with their contributions to this release:
+
+- Maksim Kurnakov _([GitHub](https://github.com/kurnakovv))_
+
+### Features Added
+
+- OpenAI.Chat:
+  - Added the `Minimal` property to `ChatReasoningEffortLevel`. _(A community contribution, courtesy of [kurnakovv](https://github.com/kurnakovv))_
+  - Added support for System.Client.Model's `JsonPatch`, which enables users to get and set additional JSON properties in response and request payloads.
+    - See the following examples for more information:
+      - [AdditionalProperties](https://github.com/openai/openai-dotnet/blob/main/examples/Chat/Example10_AdditionalProperties.cs)
+      - [AdditionalPropertiesAsync](https://github.com/openai/openai-dotnet/blob/main/examples/Chat/Example10_AdditionalPropertiesAsync.cs)
+      - Go to the OpenAI.Responses section in this changelog for more examples that can be extrapolated to Chat.
+- OpenAI.Conversations:
+  - Introduced the new `ConversationClient` to support the Conversations API with protocol methods for the following operations:
+    - `CreateConversation` and `CreateConversationAsync`
+    - `GetConversation` and `GetConversationAsync`
+    - `UpdateConversation` and `UpdateConversationAsync`
+    - `DeleteConversation` and `DeleteConversationAsync`
+    - `CreateConversationItems` and `CreateConversationItemsAsync`
+    - `GetConversationItems` and `GetConversationItemsAsync`
+    - `DeleteConversationItem` and `DeleteConversationItemAsync`
+- OpenAI.Embeddings:
+  - Added support for System.Client.Model's `JsonPatch`, which enables users to get and set additional JSON properties in response and request payloads.
+    - Go to the OpenAI.Chat and OpenAI.Responses section in this changelog for examples that can be extrapolated to Embeddings.
+- OpenAI.Responses:
+  - Added the `Minimal` property to `ResponseReasoningEffortLevel`. _(A community contribution, courtesy of [kurnakovv](https://github.com/kurnakovv))_
+  - Added the `ContainerFileCitationMessageAnnotation` class which is derived from `ResponseMessageAnnotation` and is used to cite files in the container of the Code Interpreter tool.
+  - Enabled support for the Image Generation tool, which can be used to generate images using models like `gpt-image-1`.
+    - Users can add the new `ImageGenerationTool` to the `Tools` property of their `ResponseCreationOptions` and configure it using properties such as `Background`, `Quality`, `Size`, and more.
+  - Added support for System.Client.Model's `JsonPatch`, which enables users to get and set additional JSON properties in response and request payloads.
+    - See the following examples for more information:
+      - [InputAdditionalProperties](https://github.com/openai/openai-dotnet/blob/main/examples/Responses/Example07_InputAdditionalProperties.cs)
+      - [InputAdditionalPropertiesAsync](https://github.com/openai/openai-dotnet/blob/main/examples/Responses/Example07_InputAdditionalPropertiesAsync.cs)
+      - [OutputAdditionalProperties](https://github.com/openai/openai-dotnet/blob/main/examples/Responses/Example08_OutputAdditionalProperties.cs)
+      - [OutputAdditionalPropertiesAsync](https://github.com/openai/openai-dotnet/blob/main/examples/Responses/Example08_OutputAdditionalPropertiesAsync.cs)
+      - [ModelOverridePerRequest](https://github.com/openai/openai-dotnet/blob/main/examples/Responses/Example09_ModelOverridePerRequest.cs)
+      - [ModelOverridePerRequestAsync](https://github.com/openai/openai-dotnet/blob/main/examples/Responses/Example09_ModelOverridePerRequestAsync.cs)
+      - Go to the OpenAI.Chat section for more examples that can be extrapolated to Responses.
+- OpenAI.Videos:
+  - Introduced the new `VideoClient` to support the Videos API with protocol methods for the following operations:
+    - `CreateVideo` and `CreateVideoAsync`
+    - `GetVideo` and `GetVideoAsync`
+    - `DeleteVideo` and `DeleteVideoAsync`
+    - `DownloadVideo` and `DownloadVideoAsync`
+    - `GetVideos` and `GetVideosAsync`
+    - `CreateVideoRemix` and `GetVideoRemixAsync`
+
+### Bugs Fixed
+
+- OpenAI.Audio:
+  - Added the explicit conversion operators from `ClientResult` that were missing in the `AudioTranscription` and `AudioTranslation` classes.
+- OpenAI.Chat:
+  - Added the `ContentParts` property that was missing in the `ChatCompletionMessageListDatum` class.
+
+### Breaking Changes in Preview APIs
+
+- OpenAI.Containers:
+  - Renamed the `GetContainerFileContent` and `GetContainerFileContentAsync` methods of `ContainerClient` to `DownloadContainerFile` and `DownloadContainerFileAsync`.
+- OpenAI.Responses:
+  - Removed the duplicated `GetInputItems` and `GetInputItemsAsync` methods of the `OpenAIResponseClient` in favor of the existing `GetResponseInputItems` and `GetResponseInputItemsAsync` methods.
+
+## 2.5.0 (2025-09-23)
+
+### Acknowledgments
+
+Thank you to our developer community members who helped to make the OpenAI client library better with their contributions to this release:
+
+- Benjamin Pinter _([GitHub](https://github.com/BenjaminDavidPinter))_
+
+### Features Added
+
+- OpenAI.Responses:
+  - Added the `Model` property to `OpenAIResponseClient`. _(A community contribution, courtesy of [BenjaminDavidPinter](https://github.com/BenjaminDavidPinter))_
+  - Added the `ServiceDescription` property to `McpTool`.
+  - Enabled support for connectors, which are OpenAI-maintained MCP wrappers for popular services like Microsoft Outlook or Dropbox.
+    - Added the `ConnectorId` property to `McpTool`.
+  - Enabled support for authentication with remote MCP servers.
+    - Added the `AuthorizationToken` property to `McpTool`.
+  - Enabled support for the Code Interpreter tool, which allows models to write and run Python code in a sandboxed environment to solve complex problems in domains like data analysis, coding, and math.
+    - Users can add the new `CodeInterpreterTool` to the `Tools` property of their `ResponseCreationOptions` and configure it.
+      - Use the `Container` property to configure the sandboxed environment, including any files that should be made available.
+
+### Bugs Fixed
+
+- OpenAI.Responses:
+  - Fixed an issue with the constructor of `McpToolCallApprovalRequestItem` not taking the item ID as a parameter. MCP approval requests are correlated to MCP approval responses using this ID, which implies that this ID should be required.
+  - Fixed an issue with some of the MCP-related `StreamingResponseUpdate` classes missing the `ItemId` and `OutputIndex` properties.
+
 ## 2.4.0 (2025-09-05)
 
 ### Features Added

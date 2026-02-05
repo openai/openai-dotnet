@@ -5,13 +5,14 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Files
 {
-    public partial class OpenAIFileCollection : IJsonModel<OpenAIFileCollection>
+    public partial class OpenAIFileCollection : ReadOnlyCollection<OpenAIFile>, IJsonModel<OpenAIFileCollection>
     {
         [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
@@ -101,7 +102,7 @@ namespace OpenAI.Files
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeOpenAIFileCollection(document.RootElement, options);
                     }
@@ -115,8 +116,8 @@ namespace OpenAI.Files
         [Experimental("OPENAI001")]
         public static explicit operator OpenAIFileCollection(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
+            PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
             return DeserializeOpenAIFileCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

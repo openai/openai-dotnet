@@ -1,4 +1,5 @@
-﻿using System.ClientModel;
+using Microsoft.TypeSpec.Generator.Customizations;
+using System.ClientModel;
 
 namespace OpenAI.Containers;
 

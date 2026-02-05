@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeResponseAudioContentPart : IJsonModel<InternalRealtimeResponseAudioContentPart>
+    internal partial class InternalRealtimeResponseAudioContentPart : ConversationContentPart, IJsonModel<InternalRealtimeResponseAudioContentPart>
     {
         internal InternalRealtimeResponseAudioContentPart() : this(ConversationContentPartKind.OutputAudio, null, null)
         {
@@ -112,7 +112,7 @@ namespace OpenAI.Realtime
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalRealtimeResponseAudioContentPart(document.RootElement, options);
                     }

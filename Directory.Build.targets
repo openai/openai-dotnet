@@ -1,0 +1,55 @@
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!--
+    ==============================================================
+      GenAPI Target: Generate public API surface
+    ==============================================================
+  -->
+
+  <!-- GenAPI Properties -->
+  <PropertyGroup>
+    <GenAPIOutputDirectory>$(RepositoryRoot)api\</GenAPIOutputDirectory>
+  </PropertyGroup>
+
+  <!-- Import GenAPI Task package when exporting API -->
+  <ItemGroup Condition="'$(ExportingApi)' == 'true'">
+    <PackageReference Include="Microsoft.DotNet.GenAPI.Task" PrivateAssets="All" />
+  </ItemGroup>
+
+  <!--
+    ExportApi target: Generates the public API surface for the OpenAI library.
+    
+    Usage:
+      dotnet build src/OpenAI.csproj -t:ExportApi -c Release -p:ExportingApi=true
+    
+    Outputs to:
+      api/OpenAI.<TargetFramework>.cs
+  -->
+  
+  <!-- Outer build target: Dispatches to inner builds for each target framework -->
+  <Target Name="ExportApi"
+          Condition="'$(MSBuildProjectName)' == 'OpenAI' and '$(TargetFramework)' == '' and '$(TargetFrameworks)' != ''">
+    <ItemGroup>
+      <_ExportApiTargetFramework Include="$(TargetFrameworks)" />
+    </ItemGroup>
+    
+    <MSBuild Projects="$(MSBuildProjectFile)"
+             Targets="ExportApiInner"
+             Properties="TargetFramework=%(_ExportApiTargetFramework.Identity);ExportingApi=true" />
+  </Target>
+
+  <!-- Inner build target: Runs for each specific target framework -->
+  <Target Name="ExportApiInner"
+          DependsOnTargets="Build"
+          Condition="'$(MSBuildProjectName)' == 'OpenAI' and '$(TargetFramework)' != ''">
+
+    <!-- Run GenAPI task -->
+    <GenAPITask Assemblies="$(TargetPath)"
+                AssemblyReferences="@(ReferencePath)"
+                OutputPath="$(GenAPIOutputDirectory)OpenAI.$(TargetFramework).cs" />
+
+    <Message Importance="high"
+             Text="Generated API surface: $(GenAPIOutputDirectory)OpenAI.$(TargetFramework).cs" />
+  </Target>
+
+</Project>

@@ -13,7 +13,7 @@ namespace OpenAI.Audio
 {
     public partial class AudioTranscription : IJsonModel<AudioTranscription>
     {
-        internal AudioTranscription() : this(null, null, default, null, null, null, null, null)
+        internal AudioTranscription() : this(null, default, null, null, null, null, null, null)
         {
         }
 
@@ -32,11 +32,6 @@ namespace OpenAI.Audio
             {
                 throw new FormatException($"The model {nameof(AudioTranscription)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("task") != true)
-            {
-                writer.WritePropertyName("task"u8);
-                writer.WriteStringValue(Task);
-            }
             if (_additionalBinaryDataProperties?.ContainsKey("language") != true)
             {
                 writer.WritePropertyName("language"u8);
@@ -45,7 +40,7 @@ namespace OpenAI.Audio
             if (_additionalBinaryDataProperties?.ContainsKey("duration") != true)
             {
                 writer.WritePropertyName("duration"u8);
-                writer.WriteNumberValue(Convert.ToDouble(Duration.Value.ToString("s\\.FFF")));
+                writer.WriteNumberValue(Duration.Value.TotalSeconds);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("text") != true)
             {
@@ -73,6 +68,11 @@ namespace OpenAI.Audio
                     writer.WriteObjectValue(item, options);
                 }
                 writer.WriteEndArray();
+            }
+            if (Optional.IsDefined(Usage) && _additionalBinaryDataProperties?.ContainsKey("usage") != true)
+            {
+                writer.WritePropertyName("usage"u8);
+                writer.WriteObjectValue(Usage, options);
             }
             if (Optional.IsCollectionDefined(TranscriptionTokenLogProbabilities) && _additionalBinaryDataProperties?.ContainsKey("logprobs") != true)
             {
@@ -126,21 +126,16 @@ namespace OpenAI.Audio
             {
                 return null;
             }
-            string task = default;
             string language = default;
             TimeSpan? duration = default;
             string text = default;
             IReadOnlyList<TranscribedWord> words = default;
             IReadOnlyList<TranscribedSegment> segments = default;
+            InternalTranscriptTextUsageDuration usage = default;
             IReadOnlyList<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
-                if (prop.NameEquals("task"u8))
-                {
-                    task = prop.Value.GetString();
-                    continue;
-                }
                 if (prop.NameEquals("language"u8))
                 {
                     language = prop.Value.GetString();
@@ -184,6 +179,15 @@ namespace OpenAI.Audio
                     segments = array;
                     continue;
                 }
+                if (prop.NameEquals("usage"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    usage = InternalTranscriptTextUsageDuration.DeserializeInternalTranscriptTextUsageDuration(prop.Value, options);
+                    continue;
+                }
                 if (prop.NameEquals("logprobs"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -202,12 +206,12 @@ namespace OpenAI.Audio
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new AudioTranscription(
-                task,
                 language,
                 duration,
                 text,
                 words ?? new ChangeTrackingList<TranscribedWord>(),
                 segments ?? new ChangeTrackingList<TranscribedSegment>(),
+                usage,
                 transcriptionTokenLogProbabilities ?? new ChangeTrackingList<AudioTokenLogProbabilityDetails>(),
                 additionalBinaryDataProperties);
         }
@@ -236,7 +240,7 @@ namespace OpenAI.Audio
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeAudioTranscription(document.RootElement, options);
                     }

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeServerEventResponseAudioDelta : IJsonModel<InternalRealtimeServerEventResponseAudioDelta>
+    internal partial class InternalRealtimeServerEventResponseAudioDelta : RealtimeUpdate, IJsonModel<InternalRealtimeServerEventResponseAudioDelta>
     {
         internal InternalRealtimeServerEventResponseAudioDelta() : this(RealtimeUpdateKind.ItemStreamingPartAudioDelta, null, null, null, null, default, default, null)
         {
@@ -158,7 +158,7 @@ namespace OpenAI.Realtime
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalRealtimeServerEventResponseAudioDelta(document.RootElement, options);
                     }

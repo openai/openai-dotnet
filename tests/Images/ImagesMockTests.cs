@@ -1,6 +1,7 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.ClientModel.TestFramework;
+using Microsoft.ClientModel.TestFramework.Mocks;
+using NUnit.Framework;
 using OpenAI.Images;
-using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.IO;
@@ -10,12 +11,10 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Tests.Images;
 
-[TestFixture(true)]
-[TestFixture(false)]
 [Parallelizable(ParallelScope.All)]
 [Category("Images")]
 [Category("Smoke")]
-public class ImagesMockTests : SyncAsyncTestBase
+public class ImagesMockTests : ClientTestBase
 {
     private static readonly ApiKeyCredential s_fakeCredential = new ApiKeyCredential("key");
 
@@ -44,11 +43,9 @@ public class ImagesMockTests : SyncAsyncTestBase
             ]
         }
         """);
-        ImageClient client = new ImageClient("model", s_fakeCredential, clientOptions);
+        ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential, clientOptions));
 
-        GeneratedImage image = IsAsync
-            ? await client.GenerateImageAsync("prompt")
-            : client.GenerateImage("prompt");
+        GeneratedImage image = await client.GenerateImageAsync("prompt");
 
         Assert.That(image.RevisedPrompt, Is.EqualTo("new prompt"));
     }
@@ -56,20 +53,11 @@ public class ImagesMockTests : SyncAsyncTestBase
     [Test]
     public void GenerateImageRespectsTheCancellationToken()
     {
-        ImageClient client = new ImageClient("model", s_fakeCredential);
+        ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential));
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
-
-        if (IsAsync)
-        {
-            Assert.That(async () => await client.GenerateImageAsync("prompt", cancellationToken: cancellationSource.Token),
+        Assert.That(async () => await client.GenerateImageAsync("prompt", cancellationToken: cancellationSource.Token),
                 Throws.InstanceOf<OperationCanceledException>());
-        }
-        else
-        {
-            Assert.That(() => client.GenerateImage("prompt", cancellationToken: cancellationSource.Token),
-                Throws.InstanceOf<OperationCanceledException>());
-        }
     }
 
     [Test]
@@ -81,12 +69,9 @@ public class ImagesMockTests : SyncAsyncTestBase
             "data": []
         }
         """);
-        ImageClient client = new ImageClient("model", s_fakeCredential, clientOptions);
+        ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential, clientOptions));
 
-        GeneratedImageCollection images = IsAsync
-            ? await client.GenerateImagesAsync("prompt", 2)
-            : client.GenerateImages("prompt", 2);
-
+        GeneratedImageCollection images = await client.GenerateImagesAsync("prompt", 2);
         Assert.That(images.CreatedAt.ToUnixTimeSeconds(), Is.EqualTo(1704096000));
     }
 
@@ -102,11 +87,9 @@ public class ImagesMockTests : SyncAsyncTestBase
             ]
         }
         """);
-        ImageClient client = new ImageClient("model", s_fakeCredential, clientOptions);
+        ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential, clientOptions));
 
-        GeneratedImageCollection images = IsAsync
-            ? await client.GenerateImagesAsync("prompt", 2)
-            : client.GenerateImages("prompt", 2);
+        GeneratedImageCollection images = await client.GenerateImagesAsync("prompt", 2);
         GeneratedImage image = images.Single();
 
         Assert.That(image.RevisedPrompt, Is.EqualTo("new prompt"));
@@ -115,20 +98,12 @@ public class ImagesMockTests : SyncAsyncTestBase
     [Test]
     public void GenerateImagesRespectsTheCancellationToken()
     {
-        ImageClient client = new ImageClient("model", s_fakeCredential);
+        ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential));
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
 
-        if (IsAsync)
-        {
-            Assert.That(async () => await client.GenerateImagesAsync("prompt", 2, cancellationToken: cancellationSource.Token),
+        Assert.That(async () => await client.GenerateImagesAsync("prompt", 2, cancellationToken: cancellationSource.Token),
                 Throws.InstanceOf<OperationCanceledException>());
-        }
-        else
-        {
-            Assert.That(() => client.GenerateImages("prompt", 2, cancellationToken: cancellationSource.Token),
-                Throws.InstanceOf<OperationCanceledException>());
-        }
     }
 
     [Test]
@@ -144,7 +119,7 @@ public class ImagesMockTests : SyncAsyncTestBase
             ]
         }
         """);
-        ImageClient client = new ImageClient("model", s_fakeCredential, clientOptions);
+        ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential, clientOptions));
         string maskFilename = "images_empty_room_with_mask.png";
         string maskImagePath = Path.Combine("Assets", maskFilename);
         GeneratedImage image = null;
@@ -153,15 +128,11 @@ public class ImagesMockTests : SyncAsyncTestBase
         {
             using Stream stream = new MemoryStream();
 
-            image = IsAsync
-                ? await client.GenerateImageEditAsync(stream, "filename", "prompt")
-                : client.GenerateImageEdit(stream, "filename", "prompt");
+            image = await client.GenerateImageEditAsync(stream, "filename", "prompt");
         }
         else if (imageSourceKind == ImageSourceKind.UsingFilePath)
         {
-            image = IsAsync
-                ? await client.GenerateImageEditAsync(maskImagePath, "prompt")
-                : client.GenerateImageEdit(maskImagePath, "prompt");
+            image = await client.GenerateImageEditAsync(maskImagePath, "prompt");
         }
         else
         {
@@ -174,21 +145,13 @@ public class ImagesMockTests : SyncAsyncTestBase
     [Test]
     public void GenerateImageEditFromStreamRespectsTheCancellationToken()
     {
-        ImageClient client = new ImageClient("model", s_fakeCredential);
+        ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential));
         using Stream stream = new MemoryStream();
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
 
-        if (IsAsync)
-        {
-            Assert.That(async () => await client.GenerateImageEditAsync(stream, "filename", "prompt", cancellationToken: cancellationSource.Token),
+        Assert.That(async () => await client.GenerateImageEditAsync(stream, "filename", "prompt", cancellationToken: cancellationSource.Token),
                 Throws.InstanceOf<OperationCanceledException>());
-        }
-        else
-        {
-            Assert.That(() => client.GenerateImageEdit(stream, "filename", "prompt", cancellationToken: cancellationSource.Token),
-                Throws.InstanceOf<OperationCanceledException>());
-        }
     }
 
     [Test]
@@ -204,7 +167,7 @@ public class ImagesMockTests : SyncAsyncTestBase
             ]
         }
         """);
-        ImageClient client = new ImageClient("model", s_fakeCredential, clientOptions);
+        ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential, clientOptions));
         string originalImageFilename = "images_empty_room.png";
         string maskFilename = "images_empty_room_with_mask.png";
         string originalImagePath = Path.Combine("Assets", originalImageFilename);
@@ -216,15 +179,11 @@ public class ImagesMockTests : SyncAsyncTestBase
             using Stream stream = new MemoryStream();
             using Stream mask = new MemoryStream();
 
-            image = IsAsync
-                ? await client.GenerateImageEditAsync(stream, "filename", "prompt", mask, "maskFilename")
-                : client.GenerateImageEdit(stream, "filename", "prompt", mask, "maskFilename");
+            image = await client.GenerateImageEditAsync(stream, "filename", "prompt", mask, "maskFilename");
         }
         else if (imageSourceKind == ImageSourceKind.UsingFilePath)
         {
-            image = IsAsync
-                ? await client.GenerateImageEditAsync(originalImagePath, "prompt", maskImagePath)
-                : client.GenerateImageEdit(originalImagePath, "prompt", maskImagePath);
+            image = await client.GenerateImageEditAsync(originalImagePath, "prompt", maskImagePath);
         }
         else
         {
@@ -237,21 +196,13 @@ public class ImagesMockTests : SyncAsyncTestBase
     [Test]
     public void GenerateImageEditFromStreamWithMaskRespectsTheCancellationToken()
     {
-        ImageClient client = new ImageClient("model", s_fakeCredential);
+        ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential));
         using Stream stream = new MemoryStream();
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
 
-        if (IsAsync)
-        {
-            Assert.That(async () => await client.GenerateImageEditAsync(stream, "filename", "prompt", stream, "maskFilename", cancellationToken: cancellationSource.Token),
+        Assert.That(async () => await client.GenerateImageEditAsync(stream, "filename", "prompt", stream, "maskFilename", cancellationToken: cancellationSource.Token),
                 Throws.InstanceOf<OperationCanceledException>());
-        }
-        else
-        {
-            Assert.That(() => client.GenerateImageEdit(stream, "filename", "prompt", stream, "maskFilename", cancellationToken: cancellationSource.Token),
-                Throws.InstanceOf<OperationCanceledException>());
-        }
     }
 
     [Test]
@@ -264,7 +215,7 @@ public class ImagesMockTests : SyncAsyncTestBase
             "data": []
         }
         """);
-        ImageClient client = new ImageClient("model", s_fakeCredential, clientOptions);
+        ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential, clientOptions));
         string maskFilename = "images_empty_room_with_mask.png";
         string maskImagePath = Path.Combine("Assets", maskFilename);
         GeneratedImageCollection images = null;
@@ -273,15 +224,11 @@ public class ImagesMockTests : SyncAsyncTestBase
         {
             using Stream stream = new MemoryStream();
 
-            images = IsAsync
-                ? await client.GenerateImageEditsAsync(stream, "filename", "prompt", 2)
-                : client.GenerateImageEdits(stream, "filename", "prompt", 2);
+            images = await client.GenerateImageEditsAsync(stream, "filename", "prompt", 2);
         }
         else if (imageSourceKind == ImageSourceKind.UsingFilePath)
         {
-            images = IsAsync
-                ? await client.GenerateImageEditsAsync(maskImagePath, "prompt", 2)
-                : client.GenerateImageEdits(maskImagePath, "prompt", 2);
+            images = await client.GenerateImageEditsAsync(maskImagePath, "prompt", 2);
         }
         else
         {
@@ -304,7 +251,7 @@ public class ImagesMockTests : SyncAsyncTestBase
             ]
         }
         """);
-        ImageClient client = new ImageClient("model", s_fakeCredential, clientOptions);
+        ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential, clientOptions));
         string maskFilename = "images_empty_room_with_mask.png";
         string maskImagePath = Path.Combine("Assets", maskFilename);
         GeneratedImageCollection images = null;
@@ -313,15 +260,11 @@ public class ImagesMockTests : SyncAsyncTestBase
         {
             using Stream stream = new MemoryStream();
 
-            images = IsAsync
-                ? await client.GenerateImageEditsAsync(stream, "filename", "prompt", 2)
-                : client.GenerateImageEdits(stream, "filename", "prompt", 2);
+            images = await client.GenerateImageEditsAsync(stream, "filename", "prompt", 2);
         }
         else if (imageSourceKind == ImageSourceKind.UsingFilePath)
         {
-            images = IsAsync
-                ? await client.GenerateImageEditsAsync(maskImagePath, "prompt", 2)
-                : client.GenerateImageEdits(maskImagePath, "prompt", 2);
+            images = await client.GenerateImageEditsAsync(maskImagePath, "prompt", 2);
         }
         else
         {
@@ -335,21 +278,13 @@ public class ImagesMockTests : SyncAsyncTestBase
     [Test]
     public void GenerateImageEditsFromStreamRespectsTheCancellationToken()
     {
-        ImageClient client = new ImageClient("model", s_fakeCredential);
+        ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential));
         using Stream stream = new MemoryStream();
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
 
-        if (IsAsync)
-        {
-            Assert.That(async () => await client.GenerateImageEditsAsync(stream, "filename", "prompt", 2, cancellationToken: cancellationSource.Token),
+        Assert.That(async () => await client.GenerateImageEditsAsync(stream, "filename", "prompt", 2, cancellationToken: cancellationSource.Token),
                 Throws.InstanceOf<OperationCanceledException>());
-        }
-        else
-        {
-            Assert.That(() => client.GenerateImageEdits(stream, "filename", "prompt", 2, cancellationToken: cancellationSource.Token),
-                Throws.InstanceOf<OperationCanceledException>());
-        }
     }
 
     [Test]
@@ -365,7 +300,7 @@ public class ImagesMockTests : SyncAsyncTestBase
             ]
         }
         """);
-        ImageClient client = new ImageClient("model", s_fakeCredential, clientOptions);
+        ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential, clientOptions));
         string originalImageFilename = "images_empty_room.png";
         string maskFilename = "images_empty_room_with_mask.png";
         string originalImagePath = Path.Combine("Assets", originalImageFilename);
@@ -377,15 +312,11 @@ public class ImagesMockTests : SyncAsyncTestBase
             using Stream stream = new MemoryStream();
             using Stream mask = new MemoryStream();
 
-            images = IsAsync
-                ? await client.GenerateImageEditsAsync(stream, "filename", "prompt", mask, "maskFilename", 2)
-                : client.GenerateImageEdits(stream, "filename", "prompt", mask, "maskFilename", 2);
+            images = await client.GenerateImageEditsAsync(stream, "filename", "prompt", mask, "maskFilename", 2);
         }
         else if (imageSourceKind == ImageSourceKind.UsingFilePath)
         {
-            images = IsAsync
-                ? await client.GenerateImageEditsAsync(originalImagePath, "prompt", maskImagePath, 2)
-                : client.GenerateImageEdits(originalImagePath, "prompt", maskImagePath, 2);
+            images = await client.GenerateImageEditsAsync(originalImagePath, "prompt", maskImagePath, 2);
         }
         else
         {
@@ -399,21 +330,13 @@ public class ImagesMockTests : SyncAsyncTestBase
     [Test]
     public void GenerateImageEditsFromStreamWithMaskRespectsTheCancellationToken()
     {
-        ImageClient client = new ImageClient("model", s_fakeCredential);
+        ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential));
         using Stream stream = new MemoryStream();
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
 
-        if (IsAsync)
-        {
-            Assert.That(async () => await client.GenerateImageEditsAsync(stream, "filename", "prompt", stream, "maskFilename", 2, cancellationToken: cancellationSource.Token),
+        Assert.That(async () => await client.GenerateImageEditsAsync(stream, "filename", "prompt", stream, "maskFilename", 2, cancellationToken: cancellationSource.Token),
                 Throws.InstanceOf<OperationCanceledException>());
-        }
-        else
-        {
-            Assert.That(() => client.GenerateImageEdits(stream, "filename", "prompt", stream, "maskFilename", 2, cancellationToken: cancellationSource.Token),
-                Throws.InstanceOf<OperationCanceledException>());
-        }
     }
 
     [Test]
@@ -429,7 +352,7 @@ public class ImagesMockTests : SyncAsyncTestBase
             ]
         }
         """);
-        ImageClient client = new ImageClient("model", s_fakeCredential, clientOptions);
+        ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential, clientOptions));
         string imageFilename = "images_dog_and_cat.png";
         string imagePath = Path.Combine("Assets", imageFilename);
         GeneratedImage image = null;
@@ -438,15 +361,11 @@ public class ImagesMockTests : SyncAsyncTestBase
         {
             using Stream stream = new MemoryStream();
 
-            image = IsAsync
-                ? await client.GenerateImageVariationAsync(stream, "filename")
-                : client.GenerateImageVariation(stream, "filename");
+            image = await client.GenerateImageVariationAsync(stream, "filename");
         }
         else if (imageSourceKind == ImageSourceKind.UsingFilePath)
         {
-            image = IsAsync
-                ? await client.GenerateImageVariationAsync(imagePath)
-                : client.GenerateImageVariation(imagePath);
+            image = await client.GenerateImageVariationAsync(imagePath);
         }
         else
         {
@@ -459,21 +378,12 @@ public class ImagesMockTests : SyncAsyncTestBase
     [Test]
     public void GenerateImageVariationFromStreamRespectsTheCancellationToken()
     {
-        ImageClient client = new ImageClient("model", s_fakeCredential);
+        ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential));
         using Stream stream = new MemoryStream();
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
-
-        if (IsAsync)
-        {
-            Assert.That(async () => await client.GenerateImageVariationAsync(stream, "filename", cancellationToken: cancellationSource.Token),
+        Assert.That(async () => await client.GenerateImageVariationAsync(stream, "filename", cancellationToken: cancellationSource.Token),
                 Throws.InstanceOf<OperationCanceledException>());
-        }
-        else
-        {
-            Assert.That(() => client.GenerateImageVariation(stream, "filename", cancellationToken: cancellationSource.Token),
-                Throws.InstanceOf<OperationCanceledException>());
-        }
     }
 
     [Test]
@@ -486,7 +396,7 @@ public class ImagesMockTests : SyncAsyncTestBase
             "data": []
         }
         """);
-        ImageClient client = new ImageClient("model", s_fakeCredential, clientOptions);
+        ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential, clientOptions));
         string imageFilename = "images_dog_and_cat.png";
         string imagePath = Path.Combine("Assets", imageFilename);
         GeneratedImageCollection images = null;
@@ -495,15 +405,11 @@ public class ImagesMockTests : SyncAsyncTestBase
         {
             using Stream stream = new MemoryStream();
 
-            images = IsAsync
-                ? await client.GenerateImageVariationsAsync(stream, "filename", 2)
-                : client.GenerateImageVariations(stream, "filename", 2);
+            images = await client.GenerateImageVariationsAsync(stream, "filename", 2);
         }
         else if (imageSourceKind == ImageSourceKind.UsingFilePath)
         {
-            images = IsAsync
-                ? await client.GenerateImageVariationsAsync(imagePath, 2)
-                : client.GenerateImageVariations(imagePath, 2);
+            images = await client.GenerateImageVariationsAsync(imagePath, 2);
         }
         else
         {
@@ -526,7 +432,7 @@ public class ImagesMockTests : SyncAsyncTestBase
             ]
         }
         """);
-        ImageClient client = new ImageClient("model", s_fakeCredential, clientOptions);
+        ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential, clientOptions));
         string imageFilename = "images_dog_and_cat.png";
         string imagePath = Path.Combine("Assets", imageFilename);
         GeneratedImageCollection images = null;
@@ -535,15 +441,11 @@ public class ImagesMockTests : SyncAsyncTestBase
         {
             using Stream stream = new MemoryStream();
 
-            images = IsAsync
-                ? await client.GenerateImageVariationsAsync(stream, "filename", 2)
-                : client.GenerateImageVariations(stream, "filename", 2);
+            images = await client.GenerateImageVariationsAsync(stream, "filename", 2);
         }
         else if (imageSourceKind == ImageSourceKind.UsingFilePath)
         {
-            images = IsAsync
-                ? await client.GenerateImageVariationsAsync(imagePath, 2)
-                : client.GenerateImageVariations(imagePath, 2);
+            images = await client.GenerateImageVariationsAsync(imagePath, 2);
         }
         else
         {
@@ -557,31 +459,25 @@ public class ImagesMockTests : SyncAsyncTestBase
     [Test]
     public void GenerateImageVariationsFromStreamRespectsTheCancellationToken()
     {
-        ImageClient client = new ImageClient("model", s_fakeCredential);
+        ImageClient client = CreateProxyFromClient(new ImageClient("model", s_fakeCredential));
         using Stream stream = new MemoryStream();
         using CancellationTokenSource cancellationSource = new();
         cancellationSource.Cancel();
 
-        if (IsAsync)
-        {
-            Assert.That(async () => await client.GenerateImageVariationsAsync(stream, "filename", 2, cancellationToken: cancellationSource.Token),
-                Throws.InstanceOf<OperationCanceledException>());
-        }
-        else
-        {
-            Assert.That(() => client.GenerateImageVariations(stream, "filename", 2, cancellationToken: cancellationSource.Token),
-                Throws.InstanceOf<OperationCanceledException>());
-        }
+        Assert.That(async () => await client.GenerateImageVariationsAsync(stream, "filename", 2, cancellationToken: cancellationSource.Token),
+            Throws.InstanceOf<OperationCanceledException>());
     }
 
     private OpenAIClientOptions GetClientOptionsWithMockResponse(int status, string content)
     {
-        MockPipelineResponse response = new MockPipelineResponse(status);
-        response.SetContent(content);
+        MockPipelineResponse response = new MockPipelineResponse(status).WithContent(content);
 
         return new OpenAIClientOptions()
         {
-            Transport = new MockPipelineTransport(response)
+            Transport = new MockPipelineTransport(_ => response)
+            {
+                ExpectSyncPipeline = !IsAsync,
+            }
         };
     }
 }

@@ -69,7 +69,7 @@ namespace OpenAI.Files
             if (Optional.IsDefined(Object) && _additionalBinaryDataProperties?.ContainsKey("object") != true)
             {
                 writer.WritePropertyName("object"u8);
-                writer.WriteStringValue(Object);
+                writer.WriteStringValue(Object.Value.ToString());
             }
             if (Optional.IsDefined(File) && _additionalBinaryDataProperties?.ContainsKey("file") != true)
             {
@@ -124,7 +124,7 @@ namespace OpenAI.Files
             string purpose = default;
             InternalUploadStatus status = default;
             DateTimeOffset expiresAt = default;
-            string @object = default;
+            InternalUploadObject? @object = default;
             OpenAIFile @file = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -166,7 +166,11 @@ namespace OpenAI.Files
                 }
                 if (prop.NameEquals("object"u8))
                 {
-                    @object = prop.Value.GetString();
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    @object = new InternalUploadObject(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("file"u8))
@@ -217,7 +221,7 @@ namespace OpenAI.Files
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalUpload(document.RootElement, options);
                     }
@@ -230,8 +234,8 @@ namespace OpenAI.Files
 
         public static explicit operator InternalUpload(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
+            PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
             return DeserializeInternalUpload(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

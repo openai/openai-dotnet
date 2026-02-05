@@ -1,7 +1,7 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using System;
 using System.ClientModel.Primitives;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Assistants;
 
@@ -103,7 +103,7 @@ public partial class AssistantResponseFormat : IEquatable<AssistantResponseForma
         }
         else
         {
-            return ModelReaderWriter.Write(this).ToString();
+            return ModelReaderWriter.Write(this, ModelReaderWriterOptions.Json, OpenAIContext.Default).ToString();
         }
     }
 }

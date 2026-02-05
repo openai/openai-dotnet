@@ -5,13 +5,14 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Moderations
 {
-    public partial class ModerationResultCollection : IJsonModel<ModerationResultCollection>
+    public partial class ModerationResultCollection : ReadOnlyCollection<ModerationResult>, IJsonModel<ModerationResultCollection>
     {
         [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
@@ -91,7 +92,7 @@ namespace OpenAI.Moderations
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeModerationResultCollection(document.RootElement, options);
                     }
@@ -105,8 +106,8 @@ namespace OpenAI.Moderations
         [Experimental("OPENAI001")]
         public static explicit operator ModerationResultCollection(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
+            PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
             return DeserializeModerationResultCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

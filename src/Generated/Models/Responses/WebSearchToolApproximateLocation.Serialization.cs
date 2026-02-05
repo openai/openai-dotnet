@@ -4,16 +4,24 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class WebSearchToolApproximateLocation : IJsonModel<WebSearchToolApproximateLocation>
+    public partial class WebSearchToolApproximateLocation : WebSearchToolLocation, IJsonModel<WebSearchToolApproximateLocation>
     {
         void IJsonModel<WebSearchToolApproximateLocation>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -27,26 +35,30 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(WebSearchToolApproximateLocation)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (Optional.IsDefined(Country) && _additionalBinaryDataProperties?.ContainsKey("country") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Optional.IsDefined(Country) && !Patch.Contains("$.country"u8))
             {
                 writer.WritePropertyName("country"u8);
                 writer.WriteStringValue(Country);
             }
-            if (Optional.IsDefined(Region) && _additionalBinaryDataProperties?.ContainsKey("region") != true)
+            if (Optional.IsDefined(Region) && !Patch.Contains("$.region"u8))
             {
                 writer.WritePropertyName("region"u8);
                 writer.WriteStringValue(Region);
             }
-            if (Optional.IsDefined(City) && _additionalBinaryDataProperties?.ContainsKey("city") != true)
+            if (Optional.IsDefined(City) && !Patch.Contains("$.city"u8))
             {
                 writer.WritePropertyName("city"u8);
                 writer.WriteStringValue(City);
             }
-            if (Optional.IsDefined(Timezone) && _additionalBinaryDataProperties?.ContainsKey("timezone") != true)
+            if (Optional.IsDefined(Timezone) && !Patch.Contains("$.timezone"u8))
             {
                 writer.WritePropertyName("timezone"u8);
                 writer.WriteStringValue(Timezone);
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         WebSearchToolApproximateLocation IJsonModel<WebSearchToolApproximateLocation>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (WebSearchToolApproximateLocation)JsonModelCreateCore(ref reader, options);
@@ -59,17 +71,19 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(WebSearchToolApproximateLocation)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeWebSearchToolApproximateLocation(document.RootElement, options);
+            return DeserializeWebSearchToolApproximateLocation(document.RootElement, null, options);
         }
 
-        internal static WebSearchToolApproximateLocation DeserializeWebSearchToolApproximateLocation(JsonElement element, ModelReaderWriterOptions options)
+        internal static WebSearchToolApproximateLocation DeserializeWebSearchToolApproximateLocation(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalWebSearchUserLocationKind kind = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string country = default;
             string region = default;
             string city = default;
@@ -121,12 +135,11 @@ namespace OpenAI.Responses
                     timezone = prop.Value.GetString();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new WebSearchToolApproximateLocation(
                 kind,
-                additionalBinaryDataProperties,
+                patch,
                 country,
                 region,
                 city,
@@ -155,9 +168,9 @@ namespace OpenAI.Responses
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeWebSearchToolApproximateLocation(document.RootElement, options);
+                        return DeserializeWebSearchToolApproximateLocation(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(WebSearchToolApproximateLocation)} does not support reading '{options.Format}' format.");

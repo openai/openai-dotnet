@@ -2,21 +2,26 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 using OpenAI;
 
 namespace OpenAI.Chat
 {
     internal partial class InternalChatCompletionStreamResponseDelta
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
-        internal InternalChatCompletionStreamResponseDelta() : this(null, null, null, null, default, null, null)
+        internal InternalChatCompletionStreamResponseDelta() : this(null, null, null, null, default, null, default)
         {
         }
 
-        internal InternalChatCompletionStreamResponseDelta(StreamingChatOutputAudioUpdate audio, ChatMessageContent content, StreamingChatFunctionCallUpdate functionCall, IReadOnlyList<StreamingChatToolCallUpdate> toolCalls, ChatMessageRole? role, string refusal, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalChatCompletionStreamResponseDelta(StreamingChatOutputAudioUpdate audio, ChatMessageContent content, StreamingChatFunctionCallUpdate functionCall, IReadOnlyList<StreamingChatToolCallUpdate> toolCalls, ChatMessageRole? role, string refusal, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Audio = audio;
@@ -25,8 +30,15 @@ namespace OpenAI.Chat
             ToolCalls = toolCalls ?? new ChangeTrackingList<StreamingChatToolCallUpdate>();
             Role = role;
             Refusal = refusal;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        [JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         public StreamingChatOutputAudioUpdate Audio { get; }
 
@@ -35,11 +47,5 @@ namespace OpenAI.Chat
         public IReadOnlyList<StreamingChatToolCallUpdate> ToolCalls { get; }
 
         public string Refusal { get; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
     }
 }

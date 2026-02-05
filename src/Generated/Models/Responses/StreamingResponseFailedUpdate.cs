@@ -2,8 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -11,16 +10,19 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class StreamingResponseFailedUpdate : StreamingResponseUpdate
     {
-        internal StreamingResponseFailedUpdate(int sequenceNumber, OpenAIResponse response) : base(InternalResponseStreamEventType.ResponseFailed, sequenceNumber)
+        internal StreamingResponseFailedUpdate(int sequenceNumber, ResponseResult response) : base(InternalResponseStreamEventType.ResponseFailed, sequenceNumber)
         {
             Response = response;
         }
 
-        internal StreamingResponseFailedUpdate(InternalResponseStreamEventType kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, OpenAIResponse response) : base(kind, sequenceNumber, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal StreamingResponseFailedUpdate(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch, ResponseResult response) : base(kind, sequenceNumber, patch)
         {
             Response = response;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public OpenAIResponse Response { get; }
+        public ResponseResult Response { get; set; }
     }
 }

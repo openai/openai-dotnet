@@ -1,0 +1,199 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/moderations",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "115",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.8.0 (.NET 8.0.23; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "input": [
+          "I forgot to water my houseplants!",
+          "I am killing all my houseplants!"
+        ],
+        "model": "omni-moderation-latest"
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9be95bd02f63ad72-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "3842",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "136",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "modr-5633",
+        "model": "omni-moderation-latest",
+        "results": [
+          {
+            "flagged": false,
+            "categories": {
+              "harassment": false,
+              "harassment/threatening": false,
+              "sexual": false,
+              "hate": false,
+              "hate/threatening": false,
+              "illicit": false,
+              "illicit/violent": false,
+              "self-harm/intent": false,
+              "self-harm/instructions": false,
+              "self-harm": false,
+              "sexual/minors": false,
+              "violence": false,
+              "violence/graphic": false
+            },
+            "category_scores": {
+              "harassment": 0.00003682979260160596,
+              "harassment/threatening": 1.9525885208642222e-6,
+              "sexual": 3.024195853395102e-6,
+              "hate": 1.7231572752142392e-6,
+              "hate/threatening": 1.994729721527057e-7,
+              "illicit": 7.2543618230189156e-6,
+              "illicit/violent": 3.5913010679499402e-6,
+              "self-harm/intent": 0.0002128468589176327,
+              "self-harm/instructions": 1.816222403812674e-7,
+              "self-harm": 0.0000115017355457,
+              "sexual/minors": 1.994729721527057e-7,
+              "violence": 0.00001141223854434603,
+              "violence/graphic": 1.0783312222985275e-6
+            },
+            "category_applied_input_types": {
+              "harassment": [
+                "text"
+              ],
+              "harassment/threatening": [
+                "text"
+              ],
+              "sexual": [
+                "text"
+              ],
+              "hate": [
+                "text"
+              ],
+              "hate/threatening": [
+                "text"
+              ],
+              "illicit": [
+                "text"
+              ],
+              "illicit/violent": [
+                "text"
+              ],
+              "self-harm/intent": [
+                "text"
+              ],
+              "self-harm/instructions": [
+                "text"
+              ],
+              "self-harm": [
+                "text"
+              ],
+              "sexual/minors": [
+                "text"
+              ],
+              "violence": [
+                "text"
+              ],
+              "violence/graphic": [
+                "text"
+              ]
+            }
+          },
+          {
+            "flagged": true,
+            "categories": {
+              "harassment": false,
+              "harassment/threatening": false,
+              "sexual": false,
+              "hate": false,
+              "hate/threatening": false,
+              "illicit": false,
+              "illicit/violent": false,
+              "self-harm/intent": false,
+              "self-harm/instructions": false,
+              "self-harm": false,
+              "sexual/minors": false,
+              "violence": true,
+              "violence/graphic": false
+            },
+            "category_scores": {
+              "harassment": 0.0050681319405286316,
+              "harassment/threatening": 0.006255070727370796,
+              "sexual": 4.264746818557914e-6,
+              "hate": 0.00002305067219931397,
+              "hate/threatening": 0.000024346046497898516,
+              "illicit": 0.007632600762426888,
+              "illicit/violent": 0.0015581785104520952,
+              "self-harm/intent": 0.00846215032366349,
+              "self-harm/instructions": 0.0002292575353938512,
+              "self-harm": 0.01857262423453905,
+              "sexual/minors": 5.594337713435001e-7,
+              "violence": 0.2001167469458225,
+              "violence/graphic": 0.0015759078905635787
+            },
+            "category_applied_input_types": {
+              "harassment": [
+                "text"
+              ],
+              "harassment/threatening": [
+                "text"
+              ],
+              "sexual": [
+                "text"
+              ],
+              "hate": [
+                "text"
+              ],
+              "hate/threatening": [
+                "text"
+              ],
+              "illicit": [
+                "text"
+              ],
+              "illicit/violent": [
+                "text"
+              ],
+              "self-harm/intent": [
+                "text"
+              ],
+              "self-harm/instructions": [
+                "text"
+              ],
+              "self-harm": [
+                "text"
+              ],
+              "sexual/minors": [
+                "text"
+              ],
+              "violence": [
+                "text"
+              ],
+              "violence/graphic": [
+                "text"
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

@@ -2,9 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
-using OpenAI;
+using System.ClientModel.Primitives;
 
 namespace OpenAI.Responses
 {
@@ -12,15 +10,15 @@ namespace OpenAI.Responses
     {
         public InternalLocalShellToolCallOutputItemParam(string output) : base(InternalItemType.LocalShellCallOutput)
         {
-            Argument.AssertNotNull(output, nameof(output));
-
             Output = output;
         }
 
-        internal InternalLocalShellToolCallOutputItemParam(InternalItemType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string output) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalLocalShellToolCallOutputItemParam(InternalItemType kind, in JsonPatch patch, string output) : base(kind, patch)
         {
             Output = output;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string Output { get; }
     }

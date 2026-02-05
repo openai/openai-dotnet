@@ -11,7 +11,7 @@ using OpenAI.Graders;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalGraderPythonResource : IJsonModel<InternalEvalGraderPythonResource>
+    internal partial class InternalEvalGraderPythonResource : InternalEvalGraderResource, IJsonModel<InternalEvalGraderPythonResource>
     {
         internal InternalEvalGraderPythonResource() : this(GraderType.Python, null, null, null, null, default)
         {
@@ -144,7 +144,7 @@ namespace OpenAI.Evals
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalEvalGraderPythonResource(document.RootElement, options);
                     }

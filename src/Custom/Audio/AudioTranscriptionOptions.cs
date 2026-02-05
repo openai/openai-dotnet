@@ -1,8 +1,8 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Security.Cryptography;
 
 namespace OpenAI.Audio;
 
@@ -25,6 +25,18 @@ public partial class AudioTranscriptionOptions
     // CUSTOM: Made internal to allow specification by the operation method.
     [CodeGenMember("Stream")]
     internal bool? Stream { get; set; }
+
+    // CUSTOM: Made internal
+    [CodeGenMember("ChunkingStrategy")]
+    internal BinaryData ChunkingStrategy { get; set; }
+
+    // CUSTOM: Made internal
+    [CodeGenMember("KnownSpeakerNames")]
+    internal IList<string> KnownSpeakerNames { get; }
+
+    // CUSTOM: Made internal
+    [CodeGenMember("KnownSpeakerReferences")]
+    internal IList<string> KnownSpeakerReferences { get; }
 
     // CUSTOM: Made public now that there are no required properties.
     /// <summary> Initializes a new instance of <see cref="AudioTranscriptionOptions"/>. </summary>

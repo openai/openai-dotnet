@@ -1,6 +1,6 @@
 # OpenAI .NET API library
 
-[![NuGet stable version](https://img.shields.io/nuget/v/openai.svg)](https://www.nuget.org/packages/OpenAI) [![NuGet preview version](https://img.shields.io/nuget/vpre/openai.svg)](https://www.nuget.org/packages/OpenAI/absoluteLatest)
+[![NuGet stable version](https://img.shields.io/nuget/v/openai.svg)](https://www.nuget.org/packages/OpenAI)
 
 The OpenAI .NET library provides convenient access to the OpenAI REST API from .NET applications.
 
@@ -49,21 +49,16 @@ Add the client library to your .NET project by installing the [NuGet](https://ww
 dotnet add package OpenAI
 ```
 
-If you would like to try the latest preview version, remember to append the `--prerelease` command option.
-
-Note that the code examples included below were written using [.NET 8](https://dotnet.microsoft.com/download/dotnet/8.0). The OpenAI .NET library is compatible with all .NET Standard 2.0 applications, but the syntax used in some of the code examples in this document may depend on newer language features.
+Note that the code examples included below were written using [.NET 10](https://dotnet.microsoft.com/download/dotnet/10.0). The OpenAI .NET library is compatible with all .NET Standard 2.0 applications, but the syntax used in some of the code examples in this document may depend on newer language features.
 
 ## Using the client library
 
 The full API of this library can be found in the [OpenAI.netstandard2.0.cs](https://github.com/openai/openai-dotnet/blob/main/api/OpenAI.netstandard2.0.cs) file, and there are many [code examples](https://github.com/openai/openai-dotnet/tree/main/examples) to help. For instance, the following snippet illustrates the basic use of the chat completions API:
 
-```csharp
-using OpenAI.Chat;
-
-ChatClient client = new(model: "gpt-4o", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+```C# Snippet:ReadMe_ChatCompletion_Basic
+ChatClient client = new(model: "gpt-5.1", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
 ChatCompletion completion = client.CompleteChat("Say 'this is a test.'");
-
 Console.WriteLine($"[ASSISTANT]: {completion.Content[0].Text}");
 ```
 
@@ -73,21 +68,17 @@ While you can pass your API key directly as a string, it is highly recommended t
 
 If you need to connect to an alternative API endpoint (for example, a proxy or self-hosted OpenAI-compatible LLM), you can specify a custom base URL and API key using the `ApiKeyCredential` and `OpenAIClientOptions`:
 
-```csharp
-using OpenAI;
-using OpenAI.Chat;
-
+```C# Snippet:ReadMe_CustomUrl
 ChatClient client = new(
     model: "MODEL_NAME",
     credential: new ApiKeyCredential(Environment.GetEnvironmentVariable("OPENAI_API_KEY")),
-    options: new OpenAIClientOptions() 
-    { 
-        Endpoint = new Uri("BASE_URL")
-    }
-);
+    options: new OpenAIClientOptions()
+    {
+        Endpoint = new Uri("https://YOUR_BASE_URL")
+    });
 ```
 
-Replace `CHAT_MODEL` with your model name and `BASE_URL` with your endpoint URI. This is useful when working with OpenAI-compatible APIs or custom deployments.
+Replace `MODEL_NAME` with your model name and `BASE_URL` with your endpoint URI. This is useful when working with OpenAI-compatible APIs or custom deployments.
 
 ### Namespace organization
 
@@ -107,14 +98,14 @@ The library is organized into namespaces by feature areas in the OpenAI REST API
 | `OpenAI.Models`               | `OpenAIModelClient`          |
 | `OpenAI.Moderations`          | `ModerationClient`           |
 | `OpenAI.Realtime`             | `RealtimeClient`             |
-| `OpenAI.Responses`            | `OpenAIResponseClient`       |
+| `OpenAI.Responses`            | `ResponsesClient`            |
 | `OpenAI.VectorStores`         | `VectorStoreClient`          |
 
 ### Using the async API
 
 Every client method that performs a synchronous API call has an asynchronous variant in the same client class. For instance, the asynchronous variant of the `ChatClient`'s `CompleteChat` method is `CompleteChatAsync`. To rewrite the call above using the asynchronous counterpart, simply `await` the call to the corresponding async variant:
 
-```csharp
+```C# Snippet:ReadMe_ChatCompletion_Async
 ChatCompletion completion = await client.CompleteChatAsync("Say 'this is a test.'");
 ```
 
@@ -130,13 +121,13 @@ This namespace contains the `OpenAIClient` class, which offers certain convenien
 
 You can create an `OpenAIClient` by specifying the API key that all clients will use for authentication:
 
-```csharp
+```C# Snippet:ReadMe_OpenAIClient_Create
 OpenAIClient client = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 ```
 
 Next, to create an instance of an `AudioClient`, for example, you can call the `OpenAIClient`'s `GetAudioClient` method by passing the OpenAI model that the `AudioClient` will use, just as if you were using the `AudioClient` constructor directly. If necessary, you can create additional clients of the same type to target different models.
 
-```csharp
+```C# Snippet:ReadMe_OpenAIClient_GetAudioClient
 AudioClient ttsClient = client.GetAudioClient("tts-1");
 AudioClient whisperClient = client.GetAudioClient("whisper-1");
 ```
@@ -223,11 +214,11 @@ You can still register clients manually if needed:
 
 Register the `ChatClient` as a singleton in your `Program.cs`:
 
-```csharp
+```C# Snippet:ReadMe_DependencyInjection_Register
 builder.Services.AddSingleton<ChatClient>(serviceProvider =>
 {
     var apiKey = Environment.GetEnvironmentVariable("OPENAI_API_KEY");
-    var model = "gpt-4o";
+    var model = "gpt-5.1";
 
     return new ChatClient(model, apiKey);
 });
@@ -237,7 +228,7 @@ builder.Services.AddSingleton<ChatClient>(serviceProvider =>
 
 Once registered, inject and use the clients in your controllers or services:
 
-```csharp
+```C# Snippet:ReadMe_DependencyInjection_Controller
 [ApiController]
 [Route("api/[controller]")]
 public class ChatController : ControllerBase
@@ -253,7 +244,6 @@ public class ChatController : ControllerBase
     public async Task<IActionResult> CompleteChat([FromBody] string message)
     {
         ChatCompletion completion = await _chatClient.CompleteChatAsync(message);
-        
         return Ok(new { response = completion.Content[0].Text });
     }
 }
@@ -265,13 +255,15 @@ When you request a chat completion, the default behavior is for the server to ge
 
 The client library offers a convenient approach to working with streaming chat completions. If you wanted to re-write the example from the previous section using streaming, rather than calling the `ChatClient`'s `CompleteChat` method, you would call its `CompleteChatStreaming` method instead:
 
-```csharp
+```C# Snippet:ReadMe_Streaming_Sync
 CollectionResult<StreamingChatCompletionUpdate> completionUpdates = client.CompleteChatStreaming("Say 'this is a test.'");
 ```
 
 Notice that the returned value is a `CollectionResult<StreamingChatCompletionUpdate>` instance, which can be enumerated to process the streaming response chunks as they arrive:
 
-```csharp
+```C# Snippet:ReadMe_Streaming_Enumerate
+CollectionResult<StreamingChatCompletionUpdate> completionUpdates = client.CompleteChatStreaming("Say 'this is a test.'");
+
 Console.Write($"[ASSISTANT]: ");
 foreach (StreamingChatCompletionUpdate completionUpdate in completionUpdates)
 {
@@ -284,7 +276,7 @@ foreach (StreamingChatCompletionUpdate completionUpdate in completionUpdates)
 
 Alternatively, you can do this asynchronously by calling the `CompleteChatStreamingAsync` method to get an `AsyncCollectionResult<StreamingChatCompletionUpdate>` and enumerate it using `await foreach`:
 
-```csharp
+```C# Snippet:ReadMe_Streaming_Async
 AsyncCollectionResult<StreamingChatCompletionUpdate> completionUpdates = client.CompleteChatStreamingAsync("Say 'this is a test.'");
 
 Console.Write($"[ASSISTANT]: ");
@@ -301,14 +293,14 @@ await foreach (StreamingChatCompletionUpdate completionUpdate in completionUpdat
 
 In this example, you have two functions. The first function can retrieve a user's current geographic location (e.g., by polling the location service APIs of the user's device), while the second function can query the weather in a given location (e.g., by making an API call to some third-party weather service). You want the model to be able to call these functions if it deems it necessary to have this information in order to respond to a user request as part of generating a chat completion. For illustrative purposes, consider the following:
 
-```csharp
-private static string GetCurrentLocation()
+```C# Snippet:ReadMe_Tools_Functions
+static string GetCurrentLocation()
 {
     // Call the location API here.
     return "San Francisco";
 }
 
-private static string GetCurrentWeather(string location, string unit = "celsius")
+static string GetCurrentWeather(string location, string unit = "celsius")
 {
     // Call the weather API here.
     return $"31 {unit}";
@@ -317,13 +309,13 @@ private static string GetCurrentWeather(string location, string unit = "celsius"
 
 Start by creating two `ChatTool` instances using the static `CreateFunctionTool` method to describe each function:
 
-```csharp
-private static readonly ChatTool getCurrentLocationTool = ChatTool.CreateFunctionTool(
+```C# Snippet:ReadMe_Tools_Definitions
+ChatTool getCurrentLocationTool = ChatTool.CreateFunctionTool(
     functionName: nameof(GetCurrentLocation),
     functionDescription: "Get the user's current location"
 );
 
-private static readonly ChatTool getCurrentWeatherTool = ChatTool.CreateFunctionTool(
+ChatTool getCurrentWeatherTool = ChatTool.CreateFunctionTool(
     functionName: nameof(GetCurrentWeather),
     functionDescription: "Get the current weather in a given location",
     functionParameters: BinaryData.FromBytes("""
@@ -348,8 +340,8 @@ private static readonly ChatTool getCurrentWeatherTool = ChatTool.CreateFunction
 
 Next, create a `ChatCompletionOptions` instance and add both to its `Tools` property. You will pass the `ChatCompletionOptions` as an argument in your calls to the `ChatClient`'s `CompleteChat` method.
 
-```csharp
-List<ChatMessage> messages = 
+```C# Snippet:ReadMe_Tools_Options
+List<ChatMessage> messages =
 [
     new UserChatMessage("What's the weather like today?"),
 ];
@@ -362,7 +354,7 @@ ChatCompletionOptions options = new()
 
 When the resulting `ChatCompletion` has a `FinishReason` property equal to `ChatFinishReason.ToolCalls`, it means that the model has determined that one or more tools must be called before the assistant can respond appropriately. In those cases, you must first call the function specified in the `ChatCompletion`'s `ToolCalls` and then call the `ChatClient`'s `CompleteChat` method again while passing the function's result as an additional `ChatRequestToolMessage`. Repeat this process as needed.
 
-```csharp
+```C# Snippet:ReadMe_Tools_Loop
 bool requiresAction;
 
 do
@@ -373,62 +365,62 @@ do
     switch (completion.FinishReason)
     {
         case ChatFinishReason.Stop:
-            {
-                // Add the assistant message to the conversation history.
-                messages.Add(new AssistantChatMessage(completion));
-                break;
-            }
+        {
+            // Add the assistant message to the conversation history.
+            messages.Add(new AssistantChatMessage(completion));
+            break;
+        }
 
         case ChatFinishReason.ToolCalls:
+        {
+            // First, add the assistant message with tool calls to the conversation history.
+            messages.Add(new AssistantChatMessage(completion));
+
+            // Then, add a new tool message for each tool call that is resolved.
+            foreach (ChatToolCall toolCall in completion.ToolCalls)
             {
-                // First, add the assistant message with tool calls to the conversation history.
-                messages.Add(new AssistantChatMessage(completion));
-
-                // Then, add a new tool message for each tool call that is resolved.
-                foreach (ChatToolCall toolCall in completion.ToolCalls)
+                switch (toolCall.FunctionName)
                 {
-                    switch (toolCall.FunctionName)
-                    {
-                        case nameof(GetCurrentLocation):
+                    case nameof(GetCurrentLocation):
+                        {
+                            string toolResult = GetCurrentLocation();
+                            messages.Add(new ToolChatMessage(toolCall.Id, toolResult));
+                            break;
+                        }
+
+                    case nameof(GetCurrentWeather):
+                        {
+                            // The arguments that the model wants to use to call the function are specified as a
+                            // stringified JSON object based on the schema defined in the tool definition. Note that
+                            // the model may hallucinate arguments too. Consequently, it is important to do the
+                            // appropriate parsing and validation before calling the function.
+                            using JsonDocument argumentsJson = JsonDocument.Parse(toolCall.FunctionArguments);
+                            bool hasLocation = argumentsJson.RootElement.TryGetProperty("location", out JsonElement location);
+                            bool hasUnit = argumentsJson.RootElement.TryGetProperty("unit", out JsonElement unit);
+
+                            if (!hasLocation)
                             {
-                                string toolResult = GetCurrentLocation();
-                                messages.Add(new ToolChatMessage(toolCall.Id, toolResult));
-                                break;
+                                throw new ArgumentNullException(nameof(location), "The location argument is required.");
                             }
 
-                        case nameof(GetCurrentWeather):
-                            {
-                                // The arguments that the model wants to use to call the function are specified as a
-                                // stringified JSON object based on the schema defined in the tool definition. Note that
-                                // the model may hallucinate arguments too. Consequently, it is important to do the
-                                // appropriate parsing and validation before calling the function.
-                                using JsonDocument argumentsJson = JsonDocument.Parse(toolCall.FunctionArguments);
-                                bool hasLocation = argumentsJson.RootElement.TryGetProperty("location", out JsonElement location);
-                                bool hasUnit = argumentsJson.RootElement.TryGetProperty("unit", out JsonElement unit);
+                            string toolResult = hasUnit
+                                ? GetCurrentWeather(location.GetString(), unit.GetString())
+                                : GetCurrentWeather(location.GetString());
+                            messages.Add(new ToolChatMessage(toolCall.Id, toolResult));
+                            break;
+                        }
 
-                                if (!hasLocation)
-                                {
-                                    throw new ArgumentNullException(nameof(location), "The location argument is required.");
-                                }
-
-                                string toolResult = hasUnit
-                                    ? GetCurrentWeather(location.GetString(), unit.GetString())
-                                    : GetCurrentWeather(location.GetString());
-                                messages.Add(new ToolChatMessage(toolCall.Id, toolResult));
-                                break;
-                            }
-
-                        default:
-                            {
-                                // Handle other unexpected calls.
-                                throw new NotImplementedException();
-                            }
-                    }
+                    default:
+                        {
+                            // Handle other unexpected calls.
+                            throw new NotImplementedException();
+                        }
                 }
-
-                requiresAction = true;
-                break;
             }
+
+            requiresAction = true;
+            break;
+        }
 
         case ChatFinishReason.Length:
             throw new NotImplementedException("Incomplete model output due to MaxTokens parameter or token limit exceeded.");
@@ -443,15 +435,13 @@ do
             throw new NotImplementedException(completion.FinishReason.ToString());
     }
 } while (requiresAction);
-```
-
-## How to use chat completions with structured outputs
+```\n\n## How to use chat completions with structured outputs
 
 Beginning with the `gpt-4o-mini`, `gpt-4o-mini-2024-07-18`, and `gpt-4o-2024-08-06` model snapshots, structured outputs are available for both top-level response content and tool calls in the chat completion and assistants APIs. For information about the feature, see [the Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs/introduction).
 
 To use structured outputs to constrain chat completion content, set an appropriate `ChatResponseFormat` as in the following example:
 
-```csharp
+```C# Snippet:ReadMe_StructuredOutputs
 List<ChatMessage> messages =
 [
     new UserChatMessage("How can I solve 8x + 7 = -23?"),
@@ -511,18 +501,19 @@ This example demonstrates:
   1. Retrieving audio output from a `ChatCompletion` instance
   1. Using past audio output as `ChatMessage` conversation history
 
-```csharp
+```C# Snippet:ReadMe_ChatAudio
 // Chat audio input and output is only supported on specific models, beginning with gpt-4o-audio-preview
-ChatClient client = new("gpt-4o-audio-preview", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+ChatClient client = new("gpt-5.1", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
 // Input audio is provided to a request by adding an audio content part to a user message
 string audioFilePath = Path.Combine("Assets", "realtime_whats_the_weather_pcm16_24khz_mono.wav");
 byte[] audioFileRawBytes = File.ReadAllBytes(audioFilePath);
 BinaryData audioData = BinaryData.FromBytes(audioFileRawBytes);
+
 List<ChatMessage> messages =
-    [
-        new UserChatMessage(ChatMessageContentPart.CreateInputAudioPart(audioData, ChatInputAudioFormat.Wav)),
-    ];
+[
+    new UserChatMessage(ChatMessageContentPart.CreateInputAudioPart(audioData, ChatInputAudioFormat.Wav)),
+];
 
 // Output audio is requested by configuring ChatCompletionOptions to include the appropriate
 // ResponseModalities values and corresponding AudioOptions.
@@ -544,6 +535,7 @@ void PrintAudioContent()
         {
             outputFileStream.Write(outputAudio.AudioBytes);
         }
+
         Console.WriteLine($"Response audio written to file: {outputFilePath}");
         Console.WriteLine($"Valid on followup requests until: {outputAudio.ExpiresAt}");
     }
@@ -553,7 +545,6 @@ PrintAudioContent();
 
 // To refer to past audio output, create an assistant message from the earlier ChatCompletion, use the earlier
 // response content part, or use ChatMessageContentPart.CreateAudioPart(string) to manually instantiate a part.
-
 messages.Add(new AssistantChatMessage(completion));
 messages.Add("Can you say that like a pirate?");
 
@@ -571,31 +562,35 @@ contain any of:
 
 ## How to use responses with streaming and reasoning
 
-```csharp
-OpenAIResponseClient client = new(
-    model: "o3-mini",
+```C# Snippet:ReadMe_ResponsesStreaming
+ResponsesClient client = new(
+    model: "gpt-5.1",
     apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-OpenAIResponse response = await client.CreateResponseAsync(
-    userInputText: "What's the optimal strategy to win at poker?",
-    new ResponseCreationOptions()
+CreateResponseOptions options = new()
+{
+    ReasoningOptions = new ResponseReasoningOptions()
     {
-        ReasoningOptions = new ResponseReasoningOptions()
-        {
-            ReasoningEffortLevel = ResponseReasoningEffortLevel.High,
-        },
-    });
+        ReasoningEffortLevel = ResponseReasoningEffortLevel.High,
+    },
+};
+
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("What's the optimal strategy to win at poker?"));
+ResponseResult response = await client.CreateResponseAsync(options);
+
+CreateResponseOptions streamingOptions = new()
+{
+    ReasoningOptions = new ResponseReasoningOptions()
+    {
+        ReasoningEffortLevel = ResponseReasoningEffortLevel.High,
+    },
+    StreamingEnabled = true,
+};
+
+streamingOptions.InputItems.Add(ResponseItem.CreateUserMessageItem("What's the optimal strategy to win at poker?"));
 
 await foreach (StreamingResponseUpdate update
-    in client.CreateResponseStreamingAsync(
-        userInputText: "What's the optimal strategy to win at poker?",
-        new ResponseCreationOptions()
-        {
-            ReasoningOptions = new ResponseReasoningOptions()
-            {
-                ReasoningEffortLevel = ResponseReasoningEffortLevel.High,
-            },
-        }))
+    in client.CreateResponseStreamingAsync(streamingOptions))
 {
     if (update is StreamingResponseOutputItemAddedUpdate itemUpdate
         && itemUpdate.Item is ReasoningResponseItem reasoningItem)
@@ -616,20 +611,20 @@ await foreach (StreamingResponseUpdate update
 
 ## How to use responses with file search
 
-```csharp
-OpenAIResponseClient client = new(
-    model: "gpt-4o-mini",
-    apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+```C# Snippet:ReadMe_ResponsesFileSearch
+ResponsesClient client = new("gpt-5.1", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+string vectorStoreId = "vs-123";
 
 ResponseTool fileSearchTool
-    = ResponseTool.CreateFileSearchTool(
-        vectorStoreIds: [ExistingVectorStoreForTest.Id]);
-OpenAIResponse response = await client.CreateResponseAsync(
-    userInputText: "According to available files, what's the secret number?",
-    new ResponseCreationOptions()
-    {
-        Tools = { fileSearchTool }
-    });
+    = ResponseTool.CreateFileSearchTool(vectorStoreIds: [vectorStoreId]);
+
+CreateResponseOptions options = new()
+{
+    Tools = { fileSearchTool }
+};
+
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("According to available files, what's the secret number?"));
+ResponseResult response = await client.CreateResponseAsync(options);
 
 foreach (ResponseItem outputItem in response.OutputItems)
 {
@@ -650,17 +645,16 @@ foreach (ResponseItem outputItem in response.OutputItems)
 
 ## How to use responses with web search
 
-```csharp
-OpenAIResponseClient client = new(
-    model: "gpt-4o-mini",
-    apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+```C# Snippet:ReadMe_ResponsesWebSearch
+ResponsesClient client = new("gpt-5.1", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-OpenAIResponse response = await client.CreateResponseAsync(
-    userInputText: "What's a happy news headline from today?",
-    new ResponseCreationOptions()
-    {
-        Tools = { ResponseTool.CreateWebSearchTool() },
-    });
+CreateResponseOptions options = new()
+{
+    Tools = { ResponseTool.CreateWebSearchTool() },
+};
+
+options.InputItems.Add(ResponseItem.CreateUserMessageItem("What's a happy news headline from today?"));
+ResponseResult response = await client.CreateResponseAsync(options);
 
 foreach (ResponseItem item in response.OutputItems)
 {
@@ -681,11 +675,7 @@ In this example, you want to create a trip-planning website that allows customer
 
 To generate a text embedding, use `EmbeddingClient` from the `OpenAI.Embeddings` namespace:
 
-```csharp
-using OpenAI.Embeddings;
-
-EmbeddingClient client = new("text-embedding-3-small", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
-
+```C# Snippet:ReadMe_Embeddings
 string description = "Best hotel in town if you like luxury hotels. They have an amazing infinity pool, a spa,"
     + " and a really helpful concierge. The location is perfect -- right downtown, close to all the tourist"
     + " attractions. We highly recommend this hotel.";
@@ -696,7 +686,8 @@ ReadOnlyMemory<float> vector = embedding.ToFloats();
 
 Notice that the resulting embedding is a list (also called a vector) of floating point numbers represented as an instance of `ReadOnlyMemory<float>`. By default, the length of the embedding vector will be 1536 when using the `text-embedding-3-small` model or 3072 when using the `text-embedding-3-large` model. Generally, larger embeddings perform better, but using them also tends to cost more in terms of compute, memory, and storage. You can reduce the dimensions of the embedding by creating an instance of the `EmbeddingGenerationOptions` class, setting the `Dimensions` property, and passing it as an argument in your call to the `GenerateEmbedding` method:
 
-```csharp
+```C# Snippet:ReadMe_Embeddings_WithDimensions
+string description = "Best hotel in town if you like luxury hotels.";
 EmbeddingGenerationOptions options = new() { Dimensions = 512 };
 
 OpenAIEmbedding embedding = client.GenerateEmbedding(description, options);
@@ -708,15 +699,13 @@ In this example, you want to build an app to help interior designers prototype n
 
 To generate an image, use `ImageClient` from the `OpenAI.Images` namespace:
 
-```csharp
-using OpenAI.Images;
-
+```C# Snippet:ReadMe_Images_CreateClient
 ImageClient client = new("dall-e-3", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 ```
 
 Generating an image always requires a `prompt` that describes what should be generated. To further tailor the image generation to your specific needs, you can create an instance of the `ImageGenerationOptions` class and set the `Quality`, `Size`, and `Style` properties accordingly. Note that you can also set the `ResponseFormat` property of `ImageGenerationOptions` to `GeneratedImageFormat.Bytes` in order to receive the resulting PNG as `BinaryData` (instead of the default remote `Uri`) if this is convenient for your use case.
 
-```csharp
+```C# Snippet:ReadMe_Images_Options
 string prompt = "The concept for a living room that blends Scandinavian simplicity with Japanese minimalism for"
     + " a serene and cozy atmosphere. It's a space that invites relaxation and mindfulness, with natural light"
     + " and fresh air. Using neutral tones, including colors like white, beige, gray, and black, that create a"
@@ -736,14 +725,14 @@ ImageGenerationOptions options = new()
 
 Finally, call the `ImageClient`'s `GenerateImage` method by passing the prompt and the `ImageGenerationOptions` instance as arguments:
 
-```csharp
+```C# Snippet:ReadMe_Images_Generate
 GeneratedImage image = client.GenerateImage(prompt, options);
 BinaryData bytes = image.ImageBytes;
 ```
 
 For illustrative purposes, you could then save the generated image to local storage:
 
-```csharp
+```C# Snippet:ReadMe_Images_Save
 using FileStream stream = File.OpenWrite($"{Guid.NewGuid()}.png");
 bytes.ToStream().CopyTo(stream);
 ```
@@ -752,11 +741,8 @@ bytes.ToStream().CopyTo(stream);
 
 In this example, an audio file is transcribed using the Whisper speech-to-text model, including both word- and audio-segment-level timestamp information.
 
-```csharp
-using OpenAI.Audio;
-
-AudioClient client = new("whisper-1", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
-
+```C# Snippet:ReadMe_Audio_Transcribe
+        AudioClient client = new("whisper-1", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 string audioFilePath = Path.Combine("Assets", "audio_houseplant_care.mp3");
 
 AudioTranscriptionOptions options = new()
@@ -769,9 +755,9 @@ AudioTranscription transcription = client.TranscribeAudio(audioFilePath, options
 
 Console.WriteLine("Transcription:");
 Console.WriteLine($"{transcription.Text}");
-
 Console.WriteLine();
 Console.WriteLine($"Words:");
+
 foreach (TranscribedWord word in transcription.Words)
 {
     Console.WriteLine($"  {word.Word,15} : {word.StartTime.TotalMilliseconds,5:0} - {word.EndTime.TotalMilliseconds,5:0}");
@@ -793,10 +779,7 @@ To achieve this, use both `OpenAIFileClient` from the `OpenAI.Files` namespace a
 
 Important: The Assistants REST API is currently in beta. As such, the details are subject to change, and correspondingly the `AssistantClient` is attributed as `[Experimental]`. To use it, you must suppress the `OPENAI001` warning first.
 
-```csharp
-using OpenAI.Assistants;
-using OpenAI.Files;
-
+```C# Snippet:ReadMe_Assistants_CreateClients
 OpenAIClient openAIClient = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 OpenAIFileClient fileClient = openAIClient.GetOpenAIFileClient();
 AssistantClient assistantClient = openAIClient.GetAssistantClient();
@@ -804,8 +787,8 @@ AssistantClient assistantClient = openAIClient.GetAssistantClient();
 
 Here is an example of what the JSON document might look like:
 
-```csharp
-using Stream document = BinaryData.FromBytes("""
+```C# Snippet:ReadMe_Assistants_Document
+Stream document = BinaryData.FromBytes("""
     {
         "description": "This document contains the sale history data for Contoso products.",
         "sales": [
@@ -837,7 +820,7 @@ using Stream document = BinaryData.FromBytes("""
 
 Upload this document to OpenAI using the `OpenAIFileClient`'s `UploadFile` method, ensuring that you use `FileUploadPurpose.Assistants` to allow your assistant to access it later:
 
-```csharp
+```C# Snippet:ReadMe_Assistants_UploadFile
 OpenAIFile salesFile = fileClient.UploadFile(
     document,
     "monthly_sales.json",
@@ -850,7 +833,7 @@ Create a new assistant using an instance of the `AssistantCreationOptions` class
 - Tool definition instances for the tools that the assistant should have access to; here, we use `FileSearchToolDefinition` to process the sales document we just uploaded and `CodeInterpreterToolDefinition` so we can analyze and visualize the numeric data
 - Resources for the assistant to use with its tools, here using the `VectorStoreCreationHelper` type to automatically make a new vector store that indexes the sales file; alternatively, you could use `VectorStoreClient` to manage the vector store separately
 
-```csharp
+```C# Snippet:ReadMe_Assistants_CreateAssistant
 AssistantCreationOptions assistantOptions = new()
 {
     Name = "Example: Contoso sales RAG",
@@ -875,12 +858,12 @@ AssistantCreationOptions assistantOptions = new()
     },
 };
 
-Assistant assistant = assistantClient.CreateAssistant("gpt-4o", assistantOptions);
+Assistant assistant = assistantClient.CreateAssistant("gpt-5.1", assistantOptions);
 ```
 
 Next, create a new thread. For illustrative purposes, you could include an initial user message asking about the sales information of a given product and then use the `AssistantClient`'s `CreateThreadAndRun` method to get it started:
 
-```csharp
+```C# Snippet:ReadMe_Assistants_CreateThreadAndRun
 ThreadCreationOptions threadOptions = new()
 {
     InitialMessages = { "How well did product 113045 sell in February? Graph its trend over time." }
@@ -891,7 +874,7 @@ ThreadRun threadRun = assistantClient.CreateThreadAndRun(assistant.Id, threadOpt
 
 Poll the status of the run until it is no longer queued or in progress:
 
-```csharp
+```C# Snippet:ReadMe_Assistants_Poll
 do
 {
     Thread.Sleep(TimeSpan.FromSeconds(1));
@@ -905,7 +888,7 @@ Finally, you can use the `AssistantClient`'s `GetMessages` method to retrieve th
 
 For illustrative purposes, you could print the messages to the console and also save any images produced by the assistant to local storage:
 
-```csharp
+```C# Snippet:ReadMe_Assistants_GetMessages
 CollectionResult<ThreadMessage> messages
     = assistantClient.GetMessages(threadRun.ThreadId, new MessageCollectionOptions() { Order = MessageCollectionOrder.Ascending });
 
@@ -977,7 +960,7 @@ This example shows how to use the v2 Assistants API to provide image data to an 
 
 As before, you will use a `OpenAIFileClient` and an `AssistantClient`:
 
-```csharp
+```C# Snippet:ReadMe_Assistants_Vision_CreateClients
 OpenAIClient openAIClient = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 OpenAIFileClient fileClient = openAIClient.GetOpenAIFileClient();
 AssistantClient assistantClient = openAIClient.GetAssistantClient();
@@ -985,7 +968,7 @@ AssistantClient assistantClient = openAIClient.GetAssistantClient();
 
 For this example, we will use both image data from a local file as well as an image located at a URL. For the local data, we upload the file with the `Vision` upload purpose, which would also allow it to be downloaded and retrieved later.
 
-```csharp
+```C# Snippet:ReadMe_Assistants_Vision_UploadImage
 OpenAIFile pictureOfAppleFile = fileClient.UploadFile(
     Path.Combine("Assets", "images_apple.png"),
     FileUploadPurpose.Vision);
@@ -995,9 +978,9 @@ Uri linkToPictureOfOrange = new("https://raw.githubusercontent.com/openai/openai
 
 Next, create a new assistant with a vision-capable model like `gpt-4o` and a thread with the image information referenced:
 
-```csharp
+```C# Snippet:ReadMe_Assistants_Vision_CreateAssistantAndThread
 Assistant assistant = assistantClient.CreateAssistant(
-    "gpt-4o",
+    "gpt-5.1",
     new AssistantCreationOptions()
     {
         Instructions = "When asked a question, attempt to answer very concisely. "
@@ -1009,7 +992,7 @@ AssistantThread thread = assistantClient.CreateThread(new ThreadCreationOptions(
     InitialMessages =
         {
             new ThreadInitializationMessage(
-                MessageRole.User,
+                OpenAI.Assistants.MessageRole.User,
                 [
                     "Hello, assistant! Please compare these two images for me:",
                     MessageContent.FromImageFileId(pictureOfAppleFile.Id),
@@ -1021,7 +1004,7 @@ AssistantThread thread = assistantClient.CreateThread(new ThreadCreationOptions(
 
 With the assistant and thread prepared, use the `CreateRunStreaming` method to get an enumerable `CollectionResult<StreamingUpdate>`. You can then iterate over this collection with `foreach`. For async calling patterns, use `CreateRunStreamingAsync` and iterate over the `AsyncCollectionResult<StreamingUpdate>` with `await foreach`, instead. Note that streaming variants also exist for `CreateThreadAndRunStreaming` and `SubmitToolOutputsToRunStreaming`.
 
-```csharp
+```C# Snippet:ReadMe_Assistants_Vision_CreateRunStreaming
 CollectionResult<StreamingUpdate> streamingUpdates = assistantClient.CreateRunStreaming(
     thread.Id,
     assistant.Id,
@@ -1033,7 +1016,7 @@ CollectionResult<StreamingUpdate> streamingUpdates = assistantClient.CreateRunSt
 
 Finally, to handle the `StreamingUpdates` as they arrive, you can use the `UpdateKind` property on the base `StreamingUpdate` and/or downcast to a specifically desired update type, like `MessageContentUpdate` for `thread.message.delta` events or `RequiredActionUpdate` for streaming tool calls.
 
-```csharp
+```C# Snippet:ReadMe_Assistants_Vision_HandleStreamingUpdates
 foreach (StreamingUpdate streamingUpdate in streamingUpdates)
 {
     if (streamingUpdate.UpdateKind == StreamingUpdateReason.RunCreated)
@@ -1053,32 +1036,35 @@ This will yield streamed output from the run like the following:
 --- Run started! ---
 The first image depicts a multicolored apple with a blend of red and green hues, while the second image shows an orange with a bright, textured orange peel; one might say it’s comparing apples to oranges!
 ```
-
 ## How to work with Azure OpenAI
 
-For Azure OpenAI scenarios use the [Azure SDK](https://github.com/Azure/azure-sdk-for-net) and more specifically the [Azure OpenAI client library for .NET](https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/openai/Azure.AI.OpenAI/README.md). 
+Switching from OpenAI to Azure OpenAI is simple, and in most cases requires little to no code changes. To get started quickly, check out the starter kit at https://aka.ms/openai/start. If you want to understand how endpoint switching works, you can also read: https://aka.ms/openai/switch.
 
-The Azure OpenAI client library for .NET is a companion to this library and all common capabilities between OpenAI and Azure OpenAI share the same scenario clients, methods, and request/response types. It is designed to make Azure specific scenarios straightforward, with extensions for Azure-specific concepts like Responsible AI content filter results and On Your Data integration.
+### Secure Access with Microsoft Entra ID (No API Keys)
+The starter kit includes examples showing how to call Azure OpenAI securely using Microsoft Entra ID instead of API keys. This is the recommended approach for production scenarios. Here’s a direct link to the .NET sample using Entra ID in the starter kit: https://github.com/Azure-Samples/azure-openai-starter/blob/main/src/dotnet/responses_example_entra.cs
 
-```c#
-AzureOpenAIClient azureClient = new(
-    new Uri("https://your-azure-openai-resource.com"),
-    new DefaultAzureCredential());
-ChatClient chatClient = azureClient.GetChatClient("my-gpt-35-turbo-deployment");
+Below is the core pattern using the OpenAI SDK for .NET with Azure OpenAI + Entra ID:
 
-ChatCompletion completion = chatClient.CompleteChat(
-    [
-        // System messages represent instructions or other guidance about how the assistant should behave
-        new SystemChatMessage("You are a helpful assistant that talks like a pirate."),
-        // User messages represent user input, whether historical or the most recen tinput
-        new UserChatMessage("Hi, can you help me?"),
-        // Assistant messages in a request represent conversation history for responses
-        new AssistantChatMessage("Arrr! Of course, me hearty! What can I do for ye?"),
-        new UserChatMessage("What's the best way to train a parrot?"),
-    ]);
+```C# Snippet:ReadMe_AzureOpenAI
+var endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")
+    ?? throw new InvalidOperationException("AZURE_OPENAI_ENDPOINT is required.");
 
-Console.WriteLine($"{completion.Role}: {completion.Content[0].Text}");
+var client = new ResponsesClient(
+    "gpt-5-mini",
+    new BearerTokenPolicy(new DefaultAzureCredential(), "https://ai.azure.com/.default"),
+    new OpenAIClientOptions { Endpoint = new Uri($"{endpoint}/openai/v1/") }
+);
+
+var response = await client.CreateResponseAsync("Hello world!");
+Console.WriteLine(response.Value.GetOutputText());
 ```
+
+### Why this works
+
+- One OpenAI SDK: You use the official OpenAI SDK for .NET. Azure OpenAI is just a different endpoint you point the client library to.
+- Unified /openai/v1/ endpoint: Azure OpenAI uses the same path shape as OpenAI, so most client code can stay unchanged.
+- Enterprise-ready auth: Azure Identity SDK with Microsoft Entra ID lets you access Azure OpenAI without storing secrets.
+- Drop‑in model switching: Swap "gpt-5-mini" or any other model as long as the Azure model deployment has the same name as the model.
 
 ## Advanced scenarios
 
@@ -1088,12 +1074,10 @@ In addition to the client methods that use strongly-typed request and response o
 
 For example, to use the protocol method variant of the `ChatClient`'s `CompleteChat` method, pass the request body as `BinaryContent`:
 
-```csharp
-ChatClient client = new("gpt-4o", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
-
+```C# Snippet:ReadMe_ProtocolMethods
 BinaryData input = BinaryData.FromBytes("""
     {
-       "model": "gpt-4o",
+       "model": "gpt-5.1",
        "messages": [
            {
                "role": "user",
@@ -1109,9 +1093,9 @@ BinaryData output = result.GetRawResponse().Content;
 
 using JsonDocument outputAsJson = JsonDocument.Parse(output.ToString());
 string message = outputAsJson.RootElement
-    .GetProperty("choices"u8)[0]
-    .GetProperty("message"u8)
-    .GetProperty("content"u8)
+    .GetProperty("choices")[0]
+    .GetProperty("message")
+    .GetProperty("content")
     .GetString();
 
 Console.WriteLine($"[ASSISTANT]: {message}");
@@ -1128,8 +1112,8 @@ The OpenAI .NET library has been designed to support mocking, providing key feat
 
 To illustrate how mocking works, suppose you want to validate the behavior of the following method using the [Moq](https://github.com/devlooped/moq) library. Given the path to an audio file, it determines whether it contains a specified secret word:
 
-```csharp
-public bool ContainsSecretWord(AudioClient client, string audioFilePath, string secretWord)
+```C# Snippet:ReadMe_Mocking_MethodUnderTest
+bool ContainsSecretWord(AudioClient client, string audioFilePath, string secretWord)
 {
     AudioTranscription transcription = client.TranscribeAudio(audioFilePath);
     return transcription.Text.Contains(secretWord);
@@ -1138,26 +1122,17 @@ public bool ContainsSecretWord(AudioClient client, string audioFilePath, string 
 
 Create mocks of `AudioClient` and `ClientResult<AudioTranscription>`, set up methods and properties that will be invoked, then test the behavior of the `ContainsSecretWord` method. Since the `AudioTranscription` class does not provide public constructors, it must be instantiated by the `OpenAIAudioModelFactory` static class:
 
-```csharp
+```C# Snippet:ReadMe_Mocking_Test
 // Instantiate mocks and the AudioTranscription object.
-
 Mock<AudioClient> mockClient = new();
-Mock<ClientResult<AudioTranscription>> mockResult = new(null, Mock.Of<PipelineResponse>());
 AudioTranscription transcription = OpenAIAudioModelFactory.AudioTranscription(text: "I swear I saw an apple flying yesterday!");
 
 // Set up mocks' properties and methods.
-
-mockResult
-    .SetupGet(result => result.Value)
-    .Returns(transcription);
-
-mockClient.Setup(client => client.TranscribeAudio(
-        It.IsAny<string>(),
-        It.IsAny<AudioTranscriptionOptions>()))
-    .Returns(mockResult.Object);
+mockClient
+    .Setup(client => client.TranscribeAudio(It.IsAny<string>()))
+    .Returns(ClientResult.FromValue(transcription, Mock.Of<PipelineResponse>()));
 
 // Perform validation.
-
 AudioClient client = mockClient.Object;
 bool containsSecretWord = ContainsSecretWord(client, "<audioFilePath>", "apple");
 

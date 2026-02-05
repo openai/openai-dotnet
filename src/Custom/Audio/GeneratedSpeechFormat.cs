@@ -1,3 +1,5 @@
+using Microsoft.TypeSpec.Generator.Customizations;
+
 namespace OpenAI.Audio;
 
 /// <summary> The audio format in which to generate the speech. </summary>

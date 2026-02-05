@@ -3,8 +3,8 @@
 #nullable disable
 
 using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Responses
 {
@@ -12,12 +12,12 @@ namespace OpenAI.Responses
     {
         public InternalCompoundFilterOr(IEnumerable<BinaryData> filters) : base(InternalCompoundFilterType.Or, filters)
         {
-            Argument.AssertNotNull(filters, nameof(filters));
-
         }
 
-        internal InternalCompoundFilterOr(InternalCompoundFilterType kind, IList<BinaryData> filters, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind, filters, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalCompoundFilterOr(InternalCompoundFilterType kind, IList<BinaryData> filters, in JsonPatch patch) : base(kind, filters, patch)
         {
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

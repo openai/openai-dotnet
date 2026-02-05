@@ -4,7 +4,6 @@
 
 using System;
 using System.ComponentModel;
-using OpenAI;
 
 namespace OpenAI.Internal
 {
@@ -17,8 +16,6 @@ namespace OpenAI.Internal
 
         public InternalWebSearchContextSize(string value)
         {
-            Argument.AssertNotNull(value, nameof(value));
-
             _value = value;
         }
 

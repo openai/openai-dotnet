@@ -2,9 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
-using OpenAI;
+using System.ClientModel.Primitives;
 
 namespace OpenAI.Chat
 {
@@ -13,15 +11,15 @@ namespace OpenAI.Chat
         public InternalChatOutputPredictionContent(ChatMessageContent content) : base(InternalChatOutputPredictionKind.StaticContent)
         {
             // Plugin customization: ensure initialization of collections
-            Argument.AssertNotNull(content, nameof(content));
-
             Content = content ?? new ChatMessageContent();
         }
 
-        internal InternalChatOutputPredictionContent(InternalChatOutputPredictionKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, ChatMessageContent content) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalChatOutputPredictionContent(InternalChatOutputPredictionKind kind, in JsonPatch patch, ChatMessageContent content) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             Content = content ?? new ChatMessageContent();
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

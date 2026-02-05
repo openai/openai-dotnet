@@ -146,7 +146,7 @@ namespace OpenAI.FineTuning
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalListFineTuningJobEventsResponse(document.RootElement, options);
                     }
@@ -159,8 +159,8 @@ namespace OpenAI.FineTuning
 
         public static explicit operator InternalListFineTuningJobEventsResponse(ClientResult result)
         {
-            using PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content);
+            PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
             return DeserializeInternalListFineTuningJobEventsResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }

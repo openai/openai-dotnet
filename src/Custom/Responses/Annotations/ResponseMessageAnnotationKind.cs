@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.TypeSpec.Generator.Customizations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses;
 
@@ -9,12 +10,15 @@ namespace OpenAI.Responses;
 [CodeGenType("AnnotationType")]
 public enum ResponseMessageAnnotationKind
 {
+    [CodeGenMember("FileCitation")]
     FileCitation,
 
     [CodeGenMember("UrlCitation")]
     UriCitation,
 
+    [CodeGenMember("FilePath")]
     FilePath,
 
+    [CodeGenMember("ContainerFileCitation")]
     ContainerFileCitation
 }

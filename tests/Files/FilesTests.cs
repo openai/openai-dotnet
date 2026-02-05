@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using OpenAI.Files;
 using OpenAI.Tests.Utility;
 using System;
@@ -12,13 +13,15 @@ using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Files;
 
-[TestFixture(true)]
-[TestFixture(false)]
-[Parallelizable(ParallelScope.Fixtures)]
 [Category("Files")]
-public class FilesTests : SyncAsyncTestBase
+public class FilesTests : OpenAIRecordedTestBase
 {
-    private static OpenAIFileClient GetTestClient() => GetTestClient<OpenAIFileClient>(TestScenario.Files);
+    public enum FileSourceKind
+    {
+        UsingStream,
+        UsingFilePath,
+        UsingBinaryData
+    }
 
     public FilesTests(bool isAsync) : base(isAsync)
     {
@@ -36,377 +39,340 @@ public class FilesTests : SyncAsyncTestBase
         }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task ListFiles()
     {
-        OpenAIFileClient client = GetTestClient();
-        using Stream file1 = BinaryData.FromString("Hello! This is a test text file. Please delete me.").ToStream();
-        using Stream file2 = BinaryData.FromString("Hello! This is another test text file. Please delete me.").ToStream();
-        string filename = "test-file-delete-me.txt";
-        string visionFilename = "images_dog_and_cat.png";
-        string visionFilePath = Path.Combine("Assets", visionFilename);
-
-        OpenAIFile uploadedFile1 = null;
-        OpenAIFile uploadedFile2 = null;
-        OpenAIFile uploadedVisionFile = null;
-        OpenAIFileCollection fileInfoCollection;
-
-        try
+        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            uploadedFile1 = await client.UploadFileAsync(file1, filename, FileUploadPurpose.Assistants);
-            Validate(uploadedFile1);
-            uploadedFile2 = await client.UploadFileAsync(file2, filename, FileUploadPurpose.Assistants);
-            Validate(uploadedFile2);
-            uploadedVisionFile = await client.UploadFileAsync(visionFilePath, FileUploadPurpose.Vision);
-            Validate(uploadedVisionFile);
+            OpenAIFileClient client = GetTestClient();
+            using Stream file1 = BinaryData.FromString("Hello! This is a test text file. Please delete me.").ToStream();
+            using Stream file2 = BinaryData.FromString("Hello! This is another test text file. Please delete me.").ToStream();
+            string filename = "test-file-delete-me.txt";
+            string visionFilename = "images_dog_and_cat.png";
+            string visionFilePath = Path.Combine("Assets", visionFilename);
 
-            fileInfoCollection = IsAsync
-                ? await client.GetFilesAsync(FilePurpose.Assistants)
-                : client.GetFiles(FilePurpose.Assistants);
-        }
-        finally
-        {
-            if (uploadedVisionFile != null)
+            OpenAIFile uploadedFile1 = null;
+            OpenAIFile uploadedFile2 = null;
+            OpenAIFile uploadedVisionFile = null;
+            OpenAIFileCollection fileInfoCollection;
+
+            try
             {
-                await client.DeleteFileAsync(uploadedVisionFile.Id);
+                uploadedFile1 = await client.UploadFileAsync(file1, filename, FileUploadPurpose.Assistants);
+                Validate(uploadedFile1);
+                uploadedFile2 = await client.UploadFileAsync(file2, filename, FileUploadPurpose.Assistants);
+                Validate(uploadedFile2);
+                uploadedVisionFile = await client.UploadFileAsync(visionFilePath, FileUploadPurpose.Vision);
+                Validate(uploadedVisionFile);
+
+                fileInfoCollection = await client.GetFilesAsync(FilePurpose.Assistants);
+            }
+            finally
+            {
+                if (uploadedVisionFile != null)
+                {
+                    await client.DeleteFileAsync(uploadedVisionFile.Id);
+                }
+
+                if (uploadedFile2 != null)
+                {
+                    await client.DeleteFileAsync(uploadedFile2.Id);
+                }
+
+                if (uploadedFile1 != null)
+                {
+                    await client.DeleteFileAsync(uploadedFile1.Id);
+                }
             }
 
-            if (uploadedFile2 != null)
+            OpenAIFile fileInfo1 = null;
+            OpenAIFile fileInfo2 = null;
+            OpenAIFile visionFileInfo = null;
+
+            foreach (OpenAIFile item in fileInfoCollection)
             {
-                await client.DeleteFileAsync(uploadedFile2.Id);
+                if (item.Id == uploadedFile1.Id)
+                {
+                    fileInfo1 = item;
+                }
+                else if (item.Id == uploadedFile2.Id)
+                {
+                    fileInfo2 = item;
+                }
+                else if (item.Id == uploadedVisionFile.Id)
+                {
+                    visionFileInfo = item;
+                }
             }
 
-            if (uploadedFile1 != null)
-            {
-                await client.DeleteFileAsync(uploadedFile1.Id);
-            }
-        }
-
-        OpenAIFile fileInfo1 = null;
-        OpenAIFile fileInfo2 = null;
-        OpenAIFile visionFileInfo = null;
-
-        foreach (OpenAIFile item in fileInfoCollection)
-        {
-            if (item.Id == uploadedFile1.Id)
-            {
-                fileInfo1 = item;
-            }
-            else if (item.Id == uploadedFile2.Id)
-            {
-                fileInfo2 = item;
-            }
-            else if (item.Id == uploadedVisionFile.Id)
-            {
-                visionFileInfo = item;
-            }
-        }
-
-        Assert.That(fileInfo1, Is.Not.Null);
-        Assert.That(fileInfo1.SizeInBytes, Is.EqualTo(uploadedFile1.SizeInBytes));
-        Assert.That(fileInfo1.CreatedAt, Is.EqualTo(uploadedFile1.CreatedAt));
-        Assert.That(fileInfo1.Filename, Is.EqualTo(uploadedFile1.Filename));
-        Assert.That(fileInfo1.Purpose, Is.EqualTo(uploadedFile1.Purpose));
+            Assert.That(fileInfo1, Is.Not.Null);
+            Assert.That(fileInfo1.SizeInBytes, Is.EqualTo(uploadedFile1.SizeInBytes));
+            Assert.That(fileInfo1.CreatedAt, Is.EqualTo(uploadedFile1.CreatedAt));
+            Assert.That(fileInfo1.Filename, Is.EqualTo(uploadedFile1.Filename));
+            Assert.That(fileInfo1.Purpose, Is.EqualTo(uploadedFile1.Purpose));
 #pragma warning disable CS0618
-        Assert.That(fileInfo1.Status, Is.EqualTo(uploadedFile1.Status));
-        Assert.That(fileInfo1.StatusDetails, Is.EqualTo(uploadedFile1.StatusDetails));
+            Assert.That(fileInfo1.Status, Is.EqualTo(uploadedFile1.Status));
+            Assert.That(fileInfo1.StatusDetails, Is.EqualTo(uploadedFile1.StatusDetails));
 #pragma warning restore CS0618
 
-        Assert.That(fileInfo2, Is.Not.Null);
-        Assert.That(fileInfo2.SizeInBytes, Is.EqualTo(uploadedFile2.SizeInBytes));
-        Assert.That(fileInfo2.CreatedAt, Is.EqualTo(uploadedFile2.CreatedAt));
-        Assert.That(fileInfo2.Filename, Is.EqualTo(uploadedFile2.Filename));
-        Assert.That(fileInfo2.Purpose, Is.EqualTo(uploadedFile2.Purpose));
+            Assert.That(fileInfo2, Is.Not.Null);
+            Assert.That(fileInfo2.SizeInBytes, Is.EqualTo(uploadedFile2.SizeInBytes));
+            Assert.That(fileInfo2.CreatedAt, Is.EqualTo(uploadedFile2.CreatedAt));
+            Assert.That(fileInfo2.Filename, Is.EqualTo(uploadedFile2.Filename));
+            Assert.That(fileInfo2.Purpose, Is.EqualTo(uploadedFile2.Purpose));
 #pragma warning disable CS0618
-        Assert.That(fileInfo2.Status, Is.EqualTo(uploadedFile2.Status));
-        Assert.That(fileInfo2.StatusDetails, Is.EqualTo(uploadedFile2.StatusDetails));
+            Assert.That(fileInfo2.Status, Is.EqualTo(uploadedFile2.Status));
+            Assert.That(fileInfo2.StatusDetails, Is.EqualTo(uploadedFile2.StatusDetails));
 #pragma warning restore CS0618
 
-        Assert.That(visionFileInfo, Is.Null);
+            Assert.That(visionFileInfo, Is.Null);
+        }
     }
 
-    public enum FileSourceKind
-    {
-        UsingStream,
-        UsingFilePath,
-        UsingBinaryData
-    }
-
-    private static Array s_fileSourceKindSource = Enum.GetValues(typeof(FileSourceKind));
-
-    [Test]
+    [RecordedTest]
     [TestCaseSource(nameof(s_fileSourceKindSource))]
     public async Task UploadFile(FileSourceKind fileSourceKind)
     {
-        OpenAIFileClient client = GetTestClient();
-        string filename = "images_dog_and_cat.png";
-        string path = Path.Combine("Assets", filename);
-        OpenAIFile fileInfo = null;
-
-        try
+        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            if (fileSourceKind == FileSourceKind.UsingStream)
-            {
-                using Stream file = File.OpenRead(path);
+            OpenAIFileClient client = GetTestClient();
+            string filename = "images_dog_and_cat.png";
+            string path = Path.Combine("Assets", filename);
+            OpenAIFile fileInfo = null;
 
-                fileInfo = IsAsync
-                    ? await client.UploadFileAsync(file, filename, FileUploadPurpose.Vision)
-                    : client.UploadFile(file, filename, FileUploadPurpose.Vision);
-                Validate(fileInfo);
-            }
-            else if (fileSourceKind == FileSourceKind.UsingFilePath)
+            try
             {
-                fileInfo = IsAsync
-                    ? await client.UploadFileAsync(path, FileUploadPurpose.Vision)
-                    : client.UploadFile(path, FileUploadPurpose.Vision);
-                Validate(fileInfo);
-            }
-            else if (fileSourceKind == FileSourceKind.UsingBinaryData)
-            {
-                using Stream file = File.OpenRead(path);
-                BinaryData content = BinaryData.FromStream(file);
+                if (fileSourceKind == FileSourceKind.UsingStream)
+                {
+                    using Stream file = File.OpenRead(path);
 
-                fileInfo = IsAsync
-                    ? await client.UploadFileAsync(content, filename, FileUploadPurpose.Vision)
-                    : client.UploadFile(content, filename, FileUploadPurpose.Vision);
-                Validate(fileInfo);
-            }
-            else
-            {
-                Assert.Fail("Invalid source kind.");
-            }
-        }
-        finally
-        {
-            if (fileInfo != null)
-            {
-                await client.DeleteFileAsync(fileInfo.Id);
-            }
-        }
+                    fileInfo = await client.UploadFileAsync(file, filename, FileUploadPurpose.Vision);
+                    Validate(fileInfo);
+                }
+                else if (fileSourceKind == FileSourceKind.UsingFilePath)
+                {
+                    fileInfo = await client.UploadFileAsync(path, FileUploadPurpose.Vision);
+                    Validate(fileInfo);
+                }
+                else if (fileSourceKind == FileSourceKind.UsingBinaryData)
+                {
+                    using Stream file = File.OpenRead(path);
+                    BinaryData content = BinaryData.FromStream(file);
 
-        long expectedSize = new FileInfo(path).Length;
-        long unixTime2024 = (new DateTimeOffset(2024, 01, 01, 0, 0, 0, TimeSpan.Zero)).ToUnixTimeSeconds();
-        string expectedFilename = (fileSourceKind == FileSourceKind.UsingFilePath) ? path : filename;
+                    fileInfo = await client.UploadFileAsync(content, filename, FileUploadPurpose.Vision);
+                    Validate(fileInfo);
+                }
+                else
+                {
+                    Assert.Fail("Invalid source kind.");
+                }
+            }
+            finally
+            {
+                if (fileInfo != null)
+                {
+                    await client.DeleteFileAsync(fileInfo.Id);
+                }
+            }
 
-        Assert.That(fileInfo, Is.Not.Null);
-        Assert.That(fileInfo.Id, Is.Not.Null.And.Not.Empty);
-        Assert.That(fileInfo.SizeInBytes, Is.EqualTo(expectedSize));
-        Assert.That(fileInfo.CreatedAt.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2024));
-        Assert.That(fileInfo.Filename, Is.EqualTo(expectedFilename));
-        Assert.That(fileInfo.Purpose, Is.EqualTo(FilePurpose.Vision));
+            long expectedSize = new FileInfo(path).Length;
+            long unixTime2024 = (new DateTimeOffset(2024, 01, 01, 0, 0, 0, TimeSpan.Zero)).ToUnixTimeSeconds();
+            string expectedFilename = (fileSourceKind == FileSourceKind.UsingFilePath) ? path : filename;
+
+            Assert.That(fileInfo, Is.Not.Null);
+            Assert.That(fileInfo.Id, Is.Not.Null.And.Not.Empty);
+            Assert.That(fileInfo.SizeInBytes, Is.EqualTo(expectedSize));
+            Assert.That(fileInfo.CreatedAt.ToUnixTimeSeconds(), Is.GreaterThan(unixTime2024));
+            Assert.That(fileInfo.Filename, Is.EqualTo(expectedFilename));
+            Assert.That(fileInfo.Purpose, Is.EqualTo(FilePurpose.Vision));
 #pragma warning disable CS0618
-        Assert.That(fileInfo.Status, Is.Not.EqualTo(default(FileStatus)));
+            Assert.That(fileInfo.Status, Is.Not.EqualTo(default(FileStatus)));
 #pragma warning restore CS0618
+        }
     }
 
-    [Test]
+    [RecordedTest]
     public void UploadFileCanParseServiceError()
     {
-        OpenAIFileClient client = GetTestClient();
-        string filename = "images_dog_and_cat.png";
-        string path = Path.Combine("Assets", filename);
-        FileUploadPurpose fakePurpose = new FileUploadPurpose("world_domination");
-        ClientResultException ex = null;
-
-        if (IsAsync)
+        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.UploadFileAsync(path, fakePurpose));
-        }
-        else
-        {
-            ex = Assert.Throws<ClientResultException>(() => client.UploadFile(path, fakePurpose));
-        }
+            OpenAIFileClient client = GetTestClient();
+            string filename = "images_dog_and_cat.png";
+            string path = Path.Combine("Assets", filename);
+            FileUploadPurpose fakePurpose = new FileUploadPurpose("world_domination");
+            ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.UploadFileAsync(path, fakePurpose));
 
-        Assert.That(ex.Status, Is.EqualTo(400));
+            Assert.That(ex.Status, Is.EqualTo(400));
+        }
     }
 
-    [Test]
+    [RecordedTest]
     [TestCase(true)]
     [TestCase(false)]
     public async Task DeleteFile(bool useFileInfoOverload)
     {
-        OpenAIFileClient client = GetTestClient();
-        string fileContent = "Hello! This is a test text file. Please delete me.";
-        using Stream file = BinaryData.FromString(fileContent).ToStream();
-        string filename = "test-file-delete-me.txt";
-
-        OpenAIFile uploadedFile = await client.UploadFileAsync(file, filename, FileUploadPurpose.Assistants);
-        Validate(uploadedFile);
-        FileDeletionResult result;
-
-        if (useFileInfoOverload)
+        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            result = IsAsync
-                ? await client.DeleteFileAsync(uploadedFile.Id)
-                : client.DeleteFile(uploadedFile.Id);
-        }
-        else
-        {
-            result = IsAsync
-                ? await client.DeleteFileAsync(uploadedFile.Id)
-                : client.DeleteFile(uploadedFile.Id);
-        }
+            OpenAIFileClient client = GetTestClient();
+            string fileContent = "Hello! This is a test text file. Please delete me.";
+            using Stream file = BinaryData.FromString(fileContent).ToStream();
+            string filename = "test-file-delete-me.txt";
 
-        Assert.That(result.FileId, Is.EqualTo(uploadedFile.Id));
-        Assert.That(result.Deleted, Is.True);
+            OpenAIFile uploadedFile = await client.UploadFileAsync(file, filename, FileUploadPurpose.Assistants);
+            Validate(uploadedFile);
+            FileDeletionResult result;
+
+            if (useFileInfoOverload)
+            {
+                result = await client.DeleteFileAsync(uploadedFile.Id);
+            }
+            else
+            {
+                result = await client.DeleteFileAsync(uploadedFile.Id);
+            }
+
+            Assert.That(result.FileId, Is.EqualTo(uploadedFile.Id));
+            Assert.That(result.Deleted, Is.True);
+        }
     }
 
-    [Test]
+    [RecordedTest]
     public void DeleteFileCanParseServiceError()
     {
         OpenAIFileClient client = GetTestClient();
-        ClientResultException ex = null;
-
-        if (IsAsync)
-        {
-            ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.DeleteFileAsync("fake_id"));
-        }
-        else
-        {
-            ex = Assert.Throws<ClientResultException>(() => client.DeleteFile("fake_id"));
-        }
+        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.DeleteFileAsync("fake_id"));
 
         Assert.That(ex.Status, Is.EqualTo(404));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task GetFile()
     {
-        OpenAIFileClient client = GetTestClient();
-        using Stream file = BinaryData.FromString("Hello! This is a test text file. Please delete me.").ToStream();
-        string filename = "test-file-delete-me.txt";
-        OpenAIFile uploadedFile = null;
-        OpenAIFile fileInfo;
-
-        try
+        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            uploadedFile = await client.UploadFileAsync(file, filename, FileUploadPurpose.Assistants);
-            Validate(uploadedFile);
+            OpenAIFileClient client = GetTestClient();
+            using Stream file = BinaryData.FromString("Hello! This is a test text file. Please delete me.").ToStream();
+            string filename = "test-file-delete-me.txt";
+            OpenAIFile uploadedFile = null;
+            OpenAIFile fileInfo;
 
-            fileInfo = IsAsync
-                ? await client.GetFileAsync(uploadedFile.Id)
-                : client.GetFile(uploadedFile.Id);
-        }
-        finally
-        {
-            if (uploadedFile != null)
+            try
             {
-                await client.DeleteFileAsync(uploadedFile.Id);
-            }
-        }
+                uploadedFile = await client.UploadFileAsync(file, filename, FileUploadPurpose.Assistants);
+                Validate(uploadedFile);
 
-        Assert.That(fileInfo, Is.Not.Null);
-        Assert.That(fileInfo.Id, Is.EqualTo(uploadedFile.Id));
-        Assert.That(fileInfo.SizeInBytes, Is.EqualTo(uploadedFile.SizeInBytes));
-        Assert.That(fileInfo.CreatedAt, Is.EqualTo(uploadedFile.CreatedAt));
-        Assert.That(fileInfo.Filename, Is.EqualTo(uploadedFile.Filename));
-        Assert.That(fileInfo.Purpose, Is.EqualTo(uploadedFile.Purpose));
+                fileInfo = await client.GetFileAsync(uploadedFile.Id);
+            }
+            finally
+            {
+                if (uploadedFile != null)
+                {
+                    await client.DeleteFileAsync(uploadedFile.Id);
+                }
+            }
+
+            Assert.That(fileInfo, Is.Not.Null);
+            Assert.That(fileInfo.Id, Is.EqualTo(uploadedFile.Id));
+            Assert.That(fileInfo.SizeInBytes, Is.EqualTo(uploadedFile.SizeInBytes));
+            Assert.That(fileInfo.CreatedAt, Is.EqualTo(uploadedFile.CreatedAt));
+            Assert.That(fileInfo.Filename, Is.EqualTo(uploadedFile.Filename));
+            Assert.That(fileInfo.Purpose, Is.EqualTo(uploadedFile.Purpose));
 #pragma warning disable CS0618
-        Assert.That(fileInfo.Status, Is.EqualTo(uploadedFile.Status));
-        Assert.That(fileInfo.StatusDetails, Is.EqualTo(uploadedFile.StatusDetails));
+            Assert.That(fileInfo.Status, Is.EqualTo(uploadedFile.Status));
+            Assert.That(fileInfo.StatusDetails, Is.EqualTo(uploadedFile.StatusDetails));
 #pragma warning restore CS0618
+        }
     }
 
-    [Test]
+    [RecordedTest]
     public void GetFileCanParseServiceError()
     {
         OpenAIFileClient client = GetTestClient();
-        ClientResultException ex = null;
-
-        if (IsAsync)
-        {
-            ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GetFileAsync("fake_id"));
-        }
-        else
-        {
-            ex = Assert.Throws<ClientResultException>(() => client.GetFile("fake_id"));
-        }
+        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.GetFileAsync("fake_id"));
 
         Assert.That(ex.Status, Is.EqualTo(404));
     }
 
-    [Test]
+    [RecordedTest]
     public async Task DownloadContent()
     {
-        OpenAIFileClient client = GetTestClient();
-        string filename = "images_dog_and_cat.png";
-        string path = Path.Combine("Assets", filename);
-        using Stream file = File.OpenRead(path);
-        OpenAIFile uploadedFile = null;
-        BinaryData downloadedContent;
-
-        try
+        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            uploadedFile = await client.UploadFileAsync(file, filename, FileUploadPurpose.Vision);
-            Validate(uploadedFile);
+            OpenAIFileClient client = GetTestClient();
+            string filename = "images_dog_and_cat.png";
+            string path = Path.Combine("Assets", filename);
+            using Stream file = File.OpenRead(path);
+            OpenAIFile uploadedFile = null;
+            BinaryData downloadedContent;
 
-            downloadedContent = IsAsync
-                ? await client.DownloadFileAsync(uploadedFile.Id)
-                : client.DownloadFile(uploadedFile.Id);
-        }
-        finally
-        {
-            if (uploadedFile != null)
+            try
             {
-                await client.DeleteFileAsync(uploadedFile.Id);
+                uploadedFile = await client.UploadFileAsync(file, filename, FileUploadPurpose.Vision);
+                Validate(uploadedFile);
+
+                downloadedContent = await client.DownloadFileAsync(uploadedFile.Id);
             }
+            finally
+            {
+                if (uploadedFile != null)
+                {
+                    await client.DeleteFileAsync(uploadedFile.Id);
+                }
+            }
+
+            byte[] originalFileBytes = File.ReadAllBytes(path);
+            byte[] downloadedBytes = downloadedContent.ToArray();
+
+            Assert.That(downloadedBytes.SequenceEqual(originalFileBytes));
         }
-
-        byte[] originalFileBytes = File.ReadAllBytes(path);
-        byte[] downloadedBytes = downloadedContent.ToArray();
-
-        Assert.That(downloadedBytes.SequenceEqual(originalFileBytes));
     }
 
-    [Test]
+    [RecordedTest]
     public void DownloadFileCanParseServiceError()
     {
         OpenAIFileClient client = GetTestClient();
-        ClientResultException ex = null;
-
-        if (IsAsync)
-        {
-            ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.DownloadFileAsync("fake_id"));
-        }
-        else
-        {
-            ex = Assert.Throws<ClientResultException>(() => client.DownloadFile("fake_id"));
-        }
+        ClientResultException ex = Assert.ThrowsAsync<ClientResultException>(async () => await client.DownloadFileAsync("fake_id"));
 
         Assert.That(ex.Status, Is.EqualTo(404));
     }
 
-    [Test]
+    [RecordedTest]
     public void SerializeFileCollection()
     {
         // TODO: Add this test.
     }
 
-    [Test]
+    [RecordedTest]
     public async Task NonAsciiFilename()
     {
-        OpenAIFileClient client = GetTestClient();
-        string filename = "你好.txt";
-        BinaryData fileContent = BinaryData.FromString("世界您好！这是个测试。");
-        OpenAIFile uploadedFile = IsAsync
-            ? await client.UploadFileAsync(fileContent, filename, FileUploadPurpose.Assistants)
-            : client.UploadFile(fileContent, filename, FileUploadPurpose.Assistants);
-        Validate(uploadedFile);
-        Assert.That(uploadedFile?.Filename, Is.EqualTo(filename));
+        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
+        {
+            OpenAIFileClient client = GetTestClient();
+            string filename = "你好.txt";
+            BinaryData fileContent = BinaryData.FromString("世界您好！这是个测试。");
+            OpenAIFile uploadedFile = await client.UploadFileAsync(fileContent, filename, FileUploadPurpose.Assistants);
+            Validate(uploadedFile);
+            Assert.That(uploadedFile?.Filename, Is.EqualTo(filename));
+        }
     }
 
-    [Test]
+    [RecordedTest]
     public async Task UserDataPurpose()
     {
-        OpenAIFileClient client = GetTestClient();
+        using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
+        {
+            OpenAIFileClient client = GetTestClient();
 
-        BinaryData fileContent = BinaryData.FromString("Hello, world!");
-        OpenAIFile uploadedFile = IsAsync
-            ? await client.UploadFileAsync(fileContent, "test_hello_world.txt", FileUploadPurpose.UserData)
-            : client.UploadFile(fileContent, "test_hello_world.txt", FileUploadPurpose.UserData);
-        Validate(uploadedFile);
-        Assert.That(uploadedFile.Purpose, Is.EqualTo(FilePurpose.UserData));
+            BinaryData fileContent = BinaryData.FromString("Hello, world!");
+            OpenAIFile uploadedFile = await client.UploadFileAsync(fileContent, "test_hello_world.txt", FileUploadPurpose.UserData);
+            Validate(uploadedFile);
+            Assert.That(uploadedFile.Purpose, Is.EqualTo(FilePurpose.UserData));
+        }
     }
+
+    private static Array s_fileSourceKindSource = Enum.GetValues(typeof(FileSourceKind));
+
+    private readonly List<string> FileIdsForCleanup = [];
 
     private void Validate<T>(T instance)
     {
@@ -421,5 +387,5 @@ public class FilesTests : SyncAsyncTestBase
         }
     }
 
-    private readonly List<string> FileIdsForCleanup = [];
+    private OpenAIFileClient GetTestClient() => GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
 }

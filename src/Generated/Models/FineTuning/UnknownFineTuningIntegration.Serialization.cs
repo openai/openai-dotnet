@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.FineTuning
 {
-    internal partial class UnknownFineTuningIntegration : IJsonModel<InternalFineTuningIntegration>
+    internal partial class UnknownFineTuningIntegration : InternalFineTuningIntegration, IJsonModel<InternalFineTuningIntegration>
     {
         internal UnknownFineTuningIntegration() : this(default, null)
         {
@@ -89,7 +89,7 @@ namespace OpenAI.FineTuning
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalFineTuningIntegration(document.RootElement, options);
                     }

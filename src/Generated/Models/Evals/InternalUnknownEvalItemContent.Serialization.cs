@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalUnknownEvalItemContent : IJsonModel<InternalEvalItemContent>
+    internal partial class InternalUnknownEvalItemContent : InternalEvalItemContent, IJsonModel<InternalEvalItemContent>
     {
         internal InternalUnknownEvalItemContent() : this(default, null)
         {
@@ -89,7 +89,7 @@ namespace OpenAI.Evals
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalEvalItemContent(document.RootElement, options);
                     }

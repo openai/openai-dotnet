@@ -1,6 +1,7 @@
-﻿using System;
+using Microsoft.TypeSpec.Generator.Customizations;
+using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 
 namespace OpenAI.Chat;
@@ -15,6 +16,14 @@ internal partial class InternalCreateChatCompletionStreamResponseChoice : IJsonM
 
     internal static void SerializeInternalCreateChatCompletionStreamResponseChoice(InternalCreateChatCompletionStreamResponseChoice instance, Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        if (instance.Patch.Contains("$"u8))
+        {
+            writer.WriteRawValue(instance.Patch.GetJson("$"u8));
+            return;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
         writer.WriteStartObject();
         writer.WritePropertyName("delta"u8);
         writer.WriteObjectValue(instance.Delta, options);
@@ -44,11 +53,13 @@ internal partial class InternalCreateChatCompletionStreamResponseChoice : IJsonM
         }
         writer.WritePropertyName("index"u8);
         writer.WriteNumberValue(instance.Index);
-        writer.WriteSerializedAdditionalRawData(instance._additionalBinaryDataProperties, options);
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        instance.Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         writer.WriteEndObject();
     }
 
-    internal static InternalCreateChatCompletionStreamResponseChoice DeserializeInternalCreateChatCompletionStreamResponseChoice(JsonElement element, ModelReaderWriterOptions options = null)
+    internal static InternalCreateChatCompletionStreamResponseChoice DeserializeInternalCreateChatCompletionStreamResponseChoice(JsonElement element, BinaryData data, ModelReaderWriterOptions options = null)
     {
         options ??= ModelSerializationExtensions.WireOptions;
 
@@ -60,13 +71,14 @@ internal partial class InternalCreateChatCompletionStreamResponseChoice : IJsonM
         InternalCreateChatCompletionStreamResponseChoiceLogprobs logprobs = default;
         ChatFinishReason? finishReason = default;
         int index = default;
-        IDictionary<string, BinaryData> serializedAdditionalRawData = default;
-        Dictionary<string, BinaryData> rawDataDictionary = new Dictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         foreach (var property in element.EnumerateObject())
         {
             if (property.NameEquals("delta"u8))
             {
-                delta = InternalChatCompletionStreamResponseDelta.DeserializeInternalChatCompletionStreamResponseDelta(property.Value, options);
+                delta = InternalChatCompletionStreamResponseDelta.DeserializeInternalChatCompletionStreamResponseDelta(property.Value, property.Value.GetUtf8Bytes(), options);
                 continue;
             }
             if (property.NameEquals("logprobs"u8))
@@ -76,7 +88,7 @@ internal partial class InternalCreateChatCompletionStreamResponseChoice : IJsonM
                     logprobs = null;
                     continue;
                 }
-                logprobs = InternalCreateChatCompletionStreamResponseChoiceLogprobs.DeserializeInternalCreateChatCompletionStreamResponseChoiceLogprobs(property.Value, options);
+                logprobs = InternalCreateChatCompletionStreamResponseChoiceLogprobs.DeserializeInternalCreateChatCompletionStreamResponseChoiceLogprobs(property.Value, property.Value.GetUtf8Bytes(), options);
                 continue;
             }
             if (property.NameEquals("finish_reason"u8))
@@ -96,10 +108,9 @@ internal partial class InternalCreateChatCompletionStreamResponseChoice : IJsonM
             }
             if (true)
             {
-                rawDataDictionary.Add(property.Name, BinaryData.FromString(property.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(property.Name)], property.Value.GetUtf8Bytes());
             }
         }
-        serializedAdditionalRawData = rawDataDictionary;
-        return new InternalCreateChatCompletionStreamResponseChoice(delta: delta, logprobs: logprobs, index: index, finishReason: finishReason, additionalBinaryDataProperties: serializedAdditionalRawData);
+        return new InternalCreateChatCompletionStreamResponseChoice(delta: delta, logprobs: logprobs, index: index, finishReason: finishReason, patch: patch);
     }
 }

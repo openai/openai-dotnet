@@ -62,6 +62,11 @@ namespace OpenAI.Audio
                 writer.WritePropertyName("speed"u8);
                 writer.WriteNumberValue(SpeedRatio.Value);
             }
+            if (Optional.IsDefined(StreamFormat) && _additionalBinaryDataProperties?.ContainsKey("stream_format") != true)
+            {
+                writer.WritePropertyName("stream_format"u8);
+                writer.WriteStringValue(StreamFormat.Value.ToString());
+            }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
             {
@@ -110,6 +115,7 @@ namespace OpenAI.Audio
             GeneratedSpeechVoice voice = default;
             GeneratedSpeechFormat? responseFormat = default;
             float? speedRatio = default;
+            InternalCreateSpeechRequestStreamFormat? streamFormat = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -151,6 +157,15 @@ namespace OpenAI.Audio
                     speedRatio = prop.Value.GetSingle();
                     continue;
                 }
+                if (prop.NameEquals("stream_format"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    streamFormat = new InternalCreateSpeechRequestStreamFormat(prop.Value.GetString());
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
@@ -161,6 +176,7 @@ namespace OpenAI.Audio
                 voice,
                 responseFormat,
                 speedRatio,
+                streamFormat,
                 additionalBinaryDataProperties);
         }
 
@@ -188,7 +204,7 @@ namespace OpenAI.Audio
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeSpeechGenerationOptions(document.RootElement, options);
                     }

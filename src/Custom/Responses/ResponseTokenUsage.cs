@@ -1,30 +1,28 @@
-using System.Diagnostics.CodeAnalysis;
+using Microsoft.TypeSpec.Generator.Customizations;
 
 namespace OpenAI.Responses;
 
-// CUSTOM:
-// - Added Experimental attribute.
-// - Renamed.
+// CUSTOM: Renamed.
 [CodeGenType("ResponseUsage")]
 public partial class ResponseTokenUsage
 {
     // CUSTOM: Renamed.
     [CodeGenMember("InputTokens")]
-    public int InputTokenCount { get; }
+    public int InputTokenCount { get; set; }
 
     // CUSTOM: Renamed.
     [CodeGenMember("OutputTokens")]
-    public int OutputTokenCount { get; }
+    public int OutputTokenCount { get; set; }
 
     // CUSTOM: Renamed.
     [CodeGenMember("TotalTokens")]
-    public int TotalTokenCount { get; }
+    public int TotalTokenCount { get; set;  }
 
     // CUSTOM: Renamed.
     [CodeGenMember("InputTokensDetails")]
-    public ResponseInputTokenUsageDetails InputTokenDetails { get; }
+    public ResponseInputTokenUsageDetails InputTokenDetails { get; set; }
 
     // CUSTOM: Renamed.
     [CodeGenMember("OutputTokensDetails")]
-    public ResponseOutputTokenUsageDetails OutputTokenDetails { get; }
+    public ResponseOutputTokenUsageDetails OutputTokenDetails { get; set; }
 }

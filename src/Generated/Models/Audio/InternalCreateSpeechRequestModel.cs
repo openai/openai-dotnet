@@ -4,7 +4,6 @@
 
 using System;
 using System.ComponentModel;
-using OpenAI;
 
 namespace OpenAI.Audio
 {
@@ -14,11 +13,10 @@ namespace OpenAI.Audio
         private const string Tts1Value = "tts-1";
         private const string Tts1HdValue = "tts-1-hd";
         private const string Gpt4oMiniTtsValue = "gpt-4o-mini-tts";
+        private const string Gpt4oMiniTts20251215Value = "gpt-4o-mini-tts-2025-12-15";
 
         public InternalCreateSpeechRequestModel(string value)
         {
-            Argument.AssertNotNull(value, nameof(value));
-
             _value = value;
         }
 
@@ -27,6 +25,8 @@ namespace OpenAI.Audio
         internal static InternalCreateSpeechRequestModel Tts1Hd { get; } = new InternalCreateSpeechRequestModel(Tts1HdValue);
 
         internal static InternalCreateSpeechRequestModel Gpt4oMiniTts { get; } = new InternalCreateSpeechRequestModel(Gpt4oMiniTtsValue);
+
+        internal static InternalCreateSpeechRequestModel Gpt4oMiniTts20251215 { get; } = new InternalCreateSpeechRequestModel(Gpt4oMiniTts20251215Value);
 
         public static bool operator ==(InternalCreateSpeechRequestModel left, InternalCreateSpeechRequestModel right) => left.Equals(right);
 

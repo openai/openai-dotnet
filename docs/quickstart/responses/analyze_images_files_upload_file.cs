@@ -4,18 +4,17 @@
 #pragma warning disable OPENAI001
 
 #:package OpenAI@2.*
-#:property PublishAot=false
 
 using OpenAI.Files;
 using OpenAI.Responses;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-OpenAIResponseClient client = new(model: "gpt-5", apiKey: key);
+ResponsesClient client = new(model: "gpt-5.2", apiKey: key);
 
 OpenAIFileClient files = new(key);
 OpenAIFile file = files.UploadFile("draconomicon.pdf", FileUploadPurpose.UserData);
 
-OpenAIResponse response = (OpenAIResponse)client.CreateResponse([
+ResponseResult response = client.CreateResponse([
     ResponseItem.CreateUserMessageItem([
         ResponseContentPart.CreateInputFilePart(file.Id),
         ResponseContentPart.CreateInputTextPart("What is the first dragon in the book?")

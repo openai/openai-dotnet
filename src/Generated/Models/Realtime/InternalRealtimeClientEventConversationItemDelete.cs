@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Realtime
 {
@@ -12,8 +11,6 @@ namespace OpenAI.Realtime
     {
         public InternalRealtimeClientEventConversationItemDelete(string itemId) : base(InternalRealtimeClientEventType.ConversationItemDelete)
         {
-            Argument.AssertNotNull(itemId, nameof(itemId));
-
             ItemId = itemId;
         }
 

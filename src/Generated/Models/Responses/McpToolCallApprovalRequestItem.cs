@@ -3,7 +3,7 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
@@ -12,7 +12,7 @@ namespace OpenAI.Responses
     [Experimental("OPENAI001")]
     public partial class McpToolCallApprovalRequestItem : ResponseItem
     {
-        public McpToolCallApprovalRequestItem(string serverLabel, string toolName, BinaryData toolArguments) : base(InternalItemType.McpApprovalRequest)
+        internal McpToolCallApprovalRequestItem(string serverLabel, string toolName, BinaryData toolArguments) : base(InternalItemType.McpApprovalRequest)
         {
             Argument.AssertNotNull(serverLabel, nameof(serverLabel));
             Argument.AssertNotNull(toolName, nameof(toolName));
@@ -23,12 +23,14 @@ namespace OpenAI.Responses
             ToolArguments = toolArguments;
         }
 
-        internal McpToolCallApprovalRequestItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string serverLabel, string toolName, BinaryData toolArguments) : base(kind, id, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal McpToolCallApprovalRequestItem(InternalItemType kind, string id, in JsonPatch patch, string serverLabel, string toolName, BinaryData toolArguments) : base(kind, id, patch)
         {
             ServerLabel = serverLabel;
             ToolName = toolName;
             ToolArguments = toolArguments;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ServerLabel { get; set; }
 

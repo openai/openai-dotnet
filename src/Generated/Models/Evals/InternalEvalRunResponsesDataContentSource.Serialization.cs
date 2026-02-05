@@ -11,7 +11,7 @@ using OpenAI.Chat;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalRunResponsesDataContentSource : IJsonModel<InternalEvalRunResponsesDataContentSource>
+    internal partial class InternalEvalRunResponsesDataContentSource : InternalEvalRunDataContentSource, IJsonModel<InternalEvalRunResponsesDataContentSource>
     {
         void IJsonModel<InternalEvalRunResponsesDataContentSource>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -322,7 +322,7 @@ namespace OpenAI.Evals
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalEvalRunResponsesDataContentSource(document.RootElement, options);
                     }

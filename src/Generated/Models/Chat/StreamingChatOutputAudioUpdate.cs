@@ -3,37 +3,41 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace OpenAI.Chat
 {
     [Experimental("OPENAI001")]
     public partial class StreamingChatOutputAudioUpdate
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
         internal StreamingChatOutputAudioUpdate()
         {
         }
 
-        internal StreamingChatOutputAudioUpdate(string id, string transcriptUpdate, BinaryData audioBytesUpdate, DateTimeOffset? expiresAt, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal StreamingChatOutputAudioUpdate(string id, string transcriptUpdate, BinaryData audioBytesUpdate, DateTimeOffset? expiresAt, in JsonPatch patch)
         {
             Id = id;
             TranscriptUpdate = transcriptUpdate;
             AudioBytesUpdate = audioBytesUpdate;
             ExpiresAt = expiresAt;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        [JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         public string Id { get; }
 
         public DateTimeOffset? ExpiresAt { get; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
     }
 }

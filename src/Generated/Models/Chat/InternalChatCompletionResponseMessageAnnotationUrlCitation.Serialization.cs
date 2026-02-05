@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -18,6 +18,14 @@ namespace OpenAI.Chat
 
         void IJsonModel<InternalChatCompletionResponseMessageAnnotationUrlCitation>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -30,46 +38,30 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(InternalChatCompletionResponseMessageAnnotationUrlCitation)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("end_index") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.end_index"u8))
             {
                 writer.WritePropertyName("end_index"u8);
                 writer.WriteNumberValue(EndIndex);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("start_index") != true)
+            if (!Patch.Contains("$.start_index"u8))
             {
                 writer.WritePropertyName("start_index"u8);
                 writer.WriteNumberValue(StartIndex);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("url") != true)
+            if (!Patch.Contains("$.url"u8))
             {
                 writer.WritePropertyName("url"u8);
                 writer.WriteStringValue(Url.AbsoluteUri);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("title") != true)
+            if (!Patch.Contains("$.title"u8))
             {
                 writer.WritePropertyName("title"u8);
                 writer.WriteStringValue(Title);
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalChatCompletionResponseMessageAnnotationUrlCitation IJsonModel<InternalChatCompletionResponseMessageAnnotationUrlCitation>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -82,10 +74,10 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(InternalChatCompletionResponseMessageAnnotationUrlCitation)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalChatCompletionResponseMessageAnnotationUrlCitation(document.RootElement, options);
+            return DeserializeInternalChatCompletionResponseMessageAnnotationUrlCitation(document.RootElement, null, options);
         }
 
-        internal static InternalChatCompletionResponseMessageAnnotationUrlCitation DeserializeInternalChatCompletionResponseMessageAnnotationUrlCitation(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalChatCompletionResponseMessageAnnotationUrlCitation DeserializeInternalChatCompletionResponseMessageAnnotationUrlCitation(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -95,7 +87,9 @@ namespace OpenAI.Chat
             int startIndex = default;
             Uri url = default;
             string title = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("end_index"u8))
@@ -110,7 +104,7 @@ namespace OpenAI.Chat
                 }
                 if (prop.NameEquals("url"u8))
                 {
-                    url = new Uri(prop.Value.GetString());
+                    url = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("title"u8))
@@ -118,10 +112,9 @@ namespace OpenAI.Chat
                     title = prop.Value.GetString();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalChatCompletionResponseMessageAnnotationUrlCitation(endIndex, startIndex, url, title, additionalBinaryDataProperties);
+            return new InternalChatCompletionResponseMessageAnnotationUrlCitation(endIndex, startIndex, url, title, patch);
         }
 
         BinaryData IPersistableModel<InternalChatCompletionResponseMessageAnnotationUrlCitation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -146,9 +139,9 @@ namespace OpenAI.Chat
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalChatCompletionResponseMessageAnnotationUrlCitation(document.RootElement, options);
+                        return DeserializeInternalChatCompletionResponseMessageAnnotationUrlCitation(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalChatCompletionResponseMessageAnnotationUrlCitation)} does not support reading '{options.Format}' format.");

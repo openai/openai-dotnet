@@ -346,7 +346,7 @@ namespace OpenAI.LegacyCompletions
                         streamOptions = null;
                         continue;
                     }
-                    streamOptions = InternalChatCompletionStreamOptions.DeserializeInternalChatCompletionStreamOptions(prop.Value, options);
+                    streamOptions = InternalChatCompletionStreamOptions.DeserializeInternalChatCompletionStreamOptions(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("suffix"u8))
@@ -431,7 +431,7 @@ namespace OpenAI.LegacyCompletions
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalCreateCompletionRequest(document.RootElement, options);
                     }

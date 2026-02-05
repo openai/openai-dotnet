@@ -6,6 +6,7 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
 using OpenAI;
 
@@ -21,6 +22,26 @@ namespace OpenAI.Batch
         }
 
         public ClientPipeline Pipeline { get; }
+
+        public virtual CollectionResult GetBatches(string after, int? limit, RequestOptions options)
+        {
+            return new BatchClientGetBatchesCollectionResult(this, after, limit, options);
+        }
+
+        public virtual AsyncCollectionResult GetBatchesAsync(string after, int? limit, RequestOptions options)
+        {
+            return new BatchClientGetBatchesAsyncCollectionResult(this, after, limit, options);
+        }
+
+        public virtual CollectionResult<BatchJob> GetBatches(BatchCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            return new BatchClientGetBatchesCollectionResultOfT(this, options?.AfterId, options?.PageSizeLimit, cancellationToken.ToRequestOptions());
+        }
+
+        public virtual AsyncCollectionResult<BatchJob> GetBatchesAsync(BatchCollectionOptions options = default, CancellationToken cancellationToken = default)
+        {
+            return new BatchClientGetBatchesAsyncCollectionResultOfT(this, options?.AfterId, options?.PageSizeLimit, cancellationToken.ToRequestOptions());
+        }
 
         public virtual ClientResult GetBatch(string batchId, RequestOptions options)
         {

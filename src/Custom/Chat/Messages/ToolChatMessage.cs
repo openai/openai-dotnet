@@ -1,3 +1,4 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using System.Collections.Generic;
 
 namespace OpenAI.Chat;
@@ -35,7 +36,7 @@ public partial class ToolChatMessage : ChatMessage
     ///     The collection of content items associated with the message.
     /// </param>
     public ToolChatMessage(string toolCallId, IEnumerable<ChatMessageContentPart> contentParts)
-        : this(content: new(contentParts), role: ChatMessageRole.Tool, additionalBinaryDataProperties: null, toolCallId: toolCallId)
+        : this(content: new(contentParts), role: ChatMessageRole.Tool, patch: default, toolCallId: toolCallId)
     {
         Argument.AssertNotNull(toolCallId, nameof(toolCallId));
         Argument.AssertNotNullOrEmpty(contentParts, nameof(contentParts));
@@ -52,7 +53,7 @@ public partial class ToolChatMessage : ChatMessage
     ///     The collection of content items associated with the message.
     /// </param>
     public ToolChatMessage(string toolCallId, params ChatMessageContentPart[] contentParts)
-        : this(content: new(contentParts), role: ChatMessageRole.Tool, additionalBinaryDataProperties: null, toolCallId: toolCallId)
+        : this(content: new(contentParts), role: ChatMessageRole.Tool, patch: default, toolCallId: toolCallId)
     {
         Argument.AssertNotNull(toolCallId, nameof(toolCallId));
         Argument.AssertNotNullOrEmpty(contentParts, nameof(contentParts));
@@ -66,7 +67,7 @@ public partial class ToolChatMessage : ChatMessage
     /// </param>
     /// <param name="content"> The text content of the message. </param>
     public ToolChatMessage(string toolCallId, string content)
-        : this(content: new([content]), role: ChatMessageRole.Tool, additionalBinaryDataProperties: null, toolCallId: toolCallId)
+        : this(content: new([content]), role: ChatMessageRole.Tool, patch: default, toolCallId: toolCallId)
     {
         Argument.AssertNotNull(toolCallId, nameof(toolCallId));
         Argument.AssertNotNull(content, nameof(content));

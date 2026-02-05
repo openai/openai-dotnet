@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    public partial class ConversationSessionConfiguredUpdate : IJsonModel<ConversationSessionConfiguredUpdate>
+    public partial class ConversationSessionConfiguredUpdate : RealtimeUpdate, IJsonModel<ConversationSessionConfiguredUpdate>
     {
         internal ConversationSessionConfiguredUpdate() : this(RealtimeUpdateKind.SessionConfigured, null, null, null)
         {
@@ -106,7 +106,7 @@ namespace OpenAI.Realtime
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeConversationSessionConfiguredUpdate(document.RootElement, options);
                     }

@@ -20,7 +20,7 @@ namespace OpenAI.Realtime
             Modalities = new ChangeTrackingList<InternalRealtimeResponseModality>();
         }
 
-        internal InternalRealtimeResponse(string id, string @object, ConversationStatus? status, ConversationStatusDetails statusDetails, IReadOnlyList<RealtimeItem> output, IDictionary<string, string> metadata, ConversationTokenUsage usage, string conversationId, ConversationVoice? voice, IReadOnlyList<InternalRealtimeResponseModality> modalities, RealtimeAudioFormat? outputAudioFormat, float? temperature, BinaryData maxOutputTokens, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalRealtimeResponse(string id, InternalRealtimeResponseObject? @object, ConversationStatus? status, ConversationStatusDetails statusDetails, IReadOnlyList<RealtimeItem> output, IDictionary<string, string> metadata, ConversationTokenUsage usage, string conversationId, ConversationVoice? voice, IReadOnlyList<InternalRealtimeResponseModality> modalities, RealtimeAudioFormat? outputAudioFormat, float? temperature, BinaryData maxOutputTokens, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
@@ -41,7 +41,7 @@ namespace OpenAI.Realtime
 
         public string Id { get; }
 
-        public string Object { get; }
+        internal InternalRealtimeResponseObject? Object { get; }
 
         public ConversationStatus? Status { get; }
 

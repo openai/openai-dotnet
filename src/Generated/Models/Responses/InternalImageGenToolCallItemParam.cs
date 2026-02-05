@@ -3,22 +3,24 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 
 namespace OpenAI.Responses
 {
     internal partial class InternalImageGenToolCallItemParam : InternalItemParam
     {
-        public InternalImageGenToolCallItemParam(string result) : base(InternalItemType.ImageGenerationCall)
+        public InternalImageGenToolCallItemParam(BinaryData result) : base(InternalItemType.ImageGenerationCall)
         {
             Result = result;
         }
 
-        internal InternalImageGenToolCallItemParam(InternalItemType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string result) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalImageGenToolCallItemParam(InternalItemType kind, in JsonPatch patch, BinaryData result) : base(kind, patch)
         {
             Result = result;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string Result { get; }
+        public BinaryData Result { get; }
     }
 }

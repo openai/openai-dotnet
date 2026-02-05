@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.VectorStores
 {
-    internal partial class InternalStaticChunkingStrategyRequestParam : IJsonModel<InternalStaticChunkingStrategyRequestParam>
+    internal partial class InternalStaticChunkingStrategyRequestParam : InternalChunkingStrategyRequestParam, IJsonModel<InternalStaticChunkingStrategyRequestParam>
     {
         internal InternalStaticChunkingStrategyRequestParam() : this(InternalChunkingStrategyRequestParamType.Static, null, null)
         {
@@ -100,7 +100,7 @@ namespace OpenAI.VectorStores
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalStaticChunkingStrategyRequestParam(document.RootElement, options);
                     }

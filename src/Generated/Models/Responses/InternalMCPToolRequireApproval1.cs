@@ -2,34 +2,39 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
+using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace OpenAI.Responses
 {
     internal partial class InternalMCPToolRequireApproval1
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
         public InternalMCPToolRequireApproval1()
         {
         }
 
-        internal InternalMCPToolRequireApproval1(InternalMCPToolRequireApprovalAlways always, InternalMCPToolRequireApprovalNever never, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalMCPToolRequireApproval1(McpToolFilter always, McpToolFilter never, in JsonPatch patch)
         {
             Always = always;
             Never = never;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
+            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        internal InternalMCPToolRequireApprovalAlways Always { get; set; }
+        [JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
-        internal InternalMCPToolRequireApprovalNever Never { get; set; }
+        public McpToolFilter Always { get; set; }
 
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
+        public McpToolFilter Never { get; set; }
     }
 }

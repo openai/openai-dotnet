@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -21,13 +21,16 @@ namespace OpenAI.Responses
             Results = new ChangeTrackingList<FileSearchCallResult>();
         }
 
-        internal FileSearchCallResponseItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, FileSearchCallStatus? status, IList<string> queries, IList<FileSearchCallResult> results) : base(kind, id, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal FileSearchCallResponseItem(InternalItemType kind, string id, in JsonPatch patch, FileSearchCallStatus? status, IList<string> queries, IList<FileSearchCallResult> results) : base(kind, id, patch)
         {
             // Plugin customization: ensure initialization of collections
             Status = status;
             Queries = queries ?? new ChangeTrackingList<string>();
             Results = results ?? new ChangeTrackingList<FileSearchCallResult>();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public IList<string> Queries { get; }
 

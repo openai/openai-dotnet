@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.RegularExpressions;
+using Microsoft.TypeSpec.Generator.Customizations;
+using System;
 
 namespace OpenAI.Chat;
 
@@ -33,7 +32,7 @@ internal partial class InternalChatCompletionRequestMessageContentPartImageImage
     /// <param name="uri"> Either a URL of the image or the base64 encoded image data. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="uri"/> is null. </exception>
     public InternalChatCompletionRequestMessageContentPartImageImageUrl(Uri uri, ChatImageDetailLevel? detailLevel = default)
-        : this(null, detailLevel, null)
+        : this(null, detailLevel, default)
     {
         Argument.AssertNotNull(uri, nameof(uri));
         _imageUri = uri;
@@ -41,7 +40,7 @@ internal partial class InternalChatCompletionRequestMessageContentPartImageImage
     }
 
     public InternalChatCompletionRequestMessageContentPartImageImageUrl(BinaryData imageBytes, string imageBytesMediaType, ChatImageDetailLevel? detailLevel = default)
-        : this(null, detailLevel, null)
+        : this(null, detailLevel, default)
     {
         Argument.AssertNotNull(imageBytes, nameof(imageBytes));
         Argument.AssertNotNull(imageBytesMediaType, nameof(imageBytesMediaType));

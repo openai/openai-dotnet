@@ -1,4 +1,5 @@
 import "../../base/typespec/responses/main.tsp";
+import "./common.models.tsp";
 import "@azure-tools/typespec-client-generator-core";
 
 using Azure.ClientGenerator.Core;
@@ -13,15 +14,15 @@ model DotNetItemReferenceItemResource extends ItemResource {
   ...ItemReferenceItemBase;
 }
 
-alias ResponseItemCollectionOrderQueryParameter = {
+alias DotNetResponseItemCollectionOrderQueryParameter = {
   /**
    * Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and`desc`
    * for descending order.
    */
-  @query order?: ResponseItemCollectionOrder;
+  @query order?: DotNetResponseItemCollectionOrder;
 };
 
-union ResponseItemCollectionOrder {
+union DotNetResponseItemCollectionOrder {
   string,
   Ascending: "asc",
   Descending: "desc",
@@ -29,11 +30,22 @@ union ResponseItemCollectionOrder {
 
 @access(Access.public)
 @usage(Usage.input)
-model ResponseItemCollectionOptions {
-  ...CollectionAfterQueryParameter,
-  ...CollectionBeforeQueryParameter,
-  ...CollectionLimitQueryParameter,
-  ...ResponseItemCollectionOrderQueryParameter,
+model DotNetResponseItemCollectionOptions {
+  @path response_id: string;
+  ...DotNetCollectionAfterQueryParameter;
+  ...DotNetCollectionBeforeQueryParameter;
+  ...DotNetCollectionLimitQueryParameter;
+  ...DotNetResponseItemCollectionOrderQueryParameter;
+}
+
+@access(Access.public)
+@usage(Usage.input)
+model DotNetGetResponseOptions {
+  @path response_id: string;
+  @query startingAfter?: int32;
+  @query includeObfuscation?: boolean;
+  @query includedProperties?: Includable[] | null;
+  @query streamingEnabled?: boolean;
 }
 
 @access(Access.public)
@@ -48,20 +60,22 @@ union DotNetGlobalToolCallApprovalPolicy {
 @usage(Usage.input | Usage.output)
 model DotNetCustomToolCallApprovalPolicy {
   /** A list of tools that always require approval. */
-  always?: {
-    /** List of tools that require approval. */
-    tool_names?: string[];
-  };
+  always?: MCPToolFilter;
+
   /** A list of tools that never require approval. */
-  `never`?: {
-    /** List of tools that do not require approval. */
-    tool_names?: string[];
-  };
+  `never`?: MCPToolFilter;
 }
 
 @access(Access.public)
 @usage(Usage.input | Usage.output)
-model DotNetToolCallApprovalPolicy{
+model DotNetToolCallApprovalPolicy {
   global_policy?: DotNetGlobalToolCallApprovalPolicy;
   custom_policy?: DotNetCustomToolCallApprovalPolicy;
+}
+
+@access(Access.public)
+@usage(Usage.input | Usage.output)
+model DotNetCodeInterpreterToolContainer {
+  container_id?: string;
+  container?: CodeInterpreterContainerConfiguration;
 }

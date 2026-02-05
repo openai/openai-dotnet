@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalStoredCompletionsDataSourceConfigParams : IJsonModel<InternalEvalStoredCompletionsDataSourceConfigParams>
+    internal partial class InternalEvalStoredCompletionsDataSourceConfigParams : InternalEvalDataSourceConfigParams, IJsonModel<InternalEvalStoredCompletionsDataSourceConfigParams>
     {
         void IJsonModel<InternalEvalStoredCompletionsDataSourceConfigParams>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -130,7 +130,7 @@ namespace OpenAI.Evals
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalEvalStoredCompletionsDataSourceConfigParams(document.RootElement, options);
                     }

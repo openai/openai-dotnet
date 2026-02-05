@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalRequiredFunctionToolCall : IJsonModel<InternalRequiredFunctionToolCall>
+    internal partial class InternalRequiredFunctionToolCall : InternalRequiredToolCall, IJsonModel<InternalRequiredFunctionToolCall>
     {
         internal InternalRequiredFunctionToolCall()
         {
@@ -135,7 +135,7 @@ namespace OpenAI.Assistants
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalRequiredFunctionToolCall(document.RootElement, options);
                     }

@@ -4,7 +4,7 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -14,6 +14,14 @@ namespace OpenAI.Responses
     {
         void IJsonModel<CustomMcpToolCallApprovalPolicy>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -26,36 +34,20 @@ namespace OpenAI.Responses
             {
                 throw new FormatException($"The model {nameof(CustomMcpToolCallApprovalPolicy)} does not support writing '{format}' format.");
             }
-            if (Optional.IsDefined(ToolsAlwaysRequiringApproval) && _additionalBinaryDataProperties?.ContainsKey("always") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Optional.IsDefined(ToolsAlwaysRequiringApproval) && !Patch.Contains("$.always"u8))
             {
                 writer.WritePropertyName("always"u8);
                 writer.WriteObjectValue(ToolsAlwaysRequiringApproval, options);
             }
-            if (Optional.IsDefined(ToolsNeverRequiringApproval) && _additionalBinaryDataProperties?.ContainsKey("never") != true)
+            if (Optional.IsDefined(ToolsNeverRequiringApproval) && !Patch.Contains("$.never"u8))
             {
                 writer.WritePropertyName("never"u8);
                 writer.WriteObjectValue(ToolsNeverRequiringApproval, options);
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         CustomMcpToolCallApprovalPolicy IJsonModel<CustomMcpToolCallApprovalPolicy>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -68,10 +60,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(CustomMcpToolCallApprovalPolicy)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeCustomMcpToolCallApprovalPolicy(document.RootElement, options);
+            return DeserializeCustomMcpToolCallApprovalPolicy(document.RootElement, null, options);
         }
 
-        internal static CustomMcpToolCallApprovalPolicy DeserializeCustomMcpToolCallApprovalPolicy(JsonElement element, ModelReaderWriterOptions options)
+        internal static CustomMcpToolCallApprovalPolicy DeserializeCustomMcpToolCallApprovalPolicy(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -79,7 +71,9 @@ namespace OpenAI.Responses
             }
             McpToolFilter toolsAlwaysRequiringApproval = default;
             McpToolFilter toolsNeverRequiringApproval = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("always"u8))
@@ -88,7 +82,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    toolsAlwaysRequiringApproval = McpToolFilter.DeserializeMcpToolFilter(prop.Value, options);
+                    toolsAlwaysRequiringApproval = McpToolFilter.DeserializeMcpToolFilter(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("never"u8))
@@ -97,13 +91,12 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    toolsNeverRequiringApproval = McpToolFilter.DeserializeMcpToolFilter(prop.Value, options);
+                    toolsNeverRequiringApproval = McpToolFilter.DeserializeMcpToolFilter(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new CustomMcpToolCallApprovalPolicy(toolsAlwaysRequiringApproval, toolsNeverRequiringApproval, additionalBinaryDataProperties);
+            return new CustomMcpToolCallApprovalPolicy(toolsAlwaysRequiringApproval, toolsNeverRequiringApproval, patch);
         }
 
         BinaryData IPersistableModel<CustomMcpToolCallApprovalPolicy>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -128,9 +121,9 @@ namespace OpenAI.Responses
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeCustomMcpToolCallApprovalPolicy(document.RootElement, options);
+                        return DeserializeCustomMcpToolCallApprovalPolicy(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(CustomMcpToolCallApprovalPolicy)} does not support reading '{options.Format}' format.");
@@ -138,5 +131,42 @@ namespace OpenAI.Responses
         }
 
         string IPersistableModel<CustomMcpToolCallApprovalPolicy>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("always"u8))
+            {
+                return ToolsAlwaysRequiringApproval.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("always"u8.Length)], out value);
+            }
+            if (local.StartsWith("never"u8))
+            {
+                return ToolsNeverRequiringApproval.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("never"u8.Length)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("always"u8))
+            {
+                ToolsAlwaysRequiringApproval.Patch.Set([.. "$"u8, .. local.Slice("always"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("never"u8))
+            {
+                ToolsNeverRequiringApproval.Patch.Set([.. "$"u8, .. local.Slice("never"u8.Length)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

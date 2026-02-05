@@ -98,7 +98,8 @@ public class PageOrderRemovalVisitor : ScmLibraryVisitor
             discriminatedSubtypes: new Dictionary<string, InputModelType>(),
             additionalProperties: null,
             modelAsStruct: true,
-            serializationOptions: new());
+            serializationOptions: new(),
+            isDynamicModel: false);
         return new InputQueryParameter(
             name: "order",
             serializedName: "order",

@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalRunStepCodeInterpreterLogOutput : IJsonModel<InternalRunStepCodeInterpreterLogOutput>
+    internal partial class InternalRunStepCodeInterpreterLogOutput : RunStepCodeInterpreterOutput, IJsonModel<InternalRunStepCodeInterpreterLogOutput>
     {
         internal InternalRunStepCodeInterpreterLogOutput() : this(InternalRunStepDetailsCodeInterpreterOutputType.Logs, null, null)
         {
@@ -100,7 +100,7 @@ namespace OpenAI.Assistants
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalRunStepCodeInterpreterLogOutput(document.RootElement, options);
                     }

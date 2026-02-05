@@ -67,6 +67,16 @@ namespace OpenAI.Images
                 writer.WritePropertyName("output_compression"u8);
                 writer.WriteNumberValue(OutputCompressionFactor.Value);
             }
+            if (Optional.IsDefined(Stream) && _additionalBinaryDataProperties?.ContainsKey("stream") != true)
+            {
+                writer.WritePropertyName("stream"u8);
+                writer.WriteBooleanValue(Stream.Value);
+            }
+            if (Optional.IsDefined(PartialImages) && _additionalBinaryDataProperties?.ContainsKey("partial_images") != true)
+            {
+                writer.WritePropertyName("partial_images"u8);
+                writer.WriteNumberValue(PartialImages.Value);
+            }
             if (Optional.IsDefined(Size) && _additionalBinaryDataProperties?.ContainsKey("size") != true)
             {
                 writer.WritePropertyName("size"u8);
@@ -141,6 +151,8 @@ namespace OpenAI.Images
             GeneratedImageFormat? responseFormat = default;
             GeneratedImageFileFormat? outputFileFormat = default;
             int? outputCompressionFactor = default;
+            bool? stream = default;
+            int? partialImages = default;
             GeneratedImageSize? size = default;
             GeneratedImageModerationLevel? moderationLevel = default;
             GeneratedImageBackground? background = default;
@@ -214,6 +226,26 @@ namespace OpenAI.Images
                     outputCompressionFactor = prop.Value.GetInt32();
                     continue;
                 }
+                if (prop.NameEquals("stream"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        stream = null;
+                        continue;
+                    }
+                    stream = prop.Value.GetBoolean();
+                    continue;
+                }
+                if (prop.NameEquals("partial_images"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        partialImages = null;
+                        continue;
+                    }
+                    partialImages = prop.Value.GetInt32();
+                    continue;
+                }
                 if (prop.NameEquals("size"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -270,6 +302,8 @@ namespace OpenAI.Images
                 responseFormat,
                 outputFileFormat,
                 outputCompressionFactor,
+                stream,
+                partialImages,
                 size,
                 moderationLevel,
                 background,
@@ -302,7 +336,7 @@ namespace OpenAI.Images
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeImageGenerationOptions(document.RootElement, options);
                     }

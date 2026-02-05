@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
+using Microsoft.TypeSpec.Generator.Customizations;
 
 namespace OpenAI.Responses;
 
@@ -8,7 +6,9 @@ namespace OpenAI.Responses;
 [CodeGenType("FileSearchToolCallItemResource")]
 public partial class FileSearchCallResponseItem
 {
-    // CUSTOM: Made nullable since this is a read-only property.
+    // CUSTOM:
+    // - Made nullable because this is an optional property.
+    // - Added setter because this is an optional property in an input/output type.
     [CodeGenMember("Status")]
-    public FileSearchCallStatus? Status { get; }
+    public FileSearchCallStatus? Status { get; set; }
 }

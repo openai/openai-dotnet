@@ -1,0 +1,208 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/assistants",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "18",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o"
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "996e3912c87008e3-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "332",
+        "Content-Type": "application/json",
+        "Date": "Thu, 30 Oct 2025 22:06:59 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "285",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "288",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "asst_qtgI42SHEl4Tc0GVq4fBoyVX",
+        "object": "assistant",
+        "created_at": 1761862019,
+        "name": null,
+        "description": null,
+        "model": "gpt-4o",
+        "instructions": null,
+        "tools": [],
+        "top_p": 1.0,
+        "temperature": 1.0,
+        "reasoning_effort": null,
+        "tool_resources": {},
+        "metadata": {},
+        "response_format": "auto"
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "85",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "messages": [
+          {
+            "role": "user",
+            "content": "Hello there, assistant! How are you today?"
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "996e39151b0c08e3-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "137",
+        "Content-Type": "application/json",
+        "Date": "Thu, 30 Oct 2025 22:06:59 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "428",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "434",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "thread_SkB4C5yOG0mpvmUuXXULFo06",
+        "object": "thread",
+        "created_at": 1761862019,
+        "metadata": {},
+        "tool_resources": {}
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_SkB4C5yOG0mpvmUuXXULFo06/runs?include[]=step_details.tool_calls%5B%2A%5D.file_search.results%5B%2A%5D.content",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "87",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "assistant_id": "asst_qtgI42SHEl4Tc0GVq4fBoyVX",
+        "additional_messages": [],
+        "stream": true
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "996e39185ecb08e3-SEA",
+        "Connection": "keep-alive",
+        "Content-Type": "text/event-stream; charset=utf-8",
+        "Date": "Thu, 30 Oct 2025 22:07:01 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "1187",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "1191",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": [
+        "event: thread.run.created\n",
+        "data: {\"id\":\"run_vTjp2ichhvmAcs8OfKVGjRLd\",\"object\":\"thread.run\",\"created_at\":1761862020,\"assistant_id\":\"asst_qtgI42SHEl4Tc0GVq4fBoyVX\",\"thread_id\":\"thread_SkB4C5yOG0mpvmUuXXULFo06\",\"status\":\"queued\",\"started_at\":null,\"expires_at\":1761862620,\"cancelled_at\":null,\"failed_at\":null,\"completed_at\":null,\"required_action\":null,\"last_error\":null,\"model\":\"gpt-4o\",\"instructions\":null,\"tools\":[],\"tool_resources\":{\"code_interpreter\":{\"file_ids\":[]}},\"metadata\":{},\"temperature\":1.0,\"top_p\":1.0,\"reasoning_effort\":null,\"max_completion_tokens\":null,\"max_prompt_tokens\":null,\"truncation_strategy\":{\"type\":\"auto\",\"last_messages\":null},\"incomplete_details\":null,\"usage\":null,\"response_format\":\"auto\",\"tool_choice\":\"auto\",\"parallel_tool_calls\":true}\n\n",
+        "event: thread.run.queued\n",
+        "data: {\"id\":\"run_vTjp2ichhvmAcs8OfKVGjRLd\",\"object\":\"thread.run\",\"created_at\":1761862020,\"assistant_id\":\"asst_qtgI42SHEl4Tc0GVq4fBoyVX\",\"thread_id\":\"thread_SkB4C5yOG0mpvmUuXXULFo06\",\"status\":\"queued\",\"started_at\":null,\"expires_at\":1761862620,\"cancelled_at\":null,\"failed_at\":null,\"completed_at\":null,\"required_action\":null,\"last_error\":null,\"model\":\"gpt-4o\",\"instructions\":null,\"tools\":[],\"tool_resources\":{\"code_interpreter\":{\"file_ids\":[]}},\"metadata\":{},\"temperature\":1.0,\"top_p\":1.0,\"reasoning_effort\":null,\"max_completion_tokens\":null,\"max_prompt_tokens\":null,\"truncation_strategy\":{\"type\":\"auto\",\"last_messages\":null},\"incomplete_details\":null,\"usage\":null,\"response_format\":\"auto\",\"tool_choice\":\"auto\",\"parallel_tool_calls\":true}\n\n",
+        "event: thread.run.in_progress\n",
+        "data: {\"id\":\"run_vTjp2ichhvmAcs8OfKVGjRLd\",\"object\":\"thread.run\",\"created_at\":1761862020,\"assistant_id\":\"asst_qtgI42SHEl4Tc0GVq4fBoyVX\",\"thread_id\":\"thread_SkB4C5yOG0mpvmUuXXULFo06\",\"status\":\"in_progress\",\"started_at\":1761862021,\"expires_at\":1761862620,\"cancelled_at\":null,\"failed_at\":null,\"completed_at\":null,\"required_action\":null,\"last_error\":null,\"model\":\"gpt-4o\",\"instructions\":null,\"tools\":[],\"tool_resources\":{\"code_interpreter\":{\"file_ids\":[]}},\"metadata\":{},\"temperature\":1.0,\"top_p\":1.0,\"reasoning_effort\":null,\"max_completion_tokens\":null,\"max_prompt_tokens\":null,\"truncation_strategy\":{\"type\":\"auto\",\"last_messages\":null},\"incomplete_details\":null,\"usage\":null,\"response_format\":\"auto\",\"tool_choice\":\"auto\",\"parallel_tool_calls\":true}\n\n",
+        "event: thread.run.step.created\n",
+        "data: {\"id\":\"step_3p0EMo9k3hWCNo5t80GaLtYK\",\"object\":\"thread.run.step\",\"created_at\":1761862022,\"run_id\":\"run_vTjp2ichhvmAcs8OfKVGjRLd\",\"assistant_id\":\"asst_qtgI42SHEl4Tc0GVq4fBoyVX\",\"thread_id\":\"thread_SkB4C5yOG0mpvmUuXXULFo06\",\"type\":\"message_creation\",\"status\":\"in_progress\",\"cancelled_at\":null,\"completed_at\":null,\"expires_at\":1761862620,\"failed_at\":null,\"last_error\":null,\"step_details\":{\"type\":\"message_creation\",\"message_creation\":{\"message_id\":\"msg_JCSTgSDq1vYBuf5ADq6k4ORd\"}},\"usage\":null}\n\n",
+        "event: thread.run.step.in_progress\n",
+        "data: {\"id\":\"step_3p0EMo9k3hWCNo5t80GaLtYK\",\"object\":\"thread.run.step\",\"created_at\":1761862022,\"run_id\":\"run_vTjp2ichhvmAcs8OfKVGjRLd\",\"assistant_id\":\"asst_qtgI42SHEl4Tc0GVq4fBoyVX\",\"thread_id\":\"thread_SkB4C5yOG0mpvmUuXXULFo06\",\"type\":\"message_creation\",\"status\":\"in_progress\",\"cancelled_at\":null,\"completed_at\":null,\"expires_at\":1761862620,\"failed_at\":null,\"last_error\":null,\"step_details\":{\"type\":\"message_creation\",\"message_creation\":{\"message_id\":\"msg_JCSTgSDq1vYBuf5ADq6k4ORd\"}},\"usage\":null}\n\n",
+        "event: thread.message.created\n",
+        "data: {\"id\":\"msg_JCSTgSDq1vYBuf5ADq6k4ORd\",\"object\":\"thread.message\",\"created_at\":1761862022,\"assistant_id\":\"asst_qtgI42SHEl4Tc0GVq4fBoyVX\",\"thread_id\":\"thread_SkB4C5yOG0mpvmUuXXULFo06\",\"run_id\":\"run_vTjp2ichhvmAcs8OfKVGjRLd\",\"status\":\"in_progress\",\"incomplete_details\":null,\"incomplete_at\":null,\"completed_at\":null,\"role\":\"assistant\",\"content\":[],\"attachments\":[],\"metadata\":{}}\n\n",
+        "event: thread.message.in_progress\n",
+        "data: {\"id\":\"msg_JCSTgSDq1vYBuf5ADq6k4ORd\",\"object\":\"thread.message\",\"created_at\":1761862022,\"assistant_id\":\"asst_qtgI42SHEl4Tc0GVq4fBoyVX\",\"thread_id\":\"thread_SkB4C5yOG0mpvmUuXXULFo06\",\"run_id\":\"run_vTjp2ichhvmAcs8OfKVGjRLd\",\"status\":\"in_progress\",\"incomplete_details\":null,\"incomplete_at\":null,\"completed_at\":null,\"role\":\"assistant\",\"content\":[],\"attachments\":[],\"metadata\":{}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_JCSTgSDq1vYBuf5ADq6k4ORd\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\"Hello\",\"annotations\":[]}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_JCSTgSDq1vYBuf5ADq6k4ORd\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\"!\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_JCSTgSDq1vYBuf5ADq6k4ORd\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" I'm\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_JCSTgSDq1vYBuf5ADq6k4ORd\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" here\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_JCSTgSDq1vYBuf5ADq6k4ORd\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" and\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_JCSTgSDq1vYBuf5ADq6k4ORd\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" ready\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_JCSTgSDq1vYBuf5ADq6k4ORd\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" to\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_JCSTgSDq1vYBuf5ADq6k4ORd\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" help\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_JCSTgSDq1vYBuf5ADq6k4ORd\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" you\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_JCSTgSDq1vYBuf5ADq6k4ORd\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" with\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_JCSTgSDq1vYBuf5ADq6k4ORd\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" anything\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_JCSTgSDq1vYBuf5ADq6k4ORd\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" you\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_JCSTgSDq1vYBuf5ADq6k4ORd\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" need\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_JCSTgSDq1vYBuf5ADq6k4ORd\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\".\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_JCSTgSDq1vYBuf5ADq6k4ORd\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" How\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_JCSTgSDq1vYBuf5ADq6k4ORd\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" can\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_JCSTgSDq1vYBuf5ADq6k4ORd\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" I\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_JCSTgSDq1vYBuf5ADq6k4ORd\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" assist\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_JCSTgSDq1vYBuf5ADq6k4ORd\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" you\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_JCSTgSDq1vYBuf5ADq6k4ORd\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\" today\"}}]}}\n\n",
+        "event: thread.message.delta\n",
+        "data: {\"id\":\"msg_JCSTgSDq1vYBuf5ADq6k4ORd\",\"object\":\"thread.message.delta\",\"delta\":{\"content\":[{\"index\":0,\"type\":\"text\",\"text\":{\"value\":\"?\"}}]}}\n\n",
+        "event: thread.message.completed\n",
+        "data: {\"id\":\"msg_JCSTgSDq1vYBuf5ADq6k4ORd\",\"object\":\"thread.message\",\"created_at\":1761862022,\"assistant_id\":\"asst_qtgI42SHEl4Tc0GVq4fBoyVX\",\"thread_id\":\"thread_SkB4C5yOG0mpvmUuXXULFo06\",\"run_id\":\"run_vTjp2ichhvmAcs8OfKVGjRLd\",\"status\":\"completed\",\"incomplete_details\":null,\"incomplete_at\":null,\"completed_at\":1761862023,\"role\":\"assistant\",\"content\":[{\"type\":\"text\",\"text\":{\"value\":\"Hello! I'm here and ready to help you with anything you need. How can I assist you today?\",\"annotations\":[]}}],\"attachments\":[],\"metadata\":{}}\n\n",
+        "event: thread.run.step.completed\n",
+        "data: {\"id\":\"step_3p0EMo9k3hWCNo5t80GaLtYK\",\"object\":\"thread.run.step\",\"created_at\":1761862022,\"run_id\":\"run_vTjp2ichhvmAcs8OfKVGjRLd\",\"assistant_id\":\"asst_qtgI42SHEl4Tc0GVq4fBoyVX\",\"thread_id\":\"thread_SkB4C5yOG0mpvmUuXXULFo06\",\"type\":\"message_creation\",\"status\":\"completed\",\"cancelled_at\":null,\"completed_at\":1761862023,\"expires_at\":1761862620,\"failed_at\":null,\"last_error\":null,\"step_details\":{\"type\":\"message_creation\",\"message_creation\":{\"message_id\":\"msg_JCSTgSDq1vYBuf5ADq6k4ORd\"}},\"usage\":{\"prompt_tokens\":38,\"completion_tokens\":23,\"total_tokens\":61,\"prompt_token_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0}}}\n\n",
+        "event: thread.run.completed\n",
+        "data: {\"id\":\"run_vTjp2ichhvmAcs8OfKVGjRLd\",\"object\":\"thread.run\",\"created_at\":1761862020,\"assistant_id\":\"asst_qtgI42SHEl4Tc0GVq4fBoyVX\",\"thread_id\":\"thread_SkB4C5yOG0mpvmUuXXULFo06\",\"status\":\"completed\",\"started_at\":1761862021,\"expires_at\":null,\"cancelled_at\":null,\"failed_at\":null,\"completed_at\":1761862023,\"required_action\":null,\"last_error\":null,\"model\":\"gpt-4o\",\"instructions\":null,\"tools\":[],\"tool_resources\":{\"code_interpreter\":{\"file_ids\":[]}},\"metadata\":{},\"temperature\":1.0,\"top_p\":1.0,\"reasoning_effort\":null,\"max_completion_tokens\":null,\"max_prompt_tokens\":null,\"truncation_strategy\":{\"type\":\"auto\",\"last_messages\":null},\"incomplete_details\":null,\"usage\":{\"prompt_tokens\":38,\"completion_tokens\":23,\"total_tokens\":61,\"prompt_token_details\":{\"cached_tokens\":0},\"completion_tokens_details\":{\"reasoning_tokens\":0}},\"response_format\":\"auto\",\"tool_choice\":\"auto\",\"parallel_tool_calls\":true}\n\n",
+        "event: done\n",
+        "data: [DONE]\n\n"
+      ]
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

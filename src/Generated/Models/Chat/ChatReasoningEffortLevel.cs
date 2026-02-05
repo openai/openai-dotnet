@@ -13,6 +13,8 @@ namespace OpenAI.Chat
     public readonly partial struct ChatReasoningEffortLevel : IEquatable<ChatReasoningEffortLevel>
     {
         private readonly string _value;
+        private const string NoneValue = "none";
+        private const string MinimalValue = "minimal";
         private const string LowValue = "low";
         private const string MediumValue = "medium";
         private const string HighValue = "high";
@@ -23,6 +25,10 @@ namespace OpenAI.Chat
 
             _value = value;
         }
+
+        public static ChatReasoningEffortLevel None { get; } = new ChatReasoningEffortLevel(NoneValue);
+
+        public static ChatReasoningEffortLevel Minimal { get; } = new ChatReasoningEffortLevel(MinimalValue);
 
         public static ChatReasoningEffortLevel Low { get; } = new ChatReasoningEffortLevel(LowValue);
 

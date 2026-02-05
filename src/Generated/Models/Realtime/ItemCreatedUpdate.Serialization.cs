@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    public partial class ItemCreatedUpdate : IJsonModel<ItemCreatedUpdate>
+    public partial class ItemCreatedUpdate : RealtimeUpdate, IJsonModel<ItemCreatedUpdate>
     {
         internal ItemCreatedUpdate() : this(RealtimeUpdateKind.ItemCreated, null, null, null, null)
         {
@@ -117,7 +117,7 @@ namespace OpenAI.Realtime
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeItemCreatedUpdate(document.RootElement, options);
                     }

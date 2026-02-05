@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Linq;
 using OpenAI;
@@ -13,22 +13,21 @@ namespace OpenAI.Responses
     {
         public InternalComputerUsePreviewToolCallItemParam(string callId, ComputerCallAction action, IEnumerable<ComputerCallSafetyCheck> pendingSafetyChecks) : base(InternalItemType.ComputerCall)
         {
-            Argument.AssertNotNull(callId, nameof(callId));
-            Argument.AssertNotNull(action, nameof(action));
-            Argument.AssertNotNull(pendingSafetyChecks, nameof(pendingSafetyChecks));
-
             CallId = callId;
             Action = action;
             PendingSafetyChecks = pendingSafetyChecks.ToList();
         }
 
-        internal InternalComputerUsePreviewToolCallItemParam(InternalItemType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string callId, ComputerCallAction action, IList<ComputerCallSafetyCheck> pendingSafetyChecks) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalComputerUsePreviewToolCallItemParam(InternalItemType kind, in JsonPatch patch, string callId, ComputerCallAction action, IList<ComputerCallSafetyCheck> pendingSafetyChecks) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             CallId = callId;
             Action = action;
             PendingSafetyChecks = pendingSafetyChecks ?? new ChangeTrackingList<ComputerCallSafetyCheck>();
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string CallId { get; }
 

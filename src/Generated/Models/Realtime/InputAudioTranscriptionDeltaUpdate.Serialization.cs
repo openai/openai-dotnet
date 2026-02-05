@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    public partial class InputAudioTranscriptionDeltaUpdate : IJsonModel<InputAudioTranscriptionDeltaUpdate>
+    public partial class InputAudioTranscriptionDeltaUpdate : RealtimeUpdate, IJsonModel<InputAudioTranscriptionDeltaUpdate>
     {
         internal InputAudioTranscriptionDeltaUpdate() : this(RealtimeUpdateKind.InputTranscriptionDelta, null, null, null, default, null, null)
         {
@@ -164,7 +164,7 @@ namespace OpenAI.Realtime
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInputAudioTranscriptionDeltaUpdate(document.RootElement, options);
                     }

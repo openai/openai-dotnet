@@ -1,8 +1,9 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Files;
 
-[CodeGenType("CreateFileRequestPurpose")]
+[CodeGenType("FilePurpose")]
 public readonly partial struct FileUploadPurpose
 {
     // CUSTOM: Added Experimental attribute.

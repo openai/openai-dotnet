@@ -5,6 +5,7 @@
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
@@ -14,6 +15,14 @@ namespace OpenAI.Responses
     {
         void IJsonModel<McpToolFilter>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -26,41 +35,43 @@ namespace OpenAI.Responses
             {
                 throw new FormatException($"The model {nameof(McpToolFilter)} does not support writing '{format}' format.");
             }
-            if (Optional.IsCollectionDefined(ToolNames) && _additionalBinaryDataProperties?.ContainsKey("tool_names") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$.tool_names"u8))
+            {
+                if (!Patch.IsRemoved("$.tool_names"u8))
+                {
+                    writer.WritePropertyName("tool_names"u8);
+                    writer.WriteRawValue(Patch.GetJson("$.tool_names"u8));
+                }
+            }
+            else if (Optional.IsCollectionDefined(ToolNames))
             {
                 writer.WritePropertyName("tool_names"u8);
                 writer.WriteStartArray();
-                foreach (string item in ToolNames)
+                for (int i = 0; i < ToolNames.Count; i++)
                 {
-                    if (item == null)
+                    if (Patch.IsRemoved(Encoding.UTF8.GetBytes($"$.tool_names[{i}]")))
+                    {
+                        continue;
+                    }
+                    if (ToolNames[i] == null)
                     {
                         writer.WriteNullValue();
                         continue;
                     }
-                    writer.WriteStringValue(item);
+                    writer.WriteStringValue(ToolNames[i]);
                 }
+                Patch.WriteTo(writer, "$.tool_names"u8);
                 writer.WriteEndArray();
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
+            if (Optional.IsDefined(IsReadOnly) && !Patch.Contains("$.read_only"u8))
             {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
+                writer.WritePropertyName("read_only"u8);
+                writer.WriteBooleanValue(IsReadOnly.Value);
             }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         McpToolFilter IJsonModel<McpToolFilter>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -73,17 +84,20 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(McpToolFilter)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeMcpToolFilter(document.RootElement, options);
+            return DeserializeMcpToolFilter(document.RootElement, null, options);
         }
 
-        internal static McpToolFilter DeserializeMcpToolFilter(JsonElement element, ModelReaderWriterOptions options)
+        internal static McpToolFilter DeserializeMcpToolFilter(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             IList<string> toolNames = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+            bool? isReadOnly = default;
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("tool_names"u8))
@@ -107,10 +121,18 @@ namespace OpenAI.Responses
                     toolNames = array;
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                if (prop.NameEquals("read_only"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    isReadOnly = prop.Value.GetBoolean();
+                    continue;
+                }
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new McpToolFilter(toolNames ?? new ChangeTrackingList<string>(), additionalBinaryDataProperties);
+            return new McpToolFilter(toolNames ?? new ChangeTrackingList<string>(), isReadOnly, patch);
         }
 
         BinaryData IPersistableModel<McpToolFilter>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -135,9 +157,9 @@ namespace OpenAI.Responses
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeMcpToolFilter(document.RootElement, options);
+                        return DeserializeMcpToolFilter(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(McpToolFilter)} does not support reading '{options.Format}' format.");

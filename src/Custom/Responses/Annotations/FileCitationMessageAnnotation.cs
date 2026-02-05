@@ -1,7 +1,8 @@
-﻿namespace OpenAI.Responses;
+using Microsoft.TypeSpec.Generator.Customizations;
 
-// CUSTOM:
-// - Renamed.
+namespace OpenAI.Responses;
+
+// CUSTOM: Renamed.
 [CodeGenType("AnnotationFileCitation")]
 public partial class FileCitationMessageAnnotation
 {

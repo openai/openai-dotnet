@@ -11,10 +11,11 @@ namespace OpenAI.Models
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal ModelDeletionResult(string modelId, bool deleted)
+        internal ModelDeletionResult(string modelId, bool deleted, string @object)
         {
             ModelId = modelId;
             Deleted = deleted;
+            Object = @object;
         }
 
         internal ModelDeletionResult(string modelId, bool deleted, string @object, IDictionary<string, BinaryData> additionalBinaryDataProperties)

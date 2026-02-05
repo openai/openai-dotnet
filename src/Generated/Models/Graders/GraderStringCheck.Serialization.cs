@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Graders
 {
-    public partial class GraderStringCheck : IJsonModel<GraderStringCheck>
+    public partial class GraderStringCheck : Grader, IJsonModel<GraderStringCheck>
     {
         internal GraderStringCheck() : this(GraderType.StringCheck, null, null, null, null, default)
         {
@@ -139,7 +139,7 @@ namespace OpenAI.Graders
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeGraderStringCheck(document.RootElement, options);
                     }

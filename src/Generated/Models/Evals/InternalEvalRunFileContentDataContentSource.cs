@@ -13,8 +13,6 @@ namespace OpenAI.Evals
     {
         internal InternalEvalRunFileContentDataContentSource(IEnumerable<InternalEvalRunFileContentDataContentSourceContent> content) : base(InternalEvalRunDataContentSourceType.FileContent)
         {
-            Argument.AssertNotNull(content, nameof(content));
-
             Content = content.ToList();
         }
 

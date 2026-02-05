@@ -15,8 +15,6 @@ namespace OpenAI.Evals
         public InternalEvalRunFileContentDataContentSourceContent(IDictionary<string, BinaryData> item)
         {
             // Plugin customization: ensure initialization of collections
-            Argument.AssertNotNull(item, nameof(item));
-
             Item = item ?? new ChangeTrackingDictionary<string, BinaryData>();
             Sample = new ChangeTrackingDictionary<string, BinaryData>();
         }

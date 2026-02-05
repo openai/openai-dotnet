@@ -83,7 +83,7 @@ namespace OpenAI.Evals
                     {
                         continue;
                     }
-                    format = ResponseTextFormat.DeserializeResponseTextFormat(prop.Value, options);
+                    format = ResponseTextFormat.DeserializeResponseTextFormat(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
@@ -114,7 +114,7 @@ namespace OpenAI.Evals
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalEvalResponsesRunDataSourceParamsSamplingParamsText(document.RootElement, options);
                     }

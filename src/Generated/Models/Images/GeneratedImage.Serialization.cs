@@ -106,7 +106,7 @@ namespace OpenAI.Images
                     {
                         continue;
                     }
-                    imageUri = new Uri(prop.Value.GetString());
+                    imageUri = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("revised_prompt"u8))
@@ -144,7 +144,7 @@ namespace OpenAI.Images
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeGeneratedImage(document.RootElement, options);
                     }

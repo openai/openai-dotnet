@@ -3,15 +3,18 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace OpenAI.Chat
 {
     [Experimental("OPENAI001")]
     public partial class ChatOutputAudio
     {
-        private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
         internal ChatOutputAudio(string id, DateTimeOffset expiresAt, BinaryData audioBytes, string transcript)
         {
@@ -21,25 +24,26 @@ namespace OpenAI.Chat
             Transcript = transcript;
         }
 
-        internal ChatOutputAudio(string id, DateTimeOffset expiresAt, BinaryData audioBytes, string transcript, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal ChatOutputAudio(string id, DateTimeOffset expiresAt, BinaryData audioBytes, string transcript, in JsonPatch patch)
         {
             Id = id;
             ExpiresAt = expiresAt;
             AudioBytes = audioBytes;
             Transcript = transcript;
-            _additionalBinaryDataProperties = additionalBinaryDataProperties;
+            _patch = patch;
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        [JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
         public string Id { get; }
 
         public DateTimeOffset ExpiresAt { get; }
 
         public string Transcript { get; }
-
-        internal IDictionary<string, BinaryData> SerializedAdditionalRawData
-        {
-            get => _additionalBinaryDataProperties;
-            set => _additionalBinaryDataProperties = value;
-        }
     }
 }

@@ -1,5 +1,6 @@
 namespace OpenAI.Chat;
 
+using Microsoft.TypeSpec.Generator.Customizations;
 using System;
 
 /// <summary> A streaming update representing part of a tool call made by the model. </summary>

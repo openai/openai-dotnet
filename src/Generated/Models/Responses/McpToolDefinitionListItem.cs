@@ -3,6 +3,7 @@
 #nullable disable
 
 using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -22,13 +23,16 @@ namespace OpenAI.Responses
             ToolDefinitions = toolDefinitions.ToList();
         }
 
-        internal McpToolDefinitionListItem(InternalItemType kind, string id, IDictionary<string, BinaryData> additionalBinaryDataProperties, string serverLabel, IList<McpToolDefinition> toolDefinitions, BinaryData error) : base(kind, id, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal McpToolDefinitionListItem(InternalItemType kind, string id, in JsonPatch patch, string serverLabel, IList<McpToolDefinition> toolDefinitions, BinaryData error) : base(kind, id, patch)
         {
             // Plugin customization: ensure initialization of collections
             ServerLabel = serverLabel;
             ToolDefinitions = toolDefinitions ?? new ChangeTrackingList<McpToolDefinition>();
             Error = error;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ServerLabel { get; set; }
 

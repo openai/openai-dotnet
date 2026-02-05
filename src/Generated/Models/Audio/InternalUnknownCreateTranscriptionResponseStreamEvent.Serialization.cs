@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Audio
 {
-    internal partial class InternalUnknownCreateTranscriptionResponseStreamEvent : IJsonModel<StreamingAudioTranscriptionUpdate>
+    internal partial class InternalUnknownCreateTranscriptionResponseStreamEvent : StreamingAudioTranscriptionUpdate, IJsonModel<StreamingAudioTranscriptionUpdate>
     {
         internal InternalUnknownCreateTranscriptionResponseStreamEvent() : this(default, null)
         {
@@ -89,7 +89,7 @@ namespace OpenAI.Audio
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeStreamingAudioTranscriptionUpdate(document.RootElement, options);
                     }

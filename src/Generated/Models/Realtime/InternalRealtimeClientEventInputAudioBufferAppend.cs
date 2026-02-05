@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Realtime
 {
@@ -12,8 +11,6 @@ namespace OpenAI.Realtime
     {
         public InternalRealtimeClientEventInputAudioBufferAppend(BinaryData audio) : base(InternalRealtimeClientEventType.InputAudioBufferAppend)
         {
-            Argument.AssertNotNull(audio, nameof(audio));
-
             Audio = audio;
         }
 

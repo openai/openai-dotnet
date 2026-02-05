@@ -4,15 +4,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Images
 {
-    public partial class GeneratedImageCollection
+    public partial class GeneratedImageCollection : ReadOnlyCollection<GeneratedImage>
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
-
-        internal IList<GeneratedImage> Data { get; }
 
         [Experimental("OPENAI001")]
         public ImageTokenUsage Usage { get; }

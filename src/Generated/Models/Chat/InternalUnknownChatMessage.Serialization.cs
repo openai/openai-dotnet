@@ -4,15 +4,15 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Chat
 {
-    internal partial class InternalUnknownChatMessage : IJsonModel<ChatMessage>
+    internal partial class InternalUnknownChatMessage : ChatMessage, IJsonModel<ChatMessage>
     {
-        internal InternalUnknownChatMessage() : this(default, null, null)
+        internal InternalUnknownChatMessage() : this(default, null, default)
         {
         }
 
@@ -24,6 +24,10 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(ChatMessage)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         ChatMessage IJsonModel<ChatMessage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -36,10 +40,10 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(ChatMessage)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeChatMessage(document.RootElement, options);
+            return DeserializeChatMessage(document.RootElement, null, options);
         }
 
-        internal static InternalUnknownChatMessage DeserializeInternalUnknownChatMessage(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalUnknownChatMessage DeserializeInternalUnknownChatMessage(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -47,7 +51,9 @@ namespace OpenAI.Chat
             }
             ChatMessageRole role = default;
             ChatMessageContent content = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("role"u8))
@@ -60,10 +66,9 @@ namespace OpenAI.Chat
                     DeserializeContentValue(prop, ref content);
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalUnknownChatMessage(role, content, additionalBinaryDataProperties);
+            return new InternalUnknownChatMessage(role, content, patch);
         }
 
         BinaryData IPersistableModel<ChatMessage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -88,9 +93,9 @@ namespace OpenAI.Chat
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeChatMessage(document.RootElement, options);
+                        return DeserializeChatMessage(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ChatMessage)} does not support reading '{options.Format}' format.");

@@ -1,0 +1,372 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/threads",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "0",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "996e2d7fd8ff08e3-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "137",
+        "Content-Type": "application/json",
+        "Date": "Thu, 30 Oct 2025 21:59:05 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "200",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "204",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "thread_ohNJmn4u7fJZkzneQRbMe2KZ",
+        "object": "thread",
+        "created_at": 1761861545,
+        "metadata": {},
+        "tool_resources": {}
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_ohNJmn4u7fJZkzneQRbMe2KZ/messages",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "41",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "role": "user",
+        "content": "Hello, world!"
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "996e2d81ba6d08e3-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "387",
+        "Content-Type": "application/json",
+        "Date": "Thu, 30 Oct 2025 21:59:05 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "214",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "218",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "msg_J716scMJumFtgFf7ElGbaAN3",
+        "object": "thread.message",
+        "created_at": 1761861545,
+        "assistant_id": null,
+        "thread_id": "thread_ohNJmn4u7fJZkzneQRbMe2KZ",
+        "run_id": null,
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": {
+              "value": "Hello, world!",
+              "annotations": []
+            }
+          }
+        ],
+        "attachments": [],
+        "metadata": {}
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_ohNJmn4u7fJZkzneQRbMe2KZ/messages/msg_J716scMJumFtgFf7ElGbaAN3",
+      "RequestMethod": "DELETE",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "996e2d83ac9f08e3-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "99",
+        "Content-Type": "application/json",
+        "Date": "Thu, 30 Oct 2025 21:59:05 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "310",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "313",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "msg_J716scMJumFtgFf7ElGbaAN3",
+        "object": "thread.message.deleted",
+        "deleted": true
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_ohNJmn4u7fJZkzneQRbMe2KZ/messages",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "97",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "role": "user",
+        "content": "Goodbye, world!",
+        "metadata": {
+          "messageMetadata": "messageMetadataValue"
+        }
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "996e2d863f6508e3-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "438",
+        "Content-Type": "application/json",
+        "Date": "Thu, 30 Oct 2025 21:59:06 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "554",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "580",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "msg_9xCFzXJYpT59URyaZlz49jGE",
+        "object": "thread.message",
+        "created_at": 1761861546,
+        "assistant_id": null,
+        "thread_id": "thread_ohNJmn4u7fJZkzneQRbMe2KZ",
+        "run_id": null,
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": {
+              "value": "Goodbye, world!",
+              "annotations": []
+            }
+          }
+        ],
+        "attachments": [],
+        "metadata": {
+          "messageMetadata": "messageMetadataValue"
+        }
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_ohNJmn4u7fJZkzneQRbMe2KZ/messages/msg_9xCFzXJYpT59URyaZlz49jGE",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "996e2d8a9d2308e3-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "438",
+        "Content-Type": "application/json",
+        "Date": "Thu, 30 Oct 2025 21:59:06 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "86",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "95",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "msg_9xCFzXJYpT59URyaZlz49jGE",
+        "object": "thread.message",
+        "created_at": 1761861546,
+        "assistant_id": null,
+        "thread_id": "thread_ohNJmn4u7fJZkzneQRbMe2KZ",
+        "run_id": null,
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": {
+              "value": "Goodbye, world!",
+              "annotations": []
+            }
+          }
+        ],
+        "attachments": [],
+        "metadata": {
+          "messageMetadata": "messageMetadataValue"
+        }
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_ohNJmn4u7fJZkzneQRbMe2KZ/messages/msg_9xCFzXJYpT59URyaZlz49jGE",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "43",
+        "Content-Type": "application/json",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "metadata": {
+          "messageMetadata": "newValue"
+        }
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "996e2d8cafe508e3-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "423",
+        "Content-Type": "application/json",
+        "Date": "Thu, 30 Oct 2025 21:59:07 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "129",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "132",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "msg_9xCFzXJYpT59URyaZlz49jGE",
+        "object": "thread.message",
+        "created_at": 1761861546,
+        "assistant_id": null,
+        "thread_id": "thread_ohNJmn4u7fJZkzneQRbMe2KZ",
+        "run_id": null,
+        "role": "user",
+        "content": [
+          {
+            "type": "text",
+            "text": {
+              "value": "Goodbye, world!",
+              "annotations": []
+            }
+          }
+        ],
+        "file_ids": [],
+        "metadata": {
+          "messageMetadata": "newValue"
+        }
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/threads/thread_ohNJmn4u7fJZkzneQRbMe2KZ/messages",
+      "RequestMethod": "GET",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "OpenAI-Beta": "assistants=v2",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.10; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": null,
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "996e2d8e19e108e3-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "666",
+        "Content-Type": "application/json",
+        "Date": "Thu, 30 Oct 2025 21:59:07 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "56",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "59",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "list",
+        "data": [
+          {
+            "id": "msg_9xCFzXJYpT59URyaZlz49jGE",
+            "object": "thread.message",
+            "created_at": 1761861546,
+            "assistant_id": null,
+            "thread_id": "thread_ohNJmn4u7fJZkzneQRbMe2KZ",
+            "run_id": null,
+            "role": "user",
+            "content": [
+              {
+                "type": "text",
+                "text": {
+                  "value": "Goodbye, world!",
+                  "annotations": []
+                }
+              }
+            ],
+            "attachments": [],
+            "metadata": {
+              "messageMetadata": "newValue"
+            }
+          }
+        ],
+        "first_id": "msg_9xCFzXJYpT59URyaZlz49jGE",
+        "last_id": "msg_9xCFzXJYpT59URyaZlz49jGE",
+        "has_more": false
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

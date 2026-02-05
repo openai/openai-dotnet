@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class UnknownAssistantToolDefinition : IJsonModel<ToolDefinition>
+    internal partial class UnknownAssistantToolDefinition : ToolDefinition, IJsonModel<ToolDefinition>
     {
         internal UnknownAssistantToolDefinition() : this(default, null)
         {
@@ -89,7 +89,7 @@ namespace OpenAI.Assistants
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeToolDefinition(document.RootElement, options);
                     }

@@ -4,16 +4,24 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal partial class InternalToolChoiceObjectComputer : IJsonModel<InternalToolChoiceObjectComputer>
+    internal partial class InternalToolChoiceObjectComputer : InternalToolChoiceObject, IJsonModel<InternalToolChoiceObjectComputer>
     {
         void IJsonModel<InternalToolChoiceObjectComputer>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -27,6 +35,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalToolChoiceObjectComputer)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         InternalToolChoiceObjectComputer IJsonModel<InternalToolChoiceObjectComputer>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalToolChoiceObjectComputer)JsonModelCreateCore(ref reader, options);
@@ -39,17 +51,19 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(InternalToolChoiceObjectComputer)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalToolChoiceObjectComputer(document.RootElement, options);
+            return DeserializeInternalToolChoiceObjectComputer(document.RootElement, null, options);
         }
 
-        internal static InternalToolChoiceObjectComputer DeserializeInternalToolChoiceObjectComputer(JsonElement element, ModelReaderWriterOptions options)
+        internal static InternalToolChoiceObjectComputer DeserializeInternalToolChoiceObjectComputer(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalToolChoiceObjectType kind = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -57,10 +71,9 @@ namespace OpenAI.Responses
                     kind = new InternalToolChoiceObjectType(prop.Value.GetString());
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalToolChoiceObjectComputer(kind, additionalBinaryDataProperties);
+            return new InternalToolChoiceObjectComputer(kind, patch);
         }
 
         BinaryData IPersistableModel<InternalToolChoiceObjectComputer>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -85,9 +98,9 @@ namespace OpenAI.Responses
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalToolChoiceObjectComputer(document.RootElement, options);
+                        return DeserializeInternalToolChoiceObjectComputer(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(InternalToolChoiceObjectComputer)} does not support reading '{options.Format}' format.");

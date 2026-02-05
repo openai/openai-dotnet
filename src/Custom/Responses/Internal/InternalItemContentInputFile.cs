@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+using Microsoft.TypeSpec.Generator.Customizations;
+using System;
 
 namespace OpenAI.Responses;
 
@@ -25,7 +25,7 @@ internal partial class InternalItemContentInputFile
     private string _internalFileData;
 
     public InternalItemContentInputFile(string filename, BinaryData fileBytes, string fileBytesMediaType)
-        : this(InternalItemContentType.InputFile, null, null, filename, null)
+        : this(InternalItemContentType.InputFile, default, null, filename, null)
     {
         Argument.AssertNotNullOrEmpty(filename, nameof(filename));
         Argument.AssertNotNull(fileBytes, nameof(fileBytes));

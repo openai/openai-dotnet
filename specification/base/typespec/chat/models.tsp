@@ -124,6 +124,8 @@ alias CreateChatCompletionStreamResponseChoice = {
 alias ChatCompletionMessageListData = {
   ...ChatCompletionResponseMessage;
 
+  content_parts?: ChatCompletionRequestMessageContentPart[] | null;
+
   /** The identifier of the chat message. */
   id: string;
 };
@@ -189,15 +191,6 @@ model CreateChatCompletionRequest {
 
     search_context_size?: WebSearchContextSize = "medium";
   };
-
-  @doc("""
-    An integer between 0 and 20 specifying the number of most likely tokens to
-    return at each token position, each with an associated log probability.
-    `logprobs` must be set to `true` if this parameter is used.
-    """)
-  @minValue(0)
-  @maxValue(20)
-  top_logprobs?: int32 | null;
 
   // Tool customization: apply a named union type
   @doc("""
@@ -303,8 +296,8 @@ model CreateChatCompletionRequest {
     If specified, our system will make a best effort to sample deterministically, such that repeated requests with the same `seed` and parameters should return the same result.
     Determinism is not guaranteed, and you should refer to the `system_fingerprint` response parameter to monitor changes in the backend.
     """)
-  @minValue(-9223372036854776000)
-  @maxValue(9223372036854776000)
+  @minValue(-9223372036854775808)
+  @maxValue(9223372036854775807)
   seed?: int64 | null;
 
   stream_options?: ChatCompletionStreamOptions | null = null;

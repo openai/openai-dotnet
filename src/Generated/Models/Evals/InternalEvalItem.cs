@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using OpenAI;
 
 namespace OpenAI.Evals
 {
@@ -14,13 +13,11 @@ namespace OpenAI.Evals
 
         internal InternalEvalItem(InternalEvalItemRole role, BinaryData content)
         {
-            Argument.AssertNotNull(content, nameof(content));
-
             Role = role;
             Content = content;
         }
 
-        internal InternalEvalItem(InternalEvalItemRole role, BinaryData content, string kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalEvalItem(InternalEvalItemRole role, BinaryData content, InternalEvalItemType? kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             Role = role;
             Content = content;
@@ -32,7 +29,7 @@ namespace OpenAI.Evals
 
         public BinaryData Content { get; set; }
 
-        public string Kind { get; set; }
+        internal InternalEvalItemType? Kind { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

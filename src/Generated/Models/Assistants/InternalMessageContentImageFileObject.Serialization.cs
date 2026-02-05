@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalMessageContentImageFileObject : IJsonModel<InternalMessageContentImageFileObject>
+    internal partial class InternalMessageContentImageFileObject : MessageContent, IJsonModel<InternalMessageContentImageFileObject>
     {
         internal InternalMessageContentImageFileObject() : this(InternalMessageContentType.ImageFile, null, null)
         {
@@ -100,7 +100,7 @@ namespace OpenAI.Assistants
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalMessageContentImageFileObject(document.RootElement, options);
                     }

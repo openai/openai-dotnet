@@ -25,31 +25,13 @@ namespace OpenAI.Chat
             {
                 throw new FormatException($"The model {nameof(ChatResponseFormat)} does not support writing '{format}' format.");
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.type"u8))
             {
                 writer.WritePropertyName("type"u8);
                 writer.WriteStringValue(Kind.ToString());
             }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
-                    {
-                        continue;
-                    }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
-            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         ChatResponseFormat IJsonModel<ChatResponseFormat>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
@@ -63,10 +45,10 @@ namespace OpenAI.Chat
                 throw new FormatException($"The model {nameof(ChatResponseFormat)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeChatResponseFormat(document.RootElement, options);
+            return DeserializeChatResponseFormat(document.RootElement, null, options);
         }
 
-        internal static ChatResponseFormat DeserializeChatResponseFormat(JsonElement element, ModelReaderWriterOptions options)
+        internal static ChatResponseFormat DeserializeChatResponseFormat(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -77,14 +59,14 @@ namespace OpenAI.Chat
                 switch (discriminator.GetString())
                 {
                     case "text":
-                        return InternalDotNetChatResponseFormatText.DeserializeInternalDotNetChatResponseFormatText(element, options);
+                        return InternalDotNetChatResponseFormatText.DeserializeInternalDotNetChatResponseFormatText(element, data, options);
                     case "json_object":
-                        return InternalDotNetChatResponseFormatJsonObject.DeserializeInternalDotNetChatResponseFormatJsonObject(element, options);
+                        return InternalDotNetChatResponseFormatJsonObject.DeserializeInternalDotNetChatResponseFormatJsonObject(element, data, options);
                     case "json_schema":
-                        return InternalDotNetChatResponseFormatJsonSchema.DeserializeInternalDotNetChatResponseFormatJsonSchema(element, options);
+                        return InternalDotNetChatResponseFormatJsonSchema.DeserializeInternalDotNetChatResponseFormatJsonSchema(element, data, options);
                 }
             }
-            return InternalUnknownChatResponseFormat.DeserializeInternalUnknownChatResponseFormat(element, options);
+            return InternalUnknownChatResponseFormat.DeserializeInternalUnknownChatResponseFormat(element, data, options);
         }
 
         BinaryData IPersistableModel<ChatResponseFormat>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -111,9 +93,9 @@ namespace OpenAI.Chat
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeChatResponseFormat(document.RootElement, options);
+                        return DeserializeChatResponseFormat(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(ChatResponseFormat)} does not support reading '{options.Format}' format.");

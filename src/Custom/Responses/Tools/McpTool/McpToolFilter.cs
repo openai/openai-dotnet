@@ -1,7 +1,9 @@
-﻿namespace OpenAI.Responses;
+using Microsoft.TypeSpec.Generator.Customizations;
+
+namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
-[CodeGenType("MCPToolAllowedTools1")]
+[CodeGenType("MCPToolFilter")]
 public partial class McpToolFilter
 {
 }

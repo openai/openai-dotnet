@@ -1,0 +1,142 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "336",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.5.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+      },
+      "RequestBody": {
+        "model": "gpt-5",
+        "tools": [
+          {
+            "type": "mcp",
+            "server_label": "dmcp",
+            "server_url": "https://dmcp-server.deno.dev/sse",
+            "server_description": "A Dungeons and Dragons MCP server to assist with dice rolling.",
+            "require_approval": "never"
+          }
+        ],
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Roll 2d4+1"
+              }
+            ]
+          }
+        ],
+        "stream": true
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "984f22139d51c22a-SEA",
+        "Connection": "keep-alive",
+        "Content-Type": "text/event-stream; charset=utf-8",
+        "Date": "Fri, 26 Sep 2025 01:54:24 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "129",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "139",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": [
+        "event: response.created\n",
+        "data: {\"type\":\"response.created\",\"sequence_number\":0,\"response\":{\"id\":\"resp_68d5f2500364819589f60d77d5765cf70149698ea31c1b3a\",\"object\":\"response\",\"created_at\":1758851664,\"status\":\"in_progress\",\"background\":false,\"error\":null,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-5-2025-08-07\",\"output\":[],\"parallel_tool_calls\":true,\"previous_response_id\":null,\"prompt_cache_key\":null,\"reasoning\":{\"effort\":\"medium\",\"summary\":null},\"safety_identifier\":null,\"service_tier\":\"auto\",\"store\":true,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":\"auto\",\"tools\":[{\"type\":\"mcp\",\"allowed_tools\":null,\"headers\":null,\"require_approval\":\"never\",\"server_description\":\"A Dungeons and Dragons MCP server to assist with dice rolling.\",\"server_label\":\"dmcp\",\"server_url\":\"https://dmcp-server.deno.dev/<redacted>\"}],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":null,\"user\":null,\"metadata\":{}}}\n\n",
+        "event: response.in_progress\n",
+        "data: {\"type\":\"response.in_progress\",\"sequence_number\":1,\"response\":{\"id\":\"resp_68d5f2500364819589f60d77d5765cf70149698ea31c1b3a\",\"object\":\"response\",\"created_at\":1758851664,\"status\":\"in_progress\",\"background\":false,\"error\":null,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-5-2025-08-07\",\"output\":[],\"parallel_tool_calls\":true,\"previous_response_id\":null,\"prompt_cache_key\":null,\"reasoning\":{\"effort\":\"medium\",\"summary\":null},\"safety_identifier\":null,\"service_tier\":\"auto\",\"store\":true,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":\"auto\",\"tools\":[{\"type\":\"mcp\",\"allowed_tools\":null,\"headers\":null,\"require_approval\":\"never\",\"server_description\":\"A Dungeons and Dragons MCP server to assist with dice rolling.\",\"server_label\":\"dmcp\",\"server_url\":\"https://dmcp-server.deno.dev/<redacted>\"}],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":null,\"user\":null,\"metadata\":{}}}\n\n",
+        "event: response.output_item.added\n",
+        "data: {\"type\":\"response.output_item.added\",\"sequence_number\":2,\"output_index\":0,\"item\":{\"id\":\"mcpl_68d5f2502134819596a1b0c7abebe5750149698ea31c1b3a\",\"type\":\"mcp_list_tools\",\"server_label\":\"dmcp\",\"tools\":[]}}\n\n",
+        "event: response.mcp_list_tools.in_progress\n",
+        "data: {\"type\":\"response.mcp_list_tools.in_progress\",\"sequence_number\":3,\"output_index\":0,\"item_id\":\"mcpl_68d5f2502134819596a1b0c7abebe5750149698ea31c1b3a\"}\n\n",
+        "event: response.mcp_list_tools.completed\n",
+        "data: {\"type\":\"response.mcp_list_tools.completed\",\"sequence_number\":4,\"output_index\":0,\"item_id\":\"mcpl_68d5f2502134819596a1b0c7abebe5750149698ea31c1b3a\"}\n\n",
+        "event: response.output_item.done\n",
+        "data: {\"type\":\"response.output_item.done\",\"sequence_number\":5,\"output_index\":0,\"item\":{\"id\":\"mcpl_68d5f2502134819596a1b0c7abebe5750149698ea31c1b3a\",\"type\":\"mcp_list_tools\",\"server_label\":\"dmcp\",\"tools\":[{\"annotations\":{\"read_only\":false},\"description\":\"\\n  Given a string of text describing a dice roll in \\n  Dungeons and Dragons, provide a result of the roll.\\n\\n  Example input: 2d6 + 1d4\\n  Example output: 14\\n\",\"input_schema\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"properties\":{\"diceRollExpression\":{\"type\":\"string\"}},\"required\":[\"diceRollExpression\"],\"additionalProperties\":false},\"name\":\"roll\"}]}}\n\n",
+        "event: response.output_item.added\n",
+        "data: {\"type\":\"response.output_item.added\",\"sequence_number\":6,\"output_index\":1,\"item\":{\"id\":\"rs_68d5f251b6348195be475708ff91392d0149698ea31c1b3a\",\"type\":\"reasoning\",\"summary\":[]}}\n\n",
+        "event: response.output_item.done\n",
+        "data: {\"type\":\"response.output_item.done\",\"sequence_number\":7,\"output_index\":1,\"item\":{\"id\":\"rs_68d5f251b6348195be475708ff91392d0149698ea31c1b3a\",\"type\":\"reasoning\",\"summary\":[]}}\n\n",
+        "event: response.output_item.added\n",
+        "data: {\"type\":\"response.output_item.added\",\"sequence_number\":8,\"output_index\":2,\"item\":{\"id\":\"mcp_68d5f253742c8195815184f38a83c8d10149698ea31c1b3a\",\"type\":\"mcp_call\",\"approval_request_id\":null,\"arguments\":\"\",\"error\":null,\"name\":\"roll\",\"output\":null,\"server_label\":\"dmcp\"}}\n\n",
+        "event: response.mcp_call.in_progress\n",
+        "data: {\"type\":\"response.mcp_call.in_progress\",\"sequence_number\":9,\"output_index\":2,\"item_id\":\"mcp_68d5f253742c8195815184f38a83c8d10149698ea31c1b3a\"}\n\n",
+        "event: response.mcp_call_arguments.delta\n",
+        "data: {\"type\":\"response.mcp_call_arguments.delta\",\"sequence_number\":10,\"output_index\":2,\"item_id\":\"mcp_68d5f253742c8195815184f38a83c8d10149698ea31c1b3a\",\"delta\":\"{\\\"diceRollExpression\\\":\\\"2d4+1\\\"}\",\"obfuscation\":\"KN\"}\n\n",
+        "event: response.mcp_call_arguments.done\n",
+        "data: {\"type\":\"response.mcp_call_arguments.done\",\"sequence_number\":11,\"output_index\":2,\"item_id\":\"mcp_68d5f253742c8195815184f38a83c8d10149698ea31c1b3a\",\"arguments\":\"{\\\"diceRollExpression\\\":\\\"2d4+1\\\"}\"}\n\n",
+        "event: response.mcp_call.failed\n",
+        "data: {\"type\":\"response.mcp_call.failed\",\"sequence_number\":12,\"output_index\":2,\"item_id\":\"mcp_68d5f253742c8195815184f38a83c8d10149698ea31c1b3a\"}\n\n",
+        "event: response.output_item.done\n",
+        "data: {\"type\":\"response.output_item.done\",\"sequence_number\":13,\"output_index\":2,\"item\":{\"id\":\"mcp_68d5f253742c8195815184f38a83c8d10149698ea31c1b3a\",\"type\":\"mcp_call\",\"approval_request_id\":null,\"arguments\":\"{\\\"diceRollExpression\\\":\\\"2d4+1\\\"}\",\"error\":{\"type\":\"http_error\",\"code\":424,\"message\":\"424: \"},\"name\":\"roll\",\"output\":null,\"server_label\":\"dmcp\"}}\n\n",
+        "event: response.output_item.added\n",
+        "data: {\"type\":\"response.output_item.added\",\"sequence_number\":14,\"output_index\":3,\"item\":{\"id\":\"rs_68d5f28fc72c8195b67372f8981f851a0149698ea31c1b3a\",\"type\":\"reasoning\",\"summary\":[]}}\n\n",
+        "event: response.output_item.done\n",
+        "data: {\"type\":\"response.output_item.done\",\"sequence_number\":15,\"output_index\":3,\"item\":{\"id\":\"rs_68d5f28fc72c8195b67372f8981f851a0149698ea31c1b3a\",\"type\":\"reasoning\",\"summary\":[]}}\n\n",
+        "event: response.output_item.added\n",
+        "data: {\"type\":\"response.output_item.added\",\"sequence_number\":16,\"output_index\":4,\"item\":{\"id\":\"mcp_68d5f290b5548195b6f293ddbed49ca40149698ea31c1b3a\",\"type\":\"mcp_call\",\"approval_request_id\":null,\"arguments\":\"\",\"error\":null,\"name\":\"roll\",\"output\":null,\"server_label\":\"dmcp\"}}\n\n",
+        "event: response.mcp_call.in_progress\n",
+        "data: {\"type\":\"response.mcp_call.in_progress\",\"sequence_number\":17,\"output_index\":4,\"item_id\":\"mcp_68d5f290b5548195b6f293ddbed49ca40149698ea31c1b3a\"}\n\n",
+        "event: response.mcp_call_arguments.delta\n",
+        "data: {\"type\":\"response.mcp_call_arguments.delta\",\"sequence_number\":18,\"output_index\":4,\"item_id\":\"mcp_68d5f290b5548195b6f293ddbed49ca40149698ea31c1b3a\",\"delta\":\"{\\\"diceRollExpression\\\":\\\"2d4 + 1\\\"}\",\"obfuscation\":\"\"}\n\n",
+        "event: response.mcp_call_arguments.done\n",
+        "data: {\"type\":\"response.mcp_call_arguments.done\",\"sequence_number\":19,\"output_index\":4,\"item_id\":\"mcp_68d5f290b5548195b6f293ddbed49ca40149698ea31c1b3a\",\"arguments\":\"{\\\"diceRollExpression\\\":\\\"2d4 + 1\\\"}\"}\n\n",
+        "event: response.mcp_call.completed\n",
+        "data: {\"type\":\"response.mcp_call.completed\",\"sequence_number\":20,\"output_index\":4,\"item_id\":\"mcp_68d5f290b5548195b6f293ddbed49ca40149698ea31c1b3a\"}\n\n",
+        "event: response.output_item.done\n",
+        "data: {\"type\":\"response.output_item.done\",\"sequence_number\":21,\"output_index\":4,\"item\":{\"id\":\"mcp_68d5f290b5548195b6f293ddbed49ca40149698ea31c1b3a\",\"type\":\"mcp_call\",\"approval_request_id\":null,\"arguments\":\"{\\\"diceRollExpression\\\":\\\"2d4 + 1\\\"}\",\"error\":null,\"name\":\"roll\",\"output\":\"6\",\"server_label\":\"dmcp\"}}\n\n",
+        "event: response.output_item.added\n",
+        "data: {\"type\":\"response.output_item.added\",\"sequence_number\":22,\"output_index\":5,\"item\":{\"id\":\"msg_68d5f291e3608195956f9f5199699b2a0149698ea31c1b3a\",\"type\":\"message\",\"status\":\"in_progress\",\"content\":[],\"role\":\"assistant\"}}\n\n",
+        "event: response.content_part.added\n",
+        "data: {\"type\":\"response.content_part.added\",\"sequence_number\":23,\"item_id\":\"msg_68d5f291e3608195956f9f5199699b2a0149698ea31c1b3a\",\"output_index\":5,\"content_index\":0,\"part\":{\"type\":\"output_text\",\"annotations\":[],\"logprobs\":[],\"text\":\"\"}}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"sequence_number\":24,\"item_id\":\"msg_68d5f291e3608195956f9f5199699b2a0149698ea31c1b3a\",\"output_index\":5,\"content_index\":0,\"delta\":\"You\",\"logprobs\":[],\"obfuscation\":\"zZdE3EUTsY646\"}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"sequence_number\":25,\"item_id\":\"msg_68d5f291e3608195956f9f5199699b2a0149698ea31c1b3a\",\"output_index\":5,\"content_index\":0,\"delta\":\" rolled\",\"logprobs\":[],\"obfuscation\":\"S9suHersy\"}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"sequence_number\":26,\"item_id\":\"msg_68d5f291e3608195956f9f5199699b2a0149698ea31c1b3a\",\"output_index\":5,\"content_index\":0,\"delta\":\" \",\"logprobs\":[],\"obfuscation\":\"2YO9AI71XKfFgAI\"}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"sequence_number\":27,\"item_id\":\"msg_68d5f291e3608195956f9f5199699b2a0149698ea31c1b3a\",\"output_index\":5,\"content_index\":0,\"delta\":\"2\",\"logprobs\":[],\"obfuscation\":\"QHjfUC88nEJyx5H\"}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"sequence_number\":28,\"item_id\":\"msg_68d5f291e3608195956f9f5199699b2a0149698ea31c1b3a\",\"output_index\":5,\"content_index\":0,\"delta\":\"d\",\"logprobs\":[],\"obfuscation\":\"Mx2TtCXGRQ3aoO8\"}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"sequence_number\":29,\"item_id\":\"msg_68d5f291e3608195956f9f5199699b2a0149698ea31c1b3a\",\"output_index\":5,\"content_index\":0,\"delta\":\"4\",\"logprobs\":[],\"obfuscation\":\"oo8agGPpBCoaXay\"}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"sequence_number\":30,\"item_id\":\"msg_68d5f291e3608195956f9f5199699b2a0149698ea31c1b3a\",\"output_index\":5,\"content_index\":0,\"delta\":\"+\",\"logprobs\":[],\"obfuscation\":\"8Lnw8Ti5iVyOLWB\"}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"sequence_number\":31,\"item_id\":\"msg_68d5f291e3608195956f9f5199699b2a0149698ea31c1b3a\",\"output_index\":5,\"content_index\":0,\"delta\":\"1\",\"logprobs\":[],\"obfuscation\":\"bjFXMJt0rDq6BO0\"}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"sequence_number\":32,\"item_id\":\"msg_68d5f291e3608195956f9f5199699b2a0149698ea31c1b3a\",\"output_index\":5,\"content_index\":0,\"delta\":\":\",\"logprobs\":[],\"obfuscation\":\"bW5Cq9BAET9W7jq\"}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"sequence_number\":33,\"item_id\":\"msg_68d5f291e3608195956f9f5199699b2a0149698ea31c1b3a\",\"output_index\":5,\"content_index\":0,\"delta\":\" \",\"logprobs\":[],\"obfuscation\":\"VKJadgR2YdxP4nw\"}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"sequence_number\":34,\"item_id\":\"msg_68d5f291e3608195956f9f5199699b2a0149698ea31c1b3a\",\"output_index\":5,\"content_index\":0,\"delta\":\"6\",\"logprobs\":[],\"obfuscation\":\"CwgIrG4NUo70m4J\"}\n\n",
+        "event: response.output_text.done\n",
+        "data: {\"type\":\"response.output_text.done\",\"sequence_number\":35,\"item_id\":\"msg_68d5f291e3608195956f9f5199699b2a0149698ea31c1b3a\",\"output_index\":5,\"content_index\":0,\"text\":\"You rolled 2d4+1: 6\",\"logprobs\":[]}\n\n",
+        "event: response.content_part.done\n",
+        "data: {\"type\":\"response.content_part.done\",\"sequence_number\":36,\"item_id\":\"msg_68d5f291e3608195956f9f5199699b2a0149698ea31c1b3a\",\"output_index\":5,\"content_index\":0,\"part\":{\"type\":\"output_text\",\"annotations\":[],\"logprobs\":[],\"text\":\"You rolled 2d4+1: 6\"}}\n\n",
+        "event: response.output_item.done\n",
+        "data: {\"type\":\"response.output_item.done\",\"sequence_number\":37,\"output_index\":5,\"item\":{\"id\":\"msg_68d5f291e3608195956f9f5199699b2a0149698ea31c1b3a\",\"type\":\"message\",\"status\":\"completed\",\"content\":[{\"type\":\"output_text\",\"annotations\":[],\"logprobs\":[],\"text\":\"You rolled 2d4+1: 6\"}],\"role\":\"assistant\"}}\n\n",
+        "event: response.completed\n",
+        "data: {\"type\":\"response.completed\",\"sequence_number\":38,\"response\":{\"id\":\"resp_68d5f2500364819589f60d77d5765cf70149698ea31c1b3a\",\"object\":\"response\",\"created_at\":1758851664,\"status\":\"completed\",\"background\":false,\"error\":null,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-5-2025-08-07\",\"output\":[{\"id\":\"mcpl_68d5f2502134819596a1b0c7abebe5750149698ea31c1b3a\",\"type\":\"mcp_list_tools\",\"server_label\":\"dmcp\",\"tools\":[{\"annotations\":{\"read_only\":false},\"description\":\"\\n  Given a string of text describing a dice roll in \\n  Dungeons and Dragons, provide a result of the roll.\\n\\n  Example input: 2d6 + 1d4\\n  Example output: 14\\n\",\"input_schema\":{\"$schema\":\"https://json-schema.org/draft/2020-12/schema\",\"type\":\"object\",\"properties\":{\"diceRollExpression\":{\"type\":\"string\"}},\"required\":[\"diceRollExpression\"],\"additionalProperties\":false},\"name\":\"roll\"}]},{\"id\":\"rs_68d5f251b6348195be475708ff91392d0149698ea31c1b3a\",\"type\":\"reasoning\",\"summary\":[]},{\"id\":\"mcp_68d5f253742c8195815184f38a83c8d10149698ea31c1b3a\",\"type\":\"mcp_call\",\"approval_request_id\":null,\"arguments\":\"{\\\"diceRollExpression\\\":\\\"2d4+1\\\"}\",\"error\":{\"type\":\"http_error\",\"code\":424,\"message\":\"424: \"},\"name\":\"roll\",\"output\":null,\"server_label\":\"dmcp\"},{\"id\":\"rs_68d5f28fc72c8195b67372f8981f851a0149698ea31c1b3a\",\"type\":\"reasoning\",\"summary\":[]},{\"id\":\"mcp_68d5f290b5548195b6f293ddbed49ca40149698ea31c1b3a\",\"type\":\"mcp_call\",\"approval_request_id\":null,\"arguments\":\"{\\\"diceRollExpression\\\":\\\"2d4 + 1\\\"}\",\"error\":null,\"name\":\"roll\",\"output\":\"6\",\"server_label\":\"dmcp\"},{\"id\":\"msg_68d5f291e3608195956f9f5199699b2a0149698ea31c1b3a\",\"type\":\"message\",\"status\":\"completed\",\"content\":[{\"type\":\"output_text\",\"annotations\":[],\"logprobs\":[],\"text\":\"You rolled 2d4+1: 6\"}],\"role\":\"assistant\"}],\"parallel_tool_calls\":true,\"previous_response_id\":null,\"prompt_cache_key\":null,\"reasoning\":{\"effort\":\"medium\",\"summary\":null},\"safety_identifier\":null,\"service_tier\":\"default\",\"store\":true,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":\"auto\",\"tools\":[{\"type\":\"mcp\",\"allowed_tools\":null,\"headers\":null,\"require_approval\":\"never\",\"server_description\":\"A Dungeons and Dragons MCP server to assist with dice rolling.\",\"server_label\":\"dmcp\",\"server_url\":\"https://dmcp-server.deno.dev/<redacted>\"}],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":{\"input_tokens\":991,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":134,\"output_tokens_details\":{\"reasoning_tokens\":64},\"total_tokens\":1125},\"user\":null,\"metadata\":{}}}\n\n"
+      ]
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

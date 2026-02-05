@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    public partial class InputAudioSpeechStartedUpdate : IJsonModel<InputAudioSpeechStartedUpdate>
+    public partial class InputAudioSpeechStartedUpdate : RealtimeUpdate, IJsonModel<InputAudioSpeechStartedUpdate>
     {
         internal InputAudioSpeechStartedUpdate() : this(RealtimeUpdateKind.InputSpeechStarted, null, null, null, default)
         {
@@ -117,7 +117,7 @@ namespace OpenAI.Realtime
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInputAudioSpeechStartedUpdate(document.RootElement, options);
                     }

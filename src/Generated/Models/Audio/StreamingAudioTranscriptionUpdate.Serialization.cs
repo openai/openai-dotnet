@@ -80,6 +80,8 @@ namespace OpenAI.Audio
             {
                 switch (discriminator.GetString())
                 {
+                    case "transcript.text.segment":
+                        return StreamingAudioTranscriptionTextSegmentUpdate.DeserializeStreamingAudioTranscriptionTextSegmentUpdate(element, options);
                     case "transcript.text.delta":
                         return StreamingAudioTranscriptionTextDeltaUpdate.DeserializeStreamingAudioTranscriptionTextDeltaUpdate(element, options);
                     case "transcript.text.done":
@@ -111,7 +113,7 @@ namespace OpenAI.Audio
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeStreamingAudioTranscriptionUpdate(document.RootElement, options);
                     }

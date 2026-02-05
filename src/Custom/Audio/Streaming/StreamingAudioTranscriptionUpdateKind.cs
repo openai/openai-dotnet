@@ -1,9 +1,9 @@
-using System.Diagnostics.CodeAnalysis;
+using Microsoft.TypeSpec.Generator.Customizations;
 
 namespace OpenAI.Audio;
 
 // CUSTOM: Added Experimental attribute.
-[CodeGenType("CreateTranscriptionResponseStreamEventType")]
+[CodeGenType("DotNetCreateTranscriptionStreamingResponseType")]
 public readonly partial struct StreamingAudioTranscriptionUpdateKind
 {
 }

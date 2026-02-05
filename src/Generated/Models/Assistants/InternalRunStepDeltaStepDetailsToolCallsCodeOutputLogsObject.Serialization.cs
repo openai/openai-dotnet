@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalRunStepDeltaStepDetailsToolCallsCodeOutputLogsObject : IJsonModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputLogsObject>
+    internal partial class InternalRunStepDeltaStepDetailsToolCallsCodeOutputLogsObject : RunStepUpdateCodeInterpreterOutput, IJsonModel<InternalRunStepDeltaStepDetailsToolCallsCodeOutputLogsObject>
     {
         internal InternalRunStepDeltaStepDetailsToolCallsCodeOutputLogsObject() : this(InternalRunStepDetailsCodeInterpreterOutputType.Logs, null, default, null)
         {
@@ -111,7 +111,7 @@ namespace OpenAI.Assistants
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalRunStepDeltaStepDetailsToolCallsCodeOutputLogsObject(document.RootElement, options);
                     }

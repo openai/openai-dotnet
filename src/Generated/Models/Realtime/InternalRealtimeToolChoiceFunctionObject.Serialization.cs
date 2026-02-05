@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeToolChoiceFunctionObject : IJsonModel<InternalRealtimeToolChoiceFunctionObject>
+    internal partial class InternalRealtimeToolChoiceFunctionObject : InternalRealtimeToolChoiceObject, IJsonModel<InternalRealtimeToolChoiceFunctionObject>
     {
         internal InternalRealtimeToolChoiceFunctionObject() : this(default, null, null)
         {
@@ -100,7 +100,7 @@ namespace OpenAI.Realtime
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalRealtimeToolChoiceFunctionObject(document.RootElement, options);
                     }

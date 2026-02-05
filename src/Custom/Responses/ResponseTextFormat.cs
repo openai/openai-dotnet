@@ -1,5 +1,5 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using System;
-using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses;
 
@@ -29,7 +29,7 @@ public partial class ResponseTextFormat
 
          return new InternalResponsesTextFormatJsonSchema(
             InternalResponsesTextFormatType.JsonSchema,
-            additionalBinaryDataProperties: null,
+            patch: default,
             description: jsonSchemaFormatDescription,
             name: jsonSchemaFormatName,
             strict: jsonSchemaIsStrict,

@@ -48,6 +48,14 @@ public class PaginationVisitor : ScmLibraryVisitor
             ("ChatCompletionMessageListDatum", "ChatCompletionMessageCollectionOptions", _paginationParamsToReplace)
         },
         {
+            "GetBatches",
+            ("BatchJob", "BatchCollectionOptions", _paginationParamsToReplace)
+        },
+        {
+            "GetBatchesAsync",
+            ("BatchJob", "BatchCollectionOptions", _paginationParamsToReplace)
+        },
+        {
             "GetVectorStores",
             ("VectorStore", "VectorStoreCollectionOptions", _paginationParamsToReplace)
         },
@@ -88,11 +96,11 @@ public class PaginationVisitor : ScmLibraryVisitor
             ("ContainerFileResource", "ContainerFileCollectionOptions", _paginationParamsToReplace)
         },
         {
-            "GetInputItems",
+            "GetResponseInputItems",
             ("ResponseItem", "ResponseItemCollectionOptions", _paginationParamsToReplace)
         },
         {
-            "GetInputItemsAsync",
+            "GetResponseInputItemsAsync",
             ("ResponseItem", "ResponseItemCollectionOptions", _paginationParamsToReplace)
         },
         {
@@ -279,22 +287,21 @@ public class PaginationVisitor : ScmLibraryVisitor
                         statement,
                         expression =>
                         {
-                            // Check if this is a binary expression with "==" operator
-                            if (expression is ScopedApi scopedApi && scopedApi.Original is BinaryOperatorExpression binaryExpr && binaryExpr.Operator == "==")
+                            // Check if this is a string.IsNullOrEmpty(nextToken) call
+                            if (expression is InvokeMethodExpression invokeExpr && invokeExpr.MethodName == "IsNullOrEmpty")
                             {
-                                // Check if left side is "nextToken" and right side is "null"
-                                if (binaryExpr.Left is VariableExpression leftVar &&
-                                    leftVar.Declaration.RequestedName == "nextToken" &&
-                                    binaryExpr.Right is KeywordExpression rightKeyword &&
-                                    rightKeyword.Keyword == "null"
+                                // Check if the argument is "nextToken"
+                                if (invokeExpr.Arguments.Count == 1 &&
+                                    invokeExpr.Arguments[0] is VariableExpression argVar &&
+                                    argVar.Declaration.RequestedName == "nextToken"
                                     && hasMoreVariable != null)
                                 {
                                     // Create "!hasMore" condition. Note the hasMoreVariable gets assigned earlier in the method statements
                                     // in the WhileStatement handler below.
                                     var hasMoreNullCheck = Snippet.Not(hasMoreVariable);
 
-                                    // Return "nextToken == null || !hasMore"
-                                    return BoolSnippets.Or(binaryExpr.As<bool>(), hasMoreNullCheck);
+                                    // Return "string.IsNullOrEmpty(nextToken) || !hasMore"
+                                    return BoolSnippets.Or(invokeExpr.As<bool>(), hasMoreNullCheck);
                                 }
                             }
                             return expression;

@@ -1,7 +1,6 @@
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
@@ -133,5 +132,17 @@ public partial class OpenAIFileClient
     public virtual ClientResult CancelUpload(string uploadId, RequestOptions options = null)
     {
         return _internalUploadsClient.CancelUpload(uploadId, options);
+    }
+
+    public virtual ClientResult GetFiles(string purpose, RequestOptions options)
+    {
+        using PipelineMessage message = CreateGetFilesRequest(purpose, null, null, null, options);
+        return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+    }
+
+    public virtual async Task<ClientResult> GetFilesAsync(string purpose, RequestOptions options)
+    {
+        using PipelineMessage message = CreateGetFilesRequest(purpose, null, null, null, options);
+        return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
     }
 }

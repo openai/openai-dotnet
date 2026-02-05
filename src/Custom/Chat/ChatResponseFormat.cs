@@ -1,4 +1,4 @@
-using OpenAI.Internal;
+using Microsoft.TypeSpec.Generator.Customizations;
 using System;
 
 namespace OpenAI.Chat;
@@ -99,7 +99,7 @@ public partial class ChatResponseFormat
             jsonSchemaFormatName,
             schema: jsonSchema,
             jsonSchemaIsStrict,
-            additionalBinaryDataProperties: null);
+            patch: default);
 
         return new InternalDotNetChatResponseFormatJsonSchema(internalSchema);
     }

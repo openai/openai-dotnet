@@ -4,7 +4,6 @@
 
 using System;
 using System.ComponentModel;
-using OpenAI;
 
 namespace OpenAI.FineTuning
 {
@@ -18,8 +17,6 @@ namespace OpenAI.FineTuning
 
         public InternalCreateFineTuningJobRequestModel(string value)
         {
-            Argument.AssertNotNull(value, nameof(value));
-
             _value = value;
         }
 

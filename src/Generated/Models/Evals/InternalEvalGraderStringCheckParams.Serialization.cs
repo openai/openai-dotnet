@@ -11,7 +11,7 @@ using OpenAI.Graders;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalGraderStringCheckParams : IJsonModel<InternalEvalGraderStringCheckParams>
+    internal partial class InternalEvalGraderStringCheckParams : InternalEvalGraderParams, IJsonModel<InternalEvalGraderStringCheckParams>
     {
         internal InternalEvalGraderStringCheckParams() : this(GraderType.StringCheck, null, null, null, null, default)
         {
@@ -140,7 +140,7 @@ namespace OpenAI.Evals
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalEvalGraderStringCheckParams(document.RootElement, options);
                     }

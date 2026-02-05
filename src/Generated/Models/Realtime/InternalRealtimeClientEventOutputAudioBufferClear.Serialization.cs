@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeClientEventOutputAudioBufferClear : IJsonModel<InternalRealtimeClientEventOutputAudioBufferClear>
+    internal partial class InternalRealtimeClientEventOutputAudioBufferClear : InternalRealtimeClientEvent, IJsonModel<InternalRealtimeClientEventOutputAudioBufferClear>
     {
         void IJsonModel<InternalRealtimeClientEventOutputAudioBufferClear>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -91,7 +91,7 @@ namespace OpenAI.Realtime
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalRealtimeClientEventOutputAudioBufferClear(document.RootElement, options);
                     }

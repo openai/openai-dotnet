@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    public partial class RateLimitsUpdate : IJsonModel<RateLimitsUpdate>
+    public partial class RateLimitsUpdate : RealtimeUpdate, IJsonModel<RateLimitsUpdate>
     {
         internal RateLimitsUpdate() : this(RealtimeUpdateKind.RateLimitsUpdated, null, null, null)
         {
@@ -116,7 +116,7 @@ namespace OpenAI.Realtime
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeRateLimitsUpdate(document.RootElement, options);
                     }

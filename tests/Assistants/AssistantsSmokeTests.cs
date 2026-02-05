@@ -79,7 +79,7 @@ public class AssistantsSmokeTests
         Assert.That((AssistantResponseFormat)null != AssistantResponseFormat.CreateTextFormat());
         Assert.That(AssistantResponseFormat.CreateTextFormat() != null);
         Assert.That(AssistantResponseFormat.CreateTextFormat(), Is.Not.EqualTo(null));
-        Assert.That(null, Is.Not.EqualTo(AssistantResponseFormat.CreateTextFormat()));
+        Assert.That(AssistantResponseFormat.CreateTextFormat(), Is.Not.Null);
 
         AssistantResponseFormat jsonSchemaFormat = AssistantResponseFormat.CreateJsonSchemaFormat(
             name: "test_schema",

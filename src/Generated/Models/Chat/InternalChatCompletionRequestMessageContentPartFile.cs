@@ -2,9 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
-using OpenAI;
+using System.ClientModel.Primitives;
 
 namespace OpenAI.Chat
 {
@@ -12,16 +10,17 @@ namespace OpenAI.Chat
     {
         internal InternalChatCompletionRequestMessageContentPartFile(InternalChatCompletionRequestMessageContentPartFileFile @file)
         {
-            Argument.AssertNotNull(@file, nameof(@file));
-
             File = @file;
         }
 
-        internal InternalChatCompletionRequestMessageContentPartFile(IDictionary<string, BinaryData> additionalBinaryDataProperties, InternalChatCompletionRequestMessageContentPartFileFile @file) : base(additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalChatCompletionRequestMessageContentPartFile(in JsonPatch patch, InternalChatCompletionRequestMessageContentPartFileFile @file) : base(patch)
         {
             File = @file;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        internal InternalChatCompletionRequestMessageContentPartFileFile File { get; }
+        internal InternalChatCompletionRequestMessageContentPartFileFile File { get; set; }
     }
 }

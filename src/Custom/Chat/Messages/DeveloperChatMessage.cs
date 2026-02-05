@@ -1,5 +1,5 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Chat;
 
@@ -23,7 +23,7 @@ public partial class DeveloperChatMessage : ChatMessage
     ///     The collection of content items associated with the message.
     /// </param>
     public DeveloperChatMessage(IEnumerable<ChatMessageContentPart> contentParts)
-        : this(content: new ChatMessageContent(contentParts), role: ChatMessageRole.Developer, participantName: null, additionalBinaryDataProperties: null)
+        : this(content: new ChatMessageContent(contentParts), role: ChatMessageRole.Developer, participantName: null, patch: default)
     { }
 
     /// <summary>
@@ -34,7 +34,7 @@ public partial class DeveloperChatMessage : ChatMessage
     ///     The collection of content items associated with the message.
     /// </param>
     public DeveloperChatMessage(params ChatMessageContentPart[] contentParts)
-        : this(content: new ChatMessageContent(contentParts), role: ChatMessageRole.Developer, participantName: null, additionalBinaryDataProperties: null)
+        : this(content: new ChatMessageContent(contentParts), role: ChatMessageRole.Developer, participantName: null, patch: default)
     {
         Argument.AssertNotNullOrEmpty(contentParts, nameof(contentParts));
     }
@@ -44,7 +44,7 @@ public partial class DeveloperChatMessage : ChatMessage
     /// </summary>
     /// <param name="content"> The text content of the message. </param>
     public DeveloperChatMessage(string content)
-        : this(content: new ChatMessageContent([content]), role: ChatMessageRole.Developer, participantName: null, additionalBinaryDataProperties: null)
+        : this(content: new ChatMessageContent([content]), role: ChatMessageRole.Developer, participantName: null, patch: default)
     {
         Argument.AssertNotNull(content, nameof(content));
     }

@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Linq;
 using OpenAI;
@@ -13,16 +13,16 @@ namespace OpenAI.Responses
     {
         public InternalComputerActionKeyPress(IEnumerable<string> keys) : base(ComputerCallActionKind.KeyPress)
         {
-            Argument.AssertNotNull(keys, nameof(keys));
-
             Keys = keys.ToList();
         }
 
-        internal InternalComputerActionKeyPress(ComputerCallActionKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, IList<string> keys) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalComputerActionKeyPress(ComputerCallActionKind kind, in JsonPatch patch, IList<string> keys) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             Keys = keys ?? new ChangeTrackingList<string>();
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public IList<string> Keys { get; }
     }

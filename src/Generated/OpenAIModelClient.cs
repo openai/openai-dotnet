@@ -3,7 +3,10 @@
 #nullable disable
 
 using System;
+using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Threading.Tasks;
+using OpenAI;
 
 namespace OpenAI.Models
 {
@@ -16,5 +19,49 @@ namespace OpenAI.Models
         }
 
         public ClientPipeline Pipeline { get; }
+
+        public virtual ClientResult GetModels(RequestOptions options)
+        {
+            using PipelineMessage message = CreateGetModelsRequest(options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> GetModelsAsync(RequestOptions options)
+        {
+            using PipelineMessage message = CreateGetModelsRequest(options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult DeleteModel(string model, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(model, nameof(model));
+
+            using PipelineMessage message = CreateDeleteModelRequest(model, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> DeleteModelAsync(string model, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(model, nameof(model));
+
+            using PipelineMessage message = CreateDeleteModelRequest(model, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
+
+        public virtual ClientResult GetModel(string model, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(model, nameof(model));
+
+            using PipelineMessage message = CreateGetModelRequest(model, options);
+            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+        }
+
+        public virtual async Task<ClientResult> GetModelAsync(string model, RequestOptions options)
+        {
+            Argument.AssertNotNullOrEmpty(model, nameof(model));
+
+            using PipelineMessage message = CreateGetModelRequest(model, options);
+            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+        }
     }
 }

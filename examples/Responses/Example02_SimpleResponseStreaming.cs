@@ -14,7 +14,7 @@ public partial class ResponseExamples
     [Test]
     public void Example02_SimpleResponseStreaming()
     {
-        OpenAIResponseClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         CollectionResult<StreamingResponseUpdate> responseUpdates = client.CreateResponseStreaming("Say 'this is a test.'");
 

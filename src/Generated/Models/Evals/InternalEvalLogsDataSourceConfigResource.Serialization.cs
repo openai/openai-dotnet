@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Evals
 {
-    internal partial class InternalEvalLogsDataSourceConfigResource : IJsonModel<InternalEvalLogsDataSourceConfigResource>
+    internal partial class InternalEvalLogsDataSourceConfigResource : InternalEvalDataSourceConfigResource, IJsonModel<InternalEvalLogsDataSourceConfigResource>
     {
         internal InternalEvalLogsDataSourceConfigResource() : this(InternalEvalDataSourceConfigType.Logs, null, null, null)
         {
@@ -176,7 +176,7 @@ namespace OpenAI.Evals
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalEvalLogsDataSourceConfigResource(document.RootElement, options);
                     }

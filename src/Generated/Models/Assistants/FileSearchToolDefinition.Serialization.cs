@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    public partial class FileSearchToolDefinition : IJsonModel<FileSearchToolDefinition>
+    public partial class FileSearchToolDefinition : ToolDefinition, IJsonModel<FileSearchToolDefinition>
     {
         void IJsonModel<FileSearchToolDefinition>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
@@ -100,7 +100,7 @@ namespace OpenAI.Assistants
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeFileSearchToolDefinition(document.RootElement, options);
                     }

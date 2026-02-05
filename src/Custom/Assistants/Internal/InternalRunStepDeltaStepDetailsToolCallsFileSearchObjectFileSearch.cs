@@ -1,4 +1,6 @@
-﻿namespace OpenAI.Assistants;
+using Microsoft.TypeSpec.Generator.Customizations;
+
+namespace OpenAI.Assistants;
 
 [CodeGenType("RunStepDeltaStepDetailsToolCallsFileSearchObjectFileSearch")]
 internal partial class InternalRunStepDeltaStepDetailsToolCallsFileSearchObjectFileSearch

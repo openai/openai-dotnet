@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeClientEventConversationItemDelete : IJsonModel<InternalRealtimeClientEventConversationItemDelete>
+    internal partial class InternalRealtimeClientEventConversationItemDelete : InternalRealtimeClientEvent, IJsonModel<InternalRealtimeClientEventConversationItemDelete>
     {
         internal InternalRealtimeClientEventConversationItemDelete() : this(InternalRealtimeClientEventType.ConversationItemDelete, null, null, null)
         {
@@ -106,7 +106,7 @@ namespace OpenAI.Realtime
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalRealtimeClientEventConversationItemDelete(document.RootElement, options);
                     }

@@ -1,3 +1,4 @@
+using Microsoft.TypeSpec.Generator.Customizations;
 using System;
 
 namespace OpenAI.Chat;
@@ -126,8 +127,8 @@ public partial class ChatTool
                 name: functionName,
                 strict: functionSchemaIsStrict,
                 parameters: functionParameters,
-                additionalBinaryDataProperties: null),
+                patch: default),
             kind: ChatToolKind.Function,
-            additionalBinaryDataProperties: null);
+            patch: default);
     }
 }

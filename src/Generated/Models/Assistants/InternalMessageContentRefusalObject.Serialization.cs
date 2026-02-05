@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Assistants
 {
-    internal partial class InternalMessageContentRefusalObject : IJsonModel<InternalMessageContentRefusalObject>
+    internal partial class InternalMessageContentRefusalObject : MessageContent, IJsonModel<InternalMessageContentRefusalObject>
     {
         internal InternalMessageContentRefusalObject() : this(InternalMessageContentType.Refusal, null, null)
         {
@@ -100,7 +100,7 @@ namespace OpenAI.Assistants
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalMessageContentRefusalObject(document.RootElement, options);
                     }

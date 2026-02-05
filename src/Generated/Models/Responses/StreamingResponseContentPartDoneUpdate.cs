@@ -2,8 +2,7 @@
 
 #nullable disable
 
-using System;
-using System.Collections.Generic;
+using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Responses
@@ -19,18 +18,21 @@ namespace OpenAI.Responses
             Part = part;
         }
 
-        internal StreamingResponseContentPartDoneUpdate(InternalResponseStreamEventType kind, int sequenceNumber, IDictionary<string, BinaryData> additionalBinaryDataProperties, string itemId, int outputIndex, int contentIndex, ResponseContentPart part) : base(kind, sequenceNumber, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal StreamingResponseContentPartDoneUpdate(InternalResponseStreamEventType kind, int sequenceNumber, in JsonPatch patch, string itemId, int outputIndex, int contentIndex, ResponseContentPart part) : base(kind, sequenceNumber, patch)
         {
             ItemId = itemId;
             OutputIndex = outputIndex;
             ContentIndex = contentIndex;
             Part = part;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string ItemId { get; }
+        public string ItemId { get; set; }
 
-        public int OutputIndex { get; }
+        public int OutputIndex { get; set; }
 
-        public int ContentIndex { get; }
+        public int ContentIndex { get; set; }
     }
 }

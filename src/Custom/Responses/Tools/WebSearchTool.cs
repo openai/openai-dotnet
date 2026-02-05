@@ -1,7 +1,9 @@
-﻿namespace OpenAI.Responses;
+using Microsoft.TypeSpec.Generator.Customizations;
+
+namespace OpenAI.Responses;
 
 // CUSTOM: Renamed.
-[CodeGenType("WebSearchPreviewTool")]
+[CodeGenType("WebSearchTool")]
 public partial class WebSearchTool
 {
 }

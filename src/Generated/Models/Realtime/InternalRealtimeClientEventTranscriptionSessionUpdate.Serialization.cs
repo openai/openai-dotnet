@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalRealtimeClientEventTranscriptionSessionUpdate : IJsonModel<InternalRealtimeClientEventTranscriptionSessionUpdate>
+    internal partial class InternalRealtimeClientEventTranscriptionSessionUpdate : InternalRealtimeClientEvent, IJsonModel<InternalRealtimeClientEventTranscriptionSessionUpdate>
     {
         internal InternalRealtimeClientEventTranscriptionSessionUpdate() : this(InternalRealtimeClientEventType.TranscriptionSessionUpdate, null, null, null)
         {
@@ -106,7 +106,7 @@ namespace OpenAI.Realtime
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalRealtimeClientEventTranscriptionSessionUpdate(document.RootElement, options);
                     }

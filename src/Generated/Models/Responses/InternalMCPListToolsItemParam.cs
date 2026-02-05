@@ -2,7 +2,7 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Linq;
 using OpenAI;
@@ -13,20 +13,20 @@ namespace OpenAI.Responses
     {
         public InternalMCPListToolsItemParam(string serverLabel, IEnumerable<McpToolDefinition> tools) : base(InternalItemType.McpListTools)
         {
-            Argument.AssertNotNull(serverLabel, nameof(serverLabel));
-            Argument.AssertNotNull(tools, nameof(tools));
-
             ServerLabel = serverLabel;
             Tools = tools.ToList();
         }
 
-        internal InternalMCPListToolsItemParam(InternalItemType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string serverLabel, IList<McpToolDefinition> tools, string error) : base(kind, additionalBinaryDataProperties)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal InternalMCPListToolsItemParam(InternalItemType kind, in JsonPatch patch, string serverLabel, IList<McpToolDefinition> tools, string error) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             ServerLabel = serverLabel;
             Tools = tools ?? new ChangeTrackingList<McpToolDefinition>();
             Error = error;
+            Patch.SetPropagators(PropagateSet, PropagateGet);
         }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string ServerLabel { get; }
 

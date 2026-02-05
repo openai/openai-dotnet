@@ -157,7 +157,7 @@ namespace OpenAI.Evals
                     List<ResponseTool> array = new List<ResponseTool>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ResponseTool.DeserializeResponseTool(item, options));
+                        array.Add(ResponseTool.DeserializeResponseTool(item, item.GetUtf8Bytes(), options));
                     }
                     tools = array;
                     continue;
@@ -206,7 +206,7 @@ namespace OpenAI.Evals
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalEvalResponsesRunDataSourceParamsSamplingParams(document.RootElement, options);
                     }

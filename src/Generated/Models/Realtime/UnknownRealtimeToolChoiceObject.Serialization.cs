@@ -10,7 +10,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class UnknownRealtimeToolChoiceObject : IJsonModel<InternalRealtimeToolChoiceObject>
+    internal partial class UnknownRealtimeToolChoiceObject : InternalRealtimeToolChoiceObject, IJsonModel<InternalRealtimeToolChoiceObject>
     {
         internal UnknownRealtimeToolChoiceObject() : this(default, null)
         {
@@ -89,7 +89,7 @@ namespace OpenAI.Realtime
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalRealtimeToolChoiceObject(document.RootElement, options);
                     }

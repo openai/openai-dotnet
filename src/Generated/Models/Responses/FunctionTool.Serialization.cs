@@ -4,20 +4,28 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
-    public partial class FunctionTool : IJsonModel<FunctionTool>
+    public partial class FunctionTool : ResponseTool, IJsonModel<FunctionTool>
     {
-        internal FunctionTool() : this(InternalToolType.Function, null, null, null, null, default)
+        internal FunctionTool() : this(InternalToolType.Function, default, null, null, null, default)
         {
         }
 
         void IJsonModel<FunctionTool>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
+            {
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
             writer.WriteEndObject();
@@ -31,47 +39,45 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(FunctionTool)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("name") != true)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.name"u8))
             {
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(FunctionName);
             }
-            if (Optional.IsDefined(FunctionDescription) && _additionalBinaryDataProperties?.ContainsKey("description") != true)
+            if (Optional.IsDefined(FunctionDescription) && !Patch.Contains("$.description"u8))
             {
                 writer.WritePropertyName("description"u8);
                 writer.WriteStringValue(FunctionDescription);
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("parameters") != true)
+            if (Optional.IsDefined(FunctionParameters) && !Patch.Contains("$.parameters"u8))
             {
-                if (Optional.IsDefined(FunctionParameters))
-                {
-                    writer.WritePropertyName("parameters"u8);
+                writer.WritePropertyName("parameters"u8);
 #if NET6_0_OR_GREATER
-                    writer.WriteRawValue(FunctionParameters);
+                writer.WriteRawValue(FunctionParameters);
 #else
-                    using (JsonDocument document = JsonDocument.Parse(FunctionParameters))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
+                using (JsonDocument document = JsonDocument.Parse(FunctionParameters))
+                {
+                    JsonSerializer.Serialize(writer, document.RootElement);
+                }
 #endif
-                }
-                else
-                {
-                    writer.WriteNull("parameters"u8);
-                }
             }
-            if (_additionalBinaryDataProperties?.ContainsKey("strict") != true)
+            else
             {
-                if (Optional.IsDefined(StrictModeEnabled))
-                {
-                    writer.WritePropertyName("strict"u8);
-                    writer.WriteBooleanValue(StrictModeEnabled.Value);
-                }
-                else
-                {
-                    writer.WriteNull("strict"u8);
-                }
+                writer.WriteNull("parameters"u8);
             }
+            if (Optional.IsDefined(StrictModeEnabled) && !Patch.Contains("$.strict"u8))
+            {
+                writer.WritePropertyName("strict"u8);
+                writer.WriteBooleanValue(StrictModeEnabled.Value);
+            }
+            else
+            {
+                writer.WriteNull("strict"u8);
+            }
+
+            Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         FunctionTool IJsonModel<FunctionTool>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (FunctionTool)JsonModelCreateCore(ref reader, options);
@@ -84,17 +90,19 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(FunctionTool)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeFunctionTool(document.RootElement, options);
+            return DeserializeFunctionTool(document.RootElement, null, options);
         }
 
-        internal static FunctionTool DeserializeFunctionTool(JsonElement element, ModelReaderWriterOptions options)
+        internal static FunctionTool DeserializeFunctionTool(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
             InternalToolType kind = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string functionName = default;
             string functionDescription = default;
             BinaryData functionParameters = default;
@@ -141,12 +149,11 @@ namespace OpenAI.Responses
                     strictModeEnabled = prop.Value.GetBoolean();
                     continue;
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new FunctionTool(
                 kind,
-                additionalBinaryDataProperties,
+                patch,
                 functionName,
                 functionDescription,
                 functionParameters,
@@ -175,9 +182,9 @@ namespace OpenAI.Responses
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeFunctionTool(document.RootElement, options);
+                        return DeserializeFunctionTool(document.RootElement, data, options);
                     }
                 default:
                     throw new FormatException($"The model {nameof(FunctionTool)} does not support reading '{options.Format}' format.");

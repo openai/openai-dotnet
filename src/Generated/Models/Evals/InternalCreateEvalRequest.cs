@@ -15,9 +15,6 @@ namespace OpenAI.Evals
 
         internal InternalCreateEvalRequest(InternalEvalDataSourceConfigParams dataSourceConfig, IEnumerable<InternalEvalGraderParams> testingCriteria)
         {
-            Argument.AssertNotNull(dataSourceConfig, nameof(dataSourceConfig));
-            Argument.AssertNotNull(testingCriteria, nameof(testingCriteria));
-
             Metadata = new ChangeTrackingDictionary<string, string>();
             DataSourceConfig = dataSourceConfig;
             TestingCriteria = testingCriteria.ToList();

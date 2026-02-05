@@ -155,7 +155,7 @@ namespace OpenAI.Evals
                     {
                         continue;
                     }
-                    responseFormat = ResponseTextFormat.DeserializeResponseTextFormat(prop.Value, options);
+                    responseFormat = ResponseTextFormat.DeserializeResponseTextFormat(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("tools"u8))
@@ -167,7 +167,7 @@ namespace OpenAI.Evals
                     List<ChatTool> array = new List<ChatTool>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ChatTool.DeserializeChatTool(item, options));
+                        array.Add(ChatTool.DeserializeChatTool(item, item.GetUtf8Bytes(), options));
                     }
                     tools = array;
                     continue;
@@ -207,7 +207,7 @@ namespace OpenAI.Evals
             switch (format)
             {
                 case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data))
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
                         return DeserializeInternalEvalCompletionsRunDataSourceParamsSamplingParams(document.RootElement, options);
                     }
