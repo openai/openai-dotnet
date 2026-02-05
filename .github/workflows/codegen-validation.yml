@@ -1,6 +1,6 @@
-# This workflow validates changes made to the codegen folder by running code generation
-# and ensuring the process completes successfully without errors.
-name: CodeGen Validation
+# This workflow validates code generation and API export integrity by running
+# the relevant scripts and ensuring they complete without producing changes.
+name: Code integrity checks
 
 on:
   pull_request:
@@ -13,30 +13,33 @@ on:
       - 'package-lock.json'
       - '.github/workflows/codegen-validation.yml'
       - 'scripts/Invoke-CodeGen.ps1'
+      - 'scripts/Export-Api.ps1'
+      - 'api/**'
+      - 'Directory.Build.targets'
     types: [opened, reopened, synchronize]
   workflow_dispatch:
 
 jobs:
   validate-codegen:
-    name: Validate Code Generation
+    name: Validate code generation
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
 
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
           node-version: '22.x'
 
-      - name: Setup .NET
+      - name: Set up .NET
         uses: actions/setup-dotnet@v5
         with:
           # Use the version specified in global.json
           global-json-file: global.json
 
-      - name: Run CodeGen Script
+      - name: Run Invoke-CodeGen script
         shell: pwsh
         run: |
           Write-Host "Running code generation validation..."
@@ -51,9 +54,11 @@ jobs:
 
       - name: Check for uncommitted changes
         run: |
+          CODEGEN_ERROR_MSG="Code generation produced changes. Please run './scripts/Invoke-CodeGen.ps1' locally and commit the results."
+
           # Check if there are any changes to tracked files after code generation
           if ! git diff --quiet; then
-            echo "::error::Code generation produced uncommitted changes. Please run the codegen script locally and commit the results."
+            echo "::error::$CODEGEN_ERROR_MSG"
             echo "Changed files:"
             git diff --name-only
             echo "Diff details:"
@@ -63,7 +68,7 @@ jobs:
 
           # Also check for untracked files that might have been generated
           if [ -n "$(git ls-files --others --exclude-standard)" ]; then
-            echo "::error::Code generation produced untracked files. Please review and commit them if they should be included."
+            echo "::error::$CODEGEN_ERROR_MSG"
             echo "Untracked files:"
             git ls-files --others --exclude-standard
             exit 1
@@ -84,3 +89,54 @@ jobs:
         with:
           name: build-artifacts
           path: ${{github.workspace}}/artifacts
+
+  validate-api-export:
+    name: Validate API export
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          # Use the version specified in global.json
+          global-json-file: global.json
+
+      - name: Run Export-Api script
+        shell: pwsh
+        run: |
+          Write-Host "Running API export validation..."
+          ./scripts/Export-Api.ps1
+
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "API export failed with exit code: $LASTEXITCODE"
+            exit $LASTEXITCODE
+          }
+
+          Write-Host "API export completed successfully!"
+
+      - name: Check for uncommitted changes
+        run: |
+          API_ERROR_MSG="API export produced changes. Please run './scripts/Export-Api.ps1' locally and commit the results."
+
+          # Check if there are any changes to tracked files after API export
+          if ! git diff --quiet; then
+            echo "::error::$API_ERROR_MSG"
+            echo "Changed files:"
+            git diff --name-only
+            echo "Diff details:"
+            git diff
+            exit 1
+          fi
+
+          # Also check for untracked files that might have been generated
+          if [ -n "$(git ls-files --others --exclude-standard)" ]; then
+            echo "::error::$API_ERROR_MSG"
+            echo "Untracked files:"
+            git ls-files --others --exclude-standard
+            exit 1
+          fi
+
+          echo "No uncommitted changes detected - API export is up to date!"

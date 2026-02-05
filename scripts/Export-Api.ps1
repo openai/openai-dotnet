@@ -93,8 +93,7 @@ Get-ChildItem -Path $outputDirectory -Filter "OpenAI.*.cs" | ForEach-Object {
     
     $content = Get-Content $_.FullName -Raw
 
-    # Remove empty lines.
-    $content = $content -creplace '//.*\r?\n', ''
+    # Normalize line breaks and whitespace.
     $content = $content -creplace '\r?\n\r?\n', "`n"
     $content = $content -creplace '\r?\n *{', " {"
 
