@@ -791,7 +791,6 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(functionCall.FunctionName, Is.EqualTo(toolChoice.FunctionName));
     }
 
-    // [Ignore("Failing")]
     [RecordedTest]
     public async Task CanStreamBackgroundResponses()
     {
