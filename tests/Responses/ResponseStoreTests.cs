@@ -142,7 +142,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
             ResponseItem.CreateUserMessageItem([
                 ResponseContentPart.CreateInputTextPart("What is input text?"),
                 ResponseContentPart.CreateInputFilePart(BinaryData.FromBytes(File.ReadAllBytes(filePath)), "application/pdf", "test_favorite_foods.pdf"),
-                ResponseContentPart.CreateInputImagePart(new Uri("https://upload.wikimedia.org/wikipedia/commons/c/c3/Openai.png")),
+                ResponseContentPart.CreateInputImagePart(new Uri("https://github.com/openai/openai-dotnet/blob/db6328accdd7927f19915cdc5412eb841f2447c1/tests/Assets/images_empty_room.png?raw=true")),
             ]),
             ResponseItem.CreateUserMessageItem("Item 2"),
             ResponseItem.CreateUserMessageItem("Item 3"),
