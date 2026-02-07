@@ -111,6 +111,14 @@ public partial class AudioClient
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
+    [Experimental("SCME0002")]
+    public AudioClient(AudioClientSettings settings)
+        : this(settings.Model ?? throw new ArgumentNullException(nameof(settings.Model)),
+            AuthenticationPolicy.Create(settings),
+            settings.Options ?? new OpenAIClientOptions())
+    {
+    }
+
     /// <summary>
     /// Gets the name of the model used in requests sent to the service.
     /// </summary>

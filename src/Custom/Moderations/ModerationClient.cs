@@ -92,6 +92,14 @@ public partial class ModerationClient
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
+    [Experimental("SCME0002")]
+    public ModerationClient(ModerationClientSettings settings)
+        : this(settings.Model ?? throw new ArgumentNullException(nameof(settings.Model)),
+            AuthenticationPolicy.Create(settings),
+            settings.Options ?? new OpenAIClientOptions())
+    {
+    }
+
     // CUSTOM:
     // - Added `model` parameter.
     // - Used a custom pipeline.
