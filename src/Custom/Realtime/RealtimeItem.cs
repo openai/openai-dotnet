@@ -15,6 +15,7 @@ public partial class RealtimeItem
         => (this as InternalRealtimeRequestAssistantMessageItem)?.Content.ToList().AsReadOnly()
         ?? (this as InternalRealtimeRequestSystemMessageItem)?.Content?.ToList().AsReadOnly()
         ?? (this as InternalRealtimeRequestUserMessageItem)?.Content?.ToList().AsReadOnly();
+    ?? System.Collections.Generic.Enumerable.Empty<ConversationContentPart>().ToList().AsReadOnly()
     public ConversationMessageRole? MessageRole
         => (this as InternalRealtimeRequestMessageItem)?.Role;
 
