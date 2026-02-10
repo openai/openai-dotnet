@@ -12,6 +12,10 @@ using TypeSpec.HttpClient.CSharp;
 @@alternateType(Response.`model`, string);
 @@alternateType(Response.service_tier, DotNetResponseServiceTier);
 
+// Do not generate convenience methods for these operations
+@@convenientAPI(Responses.Compactconversation, false);
+@@convenientAPI(Responses.Getinputtokencounts, false);
+
 // ------------ ItemResources ------------
 @@usage(ItemResource, Usage.input | Usage.output);
 @@visibility(ItemResource.id, Lifecycle.Read);

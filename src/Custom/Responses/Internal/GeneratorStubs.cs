@@ -122,3 +122,5 @@ namespace OpenAI.Responses;
 [CodeGenType("DotNetCustomToolCallApprovalPolicyNever")] internal partial class InternalDotNetCustomToolCallApprovalPolicyNever { }
 [CodeGenType("UnknownCodeInterpreterToolOutput")] internal partial class InternalUnknownCodeInterpreterToolOutput {}
 [CodeGenType("UnknownCodeInterpreterContainerConfiguration")] internal partial class InternalUnknownCodeInterpreterContainerConfiguration {}
+[CodeGenType("CompactconversationRequestContentType")] internal readonly partial struct InternalCompactconversationRequestContentType { }
+[CodeGenType("GetinputtokencountsRequestContentType")] internal readonly partial struct InternalGetinputtokencountsRequestContentType { }

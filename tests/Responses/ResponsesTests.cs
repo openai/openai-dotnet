@@ -894,6 +894,96 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(createdResponse.Id, Is.EqualTo(retrievedResponse.Id));
     }
 
+    [RecordedTest]
+    public async Task CanCompactConversation()
+    {
+        ResponsesClient client = GetTestClient();
+
+        // First, create a response to get a real assistant message for compaction.
+        ResponseResult initialResponse = await client.CreateResponseAsync("Create a simple landing page for a dog petting café.");
+        Assert.That(initialResponse, Is.Not.Null);
+        Assert.That(initialResponse.GetOutputText(), Is.Not.Null.And.Not.Empty);
+
+        string assistantText = initialResponse.GetOutputText();
+
+        BinaryData compactRequestBody = BinaryData.FromString($$"""
+            {
+                "model": "{{initialResponse.Model}}",
+                "input": [
+                    {
+                        "role": "user",
+                        "content": "Create a simple landing page for a dog petting café."
+                    },
+                    {
+                        "id": "{{initialResponse.OutputItems[0].Id}}",
+                        "type": "message",
+                        "status": "completed",
+                        "content": [
+                            {
+                                "type": "output_text",
+                                "text": {{JsonSerializer.Serialize(assistantText)}}
+                            }
+                        ],
+                        "role": "assistant"
+                    }
+                ]
+            }
+            """);
+
+        using BinaryContent requestContent = BinaryContent.Create(compactRequestBody);
+        ClientResult result = await client.CompactconversationAsync("application/json", requestContent);
+
+        Assert.That(result, Is.Not.Null);
+
+        using JsonDocument responseJson = JsonDocument.Parse(result.GetRawResponse().Content.ToString());
+        JsonElement root = responseJson.RootElement;
+
+        Assert.That(root.GetProperty("object").GetString(), Is.EqualTo("response.compaction"));
+        Assert.That(root.TryGetProperty("output", out JsonElement outputElement), Is.True);
+        Assert.That(outputElement.GetArrayLength(), Is.GreaterThan(0));
+
+        // Verify that the output contains a compaction item.
+        bool hasCompactionItem = false;
+        foreach (JsonElement item in outputElement.EnumerateArray())
+        {
+            if (item.GetProperty("type").GetString() == "compaction")
+            {
+                hasCompactionItem = true;
+                Assert.That(item.TryGetProperty("encrypted_content", out _), Is.True);
+            }
+        }
+        Assert.That(hasCompactionItem, Is.True, "Expected the compaction output to contain a compaction item.");
+
+        // Verify usage information is present.
+        Assert.That(root.TryGetProperty("usage", out JsonElement usageElement), Is.True);
+        Assert.That(usageElement.GetProperty("input_tokens").GetInt32(), Is.GreaterThan(0));
+        Assert.That(usageElement.GetProperty("total_tokens").GetInt32(), Is.GreaterThan(0));
+    }
+
+    [RecordedTest]
+    public async Task CanGetInputTokenCounts()
+    {
+        ResponsesClient client = GetTestClient();
+
+        BinaryData inputTokensRequestBody = BinaryData.FromBytes("""
+            {
+                "model": "gpt-4o-mini",
+                "input": "Tell me a joke."
+            }
+            """u8.ToArray());
+
+        using BinaryContent requestContent = BinaryContent.Create(inputTokensRequestBody);
+        ClientResult result = await client.GetinputtokencountsAsync("application/json", requestContent);
+
+        Assert.That(result, Is.Not.Null);
+
+        using JsonDocument responseJson = JsonDocument.Parse(result.GetRawResponse().Content.ToString());
+        JsonElement root = responseJson.RootElement;
+
+        Assert.That(root.GetProperty("object").GetString(), Is.EqualTo("response.input_tokens"));
+        Assert.That(root.GetProperty("input_tokens").GetInt32(), Is.GreaterThan(0));
+    }
+
     private List<string> FileIdsToDelete = [];
     private List<string> VectorStoreIdsToDelete = [];
 

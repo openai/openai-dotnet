@@ -1,0 +1,221 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "163",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.8.0 (.NET 10.0.3; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Create a simple landing page for a dog petting café."
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9cbe79140e74be02-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "3689",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Set-Cookie": "Sanitized",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999962",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_0249a178a07958e300698b99d52e548190a715485b2472fd05",
+        "object": "response",
+        "created_at": 1770756565,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "completed_at": 1770756573,
+        "error": null,
+        "frequency_penalty": 0.0,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4o-mini-2024-07-18",
+        "output": [
+          {
+            "id": "msg_0249a178a07958e300698b99d5b86881908f1a449edf653672",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "Sure! Here’s a simple structure for a landing page for a dog petting café. You can customize it further based on your brand and offerings.\n\n---\n\n### **[Your Café Name]**\n\n#### **Welcome to [Your Café Name] - Where Paws Meet Happiness!**\n\n---\n\n**\uD83D\uDC36 Café Experience with Loveable Dogs!**  \nCome enjoy a cozy atmosphere filled with furry friends! Whether you're a dog lover or just looking for a unique experience, we invite you to relax, sip on coffee, and spend time with our adoptable dogs.\n\n---\n\n### **Menu**\n\n- **Coffee & Beverages**\n  - Espresso, Lattes, and Specialty Drinks\n- **Light Bites**\n  - Pastries, Cookies, and Dog Treats\n\n---\n\n### **Meet Our Dogs!**\n\nCheck out our lovable rescue pups waiting for cuddles and companionship. Each visit supports their care and helps find them forever homes. \n\n---\n\n### **Why Choose Us?**\n\n- **Adoptable Dogs:** All our pups are available for adoption!\n- **A Safe Space:** A clean, safe environment for you and our furry friends.\n- **Events:** Join us for fun events like Doggie Yoga, Workshops, and more!\n\n---\n\n### **Visit Us!**\n\n**Location:** [Your Address]  \n**Hours:** [Your Operating Hours]  \n**Contact:** [Your Phone Number] | [Your Email]\n\n---\n\n### **Join Our Community!**\n\n**Follow us on Social Media:**  \n- Facebook: [Link]  \n- Instagram: [Link]  \n- Twitter: [Link]  \n\n**Sign Up for Our Newsletter**  \nStay updated on events, adoptable pets, and special offers!  \n[Email Input Field] [Subscribe Button]\n\n---\n\n### **Plan Your Visit Today!**\n\n**Reserve Your Spot:**  \n[Booking Button]\n\n---\n\n### **Testimonials**\n> \"Such a delightful place! The dogs are so friendly, and the coffee is amazing!\"  \n> – Happy Customer\n\n> \"I found my new best friend here!\"  \n> – Satisfied Adopter\n\n---\n\n### **Footer**\n- **Privacy Policy**  |  **Terms of Service**\n- **© [Year] [Your Café Name]. All Rights Reserved.**\n\n---\n\nFeel free to add images of the café, the dogs, and any special events you might host. Choose a warm color palette that matches the cozy vibe of the café!"
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "presence_penalty": 0.0,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "prompt_cache_retention": null,
+        "reasoning": {
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 19,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 488,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 507
+        },
+        "user": null,
+        "metadata": {}
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/responses/compact",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "2740",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.8.0 (.NET 10.0.3; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini-2024-07-18",
+        "input": [
+          {
+            "role": "user",
+            "content": "Create a simple landing page for a dog petting café."
+          },
+          {
+            "id": "msg_0249a178a07958e300698b99d5b86881908f1a449edf653672",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "text": "Sure! Here’s a simple structure for a landing page for a dog petting café. You can customize it further based on your brand and offerings.\n\n---\n\n### **[Your Café Name]**\n\n#### **Welcome to [Your Café Name] - Where Paws Meet Happiness!**\n\n---\n\n**\uD83D\uDC36 Café Experience with Loveable Dogs!**  \nCome enjoy a cozy atmosphere filled with furry friends! Whether you're a dog lover or just looking for a unique experience, we invite you to relax, sip on coffee, and spend time with our adoptable dogs.\n\n---\n\n### **Menu**\n\n- **Coffee & Beverages**\n  - Espresso, Lattes, and Specialty Drinks\n- **Light Bites**\n  - Pastries, Cookies, and Dog Treats\n\n---\n\n### **Meet Our Dogs!**\n\nCheck out our lovable rescue pups waiting for cuddles and companionship. Each visit supports their care and helps find them forever homes. \n\n---\n\n### **Why Choose Us?**\n\n- **Adoptable Dogs:** All our pups are available for adoption!\n- **A Safe Space:** A clean, safe environment for you and our furry friends.\n- **Events:** Join us for fun events like Doggie Yoga, Workshops, and more!\n\n---\n\n### **Visit Us!**\n\n**Location:** [Your Address]  \n**Hours:** [Your Operating Hours]  \n**Contact:** [Your Phone Number] | [Your Email]\n\n---\n\n### **Join Our Community!**\n\n**Follow us on Social Media:**  \n- Facebook: [Link]  \n- Instagram: [Link]  \n- Twitter: [Link]  \n\n**Sign Up for Our Newsletter**  \nStay updated on events, adoptable pets, and special offers!  \n[Email Input Field] [Subscribe Button]\n\n---\n\n### **Plan Your Visit Today!**\n\n**Reserve Your Spot:**  \n[Booking Button]\n\n---\n\n### **Testimonials**\n> \"Such a delightful place! The dogs are so friendly, and the coffee is amazing!\"  \n> – Happy Customer\n\n> \"I found my new best friend here!\"  \n> – Satisfied Adopter\n\n---\n\n### **Footer**\n- **Privacy Policy**  |  **Terms of Service**\n- **© [Year] [Your Café Name]. All Rights Reserved.**\n\n---\n\nFeel free to add images of the café, the dogs, and any special events you might host. Choose a warm color palette that matches the cozy vibe of the café!"
+              }
+            ],
+            "role": "assistant"
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9cbe7949de2fbe02-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "5152",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Set-Cookie": "Sanitized",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999377",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_0249a178a07958e301698b99ddcd088190ab8f295c7b44f8e4",
+        "object": "response.compaction",
+        "created_at": 1770756580,
+        "output": [
+          {
+            "id": "msg_0249a178a07958e301698b99ddd328819096fa621761dcb4ec",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Create a simple landing page for a dog petting café."
+              }
+            ],
+            "role": "user"
+          },
+          {
+            "id": "cmp_0249a178a07958e301698b99de294c8190a9501613d7303938",
+            "type": "compaction",
+            "encrypted_content": "gAAAAABpi5nkqL0Kspu9hF5OTp9JR_cSnljHZVjiixT-o5McngkAQ6-6hcFIMnWX16T1Qsqqu9WrMwoQ7QkBdmb1NXBND--dvWTOx2EeFZpiODoSmN266cd-S5VWJ1KK8I_Zq91bnmXzGN1nKQC4pOzD7RLHWlMlhpTVU1OmdLK5N9la7YUCWPPg1oNXOLHC4awWbb8fJlJ5mwRVd9M4kXdjzTn0HhIQ3d83jJ7ZsuH2uBpiIQLMHJzMApGE5Lq8t56PZ0ZGdmV5Jrde3_FutvGQYzUAChLp5iMaxz9IDUHN_XAsTSKKqEuY7Ghu2izrAjs20JuQ5fP26JwWEy7hhmQOE8SH8sfHRnWG8E0GfoB9AuwgW5ZB8pazMaLVZKUYdZoUbawRru__dLJspydkYcRgrjJ8mkHmxx_ae6b7v6XkwRrIp5DtnPZOXtNQpvhzdi5NghLRQHYKRd1sLzIRRMqOEpsiRFHxz_EeZLLa7AOb9oyEkxRPM9faCaMW2o5j6aOyfl-TUD2CyzQqn0uWBOp_-KzU3Q5T7eTMrkecIlkMklGTjL-p6HcCyWCDSkSoZOkwf4l_A5g_vUIQJHXBX2qR5_dmcrDErMvl38n63tEmH7GKu78WEej8m_n-F5PJdyUldurTkU5uon70mPSrHlDSU34BIluFC_dCCj8-dasR-2dPQvmlpZnfzR_QMw4QyzQ3Xcwmr29NSTTOOxNEqP0pVADzTHmoepHGVBgLmZF2tl5uzlOEEObZze-2yAeSPEeacvCI-7qb1uPq8KzL8DV0XNBA2wURVZmab0-PHVS9H0LhSKpZSUV-k0V-59DMQS5k7Xu9nP0f1cpsjvypPLPUNfXHBKtAZqPKarrWZON75_Flw5DUVlqSLmZqwZ8ttnMjKwBqSPJsePSF3nLWG_2lAHf2VyFo6FYmT0NmZUAurdgIew4uBL3k-rYROggTZ9nRUkr-MKsiNsRneNQfsATg5W6D22Chl0vtAUOdNhpY1E6vF3H9u4zziJF0kzWMj2fNtgsrVLmLiOBSDfBRFE6PoqW_EGC5Qbb5iLFbB8swOJgej-m6tgkptYa6f_fatbIivcFEtDRdwYlc7AplFDjutr3_ehlVOweamxKS967QISMzQw_InC9e7AXpY9V1TW7oRoYAuuk3oTibt19lYxCrFoih56Tqk5tWmbVGLN5IMfKEsTx2bcbVMChN9ZsNixNOEdhLqA6XKzDmJOwD5oXsvMOmdM73zUHJBoGxw5s7zXcUwSLLrpi0Y7-t036lpKwj4d6zQqDRh2lGW0l9plcbIr3rW6hG292znRvt3PM0Gv10d4trxwloStt4ateTppZftLYBf8JP3--onqlmmPBF4U078KAFVlURQUwPc7MMVbwtgo8uwPLl5qAhjJSg8Ojo_18uZAiH8rLVP23W8Y_cBbAyZM7bZq6RLeRcEK0CL8TPm8CbeJbIXWx7Nnv30fWvvvW-vLrxNU8UBsXWO__SlT7WOF0EIf0j02WSxQSuZXa5cL1qg0OI4Nn0b40YXVqReE3AjTufMfO7_CpDvcV0MbvFv8GAxYd17MnJrMbeWhynzEXfgzwnQYl3nKYxIltdNfG9NBZ7MGXm6P5B94Yc0tbeW_xGF1tCQV5kL3QI-eJNIzCX9HuH3sAkRGmaZ96SK7KJUopQDVV-GfRHeM-wRwOdI0olRzQ-3G4_HqWcgV7sCX4-yqGEA2oqS8ZiuOdqeDlWgZtzPa0Tur7banjvGy4NluJVFFFYpTfr8Yiwh375pAxTXycScHCPWcKxfdt0emxcn5DsAdkcRi_zyIzdIz_8P963RVAXPEyvfWZOqaCVXmTiUGw30nfm1BWq5PfgODqdBTBmy3pPJKlW_Mjv2aPxIQ_SUn8v_oKLVpxTSeacGzxsXaWtMKyeBPxoGFSS7h2HrI3VD94xwgVKTqf1otTJgUBtvnNBKKnnxue9xhs007FlX8_xEuMkR6hcIVmutI4kBUBwNb6IRySGSPVPG6o3JX6MXwP9pcyuRMeOQWYDQ0ml-X5wNCnpBJhVdHQ-FIxorXfFPSsS_8YgNJQb772r6nEC_c_mimOOIy14R9R_gpthu-rjk2fVAe6L2vRV3zoZWDwF6m3UEUVYEwLJS3v5ojFOy5ThuEZLLg38J_l0dDaAU6I7MCOh_X1zEvZXsDbdQT8wGm0ptWTv1UPuPvCaA9S5OBBPSrOPRhz__738gWoHNjJclQwGQ9VkAiqnaUQuQy2V33SA6nJaNo-1HEtCOx5nxq5l9tohqcJ9CbLrZxaC4O-w0ghyNsu2_ZvcGqljJnoc9-8uEfofCHFlz5Mo6OWYFLOHLyzxrLOEAPYABMZKPYQo1IThe5tRm6p574HVcks0UdXsgMvQAFac7uww1t1o_fWUdXaOPTt6Qbc0a0IbE8HpCsI_O_F-sfE794W5eMwajyyQ-qoS_nDaCNTS9SqYeiHFJcVQYasvaOds8tKiZDq3o1KnMBsv8o0kxfQg9lcMXsZzyayd8EGYTOZf3en9VjIjFrVt13CEFA6Uao3EDHnwxcthwGfNA58xmaYYrL-mNOBFytLwkbxk8jlD2dpxTvr0kMtxLSAYg_bp_uM0kGssbW2JxYd0ZoM_gzBwNiswK_UlD0gu7sPn7BzDTYN_2QsVJNE0otYydzYhc6S09NvLxRxDj-uJRzLCZPJ17yFt9Apa11IZQWZ4R8KWeV_kVkdErImitK2Npj-BuoBzg8JZMXrBU9pGpT3lB4akmzcVLmSKmRZk95hf-nTU8NcfDsutv0mgDtR9OQsw9O0IknZV44C6f11WiJZwzkeOPp-EV58498pjGTpJk-avrpJCm7_JrrS-qncHo03D6To1vQWM4oXw54xOu6IrjjltJDKEFvJ5OxU7vJVbKRn8U3VCFCWBbcX56BpkmH3EFgWHsspyMfbM3G43cOZdRyjD4WNF9YtqrHGx_ZYfxUkeYGZNSW9x6rVJ4aGaPZrnpPDoEE_wyk_M-_m7kop0eKbkwCwjf7xkKtQCHuXQl9MTpnvi1rwgKnr-3pUcC4BaNHCHro6iA8TQGNiTufZ8I3jOL-l-T9ObJXBW2SZKADWUYvMACxCLnMq1bAOpTC3Z6jdzPscz12f0BmXzNNu3l3_KBhpajYXXEtfjpCiX_3wwUVW5giKHM7iFlOBCv1_rpcewiOR35mpHhy8OF4I_zQHXjHc3R4jkqkdScFM7S93FstDWpQQP5c74nlvTUiUW8EBTtpR-ncnXhidr6exYnTY0Zh3H7Yy6fIaXqdYqpnPQqKVeaahAlxGTaxVrI8owwvZiLzSIL0nN_oSKDOBD8DdP5Xg3su6oSSzGn3xQ-QSlzSLnV8eO57dqqjUBWHmvYb76qgZUSbVTbbDqZ5sxMo97Hr81-GrUTirgNbW2rTx-7O-gLQH3PbOAgiveUU5HTRHnQCiP80PqhU1IIHjOA3HkbsZKTSg0PdA1pYgREx4aJ19Urb3A5Ri2xHuZnbWWMDvrLXaZ20WpzZB9U_rD8XHzp84n0LVyO04zYYDEFULmyjJ2V4mQjmj1flEs0xDkXIxsdBbujnjXy2sADw-jdoas9brSh-YyLSk5OHaRNK2yPMWyg2A6W4P2VIQYDZ1-rEDzR9SBw8O_Wz1xpUC0N8ZVzZY8HE2_VU_f029k9xwrRjzvRpPr0FLyLGSZWoZLBkfNg6b3zUqov7pmBfWmwvyisrLRX12bt5uG-FL2ea1f3h_ctvNgBa_H54UtbiKcAUMovRFZRv-dZ6UGMfJabJoj59lSsL1oNyiwMkGvfdy5MHWNUbwDyCpykwMVVROip5L7BKveBLmjq9KFEBXhYB_Clj5mUb1n46-klA2Tg9GEED9s7EZND9fbu1JyrMLDeyDzRw0XW3-lE693mlQriyMIKO-8MJu7M-tMv9h9PJsB2G8p8b2LQ6hiFAmvpXLXTmXKxydchZYU15uzAIZZs9IsnigMA4JTqqBFUA0rBdL1BIREyZvs07KgLp58DvRqBuRGdEoM-B-kLnbGEoeuHvYPx6BOqbEsP86cQuYE9SPP90eN3MGXngNctePEbz5WMLiYWtlRDXAjVSlYLquUNkOOKmDTQa62R8Wauohw-CNSLWHIPXXGgtEXnAabIZ4V90CoQBX_cBQt7I-j3EbnxONvn2vOzFLmcQOUhiiI56GD5-8NLxHWNmA0wwOu33plG4-F1tWhYCYGd_SVxb6h5W95GK3fUgnJWI8VYR64o9aqG6cI7DhRkVexvi-8BqA_lCdmhrV5fXcJR80vzqWv0Z-lRo5FcASiuwOgKA6quRzNuwVWyw=="
+          }
+        ],
+        "usage": {
+          "input_tokens": 603,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 390,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 993
+        }
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

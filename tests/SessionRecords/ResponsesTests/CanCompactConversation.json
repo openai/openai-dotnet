@@ -1,0 +1,221 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "163",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.8.0 (.NET 10.0.3; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Create a simple landing page for a dog petting café."
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9cbe785f78f9be02-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "5110",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Set-Cookie": "Sanitized",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999962",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_020b2418e404a28800698b99b84a0c81948e945ecd1572fe97",
+        "object": "response",
+        "created_at": 1770756536,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "completed_at": 1770756556,
+        "error": null,
+        "frequency_penalty": 0.0,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4o-mini-2024-07-18",
+        "output": [
+          {
+            "id": "msg_020b2418e404a28800698b99b8c9048194919d8422db361174",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "Here's a simple landing page design concept for a dog petting café. You can use HTML and CSS to implement this. \n\n### HTML Structure\n\n```html\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Welcome to Paws & Relax Dog Café</title>\n    <link rel=\"stylesheet\" href=\"styles.css\">\n</head>\n<body>\n    <header>\n        <h1>Paws & Relax Dog Café</h1>\n        <nav>\n            <ul>\n                <li><a href=\"#about\">About</a></li>\n                <li><a href=\"#menu\">Menu</a></li>\n                <li><a href=\"#visit\">Visit Us</a></li>\n                <li><a href=\"#contact\">Contact</a></li>\n            </ul>\n        </nav>\n    </header>\n\n    <main>\n        <section id=\"hero\">\n            <h2>Find your furry friend</h2>\n            <p>Come in for a cup of coffee and some quality time with our lovable pups!</p>\n            <a href=\"#visit\" class=\"cta-button\">Join Us Today!</a>\n        </section>\n\n        <section id=\"about\">\n            <h2>About Us</h2>\n            <p>Paws & Relax is a unique café where you can enjoy a cozy atmosphere while petting our friendly dogs. All our dogs are up for adoption!</p>\n        </section>\n\n        <section id=\"menu\">\n            <h2>Our Menu</h2>\n            <ul>\n                <li>Coffee</li>\n                <li>Tea</li>\n                <li>Dog Treats</li>\n                <li>Cookies</li>\n            </ul>\n        </section>\n\n        <section id=\"visit\">\n            <h2>Visit Us</h2>\n            <p>Location: 123 Dog Lane, Puppy Town</p>\n            <p>Opening Hours: Mon-Sun 9 AM - 6 PM</p>\n        </section>\n\n        <section id=\"contact\">\n            <h2>Contact Us</h2>\n            <p>Email: info@pawsandrelax.com</p>\n            <p>Phone: (123) 456-7890</p>\n        </section>\n    </main>\n\n    <footer>\n        <p>&copy; 2023 Paws & Relax Dog Café. All rights reserved.</p>\n    </footer>\n</body>\n</html>\n```\n\n### CSS Styles (styles.css)\n\n```css\n* {\n    margin: 0;\n    padding: 0;\n    box-sizing: border-box;\n}\n\nbody {\n    font-family: 'Arial, sans-serif';\n    line-height: 1.6;\n}\n\nheader {\n    background: #ffcc00;\n    padding: 20px;\n    text-align: center;\n}\n\nnav ul {\n    list-style: none;\n}\n\nnav ul li {\n    display: inline;\n    margin: 0 15px;\n}\n\nnav ul li a {\n    text-decoration: none;\n    color: #000;\n}\n\n#hero {\n    background: url('dog-cafe-hero.jpg') no-repeat center center/cover;\n    color: white;\n    text-align: center;\n    padding: 100px 20px;\n}\n\n.cta-button {\n    background: #ff6600;\n    color: white;\n    padding: 10px 20px;\n    text-decoration: none;\n    border-radius: 5px;\n}\n\nsection {\n    padding: 20px;\n    text-align: center;\n}\n\nfooter {\n    background: #333;\n    color: white;\n    text-align: center;\n    padding: 10px 0;\n}\n```\n\n### General Notes\n\n1. **Hero Image**: Replace `'dog-cafe-hero.jpg'` with an actual image path that you want to use for the hero section.\n2. **Responsive Design**: Ensure your landing page is responsive for different screen sizes by adding media queries if needed.\n3. **Fonts and Colors**: You can customize fonts and colors to match the theme of your café.\n4. **Images**: Consider adding pictures of dogs and the café to make the page more inviting.\n\nThis structure offers a clear overview for visitors, allowing them to quickly find the information they need."
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "presence_penalty": 0.0,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "prompt_cache_retention": null,
+        "reasoning": {
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 19,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 928,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 947
+        },
+        "user": null,
+        "metadata": {}
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/responses/compact",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "5241",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.8.0 (.NET 10.0.3; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini-2024-07-18",
+        "input": [
+          {
+            "role": "user",
+            "content": "Create a simple landing page for a dog petting café."
+          },
+          {
+            "id": "msg_020b2418e404a28800698b99b8c9048194919d8422db361174",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "text": "Here's a simple landing page design concept for a dog petting café. You can use HTML and CSS to implement this. \n\n### HTML Structure\n\n```html\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Welcome to Paws & Relax Dog Café</title>\n    <link rel=\"stylesheet\" href=\"styles.css\">\n</head>\n<body>\n    <header>\n        <h1>Paws & Relax Dog Café</h1>\n        <nav>\n            <ul>\n                <li><a href=\"#about\">About</a></li>\n                <li><a href=\"#menu\">Menu</a></li>\n                <li><a href=\"#visit\">Visit Us</a></li>\n                <li><a href=\"#contact\">Contact</a></li>\n            </ul>\n        </nav>\n    </header>\n\n    <main>\n        <section id=\"hero\">\n            <h2>Find your furry friend</h2>\n            <p>Come in for a cup of coffee and some quality time with our lovable pups!</p>\n            <a href=\"#visit\" class=\"cta-button\">Join Us Today!</a>\n        </section>\n\n        <section id=\"about\">\n            <h2>About Us</h2>\n            <p>Paws & Relax is a unique café where you can enjoy a cozy atmosphere while petting our friendly dogs. All our dogs are up for adoption!</p>\n        </section>\n\n        <section id=\"menu\">\n            <h2>Our Menu</h2>\n            <ul>\n                <li>Coffee</li>\n                <li>Tea</li>\n                <li>Dog Treats</li>\n                <li>Cookies</li>\n            </ul>\n        </section>\n\n        <section id=\"visit\">\n            <h2>Visit Us</h2>\n            <p>Location: 123 Dog Lane, Puppy Town</p>\n            <p>Opening Hours: Mon-Sun 9 AM - 6 PM</p>\n        </section>\n\n        <section id=\"contact\">\n            <h2>Contact Us</h2>\n            <p>Email: info@pawsandrelax.com</p>\n            <p>Phone: (123) 456-7890</p>\n        </section>\n    </main>\n\n    <footer>\n        <p>&copy; 2023 Paws & Relax Dog Café. All rights reserved.</p>\n    </footer>\n</body>\n</html>\n```\n\n### CSS Styles (styles.css)\n\n```css\n* {\n    margin: 0;\n    padding: 0;\n    box-sizing: border-box;\n}\n\nbody {\n    font-family: 'Arial, sans-serif';\n    line-height: 1.6;\n}\n\nheader {\n    background: #ffcc00;\n    padding: 20px;\n    text-align: center;\n}\n\nnav ul {\n    list-style: none;\n}\n\nnav ul li {\n    display: inline;\n    margin: 0 15px;\n}\n\nnav ul li a {\n    text-decoration: none;\n    color: #000;\n}\n\n#hero {\n    background: url('dog-cafe-hero.jpg') no-repeat center center/cover;\n    color: white;\n    text-align: center;\n    padding: 100px 20px;\n}\n\n.cta-button {\n    background: #ff6600;\n    color: white;\n    padding: 10px 20px;\n    text-decoration: none;\n    border-radius: 5px;\n}\n\nsection {\n    padding: 20px;\n    text-align: center;\n}\n\nfooter {\n    background: #333;\n    color: white;\n    text-align: center;\n    padding: 10px 0;\n}\n```\n\n### General Notes\n\n1. **Hero Image**: Replace `'dog-cafe-hero.jpg'` with an actual image path that you want to use for the hero section.\n2. **Responsive Design**: Ensure your landing page is responsive for different screen sizes by adding media queries if needed.\n3. **Fonts and Colors**: You can customize fonts and colors to match the theme of your café.\n4. **Images**: Consider adding pictures of dogs and the café to make the page more inviting.\n\nThis structure offers a clear overview for visitors, allowing them to quickly find the information they need."
+              }
+            ],
+            "role": "assistant"
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9cbe78debc01be02-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "5322",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Set-Cookie": "Sanitized",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149998937",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_020b2418e404a28801698b99cca98481948e1409f60bc3a4eb",
+        "object": "response.compaction",
+        "created_at": 1770756564,
+        "output": [
+          {
+            "id": "msg_020b2418e404a28801698b99ccaf3c8194a6d571a01528d77c",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Create a simple landing page for a dog petting café."
+              }
+            ],
+            "role": "user"
+          },
+          {
+            "id": "cmp_020b2418e404a28801698b99cd05f8819499a36df301add71e",
+            "type": "compaction",
+            "encrypted_content": "gAAAAABpi5nU_RTclqnUAtuLykfjAUBvIkWsbESHc0CTxW00PzDr8k9qhziZohwXLTrNwwXbl4t4cS3CNQ-wlNn2EVqtW23AgTOdiEPChIrBt4sQtyIujAE7QQfg4Jb6JcwCf7rtFLGJGSyrQmdMtVZto4WxsI6vUcOPDz4tBO0IHkQ1rljvU6rjY-DtGoRDxhi4hyoWcZq-vGLPeiYYKZU-WKN3ELBWBb3NIuWLV5VdEpj6gOVtD4yIqlDm1V7uEQZEop8zQu4-8JHHu_i6btbD8_8VvqaRxC0QIXUDe5Wo69XUUGHg4imxhqy3FBaL1ooj174BnCSMDfkdnVvyRf0JryoRw6F4pu07tFA_oDvYyurUrQHhl77uBPHfh5LWTkQFKFlx-HAOTVIabbKR8kF1QLAWJovHBxXrjjmJ91Q-lh0a9yVOHM9qXTEHPqot1kBFDYmqgeGHrKG_0lQJdjCWtcWGsRc-7Lvtz7rlUmNp9DC0wUQtiHQbdCMIrLNjg5uI49uBmudWIRhnqDgXwLRrE8v_zczdojK7K3sBygEavzyXS81UMLrSP4o92fkiK6W4omue-lN-DKT7iJpqH_2WRVg5PwwkMqcv8ARvC-3f_XrD4QrB6O6gh0r5hGURXnqlHebAN0SwzDsZ8dbxV8wnfkTKYfXHJAA9jntz2IsoqngrYh-kfv1tTXjlbF4xLTPFOyTL3A9Q5n3IXs8fbue8mREhXoGTxiNAHC_8ssk1cUWuEPnrZ7XmK67Jrf7WNaDswcYRl0Ih93UvjzMMLbKfz2IqANtTREX9SNoui6g1qFYTwI9Rr-FVIiM7cnkHeYoc5qRG7l9KX8XBAbFmJ_FyZ7kfDupjUySqoDGXD-HHNL3ukFxXHHtxKQvtHSFJaBBPUfSqQBFNrNRCFpCrheH9xK2ZMVLJRYtQJasM1lvDIjJ57S7ROxPq0_IeqAxArY6K85CPUNMJP4dyL75y-65-988XPWKjsrDd-CiweRLGmC7rS8beFIijmWtuBh4UP_ZLMEpytlbZfrfN9f1Ym2agCy196G1vdhKA117h2ueyU_wLREGq52jmrownfJJR3HNig5juEzf_Gg20tDJAbY07RxEaqJyBAiGZJxQiXVEVBxjNSMnKu-qWhjAhwxf0ut4hRXDbXCnf1qHmsVRPzTeJcQr9TmLqQRuAWvg5S9XGmz661Wcb_3Hqyndcgl74-lSdjehQCXxN47JvifYkj9OBgktbODl3qH_vV1OdCHw1iTshu18H7BpzPDEVUhRy-q5ODIJ9KPJjLSHNXNfHXJgZLPHn1uTlLZtK-H5CkBUW1zhzoNSZUm0MBIugFn5cHxPyNMsMiNZJ_BC7t_NHjrLC1GWGUmIqZznSa8tMCnJXp_uT8pGjthPkwPr148P-xwfvOB2ZdoeOFRXOHCAZz7RGfrqXh0Zi6zNpunKmpfutO8i5Zzzjs-tQIPBfVvlLE8LWDR1j1x9w8oWj6ri4gi2C_qJFIsRwOmBoIskwlcLNRlI-RjJsVO0HvHnm9xpKoEAWF7_xVF2Fvc2B9Fm4uzdciCAGp305f6wZ9CoEapPIIgcyVURLXhBmAZzdAL6GkfmLyoXtAC3ZwOk_P7LEedDfN-6L8mxf9q-wRMRcj_9oDi64rua5Vi1ZZwxpgIiK1n-UaVEp1sy1KqzhC-Trvb-UqGAW4NUvqfQtS7fmQ19hkq9XXyhOfwH6WboFPXOnOPRen8xL9aQFRoTn58R1-t2huDzZdeb8eINUf-qvhu3GP1_lM-gi0KyetEAy4Ob5MlfW_0fLBK3EZInoi6lc9jw6xWRGrINiQ32_USR_IgpL5zTkmr4gwFbVQZVZp1CvEUifU8JbK-NqIvaxa_DEd5S6HSqPHGEDJx3QA8mBq_x--9u8pWT_owMqwERw3ryf1Hj8BnjUZGTl8ofPVNCfVVr9j8qgyWea9X0d67A_CTwvdWzVbkBpZXX1B34oC4NvL4xndIvZNSi3U2wJZ4w_OdhyFUeTPZGxAjW_m8R77q4FHhHls9XKLR2QEpuhjKyzODYZqC_bAShmd-vWaUFZmuQTgfDB5dUI0znB4TGqfsEx_1VDjSdenyfUbRbUnqdT979GOO3c0hv6SLWFKSm4VNThG-GdniS1GPgsqQrV6jhtT00yLhV9NpOx-tbALzIwtXF28V55_FZNyW8ddjxck3r5x9-UhJi13a-B1QACyGYSzbJb6CAGPV-SFgkK8bmeTG8sXDNzSLys-WaM75WpxagDhp0EV4PS1ApwdVaSftw136-r_7Fkkh-OzcY9htaAjI6rDl6Y3wf7TuvJo538KOn9gNiFRx00Z3KepVaxPxjnuFP8bXefM8GUQVgYHSu8UY0WsGe5F_rFC5jOXEMaKz0J8ZfEHaAAZbW6NmrSgxy4C9nOuwDxCOhx-ASwc84BaAqILbIgVT0Au-xm07dwG6iQTxu1I132Qe2O6FYd8ywtSbS9lnFdj2BdVeqG_DxvUWYQbEEzsN49rUDG0ljjq6DtTxNg_2WdkjJ9qoRv8BhAQIJ89t5cCAIIdFli2ILe34r6vrIq8dNP156fvdhw0uMQ7HMzEh0jnqqNwcZBciBbCi8S1pi0A3X5b0Vzhzw9Wm50X0n06XhOgqssCKye_Zm9zhRN0V8OK-V3SNLRIpJqVgfCcq-y7M7yiKxg_LITC0WlCIo4s3B0eLGAmJRvrOqXnb7ZvZMoJwTBQdfU4cSAFRq8oYba29zP-tlprED3cRAMvKzq3GF3orkD4wcvkj5i9G34aqNF5suokGazFx2l_DBdSsFNq-_uUnkUmlMD0vhrkyIM6WNW2Cy6_fjzGtMpmww5dkoQ-YhKhw8hOP5JCSgPmhpo8rjWBK9FRGXw8vhw-CYJa5tm9lAypUr8HhvoXyBCHMxX5Xqc00efM_936dpkZXLRf6aMbGrapPvmN80ZadLyDwnK2KKcHHzKrtjHcOI5A75EwDAE3uc5QUx9EBCip-Xf0kH6GUoEsbDCPLaoz4yTHPvrSBQ2Eljpc7sYEpWxMl_ZWpoQUHZl78hUvR434Uj7OmolXa6q-8tVdkae2gTRBnmmpsGi5sQ4pFSSSMN6qF-Ldxq9YdYpeHVK-K8vlzt5CcjJbWm-6A6rsko81ceK7Lk8CScDy8N1KFm6ZFDGVc04HQ-WG6uO1Qxj6dpLXFEE0EP-nJANFZjRpuxp8mIAA_W5J_H-Vo-WNdMStR20t-uv6uktvaT0rQXzmtztmAaXxd1fTW3Q0KC0fFiO8pfYV-Z_CpcfyGq4SpbN9lQWipxuPCvHtQqSP8lDqFjiFMIBaycBNarUiqdxS-F16L-oEw6yOWt0_Yih9WNnFx61GJ-yhVVWQqmitmv7B1pMhonWhq66lPXYxexFhkNlP2zC4luOhV5nD3YBT2w2Omr0YQHTBAB1Eq5Q1Z8eu85hdQiiOP4lbAexDNxWomDCr0WpYUAVUG-HGQYH3tHn1e_8AYxY6v6PYdZRqQ2rnz04iQuL8TYpEnC42w9okN2eEkNXty_zvevKDV4iFE4PfRa0QtJkFkuzZHEPkK0tFMEFIttjLxc-qtBt0yQCVnxbvEVDBz_Bahnz1ZtJVNif_BU6OqyRnWJSxYCUo_OMqKf0kFtnNdmnDGCxXtHlzMB5oXuqDK36D4_7PnnFAWcIuxYC7-e9YrfqilVqnHsAip36elG2OgCB2uG3oqeAcfKpIAiuqcSQ-nWCoEJoLFAiWYiGpaqROlxIZjPP-LxNMgRtTj_5KFkv8W3oTTTQWfhHe_t83JSXhuPcntCiv_NKBsRWxVx6zpYNv8PqW5O7kAuzFP6R1ErBv-WejoTIIgnOqRcR6RMifFuOOFpJ2nUQwRrIPsxEI8vtIFBOr-MDtEJ23d8aPnepR03a8d2Thwe8NO1akdm0qC_SO3-PU-wDOf4G4uhYwpGwqOSiL_rgNqgrncck6496c1w_g_d6dauljYvQZt4LyV51EIznAzPJD6r_FFwH5DnuB2JOcCbfyOGAqJE5DKzTeI8KxBJTE2H6ZNtoG05mjQV-9NcSVB3Sbu-Eg2I6YqpPmCiPtahk5Vgkk6pSKziK6YvHST2pwjqdA_O__3nhELjx-hlL2E-5g_5ZGbE907GYUyTKzFwElVilMro_upPcwhyZkCarO4TiA4DLBDd79XN6FPfA3lR99YOhwbbpL9WfSHqi17ZNdJPXXCDFc4Tmg_Ndv4bYV-V-xBwDA_XviiiQq_ACQFHVrhktDsryDikCgbHHdSmqr0dzn4l61m2JCCCyXL7b9WaP9JhcKlmgBZIBXbLdGvt3hQ4u0BJZjk7y8Z6K4i3FVcPaLsFg46pVl-9sfp4s09X4iQFuk21xAFsrzk9bPz5vcRX0vpz4z-QsX_Vdeyt-_sgI7Fq5IGaWyX2hPC5y5h18svbjZeiT80wmPR_jg5ups5KJSu3XaEKlVGgtRIFrUIR6yoBjAf1L32vEFTWaUmp-_CHzusIn"
+          }
+        ],
+        "usage": {
+          "input_tokens": 1043,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 459,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 1502
+        }
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}
