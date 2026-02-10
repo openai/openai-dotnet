@@ -7,33 +7,33 @@ using System.ComponentModel;
 
 namespace OpenAI.Responses
 {
-    internal readonly partial struct InternalGetinputtokencountsRequestContentType : IEquatable<InternalGetinputtokencountsRequestContentType>
+    internal readonly partial struct InternalGetInputTokenCountsRequestContentType : IEquatable<InternalGetInputTokenCountsRequestContentType>
     {
         private readonly string _value;
         private const string ApplicationJsonValue = "application/json";
         private const string ApplicationXWwwFormUrlencodedValue = "application/x-www-form-urlencoded";
 
-        public InternalGetinputtokencountsRequestContentType(string value)
+        public InternalGetInputTokenCountsRequestContentType(string value)
         {
             _value = value;
         }
 
-        internal static InternalGetinputtokencountsRequestContentType ApplicationJson { get; } = new InternalGetinputtokencountsRequestContentType(ApplicationJsonValue);
+        internal static InternalGetInputTokenCountsRequestContentType ApplicationJson { get; } = new InternalGetInputTokenCountsRequestContentType(ApplicationJsonValue);
 
-        internal static InternalGetinputtokencountsRequestContentType ApplicationXWwwFormUrlencoded { get; } = new InternalGetinputtokencountsRequestContentType(ApplicationXWwwFormUrlencodedValue);
+        internal static InternalGetInputTokenCountsRequestContentType ApplicationXWwwFormUrlencoded { get; } = new InternalGetInputTokenCountsRequestContentType(ApplicationXWwwFormUrlencodedValue);
 
-        public static bool operator ==(InternalGetinputtokencountsRequestContentType left, InternalGetinputtokencountsRequestContentType right) => left.Equals(right);
+        public static bool operator ==(InternalGetInputTokenCountsRequestContentType left, InternalGetInputTokenCountsRequestContentType right) => left.Equals(right);
 
-        public static bool operator !=(InternalGetinputtokencountsRequestContentType left, InternalGetinputtokencountsRequestContentType right) => !left.Equals(right);
+        public static bool operator !=(InternalGetInputTokenCountsRequestContentType left, InternalGetInputTokenCountsRequestContentType right) => !left.Equals(right);
 
-        public static implicit operator InternalGetinputtokencountsRequestContentType(string value) => new InternalGetinputtokencountsRequestContentType(value);
+        public static implicit operator InternalGetInputTokenCountsRequestContentType(string value) => new InternalGetInputTokenCountsRequestContentType(value);
 
-        public static implicit operator InternalGetinputtokencountsRequestContentType?(string value) => value == null ? null : new InternalGetinputtokencountsRequestContentType(value);
+        public static implicit operator InternalGetInputTokenCountsRequestContentType?(string value) => value == null ? null : new InternalGetInputTokenCountsRequestContentType(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool Equals(object obj) => obj is InternalGetinputtokencountsRequestContentType other && Equals(other);
+        public override bool Equals(object obj) => obj is InternalGetInputTokenCountsRequestContentType other && Equals(other);
 
-        public bool Equals(InternalGetinputtokencountsRequestContentType other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
+        public bool Equals(InternalGetInputTokenCountsRequestContentType other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;

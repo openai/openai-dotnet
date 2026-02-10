@@ -7,33 +7,33 @@ using System.ComponentModel;
 
 namespace OpenAI.Responses
 {
-    internal readonly partial struct InternalCompactconversationRequestContentType : IEquatable<InternalCompactconversationRequestContentType>
+    internal readonly partial struct InternalCompactConversationRequestContentType : IEquatable<InternalCompactConversationRequestContentType>
     {
         private readonly string _value;
         private const string ApplicationJsonValue = "application/json";
         private const string ApplicationXWwwFormUrlencodedValue = "application/x-www-form-urlencoded";
 
-        public InternalCompactconversationRequestContentType(string value)
+        public InternalCompactConversationRequestContentType(string value)
         {
             _value = value;
         }
 
-        internal static InternalCompactconversationRequestContentType ApplicationJson { get; } = new InternalCompactconversationRequestContentType(ApplicationJsonValue);
+        internal static InternalCompactConversationRequestContentType ApplicationJson { get; } = new InternalCompactConversationRequestContentType(ApplicationJsonValue);
 
-        internal static InternalCompactconversationRequestContentType ApplicationXWwwFormUrlencoded { get; } = new InternalCompactconversationRequestContentType(ApplicationXWwwFormUrlencodedValue);
+        internal static InternalCompactConversationRequestContentType ApplicationXWwwFormUrlencoded { get; } = new InternalCompactConversationRequestContentType(ApplicationXWwwFormUrlencodedValue);
 
-        public static bool operator ==(InternalCompactconversationRequestContentType left, InternalCompactconversationRequestContentType right) => left.Equals(right);
+        public static bool operator ==(InternalCompactConversationRequestContentType left, InternalCompactConversationRequestContentType right) => left.Equals(right);
 
-        public static bool operator !=(InternalCompactconversationRequestContentType left, InternalCompactconversationRequestContentType right) => !left.Equals(right);
+        public static bool operator !=(InternalCompactConversationRequestContentType left, InternalCompactConversationRequestContentType right) => !left.Equals(right);
 
-        public static implicit operator InternalCompactconversationRequestContentType(string value) => new InternalCompactconversationRequestContentType(value);
+        public static implicit operator InternalCompactConversationRequestContentType(string value) => new InternalCompactConversationRequestContentType(value);
 
-        public static implicit operator InternalCompactconversationRequestContentType?(string value) => value == null ? null : new InternalCompactconversationRequestContentType(value);
+        public static implicit operator InternalCompactConversationRequestContentType?(string value) => value == null ? null : new InternalCompactConversationRequestContentType(value);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool Equals(object obj) => obj is InternalCompactconversationRequestContentType other && Equals(other);
+        public override bool Equals(object obj) => obj is InternalCompactConversationRequestContentType other && Equals(other);
 
-        public bool Equals(InternalCompactconversationRequestContentType other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
+        public bool Equals(InternalCompactConversationRequestContentType other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;

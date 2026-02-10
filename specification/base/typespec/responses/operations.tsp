@@ -96,8 +96,8 @@ interface Responses {
  @summary("Get input token counts")
  @post
  @route("input_tokens")
- @operationId("Getinputtokencounts")
- op Getinputtokencounts(
+ @operationId("getInputTokenCounts")
+ op getInputTokenCounts(
   @header
   contentType: "application/json" | "application/x-www-form-urlencoded",
   @body
@@ -122,8 +122,8 @@ interface Responses {
 
   @post
   @route("compact")
-  @operationId("Compactconversation")
-  op Compactconversation(
+  @operationId("compactConversation")
+  op compactConversation(
   @header
   contentType: "application/json" | "application/x-www-form-urlencoded",
   @body

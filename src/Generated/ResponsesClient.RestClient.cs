@@ -118,7 +118,7 @@ namespace OpenAI.Responses
             return message;
         }
 
-        internal virtual PipelineMessage CreateGetinputtokencountsRequest(string contentType, BinaryContent content, RequestOptions options)
+        internal virtual PipelineMessage CreateGetInputTokenCountsRequest(string contentType, BinaryContent content, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
@@ -132,7 +132,7 @@ namespace OpenAI.Responses
             return message;
         }
 
-        internal virtual PipelineMessage CreateCompactconversationRequest(string contentType, BinaryContent content, RequestOptions options)
+        internal virtual PipelineMessage CreateCompactConversationRequest(string contentType, BinaryContent content, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);

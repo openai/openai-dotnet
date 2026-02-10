@@ -895,6 +895,30 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    public async Task CanGetInputTokenCounts()
+    {
+        ResponsesClient client = GetTestClient();
+
+        BinaryData inputTokensRequestBody = BinaryData.FromBytes("""
+            {
+                "model": "gpt-4o-mini",
+                "input": "Tell me a joke."
+            }
+            """u8.ToArray());
+
+        using BinaryContent requestContent = BinaryContent.Create(inputTokensRequestBody);
+        ClientResult result = await client.GetInputTokenCountsAsync("application/json", requestContent);
+
+        Assert.That(result, Is.Not.Null);
+
+        using JsonDocument responseJson = JsonDocument.Parse(result.GetRawResponse().Content.ToString());
+        JsonElement root = responseJson.RootElement;
+
+        Assert.That(root.GetProperty("object").GetString(), Is.EqualTo("response.input_tokens"));
+        Assert.That(root.GetProperty("input_tokens").GetInt32(), Is.GreaterThan(0));
+    }
+
+    [RecordedTest]
     public async Task CanCompactConversation()
     {
         ResponsesClient client = GetTestClient();
@@ -931,7 +955,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             """);
 
         using BinaryContent requestContent = BinaryContent.Create(compactRequestBody);
-        ClientResult result = await client.CompactconversationAsync("application/json", requestContent);
+        ClientResult result = await client.CompactConversationAsync("application/json", requestContent);
 
         Assert.That(result, Is.Not.Null);
 
@@ -958,30 +982,6 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(root.TryGetProperty("usage", out JsonElement usageElement), Is.True);
         Assert.That(usageElement.GetProperty("input_tokens").GetInt32(), Is.GreaterThan(0));
         Assert.That(usageElement.GetProperty("total_tokens").GetInt32(), Is.GreaterThan(0));
-    }
-
-    [RecordedTest]
-    public async Task CanGetInputTokenCounts()
-    {
-        ResponsesClient client = GetTestClient();
-
-        BinaryData inputTokensRequestBody = BinaryData.FromBytes("""
-            {
-                "model": "gpt-4o-mini",
-                "input": "Tell me a joke."
-            }
-            """u8.ToArray());
-
-        using BinaryContent requestContent = BinaryContent.Create(inputTokensRequestBody);
-        ClientResult result = await client.GetinputtokencountsAsync("application/json", requestContent);
-
-        Assert.That(result, Is.Not.Null);
-
-        using JsonDocument responseJson = JsonDocument.Parse(result.GetRawResponse().Content.ToString());
-        JsonElement root = responseJson.RootElement;
-
-        Assert.That(root.GetProperty("object").GetString(), Is.EqualTo("response.input_tokens"));
-        Assert.That(root.GetProperty("input_tokens").GetInt32(), Is.GreaterThan(0));
     }
 
     private List<string> FileIdsToDelete = [];
