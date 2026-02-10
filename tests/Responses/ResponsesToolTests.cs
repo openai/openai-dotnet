@@ -683,6 +683,69 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    public async Task ComputerToolWithScreenshotRoundTrip()
+    {
+        ResponsesClient client = GetTestClient("computer-use-preview-2025-03-11");
+        ResponseTool computerTool = ResponseTool.CreateComputerTool(ComputerToolEnvironment.Windows, 1024, 768);
+        CreateResponseOptions responseOptions = new(
+            [
+                ResponseItem.CreateDeveloperMessageItem("Call tools when the user asks to perform computer-related tasks like clicking interface elements."),
+                ResponseItem.CreateUserMessageItem("Click on the Save button.")
+            ])
+        {
+            Tools = { computerTool },
+            TruncationMode = ResponseTruncationMode.Auto,
+        };
+        ResponseResult response = await client.CreateResponseAsync(responseOptions);
+
+        while (true)
+        {
+            Assert.That(response.OutputItems.Count, Is.GreaterThan(0));
+            ResponseItem outputItem = response.OutputItems?.LastOrDefault();
+            if (outputItem is ComputerCallResponseItem computerCall)
+            {
+                if (computerCall.Action.Kind == ComputerCallActionKind.Screenshot)
+                {
+                    string screenshotPath = Path.Join("Assets", "images_screenshot_with_save_1024_768.png");
+                    BinaryData screenshotBytes = BinaryData.FromBytes(File.ReadAllBytes(screenshotPath));
+                    ResponseItem screenshotReply = ResponseItem.CreateComputerCallOutputItem(
+                        computerCall.CallId,
+                        ComputerCallOutput.CreateScreenshotOutput(screenshotBytes, "image/png"));
+
+                    responseOptions.PreviousResponseId = response.Id;
+                    responseOptions.InputItems.Clear();
+                    responseOptions.InputItems.Add(screenshotReply);
+                    response = await client.CreateResponseAsync(responseOptions);
+                }
+                else if (computerCall.Action.Kind == ComputerCallActionKind.Click)
+                {
+                    Console.WriteLine($"Instruction from model: click");
+                    break;
+                }
+            }
+            else if (outputItem is MessageResponseItem message
+                && message.Content?.FirstOrDefault()?.Text?.ToLower() is string assistantText
+                && (
+                    assistantText.Contains("should i")
+                    || assistantText.Contains("shall i")
+                    || assistantText.Contains("can you confirm")
+                    || assistantText.Contains("could you confirm")
+                    || assistantText.Contains("please confirm")))
+            {
+                responseOptions.PreviousResponseId = response.Id;
+                responseOptions.InputItems.Clear();
+                responseOptions.InputItems.Add(
+                    ResponseItem.CreateAssistantMessageItem("Yes, proceed."));
+                response = await client.CreateResponseAsync(responseOptions);
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+
+    [RecordedTest]
     public async Task ImageGenToolWorks()
     {
         ResponsesClient client = GetTestClient();
@@ -805,23 +868,26 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(imageGenItemId, Is.Not.Null.And.Not.Empty);
     }
 
+#if NET10_0_OR_GREATER
     [RecordedTest]
-    [LiveOnly(Reason = "Temp due to the recording framework timing out")]
     public async Task ImageGenToolInputMaskWithImageBytes()
     {
         ResponsesClient client = GetTestClient(options: new() { NetworkTimeout = TimeSpan.FromMinutes(5) });
 
-        string imageFilename = "images_empty_room.png";
-        string imagePath = Path.Combine("Assets", imageFilename);
-        BinaryData imageBytes = BinaryData.FromBytes(File.ReadAllBytes(imagePath));
+        string imagePath = Path.Combine("Assets", "images_empty_room.png");
+        string imageMediaType = "image/png";
+        BinaryData imageBytes = BinaryData.FromBytes(await File.ReadAllBytesAsync(imagePath));
+        Uri imageDataUri = new($"data:{imageMediaType};base64,{Convert.ToBase64String(imageBytes.ToArray())}");
 
-        string maskFilename = "images_empty_room_with_mask.png";
-        string maskPath = Path.Combine("Assets", maskFilename);
+        string maskPath = Path.Combine("Assets", "images_empty_room_with_mask.png");
+        string maskMediaType = "image/png";
         BinaryData maskBytes = BinaryData.FromBytes(File.ReadAllBytes(maskPath));
+        Uri maskDataUri = new($"data:{maskMediaType};base64,{Convert.ToBase64String(maskBytes.ToArray())}");
+
 
         List<ResponseItem> inputItems = [
             ResponseItem.CreateUserMessageItem("Edit this image by adding a big cat with big round eyes and large cat ears, sitting in an empty room and looking at the camera."),
-            ResponseItem.CreateUserMessageItem([ResponseContentPart.CreateInputImagePart(imageBytes, "image/png")])
+            ResponseItem.CreateUserMessageItem([ResponseContentPart.CreateInputImagePart(imageDataUri)])
         ];
 
         CreateResponseOptions options = new(inputItems)
@@ -833,7 +899,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                     outputFileFormat: ImageGenerationToolOutputFileFormat.Png,
                     size: ImageGenerationToolSize.W1024xH1024,
                     quality: ImageGenerationToolQuality.Low,
-                    inputImageMask: new(maskBytes, "image/png"))
+                    inputImageMask: new(maskDataUri))
             }
         };
 
@@ -853,6 +919,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(imageGenResponse.Status, Is.EqualTo(ImageGenerationCallStatus.Completed));
         Assert.That(imageGenResponse.ImageResultBytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
+#endif
 
     [RecordedTest]
     public async Task ImageGenToolInputMaskWithImageUri()
@@ -965,6 +1032,129 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         ImageGenerationCallResponseItem imageGenResponse = (ImageGenerationCallResponseItem)response.OutputItems[0];
         Assert.That(imageGenResponse.Status, Is.EqualTo(ImageGenerationCallStatus.Completed));
         Assert.That(imageGenResponse.ImageResultBytes.ToArray(), Is.Not.Null.And.Not.Empty);
+    }
+
+    [RecordedTest]
+    public async Task WebSearchCall()
+    {
+        ResponsesClient client = GetTestClient();
+        ResponseResult response = await client.CreateResponseAsync(
+            new CreateResponseOptions([ResponseItem.CreateUserMessageItem("Searching the internet, what's the weather like in Seattle?")])
+            {
+                Tools =
+                {
+                    ResponseTool.CreateWebSearchTool()
+                },
+                ToolChoice = ResponseToolChoice.CreateWebSearchChoice()
+            });
+
+        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+        Assert.That(response.OutputItems[0], Is.InstanceOf<WebSearchCallResponseItem>());
+        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
+
+        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
+        Assert.That(message.Content, Has.Count.GreaterThan(0));
+        Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
+        Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
+        Assert.That(message.Content[0].OutputTextAnnotations, Has.Count.GreaterThan(0));
+
+        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<WebSearchTool>());
+    }
+
+    [RecordedTest]
+    public async Task WebSearchCallPreview()
+    {
+        ResponsesClient client = GetTestClient();
+        ResponseResult response = await client.CreateResponseAsync(
+            new CreateResponseOptions([ResponseItem.CreateUserMessageItem("What was a positive news story from today?")])
+            {
+                Tools =
+                {
+                    ResponseTool.CreateWebSearchPreviewTool()
+                },
+                ToolChoice = ResponseToolChoice.CreateWebSearchChoice()
+            });
+
+        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+        Assert.That(response.OutputItems[0], Is.InstanceOf<WebSearchCallResponseItem>());
+        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
+
+        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
+        Assert.That(message.Content, Has.Count.GreaterThan(0));
+        Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
+        Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
+        Assert.That(message.Content[0].OutputTextAnnotations, Has.Count.GreaterThan(0));
+
+        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<WebSearchPreviewTool>());
+    }
+
+    [RecordedTest]
+    public async Task WebSearchCallStreaming()
+    {
+        ResponsesClient client = GetTestClient();
+
+        const string message = "Searching the internet, what's the weather like in San Francisco?";
+
+        CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem(message)])
+        {
+            Tools =
+            {
+                ResponseTool.CreateWebSearchTool(
+                    userLocation: WebSearchToolLocation.CreateApproximateLocation(city: "San Francisco"),
+                    searchContextSize: WebSearchToolContextSize.Low)
+            },
+            StreamingEnabled = true,
+        };
+
+        string searchItemId = null;
+        int inProgressCount = 0;
+        int searchingCount = 0;
+        int completedCount = 0;
+        bool gotFinishedSearchItem = false;
+
+        await foreach (StreamingResponseUpdate update
+            in client.CreateResponseStreamingAsync(responseOptions))
+        {
+            if (update is StreamingResponseWebSearchCallInProgressUpdate searchCallInProgressUpdate)
+            {
+                Assert.That(searchCallInProgressUpdate.ItemId, Is.Not.Null.And.Not.Empty);
+                searchItemId ??= searchCallInProgressUpdate.ItemId;
+                Assert.That(searchItemId, Is.EqualTo(searchCallInProgressUpdate.ItemId));
+                Assert.That(searchCallInProgressUpdate.OutputIndex, Is.EqualTo(0));
+                inProgressCount++;
+            }
+            else if (update is StreamingResponseWebSearchCallSearchingUpdate searchCallSearchingUpdate)
+            {
+                Assert.That(searchCallSearchingUpdate.ItemId, Is.Not.Null.And.Not.Empty);
+                searchItemId ??= searchCallSearchingUpdate.ItemId;
+                Assert.That(searchItemId, Is.EqualTo(searchCallSearchingUpdate.ItemId));
+                Assert.That(searchCallSearchingUpdate.OutputIndex, Is.EqualTo(0));
+                searchingCount++;
+            }
+            else if (update is StreamingResponseWebSearchCallCompletedUpdate searchCallCompletedUpdate)
+            {
+                Assert.That(searchCallCompletedUpdate.ItemId, Is.Not.Null.And.Not.Empty);
+                searchItemId ??= searchCallCompletedUpdate.ItemId;
+                Assert.That(searchItemId, Is.EqualTo(searchCallCompletedUpdate.ItemId));
+                Assert.That(searchCallCompletedUpdate.OutputIndex, Is.EqualTo(0));
+                completedCount++;
+            }
+            else if (update is StreamingResponseOutputItemDoneUpdate outputItemDoneUpdate)
+            {
+                if (outputItemDoneUpdate.Item is WebSearchCallResponseItem webSearchCallItem)
+                {
+                    Assert.That(webSearchCallItem.Status, Is.EqualTo(WebSearchCallStatus.Completed));
+                    Assert.That(webSearchCallItem.Id, Is.EqualTo(searchItemId));
+                    gotFinishedSearchItem = true;
+                }
+            }
+        }
+
+        Assert.That(gotFinishedSearchItem, Is.True);
+        Assert.That(searchingCount, Is.EqualTo(1));
+        Assert.That(inProgressCount, Is.EqualTo(1));
+        Assert.That(completedCount, Is.EqualTo(1));
+        Assert.That(searchItemId, Is.Not.Null.And.Not.Empty);
     }
 
     private List<string> FileIdsToDelete = [];

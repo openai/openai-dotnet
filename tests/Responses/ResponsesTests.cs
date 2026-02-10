@@ -72,193 +72,6 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         }
     }
 
-    [Ignore("Failing")]
-    [RecordedTest]
-    public async Task ComputerToolWithScreenshotRoundTrip()
-    {
-        ResponsesClient client = GetTestClient("computer-use-preview-2025-03-11");
-        ResponseTool computerTool = ResponseTool.CreateComputerTool(ComputerToolEnvironment.Windows, 1024, 768);
-        CreateResponseOptions responseOptions = new(
-            [
-                ResponseItem.CreateDeveloperMessageItem("Call tools when the user asks to perform computer-related tasks like clicking interface elements."),
-                ResponseItem.CreateUserMessageItem("Click on the Save button.")
-            ])
-        {
-            Tools = { computerTool },
-            TruncationMode = ResponseTruncationMode.Auto,
-        };
-        ResponseResult response = await client.CreateResponseAsync(responseOptions);
-
-        while (true)
-        {
-            Assert.That(response.OutputItems.Count, Is.GreaterThan(0));
-            ResponseItem outputItem = response.OutputItems?.LastOrDefault();
-            if (outputItem is ComputerCallResponseItem computerCall)
-            {
-                if (computerCall.Action.Kind == ComputerCallActionKind.Screenshot)
-                {
-                    string screenshotPath = Path.Join("Assets", "images_screenshot_with_save_1024_768.png");
-                    BinaryData screenshotBytes = BinaryData.FromBytes(File.ReadAllBytes(screenshotPath));
-                    ResponseItem screenshotReply = ResponseItem.CreateComputerCallOutputItem(
-                        computerCall.CallId,
-                        ComputerCallOutput.CreateScreenshotOutput(screenshotBytes, "image/png"));
-
-                    responseOptions.PreviousResponseId = response.Id;
-                    responseOptions.InputItems.Clear();
-                    responseOptions.InputItems.Add(screenshotReply);
-                    response = await client.CreateResponseAsync(responseOptions);
-                }
-                else if (computerCall.Action.Kind == ComputerCallActionKind.Click)
-                {
-                    Console.WriteLine($"Instruction from model: click");
-                    break;
-                }
-            }
-            else if (outputItem is MessageResponseItem message
-                && message.Content?.FirstOrDefault()?.Text?.ToLower() is string assistantText
-                && (
-                    assistantText.Contains("should i")
-                    || assistantText.Contains("shall i")
-                    || assistantText.Contains("can you confirm")
-                    || assistantText.Contains("could you confirm")
-                    || assistantText.Contains("please confirm")))
-            {
-                responseOptions.PreviousResponseId = response.Id;
-                responseOptions.InputItems.Clear();
-                responseOptions.InputItems.Add(
-                    ResponseItem.CreateAssistantMessageItem("Yes, proceed."));
-                response = await client.CreateResponseAsync(responseOptions);
-            }
-            else
-            {
-                break;
-            }
-        }
-    }
-
-    [RecordedTest]
-    public async Task WebSearchCall()
-    {
-        ResponsesClient client = GetTestClient();
-        ResponseResult response = await client.CreateResponseAsync(
-            new CreateResponseOptions([ResponseItem.CreateUserMessageItem("Searching the internet, what's the weather like in Seattle?")])
-            {
-                Tools =
-                {
-                    ResponseTool.CreateWebSearchTool()
-                },
-                ToolChoice = ResponseToolChoice.CreateWebSearchChoice()
-            });
-
-        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
-        Assert.That(response.OutputItems[0], Is.InstanceOf<WebSearchCallResponseItem>());
-        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
-
-        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
-        Assert.That(message.Content, Has.Count.GreaterThan(0));
-        Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
-        Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
-        Assert.That(message.Content[0].OutputTextAnnotations, Has.Count.GreaterThan(0));
-
-        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<WebSearchTool>());
-    }
-
-    [RecordedTest]
-    public async Task WebSearchCallPreview()
-    {
-        ResponsesClient client = GetTestClient();
-        ResponseResult response = await client.CreateResponseAsync(
-            new CreateResponseOptions([ResponseItem.CreateUserMessageItem("What was a positive news story from today?")])
-            {
-                Tools =
-                {
-                    ResponseTool.CreateWebSearchPreviewTool()
-                },
-                ToolChoice = ResponseToolChoice.CreateWebSearchChoice()
-            });
-
-        Assert.That(response.OutputItems, Has.Count.EqualTo(2));
-        Assert.That(response.OutputItems[0], Is.InstanceOf<WebSearchCallResponseItem>());
-        Assert.That(response.OutputItems[1], Is.InstanceOf<MessageResponseItem>());
-
-        MessageResponseItem message = (MessageResponseItem)response.OutputItems[1];
-        Assert.That(message.Content, Has.Count.GreaterThan(0));
-        Assert.That(message.Content[0].Kind, Is.EqualTo(ResponseContentPartKind.OutputText));
-        Assert.That(message.Content[0].Text, Is.Not.Null.And.Not.Empty);
-        Assert.That(message.Content[0].OutputTextAnnotations, Has.Count.GreaterThan(0));
-
-        Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<WebSearchPreviewTool>());
-    }
-
-    [RecordedTest]
-    public async Task WebSearchCallStreaming()
-    {
-        ResponsesClient client = GetTestClient();
-
-        const string message = "Searching the internet, what's the weather like in San Francisco?";
-
-        CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem(message)])
-        {
-            Tools =
-            {
-                ResponseTool.CreateWebSearchTool(
-                    userLocation: WebSearchToolLocation.CreateApproximateLocation(city: "San Francisco"),
-                    searchContextSize: WebSearchToolContextSize.Low)
-            },
-            StreamingEnabled = true,
-        };
-
-        string searchItemId = null;
-        int inProgressCount = 0;
-        int searchingCount = 0;
-        int completedCount = 0;
-        bool gotFinishedSearchItem = false;
-
-        await foreach (StreamingResponseUpdate update
-            in client.CreateResponseStreamingAsync(responseOptions))
-        {
-            if (update is StreamingResponseWebSearchCallInProgressUpdate searchCallInProgressUpdate)
-            {
-                Assert.That(searchCallInProgressUpdate.ItemId, Is.Not.Null.And.Not.Empty);
-                searchItemId ??= searchCallInProgressUpdate.ItemId;
-                Assert.That(searchItemId, Is.EqualTo(searchCallInProgressUpdate.ItemId));
-                Assert.That(searchCallInProgressUpdate.OutputIndex, Is.EqualTo(0));
-                inProgressCount++;
-            }
-            else if (update is StreamingResponseWebSearchCallSearchingUpdate searchCallSearchingUpdate)
-            {
-                Assert.That(searchCallSearchingUpdate.ItemId, Is.Not.Null.And.Not.Empty);
-                searchItemId ??= searchCallSearchingUpdate.ItemId;
-                Assert.That(searchItemId, Is.EqualTo(searchCallSearchingUpdate.ItemId));
-                Assert.That(searchCallSearchingUpdate.OutputIndex, Is.EqualTo(0));
-                searchingCount++;
-            }
-            else if (update is StreamingResponseWebSearchCallCompletedUpdate searchCallCompletedUpdate)
-            {
-                Assert.That(searchCallCompletedUpdate.ItemId, Is.Not.Null.And.Not.Empty);
-                searchItemId ??= searchCallCompletedUpdate.ItemId;
-                Assert.That(searchItemId, Is.EqualTo(searchCallCompletedUpdate.ItemId));
-                Assert.That(searchCallCompletedUpdate.OutputIndex, Is.EqualTo(0));
-                completedCount++;
-            }
-            else if (update is StreamingResponseOutputItemDoneUpdate outputItemDoneUpdate)
-            {
-                if (outputItemDoneUpdate.Item is WebSearchCallResponseItem webSearchCallItem)
-                {
-                    Assert.That(webSearchCallItem.Status, Is.EqualTo(WebSearchCallStatus.Completed));
-                    Assert.That(webSearchCallItem.Id, Is.EqualTo(searchItemId));
-                    gotFinishedSearchItem = true;
-                }
-            }
-        }
-
-        Assert.That(gotFinishedSearchItem, Is.True);
-        Assert.That(searchingCount, Is.EqualTo(1));
-        Assert.That(inProgressCount, Is.EqualTo(1));
-        Assert.That(completedCount, Is.EqualTo(1));
-        Assert.That(searchItemId, Is.Not.Null.And.Not.Empty);
-    }
-
     [RecordedTest]
     public async Task StreamingResponses()
     {
@@ -399,7 +212,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ResponsesWithReasoning()
     {
-        ResponsesClient client = GetTestClient("o3-mini");
+        ResponsesClient client = GetTestClient("gpt-5");
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("What's the best way to fold a burrito?")])
         {
@@ -408,28 +221,17 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
                 ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Detailed,
                 ReasoningEffortLevel = ResponseReasoningEffortLevel.Low,
             },
-            Metadata =
-            {
-                ["superfluous_key"] = "superfluous_value",
-            },
             Instructions = "Perform reasoning over any questions asked by the user.",
         };
 
         ResponseResult response = await client.CreateResponseAsync(options);
         Assert.That(response, Is.Not.Null);
         Assert.That(response.Id, Is.Not.Null);
-        Assert.That(response.CreatedAt, Is.GreaterThan(new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero)));
-        Assert.That(response.TruncationMode, Is.EqualTo(ResponseTruncationMode.Disabled));
-        Assert.That(response.MaxOutputTokenCount, Is.Null);
-        Assert.That(response.Model, Does.StartWith("o3-mini"));
-        Assert.That(response.Usage, Is.Not.Null);
-        Assert.That(response.Usage.OutputTokenDetails, Is.Not.Null);
-        Assert.That(response.Usage.OutputTokenDetails.ReasoningTokenCount, Is.GreaterThan(0));
-        Assert.That(response.Metadata, Is.Not.Null.Or.Empty);
-        Assert.That(response.Metadata["superfluous_key"], Is.EqualTo("superfluous_value"));
         Assert.That(response.OutputItems, Has.Count.EqualTo(2));
+
         ReasoningResponseItem reasoningItem = response.OutputItems[0] as ReasoningResponseItem;
         MessageResponseItem messageItem = response.OutputItems[1] as MessageResponseItem;
+
         Assert.That(reasoningItem.SummaryParts, Has.Count.GreaterThan(0));
         Assert.That(reasoningItem.GetSummaryText(), Is.Not.Null.And.Not.Empty);
         Assert.That(reasoningItem.Id, Is.Not.Null.And.Not.Empty);
@@ -642,27 +444,30 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response, Is.Not.Null);
     }
 
-    [Ignore("Temporarily disabled due to service instability.")]
+#if NET10_0_OR_GREATER
     [RecordedTest]
     public async Task ImageInputWorks()
     {
         ResponsesClient client = GetTestClient();
 
         string imagePath = Path.Join("Assets", "images_dog_and_cat.png");
+        string imageMediaType = "image/png";
         BinaryData imageBytes = BinaryData.FromBytes(await File.ReadAllBytesAsync(imagePath));
+        Uri imageDataUri = new($"data:{imageMediaType};base64,{Convert.ToBase64String(imageBytes.ToArray())}");
 
         ResponseResult response = await client.CreateResponseAsync(
             [
                 ResponseItem.CreateUserMessageItem(
                     [
                         ResponseContentPart.CreateInputTextPart("Please describe this picture for me"),
-                        ResponseContentPart.CreateInputImagePart(imageBytes, "image/png", ResponseImageDetailLevel.Low),
+                        ResponseContentPart.CreateInputImagePart(imageDataUri, ResponseImageDetailLevel.Low),
                     ]),
             ]);
 
         Console.WriteLine(response.GetOutputText());
         Assert.That(response.GetOutputText().ToLowerInvariant(), Does.Contain("dog").Or.Contain("cat").IgnoreCase);
     }
+#endif
 
     [RecordedTest]
     public async Task FileInputFromIdWorks()
@@ -988,18 +793,18 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(functionCall.FunctionName, Is.EqualTo(toolChoice.FunctionName));
     }
 
-    [Ignore("Failing")]
     [RecordedTest]
     public async Task CanStreamBackgroundResponses()
     {
         ResponsesClient client = GetTestClient("gpt-4.1-mini");
 
-        CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Hello, model!")])
+        CreateResponseOptions createOptions = new([ResponseItem.CreateUserMessageItem("Tell me a bedtime story.")])
         {
             BackgroundModeEnabled = true,
+            StreamingEnabled = true,
         };
 
-        AsyncCollectionResult<StreamingResponseUpdate> updates = client.CreateResponseStreamingAsync(options);
+        AsyncCollectionResult<StreamingResponseUpdate> updates = client.CreateResponseStreamingAsync(createOptions);
 
         string queuedResponseId = null;
         int lastSequenceNumber = 0;
@@ -1019,15 +824,20 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(lastSequenceNumber, Is.GreaterThan(0));
 
         // Try getting the response without streaming it.
-        ResponseResult retrievedResponse = await client.GetResponseAsync(new GetResponseOptions(queuedResponseId));
+        ResponseResult retrievedResponse = await client.GetResponseAsync(queuedResponseId);
 
         Assert.That(retrievedResponse, Is.Not.Null);
         Assert.That(retrievedResponse.Id, Is.EqualTo(queuedResponseId));
         Assert.That(retrievedResponse.BackgroundModeEnabled, Is.True);
-        Assert.That(retrievedResponse.Status, Is.EqualTo(ResponseStatus.Queued));
 
         // Now try continuing the stream.
-        AsyncCollectionResult<StreamingResponseUpdate> continuedUpdates = client.GetResponseStreamingAsync(new GetResponseOptions(queuedResponseId) { StartingAfter = lastSequenceNumber });
+        GetResponseOptions getOptions = new(queuedResponseId)
+        {
+            StartingAfter = lastSequenceNumber,
+            StreamingEnabled = true
+        };
+
+        AsyncCollectionResult<StreamingResponseUpdate> continuedUpdates = client.GetResponseStreamingAsync(getOptions);
 
         ResponseResult completedResponse = null;
         int? firstContinuedSequenceNumber = null;

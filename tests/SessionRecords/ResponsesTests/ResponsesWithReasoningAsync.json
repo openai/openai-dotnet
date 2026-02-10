@@ -6,15 +6,12 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "318",
+        "Content-Length": "265",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.8.0 (.NET 10.0.1; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
-        "metadata": {
-          "superfluous_key": "superfluous_value"
-        },
-        "model": "o3-mini",
+        "model": "gpt-5",
         "reasoning": {
           "effort": "low",
           "summary": "detailed"
@@ -37,13 +34,13 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "983df5bfbb697696-SEA",
+        "CF-RAY": "9c9111260f0bc366-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "4350",
+        "Content-Length": "4221",
         "Content-Type": "application/json",
-        "Date": "Tue, 23 Sep 2025 23:53:16 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "5884",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
@@ -53,43 +50,44 @@
         ],
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "5889",
-        "x-ratelimit-limit-requests": "30000",
-        "x-ratelimit-limit-tokens": "150000000",
-        "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "149999777",
-        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-limit-requests": "15000",
+        "x-ratelimit-limit-tokens": "40000000",
+        "x-ratelimit-remaining-requests": "14999",
+        "x-ratelimit-remaining-tokens": "39999646",
+        "x-ratelimit-reset-requests": "4ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_68d332e6919c8193b843c8d22475bf2e05aca4fe69da03ca",
+        "id": "resp_030eb364fd130acd006984560108a08193840b5cfa52e29069",
         "object": "response",
-        "created_at": 1758671590,
+        "created_at": 1770280449,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
+        "completed_at": 1770280464,
         "error": null,
+        "frequency_penalty": 0.0,
         "incomplete_details": null,
         "instructions": "Perform reasoning over any questions asked by the user.",
         "max_output_tokens": null,
         "max_tool_calls": null,
-        "model": "o3-mini-2025-01-31",
+        "model": "gpt-5-2025-08-07",
         "output": [
           {
-            "id": "rs_68d332e7fa048193bb2bac3f979776d205aca4fe69da03ca",
+            "id": "rs_030eb364fd130acd00698456015a348193b83613a7b98cb771",
             "type": "reasoning",
             "summary": [
               {
                 "type": "summary_text",
-                "text": "**Exploring burrito folding techniques**\n\nI want to provide a clear answer about the best way to fold a burrito. The technique involves a few simple steps. First, lay out the tortilla and fill it with rice and beans. Next, I’ll explain how to fold the sides in and tuck them securely. I’ll suggest that the best approach is to fold smartly and then roll the ends. I'll create a detailed list of steps for the user to follow. Let’s get started on those instructions!"
+                "text": "**Folding a burrito**\n\nThe user wants clear instructions on how to fold a burrito, which is great! I’ll provide a step-by-step method with tips for different tortilla sizes. First, I'll cover steaming or heating the tortillas and how to place the filling. Then, I can explain the envelope fold and the tuck-and-roll methods. It’s important to avoid overfilling and to seal properly by toasting the seam-side down. I should also mention foil wrapping and troubleshoot if tortillas crack, suggesting fresher or larger options. I'll keep it concise!"
               }
             ]
           },
           {
-            "id": "msg_68d332ea649881938e2b3ccec01a2efa05aca4fe69da03ca",
+            "id": "msg_030eb364fd130acd006984560ea3ac819398646a9b97a030d1",
             "type": "message",
             "status": "completed",
             "content": [
@@ -97,15 +95,17 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "Folding a burrito so that nothing spills out and you get neat, bite-sized pieces can be a bit of art. Here’s a step‐by‐step method that many consider the best way:\n\n1. Prepare and arrange your ingredients:\u2003\n\u2003• Warm your large-flour tortilla so it's soft and flexible.  \n\u2003• Place your fillings (rice, beans, meats, veggies, salsa, etc.) roughly in a line near the center, leaving extra space on the sides. This helps with an even fold and avoids overfilling.\n\n2. Position your tortilla:\u2003\n\u2003• Lay the tortilla on a flat surface with the center of the filling coming about two inches from the edge closest to you.\n\n3. Fold the bottom edge:\u2003\n\u2003• Take the edge nearest you and fold it up over the filling. This creates a nice base and encloses one side of the filling.\n\n4. Fold in the sides:\u2003\n\u2003• Next, gently fold in each side toward the center. These folds should encase the filling on the left and right sides.  \n\u2003• Be mindful not to overfill; otherwise, the sides won’t be able to cover the filling properly.\n\n5. Roll it up:\u2003\n\u2003• With the bottom and sides tucked in, continue rolling the tortilla away from you from the bottom edge.  \n\u2003• Roll tightly but gently to ensure the burrito holds together – a firm, tight roll is key to preventing spillage.\n\n6. Optionally secure:\u2003\n\u2003• If you’re taking it to-go, you might wrap it in foil which helps keep everything snug until you’re ready to eat.\n\nSome additional tips:  \n\u2003• Avoid overloading the burrito – leaving even a little extra space around the edges makes it easier to fold the sides without the filling spilling out.  \n\u2003• Using a slightly larger tortilla gives you more room to work with and is often easier for folding a well-contained burrito.  \n\u2003• Practice makes perfect! The more you roll burritos, the better your technique will become.\n\nThis method generally results in a compact, neat burrito with minimal risk during transport or eating. Enjoy your perfectly folded creation!"
+                "text": "Here’s a reliable, neat fold that keeps fillings in and holds up to eating:\n\n1) Warm the tortilla\n- Use a 10–12 inch flour tortilla (corn cracks more easily).\n- Heat 15–30 seconds per side in a dry pan or 20–30 seconds in the microwave wrapped in a damp paper towel until pliable.\n\n2) Place the filling correctly\n- Keep all fillings in a horizontal line across the center, slightly closer to you than the center.\n- Use less than you think: about 1 to 1.5 cups total. Put heavier items (rice/beans/meat) on the bottom, then cheese, then wet items (salsa/guac/sour cream) last to prevent sogginess.\n- Leave 1–2 inches clear on the left and right edges.\n\n3) Fold the sides\n- Fold the left and right edges toward the center so they just overlap the ends of the filling line. This creates “walls.”\n\n4) Tuck and roll\n- Lift the edge closest to you up and over the filling, tucking it snugly underneath with your fingers to compress.\n- Roll away from you, keeping it tight so the side folds stay closed. Continue rolling until the seam is underneath.\n\n5) Set the seam\n- Place seam-side down in a hot pan for 30–60 seconds to lightly toast and seal, or wrap tightly in foil with the seam down.\n\nTips and fixes:\n- Overfilling is the #1 cause of blowouts. If it struggles to close, remove a bit.\n- If the tortilla cracks, it’s too cold or dry—rewarm, or lightly brush the inside with a bit of water or oil and reheat.\n- For extra-juicy fillings, line the tortilla with cheese or rice first to act as a moisture barrier.\n- For portable burritos, wrap in foil, twisting the ends. Peel back the foil as you eat.\n- Big burrito option: use a 12-inch tortilla or two overlapped tortillas for “Mission-style” size.\n\nThat’s it—warm, place, fold sides, tuck, tight roll, and set the seam."
               }
             ],
             "role": "assistant"
           }
         ],
         "parallel_tool_calls": true,
+        "presence_penalty": 0.0,
         "previous_response_id": null,
         "prompt_cache_key": null,
+        "prompt_cache_retention": null,
         "reasoning": {
           "effort": "low",
           "summary": "detailed"
@@ -130,16 +130,14 @@
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 510,
+          "output_tokens": 571,
           "output_tokens_details": {
             "reasoning_tokens": 64
           },
-          "total_tokens": 540
+          "total_tokens": 601
         },
         "user": null,
-        "metadata": {
-          "superfluous_key": "superfluous_value"
-        }
+        "metadata": {}
       }
     }
   ],

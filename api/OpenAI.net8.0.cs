@@ -5506,11 +5506,10 @@ namespace OpenAI.Responses {
     }
     [Experimental("OPENAI001")]
     public class ImageGenerationToolInputImageMask : IJsonModel<ImageGenerationToolInputImageMask>, IPersistableModel<ImageGenerationToolInputImageMask> {
-        public ImageGenerationToolInputImageMask(BinaryData imageBytes, string imageBytesMediaType);
         public ImageGenerationToolInputImageMask(string fileId);
         public ImageGenerationToolInputImageMask(Uri imageUri);
         public string FileId { get; }
-        public string ImageUrl { get; }
+        public Uri ImageUri { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
@@ -5817,7 +5816,7 @@ namespace OpenAI.Responses {
         public string InputFilename { get; }
         public ResponseImageDetailLevel? InputImageDetailLevel { get; }
         public string InputImageFileId { get; }
-        public string InputImageUrl { get; }
+        public Uri InputImageUri { get; }
         public ResponseContentPartKind Kind { get; }
         public IReadOnlyList<ResponseMessageAnnotation> OutputTextAnnotations { get; }
         [Serialization.JsonIgnore]
@@ -5828,7 +5827,6 @@ namespace OpenAI.Responses {
         public string Text { get; }
         public static ResponseContentPart CreateInputFilePart(BinaryData fileBytes, string fileBytesMediaType, string filename);
         public static ResponseContentPart CreateInputFilePart(string fileId);
-        public static ResponseContentPart CreateInputImagePart(BinaryData imageBytes, string imageBytesMediaType, ResponseImageDetailLevel? imageDetailLevel = null);
         public static ResponseContentPart CreateInputImagePart(string imageFileId, ResponseImageDetailLevel? imageDetailLevel = null);
         public static ResponseContentPart CreateInputImagePart(Uri imageUri, ResponseImageDetailLevel? imageDetailLevel = null);
         public static ResponseContentPart CreateInputTextPart(string text);
