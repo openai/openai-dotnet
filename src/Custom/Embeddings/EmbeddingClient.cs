@@ -94,9 +94,9 @@ public partial class EmbeddingClient
 
     [Experimental("SCME0002")]
     public EmbeddingClient(EmbeddingClientSettings settings)
-        : this(settings.Model ?? throw new ArgumentNullException(nameof(settings.Model)),
+        : this(settings.Model,
             AuthenticationPolicy.Create(settings),
-            settings.Options ?? new OpenAIClientOptions())
+            settings.Options)
     {
     }
 

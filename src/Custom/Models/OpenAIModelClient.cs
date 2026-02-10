@@ -92,6 +92,13 @@ public partial class OpenAIModelClient
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
+    [Experimental("SCME0002")]
+    public OpenAIModelClient(OpenAIModelClientSettings settings)
+        : this(AuthenticationPolicy.Create(settings),
+            settings.Options)
+    {
+    }
+
     /// <summary>
     /// Gets the endpoint URI for the service.
     /// </summary>

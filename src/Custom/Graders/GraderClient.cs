@@ -78,6 +78,13 @@ public partial class GraderClient
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
+    [Experimental("SCME0002")]
+    public GraderClient(GraderClientSettings settings)
+        : this(AuthenticationPolicy.Create(settings),
+            settings.Options)
+    {
+    }
+
     /// <summary>
     /// Gets the endpoint URI for the service.
     /// </summary>

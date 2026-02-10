@@ -121,9 +121,9 @@ public partial class ChatClient
 
     [Experimental("SCME0002")]
     public ChatClient(ChatClientSettings settings)
-        : this(settings.Model ?? throw new ArgumentNullException(nameof(settings.Model)),
+        : this(settings.Model,
             AuthenticationPolicy.Create(settings),
-            settings.Options ?? new OpenAIClientOptions())
+            settings.Options)
     {
     }
 

@@ -2,10 +2,10 @@
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 
-namespace OpenAI.Moderations;
+namespace OpenAI.Responses;
 
 [Experimental("SCME0002")]
-public sealed class ModerationClientSettings : ClientSettings
+public sealed class ResponsesClientSettings : ClientSettings
 {
     public string Model { get; set; }
 

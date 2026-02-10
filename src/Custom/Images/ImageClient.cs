@@ -92,9 +92,9 @@ public partial class ImageClient
 
     [Experimental("SCME0002")]
     public ImageClient(ImageClientSettings settings)
-        : this(settings.Model ?? throw new ArgumentNullException(nameof(settings.Model)),
+        : this(settings.Model,
             AuthenticationPolicy.Create(settings),
-            settings.Options ?? new OpenAIClientOptions())
+            settings.Options)
     {
     }
 

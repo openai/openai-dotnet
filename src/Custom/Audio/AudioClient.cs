@@ -113,9 +113,9 @@ public partial class AudioClient
 
     [Experimental("SCME0002")]
     public AudioClient(AudioClientSettings settings)
-        : this(settings.Model ?? throw new ArgumentNullException(nameof(settings.Model)),
+        : this(settings.Model,
             AuthenticationPolicy.Create(settings),
-            settings.Options ?? new OpenAIClientOptions())
+            settings.Options)
     {
     }
 

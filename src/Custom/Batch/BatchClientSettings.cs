@@ -2,19 +2,15 @@
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 
-namespace OpenAI.Moderations;
+namespace OpenAI.Batch;
 
 [Experimental("SCME0002")]
-public sealed class ModerationClientSettings : ClientSettings
+public sealed class BatchClientSettings : ClientSettings
 {
-    public string Model { get; set; }
-
     public OpenAIClientOptions Options { get; set; }
 
     protected override void BindCore(IConfigurationSection section)
     {
-        Model = section["Model"];
-
         var optionsSection = section.GetSection("Options");
         if (optionsSection.Exists())
         {
