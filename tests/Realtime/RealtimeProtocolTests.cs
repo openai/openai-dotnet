@@ -95,17 +95,25 @@ public class RealtimeProtocolTests : RealtimeTestFixtureBase
 
         BinaryData input = BinaryData.FromBytes("""
             {
-               "model": "gpt-4o-realtime-preview",
-               "instructions": "You are a friendly assistant."
+                "expires_after": {
+                     "anchor": "created_at",
+                     "seconds": 600
+                },
+               "session": {
+                   "type": "realtime",
+                   "model": "gpt-realtime",
+                   "instructions": "You are a friendly assistant."
+               }
             }
             """u8.ToArray());
 
         using BinaryContent content = BinaryContent.Create(input);
-        ClientResult result = await client.CreateEphemeralTokenAsync(content);
+        ClientResult result = await client.CreateRealtimeClientSecretAsync(content);
         BinaryData output = result.GetRawResponse().Content;
 
         using JsonDocument outputAsJson = JsonDocument.Parse(output.ToString());
         string objectKind = outputAsJson.RootElement
+            .GetProperty("session"u8)
             .GetProperty("object"u8)
             .GetString();
 
@@ -118,16 +126,24 @@ public class RealtimeProtocolTests : RealtimeTestFixtureBase
         RealtimeClient client = GetTestClient(excludeDumpPolicy: true);
 
         BinaryData input = BinaryData.FromBytes("""
-            {
+        {
+            "expires_after": {
+                    "anchor": "created_at",
+                    "seconds": 600
+            },
+            "session": {
+                "type": "transcription"
             }
-            """u8.ToArray());
+        }
+        """u8.ToArray());
 
         using BinaryContent content = BinaryContent.Create(input);
-        ClientResult result = await client.CreateEphemeralTranscriptionTokenAsync(content);
+        ClientResult result = await client.CreateRealtimeClientSecretAsync(content);
         BinaryData output = result.GetRawResponse().Content;
 
         using JsonDocument outputAsJson = JsonDocument.Parse(output.ToString());
         string objectKind = outputAsJson.RootElement
+            .GetProperty("session"u8)
             .GetProperty("object"u8)
             .GetString();
 

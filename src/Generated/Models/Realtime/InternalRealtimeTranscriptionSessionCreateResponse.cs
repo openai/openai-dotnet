@@ -12,22 +12,28 @@ namespace OpenAI.Realtime
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalRealtimeTranscriptionSessionCreateResponse(InternalRealtimeTranscriptionSessionCreateResponseClientSecret clientSecret)
+        internal InternalRealtimeTranscriptionSessionCreateResponse(string id, InternalRealtimeTranscriptionSessionCreateResponseClientSecret clientSecret)
         {
+            Id = id;
             ClientSecret = clientSecret;
             Modalities = new ChangeTrackingList<InternalRealtimeRequestSessionModality>();
         }
 
-        internal InternalRealtimeTranscriptionSessionCreateResponse(InternalRealtimeTranscriptionSessionCreateResponseClientSecret clientSecret, IList<InternalRealtimeRequestSessionModality> modalities, RealtimeAudioFormat inputAudioFormat, InputTranscriptionOptions inputAudioTranscription, TurnDetectionOptions turnDetection, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalRealtimeTranscriptionSessionCreateResponse(string id, string @object, InternalRealtimeTranscriptionSessionCreateResponseClientSecret clientSecret, IList<InternalRealtimeRequestSessionModality> modalities, RealtimeAudioFormat inputAudioFormat, InputTranscriptionOptions inputAudioTranscription, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
+            Id = id;
+            Object = @object;
             ClientSecret = clientSecret;
             Modalities = modalities ?? new ChangeTrackingList<InternalRealtimeRequestSessionModality>();
             InputAudioFormat = inputAudioFormat;
             InputAudioTranscription = inputAudioTranscription;
-            TurnDetection = turnDetection;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
+
+        public string Id { get; }
+
+        public string Object { get; } = "realtime.transcription_session";
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

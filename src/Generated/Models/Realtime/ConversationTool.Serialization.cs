@@ -82,6 +82,8 @@ namespace OpenAI.Realtime
                 {
                     case "function":
                         return ConversationFunctionTool.DeserializeConversationFunctionTool(element, options);
+                    case "mcp":
+                        return InternalRealtimeMCPTool.DeserializeInternalRealtimeMCPTool(element, options);
                 }
             }
             return UnknownRealtimeTool.DeserializeUnknownRealtimeTool(element, options);

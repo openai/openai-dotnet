@@ -16,10 +16,12 @@ namespace OpenAI.Realtime;
 [Experimental("OPENAI002")][CodeGenType("RealtimeClientEventInputAudioBufferCommit")] internal partial class InternalRealtimeClientEventInputAudioBufferCommit { }
 [Experimental("OPENAI002")][CodeGenType("RealtimeClientEventResponseCancel")] internal partial class InternalRealtimeClientEventResponseCancel { }
 [Experimental("OPENAI002")][CodeGenType("RealtimeClientEventSessionUpdate")] internal partial class InternalRealtimeClientEventSessionUpdate { }
-[Experimental("OPENAI002")][CodeGenType("RealtimeClientEventTranscriptionSessionUpdate")] internal partial class InternalRealtimeClientEventTranscriptionSessionUpdate {}
+// InternalRealtimeClientEventTranscriptionSessionUpdate is defined in InternalRealtimeClientEventTranscriptionSessionUpdate.Serialization.cs with custom serialization
 [Experimental("OPENAI002")][CodeGenType("RealtimeClientEventType")] internal readonly partial struct InternalRealtimeClientEventType { }
 [Experimental("OPENAI002")][CodeGenType("RealtimeConversationResponseItemObject")] internal readonly partial struct InternalRealtimeConversationResponseItemObject { }
 [Experimental("OPENAI002")][CodeGenType("RealtimeItemType")] internal readonly partial struct InternalRealtimeItemType { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeMCPTool")] internal partial class InternalRealtimeMCPTool { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeMCPToolRequireApproval")] internal readonly partial struct InternalRealtimeMCPToolRequireApproval { }
 [Experimental("OPENAI002")][CodeGenType("RealtimeModality")] internal readonly partial struct InternalRealtimeRequestSessionModality { }
 [Experimental("OPENAI002")][CodeGenType("RealtimeRequestFunctionCallItem")] internal partial class InternalRealtimeRequestFunctionCallItem { }
 [Experimental("OPENAI002")][CodeGenType("RealtimeRequestFunctionCallOutputItem")] internal partial class InternalRealtimeRequestFunctionCallOutputItem { }
@@ -28,6 +30,10 @@ namespace OpenAI.Realtime;
 [Experimental("OPENAI002")][CodeGenType("RealtimeRequestTextContentPart")] internal partial class InternalRealtimeRequestTextContentPart { }
 [Experimental("OPENAI002")][CodeGenType("RealtimeResponseFunctionCallItem")] internal partial class InternalRealtimeResponseFunctionCallItem { }
 [Experimental("OPENAI002")][CodeGenType("RealtimeResponseFunctionCallOutputItem")] internal partial class InternalRealtimeResponseFunctionCallOutputItem { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeResponseMCPApprovalRequestItem")] internal partial class InternalRealtimeResponseMCPApprovalRequestItem { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeResponseMCPApprovalResponseItem")] internal partial class InternalRealtimeResponseMCPApprovalResponseItem { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeResponseMCPCallItem")] internal partial class InternalRealtimeResponseMCPCallItem { }
+[Experimental("OPENAI002")][CodeGenType("RealtimeResponseMCPListToolsItem")] internal partial class InternalRealtimeResponseMCPListToolsItem { }
 [Experimental("OPENAI002")][CodeGenType("RealtimeResponseModality")] internal readonly partial struct InternalRealtimeResponseModality { }
 [Experimental("OPENAI002")][CodeGenType("RealtimeResponseObject")] internal readonly partial struct InternalRealtimeResponseObject { }
 [Experimental("OPENAI002")][CodeGenType("RealtimeResponseOutputAudioFormat")] internal readonly partial struct InternalRealtimeResponseOutputAudioFormat { }
@@ -93,3 +99,59 @@ namespace OpenAI.Realtime;
 [CodeGenType("RealtimeSessionCreateResponseInputAudioTranscription")] internal partial class InternalRealtimeSessionCreateResponseInputAudioTranscription {}
 [CodeGenType("RealtimeSessionCreateResponseTracing1")] internal partial class InternalRealtimeSessionCreateResponseTracing1 {}
 [CodeGenType("RealtimeSessionCreateResponseTurnDetection")] internal partial class InternalRealtimeSessionCreateResponseTurnDetection {}
+
+// MCP-related types
+[CodeGenType("RealtimeMCPErrorType")] internal readonly partial struct InternalRealtimeMCPErrorType {}
+[CodeGenType("RealtimeTracingConfig")] internal partial class InternalRealtimeTracingConfig {}
+[CodeGenType("RealtimeToolChoiceMCPObject")] internal partial class InternalRealtimeToolChoiceMCPObject {}
+[CodeGenType("RealtimeToolChoiceMCPObjectMcp")] internal partial class InternalRealtimeToolChoiceMCPObjectMcp {}
+[CodeGenType("RealtimeRequestMCPCallItem")] internal partial class InternalRealtimeRequestMCPCallItem {}
+[CodeGenType("RealtimeRequestMCPListToolsItem")] internal partial class InternalRealtimeRequestMCPListToolsItem {}
+[CodeGenType("RealtimeRequestMCPApprovalRequestItem")] internal partial class InternalRealtimeRequestMCPApprovalRequestItem {}
+[CodeGenType("RealtimeRequestMCPApprovalResponseItem")] internal partial class InternalRealtimeRequestMCPApprovalResponseItem {}
+[CodeGenType("RealtimeMCPError")] internal partial class InternalRealtimeMCPError {}
+[CodeGenType("UnknownRealtimeMCPError")] internal partial class InternalUnknownRealtimeMCPError {}
+[CodeGenType("RealtimeMCPProtocolError")] internal partial class InternalRealtimeMCPProtocolError {}
+[CodeGenType("RealtimeMCPToolExecutionError")] internal partial class InternalRealtimeMCPToolExecutionError {}
+[CodeGenType("RealtimeMCPHTTPError")] internal partial class InternalRealtimeMCPHTTPError {}
+[CodeGenType("RealtimeServerEventInputAudioBufferDtmfEventReceived")] internal partial class InternalRealtimeServerEventInputAudioBufferDtmfEventReceived {}
+[CodeGenType("RealtimeServerEventInputAudioBufferTimeoutTriggered")] internal partial class InternalRealtimeServerEventInputAudioBufferTimeoutTriggered {}
+[CodeGenType("RealtimeServerEventConversationItemInputAudioTranscriptionSegment")] internal partial class InternalRealtimeServerEventConversationItemInputAudioTranscriptionSegment {}
+[CodeGenType("RealtimeServerEventMCPListToolsInProgress")] internal partial class InternalRealtimeServerEventMCPListToolsInProgress {}
+[CodeGenType("RealtimeServerEventMCPListToolsCompleted")] internal partial class InternalRealtimeServerEventMCPListToolsCompleted {}
+[CodeGenType("RealtimeServerEventMCPListToolsFailed")] internal partial class InternalRealtimeServerEventMCPListToolsFailed {}
+[CodeGenType("RealtimeServerEventResponseMCPCallArgumentsDelta")] internal partial class InternalRealtimeServerEventResponseMCPCallArgumentsDelta {}
+[CodeGenType("RealtimeServerEventResponseMCPCallArgumentsDone")] internal partial class InternalRealtimeServerEventResponseMCPCallArgumentsDone {}
+[CodeGenType("RealtimeServerEventResponseMCPCallInProgress")] internal partial class InternalRealtimeServerEventResponseMCPCallInProgress {}
+[CodeGenType("RealtimeServerEventResponseMCPCallCompleted")] internal partial class InternalRealtimeServerEventResponseMCPCallCompleted {}
+[CodeGenType("RealtimeServerEventResponseMCPCallFailed")] internal partial class InternalRealtimeServerEventResponseMCPCallFailed {}
+[CodeGenType("RealtimeServerEventTranscriptionSessionCreated")] internal partial class InternalRealtimeServerEventTranscriptionSessionCreated {}
+[CodeGenType("RealtimeSessionCreateRealtimeRequest")] internal partial class InternalRealtimeSessionCreateRealtimeRequest {}
+[CodeGenType("RealtimeSessionCreateTranscriptionRequest")] internal partial class InternalRealtimeSessionCreateTranscriptionRequest {}
+[CodeGenType("RealtimeSessionCreateRealtimeResponse")] internal partial class InternalRealtimeSessionCreateRealtimeResponse {}
+[CodeGenType("RealtimeSessionCreateTranscriptionResponse")] internal partial class InternalRealtimeSessionCreateTranscriptionResponse {}
+
+// Session update discriminated union types (from custom.tsp)
+// Note: RealtimeSessionType, RealtimeRequestSessionBase, and RealtimeSessionAudio* types must be public 
+// because public types extend them. They are defined in the public GeneratorStubs.cs file
+[CodeGenType("UnknownRealtimeRequestSessionBase")] internal partial class InternalUnknownRealtimeRequestSessionBase {}
+[CodeGenType("RealtimeTranscriptionRequestSession")] internal partial class InternalRealtimeTranscriptionRequestSession {}
+[CodeGenType("RealtimeTranscriptionSessionAudioConfiguration")] internal partial class InternalRealtimeTranscriptionSessionAudioConfiguration {}
+[CodeGenType("RealtimeTranscriptionSessionAudioInputConfiguration")] internal partial class InternalRealtimeTranscriptionSessionAudioInputConfiguration {}
+
+// Session response discriminated union types (GA types for session.created and session.updated)
+[CodeGenType("RealtimeSessionResponseBase")] internal partial class InternalRealtimeSessionResponseBase {}
+[CodeGenType("UnknownRealtimeSessionResponseBase")] internal partial class InternalUnknownRealtimeSessionResponseBase {}
+[CodeGenType("RealtimeSessionGA")] internal partial class InternalRealtimeSessionGA {}
+[CodeGenType("RealtimeSessionGAObject")] internal readonly partial struct InternalRealtimeSessionGAObject {}
+[CodeGenType("RealtimeTranscriptionSessionGA")] internal partial class InternalRealtimeTranscriptionSessionGA {}
+[CodeGenType("RealtimeTranscriptionSessionGAObject")] internal readonly partial struct InternalRealtimeTranscriptionSessionGAObject {}
+
+// Audio formats discriminated union types (GA audio format model)
+[CodeGenType("RealtimeAudioFormatsType")] internal readonly partial struct InternalRealtimeAudioFormatsType {}
+[CodeGenType("RealtimeAudioFormats")] internal partial class InternalRealtimeAudioFormats {}
+[CodeGenType("UnknownRealtimeAudioFormats")] internal partial class InternalUnknownRealtimeAudioFormats {}
+[CodeGenType("RealtimeAudioFormatsPcm")] internal partial class InternalRealtimeAudioFormatsPcm {}
+[CodeGenType("RealtimeAudioFormatsPcmu")] internal partial class InternalRealtimeAudioFormatsPcmu {}
+[CodeGenType("RealtimeAudioFormatsPcma")] internal partial class InternalRealtimeAudioFormatsPcma {}
+[CodeGenType("RealtimeAudioFormatsPcmRate")] internal readonly partial struct InternalRealtimeAudioFormatsPcmRate {}
