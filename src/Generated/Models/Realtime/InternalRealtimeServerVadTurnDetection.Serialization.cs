@@ -42,6 +42,11 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("silence_duration_ms"u8);
                 SerializeSilenceDurationMs(writer, options);
             }
+            if (Optional.IsDefined(IdleTimeoutMs) && _additionalBinaryDataProperties?.ContainsKey("idle_timeout_ms") != true)
+            {
+                writer.WritePropertyName("idle_timeout_ms"u8);
+                writer.WriteStringValue(IdleTimeoutMs.Value, "P");
+            }
         }
 
         InternalRealtimeServerVadTurnDetection IJsonModel<InternalRealtimeServerVadTurnDetection>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalRealtimeServerVadTurnDetection)JsonModelCreateCore(ref reader, options);
@@ -70,6 +75,7 @@ namespace OpenAI.Realtime
             float? threshold = default;
             TimeSpan? prefixPaddingMs = default;
             TimeSpan? silenceDurationMs = default;
+            TimeSpan? idleTimeoutMs = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -114,6 +120,16 @@ namespace OpenAI.Realtime
                     DeserializeMillisecondDuration(prop, ref silenceDurationMs);
                     continue;
                 }
+                if (prop.NameEquals("idle_timeout_ms"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        idleTimeoutMs = null;
+                        continue;
+                    }
+                    idleTimeoutMs = prop.Value.GetTimeSpan("P");
+                    continue;
+                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
@@ -124,7 +140,8 @@ namespace OpenAI.Realtime
                 additionalBinaryDataProperties,
                 threshold,
                 prefixPaddingMs,
-                silenceDurationMs);
+                silenceDurationMs,
+                idleTimeoutMs);
         }
 
         BinaryData IPersistableModel<InternalRealtimeServerVadTurnDetection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

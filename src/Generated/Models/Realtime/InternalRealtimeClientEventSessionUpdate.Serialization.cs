@@ -60,7 +60,7 @@ namespace OpenAI.Realtime
             InternalRealtimeClientEventType kind = default;
             string eventId = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            ConversationSessionOptions session = default;
+            RealtimeRequestSessionBase session = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -75,7 +75,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("session"u8))
                 {
-                    session = ConversationSessionOptions.DeserializeConversationSessionOptions(prop.Value, options);
+                    session = RealtimeRequestSessionBase.DeserializeRealtimeRequestSessionBase(prop.Value, options);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

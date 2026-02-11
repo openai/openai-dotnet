@@ -3,7 +3,6 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -13,7 +12,7 @@ namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeTranscriptionSessionCreateResponse : IJsonModel<InternalRealtimeTranscriptionSessionCreateResponse>
     {
-        internal InternalRealtimeTranscriptionSessionCreateResponse() : this(null, null, default, null, null, null)
+        internal InternalRealtimeTranscriptionSessionCreateResponse() : this(null, null, null, null, default, null, null)
         {
         }
 
@@ -30,6 +29,16 @@ namespace OpenAI.Realtime
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(InternalRealtimeTranscriptionSessionCreateResponse)} does not support writing '{format}' format.");
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("id") != true)
+            {
+                writer.WritePropertyName("id"u8);
+                writer.WriteStringValue(Id);
+            }
+            if (_additionalBinaryDataProperties?.ContainsKey("object") != true)
+            {
+                writer.WritePropertyName("object"u8);
+                writer.WriteStringValue(Object);
             }
             if (_additionalBinaryDataProperties?.ContainsKey("client_secret") != true)
             {
@@ -55,11 +64,6 @@ namespace OpenAI.Realtime
             {
                 writer.WritePropertyName("input_audio_transcription"u8);
                 writer.WriteObjectValue(InputAudioTranscription, options);
-            }
-            if (Optional.IsDefined(TurnDetection) && _additionalBinaryDataProperties?.ContainsKey("turn_detection") != true)
-            {
-                writer.WritePropertyName("turn_detection"u8);
-                writer.WriteObjectValue(TurnDetection, options);
             }
             // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties != null)
@@ -102,14 +106,25 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
+            string id = default;
+            string @object = default;
             InternalRealtimeTranscriptionSessionCreateResponseClientSecret clientSecret = default;
             IList<InternalRealtimeRequestSessionModality> modalities = default;
             RealtimeAudioFormat inputAudioFormat = default;
             InputTranscriptionOptions inputAudioTranscription = default;
-            TurnDetectionOptions turnDetection = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
+                if (prop.NameEquals("id"u8))
+                {
+                    id = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("object"u8))
+                {
+                    @object = prop.Value.GetString();
+                    continue;
+                }
                 if (prop.NameEquals("client_secret"u8))
                 {
                     clientSecret = InternalRealtimeTranscriptionSessionCreateResponseClientSecret.DeserializeInternalRealtimeTranscriptionSessionCreateResponseClientSecret(prop.Value, options);
@@ -143,24 +158,16 @@ namespace OpenAI.Realtime
                     inputAudioTranscription = InputTranscriptionOptions.DeserializeInputTranscriptionOptions(prop.Value, options);
                     continue;
                 }
-                if (prop.NameEquals("turn_detection"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    turnDetection = TurnDetectionOptions.DeserializeTurnDetectionOptions(prop.Value, options);
-                    continue;
-                }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new InternalRealtimeTranscriptionSessionCreateResponse(
+                id,
+                @object,
                 clientSecret,
                 modalities ?? new ChangeTrackingList<InternalRealtimeRequestSessionModality>(),
                 inputAudioFormat,
                 inputAudioTranscription,
-                turnDetection,
                 additionalBinaryDataProperties);
         }
 
@@ -196,12 +203,5 @@ namespace OpenAI.Realtime
         }
 
         string IPersistableModel<InternalRealtimeTranscriptionSessionCreateResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static explicit operator InternalRealtimeTranscriptionSessionCreateResponse(ClientResult result)
-        {
-            PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
-            return DeserializeInternalRealtimeTranscriptionSessionCreateResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

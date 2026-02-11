@@ -17,6 +17,7 @@ namespace OpenAI.Realtime
         private const string CancelledValue = "cancelled";
         private const string FailedValue = "failed";
         private const string IncompleteValue = "incomplete";
+        private const string InProgressValue = "in_progress";
 
         public ConversationStatus(string value)
         {
@@ -32,6 +33,8 @@ namespace OpenAI.Realtime
         public static ConversationStatus Failed { get; } = new ConversationStatus(FailedValue);
 
         public static ConversationStatus Incomplete { get; } = new ConversationStatus(IncompleteValue);
+
+        public static ConversationStatus InProgress { get; } = new ConversationStatus(InProgressValue);
 
         public static bool operator ==(ConversationStatus left, ConversationStatus right) => left.Equals(right);
 

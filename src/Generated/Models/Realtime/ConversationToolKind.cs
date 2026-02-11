@@ -14,6 +14,7 @@ namespace OpenAI.Realtime
     {
         private readonly string _value;
         private const string FunctionValue = "function";
+        private const string McpValue = "mcp";
 
         public ConversationToolKind(string value)
         {
@@ -23,6 +24,8 @@ namespace OpenAI.Realtime
         }
 
         public static ConversationToolKind Function { get; } = new ConversationToolKind(FunctionValue);
+
+        public static ConversationToolKind Mcp { get; } = new ConversationToolKind(McpValue);
 
         public static bool operator ==(ConversationToolKind left, ConversationToolKind right) => left.Equals(right);
 

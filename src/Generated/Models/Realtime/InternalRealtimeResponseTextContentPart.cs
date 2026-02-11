@@ -9,7 +9,7 @@ namespace OpenAI.Realtime
 {
     internal partial class InternalRealtimeResponseTextContentPart : ConversationContentPart
     {
-        internal InternalRealtimeResponseTextContentPart(string internalTextValue) : base(ConversationContentPartKind.OutputText)
+        public InternalRealtimeResponseTextContentPart(string internalTextValue) : base(ConversationContentPartKind.OutputText)
         {
             InternalTextValue = internalTextValue;
         }
