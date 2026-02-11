@@ -41,6 +41,8 @@ Tests use the [Microsoft.ClientModel.TestFramework](https://github.com/Azure/azu
 | **Record** | Tests run against the live OpenAI API and record HTTP interactions for later playback. |
 | **Live** | Tests run against the live OpenAI API without recording. |
 
+> **Note:** In Playback mode, if an existing session record does not match the test's requests, the framework will automatically attempt to re-record the test against the live API. To disable this auto-recording behavior, set the `CLIENTMODEL_DISABLE_AUTO_RECORDING` environment variable to `true`.
+
 ### Running Tests in Playback Mode (Default)
 
 ```bash
