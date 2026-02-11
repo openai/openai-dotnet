@@ -4080,11 +4080,11 @@ namespace OpenAI.Realtime {
     }
     public class RealtimeClient {
         protected RealtimeClient();
-        public RealtimeClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public RealtimeClient(ApiKeyCredential credential, RealtimeClientOptions options);
         public RealtimeClient(ApiKeyCredential credential);
-        public RealtimeClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public RealtimeClient(AuthenticationPolicy authenticationPolicy, RealtimeClientOptions options);
         public RealtimeClient(AuthenticationPolicy authenticationPolicy);
-        protected internal RealtimeClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal RealtimeClient(ClientPipeline pipeline, RealtimeClientOptions options);
         public RealtimeClient(string apiKey);
         public Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
@@ -4106,6 +4106,12 @@ namespace OpenAI.Realtime {
         public virtual Task<RealtimeSession> StartSessionAsync(string model, string intent, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
         public RealtimeSession StartTranscriptionSession(RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<RealtimeSession> StartTranscriptionSessionAsync(RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
+    }
+    public class RealtimeClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
     }
     [Flags]
     public enum RealtimeContentModalities {
