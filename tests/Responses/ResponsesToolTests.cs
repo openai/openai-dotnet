@@ -36,7 +36,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
-            Model = "gpt-5",
+            Model = "gpt-4o-mini",
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
@@ -46,7 +46,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         };
 
-        ResponsesClient client = GetTestClient(overrideModel: "gpt-5");
+        ResponsesClient client = GetTestClient(overrideModel: "gpt-4o-mini");
 
         ResponseResult response = await client.CreateResponseAsync(options);
         Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
@@ -89,7 +89,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
-            Model = "gpt-5",
+            Model = "gpt-4o-mini",
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
@@ -100,7 +100,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             StreamingEnabled = true,
         };
 
-        ResponsesClient client = GetTestClient(overrideModel: "gpt-5");
+        ResponsesClient client = GetTestClient(overrideModel: "gpt-4o-mini");
 
         AsyncCollectionResult<StreamingResponseUpdate> responseUpdates = client.CreateResponseStreamingAsync(options);
 
@@ -205,7 +205,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
-            Model = "gpt-5",
+            Model = "gpt-4o-mini",
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
@@ -215,7 +215,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         };
 
-        ResponsesClient client = GetTestClient(overrideModel: "gpt-5");
+        ResponsesClient client = GetTestClient(overrideModel: "gpt-4o-mini");
 
         ResponseResult response = await client.CreateResponseAsync(options);
         Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
@@ -247,7 +247,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
-            Model = "gpt-5",
+            Model = "gpt-4o-mini",
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
@@ -257,7 +257,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         };
 
-        ResponsesClient client = GetTestClient(overrideModel: "gpt-5");
+        ResponsesClient client = GetTestClient(overrideModel: "gpt-4o-mini");
 
         ResponseResult response1 = await client.CreateResponseAsync(options);
         Assert.That(response1.OutputItems, Has.Count.GreaterThan(0));
@@ -289,7 +289,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
-            Model = "gpt-5",
+            Model = "gpt-4o-mini",
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
@@ -303,7 +303,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         };
 
-        ResponsesClient client = GetTestClient(overrideModel: "gpt-5");
+        ResponsesClient client = GetTestClient(overrideModel: "gpt-4o-mini");
 
         ResponseResult response = await client.CreateResponseAsync(options);
         Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
@@ -331,7 +331,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
-            Model = "gpt-5",
+            Model = "gpt-4o-mini",
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
@@ -345,7 +345,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         };
 
-        ResponsesClient client = GetTestClient(overrideModel: "gpt-5");
+        ResponsesClient client = GetTestClient(overrideModel: "gpt-4o-mini");
 
         ResponseResult response = await client.CreateResponseAsync(options);
         Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
@@ -384,7 +384,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         ResponseResult response = await client.CreateResponseAsync(
             new CreateResponseOptions([ResponseItem.CreateUserMessageItem("Using the file search tool, what's Travis's favorite food?")])
             {
-                Model = "gpt-5",
+                Model = "gpt-4o-mini",
                 Tools =
                 {
                     ResponseTool.CreateFileSearchTool(vectorStoreIds: [vectorStore.Id]),
@@ -420,7 +420,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new CodeInterpreterToolContainer(CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration()));
         CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem("Calculate the factorial of 5 using Python code.")])
         {
-            Model = "gpt-5",
+            Model = "gpt-4o-mini",
             Tools = { codeInterpreterTool },
         };
 
@@ -451,7 +451,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new(new AutomaticCodeInterpreterToolContainerConfiguration()));
         CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem("Generate a simple chart using matplotlib. Ensure you emit debug logging and include any resulting log file output.")])
         {
-            Model = "gpt-5",
+            Model = "gpt-4o-mini",
             Tools = { codeInterpreterTool },
         };
 
@@ -495,7 +495,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new(containerId));
             CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem("Calculate the factorial of 5 using Python code.")])
             {
-                Model = "gpt-5",
+                Model = "gpt-4o-mini",
                 Tools = { codeInterpreterTool },
             };
 
@@ -561,7 +561,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new(CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration(fileIds)));
             CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem("Analyze the CSV data in the uploaded file and create a simple visualization. Also run the Python script that was uploaded.")])
             {
-                Model = "gpt-5",
+                Model = "gpt-4o-mini",
                 Tools = { codeInterpreterTool },
             };
 
@@ -602,7 +602,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new CodeInterpreterToolContainer(new AutomaticCodeInterpreterToolContainerConfiguration()));
         CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem("Calculate the factorial of 5 using Python code and show me the code step by step.")])
         {
-            Model = "gpt-5",
+            Model = "gpt-4o-mini",
             Tools = { codeInterpreterTool },
             StreamingEnabled = true,
         };
@@ -651,7 +651,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             ResponseTool codeInterpreterTool = ResponseTool.CreateCodeInterpreterTool(new CodeInterpreterToolContainer(CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration(fileIds)));
             CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem("Load the CSV file and create a simple plot visualization showing the relationship between x and y values.")])
             {
-                Model = "gpt-5",
+                Model = "gpt-4o-mini",
                 Tools = { codeInterpreterTool },
                 StreamingEnabled = true,
             };
@@ -706,7 +706,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
                 ResponseItem.CreateUserMessageItem("Click on the Save button.")
             ])
         {
-            Model = "gpt-5",
+            Model = "gpt-4o-mini",
             Tools = { computerTool },
             TruncationMode = ResponseTruncationMode.Auto,
         };
@@ -767,7 +767,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         CreateResponseOptions options = new(
             [ResponseItem.CreateUserMessageItem("Generate an image of gray tabby cat hugging an otter with an orange scarf")])
         {
-            Model = "gpt-5",
+            Model = "gpt-4o-mini",
             Tools =
             {
                 ResponseTool.CreateImageGenerationTool(
@@ -807,7 +807,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem(message)])
         {
-            Model = "gpt-5",
+            Model = "gpt-4o-mini",
             Tools =
             {
                 ResponseTool.CreateImageGenerationTool(
@@ -908,7 +908,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new(inputItems)
         {
-            Model = "gpt-5",
+            Model = "gpt-4o-mini",
             Tools =
             {
                 ResponseTool.CreateImageGenerationTool(
@@ -953,7 +953,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new(inputItems)
         {
-            Model = "gpt-5",
+            Model = "gpt-4o-mini",
             Tools =
             {
                 ResponseTool.CreateImageGenerationTool(
@@ -1024,7 +1024,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new(inputItems)
         {
-            Model = "gpt-5",
+            Model = "gpt-4o-mini",
             Tools =
             {
                 ResponseTool.CreateImageGenerationTool(
@@ -1060,7 +1060,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         ResponseResult response = await client.CreateResponseAsync(
             new CreateResponseOptions([ResponseItem.CreateUserMessageItem("Searching the internet, what's the weather like in Seattle?")])
             {
-                Model = "gpt-5",
+                Model = "gpt-4o-mini",
                 Tools =
                 {
                     ResponseTool.CreateWebSearchTool()
@@ -1088,7 +1088,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         ResponseResult response = await client.CreateResponseAsync(
             new CreateResponseOptions([ResponseItem.CreateUserMessageItem("What was a positive news story from today?")])
             {
-                Model = "gpt-5",
+                Model = "gpt-4o-mini",
                 Tools =
                 {
                     ResponseTool.CreateWebSearchPreviewTool()
@@ -1118,7 +1118,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         CreateResponseOptions responseOptions = new([ResponseItem.CreateUserMessageItem(message)])
         {
-            Model = "gpt-5",
+            Model = "gpt-4o-mini",
             Tools =
             {
                 ResponseTool.CreateWebSearchTool(
