@@ -1200,7 +1200,7 @@ model ItemContentInputImage extends ItemContent {
   type: ItemContentType.input_image;
 
   /** The URL of the image to be sent to the model. A fully qualified URL or base64 encoded image in a data URL. */
-  image_url?: string | null;
+  image_url?: url | null;
 
   /** The ID of the file to be sent to the model. */
   file_id?: string | null;
@@ -2024,7 +2024,7 @@ model ImageGenTool extends Tool {
     """)
   input_image_mask?: {
     /** Base64-encoded mask image. */
-    image_url?: string;
+    image_url?: url;
 
     /** File ID for the mask image. */
     file_id?: string;

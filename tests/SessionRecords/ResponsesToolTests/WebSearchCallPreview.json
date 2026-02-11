@@ -1,0 +1,191 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "236",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.6.0 (.NET 9.0.10; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "tools": [
+          {
+            "type": "web_search_preview"
+          }
+        ],
+        "tool_choice": {
+          "type": "web_search_preview"
+        },
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "What was a positive news story from today?"
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "99ab70b48c8c6841-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "6236",
+        "Content-Type": "application/json",
+        "Date": "Fri, 07 Nov 2025 08:25:35 GMT",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "6549",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Set-Cookie": [
+          "Sanitized",
+          "Sanitized"
+        ],
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "6554",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_056b55c61ddc70ad00690dacf91da08193a10d51aa3276e4e2",
+        "object": "response",
+        "created_at": 1762503929,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4o-mini-2024-07-18",
+        "output": [
+          {
+            "id": "ws_056b55c61ddc70ad00690dacf9317c8193a3032562dc43beeb",
+            "type": "web_search_call",
+            "status": "completed",
+            "action": {
+              "type": "search",
+              "query": "What was a positive news story from today?"
+            }
+          },
+          {
+            "id": "msg_056b55c61ddc70ad00690dacfb0b50819382b918f7c025690f",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [
+                  {
+                    "type": "url_citation",
+                    "end_index": 463,
+                    "start_index": 331,
+                    "title": "School Assembly News Headlines – 7 November 2025 | Today’s Top Updates » Uniapply Blog",
+                    "url": "https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai"
+                  },
+                  {
+                    "type": "url_citation",
+                    "end_index": 854,
+                    "start_index": 722,
+                    "title": "School Assembly News Headlines – 7 November 2025 | Today’s Top Updates » Uniapply Blog",
+                    "url": "https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai"
+                  },
+                  {
+                    "type": "url_citation",
+                    "end_index": 1269,
+                    "start_index": 1133,
+                    "title": "School Assembly News Headlines: 7 November 2025 - Leverage Edu Discover",
+                    "url": "https://leverageedu.com/discover/school-education/school-assembly-news-headlines-7-november-2025/?utm_source=openai"
+                  },
+                  {
+                    "type": "url_citation",
+                    "end_index": 1702,
+                    "start_index": 1566,
+                    "title": "School Assembly News Headlines: 7 November 2025 - Leverage Edu Discover",
+                    "url": "https://leverageedu.com/discover/school-education/school-assembly-news-headlines-7-november-2025/?utm_source=openai"
+                  },
+                  {
+                    "type": "url_citation",
+                    "end_index": 2105,
+                    "start_index": 1973,
+                    "title": "School Assembly News Headlines – 7 November 2025 | Today’s Top Updates » Uniapply Blog",
+                    "url": "https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai"
+                  }
+                ],
+                "logprobs": [],
+                "text": "Here are some positive news stories from today, November 7, 2025:\n\n**1. India Plants 5 Million Trees for Clean Air Campaign**\n\nAs part of the \"Clean Air, Green Future\" initiative, citizens across 10 states in India planted over 5 million saplings today. This campaign encourages sustainable living and aims to improve air quality. ([uniapply.com](https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai))\n\n**2. Mumbai Students Lead Beach Cleanup Drive**\n\nOver 2,000 students participated in a beach cleanup drive at Juhu Beach in Mumbai, collecting nearly 10 tonnes of plastic waste in one day. This effort set a record for community-led cleanliness initiatives. ([uniapply.com](https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai))\n\n**3. India’s Wealthiest Donate Record Rs 10,380 Crore in 2025**\n\nAccording to the EdelGive Hurun India Philanthropy List 2025, top donors contributed Rs 10,380 crore. The list includes 191 philanthropists, with 12 newcomers, reflecting the rise of large-scale giving in India. ([leverageedu.com](https://leverageedu.com/discover/school-education/school-assembly-news-headlines-7-november-2025/?utm_source=openai))\n\n**4. India’s Solar Module Capacity to Exceed 125 GW by 2025**\n\nIndia's solar manufacturing capacity is projected to reach 125 GW by 2025, surpassing domestic demand. This growth is fueled by Production-Linked Incentive (PLI) incentives, contributing to the country's renewable energy expansion. ([leverageedu.com](https://leverageedu.com/discover/school-education/school-assembly-news-headlines-7-november-2025/?utm_source=openai))\n\n**5. AI-Based Education Tools Gain Popularity in Schools**\n\nSchools across India are adopting AI-powered learning platforms to personalize education and track student progress. This integration is set to reshape traditional classrooms and enhance learning experiences. ([uniapply.com](https://www.uniapply.com/blog/school-assembly-news-headlines-7-november-2025-todays-top-updates/?utm_source=openai))\n\nThese stories highlight positive developments in environmental conservation, community engagement, philanthropy, renewable energy, and educational innovation. "
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "prompt_cache_retention": null,
+        "reasoning": {
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "auto",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": {
+          "type": "web_search_preview"
+        },
+        "tools": [
+          {
+            "type": "web_search_preview",
+            "search_context_size": "medium",
+            "user_location": {
+              "type": "approximate",
+              "city": null,
+              "country": "US",
+              "region": null,
+              "timezone": null
+            }
+          }
+        ],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 312,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 519,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 831
+        },
+        "user": null,
+        "metadata": {}
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

@@ -35,10 +35,10 @@ namespace OpenAI.Responses
                 throw new FormatException($"The model {nameof(ImageGenerationToolInputImageMask)} does not support writing '{format}' format.");
             }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(ImageUrl) && !Patch.Contains("$.image_url"u8))
+            if (Optional.IsDefined(ImageUri) && !Patch.Contains("$.image_url"u8))
             {
                 writer.WritePropertyName("image_url"u8);
-                writer.WriteStringValue(ImageUrl);
+                writer.WriteStringValue(ImageUri.AbsoluteUri);
             }
             if (Optional.IsDefined(FileId) && !Patch.Contains("$.file_id"u8))
             {
@@ -69,7 +69,7 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            string imageUrl = default;
+            Uri imageUri = default;
             string fileId = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -78,7 +78,11 @@ namespace OpenAI.Responses
             {
                 if (prop.NameEquals("image_url"u8))
                 {
-                    imageUrl = prop.Value.GetString();
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    imageUri = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("file_id"u8))
@@ -88,7 +92,7 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new ImageGenerationToolInputImageMask(imageUrl, fileId, patch);
+            return new ImageGenerationToolInputImageMask(imageUri, fileId, patch);
         }
 
         BinaryData IPersistableModel<ImageGenerationToolInputImageMask>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
