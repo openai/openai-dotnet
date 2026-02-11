@@ -609,8 +609,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponsesClient client1 = GetTestClient("gpt-4o-mini");
         ResponsesClient client2 = GetTestClient("o3-mini");
 
-        ResponseResult response1 = await client1.CreateResponseAsync("gpt-5", "Hello, Assistant! My name is Travis.");
-        ResponseResult response2 = await client2.CreateResponseAsync("gpt-5", "What's my name?", response1.Id);
+        ResponseResult response1 = await client1.CreateResponseAsync("gpt-4o-mini", "Hello, Assistant! My name is Travis.");
+        ResponseResult response2 = await client2.CreateResponseAsync("o3-mini", "What's my name?", response1.Id);
 
         Assert.That(response1.Model.StartsWith("gpt-4o-mini"), Is.True);
         Assert.That(response2.Model.StartsWith("o3-mini"), Is.True);
