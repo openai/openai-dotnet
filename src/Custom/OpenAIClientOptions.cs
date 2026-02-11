@@ -89,17 +89,17 @@ public partial class OpenAIClientOptions : ClientPipelineOptions
             Endpoint = endpoint;
         }
 
-        if (section[nameof(OrganizationId)] is { } organizationId)
+        if (section[nameof(OrganizationId)] is string organizationId)
         {
             OrganizationId = organizationId;
         }
 
-        if (section[nameof(ProjectId)] is { } projectId)
+        if (section[nameof(ProjectId)] is string projectId)
         {
             ProjectId = projectId;
         }
 
-        if (section[nameof(UserAgentApplicationId)] is { } userAgentApplicationId)
+        if (section[nameof(UserAgentApplicationId)] is string userAgentApplicationId)
         {
             UserAgentApplicationId = userAgentApplicationId;
         }
