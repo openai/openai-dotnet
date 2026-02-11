@@ -40,14 +40,3 @@ using Azure.ClientGenerator.Core;
 @@clientLocation(updateVectorStoreFileAttributes, "VectorStores");
 @@clientLocation(retrieveVectorStoreFileContent, "VectorStores");
 @@clientLocation(searchVectorStore, "VectorStores");
-
-// Add pagination decorators
-@@list(listVectorStores);
-@@list(listFilesInVectorStoreBatch);
-@@list(listVectorStoreFiles);
-
-@@pageItems(ListVectorStoresResponse.data);
-@@pageItems(ListVectorStoreFilesResponse.data);
-
-@@continuationToken(ListVectorStoresResponse.last_id);
-@@continuationToken(ListVectorStoreFilesResponse.last_id);

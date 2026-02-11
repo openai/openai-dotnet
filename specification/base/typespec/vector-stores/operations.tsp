@@ -1,18 +1,20 @@
 import "@typespec/http";
 import "@typespec/openapi";
-import "./models.tsp";
 import "../common/models.tsp";
+import "./models.tsp";
 using TypeSpec.Http;
 using TypeSpec.OpenAPI;
 namespace OpenAI;
 /** Returns a list of vector stores. */
 #suppress "@azure-tools/typespec-azure-core/response-schema-problem" "Auto-suppressed warnings non-applicable rules during import."
-#suppress "@azure-tools/typespec-azure-core/use-standard-names" "Auto-suppressed warnings non-applicable rules during import."
 #suppress "@azure-tools/typespec-azure-core/use-standard-operations" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
 #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
 @summary("List vector stores")
 @get
 @route("/vector_stores")
+@extension("x-ms-list", true)
+@list
 @extension(
   "x-oaiMeta",
   #{
@@ -158,15 +160,15 @@ op listVectorStores(
 
   /** Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order. */
   #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."
-  #suppress "@azure-tools/typespec-azure-core/no-closed-literal-union" "Auto-suppressed warnings non-applicable rules during import."
-  #suppress "@azure-tools/typespec-azure-core/no-unnamed-union" "Auto-suppressed warnings non-applicable rules during import."
   @query(#{ explode: true })
-  order?: PageOrderOptions,
+  order?: OrderEnum = OrderEnum.desc,
 
   /** A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list. */
   #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
   @query(#{ explode: true })
   @continuationToken
+  @extension("x-ms-list-continuation-token", true)
   after?: string,
 
   /** A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, starting with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list. */
@@ -1239,12 +1241,14 @@ op cancelVectorStoreFileBatch(
 
 /** Returns a list of vector store files in a batch. */
 #suppress "@azure-tools/typespec-azure-core/response-schema-problem" "Auto-suppressed warnings non-applicable rules during import."
-#suppress "@azure-tools/typespec-azure-core/use-standard-names" "Auto-suppressed warnings non-applicable rules during import."
 #suppress "@azure-tools/typespec-azure-core/use-standard-operations" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
 #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
 @summary("List vector store files in a batch")
 @get
 @route("/vector_stores/{vector_store_id}/file_batches/{batch_id}/files")
+@extension("x-ms-list", true)
+@list
 @extension(
   "x-oaiMeta",
   #{
@@ -1396,15 +1400,15 @@ op listFilesInVectorStoreBatch(
 
   /** Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order. */
   #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."
-  #suppress "@azure-tools/typespec-azure-core/no-closed-literal-union" "Auto-suppressed warnings non-applicable rules during import."
-  #suppress "@azure-tools/typespec-azure-core/no-unnamed-union" "Auto-suppressed warnings non-applicable rules during import."
   @query(#{ explode: true })
-  order?: PageOrderOptions,
+  order?: OrderEnum = OrderEnum.desc,
 
   /** A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list. */
   #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
   @query(#{ explode: true })
   @continuationToken
+  @extension("x-ms-list-continuation-token", true)
   after?: string,
 
   /** A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, starting with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list. */
@@ -1414,8 +1418,6 @@ op listFilesInVectorStoreBatch(
 
   /** Filter by file status. One of `in_progress`, `completed`, `failed`, `cancelled`. */
   #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."
-  #suppress "@azure-tools/typespec-azure-core/no-closed-literal-union" "Auto-suppressed warnings non-applicable rules during import."
-  #suppress "@azure-tools/typespec-azure-core/no-unnamed-union" "Auto-suppressed warnings non-applicable rules during import."
   @query(#{ explode: true })
   filter?: ListVectorStoreFilesFilter,
 ): ListVectorStoreFilesResponse | {
@@ -1438,12 +1440,14 @@ op listFilesInVectorStoreBatch(
 
 /** Returns a list of vector store files. */
 #suppress "@azure-tools/typespec-azure-core/response-schema-problem" "Auto-suppressed warnings non-applicable rules during import."
-#suppress "@azure-tools/typespec-azure-core/use-standard-names" "Auto-suppressed warnings non-applicable rules during import."
 #suppress "@azure-tools/typespec-azure-core/use-standard-operations" "Auto-suppressed warnings non-applicable rules during import."
+#suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
 #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
 @summary("List vector store files")
 @get
 @route("/vector_stores/{vector_store_id}/files")
+@extension("x-ms-list", true)
+@list
 @extension(
   "x-oaiMeta",
   #{
@@ -1582,15 +1586,15 @@ op listVectorStoreFiles(
 
   /** Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order. */
   #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."
-  #suppress "@azure-tools/typespec-azure-core/no-closed-literal-union" "Auto-suppressed warnings non-applicable rules during import."
-  #suppress "@azure-tools/typespec-azure-core/no-unnamed-union" "Auto-suppressed warnings non-applicable rules during import."
   @query(#{ explode: true })
-  order?: PageOrderOptions,
+  order?: OrderEnum = OrderEnum.desc,
 
   /** A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list. */
   #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
   @query(#{ explode: true })
   @continuationToken
+  @extension("x-ms-list-continuation-token", true)
   after?: string,
 
   /** A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, starting with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list. */
@@ -1600,8 +1604,6 @@ op listVectorStoreFiles(
 
   /** Filter by file status. One of `in_progress`, `completed`, `failed`, `cancelled`. */
   #suppress "@azure-tools/typespec-azure-core/no-query-explode" "Auto-suppressed warnings non-applicable rules during import."
-  #suppress "@azure-tools/typespec-azure-core/no-closed-literal-union" "Auto-suppressed warnings non-applicable rules during import."
-  #suppress "@azure-tools/typespec-azure-core/no-unnamed-union" "Auto-suppressed warnings non-applicable rules during import."
   @query(#{ explode: true })
   filter?: ListVectorStoreFilesFilter,
 ): ListVectorStoreFilesResponse | {
