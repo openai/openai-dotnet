@@ -80,7 +80,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("Hello, world!")];
         List<string> deltaTextSegments = [];
         string finalResponseText = null;
-        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(inputItems))
+        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync("gpt-5", inputItems))
         {
             Console.WriteLine(ModelReaderWriter.Write(update));
             if (update is StreamingResponseOutputTextDeltaUpdate outputTextDeltaUpdate)
@@ -108,6 +108,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new(inputItems)
         {
+            Model = "gpt-5",
             ReasoningOptions = new()
             {
                 ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Auto,
@@ -175,6 +176,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
                 ]),
             ])
         {
+            Model = "gpt-5",
             Tools =
             {
                 ResponseTool.CreateFunctionTool(
@@ -216,6 +218,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("What's the best way to fold a burrito?")])
         {
+            Model = "gpt-5",
             ReasoningOptions = new()
             {
                 ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Detailed,
@@ -246,6 +249,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("Hello, world!")];
         CreateResponseOptions options = new(inputItems)
         {
+            Model = "gpt-5",
             StoredOutputEnabled = false,
             IncludedProperties = { IncludedResponseProperty.ReasoningEncryptedContent }
         };
@@ -280,6 +284,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new([inputItem])
         {
+            Model = "gpt-5",
             TruncationMode = ResponseTruncationMode.Auto,
             StreamingEnabled = true,
         };
@@ -295,7 +300,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetTestClient();
 
-        ResponseResult response = await client.CreateResponseAsync("Hello, model!");
+        ResponseResult response = await client.CreateResponseAsync("gpt-5", "Hello, model!");
 
         async Task RetrieveThatResponseAsync()
         {
@@ -318,6 +323,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Hello, model!")])
         {
+            Model = "gpt-5",
             StoredOutputEnabled = false,
         };
 
@@ -354,6 +360,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponseResult response = await client.CreateResponseAsync(
             new CreateResponseOptions([ResponseItem.CreateUserMessageItem("tell me another")])
             {
+                Model = "gpt-5",
                 ConversationOptions = new(conversationId),
             });
 
@@ -392,6 +399,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         MessageResponseItem message = ResponseItem.CreateUserMessageItem("Using a comprehensive evaluation of popular media in the 1970s and 1980s, what were the most common sci-fi themes?");
         CreateResponseOptions options = new([message])
         {
+            Model = "gpt-5",
             ServiceTier = ResponseServiceTier.Default,
         };
         ResponseResult response = await client.CreateResponseAsync(options);
@@ -404,7 +412,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     public async Task OutputTextMethod()
     {
         ResponsesClient client = GetTestClient();
-        ResponseResult response = await client.CreateResponseAsync("Respond with only the word hello.");
+        ResponseResult response = await client.CreateResponseAsync("gpt-5", "Respond with only the word hello.");
         var outputText = response.GetOutputText();
         Assert.That(outputText.Length, Is.GreaterThan(0).And.LessThan(7));
         Assert.That(outputText.ToLower(), Does.Contain("hello"));
@@ -415,6 +423,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         response = await client.CreateResponseAsync(
             new CreateResponseOptions([ResponseItem.CreateUserMessageItem("How's the weather?")])
             {
+                Model = "gpt-5",
                 Tools =
                 {
                     ResponseTool.CreateFunctionTool(
@@ -493,7 +502,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
                 ResponseContentPart.CreateInputFilePart(newFileToUse.Id),
             ]);
 
-        ResponseResult response = await client.CreateResponseAsync([messageItem]);
+        ResponseResult response = await client.CreateResponseAsync("gpt-5", [messageItem]);
 
         Assert.That(response?.GetOutputText().ToLower(), Does.Contain("pizza"));
     }
@@ -513,7 +522,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
                 ResponseContentPart.CreateInputFilePart(fileBytes, "application/pdf", "test_favorite_foods.pdf"),
             ]);
 
-        ResponseResult response = await client.CreateResponseAsync([messageItem]);
+        ResponseResult response = await client.CreateResponseAsync("gpt-5", [messageItem]);
 
         Assert.That(response?.GetOutputText(), Does.Contain("pizza"));
     }
@@ -540,7 +549,10 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         const string userMessage = "Hello, model!";
         messages.Add(ResponseItem.CreateUserMessageItem(userMessage));
 
-        CreateResponseOptions options = new(messages);
+        CreateResponseOptions options = new(messages)
+        {
+            Model = "gpt-5",
+        };
 
         if (instructionMethod == ResponsesTestInstructionMethod.InstructionsProperty)
         {
@@ -597,8 +609,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponsesClient client1 = GetTestClient("gpt-4o-mini");
         ResponsesClient client2 = GetTestClient("o3-mini");
 
-        ResponseResult response1 = await client1.CreateResponseAsync("Hello, Assistant! My name is Travis.");
-        ResponseResult response2 = await client2.CreateResponseAsync("What's my name?", response1.Id);
+        ResponseResult response1 = await client1.CreateResponseAsync("gpt-5", "Hello, Assistant! My name is Travis.");
+        ResponseResult response2 = await client2.CreateResponseAsync("gpt-5", "What's my name?", response1.Id);
 
         Assert.That(response1.Model.StartsWith("gpt-4o-mini"), Is.True);
         Assert.That(response2.Model.StartsWith("o3-mini"), Is.True);
@@ -614,6 +626,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponseResult response = await client.CreateResponseAsync(
             new CreateResponseOptions([ResponseItem.CreateUserMessageItem("Write a JSON document with a list of five animals")])
             {
+                Model = "gpt-5",
                 TextOptions = new ResponseTextOptions()
                 {
                     TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
@@ -659,6 +672,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")])
         {
+            Model = "gpt-5",
             Tools = { s_GetWeatherAtLocationTool }
         };
 
@@ -681,6 +695,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponseItem functionReply = ResponseItem.CreateFunctionCallOutputItem(functionCall.CallId, "22 celcius and windy");
         CreateResponseOptions turn2Options = new([functionReply])
         {
+            Model = "gpt-5",
             PreviousResponseId = response.Id,
             Tools = { s_GetWeatherAtLocationTool },
         };
@@ -705,6 +720,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")])
         {
+            Model = "gpt-5",
             Tools = { s_GetWeatherAtLocationTool },
             StreamingEnabled = true,
         };
@@ -756,6 +772,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponseResult response = await client.CreateResponseAsync(
             new CreateResponseOptions([ResponseItem.CreateUserMessageItem("Write three haikus about tropical fruit")])
             {
+                Model = "gpt-5",
                 MaxOutputTokenCount = 20,
             });
 
@@ -777,6 +794,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")])
         {
+            Model = "gpt-5",
             Tools = { s_GetWeatherAtLocationTool },
             ToolChoice = toolChoice,
         };
@@ -800,6 +818,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         CreateResponseOptions createOptions = new([ResponseItem.CreateUserMessageItem("Tell me a bedtime story.")])
         {
+            Model = "gpt-5",
             BackgroundModeEnabled = true,
             StreamingEnabled = true,
         };
@@ -867,6 +886,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Hello, model!")])
         {
+            Model = "gpt-5",
             BackgroundModeEnabled = true,
         };
 
@@ -887,7 +907,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetTestClient();
 
-        ResponseResult createdResponse = await client.CreateResponseAsync("This is a test.");
+        ResponseResult createdResponse = await client.CreateResponseAsync("gpt-5", "This is a test.");
 
         ResponseResult retrievedResponse = await client.GetResponseAsync(createdResponse.Id);
 
