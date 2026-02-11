@@ -443,6 +443,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponsesClient client = GetTestClient();
 
         ResponseResult response = await client.CreateResponseAsync(
+            "gpt-5",
             [
                 ResponseItem.CreateDeveloperMessageItem("You are a helpful assistant."),
                 ResponseItem.CreateUserMessageItem("Hello, Assistant, my name is Bob!"),
@@ -465,6 +466,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Uri imageDataUri = new($"data:{imageMediaType};base64,{Convert.ToBase64String(imageBytes.ToArray())}");
 
         ResponseResult response = await client.CreateResponseAsync(
+            "gpt-5",
             [
                 ResponseItem.CreateUserMessageItem(
                     [

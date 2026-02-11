@@ -1176,13 +1176,12 @@ public class ReadMeSnippets
             ?? throw new InvalidOperationException("AZURE_OPENAI_ENDPOINT is required.");
 
         var client = new ResponsesClient(
-            "gpt-5-mini",
             new BearerTokenPolicy(new DefaultAzureCredential(), "https://ai.azure.com/.default"),
             new OpenAIClientOptions { Endpoint = new Uri($"{endpoint}/openai/v1/") }
         );
 
 #if SNIPPET
-        var response = await client.CreateResponseAsync("Hello world!");
+        var response = await client.CreateResponseAsync("gpt-5", "Hello world!");
         Console.WriteLine(response.Value.GetOutputText());
 #endif
         #endregion
