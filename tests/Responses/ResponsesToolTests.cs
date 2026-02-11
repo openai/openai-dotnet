@@ -36,7 +36,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
-            Model = "gpt-4o-mini",
+            Model = "gpt-5",
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
@@ -46,7 +46,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         };
 
-        ResponsesClient client = GetTestClient(overrideModel: "gpt-4o-mini");
+        ResponsesClient client = GetTestClient(overrideModel: "gpt-5");
 
         ResponseResult response = await client.CreateResponseAsync(options);
         Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
@@ -89,7 +89,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
-            Model = "gpt-4o-mini",
+            Model = "gpt-5",
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
@@ -100,7 +100,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             StreamingEnabled = true,
         };
 
-        ResponsesClient client = GetTestClient(overrideModel: "gpt-4o-mini");
+        ResponsesClient client = GetTestClient(overrideModel: "gpt-5");
 
         AsyncCollectionResult<StreamingResponseUpdate> responseUpdates = client.CreateResponseStreamingAsync(options);
 
@@ -205,7 +205,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
-            Model = "gpt-4o-mini",
+            Model = "gpt-5",
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
@@ -215,7 +215,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         };
 
-        ResponsesClient client = GetTestClient(overrideModel: "gpt-4o-mini");
+        ResponsesClient client = GetTestClient(overrideModel: "gpt-5");
 
         ResponseResult response = await client.CreateResponseAsync(options);
         Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
@@ -247,7 +247,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
-            Model = "gpt-4o-mini",
+            Model = "gpt-5",
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
@@ -257,7 +257,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         };
 
-        ResponsesClient client = GetTestClient(overrideModel: "gpt-4o-mini");
+        ResponsesClient client = GetTestClient(overrideModel: "gpt-5");
 
         ResponseResult response1 = await client.CreateResponseAsync(options);
         Assert.That(response1.OutputItems, Has.Count.GreaterThan(0));
@@ -289,7 +289,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
-            Model = "gpt-4o-mini",
+            Model = "gpt-5",
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
@@ -303,7 +303,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         };
 
-        ResponsesClient client = GetTestClient(overrideModel: "gpt-4o-mini");
+        ResponsesClient client = GetTestClient(overrideModel: "gpt-5");
 
         ResponseResult response = await client.CreateResponseAsync(options);
         Assert.That(response.OutputItems, Has.Count.GreaterThan(0));
@@ -331,7 +331,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Roll 2d4+1")])
         {
-            Model = "gpt-4o-mini",
+            Model = "gpt-5",
             Tools = {
                 new McpTool(serverLabel, serverUri)
                 {
@@ -345,7 +345,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         };
 
-        ResponsesClient client = GetTestClient(overrideModel: "gpt-4o-mini");
+        ResponsesClient client = GetTestClient(overrideModel: "gpt-5");
 
         ResponseResult response = await client.CreateResponseAsync(options);
         Assert.That(response.OutputItems, Has.Count.GreaterThan(0));

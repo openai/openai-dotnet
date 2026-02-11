@@ -108,7 +108,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new(inputItems)
         {
-            Model = "gpt-4o-mini",
+            Model = "o3-mini",
             ReasoningOptions = new()
             {
                 ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Auto,
@@ -284,7 +284,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new([inputItem])
         {
-            Model = "gpt-4o-mini",
+            Model = model,
             TruncationMode = ResponseTruncationMode.Auto,
             StreamingEnabled = true,
         };
