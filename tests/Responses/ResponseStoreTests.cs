@@ -34,7 +34,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
             ResponseItem.CreateUserMessageItem("Item 4")
         };
 
-        ResponseResult response = await client.CreateResponseAsync("gpt-4o-mini", inputItems);
+        ResponseResult response = await client.CreateResponseAsync(TestHelpers.GetModelForScenario(TestScenario.Responses), inputItems);
 
         // Paginate through input items with a small page size
         var options = new ResponseItemCollectionOptions(response.Id)
@@ -75,7 +75,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
             ResponseItem.CreateUserMessageItem("Item 4")
         };
 
-        ResponseResult response = await client.CreateResponseAsync("gpt-4o-mini", inputItems);
+        ResponseResult response = await client.CreateResponseAsync(TestHelpers.GetModelForScenario(TestScenario.Responses), inputItems);
 
         // Paginate through input items with a small page size
         var options = new ResponseItemCollectionOptions(response.Id)
@@ -112,7 +112,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
             ResponseItem.CreateUserMessageItem("Item 4")
         };
 
-        ResponseResult response = await client.CreateResponseAsync("gpt-4o-mini", inputItems);
+        ResponseResult response = await client.CreateResponseAsync(TestHelpers.GetModelForScenario(TestScenario.Responses), inputItems);
 
         int totalCount = 0;
         string lastId = null;
@@ -149,7 +149,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
             ResponseItem.CreateUserMessageItem("Item 4")
         };
 
-        ResponseResult response = await client.CreateResponseAsync("gpt-4o-mini", inputItems);
+        ResponseResult response = await client.CreateResponseAsync(TestHelpers.GetModelForScenario(TestScenario.Responses), inputItems);
 
         // Paginate through input items with a small page size
         var options = new ResponseItemCollectionOptions(response.Id)
@@ -194,7 +194,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
             ResponseItem.CreateUserMessageItem("C")
         };
 
-        ResponseResult response = await client.CreateResponseAsync("gpt-4o-mini", inputItems);
+        ResponseResult response = await client.CreateResponseAsync(TestHelpers.GetModelForScenario(TestScenario.Responses), inputItems);
 
         string afterId = null;
         await foreach (ResponseItem first in client.GetResponseInputItemsAsync(new ResponseItemCollectionOptions(response.Id)))
@@ -234,7 +234,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
             ResponseItem.CreateUserMessageItem("Second")
         };
 
-        ResponseResult response = await client.CreateResponseAsync("gpt-4o-mini", inputItems);
+        ResponseResult response = await client.CreateResponseAsync(TestHelpers.GetModelForScenario(TestScenario.Responses), inputItems);
 
         // Ascending
         var ascOptions = new ResponseItemCollectionOptions(response.Id)
@@ -276,7 +276,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetTestClient();
 
-        ResponseResult response = await client.CreateResponseAsync("gpt-4o-mini",
+        ResponseResult response = await client.CreateResponseAsync(TestHelpers.GetModelForScenario(TestScenario.Responses),
             [
                 ResponseItem.CreateUserMessageItem("alpha"),
                 ResponseItem.CreateUserMessageItem("beta"),
@@ -301,7 +301,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetTestClient();
 
-        ResponseResult response = await client.CreateResponseAsync("gpt-4o-mini",
+        ResponseResult response = await client.CreateResponseAsync(TestHelpers.GetModelForScenario(TestScenario.Responses),
             [
                 ResponseItem.CreateUserMessageItem("x"),
                 ResponseItem.CreateUserMessageItem("y"),
@@ -326,7 +326,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetTestClient();
 
-        ResponseResult response = await client.CreateResponseAsync("gpt-4o-mini",
+        ResponseResult response = await client.CreateResponseAsync(TestHelpers.GetModelForScenario(TestScenario.Responses),
             [
                 ResponseItem.CreateUserMessageItem("ct1"),
                 ResponseItem.CreateUserMessageItem("ct2"),
@@ -362,7 +362,7 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetTestClient();
 
-        ResponseResult response = await client.CreateResponseAsync("gpt-4o-mini",
+        ResponseResult response = await client.CreateResponseAsync(TestHelpers.GetModelForScenario(TestScenario.Responses),
             [
                 ResponseItem.CreateUserMessageItem("co1"),
                 ResponseItem.CreateUserMessageItem("co2"),

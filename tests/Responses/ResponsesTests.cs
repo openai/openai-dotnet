@@ -80,7 +80,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("Hello, world!")];
         List<string> deltaTextSegments = [];
         string finalResponseText = null;
-        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync("gpt-4o-mini", inputItems))
+        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(TestHelpers.GetModelForScenario(TestScenario.Responses), inputItems))
         {
             Console.WriteLine(ModelReaderWriter.Write(update));
             if (update is StreamingResponseOutputTextDeltaUpdate outputTextDeltaUpdate)
@@ -176,7 +176,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
                 ]),
             ])
         {
-            Model = "gpt-4o-mini",
+            Model = model,
             Tools =
             {
                 ResponseTool.CreateFunctionTool(
@@ -214,11 +214,11 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ResponsesWithReasoning()
     {
-        ResponsesClient client = GetTestClient("gpt-4o-mini");
+        ResponsesClient client = GetTestClient("gpt-5");
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("What's the best way to fold a burrito?")])
         {
-            Model = "gpt-4o-mini",
+            Model = "gpt-5",
             ReasoningOptions = new()
             {
                 ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Detailed,
@@ -300,7 +300,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetTestClient();
 
-        ResponseResult response = await client.CreateResponseAsync("gpt-4o-mini", "Hello, model!");
+        ResponseResult response = await client.CreateResponseAsync(TestHelpers.GetModelForScenario(TestScenario.Responses), "Hello, model!");
 
         async Task RetrieveThatResponseAsync()
         {
@@ -323,7 +323,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Hello, model!")])
         {
-            Model = "gpt-4o-mini",
+            Model = TestHelpers.GetModelForScenario(TestScenario.Responses),
             StoredOutputEnabled = false,
         };
 
@@ -399,7 +399,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         MessageResponseItem message = ResponseItem.CreateUserMessageItem("Using a comprehensive evaluation of popular media in the 1970s and 1980s, what were the most common sci-fi themes?");
         CreateResponseOptions options = new([message])
         {
-            Model = "gpt-4o-mini",
+            Model = TestHelpers.GetModelForScenario(TestScenario.Responses),
             ServiceTier = ResponseServiceTier.Default,
         };
         ResponseResult response = await client.CreateResponseAsync(options);
@@ -412,7 +412,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     public async Task OutputTextMethod()
     {
         ResponsesClient client = GetTestClient();
-        ResponseResult response = await client.CreateResponseAsync("gpt-4o-mini", "Respond with only the word hello.");
+        ResponseResult response = await client.CreateResponseAsync(TestHelpers.GetModelForScenario(TestScenario.Responses), "Respond with only the word hello.");
         var outputText = response.GetOutputText();
         Assert.That(outputText.Length, Is.GreaterThan(0).And.LessThan(7));
         Assert.That(outputText.ToLower(), Does.Contain("hello"));
@@ -423,7 +423,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         response = await client.CreateResponseAsync(
             new CreateResponseOptions([ResponseItem.CreateUserMessageItem("How's the weather?")])
             {
-                Model = "gpt-4o-mini",
+                Model = TestHelpers.GetModelForScenario(TestScenario.Responses),
                 Tools =
                 {
                     ResponseTool.CreateFunctionTool(
@@ -443,7 +443,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponsesClient client = GetTestClient();
 
         ResponseResult response = await client.CreateResponseAsync(
-            "gpt-4o-mini",
+            TestHelpers.GetModelForScenario(TestScenario.Responses),
             [
                 ResponseItem.CreateDeveloperMessageItem("You are a helpful assistant."),
                 ResponseItem.CreateUserMessageItem("Hello, Assistant, my name is Bob!"),
@@ -466,7 +466,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Uri imageDataUri = new($"data:{imageMediaType};base64,{Convert.ToBase64String(imageBytes.ToArray())}");
 
         ResponseResult response = await client.CreateResponseAsync(
-            "gpt-4o-mini",
+            TestHelpers.GetModelForScenario(TestScenario.Responses),
             [
                 ResponseItem.CreateUserMessageItem(
                     [
@@ -504,7 +504,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
                 ResponseContentPart.CreateInputFilePart(newFileToUse.Id),
             ]);
 
-        ResponseResult response = await client.CreateResponseAsync("gpt-4o-mini", [messageItem]);
+        ResponseResult response = await client.CreateResponseAsync(TestHelpers.GetModelForScenario(TestScenario.Responses), [messageItem]);
 
         Assert.That(response?.GetOutputText().ToLower(), Does.Contain("pizza"));
     }
@@ -524,7 +524,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
                 ResponseContentPart.CreateInputFilePart(fileBytes, "application/pdf", "test_favorite_foods.pdf"),
             ]);
 
-        ResponseResult response = await client.CreateResponseAsync("gpt-4o-mini", [messageItem]);
+        ResponseResult response = await client.CreateResponseAsync(TestHelpers.GetModelForScenario(TestScenario.Responses), [messageItem]);
 
         Assert.That(response?.GetOutputText(), Does.Contain("pizza"));
     }
@@ -553,7 +553,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new(messages)
         {
-            Model = "gpt-4o-mini",
+            Model = TestHelpers.GetModelForScenario(TestScenario.Responses),
         };
 
         if (instructionMethod == ResponsesTestInstructionMethod.InstructionsProperty)
@@ -608,13 +608,13 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task TwoTurnCrossModel()
     {
-        ResponsesClient client1 = GetTestClient("gpt-4o-mini");
+        ResponsesClient client1 = GetTestClient(TestHelpers.GetModelForScenario(TestScenario.Responses));
         ResponsesClient client2 = GetTestClient("o3-mini");
 
-        ResponseResult response1 = await client1.CreateResponseAsync("gpt-4o-mini", "Hello, Assistant! My name is Travis.");
+        ResponseResult response1 = await client1.CreateResponseAsync(TestHelpers.GetModelForScenario(TestScenario.Responses), "Hello, Assistant! My name is Travis.");
         ResponseResult response2 = await client2.CreateResponseAsync("o3-mini", "What's my name?", response1.Id);
 
-        Assert.That(response1.Model.StartsWith("gpt-4o-mini"), Is.True);
+        Assert.That(response1.Model.StartsWith(TestHelpers.GetModelForScenario(TestScenario.Responses)), Is.True);
         Assert.That(response2.Model.StartsWith("o3-mini"), Is.True);
     }
 
@@ -628,7 +628,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponseResult response = await client.CreateResponseAsync(
             new CreateResponseOptions([ResponseItem.CreateUserMessageItem("Write a JSON document with a list of five animals")])
             {
-                Model = "gpt-4o-mini",
+                Model = TestHelpers.GetModelForScenario(TestScenario.Responses),
                 TextOptions = new ResponseTextOptions()
                 {
                     TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
@@ -674,7 +674,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")])
         {
-            Model = "gpt-4o-mini",
+            Model = TestHelpers.GetModelForScenario(TestScenario.Responses),
             Tools = { s_GetWeatherAtLocationTool }
         };
 
@@ -697,7 +697,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponseItem functionReply = ResponseItem.CreateFunctionCallOutputItem(functionCall.CallId, "22 celcius and windy");
         CreateResponseOptions turn2Options = new([functionReply])
         {
-            Model = "gpt-4o-mini",
+            Model = TestHelpers.GetModelForScenario(TestScenario.Responses),
             PreviousResponseId = response.Id,
             Tools = { s_GetWeatherAtLocationTool },
         };
@@ -722,7 +722,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")])
         {
-            Model = "gpt-4o-mini",
+            Model = TestHelpers.GetModelForScenario(TestScenario.Responses),
             Tools = { s_GetWeatherAtLocationTool },
             StreamingEnabled = true,
         };
@@ -774,7 +774,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponseResult response = await client.CreateResponseAsync(
             new CreateResponseOptions([ResponseItem.CreateUserMessageItem("Write three haikus about tropical fruit")])
             {
-                Model = "gpt-4o-mini",
+                Model = TestHelpers.GetModelForScenario(TestScenario.Responses),
                 MaxOutputTokenCount = 20,
             });
 
@@ -796,7 +796,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")])
         {
-            Model = "gpt-4o-mini",
+            Model = TestHelpers.GetModelForScenario(TestScenario.Responses),
             Tools = { s_GetWeatherAtLocationTool },
             ToolChoice = toolChoice,
         };
@@ -909,7 +909,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetTestClient();
 
-        ResponseResult createdResponse = await client.CreateResponseAsync("gpt-4o-mini", "This is a test.");
+        ResponseResult createdResponse = await client.CreateResponseAsync(TestHelpers.GetModelForScenario(TestScenario.Responses), "This is a test.");
 
         ResponseResult retrievedResponse = await client.GetResponseAsync(createdResponse.Id);
 
