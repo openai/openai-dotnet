@@ -871,106 +871,6 @@ namespace OpenAI
             return new ThreadDeletionResult(threadId, deleted, "thread.deleted", additionalBinaryDataProperties: null);
         }
 
-        public static VectorStore VectorStore(string id = default, DateTimeOffset createdAt = default, string name = default, int usageBytes = default, VectorStoreFileCounts fileCounts = default, VectorStoreStatus status = default, VectorStoreExpirationPolicy expirationPolicy = default, DateTimeOffset? expiresAt = default, DateTimeOffset? lastActiveAt = default, IReadOnlyDictionary<string, string> metadata = default)
-        {
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-
-            return new VectorStore(
-                id,
-                "vector_store",
-                createdAt,
-                name,
-                usageBytes,
-                fileCounts,
-                status,
-                expirationPolicy,
-                expiresAt,
-                lastActiveAt,
-                metadata,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static VectorStoreFileCounts VectorStoreFileCounts(int inProgress = default, int completed = default, int failed = default, int cancelled = default, int total = default)
-        {
-            return new VectorStoreFileCounts(
-                inProgress,
-                completed,
-                failed,
-                cancelled,
-                total,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static VectorStoreExpirationPolicy VectorStoreExpirationPolicy(int days = default)
-        {
-            return new VectorStoreExpirationPolicy(VectorStoreExpirationAnchor.LastActiveAt, days, additionalBinaryDataProperties: null);
-        }
-
-        public static VectorStoreCreationOptions VectorStoreCreationOptions(IEnumerable<string> fileIds = default, string name = default, VectorStoreExpirationPolicy expirationPolicy = default, FileChunkingStrategy chunkingStrategy = default, IDictionary<string, string> metadata = default)
-        {
-            fileIds ??= new ChangeTrackingList<string>();
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-
-            return new VectorStoreCreationOptions(
-                fileIds.ToList(),
-                name,
-                expirationPolicy,
-                chunkingStrategy,
-                metadata,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static VectorStoreModificationOptions VectorStoreModificationOptions(string name = default, VectorStoreExpirationPolicy expirationPolicy = default, IDictionary<string, string> metadata = default)
-        {
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-
-            return new VectorStoreModificationOptions(name, expirationPolicy, metadata, additionalBinaryDataProperties: null);
-        }
-
-        public static VectorStoreDeletionResult VectorStoreDeletionResult(string vectorStoreId = default, bool deleted = default)
-        {
-            return new VectorStoreDeletionResult(vectorStoreId, deleted, "vector_store.deleted", additionalBinaryDataProperties: null);
-        }
-
-        public static VectorStoreFileBatch VectorStoreFileBatch(string batchId = default, DateTimeOffset createdAt = default, string vectorStoreId = default, VectorStoreFileBatchStatus status = default, VectorStoreFileCounts fileCounts = default, object @object = default)
-        {
-            return new VectorStoreFileBatch(
-                batchId,
-                createdAt,
-                vectorStoreId,
-                status,
-                fileCounts,
-                @object,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static VectorStoreFile VectorStoreFile(string fileId = default, int size = default, DateTimeOffset createdAt = default, string vectorStoreId = default, VectorStoreFileStatus status = default, VectorStoreFileError lastError = default, FileChunkingStrategy chunkingStrategy = default, IDictionary<string, BinaryData> attributes = default)
-        {
-            attributes ??= new ChangeTrackingDictionary<string, BinaryData>();
-
-            return new VectorStoreFile(
-                fileId,
-                "vector_store.file",
-                size,
-                createdAt,
-                vectorStoreId,
-                status,
-                lastError,
-                chunkingStrategy,
-                attributes,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static VectorStoreFileError VectorStoreFileError(VectorStoreFileErrorCode code = default, string message = default)
-        {
-            return new VectorStoreFileError(code, message, additionalBinaryDataProperties: null);
-        }
-
-        public static FileFromStoreRemovalResult FileFromStoreRemovalResult(string fileId = default, bool removed = default)
-        {
-            return new FileFromStoreRemovalResult(fileId, removed, "vector_store.file.deleted", additionalBinaryDataProperties: null);
-        }
-
         public static RealtimeRequestSessionBase RealtimeRequestSessionBase(string kind = default)
         {
             return new InternalUnknownRealtimeRequestSessionBase(new RealtimeSessionType(kind), additionalBinaryDataProperties: null);
@@ -1357,6 +1257,107 @@ namespace OpenAI
         public static ModerationResult ModerationResult(bool flagged = default)
         {
             return new ModerationResult(flagged, additionalBinaryDataProperties: null);
+        }
+
+        public static VectorStore VectorStore(string id = default, DateTimeOffset createdAt = default, string name = default, int usageBytes = default, VectorStoreFileCounts fileCounts = default, VectorStoreStatus status = default, VectorStoreExpirationPolicy expirationPolicy = default, DateTimeOffset? expiresAt = default, DateTimeOffset? lastActiveAt = default, IReadOnlyDictionary<string, string> metadata = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new VectorStore(
+                id,
+                "vector_store",
+                createdAt,
+                name,
+                usageBytes,
+                fileCounts,
+                status,
+                expirationPolicy,
+                expiresAt,
+                lastActiveAt,
+                metadata,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static VectorStoreFileCounts VectorStoreFileCounts(int inProgress = default, int completed = default, int failed = default, int cancelled = default, int total = default)
+        {
+            return new VectorStoreFileCounts(
+                inProgress,
+                completed,
+                failed,
+                cancelled,
+                total,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static VectorStoreExpirationPolicy VectorStoreExpirationPolicy(VectorStoreExpirationAnchor anchor = default, int days = default)
+        {
+            return new VectorStoreExpirationPolicy(anchor, days, additionalBinaryDataProperties: null);
+        }
+
+        public static VectorStoreCreationOptions VectorStoreCreationOptions(IEnumerable<string> fileIds = default, string name = default, string description = default, VectorStoreExpirationPolicy expirationPolicy = default, FileChunkingStrategy chunkingStrategy = default, IDictionary<string, string> metadata = default)
+        {
+            fileIds ??= new ChangeTrackingList<string>();
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new VectorStoreCreationOptions(
+                fileIds.ToList(),
+                name,
+                description,
+                expirationPolicy,
+                chunkingStrategy,
+                metadata,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static VectorStoreDeletionResult VectorStoreDeletionResult(string vectorStoreId = default, bool deleted = default)
+        {
+            return new VectorStoreDeletionResult(vectorStoreId, deleted, "vector_store.deleted", additionalBinaryDataProperties: null);
+        }
+
+        public static VectorStoreModificationOptions VectorStoreModificationOptions(string name = default, VectorStoreExpirationPolicy expirationPolicy = default, IDictionary<string, string> metadata = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, string>();
+
+            return new VectorStoreModificationOptions(name, expirationPolicy, metadata, additionalBinaryDataProperties: null);
+        }
+
+        public static VectorStoreFileBatch VectorStoreFileBatch(string batchId = default, DateTimeOffset createdAt = default, string vectorStoreId = default, VectorStoreFileBatchStatus status = default, VectorStoreFileCounts fileCounts = default, object @object = default)
+        {
+            return new VectorStoreFileBatch(
+                batchId,
+                createdAt,
+                vectorStoreId,
+                status,
+                fileCounts,
+                @object,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static VectorStoreFile VectorStoreFile(string fileId = default, int size = default, DateTimeOffset createdAt = default, string vectorStoreId = default, VectorStoreFileStatus status = default, VectorStoreFileError lastError = default, FileChunkingStrategy chunkingStrategy = default, IDictionary<string, BinaryData> attributes = default)
+        {
+            attributes ??= new ChangeTrackingDictionary<string, BinaryData>();
+
+            return new VectorStoreFile(
+                fileId,
+                "vector_store.file",
+                size,
+                createdAt,
+                vectorStoreId,
+                status,
+                lastError,
+                chunkingStrategy,
+                attributes,
+                additionalBinaryDataProperties: null);
+        }
+
+        public static VectorStoreFileError VectorStoreFileError(VectorStoreFileErrorCode code = default, string message = default)
+        {
+            return new VectorStoreFileError(code, message, additionalBinaryDataProperties: null);
+        }
+
+        public static FileFromStoreRemovalResult FileFromStoreRemovalResult(string fileId = default, bool removed = default)
+        {
+            return new FileFromStoreRemovalResult(fileId, removed, "vector_store.file.deleted", additionalBinaryDataProperties: null);
         }
 
         public static ChatFunctionChoice ChatFunctionChoice()

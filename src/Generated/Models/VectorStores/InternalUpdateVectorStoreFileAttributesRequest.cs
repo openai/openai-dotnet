@@ -12,7 +12,7 @@ namespace OpenAI.VectorStores
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalUpdateVectorStoreFileAttributesRequest(IDictionary<string, BinaryData> attributes)
+        public InternalUpdateVectorStoreFileAttributesRequest(IDictionary<string, BinaryData> attributes)
         {
             // Plugin customization: ensure initialization of collections
             Attributes = attributes ?? new ChangeTrackingDictionary<string, BinaryData>();

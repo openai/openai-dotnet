@@ -274,17 +274,9 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(ResponsesDeveloperMessageItemResource);
 @@dynamicModel(ResponsesAssistantMessageItemResource);
 @@dynamicModel(ImplicitUserMessage);
-// base/entrypoints/sdk.dotnet/specialized-types.tsp models
+// base/typespec/specialized-types/models.tsp models
 @@dynamicModel(ComparisonFilter);
-@@dynamicModel(ComparisonFilterEquals);
-@@dynamicModel(ComparisonFilterNotEquals);
-@@dynamicModel(ComparisonFilterGreaterThan);
-@@dynamicModel(ComparisonFilterGreaterThanOrEquals);
-@@dynamicModel(ComparisonFilterLessThan);
-@@dynamicModel(ComparisonFilterLessThanOrEquals);
 @@dynamicModel(CompoundFilter);
-@@dynamicModel(CompoundFilterAnd);
-@@dynamicModel(CompoundFilterOr);
 // client/models/responses.models.tsp models
 @@dynamicModel(DotNetItemReferenceItemResource);
 @@dynamicModel(DotNetResponseItemCollectionOrder);

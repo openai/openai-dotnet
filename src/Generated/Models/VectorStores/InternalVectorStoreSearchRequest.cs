@@ -11,7 +11,7 @@ namespace OpenAI.VectorStores
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalVectorStoreSearchRequest(BinaryData query)
+        public InternalVectorStoreSearchRequest(BinaryData query)
         {
             Query = query;
         }
@@ -28,13 +28,13 @@ namespace OpenAI.VectorStores
 
         public BinaryData Query { get; }
 
-        public bool? RewriteQuery { get; }
+        public bool? RewriteQuery { get; set; }
 
-        public int? MaxNumResults { get; }
+        public int? MaxNumResults { get; set; }
 
-        public BinaryData Filters { get; }
+        public BinaryData Filters { get; set; }
 
-        internal InternalVectorStoreSearchRequestRankingOptions RankingOptions { get; }
+        internal InternalVectorStoreSearchRequestRankingOptions RankingOptions { get; set; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

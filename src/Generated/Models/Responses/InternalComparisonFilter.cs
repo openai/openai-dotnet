@@ -10,12 +10,12 @@ using System.Text.Json.Serialization;
 
 namespace OpenAI.Responses
 {
-    internal abstract partial class InternalComparisonFilter
+    internal partial class InternalComparisonFilter
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        private protected InternalComparisonFilter(InternalComparisonFilterType kind, string key, BinaryData value)
+        internal InternalComparisonFilter(InternalComparisonFilterType kind, string key, BinaryData value)
         {
             Kind = kind;
             Key = key;

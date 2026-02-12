@@ -4,13 +4,13 @@
 
 using System;
 using System.ClientModel.Primitives;
+using System.Text;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Responses
 {
-    [PersistableModelProxy(typeof(InternalUnknownComparisonFilter))]
-    internal abstract partial class InternalComparisonFilter : IJsonModel<InternalComparisonFilter>
+    internal partial class InternalComparisonFilter : IJsonModel<InternalComparisonFilter>
     {
         internal InternalComparisonFilter()
         {
@@ -61,6 +61,8 @@ namespace OpenAI.Responses
                 }
 #endif
             }
+
+            Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
@@ -83,25 +85,32 @@ namespace OpenAI.Responses
             {
                 return null;
             }
-            if (element.TryGetProperty("type"u8, out JsonElement discriminator))
+            InternalComparisonFilterType kind = default;
+            string key = default;
+            BinaryData value = default;
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            foreach (var prop in element.EnumerateObject())
             {
-                switch (discriminator.GetString())
+                if (prop.NameEquals("type"u8))
                 {
-                    case "eq":
-                        return InternalComparisonFilterEquals.DeserializeInternalComparisonFilterEquals(element, data, options);
-                    case "ne":
-                        return InternalComparisonFilterNotEquals.DeserializeInternalComparisonFilterNotEquals(element, data, options);
-                    case "gt":
-                        return InternalComparisonFilterGreaterThan.DeserializeInternalComparisonFilterGreaterThan(element, data, options);
-                    case "gte":
-                        return InternalComparisonFilterGreaterThanOrEquals.DeserializeInternalComparisonFilterGreaterThanOrEquals(element, data, options);
-                    case "lt":
-                        return InternalComparisonFilterLessThan.DeserializeInternalComparisonFilterLessThan(element, data, options);
-                    case "lte":
-                        return InternalComparisonFilterLessThanOrEquals.DeserializeInternalComparisonFilterLessThanOrEquals(element, data, options);
+                    kind = new InternalComparisonFilterType(prop.Value.GetString());
+                    continue;
                 }
+                if (prop.NameEquals("key"u8))
+                {
+                    key = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("value"u8))
+                {
+                    value = BinaryData.FromString(prop.Value.GetRawText());
+                    continue;
+                }
+                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return InternalUnknownComparisonFilter.DeserializeInternalUnknownComparisonFilter(element, data, options);
+            return new InternalComparisonFilter(kind, key, value, patch);
         }
 
         BinaryData IPersistableModel<InternalComparisonFilter>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

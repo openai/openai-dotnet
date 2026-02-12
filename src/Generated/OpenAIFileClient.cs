@@ -22,14 +22,14 @@ namespace OpenAI.Files
         public ClientPipeline Pipeline { get; }
 
         [Experimental("OPENAI001")]
-        public virtual ClientResult GetFiles(string purpose, long? limit, string order, string after, RequestOptions options)
+        public virtual ClientResult GetFiles(string purpose, int? limit, string order, string after, RequestOptions options)
         {
             using PipelineMessage message = CreateGetFilesRequest(purpose, limit, order, after, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
         [Experimental("OPENAI001")]
-        public virtual async Task<ClientResult> GetFilesAsync(string purpose, long? limit, string order, string after, RequestOptions options)
+        public virtual async Task<ClientResult> GetFilesAsync(string purpose, int? limit, string order, string after, RequestOptions options)
         {
             using PipelineMessage message = CreateGetFilesRequest(purpose, limit, order, after, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));

@@ -12,8 +12,9 @@ namespace OpenAI.VectorStores
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalListVectorStoresResponse(string firstId, string lastId, bool hasMore)
+        internal InternalListVectorStoresResponse(string @object, string firstId, string lastId, bool hasMore)
         {
+            Object = @object;
             Data = new ChangeTrackingList<VectorStore>();
             FirstId = firstId;
             LastId = lastId;
@@ -31,7 +32,7 @@ namespace OpenAI.VectorStores
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public string Object { get; } = "list";
+        public string Object { get; }
 
         public IReadOnlyList<VectorStore> Data { get; }
 

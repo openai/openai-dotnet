@@ -14,7 +14,7 @@ namespace OpenAI.Videos
 
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 = PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
-        internal virtual PipelineMessage CreateGetVideosRequest(long? limit, string order, string after, RequestOptions options)
+        internal virtual PipelineMessage CreateGetVideosRequest(int? limit, string order, string after, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
