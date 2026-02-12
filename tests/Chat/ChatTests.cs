@@ -9,6 +9,7 @@ using OpenAI.Tests.Utility;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -1054,7 +1055,7 @@ public class ChatTests : OpenAIRecordedTestBase
             "3 + 5 = ?",
             "4 + 6 = ?",
         ];
-        List<string> responses = [];
+        ConcurrentBag<string> responses = [];
 
         await Parallel.ForEachAsync(_messages, async (message, cancellationToken) =>
         {
