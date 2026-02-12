@@ -11,11 +11,14 @@ on:
       - 'package.json'
       - 'global.json'
       - 'package-lock.json'
-      - '.github/workflows/codegen-validation.yml'
+      - '.github/workflows/integrity-checks.yml'
       - 'scripts/Invoke-CodeGen.ps1'
       - 'scripts/Export-Api.ps1'
       - 'api/**'
       - 'Directory.Build.targets'
+      - 'tests/Snippets/**'
+      - 'README.md'
+      - 'scripts/Update-Snippets.ps1'
     types: [opened, reopened, synchronize]
   workflow_dispatch:
 
@@ -53,28 +56,9 @@ jobs:
           Write-Host "Code generation completed successfully!"
 
       - name: Check for uncommitted changes
-        run: |
-          CODEGEN_ERROR_MSG="Code generation produced changes. Please run './scripts/Invoke-CodeGen.ps1' locally and commit the results."
-
-          # Check if there are any changes to tracked files after code generation
-          if ! git diff --quiet; then
-            echo "::error::$CODEGEN_ERROR_MSG"
-            echo "Changed files:"
-            git diff --name-only
-            echo "Diff details:"
-            git diff
-            exit 1
-          fi
-
-          # Also check for untracked files that might have been generated
-          if [ -n "$(git ls-files --others --exclude-standard)" ]; then
-            echo "::error::$CODEGEN_ERROR_MSG"
-            echo "Untracked files:"
-            git ls-files --others --exclude-standard
-            exit 1
-          fi
-
-          echo "No uncommitted changes detected - code generation is up to date!"
+        uses: ./.github/actions/check-uncommitted-changes
+        with:
+          error-message: "Code generation produced changes. Please run './scripts/Invoke-CodeGen.ps1' locally and commit the results."
 
       - name: Run codegen visitor tests
         run: dotnet test codegen/generator/test/
@@ -118,25 +102,38 @@ jobs:
           Write-Host "API export completed successfully!"
 
       - name: Check for uncommitted changes
+        uses: ./.github/actions/check-uncommitted-changes
+        with:
+          error-message: "API export produced changes. Please run './scripts/Export-Api.ps1' locally and commit the results."
+
+  validate-snippets:
+    name: Validate documentation snippets
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          # Use the version specified in global.json
+          global-json-file: global.json
+
+      - name: Run Update-Snippets script
+        shell: pwsh
         run: |
-          API_ERROR_MSG="API export produced changes. Please run './scripts/Export-Api.ps1' locally and commit the results."
+          Write-Host "Running snippet update validation..."
+          ./scripts/Update-Snippets.ps1
 
-          # Check if there are any changes to tracked files after API export
-          if ! git diff --quiet; then
-            echo "::error::$API_ERROR_MSG"
-            echo "Changed files:"
-            git diff --name-only
-            echo "Diff details:"
-            git diff
-            exit 1
-          fi
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "Snippet update failed with exit code: $LASTEXITCODE"
+            exit $LASTEXITCODE
+          }
 
-          # Also check for untracked files that might have been generated
-          if [ -n "$(git ls-files --others --exclude-standard)" ]; then
-            echo "::error::$API_ERROR_MSG"
-            echo "Untracked files:"
-            git ls-files --others --exclude-standard
-            exit 1
-          fi
+          Write-Host "Snippet update completed successfully!"
 
-          echo "No uncommitted changes detected - API export is up to date!"
+      - name: Check for uncommitted changes
+        uses: ./.github/actions/check-uncommitted-changes
+        with:
+          error-message: "Documentation snippets are out of date. Please run './scripts/Update-Snippets.ps1' locally and commit the results."
