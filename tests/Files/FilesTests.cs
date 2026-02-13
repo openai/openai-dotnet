@@ -177,7 +177,7 @@ public class FilesTests : OpenAIRecordedTestBase
 
             long expectedSize = new FileInfo(path).Length;
             long unixTime2024 = (new DateTimeOffset(2024, 01, 01, 0, 0, 0, TimeSpan.Zero)).ToUnixTimeSeconds();
-            string expectedFilename = (fileSourceKind == FileSourceKind.UsingFilePath) ? path : filename;
+            string expectedFilename = (fileSourceKind == FileSourceKind.UsingFilePath) ? Path.GetFileName(path) : filename;
 
             Assert.That(fileInfo, Is.Not.Null);
             Assert.That(fileInfo.Id, Is.Not.Null.And.Not.Empty);
