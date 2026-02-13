@@ -612,7 +612,6 @@ public partial class ResponsesClient
     {
         Argument.AssertNotNull(options, nameof(options));
         Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
-
         return new ResponsesClientGetResponseInputItemsAsyncCollectionResultOfT(
             client: this,
             responseId: options.ResponseId,
