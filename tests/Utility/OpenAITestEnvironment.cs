@@ -69,7 +69,7 @@ public class OpenAITestEnvironment : TestEnvironment
         EnvironmentFile = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
             { EnvironmentVariables.OpenAIKey, "api-key" },
-            { EnvironmentVariables.TestMode, "live" }
+            { EnvironmentVariables.TestMode, "Live" }
         };
         _ = TryReadEnvFile(Path.Combine(RepositoryRoot, ".env"), EnvironmentFile);
         _ = TryReadEnvFile(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), ".env"), EnvironmentFile);
@@ -113,12 +113,18 @@ public class OpenAITestEnvironment : TestEnvironment
                 // OpenAI does not support bootstrapping of test resources, so disable it.
                 DisableBootstrapping = true;
 
-                // If a test mode was set, then use that as the default global mode for the environment.
+                // If a test mode was set, then use that as the default global mode for the environment.  Enum.Parse
+                // will accept undefined members, such as "9999", so validate that the parsed value is defined before accepting it.
                 var testMode = GetOptionalVariable(EnvironmentVariables.TestMode);
 
-                if ((testMode is { }) && (Enum.IsDefined(typeof(RecordedTestMode), testMode)))
+                if ((testMode is { }) && (Enum.TryParse<RecordedTestMode>(testMode, ignoreCase: true, out var parsedTestMode)))
                 {
-                    GlobalTestMode = Enum.Parse<RecordedTestMode>(testMode);
+                    if (!Enum.IsDefined(typeof(RecordedTestMode), parsedTestMode))
+                    {
+                        throw new FormatException($"The test mode value '{testMode}' is not valid. Accepted values are: {string.Join(", ", Enum.GetNames(typeof(RecordedTestMode)))}");
+                    }
+
+                    GlobalTestMode = parsedTestMode;
                 }
 
                 s_baseInitialized = true;
@@ -196,7 +202,7 @@ public class OpenAITestEnvironment : TestEnvironment
 
             if ((separator == -1) || (separator <= firstCharacterPos))
             {
-                throw new FormatException($"The environment file is malformed at line {count}: '{line.ToString()}'");
+                throw new FormatException($"The environment file is malformed at line {count}");
             }
 
             var length = separator - firstCharacterPos;
