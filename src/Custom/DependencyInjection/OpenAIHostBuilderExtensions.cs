@@ -31,7 +31,7 @@ namespace OpenAI.DependencyInjection;
 [Experimental("SCME0002")]
 public static class OpenAIHostBuilderExtensions
 {
-    public static IClientBuilder AddChatClient(
+    public static IClientBuilder AddAssistantClient(
         this IHostApplicationBuilder builder,
         string sectionName)
     {
@@ -40,10 +40,10 @@ public static class OpenAIHostBuilderExtensions
             throw new ArgumentNullException(nameof(builder));
         }
 
-        return builder.AddClient<ChatClient, ChatClientSettings>(sectionName);
+        return builder.AddClient<AssistantClient, AssistantClientSettings>(sectionName);
     }
 
-    public static IClientBuilder AddKeyedChatClient(
+    public static IClientBuilder AddKeyedAssistantClient(
         this IHostApplicationBuilder builder,
         string serviceKey,
         string sectionName)
@@ -53,32 +53,7 @@ public static class OpenAIHostBuilderExtensions
             throw new ArgumentNullException(nameof(builder));
         }
 
-        return builder.AddKeyedClient<ChatClient, ChatClientSettings>(serviceKey, sectionName);
-    }
-
-    public static IClientBuilder AddEmbeddingClient(
-        this IHostApplicationBuilder builder,
-        string sectionName)
-    {
-        if (builder is null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
-
-        return builder.AddClient<EmbeddingClient, EmbeddingClientSettings>(sectionName);
-    }
-
-    public static IClientBuilder AddKeyedEmbeddingClient(
-        this IHostApplicationBuilder builder,
-        string serviceKey,
-        string sectionName)
-    {
-        if (builder is null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
-
-        return builder.AddKeyedClient<EmbeddingClient, EmbeddingClientSettings>(serviceKey, sectionName);
+        return builder.AddKeyedClient<AssistantClient, AssistantClientSettings>(serviceKey, sectionName);
     }
 
     public static IClientBuilder AddAudioClient(
@@ -106,81 +81,6 @@ public static class OpenAIHostBuilderExtensions
         return builder.AddKeyedClient<AudioClient, AudioClientSettings>(serviceKey, sectionName);
     }
 
-    public static IClientBuilder AddImageClient(
-        this IHostApplicationBuilder builder,
-        string sectionName)
-    {
-        if (builder is null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
-
-        return builder.AddClient<ImageClient, ImageClientSettings>(sectionName);
-    }
-
-    public static IClientBuilder AddKeyedImageClient(
-        this IHostApplicationBuilder builder,
-        string serviceKey,
-        string sectionName)
-    {
-        if (builder is null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
-
-        return builder.AddKeyedClient<ImageClient, ImageClientSettings>(serviceKey, sectionName);
-    }
-
-    public static IClientBuilder AddModerationClient(
-        this IHostApplicationBuilder builder,
-        string sectionName)
-    {
-        if (builder is null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
-
-        return builder.AddClient<ModerationClient, ModerationClientSettings>(sectionName);
-    }
-
-    public static IClientBuilder AddKeyedModerationClient(
-        this IHostApplicationBuilder builder,
-        string serviceKey,
-        string sectionName)
-    {
-        if (builder is null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
-
-        return builder.AddKeyedClient<ModerationClient, ModerationClientSettings>(serviceKey, sectionName);
-    }
-
-    public static IClientBuilder AddAssistantClient(
-        this IHostApplicationBuilder builder,
-        string sectionName)
-    {
-        if (builder is null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
-
-        return builder.AddClient<AssistantClient, AssistantClientSettings>(sectionName);
-    }
-
-    public static IClientBuilder AddKeyedAssistantClient(
-        this IHostApplicationBuilder builder,
-        string serviceKey,
-        string sectionName)
-    {
-        if (builder is null)
-        {
-            throw new ArgumentNullException(nameof(builder));
-        }
-
-        return builder.AddKeyedClient<AssistantClient, AssistantClientSettings>(serviceKey, sectionName);
-    }
-
     public static IClientBuilder AddBatchClient(
         this IHostApplicationBuilder builder,
         string sectionName)
@@ -204,6 +104,31 @@ public static class OpenAIHostBuilderExtensions
         }
 
         return builder.AddKeyedClient<BatchClient, BatchClientSettings>(serviceKey, sectionName);
+    }
+
+    public static IClientBuilder AddChatClient(
+        this IHostApplicationBuilder builder,
+        string sectionName)
+    {
+        if (builder is null)
+        {
+            throw new ArgumentNullException(nameof(builder));
+        }
+
+        return builder.AddClient<ChatClient, ChatClientSettings>(sectionName);
+    }
+
+    public static IClientBuilder AddKeyedChatClient(
+        this IHostApplicationBuilder builder,
+        string serviceKey,
+        string sectionName)
+    {
+        if (builder is null)
+        {
+            throw new ArgumentNullException(nameof(builder));
+        }
+
+        return builder.AddKeyedClient<ChatClient, ChatClientSettings>(serviceKey, sectionName);
     }
 
     public static IClientBuilder AddContainerClient(
@@ -254,6 +179,31 @@ public static class OpenAIHostBuilderExtensions
         }
 
         return builder.AddKeyedClient<ConversationClient, ConversationClientSettings>(serviceKey, sectionName);
+    }
+
+    public static IClientBuilder AddEmbeddingClient(
+        this IHostApplicationBuilder builder,
+        string sectionName)
+    {
+        if (builder is null)
+        {
+            throw new ArgumentNullException(nameof(builder));
+        }
+
+        return builder.AddClient<EmbeddingClient, EmbeddingClientSettings>(sectionName);
+    }
+
+    public static IClientBuilder AddKeyedEmbeddingClient(
+        this IHostApplicationBuilder builder,
+        string serviceKey,
+        string sectionName)
+    {
+        if (builder is null)
+        {
+            throw new ArgumentNullException(nameof(builder));
+        }
+
+        return builder.AddKeyedClient<EmbeddingClient, EmbeddingClientSettings>(serviceKey, sectionName);
     }
 
     public static IClientBuilder AddEvaluationClient(
@@ -356,6 +306,31 @@ public static class OpenAIHostBuilderExtensions
         return builder.AddKeyedClient<GraderClient, GraderClientSettings>(serviceKey, sectionName);
     }
 
+    public static IClientBuilder AddImageClient(
+        this IHostApplicationBuilder builder,
+        string sectionName)
+    {
+        if (builder is null)
+        {
+            throw new ArgumentNullException(nameof(builder));
+        }
+
+        return builder.AddClient<ImageClient, ImageClientSettings>(sectionName);
+    }
+
+    public static IClientBuilder AddKeyedImageClient(
+        this IHostApplicationBuilder builder,
+        string serviceKey,
+        string sectionName)
+    {
+        if (builder is null)
+        {
+            throw new ArgumentNullException(nameof(builder));
+        }
+
+        return builder.AddKeyedClient<ImageClient, ImageClientSettings>(serviceKey, sectionName);
+    }
+
     public static IClientBuilder AddOpenAIModelClient(
         this IHostApplicationBuilder builder,
         string sectionName)
@@ -379,6 +354,31 @@ public static class OpenAIHostBuilderExtensions
         }
 
         return builder.AddKeyedClient<OpenAIModelClient, OpenAIModelClientSettings>(serviceKey, sectionName);
+    }
+
+    public static IClientBuilder AddModerationClient(
+        this IHostApplicationBuilder builder,
+        string sectionName)
+    {
+        if (builder is null)
+        {
+            throw new ArgumentNullException(nameof(builder));
+        }
+
+        return builder.AddClient<ModerationClient, ModerationClientSettings>(sectionName);
+    }
+
+    public static IClientBuilder AddKeyedModerationClient(
+        this IHostApplicationBuilder builder,
+        string serviceKey,
+        string sectionName)
+    {
+        if (builder is null)
+        {
+            throw new ArgumentNullException(nameof(builder));
+        }
+
+        return builder.AddKeyedClient<ModerationClient, ModerationClientSettings>(serviceKey, sectionName);
     }
 
     public static IClientBuilder AddRealtimeClient(

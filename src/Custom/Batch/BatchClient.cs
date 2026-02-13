@@ -96,9 +96,16 @@ public partial class BatchClient
 
     [Experimental("SCME0002")]
     public BatchClient(BatchClientSettings settings)
-        : this(AuthenticationPolicy.Create(settings),
-            settings.Options)
     {
+        Argument.AssertNotNull(settings, nameof(settings));
+
+        AuthenticationPolicy authenticationPolicy = AuthenticationPolicy.Create(settings);
+        Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
+
+        OpenAIClientOptions options = settings.Options ?? new OpenAIClientOptions();
+
+        Pipeline = OpenAIClient.CreatePipeline(authenticationPolicy, options);
+        _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
     /// <summary>
