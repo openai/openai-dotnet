@@ -18,7 +18,8 @@ namespace OpenAI.Tests.Batch;
 [TestFixture(true)]
 [TestFixture(false)]
 public class BatchTests : OpenAIRecordedTestBase
-{    private static readonly DateTimeOffset s_2024 = new(2024, 01, 01, 0, 0, 0, TimeSpan.Zero);
+{
+    private static readonly DateTimeOffset s_2024 = new(2024, 01, 01, 0, 0, 0, TimeSpan.Zero);
 
     public BatchTests(bool isAsync) : base(isAsync)
     {

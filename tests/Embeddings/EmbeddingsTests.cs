@@ -177,4 +177,5 @@ public class EmbeddingsTests : OpenAIRecordedTestBase
         {
             Assert.That(vector1.Span[i], Is.EqualTo(vector2.Span[i]).Within(0.0005));
         }
-    }}
+    }
+}
