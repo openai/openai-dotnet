@@ -4,7 +4,6 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
@@ -49,39 +48,6 @@ namespace OpenAI.Realtime
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeTranscriptionSessionConfiguredUpdate(document.RootElement, options);
-        }
-
-        internal static TranscriptionSessionConfiguredUpdate DeserializeTranscriptionSessionConfiguredUpdate(JsonElement element, ModelReaderWriterOptions options)
-        {
-            if (element.ValueKind == JsonValueKind.Null)
-            {
-                return null;
-            }
-            RealtimeUpdateKind kind = default;
-            string eventId = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            InternalRealtimeTranscriptionSessionCreateResponse internalSession = default;
-            foreach (var prop in element.EnumerateObject())
-            {
-                if (prop.NameEquals("type"u8))
-                {
-                    kind = prop.Value.GetString().ToRealtimeUpdateKind();
-                    continue;
-                }
-                if (prop.NameEquals("event_id"u8))
-                {
-                    eventId = prop.Value.GetString();
-                    continue;
-                }
-                if (prop.NameEquals("session"u8))
-                {
-                    internalSession = InternalRealtimeTranscriptionSessionCreateResponse.DeserializeInternalRealtimeTranscriptionSessionCreateResponse(prop.Value, options);
-                    continue;
-                }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
-            }
-            return new TranscriptionSessionConfiguredUpdate(kind, eventId, additionalBinaryDataProperties, internalSession);
         }
 
         BinaryData IPersistableModel<TranscriptionSessionConfiguredUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

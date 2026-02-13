@@ -123,7 +123,7 @@ internal static class TestHelpers
 #pragma warning restore OPENAI001
             TestScenario.TopLevel => new OpenAIClient(credential, options),
 #pragma warning disable OPENAI002
-            TestScenario.Realtime => new RealtimeClient(credential, options),
+            TestScenario.Realtime => new RealtimeClient(credential, CreateRealtimeClientOptions(options, excludeDumpPolicy)),
 #pragma warning restore
 #pragma warning disable OPENAI003
             TestScenario.Responses => new ResponsesClient(model, credential, options),
@@ -157,6 +157,24 @@ internal static class TestHelpers
                 }
             }
         }
+    }
+
+    private static RealtimeClientOptions CreateRealtimeClientOptions(OpenAIClientOptions options, bool excludeDumpPolicy)
+    {
+        RealtimeClientOptions realtimeOptions = new()
+        {
+            Endpoint = options?.Endpoint,
+            OrganizationId = options?.OrganizationId,
+            ProjectId = options?.ProjectId,
+            UserAgentApplicationId = options?.UserAgentApplicationId,
+        };
+
+        if (!excludeDumpPolicy)
+        {
+            realtimeOptions.AddPolicy(GetDumpPolicy(), PipelinePosition.BeforeTransport);
+        }
+
+        return realtimeOptions;
     }
 
     private static PipelinePolicy GetDumpPolicy()

@@ -14,7 +14,7 @@ public partial class ConversationSessionOptions
     [CodeGenMember("Model")]
     internal InternalRealtimeRequestSessionModel? Model { get; set; }
 
-    [CodeGenMember("Modalities")]
+    [CodeGenMember("OutputModalities")]
     private IList<InternalRealtimeRequestSessionModality> _internalModalities;
 
     public RealtimeContentModalities ContentModalities

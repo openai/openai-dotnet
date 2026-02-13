@@ -6,6 +6,7 @@ using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
+using System.Threading;
 using System.Threading.Tasks;
 using OpenAI;
 
@@ -28,36 +29,36 @@ namespace OpenAI.Realtime
 
         public ClientPipeline Pipeline { get; }
 
-        public virtual ClientResult CreateEphemeralToken(BinaryContent content, RequestOptions options = null)
+        public virtual ClientResult CreateRealtimeClientSecret(BinaryContent content, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
 
-            using PipelineMessage message = CreateCreateEphemeralTokenRequest(content, options);
+            using PipelineMessage message = CreateCreateRealtimeClientSecretRequest(content, options);
             return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
         }
 
-        public virtual async Task<ClientResult> CreateEphemeralTokenAsync(BinaryContent content, RequestOptions options = null)
+        public virtual async Task<ClientResult> CreateRealtimeClientSecretAsync(BinaryContent content, RequestOptions options = null)
         {
             Argument.AssertNotNull(content, nameof(content));
 
-            using PipelineMessage message = CreateCreateEphemeralTokenRequest(content, options);
+            using PipelineMessage message = CreateCreateRealtimeClientSecretRequest(content, options);
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult CreateEphemeralTranscriptionToken(BinaryContent content, RequestOptions options = null)
+        public virtual ClientResult<RealtimeCreateClientSecretResponse> CreateRealtimeClientSecret(RealtimeCreateClientSecretRequest body, CancellationToken cancellationToken = default)
         {
-            Argument.AssertNotNull(content, nameof(content));
+            Argument.AssertNotNull(body, nameof(body));
 
-            using PipelineMessage message = CreateCreateEphemeralTranscriptionTokenRequest(content, options);
-            return ClientResult.FromResponse(Pipeline.ProcessMessage(message, options));
+            ClientResult result = CreateRealtimeClientSecret(body, cancellationToken.ToRequestOptions());
+            return ClientResult.FromValue((RealtimeCreateClientSecretResponse)result, result.GetRawResponse());
         }
 
-        public virtual async Task<ClientResult> CreateEphemeralTranscriptionTokenAsync(BinaryContent content, RequestOptions options = null)
+        public virtual async Task<ClientResult<RealtimeCreateClientSecretResponse>> CreateRealtimeClientSecretAsync(RealtimeCreateClientSecretRequest body, CancellationToken cancellationToken = default)
         {
-            Argument.AssertNotNull(content, nameof(content));
+            Argument.AssertNotNull(body, nameof(body));
 
-            using PipelineMessage message = CreateCreateEphemeralTranscriptionTokenRequest(content, options);
-            return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
+            ClientResult result = await CreateRealtimeClientSecretAsync(body, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
+            return ClientResult.FromValue((RealtimeCreateClientSecretResponse)result, result.GetRawResponse());
         }
     }
 }
