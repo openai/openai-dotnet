@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "163",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.8.0 (.NET 10.0.3; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.8.0 (.NET 8.0.24; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini",
@@ -29,9 +29,9 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9cbe785f78f9be02-SEA",
+        "CF-RAY": "9cd07e112d7c6ac0-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "5110",
+        "Content-Length": "4840",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -51,15 +51,15 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_020b2418e404a28800698b99b84a0c81948e945ecd1572fe97",
+        "id": "resp_058fe7b2e68237e100698e7be97b08819589c7422adfacbe57",
         "object": "response",
-        "created_at": 1770756536,
+        "created_at": 1770945513,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
-        "completed_at": 1770756556,
+        "completed_at": 1770945528,
         "error": null,
         "frequency_penalty": 0.0,
         "incomplete_details": null,
@@ -69,7 +69,7 @@
         "model": "gpt-4o-mini-2024-07-18",
         "output": [
           {
-            "id": "msg_020b2418e404a28800698b99b8c9048194919d8422db361174",
+            "id": "msg_058fe7b2e68237e100698e7be9e2fc8195a1b469e652877430",
             "type": "message",
             "status": "completed",
             "content": [
@@ -77,7 +77,7 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "Here's a simple landing page design concept for a dog petting café. You can use HTML and CSS to implement this. \n\n### HTML Structure\n\n```html\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Welcome to Paws & Relax Dog Café</title>\n    <link rel=\"stylesheet\" href=\"styles.css\">\n</head>\n<body>\n    <header>\n        <h1>Paws & Relax Dog Café</h1>\n        <nav>\n            <ul>\n                <li><a href=\"#about\">About</a></li>\n                <li><a href=\"#menu\">Menu</a></li>\n                <li><a href=\"#visit\">Visit Us</a></li>\n                <li><a href=\"#contact\">Contact</a></li>\n            </ul>\n        </nav>\n    </header>\n\n    <main>\n        <section id=\"hero\">\n            <h2>Find your furry friend</h2>\n            <p>Come in for a cup of coffee and some quality time with our lovable pups!</p>\n            <a href=\"#visit\" class=\"cta-button\">Join Us Today!</a>\n        </section>\n\n        <section id=\"about\">\n            <h2>About Us</h2>\n            <p>Paws & Relax is a unique café where you can enjoy a cozy atmosphere while petting our friendly dogs. All our dogs are up for adoption!</p>\n        </section>\n\n        <section id=\"menu\">\n            <h2>Our Menu</h2>\n            <ul>\n                <li>Coffee</li>\n                <li>Tea</li>\n                <li>Dog Treats</li>\n                <li>Cookies</li>\n            </ul>\n        </section>\n\n        <section id=\"visit\">\n            <h2>Visit Us</h2>\n            <p>Location: 123 Dog Lane, Puppy Town</p>\n            <p>Opening Hours: Mon-Sun 9 AM - 6 PM</p>\n        </section>\n\n        <section id=\"contact\">\n            <h2>Contact Us</h2>\n            <p>Email: info@pawsandrelax.com</p>\n            <p>Phone: (123) 456-7890</p>\n        </section>\n    </main>\n\n    <footer>\n        <p>&copy; 2023 Paws & Relax Dog Café. All rights reserved.</p>\n    </footer>\n</body>\n</html>\n```\n\n### CSS Styles (styles.css)\n\n```css\n* {\n    margin: 0;\n    padding: 0;\n    box-sizing: border-box;\n}\n\nbody {\n    font-family: 'Arial, sans-serif';\n    line-height: 1.6;\n}\n\nheader {\n    background: #ffcc00;\n    padding: 20px;\n    text-align: center;\n}\n\nnav ul {\n    list-style: none;\n}\n\nnav ul li {\n    display: inline;\n    margin: 0 15px;\n}\n\nnav ul li a {\n    text-decoration: none;\n    color: #000;\n}\n\n#hero {\n    background: url('dog-cafe-hero.jpg') no-repeat center center/cover;\n    color: white;\n    text-align: center;\n    padding: 100px 20px;\n}\n\n.cta-button {\n    background: #ff6600;\n    color: white;\n    padding: 10px 20px;\n    text-decoration: none;\n    border-radius: 5px;\n}\n\nsection {\n    padding: 20px;\n    text-align: center;\n}\n\nfooter {\n    background: #333;\n    color: white;\n    text-align: center;\n    padding: 10px 0;\n}\n```\n\n### General Notes\n\n1. **Hero Image**: Replace `'dog-cafe-hero.jpg'` with an actual image path that you want to use for the hero section.\n2. **Responsive Design**: Ensure your landing page is responsive for different screen sizes by adding media queries if needed.\n3. **Fonts and Colors**: You can customize fonts and colors to match the theme of your café.\n4. **Images**: Consider adding pictures of dogs and the café to make the page more inviting.\n\nThis structure offers a clear overview for visitors, allowing them to quickly find the information they need."
+                "text": "Sure! Below is a simple HTML and CSS structure for a landing page for a dog petting café. You can copy and paste this into an HTML file to view it in your browser.\n\n### HTML (index.html)\n\n```html\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Pawsitive Café</title>\n    <link rel=\"stylesheet\" href=\"styles.css\">\n</head>\n<body>\n    <header>\n        <h1>Pawsitive Café</h1>\n        <p>Your favorite dog petting spot!</p>\n    </header>\n\n    <section class=\"about\">\n        <h2>About Us</h2>\n        <p>At Pawsitive Café, we provide a relaxing environment where you can enjoy a cup of coffee while petting adorable dogs. Our furry friends are waiting to bring joy to your day!</p>\n    </section>\n\n    <section class=\"services\">\n        <h2>Our Services</h2>\n        <ul>\n            <li>Dog Petting Sessions</li>\n            <li>Freshly Brewed Coffee</li>\n            <li>Delicious Treats for You and Your Pup</li>\n            <li>Dog Adoption Events</li>\n        </ul>\n    </section>\n\n    <section class=\"contact\">\n        <h2>Contact Us</h2>\n        <p>Address: 123 Woof St, Dogtown, DT 45678</p>\n        <p>Phone: (123) 456-7890</p>\n        <p>Email: info@pawsitivecafe.com</p>\n        <p><a href=\"mailto:info@pawsitivecafe.com\" class=\"btn\">Get in Touch!</a></p>\n    </section>\n\n    <footer>\n        <p>&copy; 2023 Pawsitive Café. All rights reserved.</p>\n    </footer>\n</body>\n</html>\n```\n\n### CSS (styles.css)\n\n```css\nbody {\n    font-family: Arial, sans-serif;\n    margin: 0;\n    padding: 0;\n    color: #333;\n    background-color: #f8f8f8;\n}\n\nheader {\n    background-color: #ffcc00;\n    padding: 20px;\n    text-align: center;\n}\n\nh1 {\n    margin: 0;\n    font-size: 2.5em;\n}\n\np {\n    margin: 5px 0;\n}\n\n.about, .services, .contact {\n    max-width: 600px;\n    margin: 20px auto;\n    padding: 20px;\n    background-color: #ffffff;\n    border-radius: 8px;\n    box-shadow: 0 2px 5px rgba(0,0,0,0.1);\n}\n\nh2 {\n    color: #ffcc00;\n}\n\nul {\n    list-style-type: none;\n    padding: 0;\n}\n\nul li {\n    background-color: #ffeb99;\n    margin: 5px 0;\n    padding: 10px;\n    border-radius: 5px;\n}\n\n.btn {\n    display: inline-block;\n    background-color: #ffcc00;\n    color: #333;\n    padding: 10px 15px;\n    text-decoration: none;\n    border-radius: 5px;\n}\n\nfooter {\n    text-align: center;\n    padding: 10px;\n    background-color: #ffcc00;\n    position: relative;\n    bottom: 0;\n    width: 100%;\n}\n```\n\n### Instructions to View the Landing Page\n\n1. **Create a Folder:** Create a new folder on your computer for your project.\n2. **Create HTML and CSS Files:** Create two files within that folder: `index.html` and `styles.css`.\n3. **Copy and Paste the Code:** Copy the HTML code above into `index.html` and the CSS code into `styles.css`.\n4. **Open in a Browser:** Open `index.html` in your web browser to view the landing page.\n\nThis landing page features sections for an introduction, services, contact information, and a footer, all styled simply for clarity and ease of navigation. You can customize the content further to better fit your vision!"
               }
             ],
             "role": "assistant"
@@ -112,11 +112,11 @@
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 928,
+          "output_tokens": 912,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 947
+          "total_tokens": 931
         },
         "user": null,
         "metadata": {}
@@ -128,9 +128,9 @@
       "RequestHeaders": {
         "Accept": "application/json",
         "Authorization": "Sanitized",
-        "Content-Length": "5241",
+        "Content-Length": "4608",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.8.0 (.NET 10.0.3; Microsoft Windows 10.0.26200)"
+        "User-Agent": "OpenAI/2.8.0 (.NET 8.0.24; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "model": "gpt-4o-mini-2024-07-18",
@@ -140,13 +140,13 @@
             "content": "Create a simple landing page for a dog petting café."
           },
           {
-            "id": "msg_020b2418e404a28800698b99b8c9048194919d8422db361174",
+            "id": "msg_058fe7b2e68237e100698e7be9e2fc8195a1b469e652877430",
             "type": "message",
             "status": "completed",
             "content": [
               {
                 "type": "output_text",
-                "text": "Here's a simple landing page design concept for a dog petting café. You can use HTML and CSS to implement this. \n\n### HTML Structure\n\n```html\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Welcome to Paws & Relax Dog Café</title>\n    <link rel=\"stylesheet\" href=\"styles.css\">\n</head>\n<body>\n    <header>\n        <h1>Paws & Relax Dog Café</h1>\n        <nav>\n            <ul>\n                <li><a href=\"#about\">About</a></li>\n                <li><a href=\"#menu\">Menu</a></li>\n                <li><a href=\"#visit\">Visit Us</a></li>\n                <li><a href=\"#contact\">Contact</a></li>\n            </ul>\n        </nav>\n    </header>\n\n    <main>\n        <section id=\"hero\">\n            <h2>Find your furry friend</h2>\n            <p>Come in for a cup of coffee and some quality time with our lovable pups!</p>\n            <a href=\"#visit\" class=\"cta-button\">Join Us Today!</a>\n        </section>\n\n        <section id=\"about\">\n            <h2>About Us</h2>\n            <p>Paws & Relax is a unique café where you can enjoy a cozy atmosphere while petting our friendly dogs. All our dogs are up for adoption!</p>\n        </section>\n\n        <section id=\"menu\">\n            <h2>Our Menu</h2>\n            <ul>\n                <li>Coffee</li>\n                <li>Tea</li>\n                <li>Dog Treats</li>\n                <li>Cookies</li>\n            </ul>\n        </section>\n\n        <section id=\"visit\">\n            <h2>Visit Us</h2>\n            <p>Location: 123 Dog Lane, Puppy Town</p>\n            <p>Opening Hours: Mon-Sun 9 AM - 6 PM</p>\n        </section>\n\n        <section id=\"contact\">\n            <h2>Contact Us</h2>\n            <p>Email: info@pawsandrelax.com</p>\n            <p>Phone: (123) 456-7890</p>\n        </section>\n    </main>\n\n    <footer>\n        <p>&copy; 2023 Paws & Relax Dog Café. All rights reserved.</p>\n    </footer>\n</body>\n</html>\n```\n\n### CSS Styles (styles.css)\n\n```css\n* {\n    margin: 0;\n    padding: 0;\n    box-sizing: border-box;\n}\n\nbody {\n    font-family: 'Arial, sans-serif';\n    line-height: 1.6;\n}\n\nheader {\n    background: #ffcc00;\n    padding: 20px;\n    text-align: center;\n}\n\nnav ul {\n    list-style: none;\n}\n\nnav ul li {\n    display: inline;\n    margin: 0 15px;\n}\n\nnav ul li a {\n    text-decoration: none;\n    color: #000;\n}\n\n#hero {\n    background: url('dog-cafe-hero.jpg') no-repeat center center/cover;\n    color: white;\n    text-align: center;\n    padding: 100px 20px;\n}\n\n.cta-button {\n    background: #ff6600;\n    color: white;\n    padding: 10px 20px;\n    text-decoration: none;\n    border-radius: 5px;\n}\n\nsection {\n    padding: 20px;\n    text-align: center;\n}\n\nfooter {\n    background: #333;\n    color: white;\n    text-align: center;\n    padding: 10px 0;\n}\n```\n\n### General Notes\n\n1. **Hero Image**: Replace `'dog-cafe-hero.jpg'` with an actual image path that you want to use for the hero section.\n2. **Responsive Design**: Ensure your landing page is responsive for different screen sizes by adding media queries if needed.\n3. **Fonts and Colors**: You can customize fonts and colors to match the theme of your café.\n4. **Images**: Consider adding pictures of dogs and the café to make the page more inviting.\n\nThis structure offers a clear overview for visitors, allowing them to quickly find the information they need."
+                "text": "Sure! Below is a simple HTML and CSS structure for a landing page for a dog petting café. You can copy and paste this into an HTML file to view it in your browser.\n\n### HTML (index.html)\n\n```html\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Pawsitive Café</title>\n    <link rel=\"stylesheet\" href=\"styles.css\">\n</head>\n<body>\n    <header>\n        <h1>Pawsitive Café</h1>\n        <p>Your favorite dog petting spot!</p>\n    </header>\n\n    <section class=\"about\">\n        <h2>About Us</h2>\n        <p>At Pawsitive Café, we provide a relaxing environment where you can enjoy a cup of coffee while petting adorable dogs. Our furry friends are waiting to bring joy to your day!</p>\n    </section>\n\n    <section class=\"services\">\n        <h2>Our Services</h2>\n        <ul>\n            <li>Dog Petting Sessions</li>\n            <li>Freshly Brewed Coffee</li>\n            <li>Delicious Treats for You and Your Pup</li>\n            <li>Dog Adoption Events</li>\n        </ul>\n    </section>\n\n    <section class=\"contact\">\n        <h2>Contact Us</h2>\n        <p>Address: 123 Woof St, Dogtown, DT 45678</p>\n        <p>Phone: (123) 456-7890</p>\n        <p>Email: info@pawsitivecafe.com</p>\n        <p><a href=\"mailto:info@pawsitivecafe.com\" class=\"btn\">Get in Touch!</a></p>\n    </section>\n\n    <footer>\n        <p>&copy; 2023 Pawsitive Café. All rights reserved.</p>\n    </footer>\n</body>\n</html>\n```\n\n### CSS (styles.css)\n\n```css\nbody {\n    font-family: Arial, sans-serif;\n    margin: 0;\n    padding: 0;\n    color: #333;\n    background-color: #f8f8f8;\n}\n\nheader {\n    background-color: #ffcc00;\n    padding: 20px;\n    text-align: center;\n}\n\nh1 {\n    margin: 0;\n    font-size: 2.5em;\n}\n\np {\n    margin: 5px 0;\n}\n\n.about, .services, .contact {\n    max-width: 600px;\n    margin: 20px auto;\n    padding: 20px;\n    background-color: #ffffff;\n    border-radius: 8px;\n    box-shadow: 0 2px 5px rgba(0,0,0,0.1);\n}\n\nh2 {\n    color: #ffcc00;\n}\n\nul {\n    list-style-type: none;\n    padding: 0;\n}\n\nul li {\n    background-color: #ffeb99;\n    margin: 5px 0;\n    padding: 10px;\n    border-radius: 5px;\n}\n\n.btn {\n    display: inline-block;\n    background-color: #ffcc00;\n    color: #333;\n    padding: 10px 15px;\n    text-decoration: none;\n    border-radius: 5px;\n}\n\nfooter {\n    text-align: center;\n    padding: 10px;\n    background-color: #ffcc00;\n    position: relative;\n    bottom: 0;\n    width: 100%;\n}\n```\n\n### Instructions to View the Landing Page\n\n1. **Create a Folder:** Create a new folder on your computer for your project.\n2. **Create HTML and CSS Files:** Create two files within that folder: `index.html` and `styles.css`.\n3. **Copy and Paste the Code:** Copy the HTML code above into `index.html` and the CSS code into `styles.css`.\n4. **Open in a Browser:** Open `index.html` in your web browser to view the landing page.\n\nThis landing page features sections for an introduction, services, contact information, and a footer, all styled simply for clarity and ease of navigation. You can customize the content further to better fit your vision!"
               }
             ],
             "role": "assistant"
@@ -157,9 +157,9 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9cbe78debc01be02-SEA",
+        "CF-RAY": "9cd07e7339b86ac0-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "5322",
+        "Content-Length": "619",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -173,18 +173,18 @@
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "150000000",
         "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "149998937",
+        "x-ratelimit-remaining-tokens": "149998952",
         "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_020b2418e404a28801698b99cca98481948e1409f60bc3a4eb",
+        "id": "resp_058fe7b2e68237e101698e7bf9133c8195b12e75cfec5abde9",
         "object": "response.compaction",
-        "created_at": 1770756564,
+        "created_at": 1770945537,
         "output": [
           {
-            "id": "msg_020b2418e404a28801698b99ccaf3c8194a6d571a01528d77c",
+            "id": "msg_058fe7b2e68237e101698e7bf91a18819591dc68f76c2f621b",
             "type": "message",
             "status": "completed",
             "content": [
@@ -196,21 +196,21 @@
             "role": "user"
           },
           {
-            "id": "cmp_020b2418e404a28801698b99cd05f8819499a36df301add71e",
+            "id": "cmp_058fe7b2e68237e101698e7bf993d081958bee503f7bcd6dbb",
             "type": "compaction",
-            "encrypted_content": "gAAAAABpi5nU_RTclqnUAtuLykfjAUBvIkWsbESHc0CTxW00PzDr8k9qhziZohwXLTrNwwXbl4t4cS3CNQ-wlNn2EVqtW23AgTOdiEPChIrBt4sQtyIujAE7QQfg4Jb6JcwCf7rtFLGJGSyrQmdMtVZto4WxsI6vUcOPDz4tBO0IHkQ1rljvU6rjY-DtGoRDxhi4hyoWcZq-vGLPeiYYKZU-WKN3ELBWBb3NIuWLV5VdEpj6gOVtD4yIqlDm1V7uEQZEop8zQu4-8JHHu_i6btbD8_8VvqaRxC0QIXUDe5Wo69XUUGHg4imxhqy3FBaL1ooj174BnCSMDfkdnVvyRf0JryoRw6F4pu07tFA_oDvYyurUrQHhl77uBPHfh5LWTkQFKFlx-HAOTVIabbKR8kF1QLAWJovHBxXrjjmJ91Q-lh0a9yVOHM9qXTEHPqot1kBFDYmqgeGHrKG_0lQJdjCWtcWGsRc-7Lvtz7rlUmNp9DC0wUQtiHQbdCMIrLNjg5uI49uBmudWIRhnqDgXwLRrE8v_zczdojK7K3sBygEavzyXS81UMLrSP4o92fkiK6W4omue-lN-DKT7iJpqH_2WRVg5PwwkMqcv8ARvC-3f_XrD4QrB6O6gh0r5hGURXnqlHebAN0SwzDsZ8dbxV8wnfkTKYfXHJAA9jntz2IsoqngrYh-kfv1tTXjlbF4xLTPFOyTL3A9Q5n3IXs8fbue8mREhXoGTxiNAHC_8ssk1cUWuEPnrZ7XmK67Jrf7WNaDswcYRl0Ih93UvjzMMLbKfz2IqANtTREX9SNoui6g1qFYTwI9Rr-FVIiM7cnkHeYoc5qRG7l9KX8XBAbFmJ_FyZ7kfDupjUySqoDGXD-HHNL3ukFxXHHtxKQvtHSFJaBBPUfSqQBFNrNRCFpCrheH9xK2ZMVLJRYtQJasM1lvDIjJ57S7ROxPq0_IeqAxArY6K85CPUNMJP4dyL75y-65-988XPWKjsrDd-CiweRLGmC7rS8beFIijmWtuBh4UP_ZLMEpytlbZfrfN9f1Ym2agCy196G1vdhKA117h2ueyU_wLREGq52jmrownfJJR3HNig5juEzf_Gg20tDJAbY07RxEaqJyBAiGZJxQiXVEVBxjNSMnKu-qWhjAhwxf0ut4hRXDbXCnf1qHmsVRPzTeJcQr9TmLqQRuAWvg5S9XGmz661Wcb_3Hqyndcgl74-lSdjehQCXxN47JvifYkj9OBgktbODl3qH_vV1OdCHw1iTshu18H7BpzPDEVUhRy-q5ODIJ9KPJjLSHNXNfHXJgZLPHn1uTlLZtK-H5CkBUW1zhzoNSZUm0MBIugFn5cHxPyNMsMiNZJ_BC7t_NHjrLC1GWGUmIqZznSa8tMCnJXp_uT8pGjthPkwPr148P-xwfvOB2ZdoeOFRXOHCAZz7RGfrqXh0Zi6zNpunKmpfutO8i5Zzzjs-tQIPBfVvlLE8LWDR1j1x9w8oWj6ri4gi2C_qJFIsRwOmBoIskwlcLNRlI-RjJsVO0HvHnm9xpKoEAWF7_xVF2Fvc2B9Fm4uzdciCAGp305f6wZ9CoEapPIIgcyVURLXhBmAZzdAL6GkfmLyoXtAC3ZwOk_P7LEedDfN-6L8mxf9q-wRMRcj_9oDi64rua5Vi1ZZwxpgIiK1n-UaVEp1sy1KqzhC-Trvb-UqGAW4NUvqfQtS7fmQ19hkq9XXyhOfwH6WboFPXOnOPRen8xL9aQFRoTn58R1-t2huDzZdeb8eINUf-qvhu3GP1_lM-gi0KyetEAy4Ob5MlfW_0fLBK3EZInoi6lc9jw6xWRGrINiQ32_USR_IgpL5zTkmr4gwFbVQZVZp1CvEUifU8JbK-NqIvaxa_DEd5S6HSqPHGEDJx3QA8mBq_x--9u8pWT_owMqwERw3ryf1Hj8BnjUZGTl8ofPVNCfVVr9j8qgyWea9X0d67A_CTwvdWzVbkBpZXX1B34oC4NvL4xndIvZNSi3U2wJZ4w_OdhyFUeTPZGxAjW_m8R77q4FHhHls9XKLR2QEpuhjKyzODYZqC_bAShmd-vWaUFZmuQTgfDB5dUI0znB4TGqfsEx_1VDjSdenyfUbRbUnqdT979GOO3c0hv6SLWFKSm4VNThG-GdniS1GPgsqQrV6jhtT00yLhV9NpOx-tbALzIwtXF28V55_FZNyW8ddjxck3r5x9-UhJi13a-B1QACyGYSzbJb6CAGPV-SFgkK8bmeTG8sXDNzSLys-WaM75WpxagDhp0EV4PS1ApwdVaSftw136-r_7Fkkh-OzcY9htaAjI6rDl6Y3wf7TuvJo538KOn9gNiFRx00Z3KepVaxPxjnuFP8bXefM8GUQVgYHSu8UY0WsGe5F_rFC5jOXEMaKz0J8ZfEHaAAZbW6NmrSgxy4C9nOuwDxCOhx-ASwc84BaAqILbIgVT0Au-xm07dwG6iQTxu1I132Qe2O6FYd8ywtSbS9lnFdj2BdVeqG_DxvUWYQbEEzsN49rUDG0ljjq6DtTxNg_2WdkjJ9qoRv8BhAQIJ89t5cCAIIdFli2ILe34r6vrIq8dNP156fvdhw0uMQ7HMzEh0jnqqNwcZBciBbCi8S1pi0A3X5b0Vzhzw9Wm50X0n06XhOgqssCKye_Zm9zhRN0V8OK-V3SNLRIpJqVgfCcq-y7M7yiKxg_LITC0WlCIo4s3B0eLGAmJRvrOqXnb7ZvZMoJwTBQdfU4cSAFRq8oYba29zP-tlprED3cRAMvKzq3GF3orkD4wcvkj5i9G34aqNF5suokGazFx2l_DBdSsFNq-_uUnkUmlMD0vhrkyIM6WNW2Cy6_fjzGtMpmww5dkoQ-YhKhw8hOP5JCSgPmhpo8rjWBK9FRGXw8vhw-CYJa5tm9lAypUr8HhvoXyBCHMxX5Xqc00efM_936dpkZXLRf6aMbGrapPvmN80ZadLyDwnK2KKcHHzKrtjHcOI5A75EwDAE3uc5QUx9EBCip-Xf0kH6GUoEsbDCPLaoz4yTHPvrSBQ2Eljpc7sYEpWxMl_ZWpoQUHZl78hUvR434Uj7OmolXa6q-8tVdkae2gTRBnmmpsGi5sQ4pFSSSMN6qF-Ldxq9YdYpeHVK-K8vlzt5CcjJbWm-6A6rsko81ceK7Lk8CScDy8N1KFm6ZFDGVc04HQ-WG6uO1Qxj6dpLXFEE0EP-nJANFZjRpuxp8mIAA_W5J_H-Vo-WNdMStR20t-uv6uktvaT0rQXzmtztmAaXxd1fTW3Q0KC0fFiO8pfYV-Z_CpcfyGq4SpbN9lQWipxuPCvHtQqSP8lDqFjiFMIBaycBNarUiqdxS-F16L-oEw6yOWt0_Yih9WNnFx61GJ-yhVVWQqmitmv7B1pMhonWhq66lPXYxexFhkNlP2zC4luOhV5nD3YBT2w2Omr0YQHTBAB1Eq5Q1Z8eu85hdQiiOP4lbAexDNxWomDCr0WpYUAVUG-HGQYH3tHn1e_8AYxY6v6PYdZRqQ2rnz04iQuL8TYpEnC42w9okN2eEkNXty_zvevKDV4iFE4PfRa0QtJkFkuzZHEPkK0tFMEFIttjLxc-qtBt0yQCVnxbvEVDBz_Bahnz1ZtJVNif_BU6OqyRnWJSxYCUo_OMqKf0kFtnNdmnDGCxXtHlzMB5oXuqDK36D4_7PnnFAWcIuxYC7-e9YrfqilVqnHsAip36elG2OgCB2uG3oqeAcfKpIAiuqcSQ-nWCoEJoLFAiWYiGpaqROlxIZjPP-LxNMgRtTj_5KFkv8W3oTTTQWfhHe_t83JSXhuPcntCiv_NKBsRWxVx6zpYNv8PqW5O7kAuzFP6R1ErBv-WejoTIIgnOqRcR6RMifFuOOFpJ2nUQwRrIPsxEI8vtIFBOr-MDtEJ23d8aPnepR03a8d2Thwe8NO1akdm0qC_SO3-PU-wDOf4G4uhYwpGwqOSiL_rgNqgrncck6496c1w_g_d6dauljYvQZt4LyV51EIznAzPJD6r_FFwH5DnuB2JOcCbfyOGAqJE5DKzTeI8KxBJTE2H6ZNtoG05mjQV-9NcSVB3Sbu-Eg2I6YqpPmCiPtahk5Vgkk6pSKziK6YvHST2pwjqdA_O__3nhELjx-hlL2E-5g_5ZGbE907GYUyTKzFwElVilMro_upPcwhyZkCarO4TiA4DLBDd79XN6FPfA3lR99YOhwbbpL9WfSHqi17ZNdJPXXCDFc4Tmg_Ndv4bYV-V-xBwDA_XviiiQq_ACQFHVrhktDsryDikCgbHHdSmqr0dzn4l61m2JCCCyXL7b9WaP9JhcKlmgBZIBXbLdGvt3hQ4u0BJZjk7y8Z6K4i3FVcPaLsFg46pVl-9sfp4s09X4iQFuk21xAFsrzk9bPz5vcRX0vpz4z-QsX_Vdeyt-_sgI7Fq5IGaWyX2hPC5y5h18svbjZeiT80wmPR_jg5ups5KJSu3XaEKlVGgtRIFrUIR6yoBjAf1L32vEFTWaUmp-_CHzusIn"
+            "encrypted_content": "Sanitized"
           }
         ],
         "usage": {
-          "input_tokens": 1043,
+          "input_tokens": 1027,
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 459,
+          "output_tokens": 449,
           "output_tokens_details": {
             "reasoning_tokens": 0
           },
-          "total_tokens": 1502
+          "total_tokens": 1476
         }
       }
     }

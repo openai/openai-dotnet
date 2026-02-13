@@ -26,6 +26,7 @@ namespace OpenAI.Tests.Utility
             SanitizedHeaders.Add("Date");
             SanitizedHeaders.Add("Set-Cookie");
             JsonPathSanitizers.Add("$.system_fingerprint");
+            JsonPathSanitizers.Add("$..encrypted_content");
         }
 
         internal T GetProxiedOpenAIClient<T>(TestScenario scenario, string overrideModel = null, bool excludeDumpPolicy = false, OpenAIClientOptions options = default) where T : class

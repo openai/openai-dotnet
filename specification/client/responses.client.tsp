@@ -13,8 +13,11 @@ using TypeSpec.HttpClient.CSharp;
 @@alternateType(Response.service_tier, DotNetResponseServiceTier);
 
 // Do not generate convenience methods for these operations
-@@convenientAPI(Responses.compactConversation, false);
 @@convenientAPI(Responses.getInputTokenCounts, false);
+@@convenientAPI(Responses.compactConversation, false);
+
+@@clientName(Responses.getInputTokenCounts, "GetInputTokenCount");
+@@clientName(Responses.compactConversation, "CompactResponse");
 
 // ------------ ItemResources ------------
 @@usage(ItemResource, Usage.input | Usage.output);

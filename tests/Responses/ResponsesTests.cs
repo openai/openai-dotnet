@@ -907,7 +907,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             """u8.ToArray());
 
         using BinaryContent requestContent = BinaryContent.Create(inputTokensRequestBody);
-        ClientResult result = await client.GetInputTokenCountsAsync("application/json", requestContent);
+        ClientResult result = await client.GetInputTokenCountAsync("application/json", requestContent);
 
         Assert.That(result, Is.Not.Null);
 
@@ -955,7 +955,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             """);
 
         using BinaryContent requestContent = BinaryContent.Create(compactRequestBody);
-        ClientResult result = await client.CompactConversationAsync("application/json", requestContent);
+        ClientResult result = await client.CompactResponseAsync("application/json", requestContent);
 
         Assert.That(result, Is.Not.Null);
 
