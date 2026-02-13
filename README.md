@@ -978,7 +978,7 @@ var client = new ResponsesClient(
     new OpenAIClientOptions { Endpoint = new Uri($"{endpoint}/openai/v1/") }
 );
 
-var response = await client.CreateResponseAsync("gpt-5-mini", "Hello world!");
+var response = await client.CreateResponseAsync("gpt-5", "Hello world!");
 Console.WriteLine(response.Value.GetOutputText());
 ```
 
