@@ -556,15 +556,14 @@ public class ReadMeSnippets
 
         #region Snippet:ReadMe_ResponsesStreaming
 #if SNIPPET
-        ResponsesClient client = new(
-            model: "gpt-5.1",
-            apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 #else
         ResponsesClient client = clientMock.Object;
 #endif
 
         CreateResponseOptions options = new()
         {
+            Model = "gpt-5.1",
             ReasoningOptions = new ResponseReasoningOptions()
             {
                 ReasoningEffortLevel = ResponseReasoningEffortLevel.High,
@@ -576,6 +575,7 @@ public class ReadMeSnippets
 
         CreateResponseOptions streamingOptions = new()
         {
+            Model = "gpt-5.1",
             ReasoningOptions = new ResponseReasoningOptions()
             {
                 ReasoningEffortLevel = ResponseReasoningEffortLevel.High,
@@ -619,7 +619,7 @@ public class ReadMeSnippets
 
         #region Snippet:ReadMe_ResponsesFileSearch
 #if SNIPPET
-        ResponsesClient client = new("gpt-5.1", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 #else
         ResponsesClient client = clientMock.Object;
 
@@ -631,6 +631,7 @@ public class ReadMeSnippets
 
         CreateResponseOptions options = new()
         {
+            Model = "gpt-5.1",
             Tools = { fileSearchTool }
         };
 
@@ -668,13 +669,14 @@ public class ReadMeSnippets
 
         #region Snippet:ReadMe_ResponsesWebSearch
 #if SNIPPET
-        ResponsesClient client = new("gpt-5.1", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 #else
         ResponsesClient client = clientMock.Object;
 #endif
 
         CreateResponseOptions options = new()
         {
+            Model = "gpt-5.1",
             Tools = { ResponseTool.CreateWebSearchTool() },
         };
 
@@ -1176,13 +1178,12 @@ public class ReadMeSnippets
             ?? throw new InvalidOperationException("AZURE_OPENAI_ENDPOINT is required.");
 
         var client = new ResponsesClient(
-            "gpt-5-mini",
             new BearerTokenPolicy(new DefaultAzureCredential(), "https://ai.azure.com/.default"),
             new OpenAIClientOptions { Endpoint = new Uri($"{endpoint}/openai/v1/") }
         );
 
 #if SNIPPET
-        var response = await client.CreateResponseAsync("Hello world!");
+        var response = await client.CreateResponseAsync("gpt-5", "Hello world!");
         Console.WriteLine(response.Value.GetOutputText());
 #endif
         #endregion
