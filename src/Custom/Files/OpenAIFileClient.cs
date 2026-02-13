@@ -208,7 +208,8 @@ public partial class OpenAIFileClient
         Argument.AssertNotNullOrEmpty(filePath, nameof(filePath));
 
         using FileStream stream = File.OpenRead(filePath);
-        return await UploadFileAsync(stream, filePath, purpose).ConfigureAwait(false);
+        string filename = Path.GetFileName(filePath);
+        return await UploadFileAsync(stream, filename, purpose).ConfigureAwait(false);
     }
 
     /// <summary> Uploads a file that can be used across various operations. </summary>
@@ -226,7 +227,8 @@ public partial class OpenAIFileClient
         Argument.AssertNotNullOrEmpty(filePath, nameof(filePath));
 
         using FileStream stream = File.OpenRead(filePath);
-        return UploadFile(stream, filePath, purpose);
+        string filename = Path.GetFileName(filePath);
+        return UploadFile(stream, filename, purpose);
     }
 
     /// <summary> Gets basic information about each of the files belonging to the user's organization. </summary>
