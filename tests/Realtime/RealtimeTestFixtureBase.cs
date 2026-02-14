@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.ClientModel.TestFramework;
+using NUnit.Framework;
 using OpenAI.Realtime;
 using OpenAI.Tests.Utility;
 using System;
@@ -7,7 +8,6 @@ using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading;
-using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Realtime;
 
@@ -16,12 +16,19 @@ namespace OpenAI.Tests.Realtime;
 [Category("Conversation")]
 public class RealtimeTestFixtureBase : OpenAIRecordedTestBase
 {
-    public CancellationTokenSource CancellationTokenSource { get; }
+    public CancellationTokenSource CancellationTokenSource { get; private set; }
     public CancellationToken CancellationToken => CancellationTokenSource?.Token ?? default;
     public RequestOptions CancellationOptions => new() { CancellationToken = CancellationToken };
 
-    public RealtimeTestFixtureBase(bool isAsync) : base(isAsync)
+    public RealtimeTestFixtureBase(bool isAsync, RecordedTestMode mode = RecordedTestMode.Playback) : base(isAsync, mode)
     {
+    }
+
+    [SetUp]
+    public void SetUpCancellationToken()
+    {
+        // Create a fresh CancellationTokenSource for each test to ensure each test
+        // gets its own 15-second timeout, not a shared one from the fixture constructor
         CancellationTokenSource = new();
         if (!Debugger.IsAttached)
         {
@@ -29,13 +36,28 @@ public class RealtimeTestFixtureBase : OpenAIRecordedTestBase
         }
     }
 
-    public static string GetTestModel() => GetModelForScenario(TestScenario.Realtime);
-
-    public RealtimeClient GetTestClient(bool excludeDumpPolicy = false)
+    [TearDown]
+    public void TearDownCancellationToken()
     {
-        RealtimeClient client = GetProxiedOpenAIClient<RealtimeClient>(
-            scenario: TestScenario.Realtime,
-            excludeDumpPolicy: excludeDumpPolicy);
+        CancellationTokenSource?.Dispose();
+        CancellationTokenSource = null;
+    }
+
+    public static string GetTestModel() => TestModel.Realtime;
+
+    public RealtimeClient GetTestClient()
+    {
+        // WebSocket connections cannot go through the test proxy, so for Live mode tests
+        // we create a direct client instead of using GetProxiedOpenAIClient.
+        // The proxy only works with HTTP/HTTPS requests, not WebSocket connections.
+        RealtimeClient client = Mode switch
+        {
+            // Create a direct client without proxy for live WebSocket tests
+            RecordedTestMode.Live => TestEnvironment.GetTestClient<RealtimeClient>(TestModel.Realtime),
+
+            // Use proxied client for playback mode (recordings)
+            _ => GetProxiedOpenAIClient<RealtimeClient>(TestModel.Realtime)
+        };
 
         client.OnSendingCommand += (_, data) => PrintMessageData(data, "> ");
         client.OnReceivingCommand += (_, data) => PrintMessageData(data, "  < ");

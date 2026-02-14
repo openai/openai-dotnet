@@ -14,6 +14,10 @@ namespace OpenAI.Realtime
     {
         private readonly string _value;
         private const string Whisper1Value = "whisper-1";
+        private const string Gpt4oTranscribeValue = "gpt-4o-transcribe";
+        private const string Gpt4oMiniTranscribeValue = "gpt-4o-mini-transcribe";
+        private const string Gpt4oMiniTranscribe20251215Value = "gpt-4o-mini-transcribe-2025-12-15";
+        private const string Gpt4oTranscribeDiarizeValue = "gpt-4o-transcribe-diarize";
 
         public InputTranscriptionModel(string value)
         {
@@ -23,6 +27,14 @@ namespace OpenAI.Realtime
         }
 
         public static InputTranscriptionModel Whisper1 { get; } = new InputTranscriptionModel(Whisper1Value);
+
+        public static InputTranscriptionModel Gpt4oTranscribe { get; } = new InputTranscriptionModel(Gpt4oTranscribeValue);
+
+        public static InputTranscriptionModel Gpt4oMiniTranscribe { get; } = new InputTranscriptionModel(Gpt4oMiniTranscribeValue);
+
+        public static InputTranscriptionModel Gpt4oMiniTranscribe20251215 { get; } = new InputTranscriptionModel(Gpt4oMiniTranscribe20251215Value);
+
+        public static InputTranscriptionModel Gpt4oTranscribeDiarize { get; } = new InputTranscriptionModel(Gpt4oTranscribeDiarizeValue);
 
         public static bool operator ==(InputTranscriptionModel left, InputTranscriptionModel right) => left.Equals(right);
 

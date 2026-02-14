@@ -17,6 +17,15 @@ namespace OpenAI.Realtime;
 [CodeGenSuppress("StartRealtimeSessionAsync", typeof(IEnumerable<InternalRealtimeClientEvent>), typeof(CancellationToken))]
 public partial class RealtimeClient
 {
+    private const string DefaultEndpoint = "https://api.openai.com/v1";
+
+    private static class KnownHeaderNames
+    {
+        public const string OpenAIOrganization = "OpenAI-Organization";
+        public const string OpenAIProject = "OpenAI-Project";
+        public const string UserAgent = "User-Agent";
+    }
+
     public event EventHandler<BinaryData> OnSendingCommand;
     public event EventHandler<BinaryData> OnReceivingCommand;
 
@@ -27,7 +36,7 @@ public partial class RealtimeClient
     /// <summary> Initializes a new instance of <see cref="RealtimeClient"/>. </summary>
     /// <param name="apiKey"> The API key to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="apiKey"/> is null. </exception>
-    public RealtimeClient(string apiKey) : this(new ApiKeyCredential(apiKey), new OpenAIClientOptions())
+    public RealtimeClient(string apiKey) : this(new ApiKeyCredential(apiKey), new RealtimeClientOptions())
     {
     }
 
@@ -37,7 +46,7 @@ public partial class RealtimeClient
     /// <summary> Initializes a new instance of <see cref="RealtimeClient"/>. </summary>
     /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
-    public RealtimeClient(ApiKeyCredential credential) : this(credential, new OpenAIClientOptions())
+    public RealtimeClient(ApiKeyCredential credential) : this(credential, new RealtimeClientOptions())
     {
     }
 
@@ -48,17 +57,24 @@ public partial class RealtimeClient
     /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
-    public RealtimeClient(ApiKeyCredential credential, OpenAIClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
+    public RealtimeClient(ApiKeyCredential credential, RealtimeClientOptions options)
+        : this(CreatePipeline(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options ??= new RealtimeClientOptions()), options)
     {
         _keyCredential = credential;
     }
 
+    // CUSTOM: Internal overload for use by OpenAIClient.GetRealtimeClient().
+    internal RealtimeClient(ApiKeyCredential credential, OpenAIClientOptions options)
+        : this(credential, RealtimeClientOptions.FromClientOptions(options))
+    {
+    }
+
     // CUSTOM: Added as a convenience.
     /// <summary> Initializes a new instance of <see cref="RealtimeClient"/>. </summary>
     /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
     [Experimental("OPENAI001")]
-    public RealtimeClient(AuthenticationPolicy authenticationPolicy) : this(authenticationPolicy, new OpenAIClientOptions())
+    public RealtimeClient(AuthenticationPolicy authenticationPolicy) : this(authenticationPolicy, new RealtimeClientOptions())
     {
     }
 
@@ -68,14 +84,9 @@ public partial class RealtimeClient
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
     [Experimental("OPENAI001")]
-    public RealtimeClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
+    public RealtimeClient(AuthenticationPolicy authenticationPolicy, RealtimeClientOptions options)
+        : this(CreatePipeline(authenticationPolicy, options ??= new RealtimeClientOptions()), options)
     {
-        Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
-        options ??= new OpenAIClientOptions();
-
-        Pipeline = OpenAIClient.CreatePipeline(authenticationPolicy, options);
-        _endpoint = OpenAIClient.GetEndpoint(options);
-        _webSocketEndpoint = GetWebSocketEndpoint(options);
     }
 
     // CUSTOM:
@@ -86,13 +97,13 @@ public partial class RealtimeClient
     /// <param name="pipeline"> The HTTP pipeline to send and receive REST requests and responses. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> is null. </exception>
-    protected internal RealtimeClient(ClientPipeline pipeline, OpenAIClientOptions options)
+    protected internal RealtimeClient(ClientPipeline pipeline, RealtimeClientOptions options)
     {
         Argument.AssertNotNull(pipeline, nameof(pipeline));
-        options ??= new OpenAIClientOptions();
+        options ??= new RealtimeClientOptions();
 
         Pipeline = pipeline;
-        _endpoint = OpenAIClient.GetEndpoint(options);
+        _endpoint = GetEndpoint(options);
         _webSocketEndpoint = GetWebSocketEndpoint(options);
     }
 
@@ -116,9 +127,14 @@ public partial class RealtimeClient
     [Experimental("OPENAI001")]
     public Uri Endpoint => _endpoint;
 
-    private static Uri GetWebSocketEndpoint(OpenAIClientOptions options)
+    private static Uri GetEndpoint(RealtimeClientOptions options = null)
     {
-        UriBuilder uriBuilder = new(options?.Endpoint ?? new("https://api.openai.com/v1"));
+        return options?.Endpoint ?? new(DefaultEndpoint);
+    }
+
+    private static Uri GetWebSocketEndpoint(RealtimeClientOptions options)
+    {
+        UriBuilder uriBuilder = new(options?.Endpoint ?? new(DefaultEndpoint));
         uriBuilder.Scheme = uriBuilder.Scheme.ToLowerInvariant() switch
         {
             "http" => "ws",
@@ -132,6 +148,37 @@ public partial class RealtimeClient
         }
 
         return uriBuilder.Uri;
+    }
+
+    private static ClientPipeline CreatePipeline(AuthenticationPolicy authenticationPolicy, RealtimeClientOptions options)
+    {
+        return ClientPipeline.Create(
+            options: options,
+            perCallPolicies: [CreateAddCustomHeadersPolicy(options)],
+            perTryPolicies: [authenticationPolicy],
+            beforeTransportPolicies: []);
+    }
+
+    private static PipelinePolicy CreateAddCustomHeadersPolicy(RealtimeClientOptions options = null)
+    {
+        TelemetryDetails telemetryDetails = new(typeof(RealtimeClientOptions).Assembly, options?.UserAgentApplicationId);
+        return new GenericActionPipelinePolicy((message) =>
+        {
+            if (message?.Request?.Headers?.TryGetValue(KnownHeaderNames.UserAgent, out string _) == false)
+            {
+                message.Request.Headers.Set(KnownHeaderNames.UserAgent, telemetryDetails.ToString());
+            }
+
+            if (!string.IsNullOrEmpty(options?.OrganizationId))
+            {
+                message.Request.Headers.Set(KnownHeaderNames.OpenAIOrganization, options.OrganizationId);
+            }
+
+            if (!string.IsNullOrEmpty(options?.ProjectId))
+            {
+                message.Request.Headers.Set(KnownHeaderNames.OpenAIProject, options.ProjectId);
+            }
+        });
     }
 
     internal void RaiseOnSendingCommand<T>(T session, BinaryData data)

@@ -13,6 +13,11 @@ namespace OpenAI.Realtime
         private const string MessageValue = "message";
         private const string FunctionCallValue = "function_call";
         private const string FunctionCallOutputValue = "function_call_output";
+        private const string McpCallValue = "mcp_call";
+        private const string McpCallOutputValue = "mcp_call_output";
+        private const string McpListToolsValue = "mcp_list_tools";
+        private const string McpApprovalRequestValue = "mcp_approval_request";
+        private const string McpApprovalResponseValue = "mcp_approval_response";
 
         public InternalRealtimeItemType(string value)
         {
@@ -24,6 +29,16 @@ namespace OpenAI.Realtime
         internal static InternalRealtimeItemType FunctionCall { get; } = new InternalRealtimeItemType(FunctionCallValue);
 
         internal static InternalRealtimeItemType FunctionCallOutput { get; } = new InternalRealtimeItemType(FunctionCallOutputValue);
+
+        internal static InternalRealtimeItemType McpCall { get; } = new InternalRealtimeItemType(McpCallValue);
+
+        internal static InternalRealtimeItemType McpCallOutput { get; } = new InternalRealtimeItemType(McpCallOutputValue);
+
+        internal static InternalRealtimeItemType McpListTools { get; } = new InternalRealtimeItemType(McpListToolsValue);
+
+        internal static InternalRealtimeItemType McpApprovalRequest { get; } = new InternalRealtimeItemType(McpApprovalRequestValue);
+
+        internal static InternalRealtimeItemType McpApprovalResponse { get; } = new InternalRealtimeItemType(McpApprovalResponseValue);
 
         public static bool operator ==(InternalRealtimeItemType left, InternalRealtimeItemType right) => left.Equals(right);
 

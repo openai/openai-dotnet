@@ -2,6 +2,7 @@
 
 #nullable disable
 
+using System;
 using System.ClientModel.Primitives;
 
 namespace OpenAI.Responses
@@ -13,7 +14,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalItemContentInputImage(InternalItemContentType internalType, in JsonPatch patch, string imageUrl, string fileId, ResponseImageDetailLevel? detail) : base(internalType, patch)
+        internal InternalItemContentInputImage(InternalItemContentType internalType, in JsonPatch patch, Uri imageUrl, string fileId, ResponseImageDetailLevel? detail) : base(internalType, patch)
         {
             ImageUrl = imageUrl;
             FileId = fileId;
@@ -21,7 +22,7 @@ namespace OpenAI.Responses
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string ImageUrl { get; set; }
+        public Uri ImageUrl { get; set; }
 
         public string FileId { get; set; }
 

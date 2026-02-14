@@ -84,9 +84,9 @@ namespace OpenAI.Realtime
                         return InternalRealtimeRequestTextContentPart.DeserializeInternalRealtimeRequestTextContentPart(element, options);
                     case "input_audio":
                         return InternalRealtimeRequestAudioContentPart.DeserializeInternalRealtimeRequestAudioContentPart(element, options);
-                    case "text":
+                    case "output_text":
                         return InternalRealtimeResponseTextContentPart.DeserializeInternalRealtimeResponseTextContentPart(element, options);
-                    case "audio":
+                    case "output_audio":
                         return InternalRealtimeResponseAudioContentPart.DeserializeInternalRealtimeResponseAudioContentPart(element, options);
                 }
             }
