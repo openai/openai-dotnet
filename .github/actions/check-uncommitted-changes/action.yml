@@ -1,0 +1,35 @@
+name: Check for uncommitted changes
+description: Checks if there are any uncommitted changes in the repository
+
+inputs:
+  error-message:
+    description: 'Error message to display if uncommitted changes are found'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Check for uncommitted changes
+      shell: bash
+      run: |
+        ERROR_MSG="${{ inputs.error-message }}"
+
+        # Check if there are any changes to tracked files
+        if ! git diff --quiet; then
+          echo "::error::$ERROR_MSG"
+          echo "Changed files:"
+          git diff --name-only
+          echo "Diff details:"
+          git diff
+          exit 1
+        fi
+
+        # Also check for untracked files that might have been generated
+        if [ -n "$(git ls-files --others --exclude-standard)" ]; then
+          echo "::error::$ERROR_MSG"
+          echo "Untracked files:"
+          git ls-files --others --exclude-standard
+          exit 1
+        fi
+
+        echo "No uncommitted changes detected!"
