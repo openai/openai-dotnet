@@ -124,6 +124,20 @@ public partial class FineTuningClient
         _endpoint = endpoint;
     }
 
+    [Experimental("SCME0002")]
+    public FineTuningClient(FineTuningClientSettings settings)
+    {
+        Argument.AssertNotNull(settings, nameof(settings));
+
+        AuthenticationPolicy authenticationPolicy = AuthenticationPolicy.Create(settings);
+        Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
+
+        OpenAIClientOptions options = settings.Options ?? new OpenAIClientOptions();
+
+        Pipeline = OpenAIClient.CreatePipeline(authenticationPolicy, options);
+        _endpoint = OpenAIClient.GetEndpoint(options);
+    }
+
     /// <summary>
     /// Gets the endpoint URI for the service.
     /// </summary>

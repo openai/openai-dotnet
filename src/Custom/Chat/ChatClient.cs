@@ -119,6 +119,22 @@ public partial class ChatClient
         _telemetry = new OpenTelemetrySource(model, _endpoint);
     }
 
+    [Experimental("SCME0002")]
+    public ChatClient(ChatClientSettings settings)
+    {
+        Argument.AssertNotNull(settings, nameof(settings));
+        Argument.AssertNotNullOrEmpty(settings.Model, nameof(settings.Model));
+
+        AuthenticationPolicy authenticationPolicy = AuthenticationPolicy.Create(settings);
+        Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
+
+        OpenAIClientOptions options = settings.Options ?? new OpenAIClientOptions();
+
+        _model = settings.Model;
+        Pipeline = OpenAIClient.CreatePipeline(authenticationPolicy, options);
+        _endpoint = OpenAIClient.GetEndpoint(options);
+    }
+
     /// <summary>
     /// Gets the name of the model used in requests sent to the service.
     /// </summary>

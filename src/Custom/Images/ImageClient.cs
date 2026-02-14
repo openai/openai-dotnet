@@ -90,6 +90,22 @@ public partial class ImageClient
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
+    [Experimental("SCME0002")]
+    public ImageClient(ImageClientSettings settings)
+    {
+        Argument.AssertNotNull(settings, nameof(settings));
+        Argument.AssertNotNullOrEmpty(settings.Model, nameof(settings.Model));
+
+        AuthenticationPolicy authenticationPolicy = AuthenticationPolicy.Create(settings);
+        Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
+
+        OpenAIClientOptions options = settings.Options ?? new OpenAIClientOptions();
+
+        _model = settings.Model;
+        Pipeline = OpenAIClient.CreatePipeline(authenticationPolicy, options);
+        _endpoint = OpenAIClient.GetEndpoint(options);
+    }
+
     // CUSTOM:
     // - Added `model` parameter.
     // - Used a custom pipeline.
