@@ -91,7 +91,7 @@ public class RealtimeProtocolTests : RealtimeTestFixtureBase
     [RecordedTest]
     public async Task CreateEphemeralToken()
     {
-        RealtimeClient client = GetTestClient(excludeDumpPolicy: true);
+        RealtimeClient client = GetTestClient();
 
         BinaryData input = BinaryData.FromBytes("""
             {
@@ -123,7 +123,7 @@ public class RealtimeProtocolTests : RealtimeTestFixtureBase
     [RecordedTest]
     public async Task CreateEphemeralTranscriptionToken()
     {
-        RealtimeClient client = GetTestClient(excludeDumpPolicy: true);
+        RealtimeClient client = GetTestClient();
 
         BinaryData input = BinaryData.FromBytes("""
         {

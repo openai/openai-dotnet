@@ -8,7 +8,6 @@ using System.ClientModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.FineTuning;
 
@@ -37,7 +36,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
         {
             return;
         }
-        fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
+        fileClient = TestEnvironment.GetTestClient<OpenAIFileClient>();
 
         samplePath = Path.Combine("Assets", "fine_tuning_sample.jsonl");
         validationPath = Path.Combine("Assets", "fine_tuning_sample_validation.jsonl");
@@ -93,7 +92,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task MinimalRequiredParams()
     {
-        FineTuningClient client = GetTestClient();
+        FineTuningClient client = GetProxiedOpenAIClient<FineTuningClient>();
         FineTuningJob ft = await client.FineTuneAsync("gpt-3.5-turbo", sampleFile.Id, false);
 
         Assert.That(ft.Status.InProgress);
@@ -122,7 +121,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
             Seed = 1234567
         };
 
-        FineTuningClient client = GetTestClient();
+        FineTuningClient client = GetProxiedOpenAIClient<FineTuningClient>();
         FineTuningJob ft = await client.FineTuneAsync("gpt-3.5-turbo", sampleFile.Id, false, options);
 
         ft.CancelAndUpdate();
@@ -153,7 +152,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
     [Explicit("This test requires wandb.ai account and api key integration.")]
     public void WandBIntegrations()
     {
-        FineTuningClient client = GetTestClient();
+        FineTuningClient client = GetProxiedOpenAIClient<FineTuningClient>();
         FineTuningJob job = client.FineTune(
             "gpt-3.5-turbo",
             sampleFile.Id,
@@ -168,7 +167,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
     [RecordedTest]
     public void ExceptionThrownOnInvalidFileName()
     {
-        FineTuningClient client = GetTestClient();
+        FineTuningClient client = GetProxiedOpenAIClient<FineTuningClient>();
         Assert.ThrowsAsync<ClientResultException>(async () =>
             await client.FineTuneAsync(baseModel: "gpt-3.5-turbo", trainingFileId: "Invalid File Name", waitUntilCompleted: false)
         );
@@ -177,7 +176,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
     [RecordedTest]
     public void ExceptionThrownOnInvalidModelName()
     {
-        FineTuningClient client = GetTestClient();
+        FineTuningClient client = GetProxiedOpenAIClient<FineTuningClient>();
         Assert.ThrowsAsync<ClientResultException>(async () =>
             await client.FineTuneAsync(baseModel: "gpt-nonexistent", trainingFileId: sampleFile.Id, waitUntilCompleted: false)
         );
@@ -186,7 +185,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
     [RecordedTest]
     public void ExceptionThrownOnInvalidValidationIdAsync()
     {
-        FineTuningClient client = GetTestClient();
+        FineTuningClient client = GetProxiedOpenAIClient<FineTuningClient>();
         Assert.ThrowsAsync<ClientResultException>(async () =>
         {
             await client.FineTuneAsync(
@@ -200,7 +199,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
     [RecordedTest]
     public void GetJobs()
     {
-        FineTuningClient client = GetTestClient();
+        FineTuningClient client = GetProxiedOpenAIClient<FineTuningClient>();
 
         // Arrange
         Console.WriteLine("Getting jobs");
@@ -227,7 +226,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetJobsWithAfter()
     {
-        FineTuningClient client = GetTestClient();
+        FineTuningClient client = GetProxiedOpenAIClient<FineTuningClient>();
         var firstJob = await client.GetJobsAsync().FirstAsync();
 
         if (firstJob is null)
@@ -247,7 +246,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetJobEvents()
     {
-        FineTuningClient client = GetTestClient();
+        FineTuningClient client = GetProxiedOpenAIClient<FineTuningClient>();
         // Arrange
         FineTuningJob job = await client.FineTuneAsync("gpt-3.5-turbo", sampleFile.Id, false);
 
@@ -274,7 +273,7 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetCheckpoints()
     {
-        FineTuningClient client = GetTestClient();
+        FineTuningClient client = GetProxiedOpenAIClient<FineTuningClient>();
         // Arrange
         // TODO: When `status` option becomes available, use it to get a succeeded job
         FineTuningJob job = await client.GetJobsAsync(new() { PageSize = 100 })
@@ -296,7 +295,4 @@ public class FineTuningClientTests : OpenAIRecordedTestBase
         FineTuningCheckpointMetrics metrics = first.Metrics;
         Assert.That(metrics, Is.Not.Null);
         Assert.That(metrics.StepNumber, Is.GreaterThan(0));
-    }
-
-    private FineTuningClient GetTestClient() => GetProxiedOpenAIClient<FineTuningClient>(TestScenario.FineTuning);
-}
+    }}

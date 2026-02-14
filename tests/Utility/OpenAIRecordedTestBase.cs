@@ -1,8 +1,6 @@
 ﻿using Microsoft.ClientModel.TestFramework;
 using Microsoft.ClientModel.TestFramework.TestProxy.Admin;
 using NUnit.Framework;
-using System.ClientModel;
-using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Utility
 {
@@ -29,17 +27,15 @@ namespace OpenAI.Tests.Utility
             JsonPathSanitizers.Add("$..encrypted_content");
         }
 
-        internal T GetProxiedOpenAIClient<T>(TestScenario scenario, string overrideModel = null, bool excludeDumpPolicy = false, OpenAIClientOptions options = default) where T : class
+        internal T GetProxiedOpenAIClient<T>(string overrideModel = null, OpenAIClientOptions options = default) where T : class
         {
             options ??= new OpenAIClientOptions();
+
             OpenAIClientOptions instrumentedOptions = InstrumentClientOptions(options);
-            T client = GetTestClient<T>(scenario, overrideModel, excludeDumpPolicy, options: instrumentedOptions, credential: GetTestApiKeyCredential());
+            T client = TestEnvironment.GetTestClient<T>(overrideModel, instrumentedOptions);
             T proxiedClient = CreateProxyFromClient<T>(client, null);
+
             return proxiedClient;
         }
-
-        public ApiKeyCredential GetTestApiKeyCredential() => new(TestEnvironment.OpenApiKey);
-
-        public OpenAIClient GetProxiedTestTopLevelClient() => GetProxiedOpenAIClient<OpenAIClient>(TestScenario.TopLevel);
     }
 }

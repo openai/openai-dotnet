@@ -5,7 +5,6 @@ using OpenAI.Tests.Utility;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Moderations;
 
@@ -19,7 +18,7 @@ public class ModerationsTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ClassifyTextWithSingleString()
     {
-        ModerationClient client = GetProxiedOpenAIClient<ModerationClient>(TestScenario.Moderations);
+        ModerationClient client = GetProxiedOpenAIClient<ModerationClient>();
 
         const string input = "I am killing all my houseplants!";
 
@@ -33,7 +32,7 @@ public class ModerationsTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ClassifyTextWithMultipleStrings()
     {
-        ModerationClient client = GetProxiedOpenAIClient<ModerationClient>(TestScenario.Moderations);
+        ModerationClient client = GetProxiedOpenAIClient<ModerationClient>();
 
         List<string> inputs =
             [
@@ -59,7 +58,7 @@ public class ModerationsTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ClassifyInputsWithSingleImage()
     {
-        ModerationClient client = GetProxiedOpenAIClient<ModerationClient>(TestScenario.Moderations);
+        ModerationClient client = GetProxiedOpenAIClient<ModerationClient>();
 
         List<ModerationInputPart> inputs =
             [
@@ -77,7 +76,7 @@ public class ModerationsTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ClassifyInputsWithMultipleTexts()
     {
-        ModerationClient client = GetProxiedOpenAIClient<ModerationClient>(TestScenario.Moderations);
+        ModerationClient client = GetProxiedOpenAIClient<ModerationClient>();
 
         List<ModerationInputPart> inputs =
             [
@@ -96,7 +95,7 @@ public class ModerationsTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ClassifyInputsWithTextAndImage()
     {
-        ModerationClient client = GetProxiedOpenAIClient<ModerationClient>(TestScenario.Moderations);
+        ModerationClient client = GetProxiedOpenAIClient<ModerationClient>();
 
         List<ModerationInputPart> inputs =
             [
@@ -115,7 +114,7 @@ public class ModerationsTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ClassifyInputsWithMultipleTextsAndSingleImage()
     {
-        ModerationClient client = GetProxiedOpenAIClient<ModerationClient>(TestScenario.Moderations);
+        ModerationClient client = GetProxiedOpenAIClient<ModerationClient>();
 
         List<ModerationInputPart> inputs =
             [
