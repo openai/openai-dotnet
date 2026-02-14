@@ -510,7 +510,7 @@ public partial class ResponsesSmokeTests
         else
         {
             // We construct a new instance. Later, we serialize it and confirm it was constructed correctly.
-            container = new CodeInterpreterToolContainer(containerId);
+            container = containerId;
         }
 
         BinaryData serializedContainer = ModelReaderWriter.Write(container);
@@ -545,12 +545,10 @@ public partial class ResponsesSmokeTests
         else
         {
             // We construct a new instance. Later, we serialize it and confirm it was constructed correctly.
-            AutomaticCodeInterpreterToolContainerConfiguration autoConfig = new()
+            container = new AutomaticCodeInterpreterToolContainerConfiguration()
             {
                 FileIds = { fileId }
             };
-
-            container = new CodeInterpreterToolContainer(autoConfig);
         }
 
         BinaryData serializedContainer = ModelReaderWriter.Write(container);
