@@ -1,0 +1,151 @@
+# This workflow is triggered by a PR comment and runs tests in Record mode,
+# then commits the session recordings back to the PR branch.
+name: Record test
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  record:
+    name: Record test
+    runs-on: ubuntu-latest
+    # Only run on PR comments from collaborators that start with /record-test
+    if: |
+      github.event.issue.pull_request &&
+      startsWith(github.event.comment.body, '/record-test ') &&
+      contains(fromJson('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
+    environment: Live Testing
+    env:
+      version_suffix_args: ${{ format('/p:VersionSuffix="alpha.{0}"', github.run_number) }}
+    steps:
+      - name: Parse filter from comment
+        id: parse
+        run: |
+          COMMENT_BODY="${{ github.event.comment.body }}"
+          FILTER="${COMMENT_BODY#/record-test }"
+          echo "filter=$FILTER" >> $GITHUB_OUTPUT
+          echo "Parsed filter: $FILTER"
+
+      - name: Get PR branch
+        id: pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_DATA=$(gh api repos/${{ github.repository }}/pulls/${{ github.event.issue.number }})
+          HEAD_REF=$(echo "$PR_DATA" | jq -r '.head.ref')
+          echo "head_ref=$HEAD_REF" >> $GITHUB_OUTPUT
+          echo "PR branch: $HEAD_REF"
+
+      - name: Add reaction to comment
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api repos/${{ github.repository }}/issues/comments/${{ github.event.comment.id }}/reactions \
+            -X POST -f content='eyes'
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '10.x'
+
+      - name: Setup .NET 9
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '9.x'
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: '8.x'
+
+      - name: Checkout PR branch
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ steps.pr.outputs.head_ref }}
+          persist-credentials: true
+
+      - name: Restore tools
+        run: dotnet tool restore --add-source https://pkgs.dev.azure.com/azure-sdk/public/_packaging/azure-sdk-for-net/nuget/v3/index.json
+
+      - name: Run tests in Record mode
+        run: dotnet test ./tests/OpenAI.Tests.csproj
+          --configuration Release
+          --filter="${{ steps.parse.outputs.filter }}"
+          --logger "trx;LogFilePrefix=record"
+          --results-directory ${{ github.workspace }}/artifacts/test-results
+          ${{ env.version_suffix_args }}
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          CLIENTMODEL_TEST_MODE: Record
+
+      - name: Check for recording changes
+        id: changes
+        run: |
+          if git diff --quiet tests/SessionRecords/; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "No recording changes detected"
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "Recording changes detected:"
+            git diff --name-only tests/SessionRecords/
+          fi
+
+      - name: Validate recordings in Playback mode
+        if: steps.changes.outputs.has_changes == 'true'
+        run: dotnet test ./tests/OpenAI.Tests.csproj
+          --configuration Release
+          --filter="${{ steps.parse.outputs.filter }}"
+          --logger "trx;LogFilePrefix=playback"
+          --results-directory ${{ github.workspace }}/artifacts/test-results
+          ${{ env.version_suffix_args }}
+        env:
+          CLIENTMODEL_TEST_MODE: Playback
+          CLIENTMODEL_DISABLE_AUTO_RECORDING: "true"
+
+      - name: Commit and push recordings
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add tests/SessionRecords/
+          git commit -m "Record tests matching: ${{ steps.parse.outputs.filter }}"
+          git push
+
+      - name: Comment on PR (success with changes)
+        if: success() && steps.changes.outputs.has_changes == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          CHANGED_FILES=$(git diff --name-only HEAD~1 tests/SessionRecords/ | head -20)
+          gh pr comment ${{ github.event.issue.number }} --body "✅ Successfully recorded tests matching \`${{ steps.parse.outputs.filter }}\` and pushed session recordings.
+
+          **Changed files:**
+          \`\`\`
+          $CHANGED_FILES
+          \`\`\`"
+
+      - name: Comment on PR (no changes)
+        if: success() && steps.changes.outputs.has_changes == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr comment ${{ github.event.issue.number }} --body "ℹ️ Tests matching \`${{ steps.parse.outputs.filter }}\` ran successfully, but no session recordings were modified."
+
+      - name: Comment on PR (failure)
+        if: failure()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr comment ${{ github.event.issue.number }} --body "❌ Failed to record tests matching \`${{ steps.parse.outputs.filter }}\`. Check the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details."
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v6
+        if: ${{ !cancelled() }}
+        with:
+          name: test-artifacts
+          path: ${{ github.workspace }}/artifacts
