@@ -4,7 +4,7 @@
 
 Before starting, review the **Reference PRs** in [references.md](references.md) from **previous area ingestions**. Since you're ingesting a new area, there won't be an existing PR for it — instead, study PRs from other areas to learn the patterns and common pitfalls. Pay particular attention to:
 
-- What types of changes were made to the codegen visitors (e.g., `NumericPropertiesVisitor`)
+- What types of changes were made to the codegen visitors (e.g., `NumericTypesVisitor`)
 - What features were deferred to follow-up PRs
 - What custom C# code changes were needed
 
@@ -219,12 +219,12 @@ dotnet build
 
 ### 7a. Review Numeric Properties
 
-The `NumericPropertiesVisitor` (at `codegen/generator/src/Visitors/NumericPropertiesVisitor.cs`) automatically converts `long` → `int` and `double` → `float` for all generated properties unless explicitly excluded.
+The `NumericTypesVisitor` (at `codegen/generator/src/Visitors/NumericTypesVisitor.cs`) automatically converts `long` → `int` and `double` → `float` for all generated properties, parameters, and fields unless explicitly excluded.
 
 After generation, check the generated code for any numeric properties that should **stay `long`** (e.g., byte counts, large IDs) or **stay `double`** (high-precision values). If found, add them to the exclusion list:
 
 ```csharp
-// In NumericPropertiesVisitor.cs
+// In NumericTypesVisitor.cs
 private static readonly HashSet<string> _excludedLongProperties = new(StringComparer.OrdinalIgnoreCase)
 {
     "OpenAI.{Area}.{TypeName}.{PropertyName}",

@@ -43,7 +43,7 @@ If a TypeSpec model is renamed from `FooBar` to `BazQux`, update:
 
 ## 3. Numeric Type Conversions
 
-TypeSpec's `integer` type maps to `long` in C# by default. The `NumericPropertiesVisitor` (at `codegen/generator/src/Visitors/NumericPropertiesVisitor.cs`) converts:
+TypeSpec's `integer` type maps to `long` in C# by default. The `NumericTypesVisitor` (at `codegen/generator/src/Visitors/NumericTypesVisitor.cs`) converts:
 - `long` → `int`
 - `double` → `float`
 
