@@ -23,7 +23,7 @@ This skill is split across multiple files for easier navigation:
 
 | Document | Description |
 |----------|-------------|
-| [steps.md](steps.md) | **Step-by-step process** — the full 8-step workflow from copying spec to post-generation verification |
+| [steps.md](steps.md) | **Step-by-step process** — the full 9-step workflow from copying spec to post-generation verification |
 | [file-locations.md](file-locations.md) | **Key file locations** — quick reference for all upstream and local paths, area mappings |
 | [patterns-and-gotchas.md](patterns-and-gotchas.md) | **Common patterns & gotchas** — lessons learned, pitfalls, and conventions to follow |
 | [checklist.md](checklist.md) | **Checklist** — a task-by-task checklist for tracking progress during an ingestion |
@@ -31,11 +31,11 @@ This skill is split across multiple files for easier navigation:
 
 ## Quick Start
 
-1. Read [file-locations.md](file-locations.md) to understand the repo layout
-2. Follow [steps.md](steps.md) for the full ingestion workflow
-3. Use [checklist.md](checklist.md) to track your progress
-4. Consult [patterns-and-gotchas.md](patterns-and-gotchas.md) when you hit issues
-5. Review [references.md](references.md) for examples of past ingestions
+1. Review [references.md](references.md) for examples of past ingestions in your area
+2. Read [file-locations.md](file-locations.md) to understand the repo layout
+3. Follow [steps.md](steps.md) for the full ingestion workflow
+4. Use [checklist.md](checklist.md) to track your progress
+5. Consult [patterns-and-gotchas.md](patterns-and-gotchas.md) when you hit issues
 
 ## Available Areas
 
@@ -49,5 +49,5 @@ Areas that can be ingested independently:
 2. **NEVER modify the base spec** — it must be an exact copy of upstream. Handle all issues (type unions, suppressions, etc.) in `specification/client/` instead
 3. **Update `[CodeGenType]` stubs** in `src/Custom/{Area}/Internal/GeneratorStubs.cs` for any renamed types
 4. **Defer complex features** — suggest them as follow-up items rather than implementing in the same ingestion
-5. **Run `./scripts/Invoke-CodeGen.ps1`** to generate code, then `dotnet build` and `dotnet test` to verify
+5. **Run `./scripts/Invoke-CodeGen.ps1`** to generate code, then `dotnet build` to verify
 6. **Work locally only** — do NOT create PRs or file issues. Instead, suggest a list of issues that may need to be filed upstream

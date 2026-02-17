@@ -58,7 +58,7 @@ Quick reference for all paths involved in spec ingestion.
 | What | Path |
 |------|------|
 | Codegen plugin source | `codegen/generator/src/` |
-| Numeric types visitor | `codegen/generator/src/Visitors/NumericTypesVisitor.cs` |
+| Numeric types visitor | `codegen/generator/src/Visitors/NumericPropertiesVisitor.cs` |
 
 ## Available Areas
 

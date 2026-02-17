@@ -43,13 +43,22 @@ If a TypeSpec model is renamed from `FooBar` to `BazQux`, update:
 
 ## 3. Numeric Type Conversions
 
-TypeSpec's `integer` type maps to `long` in C# by default. The `NumericTypesVisitor` (in `codegen/generator/`) converts:
+TypeSpec's `integer` type maps to `long` in C# by default. The `NumericPropertiesVisitor` (at `codegen/generator/src/Visitors/NumericPropertiesVisitor.cs`) converts:
 - `long` → `int`
 - `double` → `float`
 
-for specific properties unless explicitly excluded.
+for all generated properties unless explicitly excluded.
 
-**When adding new numeric properties:** Check if they need to be excluded from or included in the `NumericTypesVisitor`. If a property genuinely requires `long` (e.g., byte counts), add it to the exclusion list.
+**After code generation, you MUST review the generated numeric properties.** If a property genuinely requires `long` (e.g., byte counts, large IDs) or `double` (high-precision values), add it to the exclusion list in the visitor:
+
+```csharp
+private static readonly HashSet<string> _excludedLongProperties = new(StringComparer.OrdinalIgnoreCase)
+{
+    "OpenAI.{Area}.{TypeName}.{PropertyName}",
+};
+```
+
+See [PR #935 (VectorStore)](https://github.com/openai/openai-dotnet/pull/935) for an example where this visitor was enhanced to handle fields and methods in addition to properties.
 
 ---
 
@@ -75,6 +84,33 @@ model DotNetTranscriptTextSegmentEvent extends DotNetCreateTranscriptionStreamin
   ...TranscriptTextSegmentEvent;
 }
 ```
+
+---
+
+## 5. `prohibited-namespace` Errors Require `[CodeGenType]` Stubs
+
+A `prohibited-namespace` compile error means the generator found a type that doesn't have a corresponding `[CodeGenType]` stub in the custom C# code. This can be triggered by any type — inline unions, new models, new enums, etc. — but **not every new type causes it**. Only fix the specific types named in the error.
+
+**Fix:** Add a `[CodeGenType]` stub for each type named in the error, placing it in the correct location:
+
+- **Internal types** → `src/Custom/{Area}/Internal/GeneratorStubs.cs`
+- **Public types** → `src/Custom/{Area}/GeneratorStubs.cs`
+
+Look at existing stubs in the area to determine the right pattern (class vs. struct, readonly, etc.).
+
+**Example — internal stubs** (`src/Custom/{Area}/Internal/GeneratorStubs.cs`):
+```csharp
+[CodeGenType("ContainerResourceMemoryLimit")] internal readonly partial struct InternalContainerResourceMemoryLimit { }
+[CodeGenType("ContainerListResource")] internal partial class InternalContainerListResource { }
+```
+
+**Example — public stubs** (`src/Custom/{Area}/GeneratorStubs.cs`):
+```csharp
+[CodeGenType("ContainerResource")] public partial class ContainerResource { }
+[CodeGenType("ContainerCollectionOrder")] public readonly partial struct ContainerCollectionOrder { }
+```
+
+**How to identify these:** The compiler error message will name the type exactly. Only add stubs for the types that appear in `prohibited-namespace` errors — do not preemptively stub every new type.
 
 ---
 
@@ -106,7 +142,7 @@ New public types and properties that are not yet stable should be marked with `[
 
 ---
 
-## 10. Test Fixes After Ingestion
+## 9. Test Fixes After Ingestion
 
 Expect test updates after spec ingestion:
 - **Session records** may need regeneration if API shapes changed
@@ -115,6 +151,6 @@ Expect test updates after spec ingestion:
 
 ---
 
-## 12. API Export After Ingestion
+## 10. API Export After Ingestion
 
 Always run `./scripts/Export-Api.ps1` after successful code generation to update the API surface files (`api/OpenAI.net8.0.cs`, etc.). These files are used for API compatibility checks and should be committed as part of the PR.
