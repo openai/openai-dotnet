@@ -1,5 +1,6 @@
 import "../common";
 import "./models.tsp";
+import "./models_GA.tsp";
 
 using TypeSpec.Http;
 using TypeSpec.OpenAPI;
@@ -26,8 +27,8 @@ interface Realtime {
   `create-realtime-client-secret`(
     /** Create a client secret with the given session configuration. */
     @body
-    body: RealtimeCreateClientSecretRequest,
-  ): RealtimeCreateClientSecretResponse | {
+    body: RealtimeCreateClientSecretRequest_GA,
+  ): RealtimeCreateClientSecretResponse_GA | {
     @maxValue(499)
     @minValue(400)
     @statusCode

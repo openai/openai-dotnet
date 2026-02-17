@@ -126,8 +126,8 @@ namespace OpenAI.Realtime;
 [CodeGenType("RealtimeServerEventResponseMCPCallCompleted")] internal partial class InternalRealtimeServerEventResponseMCPCallCompleted {}
 [CodeGenType("RealtimeServerEventResponseMCPCallFailed")] internal partial class InternalRealtimeServerEventResponseMCPCallFailed {}
 [CodeGenType("RealtimeServerEventTranscriptionSessionCreated")] internal partial class InternalRealtimeServerEventTranscriptionSessionCreated {}
-[CodeGenType("RealtimeSessionCreateRealtimeRequest")] internal partial class InternalRealtimeSessionCreateRealtimeRequest {}
-[CodeGenType("RealtimeSessionCreateTranscriptionRequest")] internal partial class InternalRealtimeSessionCreateTranscriptionRequest {}
+
+
 [CodeGenType("RealtimeSessionCreateRealtimeResponse")] internal partial class InternalRealtimeSessionCreateRealtimeResponse {}
 [CodeGenType("RealtimeSessionCreateTranscriptionResponse")] internal partial class InternalRealtimeSessionCreateTranscriptionResponse {}
 
@@ -148,7 +148,6 @@ namespace OpenAI.Realtime;
 [CodeGenType("RealtimeTranscriptionSessionGAObject")] internal readonly partial struct InternalRealtimeTranscriptionSessionGAObject {}
 
 // Audio formats discriminated union types (GA audio format model)
-[CodeGenType("RealtimeAudioFormatsType")] internal readonly partial struct InternalRealtimeAudioFormatsType {}
 [CodeGenType("RealtimeAudioFormats")] internal partial class InternalRealtimeAudioFormats {}
 [CodeGenType("UnknownRealtimeAudioFormats")] internal partial class InternalUnknownRealtimeAudioFormats {}
 [CodeGenType("RealtimeAudioFormatsPcm")] internal partial class InternalRealtimeAudioFormatsPcm {}

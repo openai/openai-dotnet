@@ -45,20 +45,20 @@ namespace OpenAI.Realtime
             return ClientResult.FromResponse(await Pipeline.ProcessMessageAsync(message, options).ConfigureAwait(false));
         }
 
-        public virtual ClientResult<RealtimeCreateClientSecretResponse> CreateRealtimeClientSecret(RealtimeCreateClientSecretRequest body, CancellationToken cancellationToken = default)
+        public virtual ClientResult<GACreateClientSecretResult> CreateRealtimeClientSecret(GACreateClientSecretOptions body, CancellationToken cancellationToken = default)
         {
             Argument.AssertNotNull(body, nameof(body));
 
             ClientResult result = CreateRealtimeClientSecret(body, cancellationToken.ToRequestOptions());
-            return ClientResult.FromValue((RealtimeCreateClientSecretResponse)result, result.GetRawResponse());
+            return ClientResult.FromValue((GACreateClientSecretResult)result, result.GetRawResponse());
         }
 
-        public virtual async Task<ClientResult<RealtimeCreateClientSecretResponse>> CreateRealtimeClientSecretAsync(RealtimeCreateClientSecretRequest body, CancellationToken cancellationToken = default)
+        public virtual async Task<ClientResult<GACreateClientSecretResult>> CreateRealtimeClientSecretAsync(GACreateClientSecretOptions body, CancellationToken cancellationToken = default)
         {
             Argument.AssertNotNull(body, nameof(body));
 
             ClientResult result = await CreateRealtimeClientSecretAsync(body, cancellationToken.ToRequestOptions()).ConfigureAwait(false);
-            return ClientResult.FromValue((RealtimeCreateClientSecretResponse)result, result.GetRawResponse());
+            return ClientResult.FromValue((GACreateClientSecretResult)result, result.GetRawResponse());
         }
     }
 }

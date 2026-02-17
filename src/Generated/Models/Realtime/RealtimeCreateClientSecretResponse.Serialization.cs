@@ -3,7 +3,6 @@
 #nullable disable
 
 using System;
-using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -146,12 +145,5 @@ namespace OpenAI.Realtime
         }
 
         string IPersistableModel<RealtimeCreateClientSecretResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static explicit operator RealtimeCreateClientSecretResponse(ClientResult result)
-        {
-            PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
-            return DeserializeRealtimeCreateClientSecretResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
-        }
     }
 }

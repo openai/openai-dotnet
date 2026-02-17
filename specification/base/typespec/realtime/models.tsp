@@ -2190,30 +2190,6 @@ model RealtimeTranscriptionSessionCreateResponse {
 }
 
 /**
- * The anchor point from which client secret expiration is calculated.
- */
-union RealtimeCreateClientSecretRequestExpiresAfterAnchor {
-  string,
-  /** Expiration is calculated from the time the client secret is created. */
-  created_at: "created_at",
-}
-
-/**
- * Configuration for the client secret expiration.
- */
-model RealtimeCreateClientSecretRequestExpiresAfter {
-  /**
-   * The anchor point from which the expiration is calculated.
-   */
-  anchor?: RealtimeCreateClientSecretRequestExpiresAfterAnchor;
-
-  /**
-   * The number of seconds after the anchor point when the client secret expires.
-   */
-  seconds?: integer;
-}
-
-/**
  * The type of session to create.
  */
 union RealtimeSessionCreateRequestUnionType {
@@ -2295,28 +2271,6 @@ model RealtimeSessionCreateTranscriptionResponse extends RealtimeSessionCreateRe
 
   /** The transcription session details. */
   session?: RealtimeTranscriptionSessionCreateResponse;
-}
-
-/**
- * Request to create a Realtime client secret with an associated session configuration.
- * The request can specify either a realtime or a transcription session configuration.
- */
-@summary("Realtime client secret creation request")
-model RealtimeCreateClientSecretRequest {
-  @doc("""
-    Configuration for the client secret expiration. Expiration refers to the time after which
-    a client secret will no longer be valid for creating sessions. The session itself may
-    continue after that time once started. A secret can be used to create multiple sessions
-    until it expires.
-    """)
-  @summary("Client secret expiration")
-  expires_after?: RealtimeCreateClientSecretRequestExpiresAfter;
-
-  /**
-   * Session configuration to use for the client secret. Choose either a realtime
-   * session or a transcription session.
-   */
-  session?: RealtimeSessionCreateRequestUnion;
 }
 
 /**

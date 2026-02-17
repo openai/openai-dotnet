@@ -1,0 +1,77 @@
+﻿using System;
+using System.ClientModel.Primitives;
+using System.Text.Json;
+
+namespace OpenAI.Realtime;
+
+// CUSTOM: This type is not its own object. Instead, it represents a union, and as such, it must directly forward
+// its serialization and deserialization logic to the components of said union.
+public partial class GARealtimeMcpToolCallApprovalPolicy
+{
+    // CUSTOM: Edited to remove calls to WriteStartObject() and WriteEndObject(). 
+    void IJsonModel<GARealtimeMcpToolCallApprovalPolicy>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        if (Patch.Contains("$"u8))
+        {
+            writer.WriteRawValue(Patch.GetJson("$"u8));
+            return;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        JsonModelWriteCore(writer, options);
+    }
+
+    // CUSTOM:
+    // - Edited to serialize the GlobalPolicy component as a string value.
+    // - Edited to serialize the CustomPolicy component as an object value.
+    // - Removed serialization of additional properties.
+    protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    {
+        string format = options.Format == "W" ? ((IPersistableModel<GARealtimeMcpToolCallApprovalPolicy>)this).GetFormatFromOptions(options) : options.Format;
+        if (format != "J")
+        {
+            throw new FormatException($"The model {nameof(GARealtimeMcpToolCallApprovalPolicy)} does not support writing '{format}' format.");
+        }
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        if (Optional.IsDefined(DefaultPolicy) && !Patch.Contains("$.default_policy"u8))
+        {
+            writer.WriteStringValue(DefaultPolicy.Value.ToString());
+        }
+        if (Optional.IsDefined(CustomPolicy) && !Patch.Contains("$.custom_policy"u8))
+        {
+            writer.WriteObjectValue(CustomPolicy, options);
+        }
+
+        Patch.WriteTo(writer);
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+    }
+
+    // CUSTOM:
+    // - Edited to deserialize a string value into a GlobalPolicy component.
+    // - Edited to deserialize an object value into a CustomPolicy component.
+    internal static GARealtimeMcpToolCallApprovalPolicy DeserializeGARealtimeMcpToolCallApprovalPolicy(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+    {
+        if (element.ValueKind == JsonValueKind.Null)
+        {
+            return null;
+        }
+
+        GARealtimeDefaultMcpToolCallApprovalPolicy? defaultPolicy = default;
+        GARealtimeCustomMcpToolCallApprovalPolicy customPolicy = default;
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        if (element.ValueKind == JsonValueKind.String)
+        {
+            defaultPolicy = new GARealtimeDefaultMcpToolCallApprovalPolicy(element.GetString());
+        }
+        else
+        {
+            customPolicy = GARealtimeCustomMcpToolCallApprovalPolicy.DeserializeGARealtimeCustomMcpToolCallApprovalPolicy(element, element.GetUtf8Bytes(), options);
+        }
+
+        return new GARealtimeMcpToolCallApprovalPolicy(defaultPolicy, customPolicy, patch);
+    }
+}
