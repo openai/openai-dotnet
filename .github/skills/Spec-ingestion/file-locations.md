@@ -29,12 +29,12 @@ Quick reference for all paths involved in spec ingestion.
 
 | What | Path |
 |------|------|
-| Custom C# code (per area) | `src/Custom/{Area}/` |
-| Internal generator stubs | `src/Custom/{Area}/Internal/GeneratorStubs.cs` |
+| Custom C# code (per area) | `src/Custom/{area}/` |
+| Internal generator stubs | `src/Custom/{area}/Internal/GeneratorStubs.cs` |
 | Generated C# code | `src/Generated/` |
-| Generated models (per area) | `src/Generated/Models/{Area}/` |
-| Generated client | `src/Generated/{Area}Client.cs` |
-| Generated REST client | `src/Generated/{Area}Client.RestClient.cs` |
+| Generated models (per area) | `src/Generated/Models/{area}/` |
+| Generated client | `src/Generated/{area}Client.cs` |
+| Generated REST client | `src/Generated/{area}Client.RestClient.cs` |
 
 ## Local Repository — Scripts
 
