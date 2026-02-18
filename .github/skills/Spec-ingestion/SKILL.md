@@ -49,5 +49,5 @@ Areas that can be ingested independently:
 2. **NEVER modify the base spec** — it must be an exact copy of upstream. Handle all issues (type unions, suppressions, etc.) in `specification/client/` instead
 3. **Update `[CodeGenType]` stubs** in `src/Custom/{Area}/Internal/GeneratorStubs.cs` for any renamed types
 4. **Defer complex features** — suggest them as follow-up items rather than implementing in the same ingestion
-5. **Run `./scripts/Invoke-CodeGen.ps1`** to generate code, then `dotnet build` to verify
+5. **Run `./scripts/Invoke-CodeGen.ps1`** to generate code (warnings are OK. Errors are not), then `dotnet build` to verify (Should be no warnings or errors)
 6. **Work locally only** — do NOT create PRs or file issues. Instead, suggest a list of issues that may need to be filed upstream
