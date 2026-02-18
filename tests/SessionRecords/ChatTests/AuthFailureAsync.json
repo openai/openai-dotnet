@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "110",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.8.0 (.NET 9.0.13; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "messages": [
@@ -23,16 +23,16 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801d16a48c898e5-SEA",
+        "CF-RAY": "9cd101883d99a32e-SEA",
         "Connection": "keep-alive",
         "Content-Length": "288",
         "Content-Type": "application/json; charset=utf-8",
-        "Date": "Tue, 16 Sep 2025 16:42:36 GMT",
+        "Date": "Sanitized",
         "Server": "cloudflare",
+        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "Vary": "Origin",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "2",
         "x-openai-proxy-wasm": "v0.1",
         "X-Request-ID": "Sanitized"
       },
@@ -46,7 +46,5 @@
       }
     }
   ],
-  "Variables": {
-    "OPEN-API-KEY": "api-key"
-  }
+  "Variables": {}
 }

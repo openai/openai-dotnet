@@ -8,7 +8,6 @@ using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading;
-using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Realtime;
 
@@ -44,29 +43,21 @@ public class RealtimeTestFixtureBase : OpenAIRecordedTestBase
         CancellationTokenSource = null;
     }
 
-    public static string GetTestModel() => GetModelForScenario(TestScenario.Realtime);
+    public static string GetTestModel() => TestModel.Realtime;
 
-    public RealtimeClient GetTestClient(bool excludeDumpPolicy = false)
+    public RealtimeClient GetTestClient()
     {
         // WebSocket connections cannot go through the test proxy, so for Live mode tests
         // we create a direct client instead of using GetProxiedOpenAIClient.
         // The proxy only works with HTTP/HTTPS requests, not WebSocket connections.
-        RealtimeClient client;
-        if (Mode == RecordedTestMode.Live)
+        RealtimeClient client = Mode switch
         {
             // Create a direct client without proxy for live WebSocket tests
-            client = GetTestClient<RealtimeClient>(
-                scenario: TestScenario.Realtime,
-                excludeDumpPolicy: excludeDumpPolicy,
-                credential: GetTestApiKeyCredential());
-        }
-        else
-        {
+            RecordedTestMode.Live => TestEnvironment.GetTestClient<RealtimeClient>(TestModel.Realtime),
+
             // Use proxied client for playback mode (recordings)
-            client = GetProxiedOpenAIClient<RealtimeClient>(
-                scenario: TestScenario.Realtime,
-                excludeDumpPolicy: excludeDumpPolicy);
-        }
+            _ => GetProxiedOpenAIClient<RealtimeClient>(TestModel.Realtime)
+        };
 
         client.OnSendingCommand += (_, data) => PrintMessageData(data, "> ");
         client.OnReceivingCommand += (_, data) => PrintMessageData(data, "  < ");

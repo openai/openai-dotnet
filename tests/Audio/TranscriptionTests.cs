@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Audio;
 
@@ -31,7 +30,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     [TestCase(AudioSourceKind.UsingFilePath)]
     public async Task TranscriptionWorks(AudioSourceKind audioSourceKind)
     {
-        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Whisper);
         string filename = "audio_hello_world.mp3";
         string path = Path.Combine("Assets", filename);
         AudioTranscription transcription = null;
@@ -58,7 +57,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     [TestCase(AudioTimestampGranularities.Word | AudioTimestampGranularities.Segment)]
     public async Task TimestampsWork(AudioTimestampGranularities granularityFlags)
     {
-        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Whisper);
 
         using FileStream inputStream = File.OpenRead(Path.Combine("Assets", "audio_hello_world.mp3"));
 
@@ -131,7 +130,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     [TestCase(null)]
     public async Task TranscriptionFormatsWork(string responseFormat)
     {
-        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Whisper);
         string path = Path.Combine("Assets", "audio_hello_world.mp3");
 
         AudioTranscriptionOptions options = new()
@@ -188,7 +187,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task IncludesWork()
     {
-        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe);
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Mini_Transcribe);
         string filename = "audio_hello_world.mp3";
         string path = Path.Combine("Assets", filename);
 
@@ -206,7 +205,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task StreamingIncludesWork()
     {
-        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe);
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Mini_Transcribe);
         string filename = "audio_hello_world.mp3";
         string path = Path.Combine("Assets", filename);
 
@@ -240,7 +239,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task BadTranscriptionRequest()
     {
-        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Whisper);
 
         string path = Path.Combine("Assets", "audio_hello_world.mp3");
 
@@ -269,7 +268,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     [TestCase(AudioSourceKind.UsingFilePath)]
     public async Task StreamingTranscriptionWorks(AudioSourceKind audioSourceKind)
     {
-        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Gpt_4o_Mini_Transcribe);
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Gpt_4o_Mini_Transcribe);
         string filename = "audio_hello_world.mp3";
         string path = Path.Combine("Assets", filename);
 
@@ -314,7 +313,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
     [TestCase(AudioSourceKind.UsingFilePath)]
     public void StreamingTranscriptionThrowsForWhisperModel(AudioSourceKind audioSourceKind)
     {
-        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestScenario.Audio_Whisper);
+        AudioClient client = GetProxiedOpenAIClient<AudioClient>(TestModel.Audio_Whisper);
         string filename = "audio_hello_world.mp3";
         string path = Path.Combine("Assets", filename);
 
