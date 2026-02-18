@@ -119,8 +119,11 @@ Look at existing stubs in the area to determine the right pattern (class vs. str
 > **CRITICAL:** The base spec at `specification/base/typespec/` must be an **exact copy** of the upstream spec from `microsoft/openai-openapi-pr`. Do NOT modify it for any reason — not for type unions, not for import paths, not for namespaces, not for suppression directives.
 
 If there are issues with the base spec:
-- **Type unions** that would generate binary data types → handle in `specification/client/models/{area}.models.tsp` using discriminator patterns
-- **Any other issues** → resolve in the client TSP layer if possible, or suggest them as upstream issues to be filed (do NOT file issues yourself)
+
+| Issue | Solution |
+|------|----------|
+| **Type unions** that would generate binary data types | handle in `specification/client/models/{area}.models.tsp` using discriminator patterns. |
+| **Any other issues**| resolve in the client TSP layer if possible, or suggest them as upstream issues to be filed (do NOT file issues yourself) |
 
 ---
 
