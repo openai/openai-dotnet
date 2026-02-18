@@ -49,7 +49,7 @@ TypeSpec's `integer` type maps to `long` in C# by default. The `NumericTypesVisi
 
 for all generated properties unless explicitly excluded.
 
-**After code generation, you MUST review the generated numeric properties.** If a property genuinely requires `long` (e.g., byte counts, large IDs) or `double` (high-precision values), add it to the exclusion list in the visitor:
+**After code generation, you MUST review the generated numeric properties.** If a property genuinely requires `long` (e.g., byte counts, large IDs) or `double` (high-precision values), add it to the exclusion list in the NumericTypesVisitor:
 
 ```csharp
 private static readonly HashSet<string> _excludedLongProperties = new(StringComparer.OrdinalIgnoreCase)
