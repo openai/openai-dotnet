@@ -29,7 +29,7 @@ Previously completed spec ingestion PRs that demonstrate the full workflow and c
   - Added `OutputTokenDetails` property to `ImageTokenUsage`
 - **Lessons learned:**
   - Numeric type handling required a new codegen visitor (NumericPropertiesVisitor)
-  - Collection-based custom types needed special serialization handling
+  - Collection-based custom types needed special serialization handling (ItemsPropertyVisitor)
 
 ### PR #888 — Moderations
 
