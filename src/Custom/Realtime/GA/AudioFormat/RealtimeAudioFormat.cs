@@ -3,7 +3,7 @@
 namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
-[CodeGenType("RealtimeAudioFormatsGA")]
+[CodeGenType("RealtimeAudioFormatGA")]
 public partial class GARealtimeAudioFormat
 {
 }

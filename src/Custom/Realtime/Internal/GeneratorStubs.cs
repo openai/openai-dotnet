@@ -148,6 +148,7 @@ namespace OpenAI.Realtime;
 [CodeGenType("RealtimeTranscriptionSessionGAObject")] internal readonly partial struct InternalRealtimeTranscriptionSessionGAObject {}
 
 // Audio formats discriminated union types (GA audio format model)
+[CodeGenType("RealtimeAudioFormatsType")] internal readonly partial struct InternalRealtimeAudioFormatsType { }
 [CodeGenType("RealtimeAudioFormats")] internal partial class InternalRealtimeAudioFormats {}
 [CodeGenType("UnknownRealtimeAudioFormats")] internal partial class InternalUnknownRealtimeAudioFormats {}
 [CodeGenType("RealtimeAudioFormatsPcm")] internal partial class InternalRealtimeAudioFormatsPcm {}

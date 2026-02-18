@@ -8,11 +8,11 @@ internal readonly partial struct InternalRealtimeSessionCreateRequestUnionType {
 [CodeGenType("UnknownRealtimeSessionCreateRequestGABaseGA")]
 internal partial class InternalUnknownRealtimeSessionCreateRequestGABaseGA { }
 
-[CodeGenType("RealtimeAudioFormatsType")]
-internal readonly partial struct InternalRealtimeAudioFormatsType { }
+[CodeGenType("RealtimeAudioFormatTypeGA")]
+internal readonly partial struct InternalRealtimeAudioFormatType { }
 
-[CodeGenType("UnknownRealtimeAudioFormatsGA")]
-internal partial class InternalUnknownRealtimeAudioFormatsGA { }
+[CodeGenType("UnknownRealtimeAudioFormatGA")]
+internal partial class InternalUnknownRealtimeAudioFormatGA { }
 
 [CodeGenType("ToolChoiceBaseTypeGA")]
 internal readonly partial struct InternalToolChoiceBaseTypeGA { }

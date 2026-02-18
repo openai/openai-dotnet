@@ -6,10 +6,10 @@ using System.ClientModel.Primitives;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalUnknownRealtimeAudioFormatsGA : GARealtimeAudioFormat
+    internal partial class InternalUnknownRealtimeAudioFormatGA : GARealtimeAudioFormat
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalUnknownRealtimeAudioFormatsGA(InternalRealtimeAudioFormatsType kind, in JsonPatch patch) : base(kind != default ? kind : "unknown", patch)
+        internal InternalUnknownRealtimeAudioFormatGA(InternalRealtimeAudioFormatType kind, in JsonPatch patch) : base(kind != default ? kind : "unknown", patch)
         {
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

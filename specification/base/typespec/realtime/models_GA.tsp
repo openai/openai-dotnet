@@ -202,7 +202,7 @@ model RealtimeSessionCreateRequestGAAudio_GA {
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
 model RealtimeSessionCreateRequestGAAudioInput_GA {
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  format?: RealtimeAudioFormats_GA;
+  format?: RealtimeAudioFormat_GA;
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   transcription?: AudioTranscription_GA;
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
@@ -224,7 +224,7 @@ model RealtimeNoiseReduction_GA {
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
 model RealtimeSessionCreateRequestGAAudioOutput_GA {
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  format?: RealtimeAudioFormats_GA;
+  format?: RealtimeAudioFormat_GA;
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   voice?: VoiceIdsShared_GA = "alloy";
 
@@ -246,7 +246,7 @@ model RealtimeTranscriptionSessionCreateRequestGAAudio_GA {
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
 model RealtimeTranscriptionSessionCreateRequestGAAudioInput_GA {
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  format?: RealtimeAudioFormats_GA;
+  format?: RealtimeAudioFormat_GA;
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   transcription?: AudioTranscription_GA;
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
@@ -529,26 +529,33 @@ model TokenLimits_GA {
   post_instructions?: integer;
 }
 
-#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-@discriminator("type")
-model RealtimeAudioFormats_GA {
-  type: RealtimeAudioFormatsType;
+union RealtimeAudioFormatType_GA {
+  string,
+  audio_pcm: "audio/pcm",
+  audio_pcmu: "audio/pcmu",
+  audio_pcma: "audio/pcma"
 }
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-model RealtimeAudioFormatsAudioPcm_GA extends RealtimeAudioFormats_GA {
-  type: "audio/pcm";
+@discriminator("type")
+model RealtimeAudioFormat_GA {
+  type: RealtimeAudioFormatType_GA;
+}
+
+#suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+model RealtimeAudioFormatsAudioPcm_GA extends RealtimeAudioFormat_GA {
+  type: RealtimeAudioFormatType_GA.audio_pcm;
   rate?: 24000;
 }
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-model RealtimeAudioFormatsAudioPcmu_GA extends RealtimeAudioFormats_GA {
-  type: "audio/pcmu";
+model RealtimeAudioFormatsAudioPcmu_GA extends RealtimeAudioFormat_GA {
+  type: RealtimeAudioFormatType_GA.audio_pcmu;
 }
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-model RealtimeAudioFormatsAudioPcma_GA extends RealtimeAudioFormats_GA {
-  type: "audio/pcma";
+model RealtimeAudioFormatsAudioPcma_GA extends RealtimeAudioFormat_GA {
+  type: RealtimeAudioFormatType_GA.audio_pcma;
 }
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."

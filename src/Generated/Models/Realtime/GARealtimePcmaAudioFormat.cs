@@ -10,12 +10,12 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class GARealtimePcmaAudioFormat : GARealtimeAudioFormat
     {
-        public GARealtimePcmaAudioFormat() : this(InternalRealtimeAudioFormatsType.AudioPcma, default)
+        public GARealtimePcmaAudioFormat() : this(InternalRealtimeAudioFormatType.AudioPcma, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal GARealtimePcmaAudioFormat(InternalRealtimeAudioFormatsType kind, in JsonPatch patch) : base(kind, patch)
+        internal GARealtimePcmaAudioFormat(InternalRealtimeAudioFormatType kind, in JsonPatch patch) : base(kind, patch)
         {
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

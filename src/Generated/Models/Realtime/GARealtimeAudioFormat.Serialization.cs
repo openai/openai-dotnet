@@ -9,7 +9,7 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    [PersistableModelProxy(typeof(InternalUnknownRealtimeAudioFormatsGA))]
+    [PersistableModelProxy(typeof(InternalUnknownRealtimeAudioFormatGA))]
     public partial class GARealtimeAudioFormat : IJsonModel<GARealtimeAudioFormat>
     {
         internal GARealtimeAudioFormat()
@@ -78,7 +78,7 @@ namespace OpenAI.Realtime
                         return GARealtimePcmaAudioFormat.DeserializeGARealtimePcmaAudioFormat(element, data, options);
                 }
             }
-            return InternalUnknownRealtimeAudioFormatsGA.DeserializeInternalUnknownRealtimeAudioFormatsGA(element, data, options);
+            return InternalUnknownRealtimeAudioFormatGA.DeserializeInternalUnknownRealtimeAudioFormatGA(element, data, options);
         }
 
         BinaryData IPersistableModel<GARealtimeAudioFormat>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

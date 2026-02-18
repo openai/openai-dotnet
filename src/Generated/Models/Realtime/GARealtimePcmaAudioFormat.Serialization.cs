@@ -60,7 +60,7 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            InternalRealtimeAudioFormatsType kind = default;
+            InternalRealtimeAudioFormatType kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -68,7 +68,7 @@ namespace OpenAI.Realtime
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    kind = new InternalRealtimeAudioFormatsType(prop.Value.GetString());
+                    kind = new InternalRealtimeAudioFormatType(prop.Value.GetString());
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
