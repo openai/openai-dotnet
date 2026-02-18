@@ -28,7 +28,7 @@ Previously completed spec ingestion PRs that demonstrate the full workflow and c
   - Added `InputFidelity`, `OutputCompressionFactor`, `OutputFileFormat` properties to `ImageEditOptions`
   - Added `OutputTokenDetails` property to `ImageTokenUsage`
 - **Lessons learned:**
-  - Numeric type handling required a new codegen visitor
+  - Numeric type handling required a new codegen visitor (NumericPropertiesVisitor)
   - Collection-based custom types needed special serialization handling
 
 ### PR #888 — Moderations
