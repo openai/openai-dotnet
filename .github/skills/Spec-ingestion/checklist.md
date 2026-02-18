@@ -8,15 +8,13 @@ Use this checklist when performing a spec ingestion for any area.
 - [ ] **Review reference PRs** in [references.md](references.md) for the area or similar areas — note visitor changes, deferred features, and custom C# patterns
 - [ ] Pull latest from upstream `microsoft/openai-openapi-pr` (branch: `main`)
 - [ ] Pull latest from `openai/openai-dotnet` (branch: `main`)
-- [ ] Create a new branch: `{username}_{Area}SpecUpdate`
 
 ## Base Spec Update
 
 - [ ] Sparse checkout upstream repo including **both** `{area}` and `common` folders
 - [ ] Copy latest base spec from upstream `packages/openai-typespec/src/{area}/` to `specification/base/typespec/{area}/` — **exact copy, no modifications**
-- [ ] **Keep the clone** until after first successful compile — you may need common types
-- [ ] If compile shows missing common types, find the type definition in the upstream clone's `src/common/` and copy **only that type definition** into the local `specification/base/typespec/common/` file — do NOT copy the entire file or folder
-- [ ] Delete temporary clone after compile succeeds
+- [ ] **Keep the temporary sparse checkout** — don't delete it yet. If `./scripts/Invoke-CodeGen.ps1` fails with missing types from `common/`, you'll need to look them up in the clone's `src/common/` folder and copy the specific type definition into the local `specification/base/typespec/common/` file (do NOT copy the entire file or folder)
+- [ ] Delete the temporary sparse checkout after `./scripts/Invoke-CodeGen.ps1` succeeds and no more upstream files are needed
 
 ## Client TSP Update
 
@@ -24,13 +22,13 @@ Use this checklist when performing a spec ingestion for any area.
 - [ ] Fix errors in `specification/client/{area}.client.tsp`
 - [ ] Add `@@clientLocation` for **all** operations (no more `interface` blocks)
 - [ ] Update `@@clientName` for any renamed operations
-- [ ] Update `@@visibility`, `@@alternateType`, `@@usage` as needed
+- [ ] Update `@@visibility`, `@@alternateType`, `@@usage` — fix these if `./scripts/Invoke-CodeGen.ps1` reports errors referencing these decorators (e.g., a type or property was renamed or removed upstream)
 - [ ] Update client models TSP (`specification/client/models/{area}.models.tsp`) if applicable
 
 ## Compile and Generate Code
 
 - [ ] Run `./scripts/Invoke-CodeGen.ps1` (no params) — this handles `npm ci`, build, compile, and code generation in one step
-- [ ] Expect ~200 pre-existing warnings; only **errors** matter
+- [ ] Ignore warnings; only **errors** matter
 - [ ] If `prohibited-namespace` errors appear, add `[CodeGenType]` stubs — internal types go in `Internal/GeneratorStubs.cs`, public types go in `GeneratorStubs.cs` (see patterns-and-gotchas.md §5)
 - [ ] If client TSP fixes are needed, fix and re-run `./scripts/Invoke-CodeGen.ps1`
 - [ ] Report any remaining base spec compile errors — **do NOT modify base spec directly**
