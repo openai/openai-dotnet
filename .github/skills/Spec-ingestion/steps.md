@@ -176,7 +176,7 @@ If the generated type name changes (e.g., because the TypeSpec model was renamed
 
 List all new types, properties, enums, or operations added in the updated spec. For each:
 - Determine if it should be **public** or **internal**
-- If internal, add a `[CodeGenType("...")]` stub in `src/custom/{Area}/Internal/GeneratorStubs.cs`
+- If internal, add a `[CodeGenType("...")]` stub in `src/Custom/{Area}/Internal/GeneratorStubs.cs`
 - If public, check if it is generated correctly in `src/Generated`
 - New features that require significant work should be listed as suggested follow-up items
 

@@ -40,8 +40,8 @@ Previously completed spec ingestion PRs that demonstrate the full workflow and c
 - **Intermediate commits:** Spec update → Export API → Update latest TypeSpec → Add missing `[Experimental]` → Fix `ModerationInputPart` → Remove extra namespace
 - **Lessons learned:**
   - Multiple iterations needed to fix client code after spec update
-  - `[Experimental]` attributes needed for new features
-  - Namespace cleanup may be required
+  - `[Experimental]` attributes are automatically added by the `ExperimentalAttributeVisitor` in the codegen plugin — no manual tagging needed
+  - `prohibited-namespace` errors required adding `[CodeGenType]` stubs to place new types in the correct `OpenAI.{Area}` namespace (see patterns-and-gotchas.md §5)
 
 ### PR #894 — Files
 

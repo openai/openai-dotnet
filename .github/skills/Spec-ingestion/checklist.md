@@ -23,7 +23,7 @@ Use this checklist when performing a spec ingestion for any area.
 - [ ] Add `@@clientLocation` for **all** operations (no more `interface` blocks)
 - [ ] Update `@@clientName` for any renamed operations
 - [ ] Update `@@visibility`, `@@alternateType`, `@@usage` — fix these if `./scripts/Invoke-CodeGen.ps1` reports errors referencing these decorators (e.g., a type or property was renamed or removed upstream)
-- [ ] Update client models TSP (`specification/client/models/{area}.models.tsp`) if applicable
+- [ ] Update client models TSP (`specification/client/models/{area}.models.tsp`) — **only if this file already exists** for the area (see patterns-and-gotchas.md §4 for criteria)
 
 ## Compile and Generate Code
 

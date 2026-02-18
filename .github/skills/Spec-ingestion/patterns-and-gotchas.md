@@ -62,9 +62,18 @@ See [PR #935 (VectorStore)](https://github.com/openai/openai-dotnet/pull/935) fo
 
 ---
 
-## 4. Streaming Responses and Discriminated Unions
+## 4. Client Models TSP — When It Exists and Why
 
-Some areas (audio, chat, responses) have streaming variants. The client models TSP typically needs **discriminated union wrappers** for streaming event types:
+Not every area has a client models TSP file (`specification/client/models/{area}.models.tsp`). These files exist **only** for areas that need discriminated union wrappers or .NET-specific model overrides.
+
+**How to tell if you need to update one:** check whether `specification/client/models/{area}.models.tsp` exists. If it does, review and update it. If it doesn't, skip this step — do NOT create one unless the new spec introduces type unions that require discriminator treatment.
+
+| Has client models TSP | Examples |
+|-----------------------|----------|
+| **Yes** | audio, assistants, batch, chat, containers, conversations, responses, vector-stores, videos |
+| **No** | moderations, files, embeddings, images, models |
+
+Areas that have these files typically contain streaming variants or discriminated unions. The client models TSP provides **discriminated union wrappers** for streaming event types:
 
 ```typespec
 @usage(Usage.output | Usage.json)
@@ -91,12 +100,14 @@ model DotNetTranscriptTextSegmentEvent extends DotNetCreateTranscriptionStreamin
 
 A `prohibited-namespace` compile error means the generator found a type that doesn't have a corresponding `[CodeGenType]` stub in the custom C# code. This can be triggered by any type — inline unions, new models, new enums, etc. — but **not every new type causes it**. Only fix the specific types named in the error.
 
+**Why this works:** The `prohibited-namespace` error fires because TypeSpec defines types under the `OpenAI` namespace, but the generator requires each type to be placed in the correct area-specific namespace (e.g., `OpenAI.Audio`, `OpenAI.Chat`). By placing a `[CodeGenType]` stub in the correct `src/Custom/{Area}/` folder, the stub declares the right namespace (`namespace OpenAI.{Area};`), which tells the generator where the type belongs. This is important to understand when an area has **no existing stubs** — you must create the file in the right folder with the correct namespace.
+
 **Fix:** Add a `[CodeGenType]` stub for each type named in the error, placing it in the correct location:
 
 - **Internal types** → `src/Custom/{Area}/Internal/GeneratorStubs.cs`
 - **Public types** → `src/Custom/{Area}/GeneratorStubs.cs`
 
-Look at existing stubs in the area to determine the right pattern (class vs. struct, readonly, etc.).
+Both use the same namespace (`namespace OpenAI.{Area};`) — the `Internal` folder is just for organization, not a separate namespace. Look at existing stubs in the area to determine the right pattern (class vs. struct, readonly, etc.). If no stub file exists yet, create one in the appropriate folder with `namespace OpenAI.{Area};`.
 
 **Example — internal stubs** (`src/Custom/{Area}/Internal/GeneratorStubs.cs`):
 ```csharp
@@ -141,7 +152,7 @@ Not everything needs to be done during the spec ingestion. New features that req
 
 ## 8. `[Experimental]` Attribute for New Features
 
-New public types and properties that are not yet stable should be marked with `[Experimental]` in the custom C# code. This was done during the Moderations ingestion (#888).
+The `[Experimental]` attribute is automatically added to new public types by the `ExperimentalAttributeVisitor` in the codegen plugin — no manual tagging is needed. This was observed during the Moderations ingestion (#888).
 
 ---
 
