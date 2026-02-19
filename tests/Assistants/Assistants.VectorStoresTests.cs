@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.VectorStores;
 
@@ -37,7 +36,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CanCreateGetAndDeleteVectorStores()
     {
-        VectorStoreClient client = GetTestClient();
+        VectorStoreClient client = GetProxiedOpenAIClient<VectorStoreClient>();
 
         VectorStore vectorStore = await client.CreateVectorStoreAsync();
         Validate(vectorStore);
@@ -107,7 +106,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CanEnumerateVectorStores()
     {
-        VectorStoreClient client = GetTestClient();
+        VectorStoreClient client = GetProxiedOpenAIClient<VectorStoreClient>();
 
         int vectorStoreCount = 3;
 
@@ -154,7 +153,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CanAssociateFiles()
     {
-        VectorStoreClient client = GetTestClient();
+        VectorStoreClient client = GetProxiedOpenAIClient<VectorStoreClient>();
         VectorStore vectorStore = await client.CreateVectorStoreAsync();
         Validate(vectorStore);
 
@@ -204,7 +203,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task Pagination_CanRehydrateVectorStoreFileCollection()
     {
-        VectorStoreClient client = GetTestClient();
+        VectorStoreClient client = GetProxiedOpenAIClient<VectorStoreClient>();
         VectorStore vectorStore = await client.CreateVectorStoreAsync();
         Validate(vectorStore);
 
@@ -282,7 +281,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CanPaginateGetVectorStoreFilesInBatch()
     {
-        VectorStoreClient client = GetTestClient();
+        VectorStoreClient client = GetProxiedOpenAIClient<VectorStoreClient>();
         VectorStore vectorStore = await client.CreateVectorStoreAsync();
         Validate(vectorStore);
 
@@ -359,7 +358,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CanTestGetVectorStoreFilesInBatchCollectionOptions()
     {
-        VectorStoreClient client = GetTestClient();
+        VectorStoreClient client = GetProxiedOpenAIClient<VectorStoreClient>();
         VectorStore vectorStore = await client.CreateVectorStoreAsync();
         Validate(vectorStore);
         int pageSizeLimit = 2;
@@ -376,13 +375,13 @@ public class VectorStoresTests : OpenAIRecordedTestBase
         }
 
         // Test Order property - Ascending vs Descending
-        var ascendingOptions = new VectorStoreFileCollectionOptions 
-        { 
+        var ascendingOptions = new VectorStoreFileCollectionOptions
+        {
             Order = VectorStoreFileCollectionOrder.Ascending,
             PageSizeLimit = pageSizeLimit
         };
-        var descendingOptions = new VectorStoreFileCollectionOptions 
-        { 
+        var descendingOptions = new VectorStoreFileCollectionOptions
+        {
             Order = VectorStoreFileCollectionOrder.Descending,
             PageSizeLimit = pageSizeLimit
         };
@@ -404,9 +403,9 @@ public class VectorStoresTests : OpenAIRecordedTestBase
         Assert.That(ascendingIds.Count, Is.EqualTo(descendingIds.Count));
 
         // Test Filter property - only get completed files (which should be all of them after batch completion)
-        var filterOptions = new VectorStoreFileCollectionOptions 
-        { 
-            Filter = VectorStoreFileStatusFilter.Completed 
+        var filterOptions = new VectorStoreFileCollectionOptions
+        {
+            Filter = VectorStoreFileStatusFilter.Completed
         };
 
         int completedCount = 0;
@@ -422,10 +421,10 @@ public class VectorStoresTests : OpenAIRecordedTestBase
         var firstVectorStoreFile = ascendingIds.FirstOrDefault();
         if (!string.IsNullOrEmpty(firstVectorStoreFile))
         {
-            var afterOptions = new VectorStoreFileCollectionOptions 
-            { 
+            var afterOptions = new VectorStoreFileCollectionOptions
+            {
                 AfterId = firstVectorStoreFile,
-                Order = VectorStoreFileCollectionOrder.Ascending 
+                Order = VectorStoreFileCollectionOrder.Ascending
             };
 
             List<string> afterIds = new List<string>();
@@ -444,10 +443,10 @@ public class VectorStoresTests : OpenAIRecordedTestBase
         var lastVectorStoreFile = ascendingIds.LastOrDefault();
         if (!string.IsNullOrEmpty(lastVectorStoreFile))
         {
-            var beforeOptions = new VectorStoreFileCollectionOptions 
-            { 
+            var beforeOptions = new VectorStoreFileCollectionOptions
+            {
                 BeforeId = lastVectorStoreFile,
-                Order = VectorStoreFileCollectionOrder.Ascending 
+                Order = VectorStoreFileCollectionOrder.Ascending
             };
 
             List<string> beforeIds = new List<string>();
@@ -466,10 +465,10 @@ public class VectorStoresTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CanRehydrateGetVectorStoreFilesInBatchPagination()
     {
-        VectorStoreClient client = GetTestClient();
+        VectorStoreClient client = GetProxiedOpenAIClient<VectorStoreClient>();
         VectorStore vectorStore = await client.CreateVectorStoreAsync();
         Validate(vectorStore);
-        
+
         IReadOnlyList<OpenAIFile> testFiles = await GetNewTestFiles(6);
 
         VectorStoreFileBatch fileBatch = await client.AddFileBatchToVectorStoreAsync(vectorStore.Id, testFiles?.Select(file => file.Id));
@@ -541,7 +540,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CanUseBatchIngestion()
     {
-        VectorStoreClient client = GetTestClient();
+        VectorStoreClient client = GetProxiedOpenAIClient<VectorStoreClient>();
         VectorStore vectorStore = await client.CreateVectorStoreAsync();
         Validate(vectorStore);
 
@@ -583,7 +582,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
     {
         IReadOnlyList<OpenAIFile> testFiles = await GetNewTestFiles(5);
 
-        VectorStoreClient client = GetTestClient();
+        VectorStoreClient client = GetProxiedOpenAIClient<VectorStoreClient>();
 
         FileChunkingStrategy chunkingStrategy = strategyKind switch
         {
@@ -636,7 +635,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CanGetVectorStores()
     {
-        VectorStoreClient client = GetTestClient();
+        VectorStoreClient client = GetProxiedOpenAIClient<VectorStoreClient>();
 
         IReadOnlyList<OpenAIFile> testFiles = await GetNewTestFiles(5);
         VectorStoreCreationOptions creationOptions = new()
@@ -691,7 +690,7 @@ public class VectorStoresTests : OpenAIRecordedTestBase
 
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            OpenAIFileClient client = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
+            OpenAIFileClient client = GetProxiedOpenAIClient<OpenAIFileClient>();
             for (int i = 0; i < count; i++)
             {
                 OpenAIFile file = await client.UploadFileAsync(
@@ -714,8 +713,8 @@ public class VectorStoresTests : OpenAIRecordedTestBase
             return;
         }
 
-        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
-        VectorStoreClient vectorStoreClient = GetTestClient<VectorStoreClient>(TestScenario.VectorStores);
+        OpenAIFileClient fileClient = TestEnvironment.GetTestClient<OpenAIFileClient>();
+        VectorStoreClient vectorStoreClient = TestEnvironment.GetTestClient<VectorStoreClient>();
         RequestOptions requestOptions = new()
         {
             ErrorOptions = ClientErrorBehaviors.NoThrow,
@@ -776,9 +775,6 @@ public class VectorStoresTests : OpenAIRecordedTestBase
         {
             throw new NotImplementedException($"{nameof(Validate)} helper not implemented for: {typeof(T)}");
         }
-    }
-
-    private VectorStoreClient GetTestClient() => GetProxiedOpenAIClient<VectorStoreClient>(TestScenario.VectorStores);
-}
+    }}
 
 #pragma warning restore OPENAI001

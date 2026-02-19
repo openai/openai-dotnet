@@ -13,15 +13,16 @@ internal partial class InternalRealtimeResponseSession
     [CodeGenMember("Voice")]
     internal ConversationVoice Voice { get; set; }
 
-    [CodeGenMember("MaxResponseOutputTokens")]
-    private BinaryData _maxResponseOutputTokens;
+    // Customization: API changed from max_response_output_tokens to max_output_tokens
+    [CodeGenMember("MaxOutputTokens")]
+    private BinaryData _maxOutputTokens;
 
-    public ConversationMaxTokensChoice MaxResponseOutputTokens
+    public ConversationMaxTokensChoice MaxOutputTokens
     {
-        get => ConversationMaxTokensChoice.FromBinaryData(_maxResponseOutputTokens);
+        get => ConversationMaxTokensChoice.FromBinaryData(_maxOutputTokens);
         set
         {
-            _maxResponseOutputTokens = value == null ? null : ModelReaderWriter.Write(value, ModelReaderWriterOptions.Json, OpenAIContext.Default);
+            _maxOutputTokens = value == null ? null : ModelReaderWriter.Write(value, ModelReaderWriterOptions.Json, OpenAIContext.Default);
         }
     }
 }

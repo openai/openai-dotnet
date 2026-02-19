@@ -1,4 +1,4 @@
-﻿using Microsoft.ClientModel.TestFramework;
+using Microsoft.ClientModel.TestFramework;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
 using OpenAI.Conversations;
@@ -15,7 +15,6 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
-using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Responses;
 
@@ -44,8 +43,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         }
 
         RequestOptions noThrowOptions = new() { ErrorOptions = ClientErrorBehaviors.NoThrow };
-        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
-        VectorStoreClient vectorStoreClient = GetTestClient<VectorStoreClient>(TestScenario.VectorStores);
+        OpenAIFileClient fileClient = TestEnvironment.GetTestClient<OpenAIFileClient>();
+        VectorStoreClient vectorStoreClient = TestEnvironment.GetTestClient<VectorStoreClient>();
 
         foreach (string fileId in FileIdsToDelete)
         {
@@ -75,12 +74,12 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task StreamingResponses()
     {
-        ResponsesClient client = GetTestClient(); // "computer-use-alpha");
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>(); // "computer-use-alpha");
 
         List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("Hello, world!")];
         List<string> deltaTextSegments = [];
         string finalResponseText = null;
-        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(TestHelpers.GetModelForScenario(TestScenario.Responses), inputItems))
+        await foreach (StreamingResponseUpdate update in client.CreateResponseStreamingAsync(TestModel.Responses, inputItems))
         {
             Console.WriteLine(ModelReaderWriter.Write(update));
             if (update is StreamingResponseOutputTextDeltaUpdate outputTextDeltaUpdate)
@@ -103,7 +102,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task StreamingResponsesWithReasoningSummary()
     {
-        ResponsesClient client = GetTestClient("o3-mini");
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>("o3-mini");
         List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("I’m visiting New York for 3 days and love food and art. What’s the best way to plan my trip?")];
 
         CreateResponseOptions options = new(inputItems)
@@ -166,7 +165,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [TestCase("computer-use-preview")]
     public async Task ResponsesHelloWorldWithTool(string model)
     {
-        ResponsesClient client = GetTestClient(model);
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>(model);
 
         CreateResponseOptions options = new(
             [
@@ -214,7 +213,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ResponsesWithReasoning()
     {
-        ResponsesClient client = GetTestClient("gpt-5");
+        ResponsesClient client = TestEnvironment.GetTestClient<ResponsesClient>("gpt-5");
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("What's the best way to fold a burrito?")])
         {
@@ -244,7 +243,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ReasoningWithStoreDisabled()
     {
-        ResponsesClient client = GetTestClient("gpt-5-mini");
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>("gpt-5-mini");
 
         List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("Hello, world!")];
         CreateResponseOptions options = new(inputItems)
@@ -276,7 +275,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [TestCase("gpt-4o-mini")]
     public async Task HelloWorldStreaming(string model)
     {
-        ResponsesClient client = GetTestClient(model);
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>(model);
 
         ResponseContentPart contentPart
             = ResponseContentPart.CreateInputTextPart("Hello, responses!");
@@ -298,9 +297,9 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CanDeleteResponse()
     {
-        ResponsesClient client = GetTestClient();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
-        ResponseResult response = await client.CreateResponseAsync(TestHelpers.GetModelForScenario(TestScenario.Responses), "Hello, model!");
+        ResponseResult response = await client.CreateResponseAsync(TestModel.Responses, "Hello, model!");
 
         async Task RetrieveThatResponseAsync()
         {
@@ -319,11 +318,11 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CanOptOutOfStorage()
     {
-        ResponsesClient client = GetTestClient();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Hello, model!")])
         {
-            Model = TestHelpers.GetModelForScenario(TestScenario.Responses),
+            Model = TestModel.Responses,
             StoredOutputEnabled = false,
         };
 
@@ -336,7 +335,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ResponseUsingConversations()
     {
-        ConversationClient conversationClient = GetProxiedOpenAIClient<ConversationClient>(TestScenario.Conversations);
+        ConversationClient conversationClient = GetProxiedOpenAIClient<ConversationClient>();
 
         BinaryData createConversationParameters = BinaryData.FromBytes("""
             {
@@ -356,7 +355,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         using JsonDocument conversationResultAsJson = JsonDocument.Parse(conversationResult.GetRawResponse().Content.ToString());
         string conversationId = conversationResultAsJson.RootElement.GetProperty("id"u8).GetString();
 
-        ResponsesClient client = GetTestClient("gpt-4.1");
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>("gpt-4.1");
         ResponseResult response = await client.CreateResponseAsync(
             new CreateResponseOptions([ResponseItem.CreateUserMessageItem("tell me another")])
             {
@@ -394,12 +393,12 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ResponseServiceTierWorks()
     {
-        ResponsesClient client = GetTestClient();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         MessageResponseItem message = ResponseItem.CreateUserMessageItem("Using a comprehensive evaluation of popular media in the 1970s and 1980s, what were the most common sci-fi themes?");
         CreateResponseOptions options = new([message])
         {
-            Model = TestHelpers.GetModelForScenario(TestScenario.Responses),
+            Model = TestModel.Responses,
             ServiceTier = ResponseServiceTier.Default,
         };
         ResponseResult response = await client.CreateResponseAsync(options);
@@ -411,8 +410,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task OutputTextMethod()
     {
-        ResponsesClient client = GetTestClient();
-        ResponseResult response = await client.CreateResponseAsync(TestHelpers.GetModelForScenario(TestScenario.Responses), "Respond with only the word hello.");
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        ResponseResult response = await client.CreateResponseAsync(TestModel.Responses, "Respond with only the word hello.");
         var outputText = response.GetOutputText();
         Assert.That(outputText.Length, Is.GreaterThan(0).And.LessThan(7));
         Assert.That(outputText.ToLower(), Does.Contain("hello"));
@@ -423,7 +422,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         response = await client.CreateResponseAsync(
             new CreateResponseOptions([ResponseItem.CreateUserMessageItem("How's the weather?")])
             {
-                Model = TestHelpers.GetModelForScenario(TestScenario.Responses),
+                Model = TestModel.Responses,
                 Tools =
                 {
                     ResponseTool.CreateFunctionTool(
@@ -440,10 +439,10 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task MessageHistoryWorks()
     {
-        ResponsesClient client = GetTestClient();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         ResponseResult response = await client.CreateResponseAsync(
-            TestHelpers.GetModelForScenario(TestScenario.Responses),
+            TestModel.Responses,
             [
                 ResponseItem.CreateDeveloperMessageItem("You are a helpful assistant."),
                 ResponseItem.CreateUserMessageItem("Hello, Assistant, my name is Bob!"),
@@ -458,7 +457,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ImageInputWorks()
     {
-        ResponsesClient client = GetTestClient();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         string imagePath = Path.Join("Assets", "images_dog_and_cat.png");
         string imageMediaType = "image/png";
@@ -466,7 +465,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Uri imageDataUri = new($"data:{imageMediaType};base64,{Convert.ToBase64String(imageBytes.ToArray())}");
 
         ResponseResult response = await client.CreateResponseAsync(
-            TestHelpers.GetModelForScenario(TestScenario.Responses),
+            TestModel.Responses,
             [
                 ResponseItem.CreateUserMessageItem(
                     [
@@ -483,8 +482,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task FileInputFromIdWorks()
     {
-        ResponsesClient client = GetTestClient();
-        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
         string filePath = Path.Join("Assets", "files_travis_favorite_food.pdf");
 
         OpenAIFile newFileToUse;
@@ -504,7 +503,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
                 ResponseContentPart.CreateInputFilePart(newFileToUse.Id),
             ]);
 
-        ResponseResult response = await client.CreateResponseAsync(TestHelpers.GetModelForScenario(TestScenario.Responses), [messageItem]);
+        ResponseResult response = await client.CreateResponseAsync(TestModel.Responses, [messageItem]);
 
         Assert.That(response?.GetOutputText().ToLower(), Does.Contain("pizza"));
     }
@@ -512,7 +511,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task FileInputFromBinaryWorks()
     {
-        ResponsesClient client = GetTestClient();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         string filePath = Path.Join("Assets", "files_travis_favorite_food.pdf");
         Stream fileStream = File.OpenRead(filePath);
@@ -524,7 +523,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
                 ResponseContentPart.CreateInputFilePart(fileBytes, "application/pdf", "test_favorite_foods.pdf"),
             ]);
 
-        ResponseResult response = await client.CreateResponseAsync(TestHelpers.GetModelForScenario(TestScenario.Responses), [messageItem]);
+        ResponseResult response = await client.CreateResponseAsync(TestModel.Responses, [messageItem]);
 
         Assert.That(response?.GetOutputText(), Does.Contain("pizza"));
     }
@@ -553,7 +552,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         CreateResponseOptions options = new(messages)
         {
-            Model = TestHelpers.GetModelForScenario(TestScenario.Responses),
+            Model = TestModel.Responses,
         };
 
         if (instructionMethod == ResponsesTestInstructionMethod.InstructionsProperty)
@@ -561,7 +560,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             options.Instructions = instructions;
         }
 
-        ResponsesClient client = GetTestClient();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
         ResponseResult response = await client.CreateResponseAsync(options);
 
         Assert.That(response, Is.Not.Null);
@@ -608,13 +607,13 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task TwoTurnCrossModel()
     {
-        ResponsesClient client1 = GetTestClient(TestHelpers.GetModelForScenario(TestScenario.Responses));
-        ResponsesClient client2 = GetTestClient("o3-mini");
+        ResponsesClient client1 = GetProxiedOpenAIClient<ResponsesClient>(TestModel.Responses);
+        ResponsesClient client2 = GetProxiedOpenAIClient<ResponsesClient>("o3-mini");
 
-        ResponseResult response1 = await client1.CreateResponseAsync(TestHelpers.GetModelForScenario(TestScenario.Responses), "Hello, Assistant! My name is Travis.");
+        ResponseResult response1 = await client1.CreateResponseAsync(TestModel.Responses, "Hello, Assistant! My name is Travis.");
         ResponseResult response2 = await client2.CreateResponseAsync("o3-mini", "What's my name?", response1.Id);
 
-        Assert.That(response1.Model.StartsWith(TestHelpers.GetModelForScenario(TestScenario.Responses)), Is.True);
+        Assert.That(response1.Model.StartsWith(TestModel.Responses), Is.True);
         Assert.That(response2.Model.StartsWith("o3-mini"), Is.True);
     }
 
@@ -623,12 +622,12 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [TestCase("computer-use-preview", Ignore = "Not yet supported with computer-use-preview")]
     public async Task StructuredOutputs(string modelName)
     {
-        ResponsesClient client = GetTestClient(modelName);
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>(modelName);
 
         ResponseResult response = await client.CreateResponseAsync(
             new CreateResponseOptions([ResponseItem.CreateUserMessageItem("Write a JSON document with a list of five animals")])
             {
-                Model = TestHelpers.GetModelForScenario(TestScenario.Responses),
+                Model = TestModel.Responses,
                 TextOptions = new ResponseTextOptions()
                 {
                     TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
@@ -670,11 +669,11 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task FunctionCallWorks()
     {
-        ResponsesClient client = GetTestClient();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")])
         {
-            Model = TestHelpers.GetModelForScenario(TestScenario.Responses),
+            Model = TestModel.Responses,
             Tools = { s_GetWeatherAtLocationTool }
         };
 
@@ -697,7 +696,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponseItem functionReply = ResponseItem.CreateFunctionCallOutputItem(functionCall.CallId, "22 celcius and windy");
         CreateResponseOptions turn2Options = new([functionReply])
         {
-            Model = TestHelpers.GetModelForScenario(TestScenario.Responses),
+            Model = TestModel.Responses,
             PreviousResponseId = response.Id,
             Tools = { s_GetWeatherAtLocationTool },
         };
@@ -718,11 +717,11 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task FunctionCallStreamingWorks()
     {
-        ResponsesClient client = GetTestClient();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")])
         {
-            Model = TestHelpers.GetModelForScenario(TestScenario.Responses),
+            Model = TestModel.Responses,
             Tools = { s_GetWeatherAtLocationTool },
             StreamingEnabled = true,
         };
@@ -769,12 +768,12 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task MaxTokens()
     {
-        ResponsesClient client = GetTestClient();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         ResponseResult response = await client.CreateResponseAsync(
             new CreateResponseOptions([ResponseItem.CreateUserMessageItem("Write three haikus about tropical fruit")])
             {
-                Model = TestHelpers.GetModelForScenario(TestScenario.Responses),
+                Model = TestModel.Responses,
                 MaxOutputTokenCount = 20,
             });
 
@@ -789,14 +788,14 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task FunctionToolChoiceWorks()
     {
-        ResponsesClient client = GetTestClient();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         ResponseToolChoice toolChoice
             = ResponseToolChoice.CreateFunctionChoice(s_GetWeatherAtLocationToolName);
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")])
         {
-            Model = TestHelpers.GetModelForScenario(TestScenario.Responses),
+            Model = TestModel.Responses,
             Tools = { s_GetWeatherAtLocationTool },
             ToolChoice = toolChoice,
         };
@@ -816,7 +815,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CanStreamBackgroundResponses()
     {
-        ResponsesClient client = GetTestClient("gpt-4.1-mini");
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>("gpt-4.1-mini");
 
         CreateResponseOptions createOptions = new([ResponseItem.CreateUserMessageItem("Tell me a bedtime story.")])
         {
@@ -884,7 +883,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CanCancelBackgroundResponses()
     {
-        ResponsesClient client = GetTestClient("gpt-4.1-mini");
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>("gpt-4.1-mini");
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Hello, model!")])
         {
@@ -907,13 +906,103 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task GetResponseNoOptions()
     {
-        ResponsesClient client = GetTestClient();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
-        ResponseResult createdResponse = await client.CreateResponseAsync(TestHelpers.GetModelForScenario(TestScenario.Responses), "This is a test.");
+        ResponseResult createdResponse = await client.CreateResponseAsync(TestModel.Responses, "This is a test.");
 
         ResponseResult retrievedResponse = await client.GetResponseAsync(createdResponse.Id);
 
         Assert.That(createdResponse.Id, Is.EqualTo(retrievedResponse.Id));
+    }
+
+    [RecordedTest]
+    public async Task CanGetInputTokenCounts()
+    {
+        ResponsesClient client = TestEnvironment.GetTestClient<ResponsesClient>();
+
+        BinaryData inputTokensRequestBody = BinaryData.FromBytes("""
+            {
+                "model": "gpt-4o-mini",
+                "input": "Tell me a joke."
+            }
+            """u8.ToArray());
+
+        using BinaryContent requestContent = BinaryContent.Create(inputTokensRequestBody);
+        ClientResult result = await client.GetInputTokenCountAsync("application/json", requestContent);
+
+        Assert.That(result, Is.Not.Null);
+
+        using JsonDocument responseJson = JsonDocument.Parse(result.GetRawResponse().Content.ToString());
+        JsonElement root = responseJson.RootElement;
+
+        Assert.That(root.GetProperty("object").GetString(), Is.EqualTo("response.input_tokens"));
+        Assert.That(root.GetProperty("input_tokens").GetInt32(), Is.GreaterThan(0));
+    }
+
+    [RecordedTest]
+    public async Task CanCompactConversation()
+    {
+        ResponsesClient client = TestEnvironment.GetTestClient<ResponsesClient>();
+
+        // First, create a response to get a real assistant message for compaction.
+        ResponseResult initialResponse = await client.CreateResponseAsync(TestModel.Responses, "Create a simple landing page for a dog petting café.");
+        Assert.That(initialResponse, Is.Not.Null);
+        Assert.That(initialResponse.GetOutputText(), Is.Not.Null.And.Not.Empty);
+
+        string assistantText = initialResponse.GetOutputText();
+
+        BinaryData compactRequestBody = BinaryData.FromString($$"""
+            {
+                "model": "{{initialResponse.Model}}",
+                "input": [
+                    {
+                        "role": "user",
+                        "content": "Create a simple landing page for a dog petting café."
+                    },
+                    {
+                        "id": "{{initialResponse.OutputItems[0].Id}}",
+                        "type": "message",
+                        "status": "completed",
+                        "content": [
+                            {
+                                "type": "output_text",
+                                "text": {{JsonSerializer.Serialize(assistantText)}}
+                            }
+                        ],
+                        "role": "assistant"
+                    }
+                ]
+            }
+            """);
+
+        using BinaryContent requestContent = BinaryContent.Create(compactRequestBody);
+        ClientResult result = await client.CompactResponseAsync("application/json", requestContent);
+
+        Assert.That(result, Is.Not.Null);
+
+        using JsonDocument responseJson = JsonDocument.Parse(result.GetRawResponse().Content.ToString());
+        JsonElement root = responseJson.RootElement;
+
+        Assert.That(root.GetProperty("object").GetString(), Is.EqualTo("response.compaction"));
+        Assert.That(root.TryGetProperty("output", out JsonElement outputElement), Is.True);
+        Assert.That(outputElement.GetArrayLength(), Is.GreaterThan(0));
+
+        // Verify that the output contains a compaction item.
+        bool hasCompactionItem = false;
+        foreach (JsonElement item in outputElement.EnumerateArray())
+        {
+            if (item.GetProperty("type").GetString() == "compaction")
+            {
+                hasCompactionItem = true;
+                Assert.That(item.TryGetProperty("encrypted_content", out _), Is.True);
+            }
+        }
+        Assert.That(hasCompactionItem, Is.True, "Expected the compaction output to contain a compaction item.");
+
+        // Verify usage information is present.
+        Assert.That(root.TryGetProperty("usage", out JsonElement usageElement), Is.True);
+        Assert.That(usageElement.GetProperty("input_tokens").GetInt32(), Is.GreaterThan(0));
+        Assert.That(usageElement.GetProperty("total_tokens").GetInt32(), Is.GreaterThan(0));
     }
 
     private List<string> FileIdsToDelete = [];
@@ -939,6 +1028,4 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             }
             """),
         strictModeEnabled: false);
-
-    private ResponsesClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<ResponsesClient>(TestScenario.Responses, overrideModel);
 }

@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "279",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.8.0 (.NET 9.0.13; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "messages": [
@@ -29,19 +29,19 @@
         "Access-Control-Expose-Headers": "X-Request-ID",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9801ce6b8c0398e5-SEA",
+        "CF-RAY": "9cd0ffa6ae33c37c-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "1838",
+        "Content-Length": "1677",
         "Content-Type": "application/json",
-        "Date": "Tue, 16 Sep 2025 16:40:38 GMT",
+        "Date": "Sanitized",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "4956",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
+        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "4999",
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "150000000",
@@ -52,16 +52,16 @@
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-CGT1GTcbIMhlvniL6m4aMoLurqiUL",
+        "id": "chatcmpl-D8dUrgVzNkQHuZhZNhxTXQ4f8Ma3T",
         "object": "chat.completion",
-        "created": 1758040834,
+        "created": 1770950821,
         "model": "o3-mini-2025-01-31",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "Making a cheesecake from scratch—and including the process of gathering ingredients—can generally take anywhere from about 4 to 6 hours in total. Here's a rough breakdown:\n\n• Ingredient gathering: Depending on how many items you need or whether you already have some on hand, shopping might take from 30 minutes up to 1.5 hours.\n\n• Preparation: Mixing ingredients, making the crust, and assembling the cheesecake might take about 30–45 minutes.\n\n• Baking: Most cheesecake recipes require a baking time of around 45 minutes to an hour.\n\n• Cooling and chilling: Once baked, the cheesecake needs to cool and then chill in the refrigerator for at least 2–3 hours (some recipes even recommend overnight chilling to develop the best texture and flavor).\n\nSo, if you add up the times, you’re looking at roughly 4 to 6 hours from start to finish. Of course, this is a general guideline—the total time can vary depending on your recipe, how long you usually spend gathering ingredients, and personal kitchen speed.\n\nHope this helps!",
+              "content": "Making a cheesecake from scratch can vary in total time depending on your pace, your recipe, and whether you include ingredient shopping. Here’s a rough breakdown:\n\n1. Ingredient Shopping: If you don’t have the required ingredients at home, allow about 30 minutes to 1 hour for a quick trip to the store.\n\n2. Preparation: Mixing and preparing the crust and filling typically takes around 20–30 minutes.\n\n3. Baking: Most cheesecake recipes require 45 minutes to 1 hour of baking time. Some recipes also recommend doing a water bath, which might extend the setup time.\n\n4. Cooling and Chilling: After baking, the cheesecake should cool at room temperature (about 1 hour) and then chill in the refrigerator for at least 3–4 hours. Some recipes even suggest overnight chilling for the best texture and flavor.\n\nIf you’re counting active time excluding chilling, you’re looking at roughly 2–2.5 hours (including shopping, mixing, baking, and initial cooling). Including the full chilling process, the overall time from start to serving is closer to 6–8 hours or more.\n\nHope this helps!",
               "refusal": null,
               "annotations": []
             },
@@ -70,25 +70,25 @@
         ],
         "usage": {
           "prompt_tokens": 42,
-          "completion_tokens": 353,
-          "total_tokens": 395,
+          "completion_tokens": 308,
+          "total_tokens": 350,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0
           },
           "completion_tokens_details": {
-            "reasoning_tokens": 128,
+            "reasoning_tokens": 64,
             "audio_tokens": 0,
             "accepted_prediction_tokens": 0,
             "rejected_prediction_tokens": 0
           }
         },
         "service_tier": "default",
-        "system_fingerprint": "fp_6c43dcef8c"
+        "system_fingerprint": "Sanitized"
       }
     }
   ],
   "Variables": {
-    "OPEN-API-KEY": "api-key"
+    "OPENAI_API_KEY": "api-key"
   }
 }

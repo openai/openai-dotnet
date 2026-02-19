@@ -364,7 +364,11 @@ public partial class RealtimeSession : IDisposable
         {
             using PipelineResponse response = protocolEvent.GetRawResponse();
             RealtimeUpdate nextUpdate = ModelReaderWriter.Read<RealtimeUpdate>(response.Content, ModelReaderWriterOptions.Json, OpenAIContext.Default);
-            yield return nextUpdate;
+            // Skip null updates (e.g., conversation.item.done events that are intentionally ignored)
+            if (nextUpdate is not null)
+            {
+                yield return nextUpdate;
+            }
         }
     }
 

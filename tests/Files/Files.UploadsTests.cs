@@ -6,7 +6,6 @@ using System;
 using System.ClientModel;
 using System.Text.Json;
 using System.Threading.Tasks;
-using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Files;
 
@@ -26,8 +25,8 @@ public class UploadsTests : OpenAIRecordedTestBase
         // are setting the internal Uploads client correctly.
 
         OpenAIFileClient fileClient = useTopLevelClient
-            ? GetProxiedTestTopLevelClient().GetOpenAIFileClient()
-            : GetTestClient();
+            ? TestEnvironment.GetTestClient<OpenAIClient>().GetOpenAIFileClient()
+            : GetProxiedOpenAIClient<OpenAIFileClient>();
         BinaryContent content = BinaryContent.Create(BinaryData.FromObjectAsJson(new
         {
             purpose = "fine-tune",
@@ -59,7 +58,7 @@ public class UploadsTests : OpenAIRecordedTestBase
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            OpenAIFileClient fileClient = GetTestClient();
+            OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
             UploadDetails uploadDetails = await CreateTestUploadAsync(fileClient);
             using MultiPartFormDataBinaryContent content = new();
 
@@ -82,7 +81,7 @@ public class UploadsTests : OpenAIRecordedTestBase
     {
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
-            OpenAIFileClient fileClient = GetTestClient();
+            OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
             UploadDetails createdUploadDetails = await CreateTestUploadAsync(fileClient);
             using MultiPartFormDataBinaryContent firstPartContent = new();
             using MultiPartFormDataBinaryContent secondPartContent = new();
@@ -139,7 +138,7 @@ public class UploadsTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CancelUploadWorks()
     {
-        OpenAIFileClient fileClient = GetTestClient();
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
         UploadDetails createdUploadDetails = await CreateTestUploadAsync(fileClient);
 
         ClientResult result = await fileClient.CancelUploadAsync(createdUploadDetails.Id);
@@ -223,9 +222,6 @@ public class UploadsTests : OpenAIRecordedTestBase
             UploadId = uploadId
         };
     }
-
-    private OpenAIFileClient GetTestClient() => GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
-
     private readonly struct UploadDetails
     {
         public string Id { get; init; }

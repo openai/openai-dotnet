@@ -13,7 +13,7 @@ namespace OpenAI.Realtime
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalRealtimeResponseSession(string id, string model, IEnumerable<InternalRealtimeRequestSessionModality> modalities, string instructions, ConversationVoice voice, RealtimeAudioFormat inputAudioFormat, RealtimeAudioFormat outputAudioFormat, InputTranscriptionOptions inputAudioTranscription, TurnDetectionOptions turnDetection, InputNoiseReductionOptions inputAudioNoiseReduction, IEnumerable<ConversationTool> tools, BinaryData toolChoice, float temperature, BinaryData maxResponseOutputTokens)
+        internal InternalRealtimeResponseSession(string id, string model, IEnumerable<InternalRealtimeRequestSessionModality> modalities, string instructions, ConversationVoice voice, RealtimeAudioFormat inputAudioFormat, RealtimeAudioFormat outputAudioFormat, InputTranscriptionOptions inputAudioTranscription, TurnDetectionOptions turnDetection, InputNoiseReductionOptions inputAudioNoiseReduction, IEnumerable<ConversationTool> tools, BinaryData toolChoice, float temperature, BinaryData maxOutputTokens)
         {
             Id = id;
             Model = model;
@@ -28,10 +28,10 @@ namespace OpenAI.Realtime
             Tools = tools.ToList();
             ToolChoice = toolChoice;
             Temperature = temperature;
-            _maxResponseOutputTokens = maxResponseOutputTokens;
+            _maxOutputTokens = maxOutputTokens;
         }
 
-        internal InternalRealtimeResponseSession(string @object, string id, string model, IList<InternalRealtimeRequestSessionModality> modalities, string instructions, ConversationVoice voice, RealtimeAudioFormat inputAudioFormat, RealtimeAudioFormat outputAudioFormat, InputTranscriptionOptions inputAudioTranscription, TurnDetectionOptions turnDetection, InputNoiseReductionOptions inputAudioNoiseReduction, IList<ConversationTool> tools, BinaryData toolChoice, float temperature, BinaryData maxResponseOutputTokens, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalRealtimeResponseSession(string @object, string id, string model, IList<InternalRealtimeRequestSessionModality> modalities, string instructions, ConversationVoice voice, RealtimeAudioFormat inputAudioFormat, RealtimeAudioFormat outputAudioFormat, InputTranscriptionOptions inputAudioTranscription, TurnDetectionOptions turnDetection, InputNoiseReductionOptions inputAudioNoiseReduction, float? speed, BinaryData tracing, IList<ConversationTool> tools, BinaryData toolChoice, float temperature, DateTimeOffset? expiresAt, BinaryData maxOutputTokens, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Object = @object;
@@ -45,10 +45,13 @@ namespace OpenAI.Realtime
             InputAudioTranscription = inputAudioTranscription;
             TurnDetection = turnDetection;
             InputAudioNoiseReduction = inputAudioNoiseReduction;
+            Speed = speed;
+            Tracing = tracing;
             Tools = tools ?? new ChangeTrackingList<ConversationTool>();
             ToolChoice = toolChoice;
             Temperature = temperature;
-            _maxResponseOutputTokens = maxResponseOutputTokens;
+            ExpiresAt = expiresAt;
+            _maxOutputTokens = maxOutputTokens;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
@@ -72,11 +75,17 @@ namespace OpenAI.Realtime
 
         public InputNoiseReductionOptions InputAudioNoiseReduction { get; }
 
+        public float? Speed { get; }
+
+        public BinaryData Tracing { get; }
+
         public IList<ConversationTool> Tools { get; }
 
         public BinaryData ToolChoice { get; }
 
         public float Temperature { get; }
+
+        public DateTimeOffset? ExpiresAt { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

@@ -13,7 +13,6 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Assistants;
 
@@ -30,9 +29,6 @@ public class AssistantsTests : OpenAIRecordedTestBase
 
     private static readonly DateTimeOffset s_2024 = new(2024, 1, 1, 0, 0, 0, TimeSpan.Zero);
     private static readonly string s_cleanupMetadataKey = $"test_metadata_cleanup_eligible";
-
-    private AssistantClient GetTestClient() => GetProxiedOpenAIClient<AssistantClient>(TestScenario.Assistants);
-
     public AssistantsTests(bool isAsync)
         : base(isAsync)
     {
@@ -48,9 +44,9 @@ public class AssistantsTests : OpenAIRecordedTestBase
             return;
         }
 
-        AssistantClient client = GetTestClient<AssistantClient>(TestScenario.Assistants);
-        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
-        VectorStoreClient vectorStoreClient = GetTestClient<VectorStoreClient>(TestScenario.VectorStores);
+        AssistantClient client = TestEnvironment.GetTestClient<AssistantClient>();
+        OpenAIFileClient fileClient = TestEnvironment.GetTestClient<OpenAIFileClient>();
+        VectorStoreClient vectorStoreClient = TestEnvironment.GetTestClient<VectorStoreClient>();
         RequestOptions requestOptions = new()
         {
             ErrorOptions = ClientErrorBehaviors.NoThrow,
@@ -85,7 +81,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task BasicAssistantOperationsWork()
     {
-        AssistantClient client = GetTestClient();
+        AssistantClient client = GetProxiedOpenAIClient<AssistantClient>();
         Assistant assistant = await client.CreateAssistantAsync("gpt-4o");
         Validate(assistant);
         Assert.That(assistant.Name, Is.Null.Or.Empty);
@@ -140,7 +136,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task BasicThreadOperationsWork()
     {
-        AssistantClient client = GetTestClient();
+        AssistantClient client = GetProxiedOpenAIClient<AssistantClient>();
         AssistantThread thread = await client.CreateThreadAsync();
         Validate(thread);
         Assert.That(thread.CreatedAt, Is.GreaterThan(s_2024));
@@ -175,7 +171,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task BasicMessageOperationsWork()
     {
-        AssistantClient client = GetTestClient();
+        AssistantClient client = GetProxiedOpenAIClient<AssistantClient>();
         AssistantThread thread = await client.CreateThreadAsync();
         Validate(thread);
         ThreadMessage message = await client.CreateMessageAsync(thread.Id, MessageRole.User, ["Hello, world!"]);
@@ -223,7 +219,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ThreadWithInitialMessagesWorks()
     {
-        AssistantClient client = GetTestClient();
+        AssistantClient client = GetProxiedOpenAIClient<AssistantClient>();
         ThreadCreationOptions options = new()
         {
             InitialMessages =
@@ -261,7 +257,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ThreadWithImageDetailWorks()
     {
-        AssistantClient client = GetTestClient();
+        AssistantClient client = GetProxiedOpenAIClient<AssistantClient>();
 
         ThreadCreationOptions options = new()
         {
@@ -296,7 +292,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task BasicRunOperationsWork()
     {
-        AssistantClient client = GetTestClient();
+        AssistantClient client = GetProxiedOpenAIClient<AssistantClient>();
         Assistant assistant = await client.CreateAssistantAsync("gpt-4o");
         Validate(assistant);
         AssistantThread thread = await client.CreateThreadAsync();
@@ -343,7 +339,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task BasicRunStepFunctionalityWorks()
     {
-        AssistantClient client = GetTestClient();
+        AssistantClient client = GetProxiedOpenAIClient<AssistantClient>();
         Assistant assistant = await client.CreateAssistantAsync("gpt-4o", new AssistantCreationOptions()
         {
             Tools = { new CodeInterpreterToolDefinition() },
@@ -351,7 +347,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         });
         Validate(assistant);
 
-        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
         OpenAIFile equationFile;
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
         {
@@ -430,7 +426,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task SettingResponseFormatWorks()
     {
-        AssistantClient client = GetTestClient();
+        AssistantClient client = GetProxiedOpenAIClient<AssistantClient>();
         AssistantCreationOptions creationOptions = new AssistantCreationOptions()
         {
             ResponseFormat = AssistantResponseFormat.CreateAutoFormat(),
@@ -459,7 +455,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task FunctionToolsWork()
     {
-        AssistantClient client = GetTestClient();
+        AssistantClient client = GetProxiedOpenAIClient<AssistantClient>();
         AssistantCreationOptions creationOptions = new()
         {
             Tools =
@@ -538,7 +534,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task StreamingRunWorks()
     {
-        AssistantClient client = GetTestClient();
+        AssistantClient client = GetProxiedOpenAIClient<AssistantClient>();
         Assistant assistant = await client.CreateAssistantAsync("gpt-4o");
         Validate(assistant);
 
@@ -586,7 +582,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
     [TestCase]
     public async Task StreamingToolCall()
     {
-        AssistantClient client = GetTestClient();
+        AssistantClient client = GetProxiedOpenAIClient<AssistantClient>();
         FunctionToolDefinition getWeatherTool = new("get_current_weather")
         {
             Description = "Gets the user's current weather",
@@ -648,7 +644,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
     public async Task FileSearchWorks()
     {
         // First, we need to upload a simple test file.
-        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
 
         OpenAIFile testFile;
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
@@ -666,7 +662,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
             Validate(testFile);
         }
 
-        AssistantClient client = GetTestClient();
+        AssistantClient client = GetProxiedOpenAIClient<AssistantClient>();
 
         FileSearchToolDefinition fileSearchTool = new()
         {
@@ -850,7 +846,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
     public async Task FileOnMessageWorks()
     {
         // First, we need to upload a simple test file.
-        OpenAIFileClient fileClient = GetTestClient<OpenAIFileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = TestEnvironment.GetTestClient<OpenAIFileClient>();
         OpenAIFile testFile = await fileClient.UploadFileAsync(
             BinaryData.FromString("""
             This file describes the favorite foods of several people.
@@ -863,7 +859,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
             FileUploadPurpose.Assistants);
         Validate(testFile);
 
-        AssistantClient client = GetTestClient();
+        AssistantClient client = GetProxiedOpenAIClient<AssistantClient>();
 
         AssistantThread thread = await client.CreateThreadAsync();
         Validate(thread);
@@ -902,8 +898,8 @@ public class AssistantsTests : OpenAIRecordedTestBase
 
         const string fileName = "favorite_foods.txt";
 
-        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
-        AssistantClient client = GetProxiedOpenAIClient<AssistantClient>(TestScenario.Assistants);
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
+        AssistantClient client = GetProxiedOpenAIClient<AssistantClient>();
 
         OpenAIFile testFile;
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
@@ -990,7 +986,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
     {
         const int TestAssistantCount = 10;
 
-        AssistantClient client = GetTestClient();
+        AssistantClient client = GetProxiedOpenAIClient<AssistantClient>();
 
         // Create assistant collection
         for (int i = 0; i < 10; i++)
@@ -1039,7 +1035,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         const int TestAssistantCount = 5;
         const int TestPageSizeLimit = 2;
 
-        AssistantClient client = GetTestClient();
+        AssistantClient client = GetProxiedOpenAIClient<AssistantClient>();
 
         // Create assistant collection
         for (int i = 0; i < TestAssistantCount; i++)
@@ -1109,7 +1105,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         const int TestAssistantCount = 5;
         const int TestPageSizeLimit = 2;
 
-        AssistantClient client = GetTestClient();
+        AssistantClient client = GetProxiedOpenAIClient<AssistantClient>();
 
         // Create assistant collection
         for (int i = 0; i < TestAssistantCount; i++)
@@ -1186,7 +1182,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         const int TestAssistantCount = 10;
         const int TestPageSizeLimit = 2;
 
-        AssistantClient client = GetTestClient();
+        AssistantClient client = GetProxiedOpenAIClient<AssistantClient>();
 
         // Create assistant collection
         List<Assistant> createdAssistants = [];
@@ -1222,7 +1218,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
             Order = AssistantCollectionOrder.Descending
         });
 
-        // Since we're asking for the next page after the first one, remove the first two items from the 
+        // Since we're asking for the next page after the first one, remove the first two items from the
         // createdAssistants
         createdAssistants = createdAssistants.Skip(TestPageSizeLimit).ToList();
 
@@ -1265,7 +1261,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task Pagination_CanRehydrateRunStepPageCollectionFromBytes()
     {
-        AssistantClient client = GetTestClient();
+        AssistantClient client = GetProxiedOpenAIClient<AssistantClient>();
         Assistant assistant = await client.CreateAssistantAsync("gpt-4o", new AssistantCreationOptions()
         {
             Tools = { new CodeInterpreterToolDefinition() },
@@ -1273,7 +1269,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
         });
         Validate(assistant);
 
-        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>(TestScenario.Files);
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
 
         OpenAIFile equationFile;
         using (Recording.DisableRequestBodyRecording()) // Temp pending https://github.com/Azure/azure-sdk-tools/issues/11901
@@ -1354,7 +1350,7 @@ public class AssistantsTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task MessagesWithRoles()
     {
-        AssistantClient client = GetTestClient();
+        AssistantClient client = GetProxiedOpenAIClient<AssistantClient>();
         const string userMessageText = "Hello, assistant!";
         const string assistantMessageText = "Hi there, user.";
         ThreadCreationOptions threadCreationOptions = new ThreadCreationOptions()

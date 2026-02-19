@@ -30,12 +30,21 @@ public partial class RealtimeExamples
                 + "Prefer to call tools whenever applicable.",
             Voice = ConversationVoice.Alloy,
             Tools = { CreateSampleWeatherTool() },
-            InputAudioFormat = RealtimeAudioFormat.Pcm16,
-            OutputAudioFormat = RealtimeAudioFormat.Pcm16,
-            // Input transcription options must be provided to enable transcribed feedback for input audio
-            InputTranscriptionOptions = new()
+            Audio = new RealtimeSessionAudioConfiguration()
             {
-                Model = "whisper-1",
+                Input = new RealtimeSessionAudioInputConfiguration()
+                {
+                    Format = RealtimeAudioFormat.Pcm16,
+                    // Input transcription options must be provided to enable transcribed feedback for input audio
+                    Transcription = new InputTranscriptionOptions()
+                    {
+                        Model = "whisper-1",
+                    },
+                },
+                Output = new RealtimeSessionAudioOutputConfiguration()
+                {
+                    Format = RealtimeAudioFormat.Pcm16,
+                },
             },
         };
 
@@ -95,7 +104,7 @@ public partial class RealtimeExamples
                 {
                     if (!outputAudioStreamsById.TryGetValue(deltaUpdate.ItemId, out Stream value))
                     {
-                        string filename = $"output_{sessionOptions.OutputAudioFormat}_{deltaUpdate.ItemId}.raw";
+                        string filename = $"output_{sessionOptions.Audio?.Output?.Format}_{deltaUpdate.ItemId}.raw";
                         value = File.OpenWrite(filename);
                         outputAudioStreamsById[deltaUpdate.ItemId] = value;
                     }
