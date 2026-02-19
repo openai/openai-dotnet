@@ -1,5 +1,0 @@
-{
-  "package-name": "OpenAI",
-  "unreferenced-types-handling": "keepAll",
-  "disable-xml-docs": true
-}
