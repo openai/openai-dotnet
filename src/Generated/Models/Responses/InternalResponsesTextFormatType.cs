@@ -13,6 +13,8 @@ namespace OpenAI.Responses
         private const string TextValue = "text";
         private const string JsonSchemaValue = "json_schema";
         private const string JsonObjectValue = "json_object";
+        private const string GrammarValue = "grammar";
+        private const string PythonValue = "python";
 
         public InternalResponsesTextFormatType(string value)
         {
@@ -24,6 +26,10 @@ namespace OpenAI.Responses
         internal static InternalResponsesTextFormatType JsonSchema { get; } = new InternalResponsesTextFormatType(JsonSchemaValue);
 
         internal static InternalResponsesTextFormatType JsonObject { get; } = new InternalResponsesTextFormatType(JsonObjectValue);
+
+        internal static InternalResponsesTextFormatType Grammar { get; } = new InternalResponsesTextFormatType(GrammarValue);
+
+        internal static InternalResponsesTextFormatType Python { get; } = new InternalResponsesTextFormatType(PythonValue);
 
         public static bool operator ==(InternalResponsesTextFormatType left, InternalResponsesTextFormatType right) => left.Equals(right);
 

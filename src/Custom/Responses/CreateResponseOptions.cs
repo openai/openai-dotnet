@@ -161,6 +161,7 @@ public partial class CreateResponseOptions
         clone.StoredOutputEnabled = StoredOutputEnabled;
         clone.StreamingEnabled = StreamingEnabled;
         clone.ConversationOptions = ConversationOptions;
+        clone.Prompt = Prompt;
 
         return clone;
     }

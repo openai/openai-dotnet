@@ -247,6 +247,12 @@ model ResponseProperties {
     """)
   tool_choice?: ToolChoiceOptions | ToolChoiceObject;
 
+  /**
+   * Reference to a prompt template and its variables.
+   * [Learn more](https://platform.openai.com/docs/guides/text?api-mode=responses#reusable-prompts).
+   */
+  prompt?: Prompt;
+
   @doc("""
     The truncation strategy to use for the model response.
     - `auto`: If the context of this response and previous ones exceeds
@@ -498,6 +504,9 @@ union ToolType {
   code_interpreter: "code_interpreter",
   image_generation: "image_generation",
   local_shell: "local_shell",
+  shell: "shell",
+  apply_patch: "apply_patch",
+  custom: "custom",
 }
 @discriminator("type")
 model Tool {
@@ -534,6 +543,10 @@ union ToolChoiceObjectType {
   image_generation: "image_generation",
   code_interpreter: "code_interpreter",
   mcp: "mcp",
+  shell: "shell",
+  apply_patch: "apply_patch",
+  custom: "custom",
+  allowed_tools: "allowed_tools",
 }
 @discriminator("type")
 model ToolChoiceObject {
@@ -556,6 +569,58 @@ model ToolChoiceObjectCodeInterpreter extends ToolChoiceObject {
 }
 model ToolChoiceObjectMCP extends ToolChoiceObject {
   type: ToolChoiceObjectType.mcp;
+
+  /** The label of the MCP server to use. */
+  server_label: string;
+
+  /** Optional name of a specific MCP tool to use. */
+  name?: string | null;
+}
+
+/** Use this option to force the model to call the shell tool. */
+model ToolChoiceObjectShell extends ToolChoiceObject {
+  @doc("""
+    For shell tool calling, the type is always `shell`.
+    """)
+  type: ToolChoiceObjectType.shell;
+}
+
+/** Use this option to force the model to call the apply_patch tool. */
+model ToolChoiceObjectApplyPatch extends ToolChoiceObject {
+  @doc("""
+    For apply_patch tool calling, the type is always `apply_patch`.
+    """)
+  type: ToolChoiceObjectType.apply_patch;
+}
+
+/** Use this option to force the model to call a specific custom tool. */
+@summary("Custom tool")
+model ToolChoiceObjectCustom extends ToolChoiceObject {
+  @doc("""
+    For custom tool calling, the type is always `custom`.
+    """)
+  type: ToolChoiceObjectType.custom;
+
+  /** The name of the custom tool to call. */
+  name: string;
+}
+
+/** Constrains the tools available to the model to a pre-defined set. */
+@summary("Allowed tools")
+model ToolChoiceObjectAllowed extends ToolChoiceObject {
+  @doc("""
+    Allowed tool configuration type. Always `allowed_tools`.
+    """)
+  type: ToolChoiceObjectType.allowed_tools;
+
+  /**Constrains the tools available to the model to a pre-defined set.
+  `auto` allows the model to pick from among the allowed tools and generate a
+  message.
+  `required` requires the model to call one or more of the allowed tools.*/
+  mode: "auto" | "required";
+
+  /** A list of tool definitions that the model should be allowed to call. */
+  tools: Record<unknown>[];
 }
 
 // Tool customization (apply_discriminator): Apply discriminated type base
@@ -956,6 +1021,8 @@ union ResponseTextFormatConfigurationType {
   text: "text",
   json_schema: "json_schema",
   json_object: "json_object",
+  grammar: "grammar",
+  python: "python",
 }
 @discriminator("type")
 model ResponseTextFormatConfiguration {
@@ -968,6 +1035,27 @@ model ResponseTextFormatConfigurationText
 model ResponseTextFormatConfigurationJsonObject
   extends ResponseTextFormatConfiguration {
   type: ResponseTextFormatConfigurationType.json_object;
+}
+
+/** Grammar response format. Uses a grammar definition to constrain the model output. */
+model ResponseTextFormatConfigurationGrammar
+  extends ResponseTextFormatConfiguration {
+  @doc("""
+    The type of response format being defined. Always `grammar`.
+    """)
+  type: ResponseTextFormatConfigurationType.grammar;
+
+  /** The grammar definition string. */
+  grammar: string;
+}
+
+/** Python response format. Constrains the model output to valid Python code. */
+model ResponseTextFormatConfigurationPython
+  extends ResponseTextFormatConfiguration {
+  @doc("""
+    The type of response format being defined. Always `python`.
+    """)
+  type: ResponseTextFormatConfigurationType.python;
 }
 
 // Tool customization (apply_discriminator): Apply base type
@@ -1406,6 +1494,8 @@ union ResponseStreamEventType {
   response_reasoning_summary_done: "response.reasoning_summary.done",
   response_reasoning_text_delta: "response.reasoning_text.delta",
   response_reasoning_text_done: "response.reasoning_text.done",
+  response_custom_tool_call_input_delta: "response.custom_tool_call_input.delta",
+  response_custom_tool_call_input_done: "response.custom_tool_call_input.done",
 }
 @discriminator("type")
 model ResponseStreamEvent {
@@ -2096,6 +2186,89 @@ model LocalShellTool extends Tool {
   type: ToolType.local_shell;
 }
 
+// Tool customization (apply_discriminator): Apply discriminated type base for tools
+/** A tool that allows the model to execute shell commands in a sandboxed environment. */
+@summary("Shell tool")
+model FunctionShellToolParam extends Tool {
+  @doc("""
+    The type of the shell tool. Always `shell`.
+    """)
+  type: ToolType.shell;
+}
+
+// Tool customization (apply_discriminator): Apply discriminated type base for tools
+/** A tool that allows the model to apply patches to files. */
+@summary("Apply patch tool")
+model ApplyPatchToolParam extends Tool {
+  @doc("""
+    The type of the apply patch tool. Always `apply_patch`.
+    """)
+  type: ToolType.apply_patch;
+}
+
+// Tool customization (apply_discriminator): Apply discriminated type base for tools
+/** A custom tool that the model can call. */
+@summary("Custom tool")
+model CustomToolParam extends Tool {
+  @doc("""
+    The type of the custom tool. Always `custom`.
+    """)
+  type: ToolType.custom;
+
+  /** The name of the custom tool. */
+  name: string;
+
+  /** A description of the custom tool. */
+  description?: string | null;
+
+  /** The format of the custom tool's input schema. */
+  format?: CustomToolParamFormat;
+}
+
+/** The type of the custom tool parameter format. */
+union CustomToolParamFormatType {
+  string,
+  text: "text",
+  grammar: "grammar",
+}
+
+/** The format of a custom tool parameter. */
+@discriminator("type")
+model CustomToolParamFormat {
+  type: CustomToolParamFormatType;
+}
+
+/** A text format for a custom tool parameter. */
+model CustomTextFormatParam extends CustomToolParamFormat {
+  @doc("""
+    The type of the format. Always `text`.
+    """)
+  type: CustomToolParamFormatType.text;
+}
+
+/** A grammar format for a custom tool parameter. */
+model CustomGrammarFormatParam extends CustomToolParamFormat {
+  @doc("""
+    The type of the format. Always `grammar`.
+    """)
+  type: CustomToolParamFormatType.grammar;
+
+  /** The syntax of the grammar. */
+  syntax: GrammarSyntax;
+
+  /** The grammar definition string. */
+  definition: string;
+}
+
+/** The syntax type used by a grammar definition. */
+#suppress "@azure-tools/typespec-azure-core/no-enum" "Auto-suppressed warnings non-applicable rules during import."
+enum GrammarSyntax {
+  /** Lark grammar syntax. */
+  lark,
+  /** Regex grammar syntax. */
+  regex,
+}
+
 // Tool customization: Rename to supply base for split input/output models
 /** A tool call to run a command on the local shell. */
 alias LocalShellToolCallItemBase = {
@@ -2342,6 +2515,273 @@ alias MCPCallItemBase = {
     
     """
 );
+
+// Tool customization: Rename to supply base for split input/output models
+/** A shell tool call initiated by the model. */
+alias FunctionShellCallItemBase = {
+  /** The unique ID of the shell tool call. */
+  call_id: string;
+
+  /** The action performed by the shell tool. */
+  action: FunctionShellActionParam;
+};
+
+@@doc(FunctionShellCallItemResource,
+  """
+    A shell tool call initiated by the model.
+    
+    """
+);
+@@doc(FunctionShellCallItemParam,
+  """
+    A shell tool call initiated by the model.
+    
+    """
+);
+
+/** The action to perform with the shell tool. */
+model FunctionShellActionParam {
+  /** The shell commands to execute. */
+  commands: string[];
+
+  /** Optional timeout in milliseconds for the command. */
+  timeout_ms?: int32 | null;
+
+  /** Optional working directory to run the command in. */
+  working_directory?: string | null;
+}
+
+/** The status of a shell tool call item. */
+#suppress "@azure-tools/typespec-azure-core/no-enum" "Auto-suppressed warnings non-applicable rules during import."
+enum FunctionShellCallItemStatus {
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  in_progress,
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  completed,
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  incomplete,
+}
+
+// Tool customization: Rename to supply base for split input/output models
+/** The output of a shell tool call. */
+alias FunctionShellCallOutputItemBase = {
+  /** The unique ID of the shell tool call this output is for. */
+  call_id: string;
+
+  /** The output content from the shell command. */
+  output: FunctionShellCallOutputContentParam;
+
+  /** Maximum output length requested. */
+  max_output_length?: int32 | null;
+};
+
+@@doc(FunctionShellCallOutputItemResource,
+  """
+    The output of a shell tool call.
+    
+    """
+);
+@@doc(FunctionShellCallOutputItemParam,
+  """
+    The output of a shell tool call.
+    
+    """
+);
+
+/** The content from a shell tool call output. */
+model FunctionShellCallOutputContentParam {
+  /** Standard output from the shell command. */
+  stdout?: string | null;
+
+  /** Standard error from the shell command. */
+  stderr?: string | null;
+
+  /** The outcome of the shell command execution. */
+  outcome?: FunctionShellCallOutputOutcomeParam;
+}
+
+/** The outcome of a shell tool call. */
+@discriminator("type")
+model FunctionShellCallOutputOutcomeParam {
+  type: string;
+}
+
+/** A timeout outcome for a shell tool call. */
+model FunctionShellCallOutputOutcomeTimeout extends FunctionShellCallOutputOutcomeParam {
+  /** The type of the outcome. Always `timeout`. */
+  type: "timeout";
+}
+
+/** An exit outcome for a shell tool call. */
+model FunctionShellCallOutputOutcomeExit extends FunctionShellCallOutputOutcomeParam {
+  /** The type of the outcome. Always `exit`. */
+  type: "exit";
+
+  /** The exit code of the shell command. */
+  exit_code: int32;
+}
+
+// Tool customization: Rename to supply base for split input/output models
+/** An apply_patch tool call initiated by the model. */
+alias ApplyPatchToolCallItemBase = {
+  /** The unique ID of the apply_patch tool call. */
+  call_id: string;
+
+  /** The patch operation to apply. */
+  operation: ApplyPatchOperationParam;
+};
+
+@@doc(ApplyPatchToolCallItemResource,
+  """
+    An apply_patch tool call initiated by the model.
+    
+    """
+);
+@@doc(ApplyPatchToolCallItemParam,
+  """
+    An apply_patch tool call initiated by the model.
+    
+    """
+);
+
+/** The status of an apply_patch tool call. */
+#suppress "@azure-tools/typespec-azure-core/no-enum" "Auto-suppressed warnings non-applicable rules during import."
+enum ApplyPatchCallStatusParam {
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  in_progress,
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  completed,
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  incomplete,
+}
+
+/** The type of an apply_patch file operation. */
+union ApplyPatchOperationType {
+  string,
+  create_file: "create_file",
+  delete_file: "delete_file",
+  update_file: "update_file",
+}
+
+/** A file operation for the apply_patch tool. */
+@discriminator("type")
+model ApplyPatchOperationParam {
+  type: ApplyPatchOperationType;
+}
+
+/** Create a new file with the apply_patch tool. */
+model ApplyPatchCreateFileOperation extends ApplyPatchOperationParam {
+  /** The type. Always `create_file`. */
+  type: ApplyPatchOperationType.create_file;
+
+  /** The path of the file to create. */
+  path: string;
+}
+
+/** Delete a file with the apply_patch tool. */
+model ApplyPatchDeleteFileOperation extends ApplyPatchOperationParam {
+  /** The type. Always `delete_file`. */
+  type: ApplyPatchOperationType.delete_file;
+
+  /** The path of the file to delete. */
+  path: string;
+}
+
+/** Update an existing file with the apply_patch tool. */
+model ApplyPatchUpdateFileOperation extends ApplyPatchOperationParam {
+  /** The type. Always `update_file`. */
+  type: ApplyPatchOperationType.update_file;
+
+  /** The path of the file to update. */
+  path: string;
+
+  /** The unified diff to apply to the file. */
+  diff: string;
+}
+
+// Tool customization: Rename to supply base for split input/output models
+/** The output of an apply_patch tool call. */
+alias ApplyPatchToolCallOutputItemBase = {
+  /** The unique ID of the apply_patch tool call this output is for. */
+  call_id: string;
+
+  /** A JSON string of the output of the apply_patch tool call. */
+  output?: string | null;
+};
+
+@@doc(ApplyPatchToolCallOutputItemResource,
+  """
+    The output of an apply_patch tool call.
+    
+    """
+);
+@@doc(ApplyPatchToolCallOutputItemParam,
+  """
+    The output of an apply_patch tool call.
+    
+    """
+);
+
+/** The status of an apply_patch tool call output. */
+#suppress "@azure-tools/typespec-azure-core/no-enum" "Auto-suppressed warnings non-applicable rules during import."
+enum ApplyPatchCallOutputStatusParam {
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  in_progress,
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  completed,
+  #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
+  incomplete,
+}
+
+// Tool customization: Rename to supply base for split input/output models
+/** A custom tool call initiated by the model. */
+alias CustomToolCallItemBase = {
+  /** The unique ID of the custom tool call. */
+  call_id: string;
+
+  /** The name of the custom tool that was called. */
+  name: string;
+
+  /** The input provided by the model for the custom tool call. */
+  input: string;
+};
+
+@@doc(CustomToolCallItemResource,
+  """
+    A custom tool call initiated by the model.
+    
+    """
+);
+@@doc(CustomToolCallItemParam,
+  """
+    A custom tool call initiated by the model.
+    
+    """
+);
+
+// Tool customization: Rename to supply base for split input/output models
+/** The output of a custom tool call. */
+alias CustomToolCallOutputItemBase = {
+  /** The unique ID of the custom tool call this output is for. */
+  call_id: string;
+
+  /** The output from the custom tool call. */
+  output?: string | null;
+};
+
+@@doc(CustomToolCallOutputItemResource,
+  """
+    The output of a custom tool call.
+    
+    """
+);
+@@doc(CustomToolCallOutputItemParam,
+  """
+    The output of a custom tool call.
+    
+    """
+);
+
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
 /** Emitted when an image generation tool call has completed and the final image is available. */
 model ResponseImageGenCallCompletedEvent extends ResponseStreamEvent {
@@ -2509,6 +2949,38 @@ model ResponseMCPListToolsInProgressEvent extends ResponseStreamEvent {
 
   /** The index of the output item that is being processed. */
   output_index: int32;
+}
+
+// Tool customization: Remove shared sequence_number property that was moved to the common parent
+/** Emitted when there is a delta (partial update) to the input of a custom tool call. */
+model ResponseCustomToolCallInputDeltaEvent extends ResponseStreamEvent {
+  /** The type of the event. Always 'response.custom_tool_call_input.delta'. */
+  type: ResponseStreamEventType.response_custom_tool_call_input_delta;
+
+  /** The index of the output item in the response's output array. */
+  output_index: int32;
+
+  /** The unique identifier of the custom tool call item being processed. */
+  item_id: string;
+
+  /** The partial update to the input for the custom tool call. */
+  delta: string;
+}
+
+// Tool customization: Remove shared sequence_number property that was moved to the common parent
+/** Emitted when the input for a custom tool call is finalized. */
+model ResponseCustomToolCallInputDoneEvent extends ResponseStreamEvent {
+  /** The type of the event. Always 'response.custom_tool_call_input.done'. */
+  type: ResponseStreamEventType.response_custom_tool_call_input_done;
+
+  /** The index of the output item in the response's output array. */
+  output_index: int32;
+
+  /** The unique identifier of the custom tool call item being processed. */
+  item_id: string;
+
+  /** The finalized input for the custom tool call. */
+  input: string;
 }
 
 // Tool customization: Remove shared sequence_number property that was moved to the common parent
@@ -2877,6 +3349,30 @@ enum TruncationEnum {
   auto,
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   disabled,
+}
+
+/**
+ * Reference to a prompt template and its variables.
+ * [Learn more](https://platform.openai.com/docs/guides/text?api-mode=responses#reusable-prompts).
+ */
+model Prompt {
+  /** The unique identifier of the prompt template to use. */
+  id: string;
+
+  /** The version of the prompt template to use. */
+  version?: string | null;
+
+  /** The variables to substitute into the prompt template. */
+  variables?: ResponsePromptVariables;
+}
+
+/** Variables to substitute into a prompt template. */
+#suppress "@azure-tools/typespec-azure-core/no-openapi" "Auto-suppressed warnings non-applicable rules during import."
+@extension("x-oaiExpandable", true)
+model ResponsePromptVariables {
+  #suppress "@azure-tools/typespec-azure-core/no-unnamed-union" "Auto-suppressed warnings non-applicable rules during import."
+  #suppress "@azure-tools/typespec-autorest/union-unsupported" "Auto-suppressed warnings non-applicable rules during import."
+  ...Record<string | ItemContentInputText | ItemContentInputImage | ItemContentInputFile>;
 }
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."

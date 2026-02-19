@@ -14,7 +14,7 @@ namespace OpenAI.Responses
 {
     public partial class ResponseResult : IJsonModel<ResponseResult>
     {
-        public ResponseResult() : this(null, default, default, default, null, null, default, null, null, null, default, default, default, null, null, null, null, default, null, null, default, default, null, null, null, null, default, null, default)
+        public ResponseResult() : this(null, default, default, default, null, null, default, null, null, null, default, default, default, null, null, null, null, null, default, null, null, default, default, null, null, null, null, default, null, default)
         {
         }
 
@@ -185,6 +185,11 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("tool_choice"u8);
                 writer.WriteObjectValue(ToolChoice, options);
             }
+            if (Optional.IsDefined(Prompt) && !Patch.Contains("$.prompt"u8))
+            {
+                writer.WritePropertyName("prompt"u8);
+                writer.WriteObjectValue(Prompt, options);
+            }
             if (Optional.IsDefined(TruncationMode) && !Patch.Contains("$.truncation"u8))
             {
                 writer.WritePropertyName("truncation"u8);
@@ -307,6 +312,7 @@ namespace OpenAI.Responses
             ResponseTextOptions textOptions = default;
             IList<ResponseTool> tools = default;
             ResponseToolChoice toolChoice = default;
+            InternalPrompt prompt = default;
             ResponseTruncationMode? truncationMode = default;
             string id = default;
             string @object = default;
@@ -496,6 +502,15 @@ namespace OpenAI.Responses
                     toolChoice = ResponseToolChoice.DeserializeResponseToolChoice(prop.Value, options);
                     continue;
                 }
+                if (prop.NameEquals("prompt"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    prompt = InternalPrompt.DeserializeInternalPrompt(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    continue;
+                }
                 if (prop.NameEquals("truncation"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -604,6 +619,7 @@ namespace OpenAI.Responses
                 textOptions,
                 tools ?? new ChangeTrackingList<ResponseTool>(),
                 toolChoice,
+                prompt,
                 truncationMode,
                 id,
                 @object,
@@ -673,6 +689,10 @@ namespace OpenAI.Responses
             {
                 return TextOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("text"u8.Length)], out value);
             }
+            if (local.StartsWith("prompt"u8))
+            {
+                return Prompt.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("prompt"u8.Length)], out value);
+            }
             if (local.StartsWith("error"u8))
             {
                 return Error.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("error"u8.Length)], out value);
@@ -726,6 +746,11 @@ namespace OpenAI.Responses
             if (local.StartsWith("text"u8))
             {
                 TextOptions.Patch.Set([.. "$"u8, .. local.Slice("text"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("prompt"u8))
+            {
+                Prompt.Patch.Set([.. "$"u8, .. local.Slice("prompt"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("error"u8))

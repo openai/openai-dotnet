@@ -86,6 +86,12 @@ namespace OpenAI.Responses
                         return ImageGenerationTool.DeserializeImageGenerationTool(element, data, options);
                     case "local_shell":
                         return InternalLocalShellTool.DeserializeInternalLocalShellTool(element, data, options);
+                    case "shell":
+                        return ShellTool.DeserializeShellTool(element, data, options);
+                    case "apply_patch":
+                        return ApplyPatchTool.DeserializeApplyPatchTool(element, data, options);
+                    case "custom":
+                        return CustomTool.DeserializeCustomTool(element, data, options);
                     case "mcp":
                         return McpTool.DeserializeMcpTool(element, data, options);
                 }

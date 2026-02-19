@@ -17,12 +17,12 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public CreateResponseOptions() : this(null, default, default, default, null, null, default, null, null, null, default, default, default, null, null, null, null, default, null, null, default, default, default, null, default)
+        public CreateResponseOptions() : this(null, default, default, default, null, null, default, null, null, null, default, default, default, null, null, null, null, null, default, null, null, default, default, default, null, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal CreateResponseOptions(IDictionary<string, string> metadata, float? temperature, int? topLogProbabilityCount, float? topP, string endUserId, string safetyIdentifier, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? backgroundModeEnabled, int? maxOutputTokenCount, int? maxToolCallCount, string instructions, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncationMode, IList<ResponseItem> inputItems, IList<IncludedResponseProperty> includedProperties, bool? parallelToolCallsEnabled, bool? storedOutputEnabled, bool? streamingEnabled, ResponseConversationOptions conversationOptions, in JsonPatch patch)
+        internal CreateResponseOptions(IDictionary<string, string> metadata, float? temperature, int? topLogProbabilityCount, float? topP, string endUserId, string safetyIdentifier, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? backgroundModeEnabled, int? maxOutputTokenCount, int? maxToolCallCount, string instructions, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, InternalPrompt prompt, ResponseTruncationMode? truncationMode, IList<ResponseItem> inputItems, IList<IncludedResponseProperty> includedProperties, bool? parallelToolCallsEnabled, bool? storedOutputEnabled, bool? streamingEnabled, ResponseConversationOptions conversationOptions, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -42,6 +42,7 @@ namespace OpenAI.Responses
             TextOptions = textOptions;
             Tools = tools ?? new ChangeTrackingList<ResponseTool>();
             ToolChoice = toolChoice;
+            Prompt = prompt;
             TruncationMode = truncationMode;
             InputItems = inputItems ?? new ChangeTrackingList<ResponseItem>();
             IncludedProperties = includedProperties ?? new ChangeTrackingList<IncludedResponseProperty>();
@@ -76,5 +77,7 @@ namespace OpenAI.Responses
         public string Instructions { get; set; }
 
         public IList<ResponseTool> Tools { get; }
+
+        internal InternalPrompt Prompt { get; set; }
     }
 }

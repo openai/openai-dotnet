@@ -104,6 +104,18 @@ namespace OpenAI.Responses
                         return InternalMCPApprovalResponseItemParam.DeserializeInternalMCPApprovalResponseItemParam(element, data, options);
                     case "mcp_call":
                         return InternalMCPCallItemParam.DeserializeInternalMCPCallItemParam(element, data, options);
+                    case "shell_call":
+                        return InternalFunctionShellCallItemParam.DeserializeInternalFunctionShellCallItemParam(element, data, options);
+                    case "shell_call_output":
+                        return InternalFunctionShellCallOutputItemParam.DeserializeInternalFunctionShellCallOutputItemParam(element, data, options);
+                    case "apply_patch_call":
+                        return InternalApplyPatchToolCallItemParam.DeserializeInternalApplyPatchToolCallItemParam(element, data, options);
+                    case "apply_patch_call_output":
+                        return InternalApplyPatchToolCallOutputItemParam.DeserializeInternalApplyPatchToolCallOutputItemParam(element, data, options);
+                    case "custom_tool_call":
+                        return InternalCustomToolCallItemParam.DeserializeInternalCustomToolCallItemParam(element, data, options);
+                    case "custom_tool_call_output":
+                        return InternalCustomToolCallOutputItemParam.DeserializeInternalCustomToolCallOutputItemParam(element, data, options);
                 }
             }
             return InternalUnknownItemParam.DeserializeInternalUnknownItemParam(element, data, options);

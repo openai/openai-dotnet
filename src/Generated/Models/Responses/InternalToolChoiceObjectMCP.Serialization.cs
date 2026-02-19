@@ -12,6 +12,10 @@ namespace OpenAI.Responses
 {
     internal partial class InternalToolChoiceObjectMCP : InternalToolChoiceObject, IJsonModel<InternalToolChoiceObjectMCP>
     {
+        internal InternalToolChoiceObjectMCP() : this(InternalToolChoiceObjectType.Mcp, default, null, null)
+        {
+        }
+
         void IJsonModel<InternalToolChoiceObjectMCP>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -36,6 +40,16 @@ namespace OpenAI.Responses
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.server_label"u8))
+            {
+                writer.WritePropertyName("server_label"u8);
+                writer.WriteStringValue(ServerLabel);
+            }
+            if (Optional.IsDefined(Name) && !Patch.Contains("$.name"u8))
+            {
+                writer.WritePropertyName("name"u8);
+                writer.WriteStringValue(Name);
+            }
 
             Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -64,6 +78,8 @@ namespace OpenAI.Responses
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            string serverLabel = default;
+            string name = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -71,9 +87,24 @@ namespace OpenAI.Responses
                     kind = new InternalToolChoiceObjectType(prop.Value.GetString());
                     continue;
                 }
+                if (prop.NameEquals("server_label"u8))
+                {
+                    serverLabel = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("name"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        name = null;
+                        continue;
+                    }
+                    name = prop.Value.GetString();
+                    continue;
+                }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalToolChoiceObjectMCP(kind, patch);
+            return new InternalToolChoiceObjectMCP(kind, patch, serverLabel, name);
         }
 
         BinaryData IPersistableModel<InternalToolChoiceObjectMCP>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

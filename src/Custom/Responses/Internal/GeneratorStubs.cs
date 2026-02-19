@@ -124,3 +124,47 @@ namespace OpenAI.Responses;
 [CodeGenType("UnknownCodeInterpreterContainerConfiguration")] internal partial class InternalUnknownCodeInterpreterContainerConfiguration {}
 [CodeGenType("GetInputTokenCountsRequestContentType")] internal readonly partial struct InternalGetInputTokenCountsRequestContentType {}
 [CodeGenType("CompactConversationRequestContentType")] internal readonly partial struct InternalCompactConversationRequestContentType {}
+[CodeGenType("ApplyPatchCallOutputStatusParam")] internal readonly partial struct InternalApplyPatchCallOutputStatusParam {}
+[CodeGenType("ApplyPatchCallStatusParam")] internal readonly partial struct InternalApplyPatchCallStatusParam {}
+[CodeGenType("ApplyPatchCreateFileOperation")] internal partial class InternalApplyPatchCreateFileOperation {}
+[CodeGenType("ApplyPatchDeleteFileOperation")] internal partial class InternalApplyPatchDeleteFileOperation {}
+[CodeGenType("ApplyPatchOperationParam")] internal partial class InternalApplyPatchOperationParam {}
+[CodeGenType("ApplyPatchOperationType")] internal readonly partial struct InternalApplyPatchOperationType {}
+[CodeGenType("ApplyPatchToolCallItemParam")] internal partial class InternalApplyPatchToolCallItemParam {}
+[CodeGenType("ApplyPatchToolCallItemResource")] internal partial class InternalApplyPatchToolCallItemResource {}
+[CodeGenType("ApplyPatchToolCallOutputItemParam")] internal partial class InternalApplyPatchToolCallOutputItemParam {}
+[CodeGenType("ApplyPatchToolCallOutputItemResource")] internal partial class InternalApplyPatchToolCallOutputItemResource {}
+[CodeGenType("ApplyPatchUpdateFileOperation")] internal partial class InternalApplyPatchUpdateFileOperation {}
+
+[CodeGenType("CustomToolCallItemParam")] internal partial class InternalCustomToolCallItemParam {}
+[CodeGenType("CustomToolCallItemResource")] internal partial class InternalCustomToolCallItemResource {}
+[CodeGenType("CustomToolCallItemResourceStatus")] internal readonly partial struct InternalCustomToolCallItemResourceStatus {}
+[CodeGenType("CustomToolCallOutputItemParam")] internal partial class InternalCustomToolCallOutputItemParam {}
+[CodeGenType("CustomToolCallOutputItemResource")] internal partial class InternalCustomToolCallOutputItemResource {}
+[CodeGenType("CustomToolCallOutputItemResourceStatus")] internal readonly partial struct InternalCustomToolCallOutputItemResourceStatus {}
+[CodeGenType("CustomToolParamFormatType")] internal readonly partial struct InternalCustomToolParamFormatType {}
+[CodeGenType("FunctionShellActionParam")] internal partial class InternalFunctionShellActionParam {}
+[CodeGenType("FunctionShellCallItemParam")] internal partial class InternalFunctionShellCallItemParam {}
+[CodeGenType("FunctionShellCallItemResource")] internal partial class InternalFunctionShellCallItemResource {}
+[CodeGenType("FunctionShellCallItemStatus")] internal readonly partial struct InternalFunctionShellCallItemStatus {}
+[CodeGenType("FunctionShellCallOutputContentParam")] internal partial class InternalFunctionShellCallOutputContentParam {}
+[CodeGenType("FunctionShellCallOutputItemParam")] internal partial class InternalFunctionShellCallOutputItemParam {}
+[CodeGenType("FunctionShellCallOutputItemResource")] internal partial class InternalFunctionShellCallOutputItemResource {}
+[CodeGenType("FunctionShellCallOutputItemResourceStatus")] internal readonly partial struct InternalFunctionShellCallOutputItemResourceStatus {}
+[CodeGenType("FunctionShellCallOutputOutcomeExit")] internal partial class InternalFunctionShellCallOutputOutcomeExit {}
+[CodeGenType("FunctionShellCallOutputOutcomeParam")] internal partial class InternalFunctionShellCallOutputOutcomeParam {}
+[CodeGenType("FunctionShellCallOutputOutcomeTimeout")] internal partial class InternalFunctionShellCallOutputOutcomeTimeout {}
+[CodeGenType("Prompt")] internal partial class InternalPrompt {}
+[CodeGenType("ResponseCustomToolCallInputDeltaEvent")] internal partial class InternalResponseCustomToolCallInputDeltaEvent {}
+[CodeGenType("ResponseCustomToolCallInputDoneEvent")] internal partial class InternalResponseCustomToolCallInputDoneEvent {}
+[CodeGenType("ResponsePromptVariables")] internal partial class InternalResponsePromptVariables {}
+[CodeGenType("ResponseTextFormatConfigurationGrammar")] internal partial class InternalResponseTextFormatConfigurationGrammar {}
+[CodeGenType("ResponseTextFormatConfigurationPython")] internal partial class InternalResponseTextFormatConfigurationPython {}
+[CodeGenType("ToolChoiceObjectAllowed")] internal partial class InternalToolChoiceObjectAllowed {}
+[CodeGenType("ToolChoiceObjectAllowedMode")] internal readonly partial struct InternalToolChoiceObjectAllowedMode {}
+[CodeGenType("ToolChoiceObjectApplyPatch")] internal partial class InternalToolChoiceObjectApplyPatch {}
+[CodeGenType("ToolChoiceObjectCustom")] internal partial class InternalToolChoiceObjectCustom {}
+[CodeGenType("ToolChoiceObjectShell")] internal partial class InternalToolChoiceObjectShell {}
+[CodeGenType("UnknownApplyPatchOperationParam")] internal partial class InternalUnknownApplyPatchOperationParam {}
+[CodeGenType("UnknownCustomToolParamFormat")] internal partial class InternalUnknownCustomToolParamFormat {}
+[CodeGenType("UnknownFunctionShellCallOutputOutcomeParam")] internal partial class InternalUnknownFunctionShellCallOutputOutcomeParam {}

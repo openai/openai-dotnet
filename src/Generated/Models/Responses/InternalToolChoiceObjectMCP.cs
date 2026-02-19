@@ -8,14 +8,21 @@ namespace OpenAI.Responses
 {
     internal partial class InternalToolChoiceObjectMCP : InternalToolChoiceObject
     {
-        public InternalToolChoiceObjectMCP() : this(InternalToolChoiceObjectType.Mcp, default)
+        public InternalToolChoiceObjectMCP(string serverLabel) : base(InternalToolChoiceObjectType.Mcp)
         {
+            ServerLabel = serverLabel;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal InternalToolChoiceObjectMCP(InternalToolChoiceObjectType kind, in JsonPatch patch) : base(kind, patch)
+        internal InternalToolChoiceObjectMCP(InternalToolChoiceObjectType kind, in JsonPatch patch, string serverLabel, string name) : base(kind, patch)
         {
+            ServerLabel = serverLabel;
+            Name = name;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+        public string ServerLabel { get; set; }
+
+        public string Name { get; set; }
     }
 }

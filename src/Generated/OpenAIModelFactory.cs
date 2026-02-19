@@ -478,41 +478,6 @@ namespace OpenAI
             return new McpToolFilter(toolNames.ToList(), isReadOnly, default);
         }
 
-        public static CreateResponseOptions CreateResponseOptions(IDictionary<string, string> metadata = default, float? temperature = default, int? topLogProbabilityCount = default, float? topP = default, string endUserId = default, string safetyIdentifier = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? backgroundModeEnabled = default, int? maxOutputTokenCount = default, int? maxToolCallCount = default, string instructions = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, IEnumerable<ResponseItem> inputItems = default, IEnumerable<IncludedResponseProperty> includedProperties = default, bool? parallelToolCallsEnabled = default, bool? storedOutputEnabled = default, bool? streamingEnabled = default, ResponseConversationOptions conversationOptions = default)
-        {
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-            tools ??= new ChangeTrackingList<ResponseTool>();
-            inputItems ??= new ChangeTrackingList<ResponseItem>();
-            includedProperties ??= new ChangeTrackingList<IncludedResponseProperty>();
-
-            return new CreateResponseOptions(
-                metadata,
-                temperature,
-                topLogProbabilityCount,
-                topP,
-                endUserId,
-                safetyIdentifier,
-                serviceTier,
-                previousResponseId,
-                model,
-                reasoningOptions,
-                backgroundModeEnabled,
-                maxOutputTokenCount,
-                maxToolCallCount,
-                instructions,
-                textOptions,
-                tools.ToList(),
-                toolChoice,
-                truncationMode,
-                inputItems.ToList(),
-                includedProperties.ToList(),
-                parallelToolCallsEnabled,
-                storedOutputEnabled,
-                streamingEnabled,
-                conversationOptions,
-                default);
-        }
-
         public static ResponseTextOptions ResponseTextOptions(ResponseTextFormat textFormat = default)
         {
             return new ResponseTextOptions(textFormat, default);
@@ -587,44 +552,6 @@ namespace OpenAI
         public static ResponseConversationOptions ResponseConversationOptions(string conversationId = default)
         {
             return new ResponseConversationOptions(conversationId, default);
-        }
-
-        public static ResponseResult ResponseResult(IDictionary<string, string> metadata = default, float? temperature = default, int? topLogProbabilityCount = default, float? topP = default, string endUserId = default, string safetyIdentifier = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? backgroundModeEnabled = default, int? maxOutputTokenCount = default, int? maxToolCallCount = default, string instructions = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, string id = default, ResponseStatus? status = default, DateTimeOffset createdAt = default, ResponseError error = default, ResponseIncompleteStatusDetails incompleteStatusDetails = default, IEnumerable<ResponseItem> outputItems = default, ResponseTokenUsage usage = default, bool parallelToolCallsEnabled = default, ResponseConversationOptions conversationOptions = default)
-        {
-            metadata ??= new ChangeTrackingDictionary<string, string>();
-            tools ??= new ChangeTrackingList<ResponseTool>();
-            outputItems ??= new ChangeTrackingList<ResponseItem>();
-
-            return new ResponseResult(
-                metadata,
-                temperature,
-                topLogProbabilityCount,
-                topP,
-                endUserId,
-                safetyIdentifier,
-                serviceTier,
-                previousResponseId,
-                model,
-                reasoningOptions,
-                backgroundModeEnabled,
-                maxOutputTokenCount,
-                maxToolCallCount,
-                instructions,
-                textOptions,
-                tools.ToList(),
-                toolChoice,
-                truncationMode,
-                id,
-                "response",
-                status,
-                createdAt,
-                error,
-                incompleteStatusDetails,
-                outputItems.ToList(),
-                usage,
-                parallelToolCallsEnabled,
-                conversationOptions,
-                default);
         }
 
         public static ResponseError ResponseError(ResponseErrorCode code = default, string message = default)

@@ -25,6 +25,12 @@ union ItemType {
   mcp_approval_request: "mcp_approval_request",
   mcp_approval_response: "mcp_approval_response",
   mcp_call: "mcp_call",
+  shell_call: "shell_call",
+  shell_call_output: "shell_call_output",
+  apply_patch_call: "apply_patch_call",
+  apply_patch_call_output: "apply_patch_call_output",
+  custom_tool_call: "custom_tool_call",
+  custom_tool_call_output: "custom_tool_call_output",
 }
 
 model FileSearchToolCallItemParam extends ItemParam {
@@ -236,4 +242,70 @@ model MCPCallItemParam extends ItemParam {
 model MCPCallItemResource extends ItemResource {
   type: ItemType.mcp_call;
   ...MCPCallItemBase;
+}
+
+model FunctionShellCallItemParam extends ItemParam {
+  type: ItemType.shell_call;
+  ...FunctionShellCallItemBase;
+}
+
+model FunctionShellCallItemResource extends ItemResource {
+  type: ItemType.shell_call;
+  status: FunctionShellCallItemStatus;
+  ...FunctionShellCallItemBase;
+}
+
+model FunctionShellCallOutputItemParam extends ItemParam {
+  type: ItemType.shell_call_output;
+  ...FunctionShellCallOutputItemBase;
+}
+
+model FunctionShellCallOutputItemResource extends ItemResource {
+  type: ItemType.shell_call_output;
+  status: "in_progress" | "completed" | "incomplete";
+  ...FunctionShellCallOutputItemBase;
+}
+
+model ApplyPatchToolCallItemParam extends ItemParam {
+  type: ItemType.apply_patch_call;
+  ...ApplyPatchToolCallItemBase;
+}
+
+model ApplyPatchToolCallItemResource extends ItemResource {
+  type: ItemType.apply_patch_call;
+  status: ApplyPatchCallStatusParam;
+  ...ApplyPatchToolCallItemBase;
+}
+
+model ApplyPatchToolCallOutputItemParam extends ItemParam {
+  type: ItemType.apply_patch_call_output;
+  ...ApplyPatchToolCallOutputItemBase;
+}
+
+model ApplyPatchToolCallOutputItemResource extends ItemResource {
+  type: ItemType.apply_patch_call_output;
+  status: ApplyPatchCallOutputStatusParam;
+  ...ApplyPatchToolCallOutputItemBase;
+}
+
+model CustomToolCallItemParam extends ItemParam {
+  type: ItemType.custom_tool_call;
+  ...CustomToolCallItemBase;
+}
+
+model CustomToolCallItemResource extends ItemResource {
+  type: ItemType.custom_tool_call;
+  status: "in_progress" | "completed" | "incomplete";
+  ...CustomToolCallItemBase;
+}
+
+model CustomToolCallOutputItemParam extends ItemParam {
+  type: ItemType.custom_tool_call_output;
+  ...CustomToolCallOutputItemBase;
+}
+
+model CustomToolCallOutputItemResource extends ItemResource {
+  type: ItemType.custom_tool_call_output;
+  status: "in_progress" | "completed" | "incomplete";
+  ...CustomToolCallOutputItemBase;
 }

@@ -155,6 +155,10 @@ namespace OpenAI.Responses
                         return StreamingResponseMcpListToolsFailedUpdate.DeserializeStreamingResponseMcpListToolsFailedUpdate(element, data, options);
                     case "response.mcp_list_tools.in_progress":
                         return StreamingResponseMcpListToolsInProgressUpdate.DeserializeStreamingResponseMcpListToolsInProgressUpdate(element, data, options);
+                    case "response.custom_tool_call_input.delta":
+                        return InternalResponseCustomToolCallInputDeltaEvent.DeserializeInternalResponseCustomToolCallInputDeltaEvent(element, data, options);
+                    case "response.custom_tool_call_input.done":
+                        return InternalResponseCustomToolCallInputDoneEvent.DeserializeInternalResponseCustomToolCallInputDoneEvent(element, data, options);
                     case "response.output_text.annotation.added":
                         return StreamingResponseTextAnnotationAddedUpdate.DeserializeStreamingResponseTextAnnotationAddedUpdate(element, data, options);
                     case "response.queued":

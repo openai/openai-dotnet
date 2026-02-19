@@ -65,6 +65,18 @@ using TypeSpec.HttpClient.CSharp;
 @@visibility(ImageGenToolCallItemResource.status, Lifecycle.Read);
 @@clientName(ImageGenToolCallItemResource.result, "ImageResultBytes");
 
+@@visibility(FunctionShellCallItemResource.status, Lifecycle.Read);
+
+@@visibility(FunctionShellCallOutputItemResource.status, Lifecycle.Read);
+
+@@visibility(ApplyPatchToolCallItemResource.status, Lifecycle.Read);
+
+@@visibility(ApplyPatchToolCallOutputItemResource.status, Lifecycle.Read);
+
+@@visibility(CustomToolCallItemResource.status, Lifecycle.Read);
+
+@@visibility(CustomToolCallOutputItemResource.status, Lifecycle.Read);
+
 // ------------ Tools ------------
 
 @@clientName(FileSearchTool.max_num_results, "MaxResultCount");
@@ -114,6 +126,10 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(ToolChoiceObjectImageGen);
 @@dynamicModel(ToolChoiceObjectCodeInterpreter);
 @@dynamicModel(ToolChoiceObjectMCP);
+@@dynamicModel(ToolChoiceObjectShell);
+@@dynamicModel(ToolChoiceObjectApplyPatch);
+@@dynamicModel(ToolChoiceObjectCustom);
+@@dynamicModel(ToolChoiceObjectAllowed);
 @@dynamicModel(ToolChoiceObjectFunction);
 @@dynamicModel(FunctionTool);
 @@dynamicModel(FileSearchTool);
@@ -141,6 +157,8 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(ResponseTextFormatConfigurationText);
 @@dynamicModel(ResponseTextFormatConfigurationJsonObject);
 @@dynamicModel(ResponseTextFormatConfigurationJsonSchema);
+@@dynamicModel(ResponseTextFormatConfigurationGrammar);
+@@dynamicModel(ResponseTextFormatConfigurationPython);
 @@dynamicModel(ItemContent);
 @@dynamicModel(ItemContentInputAudio);
 @@dynamicModel(InputMessageContentList);
@@ -192,6 +210,21 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(ImageGenTool);
 @@dynamicModel(LocalShellExecAction);
 @@dynamicModel(LocalShellTool);
+@@dynamicModel(FunctionShellToolParam);
+@@dynamicModel(ApplyPatchToolParam);
+@@dynamicModel(CustomToolParam);
+@@dynamicModel(CustomToolParamFormat);
+@@dynamicModel(CustomTextFormatParam);
+@@dynamicModel(CustomGrammarFormatParam);
+@@dynamicModel(FunctionShellActionParam);
+@@dynamicModel(FunctionShellCallOutputContentParam);
+@@dynamicModel(FunctionShellCallOutputOutcomeParam);
+@@dynamicModel(FunctionShellCallOutputOutcomeTimeout);
+@@dynamicModel(FunctionShellCallOutputOutcomeExit);
+@@dynamicModel(ApplyPatchOperationParam);
+@@dynamicModel(ApplyPatchCreateFileOperation);
+@@dynamicModel(ApplyPatchDeleteFileOperation);
+@@dynamicModel(ApplyPatchUpdateFileOperation);
 @@dynamicModel(MCPListToolsTool);
 @@dynamicModel(MCPTool);
 @@dynamicModel(MCPToolFilter);
@@ -207,6 +240,8 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(ResponseMCPListToolsCompletedEvent);
 @@dynamicModel(ResponseMCPListToolsFailedEvent);
 @@dynamicModel(ResponseMCPListToolsInProgressEvent);
+@@dynamicModel(ResponseCustomToolCallInputDeltaEvent);
+@@dynamicModel(ResponseCustomToolCallInputDoneEvent);
 @@dynamicModel(ResponseOutputTextAnnotationAddedEvent);
 @@dynamicModel(ResponseQueuedEvent);
 @@dynamicModel(ResponseReasoningDeltaEvent);
@@ -227,6 +262,8 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(TopLogProb);
 @@dynamicModel(LogProb);
 @@dynamicModel(WebSearchToolFilters);
+@@dynamicModel(Prompt);
+@@dynamicModel(ResponsePromptVariables);
 // custom.tsp models
 @@dynamicModel(ResponseErrorResponse);
 @@dynamicModel(DeleteResponseResponse);
@@ -269,6 +306,18 @@ using TypeSpec.HttpClient.CSharp;
 @@dynamicModel(MCPApprovalResponseItemResource);
 @@dynamicModel(MCPCallItemParam);
 @@dynamicModel(MCPCallItemResource);
+@@dynamicModel(FunctionShellCallItemParam);
+@@dynamicModel(FunctionShellCallItemResource);
+@@dynamicModel(FunctionShellCallOutputItemParam);
+@@dynamicModel(FunctionShellCallOutputItemResource);
+@@dynamicModel(ApplyPatchToolCallItemParam);
+@@dynamicModel(ApplyPatchToolCallItemResource);
+@@dynamicModel(ApplyPatchToolCallOutputItemParam);
+@@dynamicModel(ApplyPatchToolCallOutputItemResource);
+@@dynamicModel(CustomToolCallItemParam);
+@@dynamicModel(CustomToolCallItemResource);
+@@dynamicModel(CustomToolCallOutputItemParam);
+@@dynamicModel(CustomToolCallOutputItemResource);
 // custom/items.messages.tsp models
 @@dynamicModel(ResponsesMessageItemParam);
 @@dynamicModel(ResponsesUserMessageItemParam);

@@ -123,6 +123,50 @@ public partial class ResponseTool
             container: container);
     }
 
+    // CUSTOM: Added factory method as a convenience.
+    /// <summary>
+    /// Creates a new instance of the <see cref="ShellTool"/> class.
+    /// </summary>
+    /// <returns>A new instance of the <see cref="ShellTool"/> class.</returns>
+    public static ShellTool CreateShellTool()
+    {
+        return new ShellTool(
+            kind: InternalToolType.Shell,
+            patch: default);
+    }
+
+    // CUSTOM: Added factory method as a convenience.
+    /// <summary>
+    /// Creates a new instance of the <see cref="ApplyPatchTool"/> class.
+    /// </summary>
+    /// <returns>A new instance of the <see cref="ApplyPatchTool"/> class.</returns>
+    public static ApplyPatchTool CreateApplyPatchTool()
+    {
+        return new ApplyPatchTool(
+            kind: InternalToolType.ApplyPatch,
+            patch: default);
+    }
+
+    // CUSTOM: Added factory method as a convenience.
+    /// <summary>
+    /// Creates a new instance of the <see cref="CustomTool"/> class.
+    /// </summary>
+    /// <param name="name">The name of the custom tool.</param>
+    /// <param name="description">An optional description of the custom tool.</param>
+    /// <param name="format">An optional format for the custom tool output.</param>
+    /// <returns>A new instance of the <see cref="CustomTool"/> class.</returns>
+    public static CustomTool CreateCustomTool(string name, string description = null, CustomToolFormat format = null)
+    {
+        Argument.AssertNotNull(name, nameof(name));
+
+        return new CustomTool(
+            kind: InternalToolType.Custom,
+            patch: default,
+            name: name,
+            description: description,
+            format: format);
+    }
+
     // CUSTOM: Added factory method for a convenience.
     /// <summary>
     /// Creates a new instance of the <see cref="ImageGenerationTool"/> class.

@@ -36,7 +36,7 @@ namespace OpenAI.Responses
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseResult(IDictionary<string, string> metadata, float? temperature, int? topLogProbabilityCount, float? topP, string endUserId, string safetyIdentifier, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? backgroundModeEnabled, int? maxOutputTokenCount, int? maxToolCallCount, string instructions, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncationMode, string id, string @object, ResponseStatus? status, DateTimeOffset createdAt, ResponseError error, ResponseIncompleteStatusDetails incompleteStatusDetails, IList<ResponseItem> outputItems, ResponseTokenUsage usage, bool parallelToolCallsEnabled, ResponseConversationOptions conversationOptions, in JsonPatch patch)
+        internal ResponseResult(IDictionary<string, string> metadata, float? temperature, int? topLogProbabilityCount, float? topP, string endUserId, string safetyIdentifier, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? backgroundModeEnabled, int? maxOutputTokenCount, int? maxToolCallCount, string instructions, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, InternalPrompt prompt, ResponseTruncationMode? truncationMode, string id, string @object, ResponseStatus? status, DateTimeOffset createdAt, ResponseError error, ResponseIncompleteStatusDetails incompleteStatusDetails, IList<ResponseItem> outputItems, ResponseTokenUsage usage, bool parallelToolCallsEnabled, ResponseConversationOptions conversationOptions, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -56,6 +56,7 @@ namespace OpenAI.Responses
             TextOptions = textOptions;
             Tools = tools ?? new ChangeTrackingList<ResponseTool>();
             ToolChoice = toolChoice;
+            Prompt = prompt;
             TruncationMode = truncationMode;
             Id = id;
             Object = @object;
@@ -94,6 +95,8 @@ namespace OpenAI.Responses
         public string Instructions { get; set; }
 
         public IList<ResponseTool> Tools { get; }
+
+        internal InternalPrompt Prompt { get; set; }
 
         public string Id { get; set; }
 

@@ -4477,6 +4477,13 @@ namespace OpenAI.Realtime {
     }
 }
 namespace OpenAI.Responses {
+    public class ApplyPatchTool : ResponseTool, IJsonModel<ApplyPatchTool>, IPersistableModel<ApplyPatchTool> {
+        public ApplyPatchTool();
+        protected override ResponseTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
     public class AutomaticCodeInterpreterToolContainerConfiguration : CodeInterpreterToolContainerConfiguration, IJsonModel<AutomaticCodeInterpreterToolContainerConfiguration>, IPersistableModel<AutomaticCodeInterpreterToolContainerConfiguration> {
         public AutomaticCodeInterpreterToolContainerConfiguration();
         public IList<string> FileIds { get; }
@@ -4750,6 +4757,41 @@ namespace OpenAI.Responses {
         protected virtual CustomMcpToolCallApprovalPolicy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
+    public class CustomTool : ResponseTool, IJsonModel<CustomTool>, IPersistableModel<CustomTool> {
+        public CustomTool(string name);
+        public string Description { get; set; }
+        public CustomToolFormat Format { get; set; }
+        public string Name { get; set; }
+        protected override ResponseTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public abstract class CustomToolFormat : IJsonModel<CustomToolFormat>, IPersistableModel<CustomToolFormat> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        protected virtual CustomToolFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual CustomToolFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class CustomToolGrammarFormat : CustomToolFormat, IJsonModel<CustomToolGrammarFormat>, IPersistableModel<CustomToolGrammarFormat> {
+        public CustomToolGrammarFormat(GrammarSyntax syntax, string definition);
+        public string Definition { get; set; }
+        public GrammarSyntax Syntax { get; set; }
+        protected override CustomToolFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override CustomToolFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class CustomToolTextFormat : CustomToolFormat, IJsonModel<CustomToolTextFormat>, IPersistableModel<CustomToolTextFormat> {
+        public CustomToolTextFormat();
+        protected override CustomToolFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override CustomToolFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
     public class FileCitationMessageAnnotation : ResponseMessageAnnotation, IJsonModel<FileCitationMessageAnnotation>, IPersistableModel<FileCitationMessageAnnotation> {
         public FileCitationMessageAnnotation(string fileId, int index, string filename);
         public string FileId { get; set; }
@@ -4907,6 +4949,21 @@ namespace OpenAI.Responses {
         public static implicit operator GlobalMcpToolCallApprovalPolicy(string value);
         public static implicit operator GlobalMcpToolCallApprovalPolicy?(string value);
         public static bool operator !=(GlobalMcpToolCallApprovalPolicy left, GlobalMcpToolCallApprovalPolicy right);
+        public override readonly string ToString();
+    }
+    public readonly partial struct GrammarSyntax : IEquatable<GrammarSyntax> {
+        public GrammarSyntax(string value);
+        public static GrammarSyntax Lark { get; }
+        public static GrammarSyntax Regex { get; }
+        public readonly bool Equals(GrammarSyntax other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(GrammarSyntax left, GrammarSyntax right);
+        public static implicit operator GrammarSyntax(string value);
+        public static implicit operator GrammarSyntax?(string value);
+        public static bool operator !=(GrammarSyntax left, GrammarSyntax right);
         public override readonly string ToString();
     }
     public class ImageGenerationCallResponseItem : ResponseItem, IJsonModel<ImageGenerationCallResponseItem>, IPersistableModel<ImageGenerationCallResponseItem> {
@@ -5715,13 +5772,16 @@ namespace OpenAI.Responses {
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
+        public static ApplyPatchTool CreateApplyPatchTool();
         public static CodeInterpreterTool CreateCodeInterpreterTool(CodeInterpreterToolContainer container);
         public static ComputerTool CreateComputerTool(ComputerToolEnvironment environment, int displayWidth, int displayHeight);
+        public static CustomTool CreateCustomTool(string name, string description = null, CustomToolFormat format = null);
         public static FileSearchTool CreateFileSearchTool(IEnumerable<string> vectorStoreIds, int? maxResultCount = null, FileSearchToolRankingOptions rankingOptions = null, BinaryData filters = null);
         public static FunctionTool CreateFunctionTool(string functionName, BinaryData functionParameters, bool? strictModeEnabled, string functionDescription = null);
         public static ImageGenerationTool CreateImageGenerationTool(string model, ImageGenerationToolQuality? quality = null, ImageGenerationToolSize? size = null, ImageGenerationToolOutputFileFormat? outputFileFormat = null, int? outputCompressionFactor = null, ImageGenerationToolModerationLevel? moderationLevel = null, ImageGenerationToolBackground? background = null, ImageGenerationToolInputFidelity? inputFidelity = null, ImageGenerationToolInputImageMask inputImageMask = null, int? partialImageCount = null);
         public static McpTool CreateMcpTool(string serverLabel, McpToolConnectorId connectorId, string authorizationToken = null, string serverDescription = null, IDictionary<string, string> headers = null, McpToolFilter allowedTools = null, McpToolCallApprovalPolicy toolCallApprovalPolicy = null);
         public static McpTool CreateMcpTool(string serverLabel, Uri serverUri, string authorizationToken = null, string serverDescription = null, IDictionary<string, string> headers = null, McpToolFilter allowedTools = null, McpToolCallApprovalPolicy toolCallApprovalPolicy = null);
+        public static ShellTool CreateShellTool();
         public static WebSearchPreviewTool CreateWebSearchPreviewTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null);
         public static WebSearchTool CreateWebSearchTool(WebSearchToolLocation userLocation = null, WebSearchToolContextSize? searchContextSize = null, WebSearchToolFilters filters = null);
         protected virtual ResponseTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -5764,6 +5824,13 @@ namespace OpenAI.Responses {
         public static implicit operator ResponseTruncationMode?(string value);
         public static bool operator !=(ResponseTruncationMode left, ResponseTruncationMode right);
         public override readonly string ToString();
+    }
+    public class ShellTool : ResponseTool, IJsonModel<ShellTool>, IPersistableModel<ShellTool> {
+        public ShellTool();
+        protected override ResponseTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class StreamingResponseCodeInterpreterCallCodeDeltaUpdate : StreamingResponseUpdate, IJsonModel<StreamingResponseCodeInterpreterCallCodeDeltaUpdate>, IPersistableModel<StreamingResponseCodeInterpreterCallCodeDeltaUpdate> {
         public StreamingResponseCodeInterpreterCallCodeDeltaUpdate();

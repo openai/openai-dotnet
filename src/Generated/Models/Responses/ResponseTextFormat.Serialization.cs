@@ -74,6 +74,10 @@ namespace OpenAI.Responses
                         return InternalResponsesTextFormatText.DeserializeInternalResponsesTextFormatText(element, data, options);
                     case "json_object":
                         return InternalResponsesTextFormatJsonObject.DeserializeInternalResponsesTextFormatJsonObject(element, data, options);
+                    case "grammar":
+                        return InternalResponseTextFormatConfigurationGrammar.DeserializeInternalResponseTextFormatConfigurationGrammar(element, data, options);
+                    case "python":
+                        return InternalResponseTextFormatConfigurationPython.DeserializeInternalResponseTextFormatConfigurationPython(element, data, options);
                     case "json_schema":
                         return InternalResponsesTextFormatJsonSchema.DeserializeInternalResponsesTextFormatJsonSchema(element, data, options);
                 }

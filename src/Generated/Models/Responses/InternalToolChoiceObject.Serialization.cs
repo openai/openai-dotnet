@@ -82,6 +82,14 @@ namespace OpenAI.Responses
                         return InternalToolChoiceObjectCodeInterpreter.DeserializeInternalToolChoiceObjectCodeInterpreter(element, data, options);
                     case "mcp":
                         return InternalToolChoiceObjectMCP.DeserializeInternalToolChoiceObjectMCP(element, data, options);
+                    case "shell":
+                        return InternalToolChoiceObjectShell.DeserializeInternalToolChoiceObjectShell(element, data, options);
+                    case "apply_patch":
+                        return InternalToolChoiceObjectApplyPatch.DeserializeInternalToolChoiceObjectApplyPatch(element, data, options);
+                    case "custom":
+                        return InternalToolChoiceObjectCustom.DeserializeInternalToolChoiceObjectCustom(element, data, options);
+                    case "allowed_tools":
+                        return InternalToolChoiceObjectAllowed.DeserializeInternalToolChoiceObjectAllowed(element, data, options);
                     case "function":
                         return InternalToolChoiceObjectFunction.DeserializeInternalToolChoiceObjectFunction(element, data, options);
                 }

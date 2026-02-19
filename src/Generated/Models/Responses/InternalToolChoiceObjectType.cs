@@ -17,6 +17,10 @@ namespace OpenAI.Responses
         private const string ImageGenerationValue = "image_generation";
         private const string CodeInterpreterValue = "code_interpreter";
         private const string McpValue = "mcp";
+        private const string ShellValue = "shell";
+        private const string ApplyPatchValue = "apply_patch";
+        private const string CustomValue = "custom";
+        private const string AllowedToolsValue = "allowed_tools";
 
         public InternalToolChoiceObjectType(string value)
         {
@@ -36,6 +40,14 @@ namespace OpenAI.Responses
         internal static InternalToolChoiceObjectType CodeInterpreter { get; } = new InternalToolChoiceObjectType(CodeInterpreterValue);
 
         internal static InternalToolChoiceObjectType Mcp { get; } = new InternalToolChoiceObjectType(McpValue);
+
+        internal static InternalToolChoiceObjectType Shell { get; } = new InternalToolChoiceObjectType(ShellValue);
+
+        internal static InternalToolChoiceObjectType ApplyPatch { get; } = new InternalToolChoiceObjectType(ApplyPatchValue);
+
+        internal static InternalToolChoiceObjectType Custom { get; } = new InternalToolChoiceObjectType(CustomValue);
+
+        internal static InternalToolChoiceObjectType AllowedTools { get; } = new InternalToolChoiceObjectType(AllowedToolsValue);
 
         public static bool operator ==(InternalToolChoiceObjectType left, InternalToolChoiceObjectType right) => left.Equals(right);
 
