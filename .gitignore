@@ -191,3 +191,7 @@ specification/base/typespec.azure.v1
 codegen/tsp-output/
 codegen/temp/
 codegen/emitter/temp/tsconfig.tsbuildinfo
+
+# Artifacts from the generator
+tspCodeModel.json
+Configuration.json

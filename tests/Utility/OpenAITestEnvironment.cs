@@ -69,7 +69,7 @@ public class OpenAITestEnvironment : TestEnvironment
         EnvironmentFile = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
         {
             { EnvironmentVariables.OpenAIKey, "api-key" },
-            { EnvironmentVariables.TestMode, "Live" }
+            { EnvironmentVariables.TestMode, "Playback" }
         };
         _ = TryReadEnvFile(Path.Combine(RepositoryRoot, ".env"), EnvironmentFile);
         _ = TryReadEnvFile(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), ".env"), EnvironmentFile);
