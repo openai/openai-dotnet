@@ -1,5 +1,5 @@
-# This workflow is triggered manually and runs tests in Record mode,
-# then commits the session recordings back to the branch.
+# This workflow is triggered manually and runs tests in Record mode, then commits the session
+# recordings and creates a PR against the target branch.
 name: Record test
 
 on:
