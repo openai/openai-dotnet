@@ -1433,6 +1433,109 @@ namespace OpenAI
             return new RealtimeCreateClientSecretResponse(value, expiresAt, session, additionalBinaryDataProperties: null);
         }
 
+        public static GARealtimeMcpToolDefinition GARealtimeMcpToolDefinition(string name = default, string description = default, BinaryData inputSchema = default, BinaryData annotations = default)
+        {
+            return new GARealtimeMcpToolDefinition(name, description, inputSchema, annotations, default);
+        }
+
+        public static GARealtimeError GARealtimeError(string kind = default, string code = default, string message = default, string parameterName = default, string eventId = default)
+        {
+            return new GARealtimeError(
+                kind,
+                code,
+                message,
+                parameterName,
+                eventId,
+                default);
+        }
+
+        public static GARealtimeLogProbabilityDetails GARealtimeLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)
+        {
+            return new GARealtimeLogProbabilityDetails(token, logProbability, utf8Bytes, default);
+        }
+
+        public static GARealtimeTranscriptionInputTokenUsageDetails GARealtimeTranscriptionInputTokenUsageDetails(int? textTokenCount = default, int? audioTokenCount = default)
+        {
+            return new GARealtimeTranscriptionInputTokenUsageDetails(textTokenCount, audioTokenCount, default);
+        }
+
+        public static GARealtimeResponseStatusDetails GARealtimeResponseStatusDetails(GARealtimeResponseStatusErrorKind? kind = default, GARealtimeResponseStatusReason? reason = default, GARealtimeError error = default)
+        {
+            return new GARealtimeResponseStatusDetails(kind, reason, error, default);
+        }
+
+        public static GARealtimeResponseAudioOptions GARealtimeResponseAudioOptions(GARealtimeResponseOutputAudioOptions outputAudioOptions = default)
+        {
+            return new GARealtimeResponseAudioOptions(outputAudioOptions, default);
+        }
+
+        public static GARealtimeResponseOutputAudioOptions GARealtimeResponseOutputAudioOptions(GARealtimeAudioFormat format = default, GARealtimeVoice? voice = default)
+        {
+            return new GARealtimeResponseOutputAudioOptions(format, voice, default);
+        }
+
+        public static GARealtimeResponseUsage GARealtimeResponseUsage(int? totalTokens = default, int? inputTokens = default, int? outputTokens = default, GARealtimeResponseInputTokenUsageDetails inputTokenDetails = default, GARealtimeResponseOutputTokenUsageDetails outputTokenDetails = default)
+        {
+            return new GARealtimeResponseUsage(
+                totalTokens,
+                inputTokens,
+                outputTokens,
+                inputTokenDetails,
+                outputTokenDetails,
+                default);
+        }
+
+        public static GARealtimeResponseInputTokenUsageDetails GARealtimeResponseInputTokenUsageDetails(int? cachedTokens = default, int? textTokens = default, int? imageTokens = default, int? audioTokens = default, GARealtimeResponseInputCachedTokenUsageDetails cachedTokensDetails = default)
+        {
+            return new GARealtimeResponseInputTokenUsageDetails(
+                cachedTokens,
+                textTokens,
+                imageTokens,
+                audioTokens,
+                cachedTokensDetails,
+                default);
+        }
+
+        public static GARealtimeResponseInputCachedTokenUsageDetails GARealtimeResponseInputCachedTokenUsageDetails(int? textTokens = default, int? imageTokens = default, int? audioTokens = default)
+        {
+            return new GARealtimeResponseInputCachedTokenUsageDetails(textTokens, imageTokens, audioTokens, default);
+        }
+
+        public static GARealtimeResponseOutputTokenUsageDetails GARealtimeResponseOutputTokenUsageDetails(int? textTokens = default, int? audioTokens = default)
+        {
+            return new GARealtimeResponseOutputTokenUsageDetails(textTokens, audioTokens, default);
+        }
+
+        public static GARealtimeResponseContentPart GARealtimeResponseContentPart(GARealtimeResponseContentPartKind? kind = default, string text = default, BinaryData audio = default, string transcript = default)
+        {
+            return new GARealtimeResponseContentPart(kind, text, audio, transcript, default);
+        }
+
+        public static GARealtimeRateLimitDetails GARealtimeRateLimitDetails(GARealtimeRateLimitName? name = default, int? limit = default, int? remainingCount = default, TimeSpan? timeUntilReset = default)
+        {
+            return new GARealtimeRateLimitDetails(name, limit, remainingCount, timeUntilReset, default);
+        }
+
+        public static GARealtimeResponseOptions GARealtimeResponseOptions(IEnumerable<GARealtimeOutputModality> outputModalities = default, string instructions = default, GARealtimeResponseAudioOptions audioOptions = default, IEnumerable<GARealtimeTool> tools = default, BinaryData toolChoice = default, int? maxOutputTokenCount = default, GARealtimeResponseDefaultConversationConfiguration? defaultConversationConfiguration = default, IDictionary<string, BinaryData> metadata = default, IEnumerable<GARealtimeItem> inputItems = default)
+        {
+            outputModalities ??= new ChangeTrackingList<GARealtimeOutputModality>();
+            tools ??= new ChangeTrackingList<GARealtimeTool>();
+            metadata ??= new ChangeTrackingDictionary<string, BinaryData>();
+            inputItems ??= new ChangeTrackingList<GARealtimeItem>();
+
+            return new GARealtimeResponseOptions(
+                outputModalities.ToList(),
+                instructions,
+                audioOptions,
+                tools.ToList(),
+                toolChoice,
+                maxOutputTokenCount,
+                defaultConversationConfiguration,
+                metadata,
+                inputItems.ToList(),
+                default);
+        }
+
         public static AssistantCollectionOptions AssistantCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, AssistantCollectionOrder? order = default)
         {
             return new AssistantCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);

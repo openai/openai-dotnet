@@ -9,6 +9,16 @@ namespace OpenAI;
 
 @access(Access.public)
 @usage(Usage.input | Usage.output)
+model DotNetRealtimeError_GA {
+  type?: string;
+  code?: string | null;
+  message?: string;
+  param?: string | null;
+  event_id?: string | null;
+}
+
+@access(Access.public)
+@usage(Usage.input | Usage.output)
 union DotNetRealtimeSessionCreateRequestGADefaultTracing_GA {
   string,
   auto: "auto",

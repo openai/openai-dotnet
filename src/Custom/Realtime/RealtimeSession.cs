@@ -191,11 +191,10 @@ public partial class RealtimeSession : IDisposable
         SendCommand(internalCommand, cancellationToken);
     }
 
-    public virtual async Task ConfigureConversationSessionAsync(ConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default)
+    public virtual async Task ConfigureConversationSessionAsync(GARealtimeClientCommandSessionUpdate command, CancellationToken cancellationToken = default)
     {
-        Argument.AssertNotNull(sessionOptions, nameof(sessionOptions));
-        InternalRealtimeClientEventSessionUpdate internalCommand = new(sessionOptions);
-        await SendCommandAsync(internalCommand, cancellationToken).ConfigureAwait(false);
+        Argument.AssertNotNull(command, nameof(command));
+        await SendCommandAsync(command, cancellationToken).ConfigureAwait(false);
     }
 
     public virtual void ConfigureSession(ConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default)
@@ -219,20 +218,10 @@ public partial class RealtimeSession : IDisposable
         SendCommand(internalCommand, cancellationToken);
     }
 
-    public virtual async Task AddItemAsync(RealtimeItem item, CancellationToken cancellationToken = default)
-        => await AddItemAsync(item, previousItemId: null, cancellationToken).ConfigureAwait(false);
-
-    public virtual void AddItem(RealtimeItem item, CancellationToken cancellationToken = default)
-        => AddItem(item, previousItemId: null, cancellationToken);
-
-    public virtual async Task AddItemAsync(RealtimeItem item, string previousItemId, CancellationToken cancellationToken = default)
+    public virtual async Task AddItemAsync(GARealtimeClientCommandConversationItemCreate command, CancellationToken cancellationToken = default)
     {
-        Argument.AssertNotNull(item, nameof(item));
-        InternalRealtimeClientEventConversationItemCreate internalCommand = new(item)
-        {
-            PreviousItemId = previousItemId,
-        };
-        await SendCommandAsync(internalCommand, cancellationToken).ConfigureAwait(false);
+        Argument.AssertNotNull(command, nameof(command));
+        await SendCommandAsync(command, cancellationToken).ConfigureAwait(false);
     }
 
     public virtual void AddItem(RealtimeItem item, string previousItemId, CancellationToken cancellationToken = default)
@@ -317,18 +306,10 @@ public partial class RealtimeSession : IDisposable
         SendCommand(internalCommand, cancellationToken);
     }
 
-    public virtual async Task StartResponseAsync(ConversationResponseOptions options, CancellationToken cancellationToken = default)
+    public virtual async Task StartResponseAsync(GARealtimeClientCommandResponseCreate command, CancellationToken cancellationToken = default)
     {
-        InternalRealtimeClientEventResponseCreate internalCommand = new(
-            kind: InternalRealtimeClientEventType.ResponseCreate,
-            eventId: null,
-            additionalBinaryDataProperties: null,
-            response: options);
-        await SendCommandAsync(internalCommand, cancellationToken).ConfigureAwait(false);
-    }
-    public virtual async Task StartResponseAsync(CancellationToken cancellationToken = default)
-    {
-        await StartResponseAsync(new ConversationResponseOptions(), cancellationToken).ConfigureAwait(false);
+        Argument.AssertNotNull(command, nameof(command));
+        await SendCommandAsync(command, cancellationToken).ConfigureAwait(false);
     }
 
     public virtual void StartResponse(ConversationResponseOptions options, CancellationToken cancellationToken = default)
@@ -358,12 +339,12 @@ public partial class RealtimeSession : IDisposable
         SendCommand(internalCommand, cancellationToken);
     }
 
-    public virtual async IAsyncEnumerable<RealtimeUpdate> ReceiveUpdatesAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public virtual async IAsyncEnumerable<GARealtimeServerUpdate> ReceiveUpdatesAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         await foreach (ClientResult protocolEvent in ReceiveUpdatesAsync(cancellationToken.ToRequestOptions()))
         {
             using PipelineResponse response = protocolEvent.GetRawResponse();
-            RealtimeUpdate nextUpdate = ModelReaderWriter.Read<RealtimeUpdate>(response.Content, ModelReaderWriterOptions.Json, OpenAIContext.Default);
+            GARealtimeServerUpdate nextUpdate = ModelReaderWriter.Read<GARealtimeServerUpdate>(response.Content, ModelReaderWriterOptions.Json, OpenAIContext.Default);
             // Skip null updates (e.g., conversation.item.done events that are intentionally ignored)
             if (nextUpdate is not null)
             {
@@ -378,6 +359,13 @@ public partial class RealtimeSession : IDisposable
     }
 
     internal virtual async Task SendCommandAsync(InternalRealtimeClientEvent command, CancellationToken cancellationToken = default)
+    {
+        BinaryData requestData = ModelReaderWriter.Write(command, ModelReaderWriterOptions.Json, OpenAIContext.Default);
+        RequestOptions cancellationOptions = cancellationToken.ToRequestOptions();
+        await SendCommandAsync(requestData, cancellationOptions).ConfigureAwait(false);
+    }
+
+    internal virtual async Task SendCommandAsync(GARealtimeClientCommand command, CancellationToken cancellationToken = default)
     {
         BinaryData requestData = ModelReaderWriter.Write(command, ModelReaderWriterOptions.Json, OpenAIContext.Default);
         RequestOptions cancellationOptions = cancellationToken.ToRequestOptions();

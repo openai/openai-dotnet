@@ -4478,6 +4478,127 @@ namespace OpenAI.Realtime {
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI002")]
+    public class GARealtimeClientCommand : IJsonModel<GARealtimeClientCommand>, IPersistableModel<GARealtimeClientCommand> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        protected virtual GARealtimeClientCommand JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual GARealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeClientCommandConversationItemCreate : GARealtimeClientCommand, IJsonModel<GARealtimeClientCommandConversationItemCreate>, IPersistableModel<GARealtimeClientCommandConversationItemCreate> {
+        public GARealtimeClientCommandConversationItemCreate(GARealtimeItem item);
+        public string EventId { get; set; }
+        public GARealtimeItem Item { get; }
+        public string PreviousItemId { get; set; }
+        protected override GARealtimeClientCommand JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeClientCommandConversationItemDelete : GARealtimeClientCommand, IJsonModel<GARealtimeClientCommandConversationItemDelete>, IPersistableModel<GARealtimeClientCommandConversationItemDelete> {
+        public GARealtimeClientCommandConversationItemDelete(string itemId);
+        public string EventId { get; set; }
+        public string ItemId { get; }
+        protected override GARealtimeClientCommand JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeClientCommandConversationItemRetrieve : GARealtimeClientCommand, IJsonModel<GARealtimeClientCommandConversationItemRetrieve>, IPersistableModel<GARealtimeClientCommandConversationItemRetrieve> {
+        public GARealtimeClientCommandConversationItemRetrieve(string itemId);
+        public string EventId { get; set; }
+        public string ItemId { get; }
+        protected override GARealtimeClientCommand JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeClientCommandConversationItemTruncate : GARealtimeClientCommand, IJsonModel<GARealtimeClientCommandConversationItemTruncate>, IPersistableModel<GARealtimeClientCommandConversationItemTruncate> {
+        public GARealtimeClientCommandConversationItemTruncate(string itemId, int contentIndex, TimeSpan audioEndTime);
+        public TimeSpan AudioEndTime { get; }
+        public int ContentIndex { get; }
+        public string EventId { get; set; }
+        public string ItemId { get; }
+        protected override GARealtimeClientCommand JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeClientCommandInputAudioBufferAppend : GARealtimeClientCommand, IJsonModel<GARealtimeClientCommandInputAudioBufferAppend>, IPersistableModel<GARealtimeClientCommandInputAudioBufferAppend> {
+        public GARealtimeClientCommandInputAudioBufferAppend(BinaryData audioBytes);
+        public BinaryData AudioBytes { get; }
+        public string EventId { get; set; }
+        protected override GARealtimeClientCommand JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeClientCommandInputAudioBufferClear : GARealtimeClientCommand, IJsonModel<GARealtimeClientCommandInputAudioBufferClear>, IPersistableModel<GARealtimeClientCommandInputAudioBufferClear> {
+        public GARealtimeClientCommandInputAudioBufferClear();
+        public string EventId { get; set; }
+        protected override GARealtimeClientCommand JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeClientCommandInputAudioBufferCommit : GARealtimeClientCommand, IJsonModel<GARealtimeClientCommandInputAudioBufferCommit>, IPersistableModel<GARealtimeClientCommandInputAudioBufferCommit> {
+        public GARealtimeClientCommandInputAudioBufferCommit();
+        public string EventId { get; set; }
+        protected override GARealtimeClientCommand JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeClientCommandOutputAudioBufferClear : GARealtimeClientCommand, IJsonModel<GARealtimeClientCommandOutputAudioBufferClear>, IPersistableModel<GARealtimeClientCommandOutputAudioBufferClear> {
+        public GARealtimeClientCommandOutputAudioBufferClear();
+        public string EventId { get; set; }
+        protected override GARealtimeClientCommand JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeClientCommandResponseCancel : GARealtimeClientCommand, IJsonModel<GARealtimeClientCommandResponseCancel>, IPersistableModel<GARealtimeClientCommandResponseCancel> {
+        public GARealtimeClientCommandResponseCancel();
+        public string EventId { get; set; }
+        public string ResponseId { get; set; }
+        protected override GARealtimeClientCommand JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeClientCommandResponseCreate : GARealtimeClientCommand, IJsonModel<GARealtimeClientCommandResponseCreate>, IPersistableModel<GARealtimeClientCommandResponseCreate> {
+        public GARealtimeClientCommandResponseCreate();
+        public string EventId { get; set; }
+        public GARealtimeResponseOptions ResponseOptions { get; set; }
+        protected override GARealtimeClientCommand JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeClientCommandSessionUpdate : GARealtimeClientCommand, IJsonModel<GARealtimeClientCommandSessionUpdate>, IPersistableModel<GARealtimeClientCommandSessionUpdate> {
+        public GARealtimeClientCommandSessionUpdate(GARealtimeSessionOptions sessionOptions);
+        public string EventId { get; set; }
+        public GARealtimeSessionOptions SessionOptions { get; }
+        protected override GARealtimeClientCommand JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
     public class GARealtimeClientSecret : IJsonModel<GARealtimeClientSecret>, IPersistableModel<GARealtimeClientSecret> {
         public DateTimeOffset ExpiresAt { get; }
         [Serialization.JsonIgnore]
@@ -4516,6 +4637,18 @@ namespace OpenAI.Realtime {
         protected virtual GARealtimeClientSecretExpirationPolicy JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual GARealtimeClientSecretExpirationPolicy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeConversation : IJsonModel<GARealtimeConversation>, IPersistableModel<GARealtimeConversation> {
+        public string Id { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        protected virtual GARealtimeConversation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual GARealtimeConversation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI002")]
@@ -4739,6 +4872,81 @@ namespace OpenAI.Realtime {
         public override readonly string ToString();
     }
     [Experimental("OPENAI002")]
+    public class GARealtimeError : IJsonModel<GARealtimeError>, IPersistableModel<GARealtimeError> {
+        public string Code { get; set; }
+        public string EventId { get; set; }
+        public string Kind { get; set; }
+        public string Message { get; set; }
+        public string ParameterName { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        protected virtual GARealtimeError JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual GARealtimeError PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeFunctionCallItem : GARealtimeItem, IJsonModel<GARealtimeFunctionCallItem>, IPersistableModel<GARealtimeFunctionCallItem> {
+        public GARealtimeFunctionCallItem(string functionName, BinaryData functionArguments);
+        public string CallId { get; set; }
+        public BinaryData FunctionArguments { get; set; }
+        public string FunctionName { get; set; }
+        public string Id { get; set; }
+        public GARealtimeFunctionCallStatus? Status { get; set; }
+        protected override GARealtimeItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeFunctionCallOutputItem : GARealtimeItem, IJsonModel<GARealtimeFunctionCallOutputItem>, IPersistableModel<GARealtimeFunctionCallOutputItem> {
+        public GARealtimeFunctionCallOutputItem(string callId, string functionOutput);
+        public string CallId { get; set; }
+        public string FunctionOutput { get; set; }
+        public string Id { get; set; }
+        public GARealtimeFunctionCallOutputStatus? Status { get; set; }
+        protected override GARealtimeItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public readonly partial struct GARealtimeFunctionCallOutputStatus : IEquatable<GARealtimeFunctionCallOutputStatus> {
+        public GARealtimeFunctionCallOutputStatus(string value);
+        public static GARealtimeFunctionCallOutputStatus Completed { get; }
+        public static GARealtimeFunctionCallOutputStatus Incomplete { get; }
+        public static GARealtimeFunctionCallOutputStatus InProgress { get; }
+        public readonly bool Equals(GARealtimeFunctionCallOutputStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(GARealtimeFunctionCallOutputStatus left, GARealtimeFunctionCallOutputStatus right);
+        public static implicit operator GARealtimeFunctionCallOutputStatus(string value);
+        public static implicit operator GARealtimeFunctionCallOutputStatus?(string value);
+        public static bool operator !=(GARealtimeFunctionCallOutputStatus left, GARealtimeFunctionCallOutputStatus right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI002")]
+    public readonly partial struct GARealtimeFunctionCallStatus : IEquatable<GARealtimeFunctionCallStatus> {
+        public GARealtimeFunctionCallStatus(string value);
+        public static GARealtimeFunctionCallStatus Completed { get; }
+        public static GARealtimeFunctionCallStatus Incomplete { get; }
+        public static GARealtimeFunctionCallStatus InProgress { get; }
+        public readonly bool Equals(GARealtimeFunctionCallStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(GARealtimeFunctionCallStatus left, GARealtimeFunctionCallStatus right);
+        public static implicit operator GARealtimeFunctionCallStatus(string value);
+        public static implicit operator GARealtimeFunctionCallStatus?(string value);
+        public static bool operator !=(GARealtimeFunctionCallStatus left, GARealtimeFunctionCallStatus right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI002")]
     public class GARealtimeFunctionTool : GARealtimeTool, IJsonModel<GARealtimeFunctionTool>, IPersistableModel<GARealtimeFunctionTool> {
         public GARealtimeFunctionTool(string functionName);
         public string FunctionDescription { get; set; }
@@ -4748,6 +4956,23 @@ namespace OpenAI.Realtime {
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override GARealtimeTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public readonly partial struct GARealtimeImageDetailLevel : IEquatable<GARealtimeImageDetailLevel> {
+        public GARealtimeImageDetailLevel(string value);
+        public static GARealtimeImageDetailLevel Auto { get; }
+        public static GARealtimeImageDetailLevel High { get; }
+        public static GARealtimeImageDetailLevel Low { get; }
+        public readonly bool Equals(GARealtimeImageDetailLevel other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(GARealtimeImageDetailLevel left, GARealtimeImageDetailLevel right);
+        public static implicit operator GARealtimeImageDetailLevel(string value);
+        public static implicit operator GARealtimeImageDetailLevel?(string value);
+        public static bool operator !=(GARealtimeImageDetailLevel left, GARealtimeImageDetailLevel right);
+        public override readonly string ToString();
     }
     [Experimental("OPENAI002")]
     public readonly partial struct GARealtimeIncludedProperty : IEquatable<GARealtimeIncludedProperty> {
@@ -4763,6 +4988,60 @@ namespace OpenAI.Realtime {
         public static implicit operator GARealtimeIncludedProperty?(string value);
         public static bool operator !=(GARealtimeIncludedProperty left, GARealtimeIncludedProperty right);
         public override readonly string ToString();
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeInputAudioMessageContentPart : GARealtimeMessageContentPart, IJsonModel<GARealtimeInputAudioMessageContentPart>, IPersistableModel<GARealtimeInputAudioMessageContentPart> {
+        public GARealtimeInputAudioMessageContentPart(BinaryData audioBytes);
+        public BinaryData AudioBytes { get; set; }
+        public string Transcript { get; set; }
+        protected override GARealtimeMessageContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeMessageContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeInputImageMessageContentPart : GARealtimeMessageContentPart, IJsonModel<GARealtimeInputImageMessageContentPart>, IPersistableModel<GARealtimeInputImageMessageContentPart> {
+        public GARealtimeInputImageMessageContentPart(Uri imageUri);
+        public GARealtimeImageDetailLevel? Detail { get; set; }
+        public Uri ImageUri { get; set; }
+        protected override GARealtimeMessageContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeMessageContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeInputTextMessageContentPart : GARealtimeMessageContentPart, IJsonModel<GARealtimeInputTextMessageContentPart>, IPersistableModel<GARealtimeInputTextMessageContentPart> {
+        public GARealtimeInputTextMessageContentPart(string text);
+        public string Text { get; set; }
+        protected override GARealtimeMessageContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeMessageContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeItem : IJsonModel<GARealtimeItem>, IPersistableModel<GARealtimeItem> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        protected virtual GARealtimeItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual GARealtimeItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeLogProbabilityDetails : IJsonModel<GARealtimeLogProbabilityDetails>, IPersistableModel<GARealtimeLogProbabilityDetails> {
+        public float LogProbability { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string Token { get; }
+        public ReadOnlyMemory<byte> Utf8Bytes { get; }
+        protected virtual GARealtimeLogProbabilityDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual GARealtimeLogProbabilityDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI002")]
     public class GARealtimeMcpTool : GARealtimeTool, IJsonModel<GARealtimeMcpTool>, IPersistableModel<GARealtimeMcpTool> {
@@ -4799,6 +5078,45 @@ namespace OpenAI.Realtime {
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI002")]
+    public class GARealtimeMcpToolCallApprovalRequestItem : GARealtimeItem, IJsonModel<GARealtimeMcpToolCallApprovalRequestItem>, IPersistableModel<GARealtimeMcpToolCallApprovalRequestItem> {
+        public GARealtimeMcpToolCallApprovalRequestItem(string id, string serverLabel, string toolName, BinaryData toolArguments);
+        public string Id { get; set; }
+        public string ServerLabel { get; set; }
+        public BinaryData ToolArguments { get; set; }
+        public string ToolName { get; set; }
+        protected override GARealtimeItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeMcpToolCallApprovalResponseItem : GARealtimeItem, IJsonModel<GARealtimeMcpToolCallApprovalResponseItem>, IPersistableModel<GARealtimeMcpToolCallApprovalResponseItem> {
+        public GARealtimeMcpToolCallApprovalResponseItem(string id, string approvalRequestId, bool approved);
+        public string ApprovalRequestId { get; set; }
+        public bool Approved { get; set; }
+        public string Id { get; set; }
+        public string Reason { get; set; }
+        protected override GARealtimeItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeMcpToolCallItem : GARealtimeItem, IJsonModel<GARealtimeMcpToolCallItem>, IPersistableModel<GARealtimeMcpToolCallItem> {
+        public GARealtimeMcpToolCallItem(string id, string serverLabel, string toolName, BinaryData toolArguments);
+        public string ApprovalRequestId { get; set; }
+        public GARealtimeError Error { get; set; }
+        public string Id { get; set; }
+        public string ServerLabel { get; set; }
+        public BinaryData ToolArguments { get; set; }
+        public string ToolName { get; set; }
+        public string ToolOutput { get; set; }
+        protected override GARealtimeItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
     public readonly partial struct GARealtimeMcpToolConnectorId : IEquatable<GARealtimeMcpToolConnectorId> {
         public GARealtimeMcpToolConnectorId(string value);
         public static GARealtimeMcpToolConnectorId Dropbox { get; }
@@ -4821,6 +5139,33 @@ namespace OpenAI.Realtime {
         public override readonly string ToString();
     }
     [Experimental("OPENAI002")]
+    public class GARealtimeMcpToolDefinition : IJsonModel<GARealtimeMcpToolDefinition>, IPersistableModel<GARealtimeMcpToolDefinition> {
+        public GARealtimeMcpToolDefinition(string name, BinaryData inputSchema);
+        public BinaryData Annotations { get; set; }
+        public string Description { get; set; }
+        public BinaryData InputSchema { get; set; }
+        public string Name { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        protected virtual GARealtimeMcpToolDefinition JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual GARealtimeMcpToolDefinition PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeMcpToolDefinitionListItem : GARealtimeItem, IJsonModel<GARealtimeMcpToolDefinitionListItem>, IPersistableModel<GARealtimeMcpToolDefinitionListItem> {
+        public GARealtimeMcpToolDefinitionListItem(string serverLabel, IEnumerable<GARealtimeMcpToolDefinition> tools);
+        public string Id { get; set; }
+        public string ServerLabel { get; set; }
+        public IList<GARealtimeMcpToolDefinition> Tools { get; }
+        protected override GARealtimeItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
     public class GARealtimeMcpToolFilter : IJsonModel<GARealtimeMcpToolFilter>, IPersistableModel<GARealtimeMcpToolFilter> {
         public bool? IsReadOnly { get; set; }
         [Serialization.JsonIgnore]
@@ -4832,6 +5177,63 @@ namespace OpenAI.Realtime {
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual GARealtimeMcpToolFilter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeMessageContentPart : IJsonModel<GARealtimeMessageContentPart>, IPersistableModel<GARealtimeMessageContentPart> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        protected virtual GARealtimeMessageContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual GARealtimeMessageContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeMessageItem : GARealtimeItem, IJsonModel<GARealtimeMessageItem>, IPersistableModel<GARealtimeMessageItem> {
+        public GARealtimeMessageItem(IEnumerable<GARealtimeMessageContentPart> content);
+        public IList<GARealtimeMessageContentPart> Content { get; }
+        public string Id { get; set; }
+        public GARealtimeMessageRole Role { get; }
+        public GARealtimeMessageStatus? Status { get; set; }
+        protected override GARealtimeItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public readonly partial struct GARealtimeMessageRole : IEquatable<GARealtimeMessageRole> {
+        public GARealtimeMessageRole(string value);
+        public static GARealtimeMessageRole Assistant { get; }
+        public static GARealtimeMessageRole System { get; }
+        public static GARealtimeMessageRole User { get; }
+        public readonly bool Equals(GARealtimeMessageRole other);
+        [EditorBrowsable(global::EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(global::EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(GARealtimeMessageRole left, GARealtimeMessageRole right);
+        public static implicit operator GARealtimeMessageRole(string value);
+        public static implicit operator GARealtimeMessageRole?(string value);
+        public static bool operator !=(GARealtimeMessageRole left, GARealtimeMessageRole right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI002")]
+    public readonly partial struct GARealtimeMessageStatus : IEquatable<GARealtimeMessageStatus> {
+        public GARealtimeMessageStatus(string value);
+        public static GARealtimeMessageStatus Completed { get; }
+        public static GARealtimeMessageStatus Incomplete { get; }
+        public static GARealtimeMessageStatus InProgress { get; }
+        public readonly bool Equals(GARealtimeMessageStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(GARealtimeMessageStatus left, GARealtimeMessageStatus right);
+        public static implicit operator GARealtimeMessageStatus(string value);
+        public static implicit operator GARealtimeMessageStatus?(string value);
+        public static bool operator !=(GARealtimeMessageStatus left, GARealtimeMessageStatus right);
+        public override readonly string ToString();
     }
     [Experimental("OPENAI002")]
     public class GARealtimeNoiseReduction : IJsonModel<GARealtimeNoiseReduction>, IPersistableModel<GARealtimeNoiseReduction> {
@@ -4862,6 +5264,16 @@ namespace OpenAI.Realtime {
         public override readonly string ToString();
     }
     [Experimental("OPENAI002")]
+    public class GARealtimeOutputAudioMessageContentPart : GARealtimeMessageContentPart, IJsonModel<GARealtimeOutputAudioMessageContentPart>, IPersistableModel<GARealtimeOutputAudioMessageContentPart> {
+        public GARealtimeOutputAudioMessageContentPart(BinaryData audioBytes, string transcript);
+        public BinaryData AudioBytes { get; set; }
+        public string Transcript { get; set; }
+        protected override GARealtimeMessageContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeMessageContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
     public readonly partial struct GARealtimeOutputModality : IEquatable<GARealtimeOutputModality> {
         public GARealtimeOutputModality(string value);
         public static GARealtimeOutputModality Audio { get; }
@@ -4876,6 +5288,15 @@ namespace OpenAI.Realtime {
         public static implicit operator GARealtimeOutputModality?(string value);
         public static bool operator !=(GARealtimeOutputModality left, GARealtimeOutputModality right);
         public override readonly string ToString();
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeOutputTextMessageContentPart : GARealtimeMessageContentPart, IJsonModel<GARealtimeOutputTextMessageContentPart>, IPersistableModel<GARealtimeOutputTextMessageContentPart> {
+        public GARealtimeOutputTextMessageContentPart(string text);
+        public string Text { get; set; }
+        protected override GARealtimeMessageContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeMessageContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI002")]
     public class GARealtimePcmaAudioFormat : GARealtimeAudioFormat, IJsonModel<GARealtimePcmaAudioFormat>, IPersistableModel<GARealtimePcmaAudioFormat> {
@@ -4917,6 +5338,278 @@ namespace OpenAI.Realtime {
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI002")]
+    public class GARealtimeRateLimitDetails : IJsonModel<GARealtimeRateLimitDetails>, IPersistableModel<GARealtimeRateLimitDetails> {
+        public int? Limit { get; }
+        public GARealtimeRateLimitName? Name { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public int? RemainingCount { get; }
+        public TimeSpan? TimeUntilReset { get; }
+        protected virtual GARealtimeRateLimitDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual GARealtimeRateLimitDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public readonly partial struct GARealtimeRateLimitName : IEquatable<GARealtimeRateLimitName> {
+        public GARealtimeRateLimitName(string value);
+        public static GARealtimeRateLimitName Requests { get; }
+        public static GARealtimeRateLimitName Tokens { get; }
+        public readonly bool Equals(GARealtimeRateLimitName other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(GARealtimeRateLimitName left, GARealtimeRateLimitName right);
+        public static implicit operator GARealtimeRateLimitName(string value);
+        public static implicit operator GARealtimeRateLimitName?(string value);
+        public static bool operator !=(GARealtimeRateLimitName left, GARealtimeRateLimitName right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeResponse : IJsonModel<GARealtimeResponse>, IPersistableModel<GARealtimeResponse> {
+        public GARealtimeResponseAudioOptions Audio { get; }
+        public string ConversationId { get; }
+        public string Id { get; }
+        public int? MaxOutputTokens { get; }
+        public IDictionary<string, BinaryData> Metadata { get; }
+        public IList<GARealtimeItem> Output { get; }
+        public IList<GARealtimeOutputModality> OutputModalities { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public GARealtimeResponseStatus? Status { get; }
+        public GARealtimeResponseStatusDetails StatusDetails { get; }
+        public GARealtimeResponseUsage Usage { get; }
+        protected virtual GARealtimeResponse JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual GARealtimeResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeResponseAudioOptions : IJsonModel<GARealtimeResponseAudioOptions>, IPersistableModel<GARealtimeResponseAudioOptions> {
+        public GARealtimeResponseOutputAudioOptions OutputAudioOptions { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        protected virtual GARealtimeResponseAudioOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual GARealtimeResponseAudioOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeResponseContentPart : IJsonModel<GARealtimeResponseContentPart>, IPersistableModel<GARealtimeResponseContentPart> {
+        public BinaryData Audio { get; }
+        public GARealtimeResponseContentPartKind? Kind { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public string Text { get; }
+        public string Transcript { get; }
+        protected virtual GARealtimeResponseContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual GARealtimeResponseContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public readonly partial struct GARealtimeResponseContentPartKind : IEquatable<GARealtimeResponseContentPartKind> {
+        public GARealtimeResponseContentPartKind(string value);
+        public static GARealtimeResponseContentPartKind Audio { get; }
+        public static GARealtimeResponseContentPartKind Text { get; }
+        public readonly bool Equals(GARealtimeResponseContentPartKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(GARealtimeResponseContentPartKind left, GARealtimeResponseContentPartKind right);
+        public static implicit operator GARealtimeResponseContentPartKind(string value);
+        public static implicit operator GARealtimeResponseContentPartKind?(string value);
+        public static bool operator !=(GARealtimeResponseContentPartKind left, GARealtimeResponseContentPartKind right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI002")]
+    public readonly partial struct GARealtimeResponseDefaultConversationConfiguration : IEquatable<GARealtimeResponseDefaultConversationConfiguration> {
+        public GARealtimeResponseDefaultConversationConfiguration(string value);
+        public static GARealtimeResponseDefaultConversationConfiguration Auto { get; }
+        public static GARealtimeResponseDefaultConversationConfiguration None { get; }
+        public readonly bool Equals(GARealtimeResponseDefaultConversationConfiguration other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(GARealtimeResponseDefaultConversationConfiguration left, GARealtimeResponseDefaultConversationConfiguration right);
+        public static implicit operator GARealtimeResponseDefaultConversationConfiguration(string value);
+        public static implicit operator GARealtimeResponseDefaultConversationConfiguration?(string value);
+        public static bool operator !=(GARealtimeResponseDefaultConversationConfiguration left, GARealtimeResponseDefaultConversationConfiguration right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeResponseInputCachedTokenUsageDetails : IJsonModel<GARealtimeResponseInputCachedTokenUsageDetails>, IPersistableModel<GARealtimeResponseInputCachedTokenUsageDetails> {
+        public int? AudioTokens { get; }
+        public int? ImageTokens { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public int? TextTokens { get; }
+        protected virtual GARealtimeResponseInputCachedTokenUsageDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual GARealtimeResponseInputCachedTokenUsageDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeResponseInputTokenUsageDetails : IJsonModel<GARealtimeResponseInputTokenUsageDetails>, IPersistableModel<GARealtimeResponseInputTokenUsageDetails> {
+        public int? AudioTokens { get; }
+        public int? CachedTokens { get; }
+        public GARealtimeResponseInputCachedTokenUsageDetails CachedTokensDetails { get; }
+        public int? ImageTokens { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public int? TextTokens { get; }
+        protected virtual GARealtimeResponseInputTokenUsageDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual GARealtimeResponseInputTokenUsageDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeResponseOptions : IJsonModel<GARealtimeResponseOptions>, IPersistableModel<GARealtimeResponseOptions> {
+        public GARealtimeResponseAudioOptions AudioOptions { get; set; }
+        public GARealtimeResponseDefaultConversationConfiguration? DefaultConversationConfiguration { get; set; }
+        public IList<GARealtimeItem> InputItems { get; }
+        public string Instructions { get; set; }
+        public int? MaxOutputTokenCount { get; set; }
+        public IDictionary<string, BinaryData> Metadata { get; set; }
+        public IList<GARealtimeOutputModality> OutputModalities { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public BinaryData ToolChoice { get; set; }
+        public IList<GARealtimeTool> Tools { get; }
+        protected virtual GARealtimeResponseOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual GARealtimeResponseOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeResponseOutputAudioOptions : IJsonModel<GARealtimeResponseOutputAudioOptions>, IPersistableModel<GARealtimeResponseOutputAudioOptions> {
+        public GARealtimeAudioFormat Format { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public GARealtimeVoice? Voice { get; set; }
+        protected virtual GARealtimeResponseOutputAudioOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual GARealtimeResponseOutputAudioOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeResponseOutputTokenUsageDetails : IJsonModel<GARealtimeResponseOutputTokenUsageDetails>, IPersistableModel<GARealtimeResponseOutputTokenUsageDetails> {
+        public int? AudioTokens { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public int? TextTokens { get; }
+        protected virtual GARealtimeResponseOutputTokenUsageDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual GARealtimeResponseOutputTokenUsageDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public readonly partial struct GARealtimeResponseStatus : IEquatable<GARealtimeResponseStatus> {
+        public GARealtimeResponseStatus(string value);
+        public static GARealtimeResponseStatus Cancelled { get; }
+        public static GARealtimeResponseStatus Completed { get; }
+        public static GARealtimeResponseStatus Failed { get; }
+        public static GARealtimeResponseStatus Incomplete { get; }
+        public static GARealtimeResponseStatus InProgress { get; }
+        public readonly bool Equals(GARealtimeResponseStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(GARealtimeResponseStatus left, GARealtimeResponseStatus right);
+        public static implicit operator GARealtimeResponseStatus(string value);
+        public static implicit operator GARealtimeResponseStatus?(string value);
+        public static bool operator !=(GARealtimeResponseStatus left, GARealtimeResponseStatus right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeResponseStatusDetails : IJsonModel<GARealtimeResponseStatusDetails>, IPersistableModel<GARealtimeResponseStatusDetails> {
+        public GARealtimeError Error { get; }
+        public GARealtimeResponseStatusErrorKind? Kind { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public GARealtimeResponseStatusReason? Reason { get; }
+        protected virtual GARealtimeResponseStatusDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual GARealtimeResponseStatusDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public readonly partial struct GARealtimeResponseStatusErrorKind : IEquatable<GARealtimeResponseStatusErrorKind> {
+        public GARealtimeResponseStatusErrorKind(string value);
+        public static GARealtimeResponseStatusErrorKind Cancelled { get; }
+        public static GARealtimeResponseStatusErrorKind Completed { get; }
+        public static GARealtimeResponseStatusErrorKind Failed { get; }
+        public static GARealtimeResponseStatusErrorKind Incomplete { get; }
+        public readonly bool Equals(GARealtimeResponseStatusErrorKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(GARealtimeResponseStatusErrorKind left, GARealtimeResponseStatusErrorKind right);
+        public static implicit operator GARealtimeResponseStatusErrorKind(string value);
+        public static implicit operator GARealtimeResponseStatusErrorKind?(string value);
+        public static bool operator !=(GARealtimeResponseStatusErrorKind left, GARealtimeResponseStatusErrorKind right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI002")]
+    public readonly partial struct GARealtimeResponseStatusReason : IEquatable<GARealtimeResponseStatusReason> {
+        public GARealtimeResponseStatusReason(string value);
+        public static GARealtimeResponseStatusReason ClientCancelled { get; }
+        public static GARealtimeResponseStatusReason ContentFilter { get; }
+        public static GARealtimeResponseStatusReason MaxOutputTokens { get; }
+        public static GARealtimeResponseStatusReason TurnDetected { get; }
+        public readonly bool Equals(GARealtimeResponseStatusReason other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(GARealtimeResponseStatusReason left, GARealtimeResponseStatusReason right);
+        public static implicit operator GARealtimeResponseStatusReason(string value);
+        public static implicit operator GARealtimeResponseStatusReason?(string value);
+        public static bool operator !=(GARealtimeResponseStatusReason left, GARealtimeResponseStatusReason right);
+        public override readonly string ToString();
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeResponseUsage : IJsonModel<GARealtimeResponseUsage>, IPersistableModel<GARealtimeResponseUsage> {
+        public GARealtimeResponseInputTokenUsageDetails InputTokenDetails { get; }
+        public int? InputTokens { get; }
+        public GARealtimeResponseOutputTokenUsageDetails OutputTokenDetails { get; }
+        public int? OutputTokens { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public int? TotalTokens { get; }
+        protected virtual GARealtimeResponseUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual GARealtimeResponseUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
     public class GARealtimeSemanticVadTurnDetection : GARealtimeTurnDetection, IJsonModel<GARealtimeSemanticVadTurnDetection>, IPersistableModel<GARealtimeSemanticVadTurnDetection> {
         public GARealtimeSemanticVadTurnDetection();
         public bool? CreateResponseEnabled { get; set; }
@@ -4925,6 +5618,509 @@ namespace OpenAI.Realtime {
         protected override GARealtimeTurnDetection JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override GARealtimeTurnDetection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdate : IJsonModel<GARealtimeServerUpdate>, IPersistableModel<GARealtimeServerUpdate> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        protected virtual GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateConversationCreated : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateConversationCreated>, IPersistableModel<GARealtimeServerUpdateConversationCreated> {
+        public GARealtimeConversation Conversation { get; }
+        public string EventId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateConversationItemAdded : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateConversationItemAdded>, IPersistableModel<GARealtimeServerUpdateConversationItemAdded> {
+        public string EventId { get; }
+        public GARealtimeItem Item { get; }
+        public string PreviousItemId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateConversationItemCreated : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateConversationItemCreated>, IPersistableModel<GARealtimeServerUpdateConversationItemCreated> {
+        public string EventId { get; }
+        public GARealtimeItem Item { get; }
+        public string PreviousItemId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateConversationItemDeleted : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateConversationItemDeleted>, IPersistableModel<GARealtimeServerUpdateConversationItemDeleted> {
+        public string EventId { get; }
+        public string ItemId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateConversationItemDone : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateConversationItemDone>, IPersistableModel<GARealtimeServerUpdateConversationItemDone> {
+        public string EventId { get; }
+        public GARealtimeItem Item { get; }
+        public string PreviousItemId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted>, IPersistableModel<GARealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted> {
+        public int ContentIndex { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        public IList<GARealtimeLogProbabilityDetails> Logprobs { get; }
+        public string Transcript { get; }
+        public GARealtimeTranscriptionUsage Usage { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateConversationItemInputAudioTranscriptionDelta : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateConversationItemInputAudioTranscriptionDelta>, IPersistableModel<GARealtimeServerUpdateConversationItemInputAudioTranscriptionDelta> {
+        public int? ContentIndex { get; }
+        public string Delta { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        public IList<GARealtimeLogProbabilityDetails> Logprobs { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateConversationItemInputAudioTranscriptionFailed : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateConversationItemInputAudioTranscriptionFailed>, IPersistableModel<GARealtimeServerUpdateConversationItemInputAudioTranscriptionFailed> {
+        public int ContentIndex { get; }
+        public GARealtimeError Error { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateConversationItemInputAudioTranscriptionSegment : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateConversationItemInputAudioTranscriptionSegment>, IPersistableModel<GARealtimeServerUpdateConversationItemInputAudioTranscriptionSegment> {
+        public int ContentIndex { get; }
+        public float End { get; }
+        public string EventId { get; }
+        public string Id { get; }
+        public string ItemId { get; }
+        public string Speaker { get; }
+        public float Start { get; }
+        public string Text { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateConversationItemRetrieved : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateConversationItemRetrieved>, IPersistableModel<GARealtimeServerUpdateConversationItemRetrieved> {
+        public string EventId { get; }
+        public GARealtimeItem Item { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateConversationItemTruncated : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateConversationItemTruncated>, IPersistableModel<GARealtimeServerUpdateConversationItemTruncated> {
+        public TimeSpan AudioEndTime { get; }
+        public int ContentIndex { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateError : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateError>, IPersistableModel<GARealtimeServerUpdateError> {
+        public GARealtimeError Error { get; }
+        public string EventId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateInputAudioBufferCleared : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateInputAudioBufferCleared>, IPersistableModel<GARealtimeServerUpdateInputAudioBufferCleared> {
+        public string EventId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateInputAudioBufferCommitted : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateInputAudioBufferCommitted>, IPersistableModel<GARealtimeServerUpdateInputAudioBufferCommitted> {
+        public string EventId { get; }
+        public string ItemId { get; }
+        public string PreviousItemId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateInputAudioBufferDtmfEventReceived : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateInputAudioBufferDtmfEventReceived>, IPersistableModel<GARealtimeServerUpdateInputAudioBufferDtmfEventReceived> {
+        public string Event { get; }
+        public DateTimeOffset ReceivedAt { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateInputAudioBufferSpeechStarted : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateInputAudioBufferSpeechStarted>, IPersistableModel<GARealtimeServerUpdateInputAudioBufferSpeechStarted> {
+        public TimeSpan AudioStartMs { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateInputAudioBufferSpeechStopped : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateInputAudioBufferSpeechStopped>, IPersistableModel<GARealtimeServerUpdateInputAudioBufferSpeechStopped> {
+        public TimeSpan AudioEndMs { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateInputAudioBufferTimeoutTriggered : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateInputAudioBufferTimeoutTriggered>, IPersistableModel<GARealtimeServerUpdateInputAudioBufferTimeoutTriggered> {
+        public TimeSpan AudioEndMs { get; }
+        public TimeSpan AudioStartMs { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateMcpListToolsCompleted : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateMcpListToolsCompleted>, IPersistableModel<GARealtimeServerUpdateMcpListToolsCompleted> {
+        public string EventId { get; }
+        public string ItemId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateMcpListToolsFailed : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateMcpListToolsFailed>, IPersistableModel<GARealtimeServerUpdateMcpListToolsFailed> {
+        public string EventId { get; }
+        public string ItemId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateMcpListToolsInProgress : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateMcpListToolsInProgress>, IPersistableModel<GARealtimeServerUpdateMcpListToolsInProgress> {
+        public string EventId { get; }
+        public string ItemId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateOutputAudioBufferCleared : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateOutputAudioBufferCleared>, IPersistableModel<GARealtimeServerUpdateOutputAudioBufferCleared> {
+        public string EventId { get; }
+        public string ResponseId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateOutputAudioBufferStarted : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateOutputAudioBufferStarted>, IPersistableModel<GARealtimeServerUpdateOutputAudioBufferStarted> {
+        public string EventId { get; }
+        public string ResponseId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateOutputAudioBufferStopped : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateOutputAudioBufferStopped>, IPersistableModel<GARealtimeServerUpdateOutputAudioBufferStopped> {
+        public string EventId { get; }
+        public string ResponseId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateRateLimitsUpdated : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateRateLimitsUpdated>, IPersistableModel<GARealtimeServerUpdateRateLimitsUpdated> {
+        public string EventId { get; }
+        public IList<GARealtimeRateLimitDetails> RateLimits { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateResponseContentPartAdded : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateResponseContentPartAdded>, IPersistableModel<GARealtimeServerUpdateResponseContentPartAdded> {
+        public int ContentIndex { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public GARealtimeResponseContentPart Part { get; }
+        public string ResponseId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateResponseContentPartDone : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateResponseContentPartDone>, IPersistableModel<GARealtimeServerUpdateResponseContentPartDone> {
+        public int ContentIndex { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public GARealtimeResponseContentPart Part { get; }
+        public string ResponseId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateResponseCreated : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateResponseCreated>, IPersistableModel<GARealtimeServerUpdateResponseCreated> {
+        public string EventId { get; }
+        public GARealtimeResponse Response { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateResponseDone : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateResponseDone>, IPersistableModel<GARealtimeServerUpdateResponseDone> {
+        public string EventId { get; }
+        public GARealtimeResponse Response { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateResponseFunctionCallArgumentsDelta : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateResponseFunctionCallArgumentsDelta>, IPersistableModel<GARealtimeServerUpdateResponseFunctionCallArgumentsDelta> {
+        public string CallId { get; }
+        public BinaryData Delta { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateResponseFunctionCallArgumentsDone : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateResponseFunctionCallArgumentsDone>, IPersistableModel<GARealtimeServerUpdateResponseFunctionCallArgumentsDone> {
+        public string CallId { get; }
+        public string EventId { get; }
+        public BinaryData FunctionArguments { get; }
+        public string ItemId { get; }
+        public string Name { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateResponseMcpCallArgumentsDelta : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateResponseMcpCallArgumentsDelta>, IPersistableModel<GARealtimeServerUpdateResponseMcpCallArgumentsDelta> {
+        public BinaryData Delta { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        public string Obfuscation { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateResponseMcpCallArgumentsDone : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateResponseMcpCallArgumentsDone>, IPersistableModel<GARealtimeServerUpdateResponseMcpCallArgumentsDone> {
+        public string EventId { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        public BinaryData ToolArguments { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateResponseMcpCallCompleted : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateResponseMcpCallCompleted>, IPersistableModel<GARealtimeServerUpdateResponseMcpCallCompleted> {
+        public string EventId { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateResponseMcpCallFailed : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateResponseMcpCallFailed>, IPersistableModel<GARealtimeServerUpdateResponseMcpCallFailed> {
+        public string EventId { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateResponseMcpCallInProgress : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateResponseMcpCallInProgress>, IPersistableModel<GARealtimeServerUpdateResponseMcpCallInProgress> {
+        public string EventId { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateResponseOutputAudioDelta : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateResponseOutputAudioDelta>, IPersistableModel<GARealtimeServerUpdateResponseOutputAudioDelta> {
+        public int ContentIndex { get; }
+        public BinaryData Delta { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateResponseOutputAudioDone : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateResponseOutputAudioDone>, IPersistableModel<GARealtimeServerUpdateResponseOutputAudioDone> {
+        public int ContentIndex { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateResponseOutputAudioTranscriptDelta : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateResponseOutputAudioTranscriptDelta>, IPersistableModel<GARealtimeServerUpdateResponseOutputAudioTranscriptDelta> {
+        public int ContentIndex { get; }
+        public string Delta { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateResponseOutputAudioTranscriptDone : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateResponseOutputAudioTranscriptDone>, IPersistableModel<GARealtimeServerUpdateResponseOutputAudioTranscriptDone> {
+        public int ContentIndex { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        public string Transcript { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateResponseOutputItemAdded : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateResponseOutputItemAdded>, IPersistableModel<GARealtimeServerUpdateResponseOutputItemAdded> {
+        public string EventId { get; }
+        public GARealtimeItem Item { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateResponseOutputItemDone : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateResponseOutputItemDone>, IPersistableModel<GARealtimeServerUpdateResponseOutputItemDone> {
+        public string EventId { get; }
+        public GARealtimeItem Item { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateResponseOutputTextDelta : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateResponseOutputTextDelta>, IPersistableModel<GARealtimeServerUpdateResponseOutputTextDelta> {
+        public int ContentIndex { get; }
+        public string Delta { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateResponseOutputTextDone : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateResponseOutputTextDone>, IPersistableModel<GARealtimeServerUpdateResponseOutputTextDone> {
+        public int ContentIndex { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        public string Text { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateSessionCreated : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateSessionCreated>, IPersistableModel<GARealtimeServerUpdateSessionCreated> {
+        public string EventId { get; }
+        public GARealtimeSession Session { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeServerUpdateSessionUpdated : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateSessionUpdated>, IPersistableModel<GARealtimeServerUpdateSessionUpdated> {
+        public string EventId { get; }
+        public GARealtimeSession Session { get; }
+        protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI002")]
@@ -5027,6 +6223,27 @@ namespace OpenAI.Realtime {
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI002")]
+    public class GARealtimeTranscriptionDurationUsage : GARealtimeTranscriptionUsage, IJsonModel<GARealtimeTranscriptionDurationUsage>, IPersistableModel<GARealtimeTranscriptionDurationUsage> {
+        public TimeSpan Duration { get; }
+        protected override GARealtimeTranscriptionUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeTranscriptionUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeTranscriptionInputTokenUsageDetails : IJsonModel<GARealtimeTranscriptionInputTokenUsageDetails>, IPersistableModel<GARealtimeTranscriptionInputTokenUsageDetails> {
+        public int? AudioTokenCount { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        public int? TextTokenCount { get; }
+        protected virtual GARealtimeTranscriptionInputTokenUsageDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual GARealtimeTranscriptionInputTokenUsageDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
     public class GARealtimeTranscriptionSession : GARealtimeSession, IJsonModel<GARealtimeTranscriptionSession>, IPersistableModel<GARealtimeTranscriptionSession> {
         public GARealtimeTranscriptionSessionAudioOptions AudioOptions { get; set; }
         public DateTimeOffset? ExpiresAt { get; }
@@ -5074,6 +6291,30 @@ namespace OpenAI.Realtime {
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override GARealtimeSessionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeTranscriptionTokenUsage : GARealtimeTranscriptionUsage, IJsonModel<GARealtimeTranscriptionTokenUsage>, IPersistableModel<GARealtimeTranscriptionTokenUsage> {
+        public int InputTokenCount { get; }
+        public GARealtimeTranscriptionInputTokenUsageDetails InputTokenDetails { get; }
+        public int OutputTokenCount { get; }
+        public int OutputTokens { get; }
+        public int TotalTokenCount { get; }
+        public int TotalTokens { get; }
+        protected override GARealtimeTranscriptionUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override GARealtimeTranscriptionUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class GARealtimeTranscriptionUsage : IJsonModel<GARealtimeTranscriptionUsage>, IPersistableModel<GARealtimeTranscriptionUsage> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch { get; }
+        protected virtual GARealtimeTranscriptionUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual GARealtimeTranscriptionUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI002")]
     public class GARealtimeTruncation : IJsonModel<GARealtimeTruncation>, IPersistableModel<GARealtimeTruncation> {
@@ -5530,7 +6771,7 @@ namespace OpenAI.Realtime {
         public virtual IEnumerable<ClientResult> ReceiveUpdates(RequestOptions options);
         public virtual IEnumerable<RealtimeUpdate> ReceiveUpdates(CancellationToken cancellationToken = default);
         public virtual IAsyncEnumerable<ClientResult> ReceiveUpdatesAsync(RequestOptions options);
-        public virtual IAsyncEnumerable<RealtimeUpdate> ReceiveUpdatesAsync(CancellationToken cancellationToken = default);
+        public virtual IAsyncEnumerable<GARealtimeServerUpdate> ReceiveUpdatesAsync(CancellationToken cancellationToken = default);
         public virtual void RequestItemRetrieval(string itemId, CancellationToken cancellationToken = default);
         public virtual Task RequestItemRetrievalAsync(string itemId, CancellationToken cancellationToken = default);
         public virtual void SendCommand(BinaryData data, RequestOptions options);

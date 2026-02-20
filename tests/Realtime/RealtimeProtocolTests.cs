@@ -3,6 +3,7 @@ using NUnit.Framework;
 using OpenAI.Realtime;
 using System;
 using System.ClientModel;
+using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -41,9 +42,9 @@ public class RealtimeProtocolTests : RealtimeTestFixtureBase
 
         List<JsonNode> receivedCommands = [];
 
-        await foreach (RealtimeUpdate update in session.ReceiveUpdatesAsync(CancellationToken))
+        await foreach (GARealtimeServerUpdate update in session.ReceiveUpdatesAsync(CancellationToken))
         {
-            BinaryData rawContentBytes = update.GetRawContent();
+            BinaryData rawContentBytes = ModelReaderWriter.Write(update, ModelReaderWriterOptions.Json, OpenAIContext.Default); ;
             JsonNode jsonNode = JsonNode.Parse(rawContentBytes);
             string updateType = jsonNode["type"]?.GetValue<string>();
             Assert.That(updateType, Is.Not.Null.And.Not.Empty);

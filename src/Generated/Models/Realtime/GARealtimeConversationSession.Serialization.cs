@@ -143,7 +143,7 @@ namespace OpenAI.Realtime
             if (Optional.IsDefined(MaxOutputTokenCount) && !Patch.Contains("$.max_output_tokens"u8))
             {
                 writer.WritePropertyName("max_output_tokens"u8);
-                writer.WriteNumberValue(MaxOutputTokenCount.Value);
+                SerializeMaxOutputTokenCountValue(writer, options);
             }
             if (Optional.IsDefined(Truncation) && !Patch.Contains("$.truncation"u8))
             {
@@ -283,11 +283,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("max_output_tokens"u8))
                 {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    maxOutputTokenCount = prop.Value.GetInt32();
+                    DeserializeMaxOutputTokenCountValue(prop, ref maxOutputTokenCount);
                     continue;
                 }
                 if (prop.NameEquals("truncation"u8))
