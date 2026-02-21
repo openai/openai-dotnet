@@ -48,12 +48,12 @@ namespace OpenAI.Realtime
             if (!Patch.Contains("$.audio_start_ms"u8))
             {
                 writer.WritePropertyName("audio_start_ms"u8);
-                writer.WriteNumberValue(AudioStartMs.TotalMilliseconds);
+                writer.WriteNumberValue(AudioStartTime.TotalMilliseconds);
             }
             if (!Patch.Contains("$.audio_end_ms"u8))
             {
                 writer.WritePropertyName("audio_end_ms"u8);
-                writer.WriteNumberValue(AudioEndMs.TotalMilliseconds);
+                writer.WriteNumberValue(AudioEndTime.TotalMilliseconds);
             }
             if (!Patch.Contains("$.item_id"u8))
             {
@@ -89,8 +89,8 @@ namespace OpenAI.Realtime
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string eventId = default;
-            TimeSpan audioStartMs = default;
-            TimeSpan audioEndMs = default;
+            TimeSpan audioStartTime = default;
+            TimeSpan audioEndTime = default;
             string itemId = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -106,12 +106,12 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("audio_start_ms"u8))
                 {
-                    audioStartMs = TimeSpan.FromMilliseconds(prop.Value.GetDouble());
+                    audioStartTime = TimeSpan.FromMilliseconds(prop.Value.GetDouble());
                     continue;
                 }
                 if (prop.NameEquals("audio_end_ms"u8))
                 {
-                    audioEndMs = TimeSpan.FromMilliseconds(prop.Value.GetDouble());
+                    audioEndTime = TimeSpan.FromMilliseconds(prop.Value.GetDouble());
                     continue;
                 }
                 if (prop.NameEquals("item_id"u8))
@@ -125,8 +125,8 @@ namespace OpenAI.Realtime
                 kind,
                 patch,
                 eventId,
-                audioStartMs,
-                audioEndMs,
+                audioStartTime,
+                audioEndTime,
                 itemId);
         }
 

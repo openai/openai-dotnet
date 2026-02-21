@@ -8,5 +8,5 @@ public readonly partial struct GARealtimeDefaultMaxOutputTokenCount
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Inf")]
-    public static GARealtimeDefaultMaxOutputTokenCount Infinite { get; } = new GARealtimeDefaultMaxOutputTokenCount(InfValue);
+    public static GARealtimeDefaultMaxOutputTokenCount Infinity { get; } = new GARealtimeDefaultMaxOutputTokenCount(InfValue);
 }

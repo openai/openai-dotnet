@@ -48,7 +48,7 @@ namespace OpenAI.Realtime
             if (!Patch.Contains("$.audio_start_ms"u8))
             {
                 writer.WritePropertyName("audio_start_ms"u8);
-                writer.WriteNumberValue(AudioStartMs.TotalMilliseconds);
+                writer.WriteNumberValue(AudioStartTime.TotalMilliseconds);
             }
             if (!Patch.Contains("$.item_id"u8))
             {
@@ -84,7 +84,7 @@ namespace OpenAI.Realtime
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string eventId = default;
-            TimeSpan audioStartMs = default;
+            TimeSpan audioStartTime = default;
             string itemId = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -100,7 +100,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("audio_start_ms"u8))
                 {
-                    audioStartMs = TimeSpan.FromMilliseconds(prop.Value.GetDouble());
+                    audioStartTime = TimeSpan.FromMilliseconds(prop.Value.GetDouble());
                     continue;
                 }
                 if (prop.NameEquals("item_id"u8))
@@ -110,7 +110,7 @@ namespace OpenAI.Realtime
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new GARealtimeServerUpdateInputAudioBufferSpeechStarted(kind, patch, eventId, audioStartMs, itemId);
+            return new GARealtimeServerUpdateInputAudioBufferSpeechStarted(kind, patch, eventId, audioStartTime, itemId);
         }
 
         BinaryData IPersistableModel<GARealtimeServerUpdateInputAudioBufferSpeechStarted>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

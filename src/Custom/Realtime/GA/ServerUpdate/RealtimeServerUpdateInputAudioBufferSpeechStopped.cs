@@ -1,4 +1,5 @@
 ﻿using Microsoft.TypeSpec.Generator.Customizations;
+using System;
 
 namespace OpenAI.Realtime;
 
@@ -6,4 +7,7 @@ namespace OpenAI.Realtime;
 [CodeGenType("RealtimeServerEventInputAudioBufferSpeechStoppedGA")]
 public partial class GARealtimeServerUpdateInputAudioBufferSpeechStopped
 {
+    // CUSTOM: Renamed.
+    [CodeGenMember("AudioEndMs")]
+    public TimeSpan AudioEndTime { get; }
 }

@@ -105,7 +105,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
                         Assert.That(session.AudioOptions.OutputAudioOptions.Speed, Is.EqualTo(1));
                         Assert.That(session.AudioOptions.OutputAudioOptions.Voice, Is.EqualTo(GARealtimeVoice.Alloy));
                         Assert.That(session.Instructions, Is.Not.Null.Or.Empty);
-                        Assert.That(session.MaxOutputTokenCount.DefaultMaxOutputTokenCount, Is.EqualTo(GARealtimeDefaultMaxOutputTokenCount.Infinite));
+                        Assert.That(session.MaxOutputTokenCount.DefaultMaxOutputTokenCount, Is.EqualTo(GARealtimeDefaultMaxOutputTokenCount.Infinity));
                         Assert.That(session.MaxOutputTokenCount.CustomMaxOutputTokenCount, Is.Null);
                         Assert.That(session.Model, Is.Not.Null.Or.Empty);
                         Assert.That(session.OutputModalities, Is.Not.Null);

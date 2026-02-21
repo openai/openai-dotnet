@@ -11,25 +11,23 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class GARealtimeServerUpdateInputAudioBufferSpeechStopped : GARealtimeServerUpdate
     {
-        internal GARealtimeServerUpdateInputAudioBufferSpeechStopped(string eventId, TimeSpan audioEndMs, string itemId) : base(InternalRealtimeServerEventTypeGA.InputAudioBufferSpeechStopped)
+        internal GARealtimeServerUpdateInputAudioBufferSpeechStopped(string eventId, TimeSpan audioEndTime, string itemId) : base(InternalRealtimeServerEventTypeGA.InputAudioBufferSpeechStopped)
         {
             EventId = eventId;
-            AudioEndMs = audioEndMs;
+            AudioEndTime = audioEndTime;
             ItemId = itemId;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal GARealtimeServerUpdateInputAudioBufferSpeechStopped(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, TimeSpan audioEndMs, string itemId) : base(kind, patch)
+        internal GARealtimeServerUpdateInputAudioBufferSpeechStopped(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, TimeSpan audioEndTime, string itemId) : base(kind, patch)
         {
             EventId = eventId;
-            AudioEndMs = audioEndMs;
+            AudioEndTime = audioEndTime;
             ItemId = itemId;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string EventId { get; }
-
-        public TimeSpan AudioEndMs { get; }
 
         public string ItemId { get; }
     }

@@ -11,29 +11,25 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class GARealtimeServerUpdateInputAudioBufferTimeoutTriggered : GARealtimeServerUpdate
     {
-        internal GARealtimeServerUpdateInputAudioBufferTimeoutTriggered(string eventId, TimeSpan audioStartMs, TimeSpan audioEndMs, string itemId) : base(InternalRealtimeServerEventTypeGA.InputAudioBufferTimeoutTriggered)
+        internal GARealtimeServerUpdateInputAudioBufferTimeoutTriggered(string eventId, TimeSpan audioStartTime, TimeSpan audioEndTime, string itemId) : base(InternalRealtimeServerEventTypeGA.InputAudioBufferTimeoutTriggered)
         {
             EventId = eventId;
-            AudioStartMs = audioStartMs;
-            AudioEndMs = audioEndMs;
+            AudioStartTime = audioStartTime;
+            AudioEndTime = audioEndTime;
             ItemId = itemId;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal GARealtimeServerUpdateInputAudioBufferTimeoutTriggered(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, TimeSpan audioStartMs, TimeSpan audioEndMs, string itemId) : base(kind, patch)
+        internal GARealtimeServerUpdateInputAudioBufferTimeoutTriggered(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, TimeSpan audioStartTime, TimeSpan audioEndTime, string itemId) : base(kind, patch)
         {
             EventId = eventId;
-            AudioStartMs = audioStartMs;
-            AudioEndMs = audioEndMs;
+            AudioStartTime = audioStartTime;
+            AudioEndTime = audioEndTime;
             ItemId = itemId;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string EventId { get; }
-
-        public TimeSpan AudioStartMs { get; }
-
-        public TimeSpan AudioEndMs { get; }
 
         public string ItemId { get; }
     }
