@@ -6,15 +6,12 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "318",
+        "Content-Length": "265",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI.Shared/2.8.0 (.NET 8.0.16; Darwin 25.2.0 Darwin Kernel Version 25.2.0: Tue Nov 18 21:08:48 PST 2025; root:xnu-12377.61.12~1/RELEASE_ARM64_T8132)"
+        "User-Agent": "OpenAI.Responses/2.8.0 (.NET 10.0.3; macOS 26.3.0)"
       },
       "RequestBody": {
-        "metadata": {
-          "superfluous_key": "superfluous_value"
-        },
-        "model": "o3-mini",
+        "model": "gpt-5",
         "reasoning": {
           "effort": "low",
           "summary": "detailed"
@@ -37,9 +34,9 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9ba549184f296c57-DFW",
+        "CF-RAY": "9d118edfefbcf084-DFW",
         "Connection": "keep-alive",
-        "Content-Length": "4378",
+        "Content-Length": "3945",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -49,44 +46,44 @@
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "5148",
-        "x-ratelimit-limit-requests": "30000",
-        "x-ratelimit-limit-tokens": "150000000",
-        "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "149999772",
-        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-limit-requests": "15000",
+        "x-ratelimit-limit-tokens": "40000000",
+        "x-ratelimit-remaining-requests": "14999",
+        "x-ratelimit-remaining-tokens": "39999576",
+        "x-ratelimit-reset-requests": "4ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_06dd66aadfbb7fe600695e9c653820819d9e1640d8f8ce68d0",
+        "id": "resp_031ff4badbcd1717006998e50006488194be3248e90a26ddfc",
         "object": "response",
-        "created_at": 1767808101,
+        "created_at": 1771627776,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
-        "completed_at": 1767808106,
+        "completed_at": 1771627791,
         "error": null,
+        "frequency_penalty": 0.0,
         "incomplete_details": null,
         "instructions": "Perform reasoning over any questions asked by the user.",
         "max_output_tokens": null,
         "max_tool_calls": null,
-        "model": "o3-mini-2025-01-31",
+        "model": "gpt-5-2025-08-07",
         "output": [
           {
-            "id": "rs_06dd66aadfbb7fe600695e9c669b5c819da42de883bfad6d3e",
+            "id": "rs_031ff4badbcd1717006998e50077388194be425cc13443e597",
             "type": "reasoning",
             "summary": [
               {
                 "type": "summary_text",
-                "text": "**Explaining burrito folding**\n\nThe user is asking for the best way to fold a burrito, which is a fun question! I think the best method is the envelope technique. First, I'd suggest warming the tortilla to make it pliable. Then, I could provide step-by-step instructions: Step 1: Place fillings in the center left, Step 2: Fold in both sides, then Step 3: Roll from the bottom to tuck everything in. Let’s ensure it's clear and easy to follow!"
+                "text": "**Crafting taco tips**\n\nI want to share some quick tips for making great tacos! First, avoid overfilling your tacos; a one-cup filling is just right. I should mention the two-tortilla trick for sturdiness. Using cheese as glue is a neat idea too! And if I want to get creative, mayo or bean paste can work as a glue substitute. I’ll outline these steps clearly, but including an image is optional. Keeping a practical tone is essential!"
               }
             ]
           },
           {
-            "id": "msg_06dd66aadfbb7fe600695e9c68a4c8819dbe5798b900a188c9",
+            "id": "msg_031ff4badbcd1717006998e509391c819499d92ebe3e71eaee",
             "type": "message",
             "status": "completed",
             "content": [
@@ -94,13 +91,14 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "When it comes to folding a burrito, many people swear by a method that keeps all the fillings snug and prevents spills. Here’s a step‐by‐step process that tends to work well:\n\n1. Warm the Tortilla:  \n\u2003• Use a large flour tortilla (usually 10-12 inches) and warm it up slightly. A warm tortilla is more pliable, which makes folding easier.\n\n2. Layer Your Fillings Wisely:  \n\u2003• Place your rice, beans, meat or veggies, salsa, cheese, and any other fillings down the center of the tortilla.  \n\u2003• Avoid overstuffing or piling fillings too high; a balanced line across the center (but not touching the edges) makes the wrap tighter and less likely to spill.\n\n3. Fold the Sides:  \n\u2003• Begin by folding the left and right edges in toward the center over the fillings. This first step helps enclose the contents so that they don’t escape when you roll.\n\n4. Roll from the Bottom:  \n\u2003• With the sides folded, start rolling the burrito from the bottom upward.  \n\u2003• As you roll, keep the fold tight so all contents stay evenly enclosed.  \n\u2003• Continue rolling until you reach the top edge.\n\n5. Tuck in the Top Edge (Optional but Helpful):  \n\u2003• When you near the end, you might try to tuck the top edge under your roll. This extra fold can help secure the burrito even more and prevent the fillings from peeking out.\n\n6. Final Press:  \n\u2003• Give the burrito a gentle press along its length, which helps to compact the fillings and make the roll more uniform.\n\nAdditional Tips:  \n• Consistency matters—if one part of your burrito is more filled than another, it might cause the roll to break open. Balancing your ingredients helps maintain structural integrity.  \n• If you’re planning on eating on the go, you could use a piece of aluminum foil wrapped around the burrito to hold everything together and keep it warm.\n\nThis method is popular because it minimizes the chance of fillings escaping, provides a neat presentation, and ultimately leads to a satisfying bite every time. Enjoy your burrito!"
+                "text": "Here’s a reliable, tidy way to fold a burrito that won’t fall apart:\n\n1) Warm the tortilla\n- Use a large (10–12 inch) flour tortilla.\n- Heat 15–30 seconds per side on a dry pan or 10–15 seconds in the microwave under a damp towel until soft and pliable.\n\n2) Build the filling smartly\n- Keep the line of filling slightly off-center, running left-to-right.\n- Don’t overfill: about 1 to 1½ cups total.\n- Put “dry” buffers outside, “wet” stuff inside:\n  - Bottom layer: rice/beans to absorb moisture.\n  - Middle: proteins and veg.\n  - Top/center: salsa, guac, sauces.\n- Keep at least 2 inches of tortilla clear on left/right edges.\n\n3) Fold the sides\n- Fold the left and right sides straight in so they touch or nearly touch.\n\n4) Tuck and roll\n- Lift the bottom edge up over the filling.\n- Use your fingers to tuck the filling back while you roll away from you, keeping it tight.\n- Continue rolling until the seam is underneath.\n\n5) Seal\n- Place seam-side down on a hot dry pan 30–60 seconds to toast and seal, then flip to lightly toast the top.\n- Optionally wrap snugly in foil for structure and heat retention.\n\nTips and fixes\n- If the tortilla tears: overlap a small tortilla “patch” or spread a thin layer of refried beans or melted cheese as “glue.”\n- Very wet fillings: drain first; add extra rice/beans/cheese as moisture barriers.\n- For extra-crisp: finish in a panini press or skillet with a little oil/butter.\n- For freezing: cool completely, wrap in foil, then a freezer bag; reheat in oven or skillet.\n\nFollow this and you’ll get a tight, leak-resistant burrito with every bite."
               }
             ],
             "role": "assistant"
           }
         ],
         "parallel_tool_calls": true,
+        "presence_penalty": 0.0,
         "previous_response_id": null,
         "prompt_cache_key": null,
         "prompt_cache_retention": null,
@@ -128,20 +126,18 @@
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 576,
+          "output_tokens": 641,
           "output_tokens_details": {
-            "reasoning_tokens": 128
+            "reasoning_tokens": 192
           },
-          "total_tokens": 606
+          "total_tokens": 671
         },
         "user": null,
-        "metadata": {
-          "superfluous_key": "superfluous_value"
-        }
+        "metadata": {}
       }
     }
   ],
   "Variables": {
-    "OPEN-API-KEY": "api-key"
+    "OPENAI_API_KEY": "api-key"
   }
 }

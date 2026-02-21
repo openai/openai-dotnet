@@ -15,8 +15,8 @@ namespace OpenAI.Realtime
         private readonly string _value;
         private const string InputTextValue = "input_text";
         private const string InputAudioValue = "input_audio";
-        private const string TextValue = "text";
-        private const string AudioValue = "audio";
+        private const string OutputTextValue = "output_text";
+        private const string OutputAudioValue = "output_audio";
 
         public ConversationContentPartKind(string value)
         {

@@ -9,11 +9,53 @@ using OpenAI.Audio;
 using OpenAI.Images;
 using OpenAI.Models;
 using OpenAI.Moderations;
+using OpenAI.Realtime;
+using OpenAI.Responses;
 
 namespace OpenAI
 {
     internal static partial class OpenAIModelFactory
     {
+        public static ImageGenerationToolInputImageMask ImageGenerationToolInputImageMask(Uri imageUri = default, string fileId = default)
+        {
+            return new ImageGenerationToolInputImageMask(imageUri, fileId, default);
+        }
+
+        public static RealtimeRequestSessionBase RealtimeRequestSessionBase(string kind = default)
+        {
+            return new InternalUnknownRealtimeRequestSessionBase(new RealtimeSessionType(kind), additionalBinaryDataProperties: null);
+        }
+
+        public static RealtimeSessionAudioConfiguration RealtimeSessionAudioConfiguration(RealtimeSessionAudioInputConfiguration input = default, RealtimeSessionAudioOutputConfiguration output = default)
+        {
+            return new RealtimeSessionAudioConfiguration(input, output, additionalBinaryDataProperties: null);
+        }
+
+        public static RealtimeCreateClientSecretRequest RealtimeCreateClientSecretRequest(RealtimeCreateClientSecretRequestExpiresAfter expiresAfter = default, RealtimeSessionCreateRequestUnion session = default)
+        {
+            return new RealtimeCreateClientSecretRequest(expiresAfter, session, additionalBinaryDataProperties: null);
+        }
+
+        public static RealtimeCreateClientSecretRequestExpiresAfter RealtimeCreateClientSecretRequestExpiresAfter(RealtimeCreateClientSecretRequestExpiresAfterAnchor? anchor = default, int? seconds = default)
+        {
+            return new RealtimeCreateClientSecretRequestExpiresAfter(anchor, seconds, additionalBinaryDataProperties: null);
+        }
+
+        public static RealtimeSessionCreateRequestUnion RealtimeSessionCreateRequestUnion(string kind = default)
+        {
+            return new UnknownRealtimeSessionCreateRequestUnion(new RealtimeSessionCreateRequestUnionType(kind), additionalBinaryDataProperties: null);
+        }
+
+        public static RealtimeCreateClientSecretResponse RealtimeCreateClientSecretResponse(string value = default, DateTimeOffset expiresAt = default, RealtimeSessionCreateResponseUnion session = default)
+        {
+            return new RealtimeCreateClientSecretResponse(value, expiresAt, session, additionalBinaryDataProperties: null);
+        }
+
+        public static RealtimeSessionCreateResponseUnion RealtimeSessionCreateResponseUnion(string kind = default)
+        {
+            return new UnknownRealtimeSessionCreateResponseUnion(new RealtimeSessionCreateResponseUnionType(kind), additionalBinaryDataProperties: null);
+        }
+
         public static ImageEditOptions ImageEditOptions(BinaryData image = default, string prompt = default, BinaryData mask = default, GeneratedImageBackground? background = default, InternalCreateImageEditRequestModel? model = default, long? n = default, GeneratedImageSize? size = default, GeneratedImageFormat? responseFormat = default, GeneratedImageFileFormat? outputFileFormat = default, int? outputCompressionFactor = default, string endUserId = default, ImageInputFidelity? inputFidelity = default, bool? stream = default, int? partialImages = default, GeneratedImageQuality? quality = default)
         {
             return new ImageEditOptions(

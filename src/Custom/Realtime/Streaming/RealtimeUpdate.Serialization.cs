@@ -5,6 +5,22 @@ namespace OpenAI.Realtime;
 
 public partial class RealtimeUpdate
 {
+    // Helper method to determine the correct update type for session.updated events
+    // The GA API uses session.updated for both conversation and transcription sessions
+    private static RealtimeUpdate DeserializeSessionUpdatedByType(JsonElement element, ModelReaderWriterOptions options)
+    {
+        if (element.TryGetProperty("session", out JsonElement sessionElement) &&
+            sessionElement.TryGetProperty("type", out JsonElement typeElement))
+        {
+            string sessionType = typeElement.GetString();
+            if (sessionType == "transcription")
+            {
+                return TranscriptionSessionConfiguredUpdate.DeserializeTranscriptionSessionConfiguredUpdate(element, options);
+            }
+        }
+        return ConversationSessionConfiguredUpdate.DeserializeConversationSessionConfiguredUpdate(element, options);
+    }
+
     internal static RealtimeUpdate DeserializeRealtimeUpdate(JsonElement element, ModelReaderWriterOptions options = null)
     {
         options ??= ModelSerializationExtensions.WireOptions;
@@ -18,7 +34,8 @@ public partial class RealtimeUpdate
             return discriminator.GetString() switch
             {
                 "conversation.created" => InternalRealtimeServerEventConversationCreated.DeserializeInternalRealtimeServerEventConversationCreated(element, options),
-                "conversation.item.created" => ItemCreatedUpdate.DeserializeItemCreatedUpdate(element, options),
+                // GA API sends "conversation.item.added" instead of "conversation.item.created"
+                "conversation.item.created" or "conversation.item.added" => ItemCreatedUpdate.DeserializeItemCreatedUpdate(element, options),
                 "conversation.item.deleted" => ItemDeletedUpdate.DeserializeItemDeletedUpdate(element, options),
                 "conversation.item.input_audio_transcription.completed" => InputAudioTranscriptionFinishedUpdate.DeserializeInputAudioTranscriptionFinishedUpdate(element, options),
                 "conversation.item.input_audio_transcription.delta" => InputAudioTranscriptionDeltaUpdate.DeserializeInputAudioTranscriptionDeltaUpdate(element, options),
@@ -33,7 +50,9 @@ public partial class RealtimeUpdate
                 "response.created" => ResponseStartedUpdate.DeserializeResponseStartedUpdate(element, options),
                 "response.done" => ResponseFinishedUpdate.DeserializeResponseFinishedUpdate(element, options),
                 "session.created" => ConversationSessionStartedUpdate.DeserializeConversationSessionStartedUpdate(element, options),
-                "session.updated" => ConversationSessionConfiguredUpdate.DeserializeConversationSessionConfiguredUpdate(element, options),
+                // GA API uses "session.updated" for both conversation and transcription sessions
+                // The session type is determined by the session.type property
+                "session.updated" => DeserializeSessionUpdatedByType(element, options),
                 "transcription_session.updated" => TranscriptionSessionConfiguredUpdate.DeserializeTranscriptionSessionConfiguredUpdate(element, options),
 
                 "response.output_item.added" => OutputStreamingStartedUpdate.DeserializeOutputStreamingStartedUpdate(element, options),
@@ -51,6 +70,9 @@ public partial class RealtimeUpdate
 
                 "response.function_call_arguments.done"
                     or "response.content_part.done" => OutputPartFinishedUpdate.DeserializeOutputPartFinishedUpdate(element, options),
+
+                // GA API: conversation.item.done signals item completion (ignore for now, item.added has the data)
+                "conversation.item.done" => null,
 
                 _ => UnknownRealtimeServerEvent.DeserializeUnknownRealtimeServerEvent(element, options),
 

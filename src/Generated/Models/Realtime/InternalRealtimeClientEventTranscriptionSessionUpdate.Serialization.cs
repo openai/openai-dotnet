@@ -23,21 +23,6 @@ namespace OpenAI.Realtime
             writer.WriteEndObject();
         }
 
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalRealtimeClientEventTranscriptionSessionUpdate>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(InternalRealtimeClientEventTranscriptionSessionUpdate)} does not support writing '{format}' format.");
-            }
-            base.JsonModelWriteCore(writer, options);
-            if (_additionalBinaryDataProperties?.ContainsKey("session") != true)
-            {
-                writer.WritePropertyName("session"u8);
-                writer.WriteObjectValue(Session, options);
-            }
-        }
-
         InternalRealtimeClientEventTranscriptionSessionUpdate IJsonModel<InternalRealtimeClientEventTranscriptionSessionUpdate>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (InternalRealtimeClientEventTranscriptionSessionUpdate)JsonModelCreateCore(ref reader, options);
 
         protected override InternalRealtimeClientEvent JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)

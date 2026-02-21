@@ -201,13 +201,16 @@ public partial class ResponsesSmokeTests
         {
             Assert.That(filePart.Kind, Is.EqualTo(ResponseContentPartKind.InputImage));
             Assert.That(filePart.InputImageDetailLevel, Is.EqualTo(ResponseImageDetailLevel.Low));
-            Assert.That(filePart.InputImageUrl, Is.EqualTo($"data:image/png;base64,{Convert.ToBase64String(Encoding.UTF8.GetBytes("image data"))}"));
+            Assert.That(filePart.InputImageUri, Is.EqualTo($"data:image/png;base64,{Convert.ToBase64String(Encoding.UTF8.GetBytes("image data"))}"));
             Assert.That(filePart.InputImageFileId, Is.Null);
         }
 
+        string imageMediaType = "image/png";
+        BinaryData imageBytes = BinaryData.FromBytes(Encoding.UTF8.GetBytes("image data"));
+        Uri imageDataUri = new($"data:{imageMediaType};base64,{Convert.ToBase64String(imageBytes.ToArray())}");
+
         ResponseContentPart imagePart = ResponseContentPart.CreateInputImagePart(
-            BinaryData.FromBytes(Encoding.UTF8.GetBytes("image data")),
-            "image/png",
+            imageDataUri,
             ResponseImageDetailLevel.Low);
 
         AssertExpectedImagePart(imagePart);
@@ -228,7 +231,7 @@ public partial class ResponsesSmokeTests
             Assert.That(filePart.Kind, Is.EqualTo(ResponseContentPartKind.InputImage));
             Assert.That(filePart.InputImageDetailLevel, Is.EqualTo(ResponseImageDetailLevel.Auto));
             Assert.That(filePart.InputImageFileId, Is.EqualTo("image_123abc"));
-            Assert.That(filePart.InputImageUrl, Is.Null);
+            Assert.That(filePart.InputImageUri, Is.Null);
         }
 
         ResponseContentPart imagePart = ResponseContentPart.CreateInputImagePart(
@@ -252,7 +255,7 @@ public partial class ResponsesSmokeTests
         {
             Assert.That(filePart.Kind, Is.EqualTo(ResponseContentPartKind.InputImage));
             Assert.That(filePart.InputImageDetailLevel, Is.EqualTo(ResponseImageDetailLevel.High));
-            Assert.That(filePart.InputImageUrl, Is.EqualTo("https://example.com/image.jpg"));
+            Assert.That(filePart.InputImageUri, Is.EqualTo("https://example.com/image.jpg"));
             Assert.That(filePart.InputImageFileId, Is.Null);
         }
 
@@ -605,5 +608,12 @@ public partial class ResponsesSmokeTests
         Assert.That(customProperty, Is.Not.Null);
         Assert.That(customProperty.ValueKind, Is.EqualTo(JsonValueKind.String));
         Assert.That(customProperty.ToString(), Is.EqualTo("custom_property"));
+    }
+
+    [Test]
+    public void ValidateCreateResponseOptionsClone()
+    {
+        var original = new CreateResponseOptions();
+        CloneTestHelper.ValidateCloneMethod(original);
     }
 }

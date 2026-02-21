@@ -515,11 +515,10 @@ namespace OpenAI.Responses {
         public override readonly string ToString();
     }
     public class ImageGenerationToolInputImageMask : IJsonModel<ImageGenerationToolInputImageMask>, IPersistableModel<ImageGenerationToolInputImageMask> {
-        public ImageGenerationToolInputImageMask(BinaryData imageBytes, string imageBytesMediaType);
         public ImageGenerationToolInputImageMask(string fileId);
         public ImageGenerationToolInputImageMask(Uri imageUri);
         public string FileId { get; }
-        public string ImageUrl { get; }
+        public Uri ImageUri { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
@@ -798,7 +797,7 @@ namespace OpenAI.Responses {
         public string InputFilename { get; }
         public ResponseImageDetailLevel? InputImageDetailLevel { get; }
         public string InputImageFileId { get; }
-        public string InputImageUrl { get; }
+        public Uri InputImageUri { get; }
         public ResponseContentPartKind Kind { get; }
         public IReadOnlyList<ResponseMessageAnnotation> OutputTextAnnotations { get; }
         [Serialization.JsonIgnore]
@@ -808,7 +807,6 @@ namespace OpenAI.Responses {
         public string Text { get; }
         public static ResponseContentPart CreateInputFilePart(BinaryData fileBytes, string fileBytesMediaType, string filename);
         public static ResponseContentPart CreateInputFilePart(string fileId);
-        public static ResponseContentPart CreateInputImagePart(BinaryData imageBytes, string imageBytesMediaType, ResponseImageDetailLevel? imageDetailLevel = null);
         public static ResponseContentPart CreateInputImagePart(string imageFileId, ResponseImageDetailLevel? imageDetailLevel = null);
         public static ResponseContentPart CreateInputImagePart(Uri imageUri, ResponseImageDetailLevel? imageDetailLevel = null);
         public static ResponseContentPart CreateInputTextPart(string text);
@@ -1133,10 +1131,10 @@ namespace OpenAI.Responses {
     }
     public class ResponsesClient {
         protected ResponsesClient();
-        protected internal ResponsesClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
-        public ResponsesClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
+        protected internal ResponsesClient(ClientPipeline pipeline, string model, ResponsesClientOptions options);
+        public ResponsesClient(string model, ApiKeyCredential credential, ResponsesClientOptions options);
         public ResponsesClient(string model, ApiKeyCredential credential);
-        public ResponsesClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public ResponsesClient(string model, AuthenticationPolicy authenticationPolicy, ResponsesClientOptions options);
         public ResponsesClient(string model, AuthenticationPolicy authenticationPolicy);
         public ResponsesClient(string model, string apiKey);
         public virtual Uri Endpoint { get; }
@@ -1146,6 +1144,8 @@ namespace OpenAI.Responses {
         public virtual ClientResult<ResponseResult> CancelResponse(string responseId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> CancelResponseAsync(string responseId, RequestOptions options);
         public virtual Task<ClientResult<ResponseResult>> CancelResponseAsync(string responseId, CancellationToken cancellationToken = default);
+        public virtual ClientResult CompactResponse(string contentType, BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult> CompactResponseAsync(string contentType, BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<ResponseResult> CreateResponse(CreateResponseOptions options, CancellationToken cancellationToken = default);
         public virtual ClientResult CreateResponse(BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<ResponseResult> CreateResponse(IEnumerable<ResponseItem> inputItems, string previousResponseId = null, CancellationToken cancellationToken = default);
@@ -1164,6 +1164,8 @@ namespace OpenAI.Responses {
         public virtual ClientResult<ResponseDeletionResult> DeleteResponse(string responseId, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> DeleteResponseAsync(string responseId, RequestOptions options);
         public virtual Task<ClientResult<ResponseDeletionResult>> DeleteResponseAsync(string responseId, CancellationToken cancellationToken = default);
+        public virtual ClientResult GetInputTokenCount(string contentType, BinaryContent content, RequestOptions options = null);
+        public virtual Task<ClientResult> GetInputTokenCountAsync(string contentType, BinaryContent content, RequestOptions options = null);
         public virtual ClientResult<ResponseResult> GetResponse(GetResponseOptions options, CancellationToken cancellationToken = default);
         public virtual ClientResult GetResponse(string responseId, IEnumerable<IncludedResponseProperty> include, bool? stream, int? startingAfter, bool? includeObfuscation, RequestOptions options);
         public virtual ClientResult<ResponseResult> GetResponse(string responseId, CancellationToken cancellationToken = default);
@@ -1182,6 +1184,13 @@ namespace OpenAI.Responses {
         public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(GetResponseOptions options, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, CancellationToken cancellationToken = default);
+    }
+    public class ResponsesClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+        public static ResponsesClientOptions FromOpenAIClientOptions(OpenAIClientOptions options);
     }
     public readonly partial struct ResponseServiceTier : IEquatable<ResponseServiceTier> {
         public ResponseServiceTier(string value);

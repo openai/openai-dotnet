@@ -14,7 +14,7 @@ internal static partial class TestHelpers
             public ResponsesScenario() : base("gpt-4o-mini") { }
             public override object CreateClient(string model, ApiKeyCredential credential, OpenAIClientOptions options)
 #pragma warning disable OPENAI003
-                => new ResponsesClient(model, credential, options);
+                => new ResponsesClient(model, credential, ResponsesClientOptions.FromOpenAIClientOptions(options));
 #pragma warning restore OPENAI003
         }
     }

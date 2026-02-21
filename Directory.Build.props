@@ -106,6 +106,9 @@
     <SignAssembly>false</SignAssembly>
     <IsPackable>false</IsPackable>
 
+    <!-- SourceLink is not needed for test/example projects -->
+    <EnableSourceLink>false</EnableSourceLink>
+
     <!--
       Reset the base ignores and reset to ignore XML doc comments
       on test types and members and experimental APIs.

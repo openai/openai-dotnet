@@ -359,9 +359,11 @@ do
             throw new NotImplementedException(completion.FinishReason.ToString());
     }
 } while (requiresAction);
-```\n\n## How to use chat completions with structured outputs
+```
 
-Beginning with the `gpt-4o-mini`, `gpt-4o-mini-2024-07-18`, and `gpt-4o-2024-08-06` model snapshots, structured outputs are available for both top-level response content and tool calls in the chat completion and assistants APIs. For information about the feature, see [the Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs/introduction).
+## How to use chat completions with structured outputs
+
+Beginning with the `gpt-4o-mini`, `gpt-4o-mini-2024-07-18`, and `gpt-4o-2024-08-06` model snapshots, structured outputs are available for both top-level response content and tool calls in the chat completion and assistants APIs. For information about the feature, see [the Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs).
 
 To use structured outputs to constrain chat completion content, set an appropriate `ChatResponseFormat` as in the following example:
 

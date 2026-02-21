@@ -1,0 +1,139 @@
+# This workflow validates code generation and API export integrity by running
+# the relevant scripts and ensuring they complete without producing changes.
+name: Code integrity checks
+
+on:
+  pull_request:
+    paths:
+      - 'codegen/**'
+      - 'specification/**'
+      - 'src/**'
+      - 'package.json'
+      - 'global.json'
+      - 'package-lock.json'
+      - '.github/workflows/integrity-checks.yml'
+      - 'scripts/Invoke-CodeGen.ps1'
+      - 'scripts/Export-Api.ps1'
+      - 'api/**'
+      - 'Directory.Build.targets'
+      - 'tests/Snippets/**'
+      - 'README.md'
+      - 'scripts/Update-Snippets.ps1'
+    types: [opened, reopened, synchronize]
+  workflow_dispatch:
+
+jobs:
+  validate-codegen:
+    name: Validate code generation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22.x'
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          # Use the version specified in global.json
+          global-json-file: global.json
+
+      - name: Run Invoke-CodeGen script
+        shell: pwsh
+        run: |
+          Write-Host "Running code generation validation..."
+          ./scripts/Invoke-CodeGen.ps1 -Clean
+
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "Code generation failed with exit code: $LASTEXITCODE"
+            exit $LASTEXITCODE
+          }
+
+          Write-Host "Code generation completed successfully!"
+
+      - name: Check for uncommitted changes
+        uses: ./.github/actions/check-uncommitted-changes
+        with:
+          error-message: "Code generation produced changes. Please run './scripts/Invoke-CodeGen.ps1' locally and commit the results."
+
+      - name: Run codegen visitor tests
+        run: dotnet test codegen/generator/test/
+          --configuration Release
+          --logger "trx;LogFilePrefix=codegen"
+          --results-directory ${{github.workspace}}/artifacts/test-results
+          ${{ env.version_suffix_args}}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v6
+        if: ${{ !cancelled() }}
+        with:
+          name: build-artifacts
+          path: ${{github.workspace}}/artifacts
+
+  validate-api-export:
+    name: Validate API export
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          # Use the version specified in global.json
+          global-json-file: global.json
+
+      - name: Run Export-Api script
+        shell: pwsh
+        run: |
+          Write-Host "Running API export validation..."
+          ./scripts/Export-Api.ps1
+
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "API export failed with exit code: $LASTEXITCODE"
+            exit $LASTEXITCODE
+          }
+
+          Write-Host "API export completed successfully!"
+
+      - name: Check for uncommitted changes
+        uses: ./.github/actions/check-uncommitted-changes
+        with:
+          error-message: "API export produced changes. Please run './scripts/Export-Api.ps1' locally and commit the results."
+
+  validate-snippets:
+    name: Validate documentation snippets
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          # Use the version specified in global.json
+          global-json-file: global.json
+
+      - name: Run Update-Snippets script
+        shell: pwsh
+        run: |
+          Write-Host "Running snippet update validation..."
+          ./scripts/Update-Snippets.ps1
+
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "Snippet update failed with exit code: $LASTEXITCODE"
+            exit $LASTEXITCODE
+          }
+
+          Write-Host "Snippet update completed successfully!"
+
+      - name: Check for uncommitted changes
+        uses: ./.github/actions/check-uncommitted-changes
+        with:
+          error-message: "Documentation snippets are out of date. Please run './scripts/Update-Snippets.ps1' locally and commit the results."

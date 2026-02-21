@@ -69,6 +69,8 @@ jobs:
           ${{ env.version_suffix_args }}
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          CLIENTMODEL_TEST_MODE: Playback
+          CLIENTMODEL_DISABLE_AUTO_RECORDING: true
 
       - name: Run Responses-only tests
         run: dotnet test ./tests/Responses/OpenAI.Responses.Tests.csproj

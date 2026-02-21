@@ -4,7 +4,6 @@ using OpenAI.Images;
 using System;
 using System.ClientModel;
 using System.Threading.Tasks;
-using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Images;
 
@@ -18,7 +17,7 @@ public partial class ImagesTests : ImageTestFixtureBase
     [RecordedTest]
     public async Task BasicGenerationWorks()
     {
-        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-3");
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>("dall-e-3");
 
         string prompt = "An isolated stop sign.";
 
@@ -33,7 +32,7 @@ public partial class ImagesTests : ImageTestFixtureBase
     [RecordedTest]
     public async Task GenerationWithOptionsWorks()
     {
-        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-3");
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>("dall-e-3");
 
         string prompt = "An isolated stop sign.";
 
@@ -53,7 +52,7 @@ public partial class ImagesTests : ImageTestFixtureBase
     [RecordedTest]
     public async Task GenerationWithBytesResponseWorks()
     {
-        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-3");
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>("dall-e-3");
 
         string prompt = "An isolated stop sign.";
 
@@ -81,7 +80,7 @@ public partial class ImagesTests : ImageTestFixtureBase
     [RecordedTest]
     public async Task GenerationOfMultipleImagesWorks()
     {
-        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "dall-e-2");
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>("dall-e-2");
 
         string prompt = "An isolated stop sign.";
 
@@ -109,7 +108,7 @@ public partial class ImagesTests : ImageTestFixtureBase
     [RecordedTest]
     public async Task GenerationOfMultipleImagesWithBytesResponseWorks()
     {
-        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images);
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>();
 
         string prompt = "An isolated stop sign.";
 
@@ -141,7 +140,7 @@ public partial class ImagesTests : ImageTestFixtureBase
     [RecordedTest]
     public async Task GptImage1Works()
     {
-        ImageClient client = GetProxiedOpenAIClient<ImageClient>(TestScenario.Images, "gpt-image-1");
+        ImageClient client = GetProxiedOpenAIClient<ImageClient>("gpt-image-1");
 
         string prompt = "An isolated stop sign.";
 

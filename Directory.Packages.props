@@ -33,7 +33,7 @@
     <PackageVersion Include="Moq" Version="[4.18.2]" />
 
     <!-- Development Feed Packages -->
-    <PackageVersion Include="Microsoft.ClientModel.TestFramework" Version="1.0.0-alpha.20260121.1" />
+    <PackageVersion Include="Microsoft.ClientModel.TestFramework" Version="1.0.0-alpha.20260212.1" />
   </ItemGroup>
 
   <!-- Generator Dependencies (for code customization attributes) -->

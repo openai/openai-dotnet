@@ -12,6 +12,7 @@ namespace OpenAI.Realtime
     public partial class RealtimeUpdate
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
+        private protected string _eventId;
 
         private protected RealtimeUpdate(RealtimeUpdateKind kind)
         {

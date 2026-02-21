@@ -1,0 +1,220 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "163",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI.Responses/2.8.0 (.NET 10.0.3; macOS 26.3.0)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Create a simple landing page for a dog petting café."
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9d118e325868f084-DFW",
+        "Connection": "keep-alive",
+        "Content-Length": "4758",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Set-Cookie": "Sanitized",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999962",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_088416244269dd4e006998e4e4408c819e99b3425175347be1",
+        "object": "response",
+        "created_at": 1771627748,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "completed_at": 1771627766,
+        "error": null,
+        "frequency_penalty": 0.0,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4o-mini-2024-07-18",
+        "output": [
+          {
+            "id": "msg_088416244269dd4e006998e4e4bd38819e9b48f41823f4c349",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "Sure! Below is a simple HTML structure for a landing page for a dog petting café. You can customize the content, styles, and images as needed.\n\n```html\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Welcome to Paws & Claws Café</title>\n    <link rel=\"stylesheet\" href=\"styles.css\">\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            margin: 0;\n            background-color: #f0f0f0;\n            color: #333;\n        }\n        header {\n            background-color: #4CAF50;\n            color: white;\n            padding: 20px;\n            text-align: center;\n        }\n        .hero {\n            background-image: url('dog-cafe.jpg');\n            background-size: cover;\n            height: 300px;\n            display: flex;\n            justify-content: center;\n            align-items: center;\n            color: white;\n            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);\n        }\n        .hero h1 {\n            font-size: 3em;\n        }\n        .content {\n            text-align: center;\n            padding: 20px;\n        }\n        .cta-button {\n            background-color: #4CAF50;\n            color: white;\n            padding: 10px 20px;\n            border: none;\n            border-radius: 5px;\n            cursor: pointer;\n            font-size: 1em;\n            text-decoration: none;\n        }\n        footer {\n            margin-top: 20px;\n            text-align: center;\n            padding: 10px 0;\n            background-color: #333;\n            color: white;\n        }\n    </style>\n</head>\n<body>\n\n<header>\n    <h1>Paws & Claws Café</h1>\n    <p>Your favorite furry hangout!</p>\n</header>\n\n<div class=\"hero\">\n    <h1>Welcome to Our Dog Petting Café!</h1>\n</div>\n\n<div class=\"content\">\n    <h2>Relax, Cuddle, and Play with Our Dogs!</h2>\n    <p>At Paws & Claws, we offer a cozy environment where you can enjoy your favorite coffee while spending quality time with our lovable and friendly pups.</p>\n    <a href=\"#reserve\" class=\"cta-button\">Reserve Your Spot Now!</a>\n</div>\n\n<footer>\n    <p>&copy; 2023 Paws & Claws Café | Follow us on \n        <a href=\"#\" style=\"color:white;\">Instagram</a> | \n        <a href=\"#\" style=\"color:white;\">Facebook</a>\n    </p>\n</footer>\n\n</body>\n</html>\n```\n\n### Features of the Landing Page:\n1. **Header**: Displays the café's name and a brief tagline.\n2. **Hero Section**: Includes a welcoming message with an attractive background image (replace `'dog-cafe.jpg'` with your image link).\n3. **Content Section**: Offers a brief description of the café and a call-to-action button for reservations.\n4. **Footer**: Contains copyright information and social media links.\n\n### Customization Options:\n- Replace the image URL in the CSS background with your own image.\n- Adjust the color scheme and fonts as needed.\n- Add more sections (like menu, services, testimonials) for additional information if desired.\n\nFeel free to ask if you need more specific features or functionality!"
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "presence_penalty": 0.0,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "prompt_cache_retention": null,
+        "reasoning": {
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 19,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 757,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 776
+        },
+        "user": null,
+        "metadata": {}
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/responses/compact",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "4365",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI.Responses/2.8.0 (.NET 10.0.3; macOS 26.3.0)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini-2024-07-18",
+        "input": [
+          {
+            "role": "user",
+            "content": "Create a simple landing page for a dog petting café."
+          },
+          {
+            "id": "msg_088416244269dd4e006998e4e4bd38819e9b48f41823f4c349",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "text": "Sure! Below is a simple HTML structure for a landing page for a dog petting café. You can customize the content, styles, and images as needed.\n\n```html\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Welcome to Paws & Claws Café</title>\n    <link rel=\"stylesheet\" href=\"styles.css\">\n    <style>\n        body {\n            font-family: Arial, sans-serif;\n            margin: 0;\n            background-color: #f0f0f0;\n            color: #333;\n        }\n        header {\n            background-color: #4CAF50;\n            color: white;\n            padding: 20px;\n            text-align: center;\n        }\n        .hero {\n            background-image: url('dog-cafe.jpg');\n            background-size: cover;\n            height: 300px;\n            display: flex;\n            justify-content: center;\n            align-items: center;\n            color: white;\n            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);\n        }\n        .hero h1 {\n            font-size: 3em;\n        }\n        .content {\n            text-align: center;\n            padding: 20px;\n        }\n        .cta-button {\n            background-color: #4CAF50;\n            color: white;\n            padding: 10px 20px;\n            border: none;\n            border-radius: 5px;\n            cursor: pointer;\n            font-size: 1em;\n            text-decoration: none;\n        }\n        footer {\n            margin-top: 20px;\n            text-align: center;\n            padding: 10px 0;\n            background-color: #333;\n            color: white;\n        }\n    </style>\n</head>\n<body>\n\n<header>\n    <h1>Paws & Claws Café</h1>\n    <p>Your favorite furry hangout!</p>\n</header>\n\n<div class=\"hero\">\n    <h1>Welcome to Our Dog Petting Café!</h1>\n</div>\n\n<div class=\"content\">\n    <h2>Relax, Cuddle, and Play with Our Dogs!</h2>\n    <p>At Paws & Claws, we offer a cozy environment where you can enjoy your favorite coffee while spending quality time with our lovable and friendly pups.</p>\n    <a href=\"#reserve\" class=\"cta-button\">Reserve Your Spot Now!</a>\n</div>\n\n<footer>\n    <p>&copy; 2023 Paws & Claws Café | Follow us on \n        <a href=\"#\" style=\"color:white;\">Instagram</a> | \n        <a href=\"#\" style=\"color:white;\">Facebook</a>\n    </p>\n</footer>\n\n</body>\n</html>\n```\n\n### Features of the Landing Page:\n1. **Header**: Displays the café's name and a brief tagline.\n2. **Hero Section**: Includes a welcoming message with an attractive background image (replace `'dog-cafe.jpg'` with your image link).\n3. **Content Section**: Offers a brief description of the café and a call-to-action button for reservations.\n4. **Footer**: Contains copyright information and social media links.\n\n### Customization Options:\n- Replace the image URL in the CSS background with your own image.\n- Adjust the color scheme and fonts as needed.\n- Add more sections (like menu, services, testimonials) for additional information if desired.\n\nFeel free to ask if you need more specific features or functionality!"
+              }
+            ],
+            "role": "assistant"
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9d118ea2ceb8f084-DFW",
+        "Connection": "keep-alive",
+        "Content-Length": "618",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999110",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_088416244269dd4e016998e4f6418c819e86b4e106116737c2",
+        "object": "response.compaction",
+        "created_at": 1771627774,
+        "output": [
+          {
+            "id": "msg_088416244269dd4e016998e4f647dc819ebeaf70ce3670deb2",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Create a simple landing page for a dog petting café."
+              }
+            ],
+            "role": "user"
+          },
+          {
+            "id": "cmp_088416244269dd4e016998e4f6aee0819e8117cf35e657bf51",
+            "type": "compaction",
+            "encrypted_content": "Sanitized"
+          }
+        ],
+        "usage": {
+          "input_tokens": 872,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 413,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 1285
+        }
+      }
+    }
+  ],
+  "Variables": {
+    "OPENAI_API_KEY": "api-key"
+  }
+}
