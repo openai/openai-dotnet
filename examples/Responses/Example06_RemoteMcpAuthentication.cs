@@ -22,6 +22,7 @@ public partial class ResponseExamples
 
         CreateResponseOptions options = new(inputItems)
         {
+            Model = "gpt-5",
             Tools = {
                 new McpTool(serverLabel: "stripe", serverUri: new Uri("https://mcp.stripe.com"))
                 {
@@ -30,7 +31,7 @@ public partial class ResponseExamples
             }
         };
 
-        ResponsesClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         ResponseResult response = client.CreateResponse(options);
 

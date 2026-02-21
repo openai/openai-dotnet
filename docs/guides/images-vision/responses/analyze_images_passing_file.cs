@@ -9,7 +9,7 @@ using OpenAI.Files;
 using OpenAI.Responses;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-ResponsesClient client = new(model: "gpt-5.2", apiKey: key);
+ResponsesClient client = new(key);
 
 string filename = "cat_and_otter.png";
 Uri imageUrl = new($"https://openai-documentation.vercel.app/images/{filename}");
@@ -21,7 +21,7 @@ using var stream = await http.GetStreamAsync(imageUrl);
 OpenAIFileClient files = new(key);
 OpenAIFile file = await files.UploadFileAsync(BinaryData.FromStream(stream), filename, FileUploadPurpose.Vision);
 
-ResponseResult response = client.CreateResponse([
+ResponseResult response = client.CreateResponse("gpt-5.2", [
     ResponseItem.CreateUserMessageItem([
         ResponseContentPart.CreateInputTextPart("what's in this image?"),
         ResponseContentPart.CreateInputImagePart(file.Id)
