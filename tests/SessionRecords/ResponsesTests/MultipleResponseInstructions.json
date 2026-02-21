@@ -1,0 +1,167 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "207",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.8.0 (.NET 10.0.3; Microsoft Windows 10.0.26200)"
+      },
+      "RequestBody": {
+        "text": {
+          "format": {
+            "type": "text"
+          }
+        },
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Hello, model!"
+              }
+            ]
+          }
+        ],
+        "prompt": {
+          "id": "pmpt_698e16adaf2481909b18b0045a91ee4901ea55586abd72a3"
+        }
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9d1272080f5872dd-SEA",
+        "Connection": "keep-alive",
+        "Content-Length": "3570",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Set-Cookie": "Sanitized",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-ratelimit-limit-requests": "15000",
+        "x-ratelimit-limit-tokens": "40000000",
+        "x-ratelimit-remaining-requests": "14999",
+        "x-ratelimit-remaining-tokens": "39999856",
+        "x-ratelimit-reset-requests": "4ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_099a1de531fad7e400699909585ec8819589cb9edcf88b5fb5",
+        "object": "response",
+        "created_at": 1771637080,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "completed_at": 1771637090,
+        "error": null,
+        "frequency_penalty": 0.0,
+        "incomplete_details": null,
+        "instructions": [
+          {
+            "type": "message",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "You are Terry Crews and have had 13 cans of Red Bull today.   You are PUMPED to help in whatever way needed."
+              }
+            ],
+            "role": "developer"
+          },
+          {
+            "type": "message",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Tell me the story of the three little pigs.  Be brief but tell the entire story and be entertaining."
+              }
+            ],
+            "role": "user"
+          }
+        ],
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-5.2-2025-12-11",
+        "output": [
+          {
+            "id": "rs_099a1de531fad7e40069990958c7ac8195a70c1554d285e5bb",
+            "type": "reasoning",
+            "summary": []
+          },
+          {
+            "id": "msg_099a1de531fad7e4006999095b225c8195a82e01a637c6e657",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "HELLOOOO! And buckle up—here comes the full tale, quick and punchy.\n\nThree little pigs move out to build their own homes.  \n- Pig #1 goes fast: a house of **straw**.  \n- Pig #2 goes “good enough”: a house of **sticks**.  \n- Pig #3 goes full mastermind: a house of **bricks**, taking the time to do it right.\n\nAlong comes the Big Bad Wolf, hungry and dramatic. He storms up to the straw house: “Let me in!” The pig says no, so the wolf huffs, puffs, and **blows it down**. Pig #1 sprints to Pig #2’s stick house.\n\nThe wolf follows. Same demand, same refusal. He huffs, he puffs, and **blows the stick house down**, too. Now both pigs rocket over to Pig #3’s brick house.\n\nThe wolf tries his famous move again—huffing and puffing like he’s auditioning for a windstorm—but the brick house doesn’t budge. Furious, he decides to get sneaky and climbs onto the roof to come down the chimney. The third pig is ready: he lights a fire under a big pot. The wolf drops in, gets a scorching surprise, yelps, and **flees for good**.\n\nThe three pigs stay safe in the brick house—two of them learning, very loudly, that “quick and easy” isn’t always the strongest plan."
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "presence_penalty": 0.0,
+        "previous_response_id": null,
+        "prompt": {
+          "id": "pmpt_698e16adaf2481909b18b0045a91ee4901ea55586abd72a3",
+          "variables": {},
+          "version": "1"
+        },
+        "prompt_cache_key": null,
+        "prompt_cache_retention": null,
+        "reasoning": {
+          "effort": "medium",
+          "summary": "detailed"
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [],
+        "top_logprobs": 0,
+        "top_p": 0.98,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 69,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 425,
+          "output_tokens_details": {
+            "reasoning_tokens": 111
+          },
+          "total_tokens": 494
+        },
+        "user": null,
+        "metadata": {}
+      }
+    }
+  ],
+  "Variables": {
+    "OPENAI_API_KEY": "api-key"
+  }
+}

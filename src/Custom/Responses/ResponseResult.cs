@@ -1,4 +1,5 @@
 using Microsoft.TypeSpec.Generator.Customizations;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -68,6 +69,11 @@ public partial class ResponseResult
     [CodeGenMember("Object")]
     [EditorBrowsable(EditorBrowsableState.Never)]
     public string Object { get; set; } = "response";
+
+    // CUSTOM: Changed from BinaryData to IList<ResponseItem> to support instructions returned as
+    // either a string or an array of ResponseItem.
+    [CodeGenMember("Instructions")]
+    public IList<ResponseItem> Instructions { get; set; }
 
     public string GetOutputText()
     {

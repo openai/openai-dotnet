@@ -983,8 +983,64 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(usageElement.GetProperty("total_tokens").GetInt32(), Is.GreaterThan(0));
     }
 
+    [RecordedTest]
+    public async Task SingleResponseInstruction()
+    {
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+
+        const string instructionsText = "Always begin your replies with 'Ahoy'";
+        CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Hello, model!")])
+        {
+            Instructions = instructionsText,
+        };
+
+        ResponseResult response = await client.CreateResponseAsync(options);
+
+        Assert.That(response, Is.Not.Null);
+        Assert.That(response.Instructions, Is.Not.Null);
+        Assert.That(response.Instructions, Has.Count.EqualTo(1));
+        Assert.That(response.Instructions[0], Is.InstanceOf<MessageResponseItem>());
+
+        MessageResponseItem instructionItem = response.Instructions[0] as MessageResponseItem;
+        Assert.That(instructionItem.Role, Is.EqualTo(MessageRole.Developer));
+        Assert.That(instructionItem.Content[0].Text, Is.EqualTo(instructionsText));
+    }
+
+    [RecordedTest]
+    public async Task MultipleResponseInstructions()
+    {
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+
+        CreateResponseOptions options = new([
+            ResponseItem.CreateUserMessageItem([
+                ResponseContentPart.CreateInputTextPart("Hello, model!")
+            ])
+        ])
+        {
+            TextOptions = new ResponseTextOptions { TextFormat = ResponseTextFormat.CreateTextFormat() },
+        };
+
+        // Use a saved prompt that contains multiple
+        // instruction messages, causing the service to return instructions as an array.
+        options.Patch.Set("$.prompt.id"u8, s_SavedPromptId);
+        options.Patch.Remove("$.model"u8);
+
+        ResponseResult response = await client.CreateResponseAsync(options);
+
+        Assert.That(response, Is.Not.Null);
+        Assert.That(response.Instructions, Is.Not.Null);
+        Assert.That(response.Instructions, Has.Count.GreaterThanOrEqualTo(2));
+
+        Assert.That(response.Instructions[0], Is.InstanceOf<MessageResponseItem>());
+        MessageResponseItem firstInstruction = response.Instructions[0] as MessageResponseItem;
+        Assert.That(firstInstruction.Role, Is.Not.Null);
+        Assert.That(firstInstruction.Content, Is.Not.Null.And.Not.Empty);
+    }
+
     private List<string> FileIdsToDelete = [];
     private List<string> VectorStoreIdsToDelete = [];
+
+    private const string s_SavedPromptId = "pmpt_698e16adaf2481909b18b0045a91ee4901ea55586abd72a3";
 
     private static readonly string s_GetWeatherAtLocationToolName = "get_weather_at_location";
     private static readonly ResponseTool s_GetWeatherAtLocationTool = ResponseTool.CreateFunctionTool(
