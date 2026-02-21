@@ -978,7 +978,7 @@ var endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")
 var client = new ResponsesClient(
     "gpt-5-mini",
     new BearerTokenPolicy(new DefaultAzureCredential(), "https://ai.azure.com/.default"),
-    new OpenAIClientOptions { Endpoint = new Uri($"{endpoint}/openai/v1/") }
+    new ResponsesClientOptions { Endpoint = new Uri($"{endpoint}/openai/v1/") }
 );
 
 var response = await client.CreateResponseAsync("Hello world!");
