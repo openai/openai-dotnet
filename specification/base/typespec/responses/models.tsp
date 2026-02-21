@@ -81,6 +81,13 @@ model CreateResponse {
   store?: boolean | null = true;
 
   /**
+   * A system (or developer) message inserted into the model's context.
+   * When using along with previous_response_id, the instructions from a previous response will not be carried over to the next response.
+   * This makes it simple to swap out system (or developer) messages in new responses.
+   */
+  instructions?: string | null;
+
+  /**
    * If set to true, the model response data will be streamed to the client
    * as it is generated using [server-sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#Event_stream_format).
    * See the [Streaming section below](/docs/api-reference/responses-streaming)
@@ -157,6 +164,13 @@ model Response {
     """)
   output: OutputItem[];
 
+  /**
+   * A system (or developer) message inserted into the model's context.
+   * When using along with previous_response_id, the instructions from a previous response will not be carried over to the next response.
+   * This makes it simple to swap out system (or developer) messages in new responses.
+   */
+  instructions: string | InputItem[] | null;
+
   @doc("""
     SDK-only convenience property that contains the aggregated text output
     from all `output_text` items in the `output` array, if any are present.
@@ -202,15 +216,6 @@ model ResponseProperties {
 
   /** The maximum number of total calls to built-in tools that can be processed in a response. This maximum number applies across all built-in tool calls, not per individual tool. Any further attempts to call a tool by the model will be ignored. */
   max_tool_calls?: int32 | null;
-
-  @doc("""
-    Inserts a system (or developer) message as the first item in the model's context.
-    
-    When using along with `previous_response_id`, the instructions from a previous
-    response will not be carried over to the next response. This makes it simple
-    to swap out system (or developer) messages in new responses.
-    """)
-  instructions?: string | null;
 
   /**
    * Configuration options for a text response from the model. Can be plain

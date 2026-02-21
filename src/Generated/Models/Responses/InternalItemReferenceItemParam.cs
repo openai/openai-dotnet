@@ -20,6 +20,6 @@ namespace OpenAI.Responses
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public string Id { get; }
+        public string Id { get; set; }
     }
 }

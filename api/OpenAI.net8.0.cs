@@ -6319,7 +6319,7 @@ namespace OpenAI.Responses {
         public ResponseError Error { get; set; }
         public string Id { get; set; }
         public ResponseIncompleteStatusDetails IncompleteStatusDetails { get; set; }
-        public string Instructions { get; set; }
+        public IList<ResponseItem> Instructions { get; set; }
         public int? MaxOutputTokenCount { get; set; }
         public int? MaxToolCallCount { get; set; }
         public IDictionary<string, string> Metadata { get; }
