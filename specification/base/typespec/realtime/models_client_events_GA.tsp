@@ -44,7 +44,7 @@ model RealtimeResponseCreateParams_GA {
   inclusive of tool calls. Provide an integer between 1 and 4096 to
   limit output tokens, or `inf` for the maximum available tokens for a
   given model. Defaults to `inf`.*/
-  max_output_tokens?: integer;
+  max_output_tokens?: integer | "inf";
 
   /**Controls which conversation the response is added to. Currently supports
   `auto` and `none`, with `auto` as the default value. The `auto` value

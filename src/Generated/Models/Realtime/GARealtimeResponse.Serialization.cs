@@ -64,17 +64,17 @@ namespace OpenAI.Realtime
                     writer.WriteRawValue(Patch.GetJson("$.output"u8));
                 }
             }
-            else if (Optional.IsCollectionDefined(Output))
+            else if (Optional.IsCollectionDefined(OutputItems))
             {
                 writer.WritePropertyName("output"u8);
                 writer.WriteStartArray();
-                for (int i = 0; i < Output.Count; i++)
+                for (int i = 0; i < OutputItems.Count; i++)
                 {
-                    if (Output[i].Patch.IsRemoved("$"u8))
+                    if (OutputItems[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
-                    writer.WriteObjectValue(Output[i], options);
+                    writer.WriteObjectValue(OutputItems[i], options);
                 }
                 Patch.WriteTo(writer, "$.output"u8);
                 writer.WriteEndArray();
@@ -116,10 +116,10 @@ namespace OpenAI.Realtime
                 Patch.WriteTo(writer, "$.metadata"u8);
                 writer.WriteEndObject();
             }
-            if (Optional.IsDefined(Audio) && !Patch.Contains("$.audio"u8))
+            if (Optional.IsDefined(AudioOptions) && !Patch.Contains("$.audio"u8))
             {
                 writer.WritePropertyName("audio"u8);
-                writer.WriteObjectValue(Audio, options);
+                writer.WriteObjectValue(AudioOptions, options);
             }
             if (Optional.IsDefined(Usage) && !Patch.Contains("$.usage"u8))
             {
@@ -154,10 +154,10 @@ namespace OpenAI.Realtime
                 Patch.WriteTo(writer, "$.output_modalities"u8);
                 writer.WriteEndArray();
             }
-            if (Optional.IsDefined(MaxOutputTokens) && !Patch.Contains("$.max_output_tokens"u8))
+            if (Optional.IsDefined(MaxOutputTokenCount) && !Patch.Contains("$.max_output_tokens"u8))
             {
                 writer.WritePropertyName("max_output_tokens"u8);
-                writer.WriteNumberValue(MaxOutputTokens.Value);
+                writer.WriteObjectValue(MaxOutputTokenCount, options);
             }
 
             Patch.WriteTo(writer);
@@ -187,13 +187,13 @@ namespace OpenAI.Realtime
             InternalRealtimeResponseGAObject? @object = default;
             GARealtimeResponseStatus? status = default;
             GARealtimeResponseStatusDetails statusDetails = default;
-            IList<GARealtimeItem> output = default;
+            IList<GARealtimeItem> outputItems = default;
             IDictionary<string, BinaryData> metadata = default;
-            GARealtimeResponseAudioOptions audio = default;
+            GARealtimeResponseAudioOptions audioOptions = default;
             GARealtimeResponseUsage usage = default;
             string conversationId = default;
             IList<GARealtimeOutputModality> outputModalities = default;
-            int? maxOutputTokens = default;
+            GARealtimeMaxOutputTokenCount maxOutputTokenCount = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -242,7 +242,7 @@ namespace OpenAI.Realtime
                     {
                         array.Add(GARealtimeItem.DeserializeGARealtimeItem(item, item.GetUtf8Bytes(), options));
                     }
-                    output = array;
+                    outputItems = array;
                     continue;
                 }
                 if (prop.NameEquals("metadata"u8))
@@ -272,7 +272,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    audio = GARealtimeResponseAudioOptions.DeserializeGARealtimeResponseAudioOptions(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    audioOptions = GARealtimeResponseAudioOptions.DeserializeGARealtimeResponseAudioOptions(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("usage"u8))
@@ -309,7 +309,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    maxOutputTokens = prop.Value.GetInt32();
+                    maxOutputTokenCount = GARealtimeMaxOutputTokenCount.DeserializeGARealtimeMaxOutputTokenCount(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
@@ -319,13 +319,13 @@ namespace OpenAI.Realtime
                 @object,
                 status,
                 statusDetails,
-                output ?? new ChangeTrackingList<GARealtimeItem>(),
+                outputItems ?? new ChangeTrackingList<GARealtimeItem>(),
                 metadata ?? new ChangeTrackingDictionary<string, BinaryData>(),
-                audio,
+                audioOptions,
                 usage,
                 conversationId,
                 outputModalities ?? new ChangeTrackingList<GARealtimeOutputModality>(),
-                maxOutputTokens,
+                maxOutputTokenCount,
                 patch);
         }
 
@@ -374,11 +374,15 @@ namespace OpenAI.Realtime
             }
             if (local.StartsWith("audio"u8))
             {
-                return Audio.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("audio"u8.Length)], out value);
+                return AudioOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("audio"u8.Length)], out value);
             }
             if (local.StartsWith("usage"u8))
             {
                 return Usage.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("usage"u8.Length)], out value);
+            }
+            if (local.StartsWith("max_output_tokens"u8))
+            {
+                return MaxOutputTokenCount.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("max_output_tokens"u8.Length)], out value);
             }
             if (local.StartsWith("output"u8))
             {
@@ -388,7 +392,7 @@ namespace OpenAI.Realtime
                 {
                     return false;
                 }
-                return Output[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+                return OutputItems[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
             }
             return false;
         }
@@ -406,12 +410,17 @@ namespace OpenAI.Realtime
             }
             if (local.StartsWith("audio"u8))
             {
-                Audio.Patch.Set([.. "$"u8, .. local.Slice("audio"u8.Length)], value);
+                AudioOptions.Patch.Set([.. "$"u8, .. local.Slice("audio"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("usage"u8))
             {
                 Usage.Patch.Set([.. "$"u8, .. local.Slice("usage"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("max_output_tokens"u8))
+            {
+                MaxOutputTokenCount.Patch.Set([.. "$"u8, .. local.Slice("max_output_tokens"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("output"u8))
@@ -422,7 +431,7 @@ namespace OpenAI.Realtime
                 {
                     return false;
                 }
-                Output[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                OutputItems[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
                 return true;
             }
             return false;

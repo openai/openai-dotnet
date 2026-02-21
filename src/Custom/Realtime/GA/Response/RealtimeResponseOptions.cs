@@ -11,9 +11,11 @@ public partial class GARealtimeResponseOptions
     [CodeGenMember("Audio")]
     public GARealtimeResponseAudioOptions AudioOptions { get; set; }
 
-    // CUSTOM: Renamed.
+    // CUSTOM:
+    // - Renamed.
+    // - Changed type from BinaryData (generated from the original union) to a custom type.
     [CodeGenMember("MaxOutputTokens")]
-    public int? MaxOutputTokenCount { get; set; }
+    public GARealtimeMaxOutputTokenCount MaxOutputTokenCount { get; set; }
 
     // CUSTOM: Renamed.
     [CodeGenMember("Conversation")]

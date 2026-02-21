@@ -10,9 +10,9 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    public partial class GARealtimeSemanticVadTurnDetection : GARealtimeTurnDetection, IJsonModel<GARealtimeSemanticVadTurnDetection>
+    public partial class GARealtimeCustomSemanticVadTurnDetection : GARealtimeCustomTurnDetection, IJsonModel<GARealtimeCustomSemanticVadTurnDetection>
     {
-        void IJsonModel<GARealtimeSemanticVadTurnDetection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<GARealtimeCustomSemanticVadTurnDetection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -29,10 +29,10 @@ namespace OpenAI.Realtime
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeSemanticVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeCustomSemanticVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(GARealtimeSemanticVadTurnDetection)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(GARealtimeCustomSemanticVadTurnDetection)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -56,20 +56,20 @@ namespace OpenAI.Realtime
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        GARealtimeSemanticVadTurnDetection IJsonModel<GARealtimeSemanticVadTurnDetection>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (GARealtimeSemanticVadTurnDetection)JsonModelCreateCore(ref reader, options);
+        GARealtimeCustomSemanticVadTurnDetection IJsonModel<GARealtimeCustomSemanticVadTurnDetection>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (GARealtimeCustomSemanticVadTurnDetection)JsonModelCreateCore(ref reader, options);
 
-        protected override GARealtimeTurnDetection JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected override GARealtimeCustomTurnDetection JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeSemanticVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeCustomSemanticVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(GARealtimeSemanticVadTurnDetection)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(GARealtimeCustomSemanticVadTurnDetection)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeGARealtimeSemanticVadTurnDetection(document.RootElement, null, options);
+            return DeserializeGARealtimeCustomSemanticVadTurnDetection(document.RootElement, null, options);
         }
 
-        internal static GARealtimeSemanticVadTurnDetection DeserializeGARealtimeSemanticVadTurnDetection(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static GARealtimeCustomSemanticVadTurnDetection DeserializeGARealtimeCustomSemanticVadTurnDetection(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -79,7 +79,7 @@ namespace OpenAI.Realtime
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            GARealtimeTimeSemanticVadTurnDetectionEagernessLevel? eagernessLevel = default;
+            GARealtimeSemanticVadEagernessLevel? eagernessLevel = default;
             bool? createResponseEnabled = default;
             bool? interruptResponseEnabled = default;
             foreach (var prop in element.EnumerateObject())
@@ -95,7 +95,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    eagernessLevel = new GARealtimeTimeSemanticVadTurnDetectionEagernessLevel(prop.Value.GetString());
+                    eagernessLevel = new GARealtimeSemanticVadEagernessLevel(prop.Value.GetString());
                     continue;
                 }
                 if (prop.NameEquals("create_response"u8))
@@ -118,40 +118,40 @@ namespace OpenAI.Realtime
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new GARealtimeSemanticVadTurnDetection(kind, patch, eagernessLevel, createResponseEnabled, interruptResponseEnabled);
+            return new GARealtimeCustomSemanticVadTurnDetection(kind, patch, eagernessLevel, createResponseEnabled, interruptResponseEnabled);
         }
 
-        BinaryData IPersistableModel<GARealtimeSemanticVadTurnDetection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<GARealtimeCustomSemanticVadTurnDetection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeSemanticVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeCustomSemanticVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(GARealtimeSemanticVadTurnDetection)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(GARealtimeCustomSemanticVadTurnDetection)} does not support writing '{options.Format}' format.");
             }
         }
 
-        GARealtimeSemanticVadTurnDetection IPersistableModel<GARealtimeSemanticVadTurnDetection>.Create(BinaryData data, ModelReaderWriterOptions options) => (GARealtimeSemanticVadTurnDetection)PersistableModelCreateCore(data, options);
+        GARealtimeCustomSemanticVadTurnDetection IPersistableModel<GARealtimeCustomSemanticVadTurnDetection>.Create(BinaryData data, ModelReaderWriterOptions options) => (GARealtimeCustomSemanticVadTurnDetection)PersistableModelCreateCore(data, options);
 
-        protected override GARealtimeTurnDetection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected override GARealtimeCustomTurnDetection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeSemanticVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeCustomSemanticVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeGARealtimeSemanticVadTurnDetection(document.RootElement, data, options);
+                        return DeserializeGARealtimeCustomSemanticVadTurnDetection(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(GARealtimeSemanticVadTurnDetection)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(GARealtimeCustomSemanticVadTurnDetection)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<GARealtimeSemanticVadTurnDetection>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<GARealtimeCustomSemanticVadTurnDetection>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

@@ -6,4 +6,7 @@ namespace OpenAI.Realtime;
 [CodeGenType("RealtimeTruncationRetentionRatioGA")]
 public partial class GARealtimeCustomRetentionRatioTruncation
 {
+    // CUSTOM: Renamed.
+    [CodeGenMember("TokenLimits")]
+    public GARealtimeRetentionRatioTokenLimitDetails TokenLimitDetails { get; set; }
 }

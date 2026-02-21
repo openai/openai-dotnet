@@ -4,15 +4,15 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Text;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalUnknownRealtimeTurnDetectionBaseGA : GARealtimeCustomTurnDetection, IJsonModel<GARealtimeCustomTurnDetection>
+    [PersistableModelProxy(typeof(InternalUnknownRealtimeTurnDetectionBaseGA))]
+    public partial class GARealtimeCustomTurnDetection : IJsonModel<GARealtimeCustomTurnDetection>
     {
-        internal InternalUnknownRealtimeTurnDetectionBaseGA() : this(default, default)
+        internal GARealtimeCustomTurnDetection()
         {
         }
 
@@ -31,23 +31,25 @@ namespace OpenAI.Realtime
             writer.WriteEndObject();
         }
 
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<GARealtimeCustomTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(GARealtimeCustomTurnDetection)} does not support writing '{format}' format.");
             }
-            base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-            Patch.WriteTo(writer);
+            if (!Patch.Contains("$.type"u8))
+            {
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Kind.ToString());
+            }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
         GARealtimeCustomTurnDetection IJsonModel<GARealtimeCustomTurnDetection>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected override GARealtimeCustomTurnDetection JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual GARealtimeCustomTurnDetection JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<GARealtimeCustomTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -58,31 +60,28 @@ namespace OpenAI.Realtime
             return DeserializeGARealtimeCustomTurnDetection(document.RootElement, null, options);
         }
 
-        internal static InternalUnknownRealtimeTurnDetectionBaseGA DeserializeInternalUnknownRealtimeTurnDetectionBaseGA(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static GARealtimeCustomTurnDetection DeserializeGARealtimeCustomTurnDetection(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            InternalRealtimeTurnDetectionBaseTypeGA kind = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            foreach (var prop in element.EnumerateObject())
+            if (element.TryGetProperty("type"u8, out JsonElement discriminator))
             {
-                if (prop.NameEquals("type"u8))
+                switch (discriminator.GetString())
                 {
-                    kind = new InternalRealtimeTurnDetectionBaseTypeGA(prop.Value.GetString());
-                    continue;
+                    case "server_vad":
+                        return GARealtimeCustomServerVadTurnDetection.DeserializeGARealtimeCustomServerVadTurnDetection(element, data, options);
+                    case "semantic_vad":
+                        return GARealtimeCustomSemanticVadTurnDetection.DeserializeGARealtimeCustomSemanticVadTurnDetection(element, data, options);
                 }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalUnknownRealtimeTurnDetectionBaseGA(kind, patch);
+            return InternalUnknownRealtimeTurnDetectionBaseGA.DeserializeInternalUnknownRealtimeTurnDetectionBaseGA(element, data, options);
         }
 
         BinaryData IPersistableModel<GARealtimeCustomTurnDetection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<GARealtimeCustomTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -96,7 +95,7 @@ namespace OpenAI.Realtime
 
         GARealtimeCustomTurnDetection IPersistableModel<GARealtimeCustomTurnDetection>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        protected override GARealtimeCustomTurnDetection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual GARealtimeCustomTurnDetection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<GARealtimeCustomTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)

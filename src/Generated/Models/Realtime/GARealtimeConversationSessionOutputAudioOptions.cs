@@ -20,9 +20,9 @@ namespace OpenAI.Realtime
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal GARealtimeConversationSessionOutputAudioOptions(GARealtimeAudioFormat format, GARealtimeVoice? voice, float? speed, in JsonPatch patch)
+        internal GARealtimeConversationSessionOutputAudioOptions(GARealtimeAudioFormat audioFormat, GARealtimeVoice? voice, float? speed, in JsonPatch patch)
         {
-            Format = format;
+            AudioFormat = audioFormat;
             Voice = voice;
             Speed = speed;
             _patch = patch;
@@ -34,8 +34,6 @@ namespace OpenAI.Realtime
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
-
-        public GARealtimeAudioFormat Format { get; set; }
 
         public GARealtimeVoice? Voice { get; set; }
 

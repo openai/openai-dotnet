@@ -10,19 +10,20 @@ using System.Text.Json.Serialization;
 namespace OpenAI.Realtime
 {
     [Experimental("OPENAI002")]
-    public partial class GARealtimeTrunctionTokenLimits
+    public partial class GARealtimeCustomTurnDetection
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public GARealtimeTrunctionTokenLimits()
+        private protected GARealtimeCustomTurnDetection(InternalRealtimeTurnDetectionBaseTypeGA kind)
         {
+            Kind = kind;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal GARealtimeTrunctionTokenLimits(int? maxPostInstructionsTokenCount, in JsonPatch patch)
+        internal GARealtimeCustomTurnDetection(InternalRealtimeTurnDetectionBaseTypeGA kind, in JsonPatch patch)
         {
-            MaxPostInstructionsTokenCount = maxPostInstructionsTokenCount;
+            Kind = kind;
             _patch = patch;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -31,5 +32,7 @@ namespace OpenAI.Realtime
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
+
+        internal InternalRealtimeTurnDetectionBaseTypeGA Kind { get; set; }
     }
 }

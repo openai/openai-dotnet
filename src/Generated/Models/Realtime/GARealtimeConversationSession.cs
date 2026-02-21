@@ -21,7 +21,7 @@ namespace OpenAI.Realtime
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal GARealtimeConversationSession(InternalRealtimeSessionCreateResponseBaseTypeGA kind, in JsonPatch patch, GARealtimeClientSecret clientSecret, IList<GARealtimeOutputModality> outputModalities, string model, string instructions, GARealtimeConversationSessionAudioOptions audioOptions, IList<GARealtimeIncludedProperty> includedProperties, GARealtimeTracing tracing, IList<GARealtimeTool> tools, GARealtimeToolChoice toolChoice, int? maxOutputTokenCount, GARealtimeTruncation truncation) : base(kind, patch)
+        internal GARealtimeConversationSession(InternalRealtimeSessionCreateResponseBaseTypeGA kind, in JsonPatch patch, GARealtimeClientSecret clientSecret, IList<GARealtimeOutputModality> outputModalities, string model, string instructions, GARealtimeConversationSessionAudioOptions audioOptions, IList<GARealtimeIncludedProperty> includedProperties, GARealtimeTracing tracing, IList<GARealtimeTool> tools, GARealtimeToolChoice toolChoice, GARealtimeMaxOutputTokenCount maxOutputTokenCount, GARealtimeTruncation truncation) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             ClientSecret = clientSecret;

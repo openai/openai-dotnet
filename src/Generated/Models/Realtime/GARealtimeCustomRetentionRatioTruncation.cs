@@ -16,16 +16,14 @@ namespace OpenAI.Realtime
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal GARealtimeCustomRetentionRatioTruncation(InternalRealtimeTruncationBaseTypeGA kind, in JsonPatch patch, float retentionRatio, GARealtimeTrunctionTokenLimits tokenLimits) : base(kind, patch)
+        internal GARealtimeCustomRetentionRatioTruncation(InternalRealtimeTruncationBaseTypeGA kind, in JsonPatch patch, float retentionRatio, GARealtimeRetentionRatioTokenLimitDetails tokenLimitDetails) : base(kind, patch)
         {
             RetentionRatio = retentionRatio;
-            TokenLimits = tokenLimits;
+            TokenLimitDetails = tokenLimitDetails;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public float RetentionRatio { get; set; }
-
-        public GARealtimeTrunctionTokenLimits TokenLimits { get; set; }
     }
 }

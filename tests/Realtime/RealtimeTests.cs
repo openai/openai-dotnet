@@ -11,6 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace OpenAI.Tests.Realtime;
 
@@ -28,6 +29,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
     {
         RealtimeClient client = GetTestClient();
 
+        // Step 1: Create a default session.
         using RealtimeSession sessionClient = await client.StartConversationSessionAsync(
             model: GetTestModel(),
             cancellationToken: CancellationToken);
@@ -36,23 +38,23 @@ public class RealtimeTests : RealtimeTestFixtureBase
         int maxOutputTokenCount = 2048;
         string userMessage = "Hello, assistant! Tell me a joke.";
 
+        // Step 2: Update the session.
         GARealtimeConversationSessionOptions sessionOptions = new()
         {
-            Instructions = instructions,
-
             AudioOptions = new GARealtimeConversationSessionAudioOptions()
             {
                 InputAudioOptions = new()
                 {
-                    // GA format: turn_detection is now inside audio.input
-                    TurnDetection = null,
+                    TurnDetection = GARealtimeDefaultTurnDetection.Disabled,
                 },
                 OutputAudioOptions = new()
                 {
-                    Format = new GARealtimePcmuAudioFormat(),
+                    AudioFormat = new GARealtimePcmuAudioFormat(),
                     Voice = GARealtimeVoice.Echo,
                 }
             },
+
+            Instructions = instructions,
 
             MaxOutputTokenCount = maxOutputTokenCount,
         };
@@ -61,17 +63,14 @@ public class RealtimeTests : RealtimeTestFixtureBase
 
         await sessionClient.ConfigureConversationSessionAsync(sessionUpdateCommand, CancellationToken);
 
+        // Step 3: Add a message item (role = user, kind = input text)
         GARealtimeInputTextMessageContentPart inputText = new(userMessage);
         GARealtimeMessageItem userMessageItem = new(GARealtimeMessageRole.User, [inputText]);
         GARealtimeClientCommandConversationItemCreate itemCreateCommand = new(userMessageItem);
 
         await sessionClient.AddItemAsync(itemCreateCommand, CancellationToken);
 
-        //if (!client.GetType().IsSubclassOf(typeof(RealtimeClient)))
-        //{
-        //    responseOverrideOptions.MaxOutputTokens = ConversationMaxTokensChoice.CreateInfiniteMaxTokensChoice();
-        //}
-
+        // Step 4: Request a text response (no audio).
         GARealtimeClientCommandResponseCreate responseCreateCommand = new()
         {
             ResponseOptions = new()
@@ -82,50 +81,166 @@ public class RealtimeTests : RealtimeTestFixtureBase
 
         await sessionClient.StartResponseAsync(responseCreateCommand, CancellationToken);
 
+        bool done = false;
         List<GARealtimeServerUpdate> receivedUpdates = [];
 
         await foreach (GARealtimeServerUpdate update in sessionClient.ReceiveUpdatesAsync(CancellationToken))
         {
             receivedUpdates.Add(update);
 
-            if (update is GARealtimeServerUpdateError errorUpdate)
+            switch (update)
             {
-                Assert.Fail($"Error: {ModelReaderWriter.Write(errorUpdate)}");
+                case GARealtimeServerUpdateSessionCreated sessionCreatedUpdate:
+                    {
+                        // Validate default values.
+                        GARealtimeConversationSession session = sessionCreatedUpdate.Session as GARealtimeConversationSession;
+                        Assert.That(session, Is.Not.Null);
+                        Assert.That(session.AudioOptions, Is.Not.Null);
+                        Assert.That(session.AudioOptions.InputAudioOptions, Is.Not.Null);
+                        Assert.That(session.AudioOptions.InputAudioOptions.AudioFormat, Is.TypeOf<GARealtimePcmAudioFormat>());
+                        Assert.That(session.AudioOptions.InputAudioOptions.AudioTranscriptionOptions, Is.Null);
+                        Assert.That(session.AudioOptions.InputAudioOptions.NoiseReduction, Is.Null);
+                        Assert.That(session.AudioOptions.InputAudioOptions.TurnDetection.DefaultTurnDetection, Is.Null);
+                        Assert.That(session.AudioOptions.InputAudioOptions.TurnDetection.CustomTurnDetection, Is.TypeOf<GARealtimeCustomServerVadTurnDetection>());
+                        Assert.That(session.AudioOptions.OutputAudioOptions, Is.Not.Null);
+                        Assert.That(session.AudioOptions.OutputAudioOptions.AudioFormat, Is.TypeOf<GARealtimePcmAudioFormat>());
+                        Assert.That(session.AudioOptions.OutputAudioOptions.Speed, Is.EqualTo(1));
+                        Assert.That(session.AudioOptions.OutputAudioOptions.Voice, Is.EqualTo(GARealtimeVoice.Alloy));
+                        Assert.That(session.Instructions, Is.Not.Null.Or.Empty);
+                        Assert.That(session.MaxOutputTokenCount.DefaultMaxOutputTokenCount, Is.EqualTo(GARealtimeDefaultMaxOutputTokenCount.Infinite));
+                        Assert.That(session.MaxOutputTokenCount.CustomMaxOutputTokenCount, Is.Null);
+                        Assert.That(session.Model, Is.Not.Null.Or.Empty);
+                        Assert.That(session.OutputModalities, Is.Not.Null);
+                        Assert.That(session.OutputModalities, Has.Count.EqualTo(1));
+                        Assert.That(session.OutputModalities[0], Is.EqualTo(GARealtimeOutputModality.Audio));
+                        Assert.That(session.ToolChoice.DefaultToolChoice, Is.EqualTo(GARealtimeDefaultToolChoice.Auto));
+                        Assert.That(session.ToolChoice.CustomToolChoice, Is.Null);
+                        Assert.That(session.Tools, Is.Not.Null);
+                        Assert.That(session.Tools, Has.Count.EqualTo(0));
+                        Assert.That(session.Tracing, Is.Null);
+                        Assert.That(session.Truncation.DefaultTruncation, Is.EqualTo(GARealtimeDefaultTruncation.Auto));
+                        Assert.That(session.Truncation.CustomTruncation, Is.Null);
+                        break;
+                    }
+                case GARealtimeServerUpdateSessionUpdated sessionUpdatedUpdate:
+                    {
+                        // Validate updates.
+                        GARealtimeConversationSession session = sessionUpdatedUpdate.Session as GARealtimeConversationSession;
+                        Assert.That(session, Is.Not.Null);
+                        Assert.That(session.AudioOptions, Is.Not.Null);
+                        Assert.That(session.AudioOptions.InputAudioOptions, Is.Not.Null);
+                        Assert.That(session.AudioOptions.InputAudioOptions.TurnDetection.DefaultTurnDetection, Is.EqualTo(GARealtimeDefaultTurnDetection.Disabled));
+                        Assert.That(session.AudioOptions.InputAudioOptions.TurnDetection.CustomTurnDetection, Is.Null);
+                        Assert.That(session.AudioOptions.OutputAudioOptions, Is.Not.Null);
+                        Assert.That(session.AudioOptions.OutputAudioOptions.AudioFormat, Is.TypeOf<GARealtimePcmuAudioFormat>());
+                        Assert.That(session.AudioOptions.OutputAudioOptions.Voice, Is.EqualTo(GARealtimeVoice.Echo));
+                        Assert.That(session.Instructions, Is.EqualTo(instructions));
+                        Assert.That(session.MaxOutputTokenCount.DefaultMaxOutputTokenCount, Is.Null);
+                        Assert.That(session.MaxOutputTokenCount.CustomMaxOutputTokenCount, Is.EqualTo(maxOutputTokenCount));
+                        break;
+                    }
+                case GARealtimeServerUpdateConversationItemAdded conversationItemAddedUpdate:
+                    {
+                        Assert.That(conversationItemAddedUpdate.Item, Is.TypeOf<GARealtimeMessageItem>());
+                        break;
+                    }
+                case GARealtimeServerUpdateConversationItemDone conversationItemDoneUpdate:
+                    {
+                        Assert.That(conversationItemDoneUpdate.Item, Is.TypeOf<GARealtimeMessageItem>());
+                        break;
+                    }
+                case GARealtimeServerUpdateResponseOutputItemAdded responseOutputItemAddedUpdate:
+                    {
+                        GARealtimeMessageItem messageItem = responseOutputItemAddedUpdate.Item as GARealtimeMessageItem;
+                        Assert.That(messageItem, Is.Not.Null);
+                        Assert.That(messageItem.Status, Is.EqualTo(GARealtimeMessageStatus.InProgress));
+                        Assert.That(messageItem.Content, Has.Count.EqualTo(0));
+                        break;
+                    }
+                case GARealtimeServerUpdateResponseOutputItemDone responseOutputItemDoneUpdate:
+                    {
+                        GARealtimeMessageItem messageItem = responseOutputItemDoneUpdate.Item as GARealtimeMessageItem;
+                        Assert.That(messageItem, Is.Not.Null);
+                        Assert.That(messageItem.Status, Is.EqualTo(GARealtimeMessageStatus.Completed));
+                        Assert.That(messageItem.Content, Has.Count.EqualTo(1));
+                        break;
+                    }
+                case GARealtimeServerUpdateResponseContentPartAdded responseContentPartAddedUpdate:
+                    {
+                        Assert.That(responseContentPartAddedUpdate.Part.Kind, Is.EqualTo(GARealtimeResponseContentPartKind.Text));
+                        break;
+                    }
+                case GARealtimeServerUpdateResponseContentPartDone responseContentPartDoneUpdate:
+                    {
+                        Assert.That(responseContentPartDoneUpdate.Part, Is.Not.Null);
+                        Assert.That(responseContentPartDoneUpdate.Part.Kind, Is.EqualTo(GARealtimeResponseContentPartKind.Text));
+                        Assert.That(responseContentPartDoneUpdate.Part.Text, Is.Not.Null.Or.Empty);
+                        Assert.That(responseContentPartDoneUpdate.Part.Audio, Is.Null);
+                        Assert.That(responseContentPartDoneUpdate.Part.Transcript, Is.Null);
+                        break;
+                    }
+                case GARealtimeServerUpdateResponseOutputTextDelta responseOutputTextDeltaUpdate:
+                    {
+                        Assert.That(responseOutputTextDeltaUpdate.Delta, Is.Not.Null);
+                        break;
+                    }
+                case GARealtimeServerUpdateResponseOutputTextDone responseOutputTextDoneUpdate:
+                    {
+                        Assert.That(responseOutputTextDoneUpdate.Text, Is.Not.Null.Or.Empty);
+                        break;
+                    }
+                case GARealtimeServerUpdateResponseCreated responseCreatedUpdate:
+                    {
+                        Assert.That(responseCreatedUpdate.Response, Is.Not.Null);
+                        Assert.That(responseCreatedUpdate.Response.Status, Is.EqualTo(GARealtimeResponseStatus.InProgress));
+                        Assert.That(responseCreatedUpdate.Response.OutputModalities, Is.Not.Null);
+                        Assert.That(responseCreatedUpdate.Response.OutputModalities, Has.Count.EqualTo(1));
+                        Assert.That(responseCreatedUpdate.Response.OutputModalities[0], Is.EqualTo(GARealtimeOutputModality.Text));
+                        break;
+                    }
+                case GARealtimeServerUpdateResponseDone responseDoneUpdate:
+                    {
+                        done = true;
+                        break;
+                    }
+                case GARealtimeServerUpdateError errorUpdate:
+                    {
+                        Assert.Fail($"Error: {ModelReaderWriter.Write(errorUpdate)}");
+                        break;
+                    }
             }
-            //else if ((update is OutputDeltaUpdate deltaUpdate && deltaUpdate.AudioBytes is not null)
-            //     || update is OutputAudioFinishedUpdate)
-            //{
-            //    Assert.Fail($"Audio content streaming unexpected after configuring response-level text-only modalities");
-            //}
-            else if (update is GARealtimeServerUpdateSessionUpdated sessionUpdatedUpdate)
-            {
-                GARealtimeConversationSession session = sessionUpdatedUpdate.Session as GARealtimeConversationSession;
-                Assert.That(session, Is.Not.Null);
-                Assert.That(session.Instructions, Is.EqualTo(instructions));
-                Assert.That(session.AudioOptions, Is.Not.Null);
-                Assert.That(session.AudioOptions.InputAudioOptions, Is.Not.Null);
-                Assert.That(session.AudioOptions.InputAudioOptions.TurnDetection, Is.Null);
-                Assert.That(session.AudioOptions.OutputAudioOptions, Is.Not.Null);
-                Assert.That(session.AudioOptions.OutputAudioOptions.Format, Is.TypeOf<GARealtimePcmuAudioFormat>());
-                Assert.That(session.AudioOptions.OutputAudioOptions.Voice, Is.EqualTo(GARealtimeVoice.Echo));
-                Assert.That(session.MaxOutputTokenCount, Is.EqualTo(maxOutputTokenCount));
-            }
-            else if (update is GARealtimeServerUpdateResponseDone responseDoneUpdate)
+
+            if (done)
             {
                 break;
             }
         }
 
-        List<T> GetReceivedUpdates<T>() where T : RealtimeUpdate
-            => receivedUpdates.Select(update => update as T)
-                .Where(update => update is not null)
-                .ToList();
+        // Only one session is created.
+        Assert.That(receivedUpdates.OfType<GARealtimeServerUpdateSessionCreated>().ToList(), Has.Count.EqualTo(1));
 
-        Assert.That(GetReceivedUpdates<ConversationSessionStartedUpdate>(), Has.Count.EqualTo(1));
-        Assert.That(GetReceivedUpdates<ResponseStartedUpdate>(), Has.Count.EqualTo(1));
-        Assert.That(GetReceivedUpdates<ResponseFinishedUpdate>(), Has.Count.EqualTo(1));
-        Assert.That(GetReceivedUpdates<OutputStreamingStartedUpdate>(), Has.Count.EqualTo(1));
-        Assert.That(GetReceivedUpdates<OutputStreamingFinishedUpdate>(), Has.Count.EqualTo(1));
+        // The session is also updated once.
+        Assert.That(receivedUpdates.OfType<GARealtimeServerUpdateSessionUpdated>().ToList(), Has.Count.EqualTo(1));
+
+        // This is a single-turn conversation, which means there is only one response from the model.
+        Assert.That(receivedUpdates.OfType<GARealtimeServerUpdateResponseCreated>().ToList(), Has.Count.EqualTo(1));
+        Assert.That(receivedUpdates.OfType<GARealtimeServerUpdateResponseDone>().ToList(), Has.Count.EqualTo(1));
+
+        // In total, there is 1 user message item and 1 assistant message item.
+        Assert.That(receivedUpdates.OfType<GARealtimeServerUpdateConversationItemAdded>().ToList(), Has.Count.EqualTo(2));
+        Assert.That(receivedUpdates.OfType<GARealtimeServerUpdateConversationItemDone>().ToList(), Has.Count.EqualTo(2));
+
+        // Only one output text item is generated by the model in their response.
+        Assert.That(receivedUpdates.OfType<GARealtimeServerUpdateResponseOutputItemAdded>().ToList(), Has.Count.EqualTo(1));
+        Assert.That(receivedUpdates.OfType<GARealtimeServerUpdateResponseOutputItemDone>().ToList(), Has.Count.EqualTo(1));
+        Assert.That(receivedUpdates.OfType<GARealtimeServerUpdateResponseContentPartAdded>().ToList(), Has.Count.EqualTo(1));
+        Assert.That(receivedUpdates.OfType<GARealtimeServerUpdateResponseContentPartDone>().ToList(), Has.Count.EqualTo(1));
+        Assert.That(receivedUpdates.OfType<GARealtimeServerUpdateResponseOutputTextDelta>().ToList(), Has.Count.GreaterThan(1));
+        Assert.That(receivedUpdates.OfType<GARealtimeServerUpdateResponseOutputTextDone>().ToList(), Has.Count.EqualTo(1));
+
+        // Response was requested as text (no audio).
+        Assert.That(receivedUpdates.OfType<GARealtimeServerUpdateResponseOutputAudioDelta>().ToList(), Has.Count.EqualTo(0));
+        Assert.That(receivedUpdates.OfType<GARealtimeServerUpdateResponseOutputAudioDone>().ToList(), Has.Count.EqualTo(0));
     }
 
     //    [Ignore("Temporarily disabled because this test is consistently failing")]

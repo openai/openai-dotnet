@@ -10,22 +10,20 @@ using System.Text.Json.Serialization;
 namespace OpenAI.Realtime
 {
     [Experimental("OPENAI002")]
-    public partial class GARealtimeResponseOutputAudioOptions
+    public partial class GARealtimeRetentionRatioTokenLimitDetails
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public GARealtimeResponseOutputAudioOptions()
+        public GARealtimeRetentionRatioTokenLimitDetails()
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal GARealtimeResponseOutputAudioOptions(GARealtimeAudioFormat audioFormat, GARealtimeVoice? voice, in JsonPatch patch)
+        internal GARealtimeRetentionRatioTokenLimitDetails(int? maxPostInstructionsTokenCount, in JsonPatch patch)
         {
-            AudioFormat = audioFormat;
-            Voice = voice;
+            MaxPostInstructionsTokenCount = maxPostInstructionsTokenCount;
             _patch = patch;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
@@ -33,7 +31,5 @@ namespace OpenAI.Realtime
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
-
-        public GARealtimeVoice? Voice { get; set; }
     }
 }

@@ -45,10 +45,10 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("retention_ratio"u8);
                 writer.WriteNumberValue(RetentionRatio);
             }
-            if (Optional.IsDefined(TokenLimits) && !Patch.Contains("$.token_limits"u8))
+            if (Optional.IsDefined(TokenLimitDetails) && !Patch.Contains("$.token_limits"u8))
             {
                 writer.WritePropertyName("token_limits"u8);
-                writer.WriteObjectValue(TokenLimits, options);
+                writer.WriteObjectValue(TokenLimitDetails, options);
             }
 
             Patch.WriteTo(writer);
@@ -79,7 +79,7 @@ namespace OpenAI.Realtime
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             float retentionRatio = default;
-            GARealtimeTrunctionTokenLimits tokenLimits = default;
+            GARealtimeRetentionRatioTokenLimitDetails tokenLimitDetails = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -98,12 +98,12 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    tokenLimits = GARealtimeTrunctionTokenLimits.DeserializeGARealtimeTrunctionTokenLimits(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    tokenLimitDetails = GARealtimeRetentionRatioTokenLimitDetails.DeserializeGARealtimeRetentionRatioTokenLimitDetails(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new GARealtimeCustomRetentionRatioTruncation(kind, patch, retentionRatio, tokenLimits);
+            return new GARealtimeCustomRetentionRatioTruncation(kind, patch, retentionRatio, tokenLimitDetails);
         }
 
         BinaryData IPersistableModel<GARealtimeCustomRetentionRatioTruncation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -147,7 +147,7 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("token_limits"u8))
             {
-                return TokenLimits.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("token_limits"u8.Length)], out value);
+                return TokenLimitDetails.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("token_limits"u8.Length)], out value);
             }
             return false;
         }
@@ -160,7 +160,7 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("token_limits"u8))
             {
-                TokenLimits.Patch.Set([.. "$"u8, .. local.Slice("token_limits"u8.Length)], value);
+                TokenLimitDetails.Patch.Set([.. "$"u8, .. local.Slice("token_limits"u8.Length)], value);
                 return true;
             }
             return false;

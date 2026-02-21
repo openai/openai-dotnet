@@ -9,16 +9,16 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Realtime
 {
     [Experimental("OPENAI002")]
-    public partial class GARealtimeServerVadTurnDetection : GARealtimeTurnDetection
+    public partial class GARealtimeCustomServerVadTurnDetection : GARealtimeCustomTurnDetection
     {
-        public GARealtimeServerVadTurnDetection() : this(InternalRealtimeTurnDetectionBaseTypeGA.ServerVad, default, default, default, default, default, default, default)
+        public GARealtimeCustomServerVadTurnDetection() : this(InternalRealtimeTurnDetectionBaseTypeGA.ServerVad, default, default, default, default, default, default, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal GARealtimeServerVadTurnDetection(InternalRealtimeTurnDetectionBaseTypeGA kind, in JsonPatch patch, float? activationThreshold, TimeSpan? prefixPadding, TimeSpan? silenceDuration, bool? createResponseEnabled, bool? interruptResponseEnabled, TimeSpan? idleTimeout) : base(kind, patch)
+        internal GARealtimeCustomServerVadTurnDetection(InternalRealtimeTurnDetectionBaseTypeGA kind, in JsonPatch patch, float? detectionThreshold, TimeSpan? prefixPadding, TimeSpan? silenceDuration, bool? createResponseEnabled, bool? interruptResponseEnabled, TimeSpan? idleTimeout) : base(kind, patch)
         {
-            ActivationThreshold = activationThreshold;
+            DetectionThreshold = detectionThreshold;
             PrefixPadding = prefixPadding;
             SilenceDuration = silenceDuration;
             CreateResponseEnabled = createResponseEnabled;

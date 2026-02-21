@@ -224,7 +224,7 @@ model RealtimeResponse_GA {
 
   /**Maximum number of output tokens for a single assistant response,
   inclusive of tool calls, that was used in this response.*/
-  max_output_tokens?: integer;
+  max_output_tokens?: integer | "inf";
 }
 
 model RealtimeResponseStatusDetails_GA {

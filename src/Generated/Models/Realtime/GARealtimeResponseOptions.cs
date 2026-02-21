@@ -18,12 +18,12 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public GARealtimeResponseOptions() : this(null, null, null, null, null, default, default, null, null, default)
+        public GARealtimeResponseOptions() : this(null, null, null, null, null, null, default, null, null, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal GARealtimeResponseOptions(IList<GARealtimeOutputModality> outputModalities, string instructions, GARealtimeResponseAudioOptions audioOptions, IList<GARealtimeTool> tools, BinaryData toolChoice, int? maxOutputTokenCount, GARealtimeResponseDefaultConversationConfiguration? defaultConversationConfiguration, IDictionary<string, BinaryData> metadata, IList<GARealtimeItem> inputItems, in JsonPatch patch)
+        internal GARealtimeResponseOptions(IList<GARealtimeOutputModality> outputModalities, string instructions, GARealtimeResponseAudioOptions audioOptions, IList<GARealtimeTool> tools, BinaryData toolChoice, GARealtimeMaxOutputTokenCount maxOutputTokenCount, GARealtimeResponseDefaultConversationConfiguration? defaultConversationConfiguration, IDictionary<string, BinaryData> metadata, IList<GARealtimeItem> inputItems, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             OutputModalities = outputModalities ?? new ChangeTrackingList<GARealtimeOutputModality>();

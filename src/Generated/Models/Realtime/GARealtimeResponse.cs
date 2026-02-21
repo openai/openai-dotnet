@@ -18,25 +18,25 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal GARealtimeResponse() : this(null, default, default, null, null, null, null, null, null, null, default, default)
+        internal GARealtimeResponse() : this(null, default, default, null, null, null, null, null, null, null, null, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal GARealtimeResponse(string id, InternalRealtimeResponseGAObject? @object, GARealtimeResponseStatus? status, GARealtimeResponseStatusDetails statusDetails, IList<GARealtimeItem> output, IDictionary<string, BinaryData> metadata, GARealtimeResponseAudioOptions audio, GARealtimeResponseUsage usage, string conversationId, IList<GARealtimeOutputModality> outputModalities, int? maxOutputTokens, in JsonPatch patch)
+        internal GARealtimeResponse(string id, InternalRealtimeResponseGAObject? @object, GARealtimeResponseStatus? status, GARealtimeResponseStatusDetails statusDetails, IList<GARealtimeItem> outputItems, IDictionary<string, BinaryData> metadata, GARealtimeResponseAudioOptions audioOptions, GARealtimeResponseUsage usage, string conversationId, IList<GARealtimeOutputModality> outputModalities, GARealtimeMaxOutputTokenCount maxOutputTokenCount, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
             Object = @object;
             Status = status;
             StatusDetails = statusDetails;
-            Output = output ?? new ChangeTrackingList<GARealtimeItem>();
+            OutputItems = outputItems ?? new ChangeTrackingList<GARealtimeItem>();
             Metadata = metadata ?? new ChangeTrackingDictionary<string, BinaryData>();
-            Audio = audio;
+            AudioOptions = audioOptions;
             Usage = usage;
             ConversationId = conversationId;
             OutputModalities = outputModalities ?? new ChangeTrackingList<GARealtimeOutputModality>();
-            MaxOutputTokens = maxOutputTokens;
+            MaxOutputTokenCount = maxOutputTokenCount;
             _patch = patch;
             _patch.SetPropagators(PropagateSet, PropagateGet);
         }
@@ -55,18 +55,12 @@ namespace OpenAI.Realtime
 
         public GARealtimeResponseStatusDetails StatusDetails { get; }
 
-        public IList<GARealtimeItem> Output { get; }
-
         public IDictionary<string, BinaryData> Metadata { get; }
-
-        public GARealtimeResponseAudioOptions Audio { get; }
 
         public GARealtimeResponseUsage Usage { get; }
 
         public string ConversationId { get; }
 
         public IList<GARealtimeOutputModality> OutputModalities { get; }
-
-        public int? MaxOutputTokens { get; }
     }
 }

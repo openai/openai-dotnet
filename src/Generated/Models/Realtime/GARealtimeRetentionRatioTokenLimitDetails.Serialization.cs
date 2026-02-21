@@ -10,9 +10,9 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    public partial class GARealtimeTrunctionTokenLimits : IJsonModel<GARealtimeTrunctionTokenLimits>
+    public partial class GARealtimeRetentionRatioTokenLimitDetails : IJsonModel<GARealtimeRetentionRatioTokenLimitDetails>
     {
-        void IJsonModel<GARealtimeTrunctionTokenLimits>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<GARealtimeRetentionRatioTokenLimitDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -29,10 +29,10 @@ namespace OpenAI.Realtime
 
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeTrunctionTokenLimits>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeRetentionRatioTokenLimitDetails>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(GARealtimeTrunctionTokenLimits)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(GARealtimeRetentionRatioTokenLimitDetails)} does not support writing '{format}' format.");
             }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Optional.IsDefined(MaxPostInstructionsTokenCount) && !Patch.Contains("$.post_instructions"u8))
@@ -45,20 +45,20 @@ namespace OpenAI.Realtime
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        GARealtimeTrunctionTokenLimits IJsonModel<GARealtimeTrunctionTokenLimits>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        GARealtimeRetentionRatioTokenLimitDetails IJsonModel<GARealtimeRetentionRatioTokenLimitDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected virtual GARealtimeTrunctionTokenLimits JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual GARealtimeRetentionRatioTokenLimitDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeTrunctionTokenLimits>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeRetentionRatioTokenLimitDetails>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(GARealtimeTrunctionTokenLimits)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(GARealtimeRetentionRatioTokenLimitDetails)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeGARealtimeTrunctionTokenLimits(document.RootElement, null, options);
+            return DeserializeGARealtimeRetentionRatioTokenLimitDetails(document.RootElement, null, options);
         }
 
-        internal static GARealtimeTrunctionTokenLimits DeserializeGARealtimeTrunctionTokenLimits(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static GARealtimeRetentionRatioTokenLimitDetails DeserializeGARealtimeRetentionRatioTokenLimitDetails(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -81,40 +81,40 @@ namespace OpenAI.Realtime
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new GARealtimeTrunctionTokenLimits(maxPostInstructionsTokenCount, patch);
+            return new GARealtimeRetentionRatioTokenLimitDetails(maxPostInstructionsTokenCount, patch);
         }
 
-        BinaryData IPersistableModel<GARealtimeTrunctionTokenLimits>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<GARealtimeRetentionRatioTokenLimitDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeTrunctionTokenLimits>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeRetentionRatioTokenLimitDetails>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(GARealtimeTrunctionTokenLimits)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(GARealtimeRetentionRatioTokenLimitDetails)} does not support writing '{options.Format}' format.");
             }
         }
 
-        GARealtimeTrunctionTokenLimits IPersistableModel<GARealtimeTrunctionTokenLimits>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        GARealtimeRetentionRatioTokenLimitDetails IPersistableModel<GARealtimeRetentionRatioTokenLimitDetails>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        protected virtual GARealtimeTrunctionTokenLimits PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual GARealtimeRetentionRatioTokenLimitDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeTrunctionTokenLimits>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeRetentionRatioTokenLimitDetails>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeGARealtimeTrunctionTokenLimits(document.RootElement, data, options);
+                        return DeserializeGARealtimeRetentionRatioTokenLimitDetails(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(GARealtimeTrunctionTokenLimits)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(GARealtimeRetentionRatioTokenLimitDetails)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<GARealtimeTrunctionTokenLimits>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<GARealtimeRetentionRatioTokenLimitDetails>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

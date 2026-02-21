@@ -9,44 +9,8 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    [PersistableModelProxy(typeof(InternalUnknownRealtimeTurnDetectionBaseGA))]
     public partial class GARealtimeTurnDetection : IJsonModel<GARealtimeTurnDetection>
     {
-        internal GARealtimeTurnDetection()
-        {
-        }
-
-        void IJsonModel<GARealtimeTurnDetection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Patch.Contains("$"u8))
-            {
-                writer.WriteRawValue(Patch.GetJson("$"u8));
-                return;
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-
-            writer.WriteStartObject();
-            JsonModelWriteCore(writer, options);
-            writer.WriteEndObject();
-        }
-
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(GARealtimeTurnDetection)} does not support writing '{format}' format.");
-            }
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.type"u8))
-            {
-                writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind.ToString());
-            }
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        }
-
         GARealtimeTurnDetection IJsonModel<GARealtimeTurnDetection>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
         protected virtual GARealtimeTurnDetection JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
@@ -58,25 +22,6 @@ namespace OpenAI.Realtime
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeGARealtimeTurnDetection(document.RootElement, null, options);
-        }
-
-        internal static GARealtimeTurnDetection DeserializeGARealtimeTurnDetection(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
-        {
-            if (element.ValueKind == JsonValueKind.Null)
-            {
-                return null;
-            }
-            if (element.TryGetProperty("type"u8, out JsonElement discriminator))
-            {
-                switch (discriminator.GetString())
-                {
-                    case "server_vad":
-                        return GARealtimeServerVadTurnDetection.DeserializeGARealtimeServerVadTurnDetection(element, data, options);
-                    case "semantic_vad":
-                        return GARealtimeSemanticVadTurnDetection.DeserializeGARealtimeSemanticVadTurnDetection(element, data, options);
-                }
-            }
-            return InternalUnknownRealtimeTurnDetectionBaseGA.DeserializeInternalUnknownRealtimeTurnDetectionBaseGA(element, data, options);
         }
 
         BinaryData IPersistableModel<GARealtimeTurnDetection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -111,5 +56,33 @@ namespace OpenAI.Realtime
         }
 
         string IPersistableModel<GARealtimeTurnDetection>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+            value = default;
+
+            if (local.StartsWith("custom_turn_detection"u8))
+            {
+                return CustomTurnDetection.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("custom_turn_detection"u8.Length)], out value);
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        private bool PropagateSet(ReadOnlySpan<byte> jsonPath, JsonPatch.EncodedValue value)
+        {
+            ReadOnlySpan<byte> local = jsonPath.SliceToStartOfPropertyName();
+
+            if (local.StartsWith("custom_turn_detection"u8))
+            {
+                CustomTurnDetection.Patch.Set([.. "$"u8, .. local.Slice("custom_turn_detection"u8.Length)], value);
+                return true;
+            }
+            return false;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 }

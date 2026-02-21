@@ -78,24 +78,8 @@ using TypeSpec.HttpClient.CSharp;
 
 // ------------ JsonPatch ------------
 
-// models.tsp
 @@dynamicModel(RealtimeCreateClientSecretRequest_GA);
 @@dynamicModel(RealtimeCreateClientSecretResponse_GA);
-
-@@dynamicModel(DotNetRealtimeSessionCreateRequestGADefaultTracing_GA);
-@@dynamicModel(DotNetRealtimeTracing_GA);
-
-@@dynamicModel(DotNetRealtimeDefaultTruncation_GA);
-@@dynamicModel(DotNetRealtimeTruncation_GA);
-@@dynamicModel(RealtimeTruncationRetentionRatio_GA);
-
-@@dynamicModel(DotNetRealtimeDefaultToolChoice_GA);
-@@dynamicModel(DotNetRealtimeToolChoice_GA);
-@@dynamicModel(ToolChoiceFunction_GA);
-@@dynamicModel(ToolChoiceMCP_GA);
-
-@@dynamicModel(DotNetRealtimeDefaultToolCallApprovalPolicy_GA);
-@@dynamicModel(DotNetRealtimeToolCallApprovalPolicy_GA);
 
 @@dynamicModel(RealtimeFunctionTool_GA);
 @@dynamicModel(MCPTool_GA);
@@ -112,3 +96,26 @@ using TypeSpec.HttpClient.CSharp;
 
 @@dynamicModel(RealtimeServerEvent_GA);
 @@dynamicModel(RealtimeClientEvent_GA);
+
+@@dynamicModel(DotNetRealtimeSessionCreateRequestGADefaultTracing_GA);
+@@dynamicModel(DotNetRealtimeTracing_GA);
+
+@@dynamicModel(DotNetRealtimeDefaultTruncation_GA);
+@@dynamicModel(DotNetRealtimeTruncation_GA);
+@@dynamicModel(RealtimeTruncationRetentionRatio_GA);
+
+@@dynamicModel(DotNetRealtimeDefaultToolChoice_GA);
+@@dynamicModel(DotNetRealtimeToolChoice_GA);
+@@dynamicModel(ToolChoiceFunction_GA);
+@@dynamicModel(ToolChoiceMCP_GA);
+
+@@dynamicModel(DotNetRealtimeDefaultToolCallApprovalPolicy_GA);
+@@dynamicModel(DotNetRealtimeToolCallApprovalPolicy_GA);
+@@dynamicModel(MCPToolRequireApproval_GA);
+
+@@dynamicModel(DotNetRealtimeDefaultMaxOutputTokenCount_GA);
+@@dynamicModel(DotNetRealtimeMaxOutputTokenCount_GA);
+
+@@dynamicModel(DotNetRealtimeDefaultTurnDetection_GA);
+@@dynamicModel(DotNetRealtimeTurnDetection_GA);
+@@dynamicModel(RealtimeTurnDetectionBase_GA);

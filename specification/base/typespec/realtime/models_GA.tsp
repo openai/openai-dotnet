@@ -158,7 +158,7 @@ model RealtimeSessionCreateRequestGA_GA extends RealtimeSessionCreateRequestGABa
   #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/no-unnamed-union" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-autorest/union-unsupported" "Auto-suppressed warnings non-applicable rules during import."
-  max_output_tokens?: integer;
+  max_output_tokens?: integer | "inf";
 
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   truncation?: "auto" | "disabled" | RealtimeTruncationBase_GA;
@@ -680,7 +680,7 @@ model RealtimeSessionCreateResponseGA_GA extends RealtimeSessionCreateResponseBa
   #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/no-unnamed-union" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-autorest/union-unsupported" "Auto-suppressed warnings non-applicable rules during import."
-  max_output_tokens?: integer;
+  max_output_tokens?: integer | "inf";
 
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
   truncation?: "auto" | "disabled" | RealtimeTruncationBase_GA; // SWAP: RealtimeTruncation;

@@ -4,11 +4,11 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeSemanticVADTurnDetectionGA")]
-public partial class GARealtimeSemanticVadTurnDetection
+public partial class GARealtimeCustomSemanticVadTurnDetection
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Eagerness")]
-    public GARealtimeTimeSemanticVadTurnDetectionEagernessLevel? EagernessLevel { get; set; }
+    public GARealtimeSemanticVadEagernessLevel? EagernessLevel { get; set; }
 
     // CUSTOM: Renamed.
     [CodeGenMember("CreateResponse")]

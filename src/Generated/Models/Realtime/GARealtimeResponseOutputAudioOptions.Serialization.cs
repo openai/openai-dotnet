@@ -35,10 +35,10 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(GARealtimeResponseOutputAudioOptions)} does not support writing '{format}' format.");
             }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Format) && !Patch.Contains("$.format"u8))
+            if (Optional.IsDefined(AudioFormat) && !Patch.Contains("$.format"u8))
             {
                 writer.WritePropertyName("format"u8);
-                writer.WriteObjectValue(Format, options);
+                writer.WriteObjectValue(AudioFormat, options);
             }
             if (Optional.IsDefined(Voice) && !Patch.Contains("$.voice"u8))
             {
@@ -69,7 +69,7 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            GARealtimeAudioFormat format = default;
+            GARealtimeAudioFormat audioFormat = default;
             GARealtimeVoice? voice = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -82,7 +82,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    format = GARealtimeAudioFormat.DeserializeGARealtimeAudioFormat(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    audioFormat = GARealtimeAudioFormat.DeserializeGARealtimeAudioFormat(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("voice"u8))
@@ -96,7 +96,7 @@ namespace OpenAI.Realtime
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new GARealtimeResponseOutputAudioOptions(format, voice, patch);
+            return new GARealtimeResponseOutputAudioOptions(audioFormat, voice, patch);
         }
 
         BinaryData IPersistableModel<GARealtimeResponseOutputAudioOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -140,7 +140,7 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("format"u8))
             {
-                return Format.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("format"u8.Length)], out value);
+                return AudioFormat.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("format"u8.Length)], out value);
             }
             return false;
         }
@@ -153,7 +153,7 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("format"u8))
             {
-                Format.Patch.Set([.. "$"u8, .. local.Slice("format"u8.Length)], value);
+                AudioFormat.Patch.Set([.. "$"u8, .. local.Slice("format"u8.Length)], value);
                 return true;
             }
             return false;

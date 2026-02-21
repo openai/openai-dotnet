@@ -107,7 +107,7 @@ namespace OpenAI.Realtime
             if (Optional.IsDefined(MaxOutputTokenCount) && !Patch.Contains("$.max_output_tokens"u8))
             {
                 writer.WritePropertyName("max_output_tokens"u8);
-                writer.WriteNumberValue(MaxOutputTokenCount.Value);
+                writer.WriteObjectValue(MaxOutputTokenCount, options);
             }
             if (Optional.IsDefined(DefaultConversationConfiguration) && !Patch.Contains("$.conversation"u8))
             {
@@ -203,7 +203,7 @@ namespace OpenAI.Realtime
             GARealtimeResponseAudioOptions audioOptions = default;
             IList<GARealtimeTool> tools = default;
             BinaryData toolChoice = default;
-            int? maxOutputTokenCount = default;
+            GARealtimeMaxOutputTokenCount maxOutputTokenCount = default;
             GARealtimeResponseDefaultConversationConfiguration? defaultConversationConfiguration = default;
             IDictionary<string, BinaryData> metadata = default;
             IList<GARealtimeItem> inputItems = default;
@@ -269,7 +269,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    maxOutputTokenCount = prop.Value.GetInt32();
+                    maxOutputTokenCount = GARealtimeMaxOutputTokenCount.DeserializeGARealtimeMaxOutputTokenCount(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("conversation"u8))
@@ -374,6 +374,10 @@ namespace OpenAI.Realtime
             {
                 return AudioOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("audio"u8.Length)], out value);
             }
+            if (local.StartsWith("max_output_tokens"u8))
+            {
+                return MaxOutputTokenCount.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("max_output_tokens"u8.Length)], out value);
+            }
             if (local.StartsWith("tools"u8))
             {
                 int propertyLength = "tools"u8.Length;
@@ -406,6 +410,11 @@ namespace OpenAI.Realtime
             if (local.StartsWith("audio"u8))
             {
                 AudioOptions.Patch.Set([.. "$"u8, .. local.Slice("audio"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("max_output_tokens"u8))
+            {
+                MaxOutputTokenCount.Patch.Set([.. "$"u8, .. local.Slice("max_output_tokens"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("tools"u8))

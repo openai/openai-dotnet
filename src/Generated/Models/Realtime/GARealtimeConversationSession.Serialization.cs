@@ -13,7 +13,7 @@ namespace OpenAI.Realtime
 {
     public partial class GARealtimeConversationSession : GARealtimeSession, IJsonModel<GARealtimeConversationSession>
     {
-        internal GARealtimeConversationSession() : this(InternalRealtimeSessionCreateResponseBaseTypeGA.Realtime, default, null, null, null, null, null, null, null, null, null, default, null)
+        internal GARealtimeConversationSession() : this(InternalRealtimeSessionCreateResponseBaseTypeGA.Realtime, default, null, null, null, null, null, null, null, null, null, null, null)
         {
         }
 
@@ -143,7 +143,7 @@ namespace OpenAI.Realtime
             if (Optional.IsDefined(MaxOutputTokenCount) && !Patch.Contains("$.max_output_tokens"u8))
             {
                 writer.WritePropertyName("max_output_tokens"u8);
-                SerializeMaxOutputTokenCountValue(writer, options);
+                writer.WriteObjectValue(MaxOutputTokenCount, options);
             }
             if (Optional.IsDefined(Truncation) && !Patch.Contains("$.truncation"u8))
             {
@@ -187,7 +187,7 @@ namespace OpenAI.Realtime
             GARealtimeTracing tracing = default;
             IList<GARealtimeTool> tools = default;
             GARealtimeToolChoice toolChoice = default;
-            int? maxOutputTokenCount = default;
+            GARealtimeMaxOutputTokenCount maxOutputTokenCount = default;
             GARealtimeTruncation truncation = default;
             foreach (var prop in element.EnumerateObject())
             {
@@ -283,7 +283,11 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("max_output_tokens"u8))
                 {
-                    DeserializeMaxOutputTokenCountValue(prop, ref maxOutputTokenCount);
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    maxOutputTokenCount = GARealtimeMaxOutputTokenCount.DeserializeGARealtimeMaxOutputTokenCount(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("truncation"u8))
@@ -368,6 +372,10 @@ namespace OpenAI.Realtime
             {
                 return ToolChoice.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("tool_choice"u8.Length)], out value);
             }
+            if (local.StartsWith("max_output_tokens"u8))
+            {
+                return MaxOutputTokenCount.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("max_output_tokens"u8.Length)], out value);
+            }
             if (local.StartsWith("truncation"u8))
             {
                 return Truncation.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("truncation"u8.Length)], out value);
@@ -409,6 +417,11 @@ namespace OpenAI.Realtime
             if (local.StartsWith("tool_choice"u8))
             {
                 ToolChoice.Patch.Set([.. "$"u8, .. local.Slice("tool_choice"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("max_output_tokens"u8))
+            {
+                MaxOutputTokenCount.Patch.Set([.. "$"u8, .. local.Slice("max_output_tokens"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("truncation"u8))
