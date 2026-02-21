@@ -488,11 +488,11 @@ contain any of:
 
 ```C# Snippet:ReadMe_ResponsesStreaming
 ResponsesClient client = new(
-    model: "gpt-5.1",
     apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
 CreateResponseOptions options = new()
 {
+    Model = "gpt-5.1",
     ReasoningOptions = new ResponseReasoningOptions()
     {
         ReasoningEffortLevel = ResponseReasoningEffortLevel.High,
@@ -504,6 +504,7 @@ ResponseResult response = await client.CreateResponseAsync(options);
 
 CreateResponseOptions streamingOptions = new()
 {
+    Model = "gpt-5.1",
     ReasoningOptions = new ResponseReasoningOptions()
     {
         ReasoningEffortLevel = ResponseReasoningEffortLevel.High,
@@ -536,7 +537,7 @@ await foreach (StreamingResponseUpdate update
 ## How to use responses with file search
 
 ```C# Snippet:ReadMe_ResponsesFileSearch
-ResponsesClient client = new("gpt-5.1", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+ResponsesClient client = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 string vectorStoreId = "vs-123";
 
 ResponseTool fileSearchTool
@@ -544,6 +545,7 @@ ResponseTool fileSearchTool
 
 CreateResponseOptions options = new()
 {
+    Model = "gpt-5.1",
     Tools = { fileSearchTool }
 };
 
@@ -570,10 +572,11 @@ foreach (ResponseItem outputItem in response.OutputItems)
 ## How to use responses with web search
 
 ```C# Snippet:ReadMe_ResponsesWebSearch
-ResponsesClient client = new("gpt-5.1", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+ResponsesClient client = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
 CreateResponseOptions options = new()
 {
+    Model = "gpt-5.1",
     Tools = { ResponseTool.CreateWebSearchTool() },
 };
 
@@ -974,12 +977,11 @@ var endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")
     ?? throw new InvalidOperationException("AZURE_OPENAI_ENDPOINT is required.");
 
 var client = new ResponsesClient(
-    "gpt-5-mini",
     new BearerTokenPolicy(new DefaultAzureCredential(), "https://ai.azure.com/.default"),
     new OpenAIClientOptions { Endpoint = new Uri($"{endpoint}/openai/v1/") }
 );
 
-var response = await client.CreateResponseAsync("Hello world!");
+var response = await client.CreateResponseAsync("gpt-5-mini", "Hello world!");
 Console.WriteLine(response.Value.GetOutputText());
 ```
 
