@@ -49,6 +49,16 @@ jobs:
           CLIENTMODEL_TEST_MODE: Playback
           CLIENTMODEL_DISABLE_AUTO_RECORDING: true
 
+      - name: Run Responses-only tests
+        run: dotnet test ./tests/Responses/OpenAI.Responses.Tests.csproj
+          --configuration Release
+          --filter="TestCategory=Responses"
+          --logger "trx;LogFilePrefix=responses"
+          --results-directory ${{ github.workspace }}/artifacts/test-results
+          ${{ env.version_suffix_args }}
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
       - name: Upload artifact
         uses: actions/upload-artifact@v6
         if: ${{ !cancelled() }}

@@ -133,14 +133,14 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
-        string filePath = Path.Join("Assets", "files_travis_favorite_food.pdf");
+        string pdfFilePath = Path.Join("Assets", "files_travis_favorite_food.pdf");
 
         // Create a response with multiple input items
         List<ResponseItem> inputItems = new()
         {
             ResponseItem.CreateUserMessageItem([
                 ResponseContentPart.CreateInputTextPart("What is input text?"),
-                ResponseContentPart.CreateInputFilePart(BinaryData.FromBytes(File.ReadAllBytes(filePath)), "application/pdf", "test_favorite_foods.pdf"),
+                ResponseContentPart.CreateInputFilePart(BinaryData.FromBytes(File.ReadAllBytes(pdfFilePath)), "application/pdf", "test_favorite_foods.pdf"),
                 ResponseContentPart.CreateInputImagePart(new Uri("https://github.com/openai/openai-dotnet/blob/db6328accdd7927f19915cdc5412eb841f2447c1/tests/Assets/images_empty_room.png?raw=true")),
             ]),
             ResponseItem.CreateUserMessageItem("Item 2"),
@@ -386,4 +386,6 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
 
         Assert.That(items, Has.Count.GreaterThan(0));
     }
+
+    private ResponsesClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<ResponsesClient>(overrideModel);
 }

@@ -10,6 +10,7 @@ namespace OpenAI.Tests.Responses;
 
 #pragma warning disable OPENAICUA001
 
+[TestFixture]
 [Category("Responses")]
 [Category("Smoke")]
 public partial class ResponsesSmokeTests

@@ -1,10 +1,14 @@
 using Microsoft.ClientModel.TestFramework;
 using NUnit.Framework;
+#if !RESPONSES_ONLY
 using OpenAI.Containers;
 using OpenAI.Files;
+#endif
 using OpenAI.Responses;
 using OpenAI.Tests.Utility;
+#if !RESPONSES_ONLY
 using OpenAI.VectorStores;
+#endif
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
@@ -347,6 +351,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(response.OutputItems.OfType<McpToolCallItem>().ToList(), Has.Count.EqualTo(0));
     }
 
+#if !RESPONSES_ONLY
     [RecordedTest]
     public async Task FileSearch()
     {
@@ -403,6 +408,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             Console.WriteLine(ModelReaderWriter.Write(inputItem).ToString());
         }
     }
+#endif
 
     [RecordedTest]
     public async Task CodeInterpreterToolWithoutFileIds()
@@ -465,6 +471,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(response.Tools.FirstOrDefault(), Is.TypeOf<CodeInterpreterTool>());
     }
 
+#if !RESPONSES_ONLY
     [RecordedTest]
     public async Task CodeInterpreterToolWithContainerIdFromContainerApi()
     {
@@ -519,7 +526,9 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             }
         }
     }
+#endif
 
+#if !RESPONSES_ONLY
     [RecordedTest]
     public async Task CodeInterpreterToolWithUploadedFileIds()
     {
@@ -581,6 +590,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             throw;
         }
     }
+#endif
 
     [RecordedTest]
     public async Task CodeInterpreterToolStreaming()
@@ -616,6 +626,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(completedCount, Is.GreaterThan(0));
     }
 
+#if !RESPONSES_ONLY
     [RecordedTest]
     public async Task CodeInterpreterToolStreamingWithFiles()
     {
@@ -680,11 +691,12 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             throw;
         }
     }
+#endif
 
     [RecordedTest]
     public async Task ComputerToolWithScreenshotRoundTrip()
     {
-        ResponsesClient client = TestEnvironment.GetTestClient<ResponsesClient>("computer-use-preview-2025-03-11");
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>("computer-use-preview-2025-03-11");
         ResponseTool computerTool = ResponseTool.CreateComputerTool(ComputerToolEnvironment.Windows, 1024, 768);
         CreateResponseOptions responseOptions = new(
             [
@@ -963,6 +975,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         Assert.That(imageGenResponse.ImageResultBytes.ToArray(), Is.Not.Null.And.Not.Empty);
     }
 
+#if !RESPONSES_ONLY
     [RecordedTest]
     [Category("MPFD")]
     public async Task ImageGenToolInputMaskWithFileId()
@@ -1036,7 +1049,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task WebSearchCall()
     {
-        ResponsesClient client = TestEnvironment.GetTestClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
         ResponseResult response = await client.CreateResponseAsync(
             new CreateResponseOptions([ResponseItem.CreateUserMessageItem("Searching the internet, what's the weather like in Seattle?")])
             {
@@ -1063,7 +1076,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task WebSearchCallPreview()
     {
-        ResponsesClient client = TestEnvironment.GetTestClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
         ResponseResult response = await client.CreateResponseAsync(
             new CreateResponseOptions([ResponseItem.CreateUserMessageItem("What was a positive news story from today?")])
             {
@@ -1090,7 +1103,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task WebSearchCallStreaming()
     {
-        ResponsesClient client = TestEnvironment.GetTestClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         const string message = "Searching the internet, what's the weather like in San Francisco?";
 
@@ -1170,6 +1183,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
             VectorStoreIdsToDelete.Add(vectorStore.Id);
         }
     }
+#endif
 
     private static void ValidateCodeInterpreterEvent(ref int inProgressCount, ref int interpretingCount, ref int codeDeltaCount, ref int codeDoneCount, ref int completedCount, ref bool gotFinishedCodeInterpreterItem, StringBuilder codeBuilder, StreamingResponseUpdate update)
     {

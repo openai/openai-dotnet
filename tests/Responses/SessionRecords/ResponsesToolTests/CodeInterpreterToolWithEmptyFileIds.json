@@ -1,0 +1,159 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "290",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI.Shared/2.8.0 (.NET 8.0.16; Darwin 25.2.0 Darwin Kernel Version 25.2.0: Tue Nov 18 21:08:48 PST 2025; root:xnu-12377.61.12~1/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "tools": [
+          {
+            "type": "code_interpreter",
+            "container": {
+              "type": "auto"
+            }
+          }
+        ],
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Generate a simple chart using matplotlib. Ensure you emit debug logging and include any resulting log file output."
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9ba54faf9de66c57-DFW",
+        "Connection": "keep-alive",
+        "Content-Length": "6794",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "88838",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149982060",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "7ms",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_08005d39aefa77b200695e9d733220819f95db7d6ec9b8840b",
+        "object": "response",
+        "created_at": 1767808371,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "completed_at": 1767808459,
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4o-mini-2024-07-18",
+        "output": [
+          {
+            "id": "ci_08005d39aefa77b200695e9d79cc28819fa02830082375c153",
+            "type": "code_interpreter_call",
+            "status": "completed",
+            "code": "import matplotlib.pyplot as plt\r\nimport numpy as np\r\nimport logging\r\n\r\n# Set up logging\r\nlogging.basicConfig(filename='chart_debug.log', level=logging.DEBUG,\r\n                    format='%(asctime)s - %(levelname)s - %(message)s')\r\nlogging.info(\"Starting the chart generation process.\")\r\n\r\n# Data for the chart\r\nx = np.linspace(0, 10, 100)  # 100 points from 0 to 10\r\ny = np.sin(x)  # Sine function\r\n\r\nlogging.debug(f\"X values: {x}\")\r\nlogging.debug(f\"Y values: {y}\")\r\n\r\n# Create the chart\r\nplt.figure(figsize=(10, 5))\r\nplt.plot(x, y, label='Sine Wave', color='blue')\r\nplt.title('Sine Wave')\r\nplt.xlabel('X-axis')\r\nplt.ylabel('Y-axis')\r\nplt.axhline(0, color='black', linewidth=0.5, linestyle='--')\r\nplt.axvline(0, color='black', linewidth=0.5, linestyle='--')\r\nplt.grid()\r\nplt.legend()\r\nplt.tight_layout()\r\n\r\n# Save the chart\r\noutput_path = '/mnt/data/sine_wave_chart.png'\r\nplt.savefig(output_path)\r\nplt.close()\r\n\r\nlogging.info(\"Chart generation complete and saved to file.\")\r\nlogging.debug(f\"Chart saved to: {output_path}\")\r\n\r\n# Check the log file created\r\nlog_output = ''\r\nwith open('chart_debug.log', 'r') as log_file:\r\n    log_output = log_file.read()\r\n\r\noutput_path, log_output",
+            "container_id": "cntr_695e9d7967a88191a2857e51bfd13af30b718c43d4ece1d8",
+            "outputs": null
+          },
+          {
+            "id": "msg_08005d39aefa77b200695e9d8a5574819f873ea10ec9b47f1e",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [
+                  {
+                    "type": "container_file_citation",
+                    "container_id": "cntr_695e9d7967a88191a2857e51bfd13af30b718c43d4ece1d8",
+                    "end_index": 3258,
+                    "file_id": "cfile_695e9dcbd8ac8191989f768d2e6dcf66",
+                    "filename": "sine_wave_chart.png",
+                    "start_index": 3221
+                  }
+                ],
+                "logprobs": [],
+                "text": "I have generated a simple sine wave chart using Matplotlib, and the process was logged for debugging purposes. \n\n### Chart Details\n- The chart shows a sine wave plotted over the interval from 0 to 10.\n- It includes labeled axes and a legend.\n\n### Log Output\nHere is the content of the debug log file:\n\n```\n2026-01-07 17:53:06,844 - INFO - Starting the chart generation process.\n2026-01-07 17:53:06,846 - DEBUG - X values: [ 0.          0.1010101   0.2020202   0.3030303   0.4040404   0.50505051\n  0.60606061  0.70707071  0.80808081  0.90909091  1.01010101  1.11111111\n  1.21212121  1.31313131  1.41414141  1.51515152  1.61616162  1.71717172\n  1.81818182  1.91919192  2.02020202  2.12121212  2.22222222  2.32323232\n  2.42424242  2.52525253  2.62626263  2.72727273  2.82828283  2.92929293\n  3.03030303  3.13131313  3.23232323  3.33333333  3.43434343  3.53535354\n  3.63636364  3.73737374  3.83838384  3.93939394  4.04040404  4.14141414\n  4.24242424  4.34343434  4.44444444  4.54545455  4.64646465  4.74747475\n  4.84848485  4.94949495  5.05050505  5.15151515  5.25252525  5.35353535\n  5.45454545  5.55555556  5.65656566  5.75757576  5.85858586  5.95959596\n  6.06060606  6.16161616  6.26262626  6.36363636  6.46464646  6.56565657\n  6.66666667  6.76767677  6.86868687  6.96969697  7.07070707  7.17171717\n  7.27272727  7.37373737  7.47474747  7.57575758  7.67676768  7.77777778\n  7.87878788  7.97979798  8.08080808  8.18181818  8.28282828  8.38383838\n  8.48484848  8.58585859  8.68686869  8.78787879  8.88888889  8.98989899\n  9.09090909  9.19191919  9.29292929  9.39393939  9.49494949  9.5959596\n  9.6969697   9.7979798   9.8989899  10.        ]\n2026-01-07 17:53:06,847 - DEBUG - Y values: [ 0.          0.10083842  0.20064886  0.2984138   0.39313661  0.48385164\n  0.56963411  0.64960951  0.72296256  0.78894546  0.84688556  0.8961922\n  0.93636273  0.96698762  0.98775469  0.99845223  0.99897117  0.98930624\n  0.96955595  0.93992165  0.90070545  0.85230712  0.79522006  0.73002623\n  0.65739025  0.57805259  0.49282204  0.40256749  0.30820902  0.21070855\n  0.11106004  0.01027934 -0.09060615 -0.19056796 -0.28858706 -0.38366419\n -0.47483011 -0.56115544 -0.64176014 -0.7158225  -0.7825875  -0.84137452\n -0.89158426 -0.93270486 -0.96431712 -0.98609877 -0.99782778 -0.99938456\n -0.99075324 -0.97202182 -0.94338126 -0.90512352 -0.85763861 -0.80141062\n -0.73701276 -0.66510151 -0.58640998 -0.50174037 -0.41195583 -0.31797166\n -0.22074597 -0.12126992 -0.0205576   0.0803643   0.18046693  0.27872982\n  0.37415123  0.46575841  0.55261747  0.63384295  0.7086068   0.77614685\n  0.83577457  0.8868821   0.92894843  0.96154471  0.98433866  0.99709789\n  0.99969234  0.99209556  0.97438499  0.94674118  0.90944594  0.86287948\n  0.8075165   0.74392141  0.6727425   0.59470541  0.51060568  0.42130064\n  0.32770071  0.23076008  0.13146699  0.03083368 -0.07011396 -0.17034683\n -0.26884313 -0.36459873 -0.45663749 -0.54402111]\n2026-01-07 17:53:06,865 - DEBUG - Loaded backend module://matplotlib_inline.backend_inline version unknown.\n...\n2026-01-07 17:53:07,514 - DEBUG - Chart saved to: /mnt/data/sine_wave_chart.png\n```\n\n### Download the Chart\nYou can download the generated sine wave chart using the link below:\n\n[Download the Sine Wave Chart](sandbox:/mnt/data/sine_wave_chart.png)"
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "prompt_cache_retention": null,
+        "reasoning": {
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [
+          {
+            "type": "code_interpreter",
+            "container": {
+              "type": "auto"
+            }
+          }
+        ],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 17921,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 1940,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 19861
+        },
+        "user": null,
+        "metadata": {}
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

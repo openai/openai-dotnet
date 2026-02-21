@@ -101,6 +101,8 @@ The library is organized into namespaces by feature areas in the OpenAI REST API
 | `OpenAI.Responses`            | `ResponsesClient`            |
 | `OpenAI.VectorStores`         | `VectorStoreClient`          |
 
+The `OpenAI.Shared` namespace contains common types and utilities used across the library.
+
 ### Using the async API
 
 Every client method that performs a synchronous API call has an asynchronous variant in the same client class. For instance, the asynchronous variant of the `ChatClient`'s `CompleteChat` method is `CompleteChatAsync`. To rewrite the call above using the asynchronous counterpart, simply `await` the call to the corresponding async variant:
@@ -976,7 +978,7 @@ var endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")
 var client = new ResponsesClient(
     "gpt-5-mini",
     new BearerTokenPolicy(new DefaultAzureCredential(), "https://ai.azure.com/.default"),
-    new OpenAIClientOptions { Endpoint = new Uri($"{endpoint}/openai/v1/") }
+    new ResponsesClientOptions { Endpoint = new Uri($"{endpoint}/openai/v1/") }
 );
 
 var response = await client.CreateResponseAsync("Hello world!");

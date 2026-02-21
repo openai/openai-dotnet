@@ -1178,7 +1178,7 @@ public class ReadMeSnippets
         var client = new ResponsesClient(
             "gpt-5-mini",
             new BearerTokenPolicy(new DefaultAzureCredential(), "https://ai.azure.com/.default"),
-            new OpenAIClientOptions { Endpoint = new Uri($"{endpoint}/openai/v1/") }
+            new ResponsesClientOptions { Endpoint = new Uri($"{endpoint}/openai/v1/") }
         );
 
 #if SNIPPET

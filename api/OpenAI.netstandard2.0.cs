@@ -5589,10 +5589,10 @@ namespace OpenAI.Responses {
     }
     public class ResponsesClient {
         protected ResponsesClient();
-        protected internal ResponsesClient(ClientPipeline pipeline, string model, OpenAIClientOptions options);
-        public ResponsesClient(string model, ApiKeyCredential credential, OpenAIClientOptions options);
+        protected internal ResponsesClient(ClientPipeline pipeline, string model, ResponsesClientOptions options);
+        public ResponsesClient(string model, ApiKeyCredential credential, ResponsesClientOptions options);
         public ResponsesClient(string model, ApiKeyCredential credential);
-        public ResponsesClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public ResponsesClient(string model, AuthenticationPolicy authenticationPolicy, ResponsesClientOptions options);
         public ResponsesClient(string model, AuthenticationPolicy authenticationPolicy);
         public ResponsesClient(string model, string apiKey);
         public virtual Uri Endpoint { get; }
@@ -5642,6 +5642,13 @@ namespace OpenAI.Responses {
         public virtual CollectionResult<StreamingResponseUpdate> GetResponseStreaming(string responseId, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(GetResponseOptions options, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, CancellationToken cancellationToken = default);
+    }
+    public class ResponsesClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+        public static ResponsesClientOptions FromOpenAIClientOptions(OpenAIClientOptions options);
     }
     public readonly partial struct ResponseServiceTier : IEquatable<ResponseServiceTier> {
         public ResponseServiceTier(string value);

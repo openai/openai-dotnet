@@ -32,7 +32,7 @@ public partial class ResponsesClient
     /// <param name="apiKey"> The API key to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="apiKey"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    public ResponsesClient(string model, string apiKey) : this(model, new ApiKeyCredential(apiKey), new OpenAIClientOptions())
+    public ResponsesClient(string model, string apiKey) : this(model, new ApiKeyCredential(apiKey), new ResponsesClientOptions())
     {
     }
 
@@ -45,7 +45,7 @@ public partial class ResponsesClient
     /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="credential"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    public ResponsesClient(string model, ApiKeyCredential credential) : this(model, credential, new OpenAIClientOptions())
+    public ResponsesClient(string model, ApiKeyCredential credential) : this(model, credential, new ResponsesClientOptions())
     {
     }
 
@@ -59,7 +59,7 @@ public partial class ResponsesClient
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="credential"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    public ResponsesClient(string model, ApiKeyCredential credential, OpenAIClientOptions options) : this(model, OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
+    public ResponsesClient(string model, ApiKeyCredential credential, ResponsesClientOptions options) : this(model, OpenAIClientHelpers.CreateApiKeyAuthenticationPolicy(credential), options)
     {
     }
 
@@ -69,7 +69,7 @@ public partial class ResponsesClient
     /// <param name="authenticationPolicy"> The authentication policy used to authenticate with the service. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="authenticationPolicy"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    public ResponsesClient(string model, AuthenticationPolicy authenticationPolicy) : this(model, authenticationPolicy, new OpenAIClientOptions())
+    public ResponsesClient(string model, AuthenticationPolicy authenticationPolicy) : this(model, authenticationPolicy, new ResponsesClientOptions())
     {
     }
 
@@ -80,15 +80,15 @@ public partial class ResponsesClient
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="model"/> or <paramref name="authenticationPolicy"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    public ResponsesClient(string model, AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options)
+    public ResponsesClient(string model, AuthenticationPolicy authenticationPolicy, ResponsesClientOptions options)
     {
         Argument.AssertNotNullOrEmpty(model, nameof(model));
         Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
-        options ??= new OpenAIClientOptions();
+        options ??= new ResponsesClientOptions();
 
         _model = model;
-        Pipeline = OpenAIClient.CreatePipeline(authenticationPolicy, options);
-        _endpoint = OpenAIClient.GetEndpoint(options);
+        Pipeline = ResponsesClientHelpers.CreatePipeline(authenticationPolicy, options);
+        _endpoint = ResponsesClientHelpers.GetEndpoint(options);
     }
 
     // CUSTOM:
@@ -102,15 +102,15 @@ public partial class ResponsesClient
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="pipeline"/> or <paramref name="model"/> is null. </exception>
     /// <exception cref="ArgumentException"> <paramref name="model"/> is an empty string, and was expected to be non-empty. </exception>
-    protected internal ResponsesClient(ClientPipeline pipeline, string model, OpenAIClientOptions options)
+    protected internal ResponsesClient(ClientPipeline pipeline, string model, ResponsesClientOptions options)
     {
         Argument.AssertNotNull(pipeline, nameof(pipeline));
         Argument.AssertNotNullOrEmpty(model, nameof(model));
-        options ??= new OpenAIClientOptions();
+        options ??= new ResponsesClientOptions();
 
         _model = model;
         Pipeline = pipeline;
-        _endpoint = OpenAIClient.GetEndpoint(options);
+        _endpoint = ResponsesClientHelpers.GetEndpoint(options);
     }
 
     /// <summary>

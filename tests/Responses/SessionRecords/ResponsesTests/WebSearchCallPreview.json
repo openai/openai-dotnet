@@ -1,0 +1,188 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "236",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI.Shared/2.8.0 (.NET 8.0.16; Darwin 25.2.0 Darwin Kernel Version 25.2.0: Tue Nov 18 21:08:48 PST 2025; root:xnu-12377.61.12~1/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "tools": [
+          {
+            "type": "web_search_preview"
+          }
+        ],
+        "tool_choice": {
+          "type": "web_search_preview"
+        },
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "What was a positive news story from today?"
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9ba5480c1bf96c57-DFW",
+        "Connection": "keep-alive",
+        "Content-Length": "6221",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "3346",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_0eb3b61f389857a000695e9c3a4eb481a1adb4bb4cc15b3e96",
+        "object": "response",
+        "created_at": 1767808058,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "completed_at": 1767808061,
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4o-mini-2024-07-18",
+        "output": [
+          {
+            "id": "ws_0eb3b61f389857a000695e9c3a5d3081a19c8598585c0bd138",
+            "type": "web_search_call",
+            "status": "completed",
+            "action": {
+              "type": "search",
+              "query": "What was a positive news story from today?"
+            }
+          },
+          {
+            "id": "msg_0eb3b61f389857a000695e9c3afc7881a190a90eb764a4fa27",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [
+                  {
+                    "type": "url_citation",
+                    "end_index": 464,
+                    "start_index": 237,
+                    "title": "Today News Headlines for School Assembly, Jan 7, 2026: India becomes world's largest rice producer, Chelsea Football Club gets new head coach",
+                    "url": "https://indianexpress.com/article/education/news-headlines-for-school-assembly-january-7-2026-national-international-sports-business-earthquake-jnu-ipo-boom-real-estate-chelsea-10389235/?utm_source=openai"
+                  },
+                  {
+                    "type": "url_citation",
+                    "end_index": 867,
+                    "start_index": 640,
+                    "title": "Today News Headlines for School Assembly, Jan 7, 2026: India becomes world's largest rice producer, Chelsea Football Club gets new head coach",
+                    "url": "https://indianexpress.com/article/education/news-headlines-for-school-assembly-january-7-2026-national-international-sports-business-earthquake-jnu-ipo-boom-real-estate-chelsea-10389235/?utm_source=openai"
+                  },
+                  {
+                    "type": "url_citation",
+                    "end_index": 1255,
+                    "start_index": 1140,
+                    "title": "Magnolia Mornings: January 7, 2026 - Magnolia Tribune",
+                    "url": "https://magnoliatribune.com/2026/01/07/magnolia-mornings-january-7-2026/?utm_source=openai"
+                  },
+                  {
+                    "type": "url_citation",
+                    "end_index": 1652,
+                    "start_index": 1537,
+                    "title": "Magnolia Mornings: January 7, 2026 - Magnolia Tribune",
+                    "url": "https://magnoliatribune.com/2026/01/07/magnolia-mornings-january-7-2026/?utm_source=openai"
+                  },
+                  {
+                    "type": "url_citation",
+                    "end_index": 1989,
+                    "start_index": 1878,
+                    "title": "Top Tech News Today, January 7, 2026 - Tech Startups",
+                    "url": "https://techstartups.com/2026/01/07/top-tech-news-today-january-7-2026/?utm_source=openai"
+                  }
+                ],
+                "logprobs": [],
+                "text": "On January 7, 2026, several positive news stories emerged:\n\n**India's Agricultural Milestone**\n\nIndia has become the world's largest rice producer, surpassing China with a total output of 150.18 million tonnes during the 2024-25 period. ([indianexpress.com](https://indianexpress.com/article/education/news-headlines-for-school-assembly-january-7-2026-national-international-sports-business-earthquake-jnu-ipo-boom-real-estate-chelsea-10389235/?utm_source=openai))\n\n**Chelsea Football Club's New Appointment**\n\nChelsea Football Club appointed Liam Rosenior as the new head coach of the men's team, signaling a fresh direction for the club. ([indianexpress.com](https://indianexpress.com/article/education/news-headlines-for-school-assembly-january-7-2026-national-international-sports-business-earthquake-jnu-ipo-boom-real-estate-chelsea-10389235/?utm_source=openai))\n\n**Mississippi State's Basketball Achievement**\n\nMississippi State's Josh Hubbard was named SEC Player of the Week, marking his sixth weekly award from the SEC. He averaged 30.0 points, 3.5 assists, and 1.5 steals per game, leading the team to a five-game winning streak. ([magnoliatribune.com](https://magnoliatribune.com/2026/01/07/magnolia-mornings-january-7-2026/?utm_source=openai))\n\n**Southern Miss's Basketball Recognition**\n\nSouthern Miss graduate student guard Jakayla Johnson was selected as the Sun Belt Conference’s Player of the Week. She led the conference in scoring with 56 total points and 28.0 points per game during the second week of league action. ([magnoliatribune.com](https://magnoliatribune.com/2026/01/07/magnolia-mornings-january-7-2026/?utm_source=openai))\n\n**Advancements in Satellite Technology**\n\nArray Labs raised $20 million in funding to advance satellite radar payloads, technology increasingly used for monitoring infrastructure, climate impacts, and geopolitical activity. ([techstartups.com](https://techstartups.com/2026/01/07/top-tech-news-today-january-7-2026/?utm_source=openai))\n\nThese stories highlight significant achievements in agriculture, sports, and technology, contributing positively to global developments. "
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "prompt_cache_retention": null,
+        "reasoning": {
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "auto",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": {
+          "type": "web_search_preview"
+        },
+        "tools": [
+          {
+            "type": "web_search_preview",
+            "search_context_size": "medium",
+            "user_location": {
+              "type": "approximate",
+              "city": null,
+              "country": "US",
+              "region": null,
+              "timezone": null
+            }
+          }
+        ],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 312,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 498,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 810
+        },
+        "user": null,
+        "metadata": {}
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

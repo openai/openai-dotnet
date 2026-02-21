@@ -1,11 +1,15 @@
 using Microsoft.ClientModel.TestFramework;
 using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using NUnit.Framework;
+#if !RESPONSES_ONLY
 using OpenAI.Conversations;
 using OpenAI.Files;
+#endif
 using OpenAI.Responses;
 using OpenAI.Tests.Utility;
+#if !RESPONSES_ONLY
 using OpenAI.VectorStores;
+#endif
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
@@ -30,6 +34,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         TestTimeoutInSeconds = 30;
     }
 
+#if !RESPONSES_ONLY
     [OneTimeTearDown]
     protected void Cleanup()
     {
@@ -70,6 +75,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             VectorStoreIdsToDelete.Add(vectorStore.Id);
         }
     }
+#endif
 
     [RecordedTest]
     public async Task StreamingResponses()
@@ -211,7 +217,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ResponsesWithReasoning()
     {
-        ResponsesClient client = TestEnvironment.GetTestClient<ResponsesClient>("gpt-5");
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>("gpt-5");
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("What's the best way to fold a burrito?")])
         {
@@ -326,6 +332,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(expectedException.Message, Does.Contain("not found"));
     }
 
+#if !RESPONSES_ONLY
     [RecordedTest]
     public async Task ResponseUsingConversations()
     {
@@ -382,6 +389,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(GetContentText(lastItem), Is.EqualTo("tell me a joke"));
         Assert.That(GetContentText(secondLastItem), Is.EqualTo("tell me another"));
     }
+#endif
 
     [RecordedTest]
     public async Task ResponseServiceTierWorks()
@@ -468,6 +476,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     }
 #endif
 
+#if !RESPONSES_ONLY
     [RecordedTest]
     public async Task FileInputFromIdWorks()
     {
@@ -496,6 +505,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         Assert.That(response?.GetOutputText().ToLower(), Does.Contain("pizza"));
     }
+#endif
 
     [RecordedTest]
     public async Task FileInputFromBinaryWorks()
@@ -896,7 +906,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CanGetInputTokenCounts()
     {
-        ResponsesClient client = TestEnvironment.GetTestClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         BinaryData inputTokensRequestBody = BinaryData.FromBytes("""
             {
@@ -920,7 +930,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CanCompactConversation()
     {
-        ResponsesClient client = TestEnvironment.GetTestClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         // First, create a response to get a real assistant message for compaction.
         ResponseResult initialResponse = await client.CreateResponseAsync("Create a simple landing page for a dog petting café.");
@@ -1006,4 +1016,6 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             }
             """),
         strictModeEnabled: false);
+
+    private ResponsesClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<ResponsesClient>(overrideModel);
 }

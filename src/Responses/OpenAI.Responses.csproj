@@ -1,0 +1,53 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>OpenAI Responses client library for .NET</Description>
+    <AssemblyTitle>OpenAI Responses Library</AssemblyTitle>
+    <PackageTags>OpenAI;openai-dotnet;Responses</PackageTags>
+
+    <VersionPrefix>2.8.0</VersionPrefix>
+    <VersionSuffix></VersionSuffix>
+
+    <TargetFrameworks>$(ClientTargetFrameworks)</TargetFrameworks>
+
+    <IsTrimmable Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">true</IsTrimmable>
+    <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">true</IsAotCompatible>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(RepositoryRoot)eng\OpenAI.png" Pack="true" PackagePath="\" />
+    <None Include="$(RepositoryRoot)CHANGELOG.md" Pack="true" PackagePath="\" />
+    <None Include="$(RepositoryRoot)README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.ClientModel" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Generated\Internal\**\*.cs" Link="Generated\Internal\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\Generated\Models\Responses\**\*.cs" Link="Generated\Models\Responses\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\Custom\Responses\**\*.cs" Link="Custom\Responses\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\Generated\ResponsesClient.cs" Link="Generated\ResponsesClient.cs" />
+    <Compile Include="..\Generated\ResponsesClient.RestClient.cs" Link="Generated\ResponsesClient.RestClient.cs" />
+    <Compile Include="..\Custom\Internal\ClientPipelineExtensions.cs" Link="Custom\Internal\ClientPipelineExtensions.cs" />
+    <Compile Include="..\Custom\Internal\CancellationTokenExtensions.cs" Link="Custom\Internal\CancellationTokenExtensions.cs" />
+    <Compile Include="..\Custom\Internal\TelemetryDetails.cs" Link="Custom\Internal\TelemetryDetails.cs" />
+    <Compile Include="..\Custom\OpenAIError.cs" Link="Custom\OpenAIError.cs" />
+    <Compile Include="..\Generated\Models\Internal\OpenAIErrorResponse.cs" Link="Generated\Models\Internal\OpenAIErrorResponse.cs" />
+    <Compile Include="..\Generated\Models\Internal\OpenAIErrorResponse.Serialization.cs" Link="Generated\Models\Internal\OpenAIErrorResponse.Serialization.cs" />
+    <Compile Include="..\Generated\Models\Internal\OpenAIError.cs" Link="Generated\Models\Internal\OpenAIError.cs" />
+    <Compile Include="..\Generated\Models\Internal\OpenAIError.Serialization.cs" Link="Generated\Models\Internal\OpenAIError.Serialization.cs" />
+    <Compile Include="..\Generated\CollectionResults\ResponsesClient*.cs" Link="Generated\CollectionResults\%(Filename)%(Extension)" />
+    <Compile Include="..\Custom\OpenAIContext.cs" Link="Custom\OpenAIContext.cs" />
+    <Compile Include="..\Custom\OpenAIClientOptions.cs" Link="Custom\OpenAIClientOptions.cs" />
+    <Compile Include="..\Generated\OpenAIClientOptions.cs" Link="Generated\OpenAIClientOptions.cs" />
+    <Compile Include="..\Utility\*.cs" Link="Utility\%(Filename)%(Extension)" />
+    <Compile Include="..\Utility\Polyfill\*.cs" Link="Utility\Polyfill\%(Filename)%(Extension)" />
+    <Compile Include="..\Utility\CodeGen\*.cs" Link="Utility\CodeGen\%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Net.ServerSentEvents" />
+  </ItemGroup>
+
+</Project>
