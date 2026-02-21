@@ -10,9 +10,9 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    public partial class GARealtimeCustomServerVadTurnDetection : GARealtimeCustomTurnDetection, IJsonModel<GARealtimeCustomServerVadTurnDetection>
+    public partial class GARealtimeServerVadTurnDetection : GARealtimeTurnDetection, IJsonModel<GARealtimeServerVadTurnDetection>
     {
-        void IJsonModel<GARealtimeCustomServerVadTurnDetection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<GARealtimeServerVadTurnDetection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -29,10 +29,10 @@ namespace OpenAI.Realtime
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeCustomServerVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeServerVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(GARealtimeCustomServerVadTurnDetection)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(GARealtimeServerVadTurnDetection)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -71,20 +71,20 @@ namespace OpenAI.Realtime
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        GARealtimeCustomServerVadTurnDetection IJsonModel<GARealtimeCustomServerVadTurnDetection>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (GARealtimeCustomServerVadTurnDetection)JsonModelCreateCore(ref reader, options);
+        GARealtimeServerVadTurnDetection IJsonModel<GARealtimeServerVadTurnDetection>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => (GARealtimeServerVadTurnDetection)JsonModelCreateCore(ref reader, options);
 
-        protected override GARealtimeCustomTurnDetection JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected override GARealtimeTurnDetection JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeCustomServerVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeServerVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(GARealtimeCustomServerVadTurnDetection)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(GARealtimeServerVadTurnDetection)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeGARealtimeCustomServerVadTurnDetection(document.RootElement, null, options);
+            return DeserializeGARealtimeServerVadTurnDetection(document.RootElement, null, options);
         }
 
-        internal static GARealtimeCustomServerVadTurnDetection DeserializeGARealtimeCustomServerVadTurnDetection(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        internal static GARealtimeServerVadTurnDetection DeserializeGARealtimeServerVadTurnDetection(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -164,7 +164,7 @@ namespace OpenAI.Realtime
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new GARealtimeCustomServerVadTurnDetection(
+            return new GARealtimeServerVadTurnDetection(
                 kind,
                 patch,
                 detectionThreshold,
@@ -175,37 +175,37 @@ namespace OpenAI.Realtime
                 idleTimeout);
         }
 
-        BinaryData IPersistableModel<GARealtimeCustomServerVadTurnDetection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<GARealtimeServerVadTurnDetection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeCustomServerVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeServerVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(GARealtimeCustomServerVadTurnDetection)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(GARealtimeServerVadTurnDetection)} does not support writing '{options.Format}' format.");
             }
         }
 
-        GARealtimeCustomServerVadTurnDetection IPersistableModel<GARealtimeCustomServerVadTurnDetection>.Create(BinaryData data, ModelReaderWriterOptions options) => (GARealtimeCustomServerVadTurnDetection)PersistableModelCreateCore(data, options);
+        GARealtimeServerVadTurnDetection IPersistableModel<GARealtimeServerVadTurnDetection>.Create(BinaryData data, ModelReaderWriterOptions options) => (GARealtimeServerVadTurnDetection)PersistableModelCreateCore(data, options);
 
-        protected override GARealtimeCustomTurnDetection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected override GARealtimeTurnDetection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeCustomServerVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeServerVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeGARealtimeCustomServerVadTurnDetection(document.RootElement, data, options);
+                        return DeserializeGARealtimeServerVadTurnDetection(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(GARealtimeCustomServerVadTurnDetection)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(GARealtimeServerVadTurnDetection)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<GARealtimeCustomServerVadTurnDetection>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<GARealtimeServerVadTurnDetection>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

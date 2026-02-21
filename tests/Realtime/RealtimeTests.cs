@@ -43,10 +43,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
         {
             AudioOptions = new GARealtimeConversationSessionAudioOptions()
             {
-                InputAudioOptions = new()
-                {
-                    TurnDetection = GARealtimeDefaultTurnDetection.Disabled,
-                },
+                InputAudioOptions = new(),
                 OutputAudioOptions = new()
                 {
                     AudioFormat = new GARealtimePcmuAudioFormat(),
@@ -58,6 +55,8 @@ public class RealtimeTests : RealtimeTestFixtureBase
 
             MaxOutputTokenCount = maxOutputTokenCount,
         };
+
+        sessionOptions.AudioOptions.InputAudioOptions.DisableTurnDetection();
 
         GARealtimeClientCommandSessionUpdate sessionUpdateCommand = new(sessionOptions);
 
@@ -100,8 +99,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
                         Assert.That(session.AudioOptions.InputAudioOptions.AudioFormat, Is.TypeOf<GARealtimePcmAudioFormat>());
                         Assert.That(session.AudioOptions.InputAudioOptions.AudioTranscriptionOptions, Is.Null);
                         Assert.That(session.AudioOptions.InputAudioOptions.NoiseReduction, Is.Null);
-                        Assert.That(session.AudioOptions.InputAudioOptions.TurnDetection.DefaultTurnDetection, Is.Null);
-                        Assert.That(session.AudioOptions.InputAudioOptions.TurnDetection.CustomTurnDetection, Is.TypeOf<GARealtimeCustomServerVadTurnDetection>());
+                        Assert.That(session.AudioOptions.InputAudioOptions.TurnDetection, Is.TypeOf<GARealtimeServerVadTurnDetection>());
                         Assert.That(session.AudioOptions.OutputAudioOptions, Is.Not.Null);
                         Assert.That(session.AudioOptions.OutputAudioOptions.AudioFormat, Is.TypeOf<GARealtimePcmAudioFormat>());
                         Assert.That(session.AudioOptions.OutputAudioOptions.Speed, Is.EqualTo(1));
@@ -129,8 +127,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
                         Assert.That(session, Is.Not.Null);
                         Assert.That(session.AudioOptions, Is.Not.Null);
                         Assert.That(session.AudioOptions.InputAudioOptions, Is.Not.Null);
-                        Assert.That(session.AudioOptions.InputAudioOptions.TurnDetection.DefaultTurnDetection, Is.EqualTo(GARealtimeDefaultTurnDetection.Disabled));
-                        Assert.That(session.AudioOptions.InputAudioOptions.TurnDetection.CustomTurnDetection, Is.Null);
+                        Assert.That(session.AudioOptions.InputAudioOptions.TurnDetection, Is.Null);
                         Assert.That(session.AudioOptions.OutputAudioOptions, Is.Not.Null);
                         Assert.That(session.AudioOptions.OutputAudioOptions.AudioFormat, Is.TypeOf<GARealtimePcmuAudioFormat>());
                         Assert.That(session.AudioOptions.OutputAudioOptions.Voice, Is.EqualTo(GARealtimeVoice.Echo));

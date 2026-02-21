@@ -15,17 +15,16 @@ namespace OpenAI.Realtime
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        public GARealtimeTurnDetection()
+        private protected GARealtimeTurnDetection(InternalRealtimeTurnDetectionBaseTypeGA kind)
         {
+            Kind = kind;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal GARealtimeTurnDetection(GARealtimeDefaultTurnDetection? defaultTurnDetection, GARealtimeCustomTurnDetection customTurnDetection, in JsonPatch patch)
+        internal GARealtimeTurnDetection(InternalRealtimeTurnDetectionBaseTypeGA kind, in JsonPatch patch)
         {
-            DefaultTurnDetection = defaultTurnDetection;
-            CustomTurnDetection = customTurnDetection;
+            Kind = kind;
             _patch = patch;
-            _patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
@@ -33,5 +32,7 @@ namespace OpenAI.Realtime
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
+
+        internal InternalRealtimeTurnDetectionBaseTypeGA Kind { get; set; }
     }
 }

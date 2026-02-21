@@ -1643,11 +1643,6 @@ namespace OpenAI
             return new GARealtimeMaxOutputTokenCount(defaultMaxOutputTokenCount, customMaxOutputTokenCount, default);
         }
 
-        public static GARealtimeTurnDetection GARealtimeTurnDetection(GARealtimeDefaultTurnDetection? defaultTurnDetection = default, GARealtimeCustomTurnDetection customTurnDetection = default)
-        {
-            return new GARealtimeTurnDetection(defaultTurnDetection, customTurnDetection, default);
-        }
-
         public static ResponseItemCollectionOptions ResponseItemCollectionOptions(string responseId = default, string afterId = default, string beforeId = default, int? pageSizeLimit = default, ResponseItemCollectionOrder? order = default)
         {
             return new ResponseItemCollectionOptions(

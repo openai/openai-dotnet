@@ -8,14 +8,14 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Realtime
 {
     [Experimental("OPENAI002")]
-    public partial class GARealtimeCustomSemanticVadTurnDetection : GARealtimeCustomTurnDetection
+    public partial class GARealtimeSemanticVadTurnDetection : GARealtimeTurnDetection
     {
-        public GARealtimeCustomSemanticVadTurnDetection() : this(InternalRealtimeTurnDetectionBaseTypeGA.SemanticVad, default, default, default, default)
+        public GARealtimeSemanticVadTurnDetection() : this(InternalRealtimeTurnDetectionBaseTypeGA.SemanticVad, default, default, default, default)
         {
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal GARealtimeCustomSemanticVadTurnDetection(InternalRealtimeTurnDetectionBaseTypeGA kind, in JsonPatch patch, GARealtimeSemanticVadEagernessLevel? eagernessLevel, bool? createResponseEnabled, bool? interruptResponseEnabled) : base(kind, patch)
+        internal GARealtimeSemanticVadTurnDetection(InternalRealtimeTurnDetectionBaseTypeGA kind, in JsonPatch patch, GARealtimeSemanticVadEagernessLevel? eagernessLevel, bool? createResponseEnabled, bool? interruptResponseEnabled) : base(kind, patch)
         {
             EagernessLevel = eagernessLevel;
             CreateResponseEnabled = createResponseEnabled;

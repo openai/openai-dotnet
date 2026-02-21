@@ -14,7 +14,8 @@ public partial class GARealtimeConversationSessionInputAudioOptions
     [CodeGenMember("Transcription")]
     public GARealtimeAudioTranscriptionOptions AudioTranscriptionOptions { get; set; }
 
-    // CUSTOM: Changed type from BinaryData (generated from the original union) to a custom type.
-    [CodeGenMember("TurnDetection")]
-    public GARealtimeTurnDetection TurnDetection { get; set; }
+    public void DisableTurnDetection()
+    {
+        Patch.SetNull("$.turn_detection"u8);
+    }
 }

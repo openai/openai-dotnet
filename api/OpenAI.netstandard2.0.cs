@@ -4036,7 +4036,7 @@ namespace OpenAI.Realtime {
         public GARealtimeClientSecret ClientSecret { get; }
         public IList<GARealtimeIncludedProperty> IncludedProperties { get; }
         public string Instructions { get; }
-        public int? MaxOutputTokenCount { get; set; }
+        public GARealtimeMaxOutputTokenCount MaxOutputTokenCount { get; set; }
         public string Model { get; set; }
         public IList<GARealtimeOutputModality> OutputModalities { get; }
         public GARealtimeToolChoice ToolChoice { get; set; }
@@ -4067,6 +4067,7 @@ namespace OpenAI.Realtime {
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
         public GARealtimeTurnDetection TurnDetection { get; set; }
+        public void DisableTurnDetection();
         protected virtual GARealtimeConversationSessionInputAudioOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual GARealtimeConversationSessionInputAudioOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -4077,7 +4078,7 @@ namespace OpenAI.Realtime {
         public GARealtimeConversationSessionAudioOptions AudioOptions { get; set; }
         public IList<GARealtimeIncludedProperty> IncludedProperties { get; }
         public string Instructions { get; set; }
-        public int? MaxOutputTokenCount { get; set; }
+        public GARealtimeMaxOutputTokenCount MaxOutputTokenCount { get; set; }
         public string Model { get; set; }
         public IList<GARealtimeOutputModality> OutputModalities { get; }
         public GARealtimeToolChoice ToolChoice { get; set; }
@@ -4090,7 +4091,7 @@ namespace OpenAI.Realtime {
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class GARealtimeConversationSessionOutputAudioOptions : IJsonModel<GARealtimeConversationSessionOutputAudioOptions>, IPersistableModel<GARealtimeConversationSessionOutputAudioOptions> {
-        public GARealtimeAudioFormat Format { get; set; }
+        public GARealtimeAudioFormat AudioFormat { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
@@ -4132,7 +4133,7 @@ namespace OpenAI.Realtime {
     public class GARealtimeCustomRetentionRatioTruncation : GARealtimeCustomTruncation, IJsonModel<GARealtimeCustomRetentionRatioTruncation>, IPersistableModel<GARealtimeCustomRetentionRatioTruncation> {
         public GARealtimeCustomRetentionRatioTruncation(float retentionRatio);
         public float RetentionRatio { get; set; }
-        public GARealtimeTrunctionTokenLimits TokenLimits { get; set; }
+        public GARealtimeRetentionRatioTokenLimitDetails TokenLimitDetails { get; set; }
         protected override GARealtimeCustomTruncation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override GARealtimeCustomTruncation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -4167,6 +4168,20 @@ namespace OpenAI.Realtime {
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual GARealtimeCustomTruncation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct GARealtimeDefaultMaxOutputTokenCount : IEquatable<GARealtimeDefaultMaxOutputTokenCount> {
+        public GARealtimeDefaultMaxOutputTokenCount(string value);
+        public static GARealtimeDefaultMaxOutputTokenCount Infinite { get; }
+        public readonly bool Equals(GARealtimeDefaultMaxOutputTokenCount other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(GARealtimeDefaultMaxOutputTokenCount left, GARealtimeDefaultMaxOutputTokenCount right);
+        public static implicit operator GARealtimeDefaultMaxOutputTokenCount(string value);
+        public static implicit operator GARealtimeDefaultMaxOutputTokenCount?(string value);
+        public static bool operator !=(GARealtimeDefaultMaxOutputTokenCount left, GARealtimeDefaultMaxOutputTokenCount right);
+        public override readonly string ToString();
     }
     public readonly partial struct GARealtimeDefaultMcpToolCallApprovalPolicy : IEquatable<GARealtimeDefaultMcpToolCallApprovalPolicy> {
         public GARealtimeDefaultMcpToolCallApprovalPolicy(string value);
@@ -4384,6 +4399,21 @@ namespace OpenAI.Realtime {
         protected virtual GARealtimeLogProbabilityDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
+    public class GARealtimeMaxOutputTokenCount : IJsonModel<GARealtimeMaxOutputTokenCount>, IPersistableModel<GARealtimeMaxOutputTokenCount> {
+        public GARealtimeMaxOutputTokenCount(GARealtimeDefaultMaxOutputTokenCount defaultMaxOutputTokenCount);
+        public GARealtimeMaxOutputTokenCount(int customMaxOutputTokenCount);
+        public int? CustomMaxOutputTokenCount { get; }
+        public GARealtimeDefaultMaxOutputTokenCount? DefaultMaxOutputTokenCount { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        protected virtual GARealtimeMaxOutputTokenCount JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public static implicit operator GARealtimeMaxOutputTokenCount(GARealtimeDefaultMaxOutputTokenCount defaultMaxOutputTokenCount);
+        public static implicit operator GARealtimeMaxOutputTokenCount(int customMaxOutputTokenCount);
+        protected virtual GARealtimeMaxOutputTokenCount PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
     public class GARealtimeMcpTool : GARealtimeTool, IJsonModel<GARealtimeMcpTool>, IPersistableModel<GARealtimeMcpTool> {
         public GARealtimeMcpTool(string serverLabel, GARealtimeMcpToolConnectorId connectorId);
         public GARealtimeMcpTool(string serverLabel, Uri serverUri);
@@ -4517,10 +4547,10 @@ namespace OpenAI.Realtime {
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class GARealtimeMessageItem : GARealtimeItem, IJsonModel<GARealtimeMessageItem>, IPersistableModel<GARealtimeMessageItem> {
-        public GARealtimeMessageItem(IEnumerable<GARealtimeMessageContentPart> content);
+        public GARealtimeMessageItem(GARealtimeMessageRole role, IEnumerable<GARealtimeMessageContentPart> content);
         public IList<GARealtimeMessageContentPart> Content { get; }
         public string Id { get; set; }
-        public GARealtimeMessageRole Role { get; }
+        public GARealtimeMessageRole Role { get; set; }
         public GARealtimeMessageStatus? Status { get; set; }
         protected override GARealtimeItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -4680,12 +4710,12 @@ namespace OpenAI.Realtime {
         public override readonly string ToString();
     }
     public class GARealtimeResponse : IJsonModel<GARealtimeResponse>, IPersistableModel<GARealtimeResponse> {
-        public GARealtimeResponseAudioOptions Audio { get; }
+        public GARealtimeResponseAudioOptions AudioOptions { get; }
         public string ConversationId { get; }
         public string Id { get; }
-        public int? MaxOutputTokens { get; }
+        public GARealtimeMaxOutputTokenCount MaxOutputTokenCount { get; set; }
         public IDictionary<string, BinaryData> Metadata { get; }
-        public IList<GARealtimeItem> Output { get; }
+        public IList<GARealtimeItem> OutputItems { get; }
         public IList<GARealtimeOutputModality> OutputModalities { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -4782,7 +4812,7 @@ namespace OpenAI.Realtime {
         public GARealtimeResponseDefaultConversationConfiguration? DefaultConversationConfiguration { get; set; }
         public IList<GARealtimeItem> InputItems { get; }
         public string Instructions { get; set; }
-        public int? MaxOutputTokenCount { get; set; }
+        public GARealtimeMaxOutputTokenCount MaxOutputTokenCount { get; set; }
         public IDictionary<string, BinaryData> Metadata { get; set; }
         public IList<GARealtimeOutputModality> OutputModalities { get; }
         [Serialization.JsonIgnore]
@@ -4796,7 +4826,7 @@ namespace OpenAI.Realtime {
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class GARealtimeResponseOutputAudioOptions : IJsonModel<GARealtimeResponseOutputAudioOptions>, IPersistableModel<GARealtimeResponseOutputAudioOptions> {
-        public GARealtimeAudioFormat Format { get; set; }
+        public GARealtimeAudioFormat AudioFormat { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
@@ -4895,10 +4925,37 @@ namespace OpenAI.Realtime {
         protected virtual GARealtimeResponseUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
+    public class GARealtimeRetentionRatioTokenLimitDetails : IJsonModel<GARealtimeRetentionRatioTokenLimitDetails>, IPersistableModel<GARealtimeRetentionRatioTokenLimitDetails> {
+        public int? MaxPostInstructionsTokenCount { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        protected virtual GARealtimeRetentionRatioTokenLimitDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual GARealtimeRetentionRatioTokenLimitDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct GARealtimeSemanticVadEagernessLevel : IEquatable<GARealtimeSemanticVadEagernessLevel> {
+        public GARealtimeSemanticVadEagernessLevel(string value);
+        public static GARealtimeSemanticVadEagernessLevel Auto { get; }
+        public static GARealtimeSemanticVadEagernessLevel High { get; }
+        public static GARealtimeSemanticVadEagernessLevel Low { get; }
+        public static GARealtimeSemanticVadEagernessLevel Medium { get; }
+        public readonly bool Equals(GARealtimeSemanticVadEagernessLevel other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(GARealtimeSemanticVadEagernessLevel left, GARealtimeSemanticVadEagernessLevel right);
+        public static implicit operator GARealtimeSemanticVadEagernessLevel(string value);
+        public static implicit operator GARealtimeSemanticVadEagernessLevel?(string value);
+        public static bool operator !=(GARealtimeSemanticVadEagernessLevel left, GARealtimeSemanticVadEagernessLevel right);
+        public override readonly string ToString();
+    }
     public class GARealtimeSemanticVadTurnDetection : GARealtimeTurnDetection, IJsonModel<GARealtimeSemanticVadTurnDetection>, IPersistableModel<GARealtimeSemanticVadTurnDetection> {
         public GARealtimeSemanticVadTurnDetection();
         public bool? CreateResponseEnabled { get; set; }
-        public GARealtimeTimeSemanticVadTurnDetectionEagernessLevel? EagernessLevel { get; set; }
+        public GARealtimeSemanticVadEagernessLevel? EagernessLevel { get; set; }
         public bool? InterruptResponseEnabled { get; set; }
         protected override GARealtimeTurnDetection JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
@@ -5362,8 +5419,8 @@ namespace OpenAI.Realtime {
     }
     public class GARealtimeServerVadTurnDetection : GARealtimeTurnDetection, IJsonModel<GARealtimeServerVadTurnDetection>, IPersistableModel<GARealtimeServerVadTurnDetection> {
         public GARealtimeServerVadTurnDetection();
-        public float? ActivationThreshold { get; set; }
         public bool? CreateResponseEnabled { get; set; }
+        public float? DetectionThreshold { get; set; }
         public TimeSpan? IdleTimeout { get; set; }
         public bool? InterruptResponseEnabled { get; set; }
         public TimeSpan? PrefixPadding { get; set; }
@@ -5390,23 +5447,6 @@ namespace OpenAI.Realtime {
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual GARealtimeSessionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public readonly partial struct GARealtimeTimeSemanticVadTurnDetectionEagernessLevel : IEquatable<GARealtimeTimeSemanticVadTurnDetectionEagernessLevel> {
-        public GARealtimeTimeSemanticVadTurnDetectionEagernessLevel(string value);
-        public static GARealtimeTimeSemanticVadTurnDetectionEagernessLevel Auto { get; }
-        public static GARealtimeTimeSemanticVadTurnDetectionEagernessLevel High { get; }
-        public static GARealtimeTimeSemanticVadTurnDetectionEagernessLevel Low { get; }
-        public static GARealtimeTimeSemanticVadTurnDetectionEagernessLevel Medium { get; }
-        public readonly bool Equals(GARealtimeTimeSemanticVadTurnDetectionEagernessLevel other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(GARealtimeTimeSemanticVadTurnDetectionEagernessLevel left, GARealtimeTimeSemanticVadTurnDetectionEagernessLevel right);
-        public static implicit operator GARealtimeTimeSemanticVadTurnDetectionEagernessLevel(string value);
-        public static implicit operator GARealtimeTimeSemanticVadTurnDetectionEagernessLevel?(string value);
-        public static bool operator !=(GARealtimeTimeSemanticVadTurnDetectionEagernessLevel left, GARealtimeTimeSemanticVadTurnDetectionEagernessLevel right);
-        public override readonly string ToString();
     }
     public class GARealtimeTool : IJsonModel<GARealtimeTool>, IPersistableModel<GARealtimeTool> {
         [Serialization.JsonIgnore]
@@ -5494,6 +5534,7 @@ namespace OpenAI.Realtime {
         [EditorBrowsable(EditorBrowsableState.Never)]
         public ref JsonPatch Patch { get; }
         public GARealtimeTurnDetection TurnDetection { get; set; }
+        public void DisableTurnDetection();
         protected virtual GARealtimeTranscriptionSessionInputAudioOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual GARealtimeTranscriptionSessionInputAudioOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -5542,16 +5583,6 @@ namespace OpenAI.Realtime {
         public static implicit operator GARealtimeTruncation(GARealtimeCustomTruncation customTruncation);
         public static implicit operator GARealtimeTruncation(GARealtimeDefaultTruncation defaultTruncation);
         protected virtual GARealtimeTruncation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class GARealtimeTrunctionTokenLimits : IJsonModel<GARealtimeTrunctionTokenLimits>, IPersistableModel<GARealtimeTrunctionTokenLimits> {
-        public int? MaxPostInstructionsTokenCount { get; set; }
-        [Serialization.JsonIgnore]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public ref JsonPatch Patch { get; }
-        protected virtual GARealtimeTrunctionTokenLimits JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual GARealtimeTrunctionTokenLimits PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class GARealtimeTurnDetection : IJsonModel<GARealtimeTurnDetection>, IPersistableModel<GARealtimeTurnDetection> {
@@ -5920,16 +5951,14 @@ namespace OpenAI.Realtime {
         protected internal RealtimeSession(ApiKeyCredential credential, RealtimeClient parentClient, Uri endpoint, string model, string intent);
         public Net.WebSockets.WebSocket WebSocket { get; protected set; }
         public virtual void AddItem(RealtimeItem item, string previousItemId, CancellationToken cancellationToken = default);
-        public virtual void AddItem(RealtimeItem item, CancellationToken cancellationToken = default);
-        public virtual Task AddItemAsync(RealtimeItem item, string previousItemId, CancellationToken cancellationToken = default);
-        public virtual Task AddItemAsync(RealtimeItem item, CancellationToken cancellationToken = default);
+        public virtual Task AddItemAsync(GARealtimeClientCommandConversationItemCreate command, CancellationToken cancellationToken = default);
         public virtual void CancelResponse(CancellationToken cancellationToken = default);
         public virtual Task CancelResponseAsync(CancellationToken cancellationToken = default);
         public virtual void ClearInputAudio(CancellationToken cancellationToken = default);
         public virtual Task ClearInputAudioAsync(CancellationToken cancellationToken = default);
         public virtual void CommitPendingAudio(CancellationToken cancellationToken = default);
         public virtual Task CommitPendingAudioAsync(CancellationToken cancellationToken = default);
-        public virtual Task ConfigureConversationSessionAsync(ConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default);
+        public virtual Task ConfigureConversationSessionAsync(GARealtimeClientCommandSessionUpdate command, CancellationToken cancellationToken = default);
         public virtual void ConfigureSession(ConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default);
         public virtual void ConfigureTranscriptionSession(TranscriptionSessionOptions sessionOptions, CancellationToken cancellationToken = default);
         public virtual Task ConfigureTranscriptionSessionAsync(TranscriptionSessionOptions sessionOptions, CancellationToken cancellationToken = default);
@@ -5954,8 +5983,7 @@ namespace OpenAI.Realtime {
         public virtual Task SendInputAudioAsync(Stream audio, CancellationToken cancellationToken = default);
         public virtual void StartResponse(ConversationResponseOptions options, CancellationToken cancellationToken = default);
         public void StartResponse(CancellationToken cancellationToken = default);
-        public virtual Task StartResponseAsync(ConversationResponseOptions options, CancellationToken cancellationToken = default);
-        public virtual Task StartResponseAsync(CancellationToken cancellationToken = default);
+        public virtual Task StartResponseAsync(GARealtimeClientCommandResponseCreate command, CancellationToken cancellationToken = default);
         public virtual void TruncateItem(string itemId, int contentPartIndex, TimeSpan audioDuration, CancellationToken cancellationToken = default);
         public virtual Task TruncateItemAsync(string itemId, int contentPartIndex, TimeSpan audioDuration, CancellationToken cancellationToken = default);
     }

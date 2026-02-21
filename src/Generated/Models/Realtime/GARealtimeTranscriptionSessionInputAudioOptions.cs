@@ -37,5 +37,7 @@ namespace OpenAI.Realtime
         public ref JsonPatch Patch => ref _patch;
 
         public GARealtimeNoiseReduction NoiseReduction { get; set; }
+
+        public GARealtimeTurnDetection TurnDetection { get; set; }
     }
 }

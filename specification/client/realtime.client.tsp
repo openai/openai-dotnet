@@ -115,7 +115,3 @@ using TypeSpec.HttpClient.CSharp;
 
 @@dynamicModel(DotNetRealtimeDefaultMaxOutputTokenCount_GA);
 @@dynamicModel(DotNetRealtimeMaxOutputTokenCount_GA);
-
-@@dynamicModel(DotNetRealtimeDefaultTurnDetection_GA);
-@@dynamicModel(DotNetRealtimeTurnDetection_GA);
-@@dynamicModel(RealtimeTurnDetectionBase_GA);

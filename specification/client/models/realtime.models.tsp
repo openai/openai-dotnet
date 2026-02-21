@@ -92,19 +92,3 @@ model DotNetRealtimeMaxOutputTokenCount_GA {
   default_max_output_token_count?: DotNetRealtimeDefaultMaxOutputTokenCount_GA;
   custom_max_output_token_count?: integer;
 }
-
-// This one does not exist in the REST API, but we will use to
-// be able to differentiate between null and unset.
-@access(Access.public)
-@usage(Usage.input | Usage.output)
-union DotNetRealtimeDefaultTurnDetection_GA {
-  string,
-  disabled: "disabled",
-}
-
-@access(Access.public)
-@usage(Usage.input | Usage.output)
-model DotNetRealtimeTurnDetection_GA {
-  default_turn_detection?: DotNetRealtimeDefaultTurnDetection_GA;
-  custom_turn_detection?: RealtimeTurnDetectionBase_GA;
-}
