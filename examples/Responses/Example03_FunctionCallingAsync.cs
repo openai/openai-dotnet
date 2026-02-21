@@ -19,7 +19,7 @@ public partial class ResponseExamples
     [Test]
     public async Task Example03_FunctionCallingAsync()
     {
-        ResponsesClient client = new(model: "gpt-5", apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+        ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
         List<ResponseItem> inputItems =
         [
@@ -36,6 +36,7 @@ public partial class ResponseExamples
 
             CreateResponseOptions options = new(inputItems)
             {
+                Model = "gpt-5",
                 Tools = { getCurrentLocationTool, getCurrentWeatherTool },
             };
 
