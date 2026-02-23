@@ -165,7 +165,7 @@ model Response {
   output: OutputItem[];
 
   /**
-   * A system (or developer) message inserted into the model's context.
+   * A collection of system (or developer) messages inserted into the model's context.
    * When using along with previous_response_id, the instructions from a previous response will not be carried over to the next response.
    * This makes it simple to swap out system (or developer) messages in new responses.
    */

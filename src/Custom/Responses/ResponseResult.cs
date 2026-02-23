@@ -11,6 +11,7 @@ namespace OpenAI.Responses;
 // - Suppressed client-only OutputText property in favor of a method.
 [CodeGenType("Response")]
 [CodeGenSuppress("OutputText")]
+[CodeGenSerialization(nameof(Instructions), DeserializationValueHook = nameof(DeserializeInstructions))]
 public partial class ResponseResult
 {
     // CUSTOM: Renamed.
@@ -70,10 +71,10 @@ public partial class ResponseResult
     [EditorBrowsable(EditorBrowsableState.Never)]
     public string Object { get; set; } = "response";
 
-    // CUSTOM: Changed from BinaryData to IList<ResponseItem> to support instructions returned as
+    // CUSTOM: Changed from BinaryData to IReadOnlyList<ResponseItem> to support instructions returned as
     // either a string or an array of ResponseItem.
     [CodeGenMember("Instructions")]
-    public IList<ResponseItem> Instructions { get; set; }
+    public IReadOnlyList<ResponseItem> Instructions { get; }
 
     public string GetOutputText()
     {

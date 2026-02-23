@@ -161,7 +161,11 @@ public partial class CreateResponseOptions
         clone.StoredOutputEnabled = StoredOutputEnabled;
         clone.StreamingEnabled = StreamingEnabled;
         clone.ConversationOptions = ConversationOptions;
+
+        // Short-term fix: struct copy + rewire propagators.
+        // For long term fix see https://github.com/openai/openai-dotnet/pull/966#discussion_r2839540419
         clone._patch = _patch;
+        clone._patch.SetPropagators(clone.PropagateSet, clone.PropagateGet);
 
         return clone;
     }
