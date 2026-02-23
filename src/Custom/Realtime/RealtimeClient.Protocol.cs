@@ -11,12 +11,12 @@ namespace OpenAI.Realtime;
 [CodeGenSuppress("CreateStartRealtimeSessionRequest", typeof(BinaryContent), typeof(RequestOptions))]
 public partial class RealtimeClient
 {
-    /// <summary> Starts a new <see cref="RealtimeSession"/> for multimodal conversation. </summary>
+    /// <summary> Starts a new <see cref="RealtimeSessionClient"/> for multimodal conversation. </summary>
     /// <remarks>
-    ///     The <see cref="RealtimeSession"/> abstracts bidirectional communication between the caller and service,
+    ///     The <see cref="RealtimeSessionClient"/> abstracts bidirectional communication between the caller and service,
     ///     simultaneously sending and receiving WebSocket messages.
     /// </remarks>
-    public virtual async Task<RealtimeSession> StartConversationSessionAsync(string model, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default)
+    public virtual async Task<RealtimeSessionClient> StartConversationSessionAsync(string model, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(model, nameof(model));
 
@@ -27,12 +27,12 @@ public partial class RealtimeClient
             cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
-    /// <summary> Starts a new <see cref="RealtimeSession"/> for multimodal conversation. </summary>
+    /// <summary> Starts a new <see cref="RealtimeSessionClient"/> for multimodal conversation. </summary>
     /// <remarks>
-    ///     The <see cref="RealtimeSession"/> abstracts bidirectional communication between the caller and service,
+    ///     The <see cref="RealtimeSessionClient"/> abstracts bidirectional communication between the caller and service,
     ///     simultaneously sending and receiving WebSocket messages.
     /// </remarks>
-    public RealtimeSession StartConversationSession(string model, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default)
+    public RealtimeSessionClient StartConversationSession(string model, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(model, nameof(model));
 
@@ -43,12 +43,12 @@ public partial class RealtimeClient
             cancellationToken: cancellationToken);
     }
 
-    /// <summary> Starts a new <see cref="RealtimeSession"/> for audio transcription.</summary>
+    /// <summary> Starts a new <see cref="RealtimeSessionClient"/> for audio transcription.</summary>
     /// <remarks>
-    ///     The <see cref="RealtimeSession"/> abstracts bidirectional communication between the caller and service,
+    ///     The <see cref="RealtimeSessionClient"/> abstracts bidirectional communication between the caller and service,
     ///     simultaneously sending and receiving WebSocket messages.
     /// </remarks>
-    public virtual async Task<RealtimeSession> StartTranscriptionSessionAsync(RealtimeSessionOptions options = null, CancellationToken cancellationToken = default)
+    public virtual async Task<RealtimeSessionClient> StartTranscriptionSessionAsync(RealtimeSessionOptions options = null, CancellationToken cancellationToken = default)
     {
         return await StartSessionAsync(
             model: null,
@@ -57,12 +57,12 @@ public partial class RealtimeClient
             cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
-    /// <summary> Starts a new <see cref="RealtimeSession"/> for audio transcription.</summary>
+    /// <summary> Starts a new <see cref="RealtimeSessionClient"/> for audio transcription.</summary>
     /// <remarks>
-    ///     The <see cref="RealtimeSession"/> abstracts bidirectional communication between the caller and service,
+    ///     The <see cref="RealtimeSessionClient"/> abstracts bidirectional communication between the caller and service,
     ///     simultaneously sending and receiving WebSocket messages.
     /// </remarks>
-    public RealtimeSession StartTranscriptionSession(RealtimeSessionOptions options = null, CancellationToken cancellationToken = default)
+    public RealtimeSessionClient StartTranscriptionSession(RealtimeSessionOptions options = null, CancellationToken cancellationToken = default)
     {
         return StartSession(
             model: null,
@@ -71,21 +71,21 @@ public partial class RealtimeClient
             cancellationToken: cancellationToken);
     }
 
-    /// <summary> Starts a new <see cref="RealtimeSession"/>. </summary>
+    /// <summary> Starts a new <see cref="RealtimeSessionClient"/>. </summary>
     /// <remarks>
-    ///     The <see cref="RealtimeSession"/> abstracts bidirectional communication between the caller and service,
+    ///     The <see cref="RealtimeSessionClient"/> abstracts bidirectional communication between the caller and service,
     ///     simultaneously sending and receiving WebSocket messages.
     /// </remarks>
-    public virtual async Task<RealtimeSession> StartSessionAsync(string model, string intent, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default)
+    public virtual async Task<RealtimeSessionClient> StartSessionAsync(string model, string intent, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default)
     {
         options ??= new();
 
-        RealtimeSession provisionalSession = new(_keyCredential, this, _webSocketEndpoint, model, intent);
+        RealtimeSessionClient provisionalSession = new(_keyCredential, this, _webSocketEndpoint, model, intent);
 
         try
         {
             await provisionalSession.ConnectAsync(options.QueryString, options.Headers, cancellationToken).ConfigureAwait(false);
-            RealtimeSession result = provisionalSession;
+            RealtimeSessionClient result = provisionalSession;
             provisionalSession = null;
             return result;
         }
@@ -95,12 +95,12 @@ public partial class RealtimeClient
         }
     }
 
-    /// <summary> Starts a new <see cref="RealtimeSession"/>. </summary>
+    /// <summary> Starts a new <see cref="RealtimeSessionClient"/>. </summary>
     /// <remarks>
-    ///     The <see cref="RealtimeSession"/> abstracts bidirectional communication between the caller and service,
+    ///     The <see cref="RealtimeSessionClient"/> abstracts bidirectional communication between the caller and service,
     ///     simultaneously sending and receiving WebSocket messages.
     /// </remarks>
-    public RealtimeSession StartSession(string model, string intent, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default)
+    public RealtimeSessionClient StartSession(string model, string intent, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default)
     {
         return StartSessionAsync(model, intent, options, cancellationToken).ConfigureAwait(false).GetAwaiter().GetResult();
     }

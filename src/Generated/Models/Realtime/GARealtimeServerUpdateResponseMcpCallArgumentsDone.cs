@@ -38,7 +38,5 @@ namespace OpenAI.Realtime
         public string ItemId { get; }
 
         public int OutputIndex { get; }
-
-        public BinaryData ToolArguments { get; }
     }
 }

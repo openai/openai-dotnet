@@ -20,11 +20,11 @@ namespace OpenAI.Realtime
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal GARealtimeResponseUsage(int? totalTokens, int? inputTokens, int? outputTokens, GARealtimeResponseInputTokenUsageDetails inputTokenDetails, GARealtimeResponseOutputTokenUsageDetails outputTokenDetails, in JsonPatch patch)
+        internal GARealtimeResponseUsage(int? totalTokenCount, int? inputTokenCount, int? outputTokenCount, GARealtimeResponseInputTokenUsageDetails inputTokenDetails, GARealtimeResponseOutputTokenUsageDetails outputTokenDetails, in JsonPatch patch)
         {
-            TotalTokens = totalTokens;
-            InputTokens = inputTokens;
-            OutputTokens = outputTokens;
+            TotalTokenCount = totalTokenCount;
+            InputTokenCount = inputTokenCount;
+            OutputTokenCount = outputTokenCount;
             InputTokenDetails = inputTokenDetails;
             OutputTokenDetails = outputTokenDetails;
             _patch = patch;
@@ -36,12 +36,6 @@ namespace OpenAI.Realtime
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
-
-        public int? TotalTokens { get; }
-
-        public int? InputTokens { get; }
-
-        public int? OutputTokens { get; }
 
         public GARealtimeResponseInputTokenUsageDetails InputTokenDetails { get; }
 

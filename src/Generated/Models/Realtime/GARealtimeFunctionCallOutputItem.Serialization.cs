@@ -60,9 +60,9 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("call_id"u8);
                 writer.WriteStringValue(CallId);
             }
-            if (!Patch.Contains("$.FunctionOutput"u8))
+            if (!Patch.Contains("$.output"u8))
             {
-                writer.WritePropertyName("FunctionOutput"u8);
+                writer.WritePropertyName("output"u8);
                 writer.WriteStringValue(FunctionOutput);
             }
 
@@ -133,7 +133,7 @@ namespace OpenAI.Realtime
                     callId = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("FunctionOutput"u8))
+                if (prop.NameEquals("output"u8))
                 {
                     functionOutput = prop.Value.GetString();
                     continue;

@@ -63,13 +63,13 @@ namespace OpenAI.Realtime
             {
                 writer.WritePropertyName("tools"u8);
                 writer.WriteStartArray();
-                for (int i = 0; i < Tools.Count; i++)
+                for (int i = 0; i < ToolDefinitions.Count; i++)
                 {
-                    if (Tools[i].Patch.IsRemoved("$"u8))
+                    if (ToolDefinitions[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
-                    writer.WriteObjectValue(Tools[i], options);
+                    writer.WriteObjectValue(ToolDefinitions[i], options);
                 }
                 Patch.WriteTo(writer, "$.tools"u8);
                 writer.WriteEndArray();
@@ -104,7 +104,7 @@ namespace OpenAI.Realtime
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string id = default;
             string serverLabel = default;
-            IList<GARealtimeMcpToolDefinition> tools = default;
+            IList<GARealtimeMcpToolDefinition> toolDefinitions = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -129,12 +129,12 @@ namespace OpenAI.Realtime
                     {
                         array.Add(GARealtimeMcpToolDefinition.DeserializeGARealtimeMcpToolDefinition(item, item.GetUtf8Bytes(), options));
                     }
-                    tools = array;
+                    toolDefinitions = array;
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new GARealtimeMcpToolDefinitionListItem(kind, patch, id, serverLabel, tools);
+            return new GARealtimeMcpToolDefinitionListItem(kind, patch, id, serverLabel, toolDefinitions);
         }
 
         BinaryData IPersistableModel<GARealtimeMcpToolDefinitionListItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -184,7 +184,7 @@ namespace OpenAI.Realtime
                 {
                     return false;
                 }
-                return Tools[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+                return ToolDefinitions[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
             }
             return false;
         }
@@ -203,7 +203,7 @@ namespace OpenAI.Realtime
                 {
                     return false;
                 }
-                Tools[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                ToolDefinitions[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
                 return true;
             }
             return false;

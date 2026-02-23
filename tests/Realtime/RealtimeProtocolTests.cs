@@ -26,7 +26,7 @@ public class RealtimeProtocolTests : RealtimeTestFixtureBase
     public async Task ProtocolCanConfigureSession()
     {
         RealtimeClient client = GetTestClient();
-        using RealtimeSession session = await client.StartConversationSessionAsync(
+        using RealtimeSessionClient session = await client.StartConversationSessionAsync(
             model: GetTestModel(),
             cancellationToken: CancellationToken);
 

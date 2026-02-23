@@ -11,7 +11,7 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class GARealtimeServerUpdateResponseFunctionCallArgumentsDone : GARealtimeServerUpdate
     {
-        internal GARealtimeServerUpdateResponseFunctionCallArgumentsDone(string eventId, string responseId, string itemId, int outputIndex, string callId, BinaryData functionArguments, string name) : base(InternalRealtimeServerEventTypeGA.ResponseFunctionCallArgumentsDone)
+        internal GARealtimeServerUpdateResponseFunctionCallArgumentsDone(string eventId, string responseId, string itemId, int outputIndex, string callId, BinaryData functionArguments, string functionName) : base(InternalRealtimeServerEventTypeGA.ResponseFunctionCallArgumentsDone)
         {
             EventId = eventId;
             ResponseId = responseId;
@@ -19,11 +19,11 @@ namespace OpenAI.Realtime
             OutputIndex = outputIndex;
             CallId = callId;
             FunctionArguments = functionArguments;
-            Name = name;
+            FunctionName = functionName;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal GARealtimeServerUpdateResponseFunctionCallArgumentsDone(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, string responseId, string itemId, int outputIndex, string callId, BinaryData functionArguments, string name) : base(kind, patch)
+        internal GARealtimeServerUpdateResponseFunctionCallArgumentsDone(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, string responseId, string itemId, int outputIndex, string callId, BinaryData functionArguments, string functionName) : base(kind, patch)
         {
             EventId = eventId;
             ResponseId = responseId;
@@ -31,7 +31,7 @@ namespace OpenAI.Realtime
             OutputIndex = outputIndex;
             CallId = callId;
             FunctionArguments = functionArguments;
-            Name = name;
+            FunctionName = functionName;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
@@ -44,9 +44,5 @@ namespace OpenAI.Realtime
         public int OutputIndex { get; }
 
         public string CallId { get; }
-
-        public BinaryData FunctionArguments { get; }
-
-        public string Name { get; }
     }
 }

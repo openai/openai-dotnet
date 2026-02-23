@@ -35,30 +35,30 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(GARealtimeResponseInputTokenUsageDetails)} does not support writing '{format}' format.");
             }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(CachedTokens) && !Patch.Contains("$.cached_tokens"u8))
+            if (Optional.IsDefined(CachedTokenCount) && !Patch.Contains("$.cached_tokens"u8))
             {
                 writer.WritePropertyName("cached_tokens"u8);
-                writer.WriteNumberValue(CachedTokens.Value);
+                writer.WriteNumberValue(CachedTokenCount.Value);
             }
-            if (Optional.IsDefined(TextTokens) && !Patch.Contains("$.text_tokens"u8))
+            if (Optional.IsDefined(TextTokenCount) && !Patch.Contains("$.text_tokens"u8))
             {
                 writer.WritePropertyName("text_tokens"u8);
-                writer.WriteNumberValue(TextTokens.Value);
+                writer.WriteNumberValue(TextTokenCount.Value);
             }
-            if (Optional.IsDefined(ImageTokens) && !Patch.Contains("$.image_tokens"u8))
+            if (Optional.IsDefined(ImageTokenCount) && !Patch.Contains("$.image_tokens"u8))
             {
                 writer.WritePropertyName("image_tokens"u8);
-                writer.WriteNumberValue(ImageTokens.Value);
+                writer.WriteNumberValue(ImageTokenCount.Value);
             }
-            if (Optional.IsDefined(AudioTokens) && !Patch.Contains("$.audio_tokens"u8))
+            if (Optional.IsDefined(AudioTokenCount) && !Patch.Contains("$.audio_tokens"u8))
             {
                 writer.WritePropertyName("audio_tokens"u8);
-                writer.WriteNumberValue(AudioTokens.Value);
+                writer.WriteNumberValue(AudioTokenCount.Value);
             }
-            if (Optional.IsDefined(CachedTokensDetails) && !Patch.Contains("$.cached_tokens_details"u8))
+            if (Optional.IsDefined(CachedTokenDetails) && !Patch.Contains("$.cached_tokens_details"u8))
             {
                 writer.WritePropertyName("cached_tokens_details"u8);
-                writer.WriteObjectValue(CachedTokensDetails, options);
+                writer.WriteObjectValue(CachedTokenDetails, options);
             }
 
             Patch.WriteTo(writer);
@@ -84,11 +84,11 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            int? cachedTokens = default;
-            int? textTokens = default;
-            int? imageTokens = default;
-            int? audioTokens = default;
-            GARealtimeResponseInputCachedTokenUsageDetails cachedTokensDetails = default;
+            int? cachedTokenCount = default;
+            int? textTokenCount = default;
+            int? imageTokenCount = default;
+            int? audioTokenCount = default;
+            GARealtimeResponseInputCachedTokenUsageDetails cachedTokenDetails = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -100,7 +100,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    cachedTokens = prop.Value.GetInt32();
+                    cachedTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("text_tokens"u8))
@@ -109,7 +109,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    textTokens = prop.Value.GetInt32();
+                    textTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("image_tokens"u8))
@@ -118,7 +118,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    imageTokens = prop.Value.GetInt32();
+                    imageTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("audio_tokens"u8))
@@ -127,7 +127,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    audioTokens = prop.Value.GetInt32();
+                    audioTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("cached_tokens_details"u8))
@@ -136,17 +136,17 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    cachedTokensDetails = GARealtimeResponseInputCachedTokenUsageDetails.DeserializeGARealtimeResponseInputCachedTokenUsageDetails(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    cachedTokenDetails = GARealtimeResponseInputCachedTokenUsageDetails.DeserializeGARealtimeResponseInputCachedTokenUsageDetails(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new GARealtimeResponseInputTokenUsageDetails(
-                cachedTokens,
-                textTokens,
-                imageTokens,
-                audioTokens,
-                cachedTokensDetails,
+                cachedTokenCount,
+                textTokenCount,
+                imageTokenCount,
+                audioTokenCount,
+                cachedTokenDetails,
                 patch);
         }
 
@@ -191,7 +191,7 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("cached_tokens_details"u8))
             {
-                return CachedTokensDetails.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("cached_tokens_details"u8.Length)], out value);
+                return CachedTokenDetails.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("cached_tokens_details"u8.Length)], out value);
             }
             return false;
         }
@@ -204,7 +204,7 @@ namespace OpenAI.Realtime
 
             if (local.StartsWith("cached_tokens_details"u8))
             {
-                CachedTokensDetails.Patch.Set([.. "$"u8, .. local.Slice("cached_tokens_details"u8.Length)], value);
+                CachedTokenDetails.Patch.Set([.. "$"u8, .. local.Slice("cached_tokens_details"u8.Length)], value);
                 return true;
             }
             return false;

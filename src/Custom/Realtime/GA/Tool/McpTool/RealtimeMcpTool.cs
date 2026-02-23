@@ -38,4 +38,12 @@ public partial class GARealtimeMcpTool
     // - Changed type from BinaryData (generated from the original union) to a custom type.
     [CodeGenMember("RequireApproval")]
     public GARealtimeMcpToolCallApprovalPolicy ToolCallApprovalPolicy { get; set; }
+
+    // CUSTOM: Renamed.
+    [CodeGenMember("ServerUrl")]
+    public Uri ServerUri { get; set; }
+
+    // CUSTOM: Renamed.
+    [CodeGenMember("Authorization")]
+    public string AuthorizationToken { get; set; }
 }

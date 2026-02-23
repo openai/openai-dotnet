@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Realtime;
 
-public partial class RealtimeSession
+public partial class RealtimeSessionClient
 {
     private readonly SemaphoreSlim _clientSendSemaphore = new(initialCount: 1, maxCount: 1);
     private readonly object _singleReceiveLock = new();

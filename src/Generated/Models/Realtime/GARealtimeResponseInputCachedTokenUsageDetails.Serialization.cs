@@ -35,20 +35,20 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(GARealtimeResponseInputCachedTokenUsageDetails)} does not support writing '{format}' format.");
             }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(TextTokens) && !Patch.Contains("$.text_tokens"u8))
+            if (Optional.IsDefined(TextTokenCount) && !Patch.Contains("$.text_tokens"u8))
             {
                 writer.WritePropertyName("text_tokens"u8);
-                writer.WriteNumberValue(TextTokens.Value);
+                writer.WriteNumberValue(TextTokenCount.Value);
             }
-            if (Optional.IsDefined(ImageTokens) && !Patch.Contains("$.image_tokens"u8))
+            if (Optional.IsDefined(ImageTokenCount) && !Patch.Contains("$.image_tokens"u8))
             {
                 writer.WritePropertyName("image_tokens"u8);
-                writer.WriteNumberValue(ImageTokens.Value);
+                writer.WriteNumberValue(ImageTokenCount.Value);
             }
-            if (Optional.IsDefined(AudioTokens) && !Patch.Contains("$.audio_tokens"u8))
+            if (Optional.IsDefined(AudioTokenCount) && !Patch.Contains("$.audio_tokens"u8))
             {
                 writer.WritePropertyName("audio_tokens"u8);
-                writer.WriteNumberValue(AudioTokens.Value);
+                writer.WriteNumberValue(AudioTokenCount.Value);
             }
 
             Patch.WriteTo(writer);
@@ -74,9 +74,9 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            int? textTokens = default;
-            int? imageTokens = default;
-            int? audioTokens = default;
+            int? textTokenCount = default;
+            int? imageTokenCount = default;
+            int? audioTokenCount = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -88,7 +88,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    textTokens = prop.Value.GetInt32();
+                    textTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("image_tokens"u8))
@@ -97,7 +97,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    imageTokens = prop.Value.GetInt32();
+                    imageTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("audio_tokens"u8))
@@ -106,12 +106,12 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    audioTokens = prop.Value.GetInt32();
+                    audioTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new GARealtimeResponseInputCachedTokenUsageDetails(textTokens, imageTokens, audioTokens, patch);
+            return new GARealtimeResponseInputCachedTokenUsageDetails(textTokenCount, imageTokenCount, audioTokenCount, patch);
         }
 
         BinaryData IPersistableModel<GARealtimeResponseInputCachedTokenUsageDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

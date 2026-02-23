@@ -12,6 +12,10 @@ namespace OpenAI.Realtime
 {
     public partial class GARealtimeNoiseReduction : IJsonModel<GARealtimeNoiseReduction>
     {
+        internal GARealtimeNoiseReduction()
+        {
+        }
+
         void IJsonModel<GARealtimeNoiseReduction>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -35,10 +39,10 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(GARealtimeNoiseReduction)} does not support writing '{format}' format.");
             }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Kind) && !Patch.Contains("$.type"u8))
+            if (!Patch.Contains("$.type"u8))
             {
                 writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind.Value.ToString());
+                writer.WriteStringValue(Kind.ToString());
             }
 
             Patch.WriteTo(writer);
@@ -64,7 +68,7 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            GARealtimeNoiseReductionKind? kind = default;
+            GARealtimeNoiseReductionKind kind = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -72,10 +76,6 @@ namespace OpenAI.Realtime
             {
                 if (prop.NameEquals("type"u8))
                 {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
                     kind = new GARealtimeNoiseReductionKind(prop.Value.GetString());
                     continue;
                 }

@@ -8,7 +8,7 @@ namespace OpenAI.Realtime;
 /// established. This is typically received immediately following connection and the <c>session</c> properties reflect
 /// the initial, default state of the session. Configuration changes can be made via the <c>session.update</c> request
 /// command
-/// (<see cref="RealtimeSession.ConfigureConversationSessionAsync(OpenAI.Realtime.ConversationSessionOptions, System.Threading.CancellationToken)"/>).
+/// (<see cref="RealtimeSessionClient.ConfigureConversationSessionAsync(OpenAI.Realtime.ConversationSessionOptions, System.Threading.CancellationToken)"/>).
 /// </summary>
 [CodeGenType("RealtimeServerEventSessionCreated")]
 public partial class ConversationSessionStartedUpdate

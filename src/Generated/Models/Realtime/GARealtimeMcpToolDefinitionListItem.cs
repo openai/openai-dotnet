@@ -13,22 +13,22 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class GARealtimeMcpToolDefinitionListItem : GARealtimeItem
     {
-        public GARealtimeMcpToolDefinitionListItem(string serverLabel, IEnumerable<GARealtimeMcpToolDefinition> tools) : base(InternalRealtimeConversationItemTypeGA.McpListTools)
+        public GARealtimeMcpToolDefinitionListItem(string serverLabel, IEnumerable<GARealtimeMcpToolDefinition> toolDefinitions) : base(InternalRealtimeConversationItemTypeGA.McpListTools)
         {
             Argument.AssertNotNull(serverLabel, nameof(serverLabel));
-            Argument.AssertNotNull(tools, nameof(tools));
+            Argument.AssertNotNull(toolDefinitions, nameof(toolDefinitions));
 
             ServerLabel = serverLabel;
-            Tools = tools.ToList();
+            ToolDefinitions = toolDefinitions.ToList();
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal GARealtimeMcpToolDefinitionListItem(InternalRealtimeConversationItemTypeGA kind, in JsonPatch patch, string id, string serverLabel, IList<GARealtimeMcpToolDefinition> tools) : base(kind, patch)
+        internal GARealtimeMcpToolDefinitionListItem(InternalRealtimeConversationItemTypeGA kind, in JsonPatch patch, string id, string serverLabel, IList<GARealtimeMcpToolDefinition> toolDefinitions) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             Id = id;
             ServerLabel = serverLabel;
-            Tools = tools ?? new ChangeTrackingList<GARealtimeMcpToolDefinition>();
+            ToolDefinitions = toolDefinitions ?? new ChangeTrackingList<GARealtimeMcpToolDefinition>();
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -36,7 +36,5 @@ namespace OpenAI.Realtime
         public string Id { get; set; }
 
         public string ServerLabel { get; set; }
-
-        public IList<GARealtimeMcpToolDefinition> Tools { get; }
     }
 }

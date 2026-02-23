@@ -40,7 +40,7 @@ namespace OpenAI.Realtime
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.id"u8))
+            if (Optional.IsDefined(Id) && !Patch.Contains("$.id"u8))
             {
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
@@ -50,9 +50,9 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("approval_request_id"u8);
                 writer.WriteStringValue(ApprovalRequestId);
             }
-            if (!Patch.Contains("$.Approved"u8))
+            if (!Patch.Contains("$.approve"u8))
             {
-                writer.WritePropertyName("Approved"u8);
+                writer.WritePropertyName("approve"u8);
                 writer.WriteBooleanValue(Approved);
             }
             if (Optional.IsDefined(Reason) && !Patch.Contains("$.reason"u8))
@@ -109,7 +109,7 @@ namespace OpenAI.Realtime
                     approvalRequestId = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("Approved"u8))
+                if (prop.NameEquals("approve"u8))
                 {
                     approved = prop.Value.GetBoolean();
                     continue;

@@ -11,12 +11,10 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class GARealtimeMcpToolCallApprovalResponseItem : GARealtimeItem
     {
-        public GARealtimeMcpToolCallApprovalResponseItem(string id, string approvalRequestId, bool approved) : base(InternalRealtimeConversationItemTypeGA.McpApprovalResponse)
+        public GARealtimeMcpToolCallApprovalResponseItem(string approvalRequestId, bool approved) : base(InternalRealtimeConversationItemTypeGA.McpApprovalResponse)
         {
-            Argument.AssertNotNull(id, nameof(id));
             Argument.AssertNotNull(approvalRequestId, nameof(approvalRequestId));
 
-            Id = id;
             ApprovalRequestId = approvalRequestId;
             Approved = approved;
         }
@@ -34,8 +32,6 @@ namespace OpenAI.Realtime
         public string Id { get; set; }
 
         public string ApprovalRequestId { get; set; }
-
-        public bool Approved { get; set; }
 
         public string Reason { get; set; }
     }

@@ -60,9 +60,9 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("output_index"u8);
                 writer.WriteNumberValue(OutputIndex);
             }
-            if (!Patch.Contains("$.ToolArguments"u8))
+            if (!Patch.Contains("$.arguments"u8))
             {
-                writer.WritePropertyName("ToolArguments"u8);
+                writer.WritePropertyName("arguments"u8);
                 SerializeToolArgumentsValue(writer, options);
             }
 
@@ -125,7 +125,7 @@ namespace OpenAI.Realtime
                     outputIndex = prop.Value.GetInt32();
                     continue;
                 }
-                if (prop.NameEquals("ToolArguments"u8))
+                if (prop.NameEquals("arguments"u8))
                 {
                     DeserializeToolArgumentsValue(prop, ref toolArguments);
                     continue;

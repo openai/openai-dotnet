@@ -38,7 +38,5 @@ namespace OpenAI.Realtime
         public GARealtimeFunctionCallOutputStatus? Status { get; set; }
 
         public string CallId { get; set; }
-
-        public string FunctionOutput { get; set; }
     }
 }

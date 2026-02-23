@@ -12,11 +12,13 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class GARealtimeFunctionCallItem : GARealtimeItem
     {
-        public GARealtimeFunctionCallItem(string functionName, BinaryData functionArguments) : base(InternalRealtimeConversationItemTypeGA.FunctionCall)
+        public GARealtimeFunctionCallItem(string callId, string functionName, BinaryData functionArguments) : base(InternalRealtimeConversationItemTypeGA.FunctionCall)
         {
+            Argument.AssertNotNull(callId, nameof(callId));
             Argument.AssertNotNull(functionName, nameof(functionName));
             Argument.AssertNotNull(functionArguments, nameof(functionArguments));
 
+            CallId = callId;
             FunctionName = functionName;
             FunctionArguments = functionArguments;
         }
@@ -40,9 +42,5 @@ namespace OpenAI.Realtime
         public GARealtimeFunctionCallStatus? Status { get; set; }
 
         public string CallId { get; set; }
-
-        public string FunctionName { get; set; }
-
-        public BinaryData FunctionArguments { get; set; }
     }
 }

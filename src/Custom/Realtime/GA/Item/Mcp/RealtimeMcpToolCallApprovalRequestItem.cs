@@ -1,4 +1,5 @@
 ﻿using Microsoft.TypeSpec.Generator.Customizations;
+using System;
 
 namespace OpenAI.Realtime;
 
@@ -6,4 +7,13 @@ namespace OpenAI.Realtime;
 [CodeGenType("RealtimeMCPApprovalRequestGA")]
 public partial class GARealtimeMcpToolCallApprovalRequestItem
 {
+    // CUSTOM: Renamed.
+    [CodeGenMember("Name")]
+    public string ToolName { get; set; }
+
+    // CUSTOM:
+    // - Renamed.
+    // - Changed type.
+    [CodeGenMember("Arguments")]
+    public BinaryData ToolArguments { get; set; }
 }

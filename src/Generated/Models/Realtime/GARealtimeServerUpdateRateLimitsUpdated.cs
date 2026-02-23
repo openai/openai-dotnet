@@ -13,24 +13,22 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class GARealtimeServerUpdateRateLimitsUpdated : GARealtimeServerUpdate
     {
-        internal GARealtimeServerUpdateRateLimitsUpdated(string eventId, IEnumerable<GARealtimeRateLimitDetails> rateLimits) : base(InternalRealtimeServerEventTypeGA.RateLimitsUpdated)
+        internal GARealtimeServerUpdateRateLimitsUpdated(string eventId, IEnumerable<GARealtimeRateLimitDetails> rateLimitDetails) : base(InternalRealtimeServerEventTypeGA.RateLimitsUpdated)
         {
             EventId = eventId;
-            RateLimits = rateLimits.ToList();
+            RateLimitDetails = rateLimitDetails.ToList();
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal GARealtimeServerUpdateRateLimitsUpdated(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, IList<GARealtimeRateLimitDetails> rateLimits) : base(kind, patch)
+        internal GARealtimeServerUpdateRateLimitsUpdated(InternalRealtimeServerEventTypeGA kind, in JsonPatch patch, string eventId, IList<GARealtimeRateLimitDetails> rateLimitDetails) : base(kind, patch)
         {
             // Plugin customization: ensure initialization of collections
             EventId = eventId;
-            RateLimits = rateLimits ?? new ChangeTrackingList<GARealtimeRateLimitDetails>();
+            RateLimitDetails = rateLimitDetails ?? new ChangeTrackingList<GARealtimeRateLimitDetails>();
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public string EventId { get; }
-
-        public IList<GARealtimeRateLimitDetails> RateLimits { get; }
     }
 }

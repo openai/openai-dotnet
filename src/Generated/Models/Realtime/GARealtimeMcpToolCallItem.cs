@@ -12,14 +12,12 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class GARealtimeMcpToolCallItem : GARealtimeItem
     {
-        public GARealtimeMcpToolCallItem(string id, string serverLabel, string toolName, BinaryData toolArguments) : base(InternalRealtimeConversationItemTypeGA.McpCall)
+        public GARealtimeMcpToolCallItem(string serverLabel, string toolName, BinaryData toolArguments) : base(InternalRealtimeConversationItemTypeGA.McpCall)
         {
-            Argument.AssertNotNull(id, nameof(id));
             Argument.AssertNotNull(serverLabel, nameof(serverLabel));
             Argument.AssertNotNull(toolName, nameof(toolName));
             Argument.AssertNotNull(toolArguments, nameof(toolArguments));
 
-            Id = id;
             ServerLabel = serverLabel;
             ToolName = toolName;
             ToolArguments = toolArguments;
@@ -43,13 +41,7 @@ namespace OpenAI.Realtime
 
         public string ServerLabel { get; set; }
 
-        public string ToolName { get; set; }
-
-        public BinaryData ToolArguments { get; set; }
-
         public string ApprovalRequestId { get; set; }
-
-        public string ToolOutput { get; set; }
 
         public GARealtimeError Error { get; set; }
     }

@@ -11,13 +11,12 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace OpenAI.Tests.Realtime;
 
 #pragma warning disable OPENAI002
 
-// [LiveOnly(Reason = "Test framework doesn't support recording with web sockets yet")]
+[LiveOnly(Reason = "Test framework doesn't support recording with web sockets yet")]
 public class RealtimeTests : RealtimeTestFixtureBase
 {
     public enum TestAudioSendType { WithAudioStreamHelper, WithManualAudioChunks }
@@ -30,15 +29,13 @@ public class RealtimeTests : RealtimeTestFixtureBase
         RealtimeClient client = GetTestClient();
 
         // Step 1: Create a default session.
-        using RealtimeSession sessionClient = await client.StartConversationSessionAsync(
+        using RealtimeSessionClient sessionClient = await client.StartConversationSessionAsync(
             model: GetTestModel(),
             cancellationToken: CancellationToken);
 
+        // Step 2: Update the session.
         string instructions = "You are a helpful assistant.";
         int maxOutputTokenCount = 2048;
-        string userMessage = "Hello, assistant! Tell me a joke.";
-
-        // Step 2: Update the session.
         GARealtimeConversationSessionOptions sessionOptions = new()
         {
             AudioOptions = new GARealtimeConversationSessionAudioOptions()
@@ -58,27 +55,22 @@ public class RealtimeTests : RealtimeTestFixtureBase
 
         sessionOptions.AudioOptions.InputAudioOptions.DisableTurnDetection();
 
-        GARealtimeClientCommandSessionUpdate sessionUpdateCommand = new(sessionOptions);
-
-        await sessionClient.ConfigureConversationSessionAsync(sessionUpdateCommand, CancellationToken);
+        await sessionClient.ConfigureConversationSessionAsync(sessionOptions, CancellationToken);
 
         // Step 3: Add a message item (role = user, kind = input text)
-        GARealtimeInputTextMessageContentPart inputText = new(userMessage);
-        GARealtimeMessageItem userMessageItem = new(GARealtimeMessageRole.User, [inputText]);
-        GARealtimeClientCommandConversationItemCreate itemCreateCommand = new(userMessageItem);
+        string userMessage = "Hello, assistant! Tell me a joke.";
+        GARealtimeInputTextMessageContentPart inputTextPart = new(userMessage);
+        GARealtimeMessageItem userMessageItem = new(GARealtimeMessageRole.User, [inputTextPart]);
 
-        await sessionClient.AddItemAsync(itemCreateCommand, CancellationToken);
+        await sessionClient.AddItemAsync(userMessageItem, CancellationToken);
 
         // Step 4: Request a text response (no audio).
-        GARealtimeClientCommandResponseCreate responseCreateCommand = new()
+        GARealtimeResponseOptions responseOptions = new()
         {
-            ResponseOptions = new()
-            {
-                OutputModalities = { GARealtimeOutputModality.Text },
-            }
+            OutputModalities = { GARealtimeOutputModality.Text },
         };
 
-        await sessionClient.StartResponseAsync(responseCreateCommand, CancellationToken);
+        await sessionClient.StartResponseAsync(responseOptions, CancellationToken);
 
         bool done = false;
         List<GARealtimeServerUpdate> receivedUpdates = [];
@@ -203,6 +195,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
                 case GARealtimeServerUpdateError errorUpdate:
                     {
                         Assert.Fail($"Error: {ModelReaderWriter.Write(errorUpdate)}");
+                        done = true;
                         break;
                     }
             }
@@ -240,702 +233,1036 @@ public class RealtimeTests : RealtimeTestFixtureBase
         Assert.That(receivedUpdates.OfType<GARealtimeServerUpdateResponseOutputAudioDone>().ToList(), Has.Count.EqualTo(0));
     }
 
-    //    [Ignore("Temporarily disabled because this test is consistently failing")]
-    //    [RecordedTest]
-    //    public async Task TextOnlyWorks()
-    //    {
-    //        RealtimeClient client = GetTestClient();
-    //        using RealtimeSession session = await client.StartConversationSessionAsync(
-    //            model: GetTestModel(),
-    //            cancellationToken: CancellationToken);
-
-    //        await session.AddItemAsync(
-    //            RealtimeItem.CreateUserMessage(["Hello, world!"]),
-    //            cancellationToken: CancellationToken);
-    //        await session.StartResponseAsync(CancellationToken);
-
-    //        StringBuilder responseBuilder = new();
-    //        bool gotResponseDone = false;
-    //        bool gotRateLimits = false;
-
-    //        await foreach (RealtimeUpdate update in session.ReceiveUpdatesAsync(CancellationToken))
-    //        {
-    //            if (update is ConversationSessionStartedUpdate sessionStartedUpdate)
-    //            {
-    //                Assert.That(sessionStartedUpdate.SessionId, Is.Not.Null.And.Not.Empty);
-    //            }
-    //            if (update is OutputDeltaUpdate deltaUpdate)
-    //            {
-    //                responseBuilder.Append(deltaUpdate.AudioTranscript);
-    //            }
-
-    //            if (update is ItemCreatedUpdate itemCreatedUpdate)
-    //            {
-    //                if (itemCreatedUpdate.MessageRole == ConversationMessageRole.Assistant)
-    //                {
-    //                    // The assistant-created item should be streamed and should not have content yet when acknowledged
-    //                    Assert.That(itemCreatedUpdate.MessageContentParts, Has.Count.EqualTo(0));
-    //                }
-    //                else if (itemCreatedUpdate.MessageRole == ConversationMessageRole.User)
-    //                {
-    //                    // When acknowledging an item added by the client (user), the text should already be there
-    //                    Assert.That(itemCreatedUpdate.MessageContentParts, Has.Count.EqualTo(1));
-    //                    Assert.That(itemCreatedUpdate.MessageContentParts[0].Text, Is.EqualTo("Hello, world!"));
-    //                }
-    //                else
-    //                {
-    //                    Assert.Fail($"Test didn't expect an acknowledged item with role: {itemCreatedUpdate.MessageRole}");
-    //                }
-    //            }
-
-    //            if (update is ResponseFinishedUpdate responseFinishedUpdate)
-    //            {
-    //                Assert.That(responseFinishedUpdate.CreatedItems, Has.Count.GreaterThan(0));
-    //                Assert.That(responseFinishedUpdate.Usage?.TotalTokenCount, Is.GreaterThan(0));
-    //                Assert.That(responseFinishedUpdate.Usage.InputTokenCount, Is.GreaterThan(0));
-    //                Assert.That(responseFinishedUpdate.Usage.OutputTokenCount, Is.GreaterThan(0));
-    //                gotResponseDone = true;
-    //                break;
-    //            }
-
-    //            if (update is RateLimitsUpdate rateLimitsUpdate)
-    //            {
-    //                Assert.That(rateLimitsUpdate.AllDetails, Has.Count.EqualTo(2));
-    //                Assert.That(rateLimitsUpdate.TokenDetails, Is.Not.Null);
-    //                Assert.That(rateLimitsUpdate.TokenDetails.Name, Is.EqualTo("tokens"));
-    //                Assert.That(rateLimitsUpdate.TokenDetails.MaximumCount, Is.GreaterThan(0));
-    //                Assert.That(rateLimitsUpdate.TokenDetails.RemainingCount, Is.GreaterThan(0));
-    //                Assert.That(rateLimitsUpdate.TokenDetails.RemainingCount, Is.LessThan(rateLimitsUpdate.TokenDetails.MaximumCount));
-    //                Assert.That(rateLimitsUpdate.TokenDetails.TimeUntilReset, Is.GreaterThan(TimeSpan.Zero));
-    //                Assert.That(rateLimitsUpdate.RequestDetails, Is.Not.Null);
-    //                gotRateLimits = true;
-    //            }
-    //        }
-
-    //        Assert.That(responseBuilder.ToString(), Is.Not.Null.Or.Empty);
-    //        Assert.That(gotResponseDone, Is.True);
-
-    //        if (!client.GetType().IsSubclassOf(typeof(RealtimeClient)))
-    //        {
-    //            // Temporarily assume that subclients don't support rate limit commands
-    //            Assert.That(gotRateLimits, Is.True);
-    //        }
-    //    }
-
-    //    [RecordedTest]
-    //    public async Task TranscriptionOnlyWorks()
-    //    {
-    //        RealtimeClient client = GetTestClient();
-    //        TranscriptionSessionOptions options = new()
-    //        {
-    //            InputAudioFormat = RealtimeAudioFormat.Pcm16,
-    //            TurnDetectionOptions = TurnDetectionOptions.CreateServerVoiceActivityTurnDetectionOptions(),
-    //            InputNoiseReductionOptions = InputNoiseReductionOptions.CreateNearFieldOptions(),
-    //            InputTranscriptionOptions = new()
-    //            {
-    //                Model = "gpt-4o-mini-transcribe",
-    //            },
-    //        };
-    //        RealtimeSession session = await client.StartTranscriptionSessionAsync(cancellationToken: CancellationToken);
-    //        await session.ConfigureTranscriptionSessionAsync(options, CancellationToken);
-
-    //        // Sending the audio in a delayed stream allows us to validate bidirectional behavior, i.e.
-    //        // transcription data arriving while audio is still being sent.
-    //        string inputPath = Path.Join("Assets", "realtime_api_description_pcm16_24khz_mono.wav");
-    //        using TestDelayedFileReadStream inputStream = new(inputPath, TimeSpan.FromMilliseconds(50), readsBeforeDelay: 2);
-    //        _ = session.SendInputAudioAsync(inputStream, CancellationToken);
-
-    //        Stopwatch stopwatch = Stopwatch.StartNew();
-
-    //        List<(RealtimeUpdate, TimeSpan, long)> updatesReceived = [];
-    //        await foreach (RealtimeUpdate update in session.ReceiveUpdatesAsync(CancellationToken))
-    //        {
-    //            updatesReceived.Add((update, stopwatch.Elapsed, inputStream.Position));
-
-    //            if (update is InputAudioTranscriptionFinishedUpdate transcriptionFinishedUpdate
-    //                && transcriptionFinishedUpdate.Transcript.Contains("the following URL"))
-    //            {
-    //                break;
-    //            }
-    //        }
-
-    //        List<(TranscriptionSessionConfiguredUpdate, TimeSpan, long)> sessionConfiguredUpdates
-    //            = updatesReceived
-    //                .Where(tuple => tuple.Item1.Kind == RealtimeUpdateKind.TranscriptionSessionConfigured)
-    //                .Select(tuple => (tuple.Item1 as TranscriptionSessionConfiguredUpdate, tuple.Item2, tuple.Item3))
-    //                .ToList();
-    //        Assert.That(sessionConfiguredUpdates, Has.Count.EqualTo(1));
-    //        List<(InputAudioTranscriptionDeltaUpdate, TimeSpan, long)> transcriptionDeltaUpdates
-    //            = updatesReceived
-    //                .Where(tuple => tuple.Item1.Kind == RealtimeUpdateKind.InputTranscriptionDelta)
-    //                .Select(tuple => (tuple.Item1 as InputAudioTranscriptionDeltaUpdate, tuple.Item2, tuple.Item3))
-    //                .ToList();
-    //        Assert.That(transcriptionDeltaUpdates, Has.Count.GreaterThan(0));
-    //        List<(InputAudioTranscriptionFinishedUpdate, TimeSpan, long)> transcriptionFinishedUpdates
-    //            = updatesReceived
-    //                .Where(tuple => tuple.Item1.Kind == RealtimeUpdateKind.InputTranscriptionFinished)
-    //                .Select(tuple => (tuple.Item1 as InputAudioTranscriptionFinishedUpdate, tuple.Item2, tuple.Item3))
-    //                .ToList();
-    //        Assert.That(transcriptionDeltaUpdates, Has.Count.GreaterThan(0));
-    //        string fullTranscriptFromDeltas
-    //            = String.Join(
-    //                string.Empty,
-    //                transcriptionDeltaUpdates
-    //                    .Select(deltaTuple => deltaTuple.Item1.Delta));
-    //        Assert.That(fullTranscriptFromDeltas.ToLower(), Does.Contain("stream the transcription"));
-
-    //        Assert.That(transcriptionDeltaUpdates.Last().Item3, Is.GreaterThan(transcriptionDeltaUpdates.First().Item3));
-    //        Assert.That(transcriptionFinishedUpdates.Last().Item3, Is.GreaterThan(transcriptionDeltaUpdates.First().Item3));
-    //    }
-
-    //    [RecordedTest]
-    //    public async Task ItemManipulationWorks()
-    //    {
-    //        RealtimeClient client = GetTestClient();
-    //        using RealtimeSession session = await client.StartConversationSessionAsync(
-    //            model: GetTestModel(),
-    //            cancellationToken: CancellationToken);
-
-    //        await session.ConfigureConversationSessionAsync(
-    //            new ConversationSessionOptions()
-    //            {
-    //                // Note: ContentModalities removed due to SDK serialization bug - "text" serializes instead of "output_text"
-    //                // TurnDetectionOptions moved to Audio.Input.TurnDetection for GA format
-    //                MaxOutputTokens = 4096,
-    //                Audio = new RealtimeSessionAudioConfiguration()
-    //                {
-    //                    Input = new RealtimeSessionAudioInputConfiguration()
-    //                    {
-    //                        TurnDetection = TurnDetectionOptions.CreateDisabledTurnDetectionOptions(),
-    //                    },
-    //                    Output = new RealtimeSessionAudioOutputConfiguration()
-    //                    {
-    //                        Voice = ConversationVoice.Alloy,
-    //                    },
-    //                },
-    //            },
-    //            CancellationToken);
-
-    //        await session.AddItemAsync(
-    //            RealtimeItem.CreateUserMessage(["The first special word you know about is 'aardvark'."]),
-    //            CancellationToken);
-    //        await session.AddItemAsync(
-    //            RealtimeItem.CreateUserMessage(["The next special word you know about is 'banana'."]),
-    //            CancellationToken);
-    //        await session.AddItemAsync(
-    //            RealtimeItem.CreateUserMessage(["The next special word you know about is 'coconut'."]),
-    //            CancellationToken);
-
-    //        bool gotSessionStarted = false;
-    //        bool gotSessionConfigured = false;
-    //        bool gotResponseFinished = false;
-
-    //        await foreach (RealtimeUpdate update in session.ReceiveUpdatesAsync(CancellationToken))
-    //        {
-    //            if (update is ConversationSessionStartedUpdate)
-    //            {
-    //                gotSessionStarted = true;
-    //            }
-
-    //            if (update is ConversationSessionConfiguredUpdate sessionConfiguredUpdate)
-    //            {
-    //                // TurnDetectionOptions may be null when disabled, or have Kind = Disabled
-    //                // The key assertion is that we don't have server-side VAD enabled
-    //                var turnDetection = sessionConfiguredUpdate.TurnDetectionOptions;
-    //                Assert.That(
-    //                    turnDetection?.Kind == null || turnDetection?.Kind == TurnDetectionKind.Disabled,
-    //                    Is.True,
-    //                    "Turn detection should be null or disabled");
-    //                // Note: ContentModalities assertion removed - SDK serialization bug prevents text-only configuration
-    //                gotSessionConfigured = true;
-    //            }
-
-    //            if (update is ItemCreatedUpdate itemCreatedUpdate)
-    //            {
-    //                if (itemCreatedUpdate.MessageContentParts.Count > 0
-    //                    && itemCreatedUpdate.MessageContentParts[0].Text.Contains("banana"))
-    //                {
-    //                    await session.DeleteItemAsync(itemCreatedUpdate.ItemId, CancellationToken);
-    //                    await session.AddItemAsync(
-    //                        RealtimeItem.CreateUserMessage(["What's the second special word you know about?"]),
-    //                        CancellationToken);
-    //                    await session.StartResponseAsync(CancellationToken);
-    //                }
-    //            }
-
-    //            if (update is ResponseFinishedUpdate responseFinishedUpdate)
-    //            {
-    //                Assert.That(responseFinishedUpdate.CreatedItems.Count, Is.EqualTo(1));
-    //                Assert.That(responseFinishedUpdate.CreatedItems[0].MessageContentParts.Count, Is.EqualTo(1));
-    //                // Note: Response contains output_audio content (not output_text) due to SDK serialization bug
-    //                // that prevents text-only modality configuration. Check AudioTranscript instead of Text.
-    //                var contentPart = responseFinishedUpdate.CreatedItems[0].MessageContentParts[0];
-    //                string responseText = contentPart.Text ?? contentPart.AudioTranscript;
-    //                Assert.That(responseText, Does.Contain("coconut"));
-    //                Assert.That(responseText, Does.Not.Contain("banana"));
-    //                gotResponseFinished = true;
-    //                break;
-    //            }
-    //        }
-
-    //        Assert.That(gotSessionStarted, Is.True);
-    //        if (!client.GetType().IsSubclassOf(typeof(RealtimeClient)))
-    //        {
-    //            Assert.That(gotSessionConfigured, Is.True);
-    //        }
-    //        Assert.That(gotResponseFinished, Is.True);
-    //    }
-
-    //    [RecordedTest]
-    //    public async Task AudioStreamConvenienceBlocksCorrectly()
-    //    {
-    //        RealtimeClient client = GetTestClient();
-    //        using RealtimeSession session = await client.StartConversationSessionAsync(
-    //            model: GetTestModel(),
-    //            cancellationToken: CancellationToken);
-
-    //        string inputAudioFilePath = Path.Join("Assets", "realtime_whats_the_weather_pcm16_24khz_mono.wav");
-    //        using TestDelayedFileReadStream delayedStream = new(inputAudioFilePath, TimeSpan.FromMilliseconds(200), readsBeforeDelay: 2);
-    //        _ = session.SendInputAudioAsync(delayedStream, CancellationToken);
-
-    //        bool gotSpeechStarted = false;
-
-    //        await foreach (RealtimeUpdate update in session.ReceiveUpdatesAsync(CancellationToken))
-    //        {
-    //            if (update is InputAudioSpeechStartedUpdate)
-    //            {
-    //                gotSpeechStarted = true;
-    //                Assert.ThrowsAsync<InvalidOperationException>(
-    //                    async () =>
-    //                    {
-    //                        using MemoryStream dummyStream = new();
-    //                        await session.SendInputAudioAsync(dummyStream, CancellationToken);
-    //                    },
-    //                    "Sending a Stream while another Stream is being sent should throw!");
-    //                Assert.ThrowsAsync<InvalidOperationException>(
-    //                    async () =>
-    //                    {
-    //                        BinaryData dummyData = BinaryData.FromString("hello, world! this isn't audio.");
-    //                        await session.SendInputAudioAsync(dummyData, CancellationToken);
-    //                    },
-    //                    "Sending BinaryData while a Stream is being sent should throw!");
-    //                break;
-    //            }
-    //        }
-
-    //        Assert.That(gotSpeechStarted, Is.True);
-    //    }
-
-    //    [RecordedTest]
-    //    [TestCase(TestAudioSendType.WithAudioStreamHelper)]
-    //    [TestCase(TestAudioSendType.WithManualAudioChunks)]
-    //    public async Task AudioWithToolsWorks(TestAudioSendType audioSendType)
-    //    {
-    //        RealtimeClient client = GetTestClient();
-    //        using RealtimeSession session = await client.StartConversationSessionAsync(
-    //            model: GetTestModel(),
-    //            cancellationToken: CancellationToken);
-
-    //        ConversationFunctionTool getWeatherTool = new("get_weather_for_location")
-    //        {
-    //            Description = "gets the weather for a location",
-    //            Parameters = BinaryData.FromString("""
-    //            {
-    //                "type": "object",
-    //                "properties": {
-    //                "location": {
-    //                    "type": "string",
-    //                    "description": "The city and state e.g. San Francisco, CA"
-    //                },
-    //                "unit": {
-    //                    "type": "string",
-    //                    "enum": [
-    //                    "c",
-    //                    "f"
-    //                    ]
-    //                }
-    //                },
-    //                "required": [
-    //                "location",
-    //                "unit"
-    //                ]
-    //            }
-    //            """)
-    //        };
-
-    //        ConversationSessionOptions options = new()
-    //        {
-    //            Instructions = "Call provided tools if appropriate for the user's input.",
-    //            ContentModalities = RealtimeContentModalities.Audio,
-    //            MaxOutputTokens = 4096,
-    //            Tools = { getWeatherTool },
-    //            Audio = new RealtimeSessionAudioConfiguration()
-    //            {
-    //                Input = new RealtimeSessionAudioInputConfiguration()
-    //                {
-    //                    Transcription = new InputTranscriptionOptions()
-    //                    {
-    //                        Model = "whisper-1"
-    //                    },
-    //                },
-    //                Output = new RealtimeSessionAudioOutputConfiguration()
-    //                {
-    //                    Voice = ConversationVoice.Alloy,
-    //                },
-    //            },
-    //        };
-
-    //        await session.ConfigureConversationSessionAsync(options, CancellationToken);
-
-    //        _ = Task.Run(async () =>
-    //        {
-    //            string inputAudioFilePath = Path.Join("Assets", "realtime_whats_the_weather_pcm16_24khz_mono.wav");
-    //            if (audioSendType == TestAudioSendType.WithAudioStreamHelper)
-    //            {
-    //                using Stream audioStream = File.OpenRead(inputAudioFilePath);
-    //                await session.SendInputAudioAsync(audioStream, CancellationToken);
-    //            }
-    //            else if (audioSendType == TestAudioSendType.WithManualAudioChunks)
-    //            {
-    //                byte[] allAudioBytes = await File.ReadAllBytesAsync(inputAudioFilePath, CancellationToken);
-    //                const int audioSendBufferLength = 8 * 1024;
-    //                byte[] audioSendBuffer = null;
-    //                try
-    //                {
-    //                    audioSendBuffer = ArrayPool<byte>.Shared.Rent(audioSendBufferLength);
-    //                    for (int readPos = 0; readPos < allAudioBytes.Length; readPos += audioSendBufferLength)
-    //                    {
-    //                        int nextSegmentLength = Math.Min(audioSendBufferLength, allAudioBytes.Length - readPos);
-    //                        ArraySegment<byte> nextSegment = new(allAudioBytes, readPos, nextSegmentLength);
-    //                        await session.SendInputAudioAsync(BinaryData.FromBytes(nextSegment), CancellationToken);
-    //                    }
-    //                }
-    //                finally
-    //                {
-    //                    if (audioSendBuffer is not null)
-    //                    {
-    //                        ArrayPool<byte>.Shared.Return(audioSendBuffer);
-    //                    }
-    //                }
-    //            }
-    //        });
-
-    //        string userTranscript = null;
-
-    //        await foreach (RealtimeUpdate update in session.ReceiveUpdatesAsync(CancellationToken))
-    //        {
-    //            if (update is ConversationSessionStartedUpdate sessionStartedUpdate)
-    //            {
-    //                Assert.That(sessionStartedUpdate.SessionId, Is.Not.Null.And.Not.Empty);
-    //                Assert.That(sessionStartedUpdate.Model, Is.Not.Null.And.Not.Empty);
-    //                // Note: Initial session state from server may have different defaults
-    //                // Voice, temperature, and modalities are verified in ConversationSessionConfiguredUpdate after configuration
-    //            }
-
-    //            if (update is ConversationSessionConfiguredUpdate sessionConfiguredUpdate)
-    //            {
-    //                // Verify our configured modalities are applied
-    //                Assert.That(sessionConfiguredUpdate.ContentModalities.HasFlag(RealtimeContentModalities.Audio), Is.True);
-    //            }
-
-    //            if (update is InputAudioTranscriptionFinishedUpdate inputTranscriptionCompletedUpdate)
-    //            {
-    //                userTranscript = inputTranscriptionCompletedUpdate.Transcript;
-    //            }
-
-    //            if (update is OutputStreamingFinishedUpdate itemFinishedUpdate
-    //                && itemFinishedUpdate.FunctionCallId is not null)
-    //            {
-    //                Assert.That(itemFinishedUpdate.FunctionName, Is.EqualTo(getWeatherTool.Name));
-
-    //                RealtimeItem functionResponse = RealtimeItem.CreateFunctionCallOutput(
-    //                    itemFinishedUpdate.FunctionCallId,
-    //                    "71 degrees Fahrenheit, sunny");
-    //                await session.AddItemAsync(functionResponse, CancellationToken);
-    //            }
-
-    //            if (update is ResponseFinishedUpdate turnFinishedUpdate)
-    //            {
-    //                if (turnFinishedUpdate.CreatedItems.Any(item => !string.IsNullOrEmpty(item.FunctionCallId)))
-    //                {
-    //                    await session.StartResponseAsync(CancellationToken);
-    //                }
-    //                else
-    //                {
-    //                    break;
-    //                }
-    //            }
-    //        }
-
-    //        Assert.That(userTranscript, Is.Not.Null.And.Not.Empty);
-    //    }
-
-    //    [RecordedTest]
-    //    public async Task CanDisableVoiceActivityDetection()
-    //    {
-    //        RealtimeClient client = GetTestClient();
-    //        using RealtimeSession session = await client.StartConversationSessionAsync(
-    //            model: GetTestModel(),
-    //            cancellationToken: CancellationToken);
-
-    //        await session.ConfigureConversationSessionAsync(
-    //            new()
-    //            {
-    //                MaxOutputTokens = 4096,
-    //                Audio = new RealtimeSessionAudioConfiguration()
-    //                {
-    //                    Input = new RealtimeSessionAudioInputConfiguration()
-    //                    {
-    //                        // GA format: turn_detection is now inside audio.input
-    //                        TurnDetection = TurnDetectionOptions.CreateDisabledTurnDetectionOptions(),
-    //                    },
-    //                    Output = new RealtimeSessionAudioOutputConfiguration()
-    //                    {
-    //                        Voice = ConversationVoice.Alloy,
-    //                    },
-    //                },
-    //            },
-    //            CancellationToken);
-
-    //        const string folderName = "Assets";
-    //        const string fileName = "realtime_whats_the_weather_pcm16_24khz_mono.wav";
-    //#if NET6_0_OR_GREATER
-    //        using Stream audioStream = File.OpenRead(Path.Join(folderName, fileName));
-    //#else
-    //        using Stream audioStream = File.OpenRead($"{folderName}\\{fileName}");
-    //#endif
-    //        await session.SendInputAudioAsync(audioStream, CancellationToken);
-
-    //        await session.AddItemAsync(RealtimeItem.CreateUserMessage(["Hello, assistant!"]), CancellationToken);
-
-    //        await foreach (RealtimeUpdate update in session.ReceiveUpdatesAsync(CancellationToken))
-    //        {
-    //            if (update is RealtimeErrorUpdate errorUpdate)
-    //            {
-    //                Assert.Fail($"Error received: {ModelReaderWriter.Write(errorUpdate)}");
-    //            }
-
-    //            if (update is InputAudioSpeechStartedUpdate
-    //                or InputAudioSpeechFinishedUpdate
-    //                or InputAudioTranscriptionFinishedUpdate
-    //                or InputAudioTranscriptionFailedUpdate
-    //                or ResponseStartedUpdate
-    //                or ResponseFinishedUpdate)
-    //            {
-    //                Assert.Fail($"Shouldn't receive any VAD events or response creation!");
-    //            }
-
-    //            if (update is ItemCreatedUpdate itemCreatedUpdate
-    //                && itemCreatedUpdate.MessageRole == ConversationMessageRole.User)
-    //            {
-    //                break;
-    //            }
-    //        }
-    //    }
-
-    //    [RecordedTest]
-    //    public async Task BadCommandProvidesError()
-    //    {
-    //        RealtimeClient client = GetTestClient();
-    //        using RealtimeSession session = await client.StartConversationSessionAsync(
-    //            model: GetTestModel(),
-    //            cancellationToken: CancellationToken);
-
-    //        await session.SendCommandAsync(
-    //            BinaryData.FromString("""
-    //                {
-    //                  "type": "update_conversation_config2",
-    //                  "event_id": "event_fabricated_1234abcd"
-    //                }
-    //                """),
-    //            CancellationOptions);
-
-    //        bool gotErrorUpdate = false;
-
-    //        await foreach (RealtimeUpdate update in session.ReceiveUpdatesAsync(CancellationToken))
-    //        {
-    //            if (update is RealtimeErrorUpdate errorUpdate)
-    //            {
-    //                Assert.That(errorUpdate.ErrorEventId, Is.EqualTo("event_fabricated_1234abcd"));
-    //                gotErrorUpdate = true;
-    //                break;
-    //            }
-    //        }
-
-    //        Assert.That(gotErrorUpdate, Is.True);
-    //    }
-
-    //    [RecordedTest]
-    //    public async Task CanAddItems()
-    //    {
-    //        RealtimeClient client = GetTestClient();
-
-    //        ConversationSessionOptions sessionOptions = new()
-    //        {
-    //            // Note: ContentModalities removed due to API change requiring 'output_text' instead of 'text'
-    //            // The test still validates item creation and manipulation functionality
-    //            MaxOutputTokens = 4096,
-    //        };
-
-    //        using RealtimeSession session = await client.StartConversationSessionAsync(
-    //            model: GetTestModel(),
-    //            cancellationToken: CancellationToken);
-
-    //        await session.ConfigureConversationSessionAsync(sessionOptions, CancellationToken);
-
-    //        List<RealtimeItem> items =
-    //            [
-    //                RealtimeItem.CreateSystemMessage(["You are a robot. Beep boop."]),
-    //                RealtimeItem.CreateUserMessage(["How can I pay for a joke?"]),
-    //                // Note: RealtimeItem.CreateAssistantMessage removed due to codegen bug where content type
-    //                // serializes as "text" but GA API expects "output_text"
-    //                RealtimeItem.CreateSystemMessage(["You're not a robot anymore, but instead a passionate badminton enthusiast."]),
-    //                RealtimeItem.CreateUserMessage(["What's a good gift to buy?"]),
-    //                RealtimeItem.CreateFunctionCall("product_lookup", "call-id-123", "{}"),
-    //                RealtimeItem.CreateFunctionCallOutput("call-id-123", "A new racquet!"),
-    //            ];
-
-    //        foreach (RealtimeItem item in items)
-    //        {
-    //            await session.AddItemAsync(item, CancellationToken);
-    //        }
-
-    //        await session.StartResponseAsync(CancellationToken);
-
-    //        int itemCreatedCount = 0;
-
-    //        await foreach (RealtimeUpdate update in session.ReceiveUpdatesAsync(CancellationToken))
-    //        {
-    //            if (update is RealtimeErrorUpdate errorUpdate)
-    //            {
-    //                Assert.Fail($"Unexpected error: {errorUpdate.Message}");
-    //            }
-
-    //            if (update is ItemCreatedUpdate)
-    //            {
-    //                itemCreatedCount++;
-    //            }
-
-    //            if (update is ResponseFinishedUpdate)
-    //            {
-    //                break;
-    //            }
-    //        }
-
-    //        Assert.That(itemCreatedCount, Is.EqualTo(items.Count + 1));
-    //    }
-
-    //    [Ignore("Temporarily disabled - SDK serialization bug: 'text' serializes instead of 'output_text' required by GA API")]
-    //    [RecordedTest]
-    //    public async Task CanUseOutOfBandResponses()
-    //    {
-    //        RealtimeClient client = GetTestClient();
-
-    //        using RealtimeSession session = await client.StartConversationSessionAsync(
-    //            model: GetTestModel(),
-    //            cancellationToken: CancellationToken);
-
-    //        await session.AddItemAsync(
-    //            RealtimeItem.CreateUserMessage(["Hello! My name is Bob."]),
-    //            cancellationToken: CancellationToken);
-
-    //        await session.StartResponseAsync(
-    //            new ConversationResponseOptions()
-    //            {
-    //                ConversationSelection = ResponseConversationSelection.None,
-    //                ContentModalities = RealtimeContentModalities.Text,
-    //                OverrideItems =
-    //                {
-    //                    RealtimeItem.CreateUserMessage(["Can you tell me what my name is?"]),
-    //                },
-    //            },
-    //            CancellationToken);
-
-    //        StringBuilder firstResponseBuilder = new();
-    //        StringBuilder secondResponseBuilder = new();
-
-    //        int completedResponseCount = 0;
-
-    //        await foreach (RealtimeUpdate update in session.ReceiveUpdatesAsync(CancellationToken))
-    //        {
-    //            if (update is ConversationSessionStartedUpdate sessionStartedUpdate)
-    //            {
-    //                Assert.That(sessionStartedUpdate.SessionId, Is.Not.Null.And.Not.Empty);
-    //            }
-
-    //            if (update is OutputDeltaUpdate deltaUpdate)
-    //            {
-    //                // First response (out of band) should be text, second (in-band) should be text + audio
-    //                if (completedResponseCount == 0)
-    //                {
-    //                    firstResponseBuilder.Append(deltaUpdate.Text);
-    //                    Assert.That(deltaUpdate.AudioTranscript, Is.Null.Or.Empty);
-    //                }
-    //                else
-    //                {
-    //                    secondResponseBuilder.Append(deltaUpdate.AudioTranscript);
-    //                    Assert.That(deltaUpdate.Text, Is.Null.Or.Empty);
-    //                }
-    //            }
-
-    //            if (update is ResponseFinishedUpdate responseFinishedUpdate)
-    //            {
-    //                completedResponseCount++;
-    //                Assert.That(responseFinishedUpdate.CreatedItems, Has.Count.GreaterThan(0));
-    //                if (completedResponseCount == 1)
-    //                {
-    //                    // Verify that an in-band response *does* have the information
-    //                    _ = session.StartResponseAsync(CancellationToken);
-    //                }
-    //                else if (completedResponseCount == 2)
-    //                {
-    //                    break;
-    //                }
-    //            }
-    //        }
-
-    //        string firstResponse = firstResponseBuilder.ToString().ToLower();
-    //        Assert.That(firstResponse, Is.Not.Null.And.Not.Empty);
-    //        Assert.That(firstResponse, Does.Not.Contain("bob"));
-
-    //        string secondResponse = secondResponseBuilder.ToString().ToLower();
-    //        Assert.That(secondResponse, Is.Not.Null.And.Not.Empty);
-    //        Assert.That(secondResponse, Does.Contain("bob"));
-    //    }
-
-    //    private class TestDelayedFileReadStream : FileStream
-    //    {
-    //        private readonly TimeSpan _delayBetweenReads;
-    //        private readonly int _readsBeforeDelay;
-    //        private int _readsPerformed;
-
-    //        public TestDelayedFileReadStream(
-    //            string path,
-    //            TimeSpan delayBetweenReads,
-    //            int readsBeforeDelay = 0)
-    //                : base(path, FileMode.Open, FileAccess.Read)
-    //        {
-    //            _delayBetweenReads = delayBetweenReads;
-    //            _readsBeforeDelay = readsBeforeDelay;
-    //            _readsPerformed = 0;
-    //        }
-
-    //        public override int Read(byte[] buffer, int offset, int count)
-    //        {
-    //            if (++_readsPerformed > _readsBeforeDelay)
-    //            {
-    //                System.Threading.Thread.Sleep((int)_delayBetweenReads.TotalMilliseconds);
-    //            }
-    //            return base.Read(buffer, offset, count);
-    //        }
-
-    //        public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
-    //        {
-    //            if (++_readsPerformed > _readsBeforeDelay)
-    //            {
-    //                await Task.Delay(_delayBetweenReads);
-    //            }
-    //            return await base.ReadAsync(buffer, offset, count, cancellationToken);
-    //        }
-    //    }
+    [Test]
+    public async Task TextOnlyWorks()
+    {
+        RealtimeClient client = GetTestClient();
+
+        using RealtimeSessionClient sessionClient = await client.StartConversationSessionAsync(
+            model: GetTestModel(),
+            cancellationToken: CancellationToken);
+
+        string userInputText = "Hello, world!";
+
+        await sessionClient.AddItemAsync(GARealtimeItem.CreateUserMessageItem(userInputText), CancellationToken);
+
+        await sessionClient.StartResponseAsync(CancellationToken);
+
+        string responseContent = null;
+        bool gotSessionCreated = false;
+        bool gotResponseDone = false;
+        bool done = false;
+
+        List<GARealtimeServerUpdate> receivedUpdates = [];
+
+        await foreach (GARealtimeServerUpdate update in sessionClient.ReceiveUpdatesAsync(CancellationToken))
+        {
+            receivedUpdates.Add(update);
+
+            switch (update)
+            {
+                case GARealtimeServerUpdateSessionCreated sessionCreatedUpdate:
+                    {
+                        GARealtimeConversationSession session = sessionCreatedUpdate.Session as GARealtimeConversationSession;
+                        Assert.That(session, Is.Not.Null);
+
+                        gotSessionCreated = true;
+                        break;
+                    }
+                case GARealtimeServerUpdateConversationItemCreated conversationItemCreated:
+                    {
+                        GARealtimeMessageItem messageItem = conversationItemCreated.Item as GARealtimeMessageItem;
+                        Assert.That(messageItem, Is.Not.Null);
+
+                        if (messageItem.Role == GARealtimeMessageRole.Assistant)
+                        {
+                            // The assistant-created item should be streamed and should not have content yet when acknowledged.
+                            Assert.That(messageItem.Content, Has.Count.EqualTo(0));
+                        }
+                        else if (messageItem.Role == GARealtimeMessageRole.User)
+                        {
+                            // When acknowledging an item added by the client (user), the text should already be there
+                            Assert.That(messageItem.Content, Has.Count.EqualTo(1));
+                            Assert.That((messageItem.Content[0] as GARealtimeInputTextMessageContentPart)?.Text, Is.EqualTo(userInputText));
+                        }
+                        else
+                        {
+                            Assert.Fail($"Error: Unexpected item.");
+                        }
+
+                        break;
+                    }
+                case GARealtimeServerUpdateRateLimitsUpdated rateLimitsUpdatedUpdate:
+                    {
+                        Assert.That(rateLimitsUpdatedUpdate.RateLimitDetails, Has.Count.EqualTo(2));
+                        Assert.That(rateLimitsUpdatedUpdate.RateLimitDetails[0].Name, Is.EqualTo(GARealtimeRateLimitName.Tokens));
+                        Assert.That(rateLimitsUpdatedUpdate.RateLimitDetails[0].Limit, Is.GreaterThan(0));
+                        Assert.That(rateLimitsUpdatedUpdate.RateLimitDetails[0].RemainingCount, Is.GreaterThan(0));
+                        Assert.That(rateLimitsUpdatedUpdate.RateLimitDetails[0].RemainingCount, Is.LessThan(rateLimitsUpdatedUpdate.RateLimitDetails[0].Limit));
+                        Assert.That(rateLimitsUpdatedUpdate.RateLimitDetails[0].TimeUntilReset, Is.GreaterThan(TimeSpan.Zero));
+                        Assert.That(rateLimitsUpdatedUpdate.RateLimitDetails[1].Name, Is.EqualTo(GARealtimeRateLimitName.Requests));
+
+                        break;
+                    }
+                case GARealtimeServerUpdateResponseDone responseDoneUpdate:
+                    {
+                        Assert.That(responseDoneUpdate.Response.OutputItems, Has.Count.EqualTo(1));
+
+                        GARealtimeMessageItem messageItem = responseDoneUpdate.Response.OutputItems[0] as GARealtimeMessageItem;
+                        Assert.That(messageItem, Is.Not.Null);
+                        Assert.That(messageItem.Content, Has.Count.EqualTo(1));
+
+                        responseContent = (messageItem.Content[0] as GARealtimeOutputAudioMessageContentPart)?.Transcript;
+
+                        Assert.That(responseDoneUpdate.Response.Usage.TotalTokenCount, Is.GreaterThan(0));
+                        Assert.That(responseDoneUpdate.Response.Usage.InputTokenCount, Is.GreaterThan(0));
+                        Assert.That(responseDoneUpdate.Response.Usage.OutputTokenCount, Is.GreaterThan(0));
+
+                        gotResponseDone = true;
+                        done = true;
+                        break;
+                    }
+                case GARealtimeServerUpdateError errorUpdate:
+                    {
+                        Assert.Fail($"Error: {ModelReaderWriter.Write(errorUpdate)}");
+                        done = true;
+                        break;
+                    }
+            }
+
+            if (done)
+            {
+                break;
+            }
+        }
+
+        Assert.That(responseContent, Is.Not.Null.Or.Empty);
+
+        Assert.That(gotSessionCreated, Is.True);
+        // Assert.That(gotRateLimitsUpdated, Is.True); // Server is not sending rate_limits.updated event.
+        Assert.That(gotResponseDone, Is.True);
+    }
+
+    [Test]
+    public async Task TranscriptionOnlyWorks()
+    {
+        RealtimeClient client = GetTestClient();
+
+        // Step 1: Create default session.
+        using RealtimeSessionClient sessionClient = await client.StartTranscriptionSessionAsync(
+            cancellationToken: CancellationToken);
+
+        GARealtimeTranscriptionSessionOptions options = new()
+        {
+            AudioOptions = new()
+            {
+                InputAudioOptions = new()
+                {
+                    // AudioFormat = new GARealtimePcmAudioFormat(),
+
+                    AudioTranscriptionOptions = new()
+                    {
+                        Model = "gpt-4o-transcribe",
+                        Prompt = "The audio contains the word 'URL'."
+                    },
+
+                    NoiseReduction = new GARealtimeNoiseReduction(GARealtimeNoiseReductionKind.NearField),
+
+                    TurnDetection = new GARealtimeServerVadTurnDetection()
+                }
+            }
+        };
+
+        await sessionClient.ConfigureTranscriptionSessionAsync(options, CancellationToken);
+
+        // Sending the audio in a delayed stream allows us to validate bidirectional behavior, i.e.
+        // transcription data arriving while audio is still being sent.
+        string inputPath = Path.Join("Assets", "realtime_api_description_pcm16_24khz_mono.wav");
+        using TestDelayedFileReadStream inputStream = new(inputPath, TimeSpan.FromMilliseconds(50), readsBeforeDelay: 2);
+        _ = sessionClient.SendInputAudioAsync(inputStream, CancellationToken);
+
+        Stopwatch stopwatch = Stopwatch.StartNew();
+
+        List<(GARealtimeServerUpdate, TimeSpan, long)> updatesReceived = [];
+
+        bool gotSessionCreated = false;
+        bool gotSessionUpdated = false;
+        bool done = false;
+
+        await foreach (GARealtimeServerUpdate update in sessionClient.ReceiveUpdatesAsync(CancellationToken))
+        {
+            updatesReceived.Add((update, stopwatch.Elapsed, inputStream.Position));
+
+            switch (update)
+            {
+                case GARealtimeServerUpdateSessionCreated sessionCreatedUpdate:
+                    {
+                        GARealtimeTranscriptionSession session = sessionCreatedUpdate.Session as GARealtimeTranscriptionSession;
+                        Assert.That(session, Is.Not.Null);
+
+                        gotSessionCreated = true;
+                        break;
+                    }
+                case GARealtimeServerUpdateSessionUpdated sessionUpdatedUpdate:
+                    {
+                        GARealtimeTranscriptionSession session = sessionUpdatedUpdate.Session as GARealtimeTranscriptionSession;
+                        Assert.That(session, Is.Not.Null);
+                        Assert.That(session.AudioOptions, Is.Not.Null);
+                        Assert.That(session.AudioOptions.InputAudioOptions, Is.Not.Null);
+                        Assert.That(session.AudioOptions.InputAudioOptions.AudioTranscriptionOptions, Is.Not.Null);
+                        Assert.That(session.AudioOptions.InputAudioOptions.AudioTranscriptionOptions.Model, Is.Not.Null.Or.Empty);
+
+                        gotSessionUpdated = true;
+                        break;
+                    }
+                case GARealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted conversationItemInputAudioTranscriptionCompletedUpdate:
+                    {
+                        if (conversationItemInputAudioTranscriptionCompletedUpdate.Transcript.Contains("the following URL"))
+                        {
+                            done = true;
+                        }
+                        break;
+                    }
+                case GARealtimeServerUpdateError errorUpdate:
+                    {
+                        Assert.Fail($"Error: {ModelReaderWriter.Write(errorUpdate)}");
+                        done = true;
+                        break;
+                    }
+            }
+
+            if (done)
+            {
+                break;
+            }
+        }
+
+        List<(GARealtimeServerUpdateSessionUpdated, TimeSpan, long)> sessionUpdatedUpdates = updatesReceived
+            .Where(tuple => tuple.Item1 is GARealtimeServerUpdateSessionUpdated)
+            .Select(tuple => (tuple.Item1 as GARealtimeServerUpdateSessionUpdated, tuple.Item2, tuple.Item3))
+            .ToList();
+
+        Assert.That(sessionUpdatedUpdates, Has.Count.EqualTo(1));
+
+        List<(GARealtimeServerUpdateConversationItemInputAudioTranscriptionDelta, TimeSpan, long)> transcriptionDeltaUpdates = updatesReceived
+            .Where(tuple => tuple.Item1 is GARealtimeServerUpdateConversationItemInputAudioTranscriptionDelta)
+            .Select(tuple => (tuple.Item1 as GARealtimeServerUpdateConversationItemInputAudioTranscriptionDelta, tuple.Item2, tuple.Item3))
+            .ToList();
+
+        Assert.That(transcriptionDeltaUpdates, Has.Count.GreaterThan(1));
+        Assert.That(transcriptionDeltaUpdates.Last().Item3, Is.GreaterThan(transcriptionDeltaUpdates.First().Item3));
+
+        List<(GARealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted, TimeSpan, long)> transcriptionCompletedUpdates = updatesReceived
+            .Where(tuple => tuple.Item1 is GARealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted)
+            .Select(tuple => (tuple.Item1 as GARealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted, tuple.Item2, tuple.Item3))
+            .ToList();
+
+        Assert.That(transcriptionCompletedUpdates, Has.Count.GreaterThan(1));
+        Assert.That(transcriptionCompletedUpdates.Last().Item3, Is.GreaterThan(transcriptionCompletedUpdates.First().Item3));
+
+        List<(GARealtimeServerUpdateConversationItemInputAudioTranscriptionDelta, TimeSpan, long)> deltaUpdatesAfterFirstCompletedUpdate = transcriptionDeltaUpdates
+            .Where(tuple => tuple.Item2 > transcriptionCompletedUpdates[0].Item2)
+            .ToList();
+
+        Assert.That(transcriptionCompletedUpdates[1].Item1.Transcript.StartsWith(deltaUpdatesAfterFirstCompletedUpdate[0].Item1.Delta), Is.True);
+
+        string fullTranscriptFromDeltas = string.Join(string.Empty, transcriptionDeltaUpdates.Select(deltaTuple => deltaTuple.Item1.Delta));
+        Assert.That(fullTranscriptFromDeltas.ToLowerInvariant(), Does.Contain("stream the transcription"));
+        Assert.That(fullTranscriptFromDeltas.ToLowerInvariant(), Does.Contain("the following url"));
+
+        Assert.That(gotSessionCreated, Is.True);
+        Assert.That(gotSessionUpdated, Is.True);
+    }
+
+    [Test]
+    public async Task ItemManipulationWorks()
+    {
+        RealtimeClient client = GetTestClient();
+
+        // Step 1: Create default session.
+        using RealtimeSessionClient sessionClient = await client.StartConversationSessionAsync(
+            model: GetTestModel(),
+            cancellationToken: CancellationToken);
+
+        int maxOutputTokenCount = 4096;
+
+        // Step 2: Update the session.
+        GARealtimeConversationSessionOptions sessionOptions = new()
+        {
+            OutputModalities = { GARealtimeOutputModality.Text },
+            MaxOutputTokenCount = maxOutputTokenCount,
+        };
+
+        sessionOptions.AudioOptions = new();
+        sessionOptions.AudioOptions.InputAudioOptions = new();
+        sessionOptions.AudioOptions.InputAudioOptions.DisableTurnDetection();
+
+        await sessionClient.ConfigureConversationSessionAsync(sessionOptions, CancellationToken);
+
+        // Step 3: Add multiple items.
+        string inputText1 = "The first special word you know about is 'aardvark'.";
+        GARealtimeMessageItem message1 = GARealtimeItem.CreateUserMessageItem(inputText1);
+        await sessionClient.AddItemAsync(message1, CancellationToken);
+
+        string inputText2 = "The next special word you know about is 'banana'.";
+        GARealtimeMessageItem message2 = GARealtimeItem.CreateUserMessageItem(inputText2);
+        await sessionClient.AddItemAsync(message2, CancellationToken);
+
+        string inputText3 = "The next special word you know about is 'coconut'.";
+        GARealtimeMessageItem message3 = GARealtimeItem.CreateUserMessageItem(inputText3);
+        await sessionClient.AddItemAsync(message3, CancellationToken);
+
+        bool done = false;
+        bool gotSessionCreated = false;
+        bool gotSessionUpdated = false;
+        bool gotItemDeleted = false;
+        bool gotResponseDone = false;
+
+        await foreach (GARealtimeServerUpdate update in sessionClient.ReceiveUpdatesAsync(CancellationToken))
+        {
+            switch (update)
+            {
+                case GARealtimeServerUpdateSessionCreated sessionCreatedUpdate:
+                    {
+                        Assert.That(sessionCreatedUpdate.Session, Is.Not.Null);
+
+                        gotSessionCreated = true;
+                        break;
+                    }
+                case GARealtimeServerUpdateSessionUpdated sessionUpdatedUpdate:
+                    {
+                        GARealtimeConversationSession session = sessionUpdatedUpdate.Session as GARealtimeConversationSession;
+                        Assert.That(session, Is.Not.Null);
+                        Assert.That(session.AudioOptions.InputAudioOptions.TurnDetection, Is.Null);
+                        Assert.That(session.OutputModalities, Is.Not.Null);
+                        Assert.That(session.OutputModalities, Has.Count.EqualTo(1));
+                        Assert.That(session.OutputModalities[0], Is.EqualTo(GARealtimeOutputModality.Text));
+
+                        gotSessionUpdated = true;
+                        break;
+                    }
+                case GARealtimeServerUpdateConversationItemDone conversationItemDoneUpdate:
+                    {
+                        GARealtimeMessageItem messageItem = conversationItemDoneUpdate.Item as GARealtimeMessageItem;
+                        Assert.That(messageItem, Is.Not.Null);
+
+                        if (messageItem.Content.Count > 0)
+                        {
+                            GARealtimeInputTextMessageContentPart inputTextPart = messageItem.Content[0] as GARealtimeInputTextMessageContentPart;
+
+                            // Step 4: Delete the second item.
+                            if (inputTextPart != null && inputTextPart.Text == inputText2)
+                            {
+                                await sessionClient.DeleteItemAsync(messageItem.Id, CancellationToken);
+                            }
+                        }
+
+                        break;
+                    }
+                case GARealtimeServerUpdateConversationItemDeleted conversationItemDeletedUpdate:
+                    {
+                        // Step 5: Add a new item with a question.
+                        string inputText4 = "What's the second special word you know about?";
+                        GARealtimeMessageItem message4 = GARealtimeItem.CreateUserMessageItem(inputText4);
+                        await sessionClient.AddItemAsync(message4, CancellationToken);
+
+                        // Step 6: Start a response.
+                        await sessionClient.StartResponseAsync(CancellationToken);
+
+                        gotItemDeleted = true;
+                        break;
+                    }
+                case GARealtimeServerUpdateResponseDone responseDoneUpdate:
+                    {
+                        Assert.That(responseDoneUpdate.Response.OutputItems.Count, Is.EqualTo(1));
+
+                        GARealtimeMessageItem messageItem = responseDoneUpdate.Response.OutputItems[0] as GARealtimeMessageItem;
+                        Assert.That(messageItem, Is.Not.Null);
+                        Assert.That(messageItem.Content.Count, Is.EqualTo(1));
+
+                        GARealtimeOutputTextMessageContentPart outputTextPart = messageItem.Content[0] as GARealtimeOutputTextMessageContentPart;
+                        Assert.That(outputTextPart, Is.Not.Null);
+                        Assert.That(outputTextPart.Text, Does.Contain("coconut"));
+                        Assert.That(outputTextPart.Text, Does.Not.Contain("banana"));
+
+                        gotResponseDone = true;
+                        done = true;
+                        break;
+                    }
+                case GARealtimeServerUpdateError errorUpdate:
+                    {
+                        Assert.Fail($"Error: {ModelReaderWriter.Write(errorUpdate)}");
+                        done = true;
+                        break;
+                    }
+            }
+
+            if (done)
+            {
+                break;
+            }
+        }
+
+        Assert.That(gotSessionCreated, Is.True);
+        Assert.That(gotSessionUpdated, Is.True);
+        Assert.That(gotItemDeleted, Is.True);
+        Assert.That(gotResponseDone, Is.True);
+    }
+
+    [Test]
+    public async Task AudioStreamConvenienceBlocksCorrectly()
+    {
+        RealtimeClient client = GetTestClient();
+
+        // Step 1: Create default session.
+        using RealtimeSessionClient sessionClient = await client.StartConversationSessionAsync(
+            model: GetTestModel(),
+            cancellationToken: CancellationToken);
+
+        // Step 2: Send input audio.
+        string inputAudioFilePath = Path.Join("Assets", "realtime_whats_the_weather_pcm16_24khz_mono.wav");
+
+        using TestDelayedFileReadStream delayedStream = new(
+            path: inputAudioFilePath,
+            delayBetweenReads: TimeSpan.FromMilliseconds(200),
+            readsBeforeDelay: 2);
+
+        _ = sessionClient.SendInputAudioAsync(delayedStream, CancellationToken);
+
+        bool gotSessionCreated = false;
+        bool gotSpeechStarted = false;
+        bool done = false;
+
+        await foreach (GARealtimeServerUpdate update in sessionClient.ReceiveUpdatesAsync(CancellationToken))
+        {
+            switch (update)
+            {
+                case GARealtimeServerUpdateSessionCreated sessionCreatedUpdate:
+                    {
+                        // Validate server VAD turn detection.
+                        GARealtimeConversationSession session = sessionCreatedUpdate.Session as GARealtimeConversationSession;
+                        Assert.That(session, Is.Not.Null);
+                        Assert.That(session.AudioOptions, Is.Not.Null);
+                        Assert.That(session.AudioOptions.InputAudioOptions, Is.Not.Null);
+                        Assert.That(session.AudioOptions.InputAudioOptions.TurnDetection, Is.TypeOf<GARealtimeServerVadTurnDetection>());
+
+                        gotSessionCreated = true;
+                        break;
+                    }
+                case GARealtimeServerUpdateInputAudioBufferSpeechStarted:
+                    {
+                        Assert.ThrowsAsync<InvalidOperationException>(
+                            async () =>
+                            {
+                                using MemoryStream dummyStream = new();
+                                await sessionClient.SendInputAudioAsync(dummyStream, CancellationToken);
+                            },
+                            "Sending a Stream while another Stream is being sent should throw!");
+
+                        Assert.ThrowsAsync<InvalidOperationException>(
+                            async () =>
+                            {
+                                BinaryData dummyData = BinaryData.FromString("hello, world! this isn't audio.");
+                                await sessionClient.SendInputAudioAsync(dummyData, CancellationToken);
+                            },
+                            "Sending BinaryData while a Stream is being sent should throw!");
+
+                        gotSpeechStarted = true;
+                        done = true;
+                        break;
+                    }
+                case GARealtimeServerUpdateError errorUpdate:
+                    {
+                        Assert.Fail($"Error: {ModelReaderWriter.Write(errorUpdate)}");
+                        done = true;
+                        break;
+                    }
+            }
+
+            if (done)
+            {
+                break;
+            }
+        }
+
+        Assert.That(gotSessionCreated, Is.True);
+        Assert.That(gotSpeechStarted, Is.True);
+    }
+
+    [Test]
+    [TestCase(TestAudioSendType.WithAudioStreamHelper)]
+    [TestCase(TestAudioSendType.WithManualAudioChunks)]
+    public async Task AudioWithToolsWorks(TestAudioSendType audioSendType)
+    {
+        string functionName = "get_weather_for_location";
+
+        GARealtimeFunctionTool getWeatherTool = new(functionName)
+        {
+            FunctionDescription = "Get the current weather in a given location",
+            FunctionParameters = BinaryData.FromBytes("""
+                {
+                    "type": "object",
+                    "properties": {
+                        "location": {
+                            "type": "string",
+                            "description": "The city and state, e.g. Boston, MA"
+                        },
+                        "unit": {
+                            "type": "string",
+                            "enum": [ "celsius", "fahrenheit" ],
+                            "description": "The temperature unit to use. Infer this from the specified location."
+                        }
+                    },
+                    "required": [ "location" ]
+                }
+                """u8.ToArray()),
+        };
+
+        RealtimeClient client = GetTestClient();
+
+        // Step 1: Create default session.
+        using RealtimeSessionClient sessionClient = await client.StartConversationSessionAsync(
+            model: GetTestModel(),
+            cancellationToken: CancellationToken);
+
+        // Step 2: Update the session.
+        string instructions = "Call the available tools if appropriate based on the user's input.";
+        int maxOutputTokenCount = 4096;
+        GARealtimeConversationSessionOptions sessionOptions = new()
+        {
+            AudioOptions = new GARealtimeConversationSessionAudioOptions()
+            {
+                InputAudioOptions = new()
+                {
+                    AudioTranscriptionOptions = new()
+                    {
+                        Model = "gpt-4o-transcribe"
+                    },
+                }
+            },
+
+            Instructions = instructions,
+
+            OutputModalities = { GARealtimeOutputModality.Audio },
+
+            Tools = { getWeatherTool },
+
+            MaxOutputTokenCount = maxOutputTokenCount,
+        };
+
+        await sessionClient.ConfigureConversationSessionAsync(sessionOptions, CancellationToken);
+
+        // Step 3: Send input audio.
+        _ = Task.Run(async () =>
+        {
+            string inputAudioFilePath = Path.Join("Assets", "realtime_whats_the_weather_pcm16_24khz_mono.wav");
+
+            if (audioSendType == TestAudioSendType.WithAudioStreamHelper)
+            {
+                using Stream audioStream = File.OpenRead(inputAudioFilePath);
+
+                await sessionClient.SendInputAudioAsync(audioStream, CancellationToken);
+            }
+            else if (audioSendType == TestAudioSendType.WithManualAudioChunks)
+            {
+                byte[] allAudioBytes = await File.ReadAllBytesAsync(inputAudioFilePath, CancellationToken);
+                const int audioSendBufferLength = 8 * 1024;
+                byte[] audioSendBuffer = null;
+                try
+                {
+                    audioSendBuffer = ArrayPool<byte>.Shared.Rent(audioSendBufferLength);
+                    for (int readPos = 0; readPos < allAudioBytes.Length; readPos += audioSendBufferLength)
+                    {
+                        int nextSegmentLength = Math.Min(audioSendBufferLength, allAudioBytes.Length - readPos);
+                        ArraySegment<byte> nextSegment = new(allAudioBytes, readPos, nextSegmentLength);
+
+                        await sessionClient.SendInputAudioAsync(BinaryData.FromBytes(nextSegment), CancellationToken);
+                    }
+                }
+                finally
+                {
+                    if (audioSendBuffer is not null)
+                    {
+                        ArrayPool<byte>.Shared.Return(audioSendBuffer);
+                    }
+                }
+            }
+        });
+
+        string inputAudioTranscript = null;
+
+        bool gotSessionCreated = false;
+        bool gotSessionUpdated = false;
+        bool gotConversationItemInputAudioTranscriptionCompleted = false;
+        bool gotResponseFunctionCallArgumentsDone = false;
+        bool gotResponseDoneUpdate = false;
+        bool done = false;
+
+        await foreach (GARealtimeServerUpdate update in sessionClient.ReceiveUpdatesAsync(CancellationToken))
+        {
+            switch (update)
+            {
+                case GARealtimeServerUpdateSessionCreated sessionCreatedUpdate:
+                    {
+                        // Validate default session.
+                        GARealtimeConversationSession session = sessionCreatedUpdate.Session as GARealtimeConversationSession;
+                        Assert.That(session, Is.Not.Null);
+                        Assert.That(session.Model, Is.Not.Null.And.Not.Empty);
+
+                        gotSessionCreated = true;
+                        break;
+                    }
+                case GARealtimeServerUpdateSessionUpdated sessionUpdatedUpdate:
+                    {
+                        // Validate output modalities.
+                        GARealtimeConversationSession session = sessionUpdatedUpdate.Session as GARealtimeConversationSession;
+                        Assert.That(session, Is.Not.Null);
+                        Assert.That(session.OutputModalities, Is.Not.Null);
+                        Assert.That(session.OutputModalities, Has.Count.EqualTo(1));
+                        Assert.That(session.OutputModalities[0], Is.EqualTo(GARealtimeOutputModality.Audio));
+                        Assert.That(session.AudioOptions, Is.Not.Null);
+                        Assert.That(session.AudioOptions.InputAudioOptions, Is.Not.Null);
+                        Assert.That(session.AudioOptions.InputAudioOptions.AudioTranscriptionOptions, Is.Not.Null);
+                        Assert.That(session.AudioOptions.InputAudioOptions.AudioTranscriptionOptions.Model, Is.Not.Null.Or.Empty);
+                        Assert.That(session.Tools, Is.Not.Null);
+                        Assert.That(session.Tools, Has.Count.EqualTo(1));
+                        Assert.That(session.MaxOutputTokenCount.DefaultMaxOutputTokenCount, Is.Null);
+                        Assert.That(session.MaxOutputTokenCount.CustomMaxOutputTokenCount, Is.EqualTo(maxOutputTokenCount));
+
+                        GARealtimeFunctionTool functionTool = session.Tools[0] as GARealtimeFunctionTool;
+                        Assert.That(functionTool, Is.Not.Null);
+                        Assert.That(functionTool.FunctionName, Is.EqualTo(functionName));
+
+                        gotSessionUpdated = true;
+                        break;
+                    }
+                case GARealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted conversationItemInputAudioTranscriptionCompletedUpdate:
+                    {
+                        // TODO: Testing input audio transcriptions should be its own test.
+                        inputAudioTranscript = conversationItemInputAudioTranscriptionCompletedUpdate.Transcript;
+
+                        gotConversationItemInputAudioTranscriptionCompleted = true;
+                        break;
+                    }
+                case GARealtimeServerUpdateResponseFunctionCallArgumentsDone responseFunctionCallArgumentsDoneUpdate:
+                    {
+                        Assert.That(responseFunctionCallArgumentsDoneUpdate.FunctionName, Is.EqualTo(getWeatherTool.FunctionName));
+
+                        // Step 3: Provide the output of the function call.
+                        GARealtimeItem functionCallOutputItem = GARealtimeItem.CreateFunctionCallOutputItem(
+                            callId: responseFunctionCallArgumentsDoneUpdate.CallId,
+                            functionOutput: "71 degrees fahrenheit");
+
+                        await sessionClient.AddItemAsync(functionCallOutputItem, CancellationToken);
+
+                        // Step 4: Request a response.
+                         await sessionClient.StartResponseAsync(CancellationToken);
+
+                        gotResponseFunctionCallArgumentsDone = true;
+                        break;
+                    }
+                case GARealtimeServerUpdateResponseDone responseDoneUpdate:
+                    {
+                        if (responseDoneUpdate.Response.OutputItems.OfType<GARealtimeFunctionCallItem>().ToList().Count == 0)
+                        {
+                            Assert.That(responseDoneUpdate.Response.OutputItems, Has.Count.EqualTo(1));
+
+                            GARealtimeMessageItem messageItem = responseDoneUpdate.Response.OutputItems[0] as GARealtimeMessageItem;
+                            Assert.That(messageItem, Is.Not.Null);
+                            Assert.That(messageItem.Content, Has.Count.EqualTo(1));
+
+                            GARealtimeOutputAudioMessageContentPart outputAudioPart = messageItem.Content[0] as GARealtimeOutputAudioMessageContentPart;
+                            Assert.That(outputAudioPart, Is.Not.Null);
+                            Assert.That(outputAudioPart.Transcript, Does.Contain("71"));
+
+                            gotResponseDoneUpdate = true;
+                            done = true;
+                        }
+
+                        break;
+                    }
+                case GARealtimeServerUpdateError errorUpdate:
+                    {
+                        Assert.Fail($"Error: {ModelReaderWriter.Write(errorUpdate)}");
+                        done = true;
+                        break;
+                    }
+            }
+
+            if (done)
+            {
+                break;
+            }
+        }
+
+        Assert.That(inputAudioTranscript, Is.Not.Null.And.Not.Empty);
+
+        Assert.That(gotSessionCreated, Is.True);
+        Assert.That(gotSessionUpdated, Is.True);
+        Assert.That(gotConversationItemInputAudioTranscriptionCompleted, Is.True);
+        Assert.That(gotResponseFunctionCallArgumentsDone, Is.True);
+        Assert.That(gotResponseDoneUpdate, Is.True);
+    }
+
+    [Test]
+    public async Task CanDisableVoiceActivityDetection()
+    {
+        RealtimeClient client = GetTestClient();
+
+        // Step 1: Create a default session.
+        using RealtimeSessionClient sessionClient = await client.StartConversationSessionAsync(
+            model: GetTestModel(),
+            cancellationToken: CancellationToken);
+
+        // Step 2: Update the session.
+        GARealtimeConversationSessionOptions sessionOptions = new()
+        {
+            AudioOptions = new()
+            {
+                InputAudioOptions = new(),
+            },
+
+            MaxOutputTokenCount = 4096,
+        };
+
+        sessionOptions.AudioOptions.InputAudioOptions.DisableTurnDetection();
+
+        await sessionClient.ConfigureConversationSessionAsync(sessionOptions, CancellationToken);
+
+
+        string inputAudioFilePath = Path.Join("Assets", "realtime_whats_the_weather_pcm16_24khz_mono.wav");
+        using Stream audioStream = File.OpenRead(inputAudioFilePath);
+
+        await sessionClient.SendInputAudioAsync(audioStream, CancellationToken);
+
+
+        GARealtimeMessageItem userMessageItem = GARealtimeItem.CreateUserMessageItem("Hello, assistant!");
+
+        await sessionClient.AddItemAsync(userMessageItem, CancellationToken);
+
+        bool done = false;
+
+        await foreach (GARealtimeServerUpdate update in sessionClient.ReceiveUpdatesAsync(CancellationToken))
+        {
+            switch (update)
+            {
+                case GARealtimeServerUpdateInputAudioBufferSpeechStarted:
+                case GARealtimeServerUpdateInputAudioBufferSpeechStopped:
+                case GARealtimeServerUpdateInputAudioBufferTimeoutTriggered:
+                case GARealtimeServerUpdateInputAudioBufferCommitted:
+                case GARealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted:
+                case GARealtimeServerUpdateConversationItemInputAudioTranscriptionDelta:
+                case GARealtimeServerUpdateConversationItemInputAudioTranscriptionSegment:
+                case GARealtimeServerUpdateConversationItemInputAudioTranscriptionFailed:
+                case GARealtimeServerUpdateResponseCreated:
+                case GARealtimeServerUpdateResponseDone:
+                    {
+                        Assert.Fail($"Should not receive any VAD events or response creation.");
+                        done = true;
+                        break;
+                    }
+                case GARealtimeServerUpdateConversationItemDone conversationItemCreatedDone:
+                    {
+                        GARealtimeMessageItem messageItem = conversationItemCreatedDone.Item as GARealtimeMessageItem;
+                        Assert.That(messageItem, Is.Not.Null);
+
+                        if (messageItem.Role == GARealtimeMessageRole.User)
+                        {
+                            // TODO: If we exit after the first message, we do not get the chance
+                            // to evaluate any other events that come after.
+                            done = true;
+                        }
+                        break;
+                    }
+                case GARealtimeServerUpdateError errorUpdate:
+                    {
+                        Assert.Fail($"Error: {ModelReaderWriter.Write(errorUpdate)}");
+                        done = true;
+                        break;
+                    }
+            }
+
+            if (done)
+            {
+                break;
+            }
+        }
+    }
+
+    [Test]
+    public async Task BadCommandProvidesError()
+    {
+        RealtimeClient client = GetTestClient();
+
+        using RealtimeSessionClient sessionClient = await client.StartConversationSessionAsync(
+            model: GetTestModel(),
+            cancellationToken: CancellationToken);
+
+        BinaryData command = BinaryData.FromString("""
+            {
+              "type": "update_conversation_config2",
+              "event_id": "event_fabricated_1234abcd"
+            }
+            """);
+
+        await sessionClient.SendCommandAsync(command, CancellationOptions);
+
+        bool gotErrorUpdate = false;
+        bool done = false;
+
+        await foreach (GARealtimeServerUpdate update in sessionClient.ReceiveUpdatesAsync(CancellationToken))
+        {
+            switch (update)
+            {
+                case GARealtimeServerUpdateError errorUpdate:
+                    {
+                        Assert.That(errorUpdate.Error.EventId, Is.EqualTo("event_fabricated_1234abcd"));
+
+                        gotErrorUpdate = true;
+                        done = true;
+                        break;
+                    }
+            }
+
+            if (done)
+            {
+                break;
+            }
+        }
+
+        Assert.That(gotErrorUpdate, Is.True);
+    }
+
+    [Test]
+    public async Task CanAddItems()
+    {
+        RealtimeClient client = GetTestClient();
+
+        using RealtimeSessionClient sessionClient = await client.StartConversationSessionAsync(
+            model: GetTestModel(),
+            cancellationToken: CancellationToken);
+
+        GARealtimeConversationSessionOptions sessionOptions = new()
+        {
+            OutputModalities = { GARealtimeOutputModality.Text },
+            MaxOutputTokenCount = 4096,
+        };
+
+        await sessionClient.ConfigureConversationSessionAsync(sessionOptions, CancellationToken);
+
+        List<GARealtimeItem> items =
+        [
+            GARealtimeItem.CreateSystemMessageItem("You are a robot. Beep boop."),
+            GARealtimeItem.CreateUserMessageItem("How can I pay for a joke?"),
+            GARealtimeItem.CreateAssistantMessageItem("I ONLY ACCEPT CACHE"),
+            GARealtimeItem.CreateSystemMessageItem("You're not a robot anymore, but instead a passionate badminton enthusiast."),
+            GARealtimeItem.CreateUserMessageItem("What's a good gift to buy?"),
+            GARealtimeItem.CreateFunctionCallItem("call-id-123", "product_lookup", BinaryData.FromString("{}")),
+            GARealtimeItem.CreateFunctionCallOutputItem("call-id-123", "A new racquet!")
+        ];
+
+        foreach (GARealtimeItem item in items)
+        {
+            await sessionClient.AddItemAsync(item, CancellationToken);
+        }
+
+        await sessionClient.StartResponseAsync(CancellationToken);
+
+        int itemDoneCount = 0;
+        bool done = false;
+
+        await foreach (GARealtimeServerUpdate update in sessionClient.ReceiveUpdatesAsync(CancellationToken))
+        {
+            switch (update)
+            {
+                case GARealtimeServerUpdateConversationItemDone conversationItemDoneUpdate:
+                    {
+                        itemDoneCount++;
+                        break;
+                    }
+                case GARealtimeServerUpdateResponseDone responseDoneUpdate:
+                    {
+                        done = true;
+                        break;
+                    }
+                case GARealtimeServerUpdateError errorUpdate:
+                    {
+                        Assert.Fail($"Error: {ModelReaderWriter.Write(errorUpdate)}");
+                        done = true;
+                        break;
+                    }
+            }
+
+            if (done)
+            {
+                break;
+            }
+        }
+
+        Assert.That(itemDoneCount, Is.EqualTo(items.Count + 1));
+    }
+
+    [Test]
+    public async Task CanUseOutOfBandResponses()
+    {
+        RealtimeClient client = GetTestClient();
+
+        // Step 1: Create a default session.
+        using RealtimeSessionClient sessionClient = await client.StartConversationSessionAsync(
+            model: GetTestModel(),
+            cancellationToken: CancellationToken);
+
+        // Step 2: Update the session.
+        await sessionClient.ConfigureConversationSessionAsync(
+            new GARealtimeConversationSessionOptions()
+            {
+                OutputModalities = { GARealtimeOutputModality.Audio }
+            },
+            CancellationToken);
+
+        // Step 3: Add an item to the conversation.
+        await sessionClient.AddItemAsync(
+            GARealtimeItem.CreateUserMessageItem("Hello! My name is Bob."),
+            cancellationToken: CancellationToken);
+
+        // Step 4: Request an out-of-band response.
+        await sessionClient.StartResponseAsync(
+            new GARealtimeResponseOptions()
+            {
+                DefaultConversationConfiguration = GARealtimeResponseDefaultConversationConfiguration.None,
+                OutputModalities = { GARealtimeOutputModality.Text },
+                InputItems =
+                {
+                    GARealtimeItem.CreateUserMessageItem("Can you tell me what my name is?"),
+                },
+            },
+            CancellationToken);
+
+        string firstResponseContent = null;
+        string secondResponseContent = null;
+        int responseDoneCount = 0;
+        bool gotSessionCreated = false;
+        bool gotSessionUpdated = false;
+        bool done = false;
+
+        await foreach (GARealtimeServerUpdate update in sessionClient.ReceiveUpdatesAsync(CancellationToken))
+        {
+            switch (update)
+            {
+                case GARealtimeServerUpdateSessionCreated sessionCreatedUpdate:
+                    {
+                        GARealtimeConversationSession session = sessionCreatedUpdate.Session as GARealtimeConversationSession;
+                        Assert.That(session, Is.Not.Null);
+
+                        gotSessionCreated = true;
+                        break;
+                    }
+                case GARealtimeServerUpdateSessionUpdated sessionUpdatedUpdate:
+                    {
+                        // Validate output modalities.
+                        GARealtimeConversationSession session = sessionUpdatedUpdate.Session as GARealtimeConversationSession;
+                        Assert.That(session, Is.Not.Null);
+                        Assert.That(session.OutputModalities, Is.Not.Null);
+                        Assert.That(session.OutputModalities, Has.Count.EqualTo(1));
+                        Assert.That(session.OutputModalities[0], Is.EqualTo(GARealtimeOutputModality.Audio));
+
+                        gotSessionUpdated = true;
+                        break;
+                    }
+                case GARealtimeServerUpdateResponseDone responseDoneUpdate:
+                    {
+                        responseDoneCount++;
+
+                        Assert.That(responseDoneUpdate.Response.OutputItems, Has.Count.EqualTo(1));
+
+                        GARealtimeMessageItem messageItem = responseDoneUpdate.Response.OutputItems[0] as GARealtimeMessageItem;
+                        Assert.That(messageItem, Is.Not.Null);
+                        Assert.That(messageItem.Content, Has.Count.EqualTo(1));
+
+                        if (responseDoneCount == 1)
+                        {
+                            // The first response should be out-of-band and be text-only.
+                            GARealtimeOutputTextMessageContentPart outputTextPart = messageItem.Content[0] as GARealtimeOutputTextMessageContentPart;
+                            Assert.That(outputTextPart, Is.Not.Null);
+
+                            firstResponseContent = outputTextPart.Text;
+
+                            // Step 5: Now request a normal response using the same session.
+                            await sessionClient.StartResponseAsync(CancellationToken);
+                        }
+                        else if (responseDoneCount == 2)
+                        {
+                            // The second should be a normal response and it should be audio-only.
+                            GARealtimeOutputAudioMessageContentPart outputAudioPart = messageItem.Content[0] as GARealtimeOutputAudioMessageContentPart;
+                            Assert.That(outputAudioPart, Is.Not.Null);
+                            Assert.That(outputAudioPart.Transcript, Is.Not.Null.Or.Empty);
+
+                            secondResponseContent = outputAudioPart.Transcript;
+
+                            done = true;
+                        }
+                        else
+                        {
+                            Assert.Fail($"Error: Unexpected response.done event.");
+                        }
+
+                        break;
+                    }
+                case GARealtimeServerUpdateError errorUpdate:
+                    {
+                        Assert.Fail($"Error: {ModelReaderWriter.Write(errorUpdate)}");
+                        done = true;
+                        break;
+                    }
+            }
+
+            if (done)
+            {
+                break;
+            }
+        }
+
+        Assert.That(firstResponseContent, Is.Not.Null.And.Not.Empty);
+        Assert.That(firstResponseContent.ToLowerInvariant(), Does.Not.Contain("bob"));
+
+        Assert.That(secondResponseContent, Is.Not.Null.And.Not.Empty);
+        Assert.That(secondResponseContent.ToLowerInvariant(), Does.Contain("bob"));
+
+        Assert.That(gotSessionCreated, Is.True);
+        Assert.That(gotSessionUpdated, Is.True);
+    }
+
+    private class TestDelayedFileReadStream : FileStream
+    {
+        private readonly TimeSpan _delayBetweenReads;
+        private readonly int _readsBeforeDelay;
+        private int _readsPerformed;
+
+        public TestDelayedFileReadStream(string path, TimeSpan delayBetweenReads, int readsBeforeDelay = 0) : base(path, FileMode.Open, FileAccess.Read)
+        {
+            _delayBetweenReads = delayBetweenReads;
+            _readsBeforeDelay = readsBeforeDelay;
+            _readsPerformed = 0;
+        }
+
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            if (++_readsPerformed > _readsBeforeDelay)
+            {
+                System.Threading.Thread.Sleep((int)_delayBetweenReads.TotalMilliseconds);
+            }
+
+            return base.Read(buffer, offset, count);
+        }
+
+        public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        {
+            if (++_readsPerformed > _readsBeforeDelay)
+            {
+                await Task.Delay(_delayBetweenReads);
+            }
+
+            return await base.ReadAsync(buffer, offset, count, cancellationToken);
+        }
+    }
 }

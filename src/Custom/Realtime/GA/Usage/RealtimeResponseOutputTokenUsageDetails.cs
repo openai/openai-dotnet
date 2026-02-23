@@ -6,4 +6,11 @@ namespace OpenAI.Realtime;
 [CodeGenType("RealtimeResponseUsageOutputTokenDetailsGA")]
 public partial class GARealtimeResponseOutputTokenUsageDetails
 {
+    // CUSTOM: Renamed.
+    [CodeGenMember("TextTokens")]
+    public int? TextTokenCount { get; }
+
+    // CUSTOM: Renamed.
+    [CodeGenMember("AudioTokens")]
+    public int? AudioTokenCount { get; }
 }

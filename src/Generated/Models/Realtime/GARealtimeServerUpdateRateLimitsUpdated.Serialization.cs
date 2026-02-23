@@ -58,13 +58,13 @@ namespace OpenAI.Realtime
             {
                 writer.WritePropertyName("rate_limits"u8);
                 writer.WriteStartArray();
-                for (int i = 0; i < RateLimits.Count; i++)
+                for (int i = 0; i < RateLimitDetails.Count; i++)
                 {
-                    if (RateLimits[i].Patch.IsRemoved("$"u8))
+                    if (RateLimitDetails[i].Patch.IsRemoved("$"u8))
                     {
                         continue;
                     }
-                    writer.WriteObjectValue(RateLimits[i], options);
+                    writer.WriteObjectValue(RateLimitDetails[i], options);
                 }
                 Patch.WriteTo(writer, "$.rate_limits"u8);
                 writer.WriteEndArray();
@@ -98,7 +98,7 @@ namespace OpenAI.Realtime
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string eventId = default;
-            IList<GARealtimeRateLimitDetails> rateLimits = default;
+            IList<GARealtimeRateLimitDetails> rateLimitDetails = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -118,12 +118,12 @@ namespace OpenAI.Realtime
                     {
                         array.Add(GARealtimeRateLimitDetails.DeserializeGARealtimeRateLimitDetails(item, item.GetUtf8Bytes(), options));
                     }
-                    rateLimits = array;
+                    rateLimitDetails = array;
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new GARealtimeServerUpdateRateLimitsUpdated(kind, patch, eventId, rateLimits);
+            return new GARealtimeServerUpdateRateLimitsUpdated(kind, patch, eventId, rateLimitDetails);
         }
 
         BinaryData IPersistableModel<GARealtimeServerUpdateRateLimitsUpdated>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
@@ -173,7 +173,7 @@ namespace OpenAI.Realtime
                 {
                     return false;
                 }
-                return RateLimits[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+                return RateLimitDetails[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
             }
             return false;
         }
@@ -192,7 +192,7 @@ namespace OpenAI.Realtime
                 {
                     return false;
                 }
-                RateLimits[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                RateLimitDetails[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
                 return true;
             }
             return false;

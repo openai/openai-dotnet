@@ -20,13 +20,13 @@ namespace OpenAI.Realtime
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal GARealtimeResponseInputTokenUsageDetails(int? cachedTokens, int? textTokens, int? imageTokens, int? audioTokens, GARealtimeResponseInputCachedTokenUsageDetails cachedTokensDetails, in JsonPatch patch)
+        internal GARealtimeResponseInputTokenUsageDetails(int? cachedTokenCount, int? textTokenCount, int? imageTokenCount, int? audioTokenCount, GARealtimeResponseInputCachedTokenUsageDetails cachedTokenDetails, in JsonPatch patch)
         {
-            CachedTokens = cachedTokens;
-            TextTokens = textTokens;
-            ImageTokens = imageTokens;
-            AudioTokens = audioTokens;
-            CachedTokensDetails = cachedTokensDetails;
+            CachedTokenCount = cachedTokenCount;
+            TextTokenCount = textTokenCount;
+            ImageTokenCount = imageTokenCount;
+            AudioTokenCount = audioTokenCount;
+            CachedTokenDetails = cachedTokenDetails;
             _patch = patch;
             _patch.SetPropagators(PropagateSet, PropagateGet);
         }
@@ -36,15 +36,5 @@ namespace OpenAI.Realtime
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
-
-        public int? CachedTokens { get; }
-
-        public int? TextTokens { get; }
-
-        public int? ImageTokens { get; }
-
-        public int? AudioTokens { get; }
-
-        public GARealtimeResponseInputCachedTokenUsageDetails CachedTokensDetails { get; }
     }
 }

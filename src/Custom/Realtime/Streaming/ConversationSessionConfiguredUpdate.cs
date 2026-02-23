@@ -6,7 +6,7 @@ namespace OpenAI.Realtime;
 /// <summary>
 /// The update (response command) of type <c>session.updated</c>, which is received when a preceding
 /// <c>session.update</c> request command
-/// (<see cref="RealtimeSession.ConfigureConversationSessionAsync(OpenAI.Realtime.ConversationSessionOptions, System.Threading.CancellationToken)"/>)
+/// (<see cref="RealtimeSessionClient.ConfigureConversationSessionAsync(OpenAI.Realtime.ConversationSessionOptions, System.Threading.CancellationToken)"/>)
 /// has been applied to the session. New session configuration related to response generation will not take effect
 /// until the next response; shared session configuration, such as input audio format, will apply immediately.
 /// </summary>

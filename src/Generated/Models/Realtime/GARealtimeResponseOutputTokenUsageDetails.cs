@@ -20,10 +20,10 @@ namespace OpenAI.Realtime
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal GARealtimeResponseOutputTokenUsageDetails(int? textTokens, int? audioTokens, in JsonPatch patch)
+        internal GARealtimeResponseOutputTokenUsageDetails(int? textTokenCount, int? audioTokenCount, in JsonPatch patch)
         {
-            TextTokens = textTokens;
-            AudioTokens = audioTokens;
+            TextTokenCount = textTokenCount;
+            AudioTokenCount = audioTokenCount;
             _patch = patch;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -32,9 +32,5 @@ namespace OpenAI.Realtime
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch => ref _patch;
-
-        public int? TextTokens { get; }
-
-        public int? AudioTokens { get; }
     }
 }

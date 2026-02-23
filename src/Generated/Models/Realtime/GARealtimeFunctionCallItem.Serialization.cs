@@ -55,19 +55,19 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("status"u8);
                 writer.WriteStringValue(Status.Value.ToString());
             }
-            if (Optional.IsDefined(CallId) && !Patch.Contains("$.call_id"u8))
+            if (!Patch.Contains("$.call_id"u8))
             {
                 writer.WritePropertyName("call_id"u8);
                 writer.WriteStringValue(CallId);
             }
-            if (!Patch.Contains("$.FunctionName"u8))
+            if (!Patch.Contains("$.name"u8))
             {
-                writer.WritePropertyName("FunctionName"u8);
+                writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(FunctionName);
             }
-            if (!Patch.Contains("$.FunctionArguments"u8))
+            if (!Patch.Contains("$.arguments"u8))
             {
-                writer.WritePropertyName("FunctionArguments"u8);
+                writer.WritePropertyName("arguments"u8);
                 SerializeFunctionArgumentsValue(writer, options);
             }
 
@@ -139,12 +139,12 @@ namespace OpenAI.Realtime
                     callId = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("FunctionName"u8))
+                if (prop.NameEquals("name"u8))
                 {
                     functionName = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("FunctionArguments"u8))
+                if (prop.NameEquals("arguments"u8))
                 {
                     DeserializeFunctionArgumentsValue(prop, ref functionArguments);
                     continue;

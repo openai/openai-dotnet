@@ -40,7 +40,7 @@ namespace OpenAI.Realtime
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (!Patch.Contains("$.id"u8))
+            if (Optional.IsDefined(Id) && !Patch.Contains("$.id"u8))
             {
                 writer.WritePropertyName("id"u8);
                 writer.WriteStringValue(Id);
@@ -50,14 +50,14 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("server_label"u8);
                 writer.WriteStringValue(ServerLabel);
             }
-            if (!Patch.Contains("$.ToolName"u8))
+            if (!Patch.Contains("$.name"u8))
             {
-                writer.WritePropertyName("ToolName"u8);
+                writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(ToolName);
             }
-            if (!Patch.Contains("$.ToolArguments"u8))
+            if (!Patch.Contains("$.arguments"u8))
             {
-                writer.WritePropertyName("ToolArguments"u8);
+                writer.WritePropertyName("arguments"u8);
                 SerializeToolArgumentsValue(writer, options);
             }
             if (Optional.IsDefined(ApprovalRequestId) && !Patch.Contains("$.approval_request_id"u8))
@@ -65,9 +65,9 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("approval_request_id"u8);
                 writer.WriteStringValue(ApprovalRequestId);
             }
-            if (Optional.IsDefined(ToolOutput) && !Patch.Contains("$.ToolOutput"u8))
+            if (Optional.IsDefined(ToolOutput) && !Patch.Contains("$.output"u8))
             {
-                writer.WritePropertyName("ToolOutput"u8);
+                writer.WritePropertyName("output"u8);
                 writer.WriteStringValue(ToolOutput);
             }
             if (Optional.IsDefined(Error) && !Patch.Contains("$.error"u8))
@@ -127,12 +127,12 @@ namespace OpenAI.Realtime
                     serverLabel = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("ToolName"u8))
+                if (prop.NameEquals("name"u8))
                 {
                     toolName = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("ToolArguments"u8))
+                if (prop.NameEquals("arguments"u8))
                 {
                     DeserializeToolArgumentsValue(prop, ref toolArguments);
                     continue;
@@ -147,7 +147,7 @@ namespace OpenAI.Realtime
                     approvalRequestId = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("ToolOutput"u8))
+                if (prop.NameEquals("output"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
                     {

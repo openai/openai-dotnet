@@ -37,7 +37,5 @@ namespace OpenAI.Realtime
         public ref JsonPatch Patch => ref _patch;
 
         public IList<string> ToolNames { get; }
-
-        public bool? IsReadOnly { get; set; }
     }
 }

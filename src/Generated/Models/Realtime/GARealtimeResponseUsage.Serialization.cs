@@ -35,20 +35,20 @@ namespace OpenAI.Realtime
                 throw new FormatException($"The model {nameof(GARealtimeResponseUsage)} does not support writing '{format}' format.");
             }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(TotalTokens) && !Patch.Contains("$.total_tokens"u8))
+            if (Optional.IsDefined(TotalTokenCount) && !Patch.Contains("$.total_tokens"u8))
             {
                 writer.WritePropertyName("total_tokens"u8);
-                writer.WriteNumberValue(TotalTokens.Value);
+                writer.WriteNumberValue(TotalTokenCount.Value);
             }
-            if (Optional.IsDefined(InputTokens) && !Patch.Contains("$.input_tokens"u8))
+            if (Optional.IsDefined(InputTokenCount) && !Patch.Contains("$.input_tokens"u8))
             {
                 writer.WritePropertyName("input_tokens"u8);
-                writer.WriteNumberValue(InputTokens.Value);
+                writer.WriteNumberValue(InputTokenCount.Value);
             }
-            if (Optional.IsDefined(OutputTokens) && !Patch.Contains("$.output_tokens"u8))
+            if (Optional.IsDefined(OutputTokenCount) && !Patch.Contains("$.output_tokens"u8))
             {
                 writer.WritePropertyName("output_tokens"u8);
-                writer.WriteNumberValue(OutputTokens.Value);
+                writer.WriteNumberValue(OutputTokenCount.Value);
             }
             if (Optional.IsDefined(InputTokenDetails) && !Patch.Contains("$.input_token_details"u8))
             {
@@ -84,9 +84,9 @@ namespace OpenAI.Realtime
             {
                 return null;
             }
-            int? totalTokens = default;
-            int? inputTokens = default;
-            int? outputTokens = default;
+            int? totalTokenCount = default;
+            int? inputTokenCount = default;
+            int? outputTokenCount = default;
             GARealtimeResponseInputTokenUsageDetails inputTokenDetails = default;
             GARealtimeResponseOutputTokenUsageDetails outputTokenDetails = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -100,7 +100,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    totalTokens = prop.Value.GetInt32();
+                    totalTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("input_tokens"u8))
@@ -109,7 +109,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    inputTokens = prop.Value.GetInt32();
+                    inputTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("output_tokens"u8))
@@ -118,7 +118,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    outputTokens = prop.Value.GetInt32();
+                    outputTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("input_token_details"u8))
@@ -142,9 +142,9 @@ namespace OpenAI.Realtime
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new GARealtimeResponseUsage(
-                totalTokens,
-                inputTokens,
-                outputTokens,
+                totalTokenCount,
+                inputTokenCount,
+                outputTokenCount,
                 inputTokenDetails,
                 outputTokenDetails,
                 patch);

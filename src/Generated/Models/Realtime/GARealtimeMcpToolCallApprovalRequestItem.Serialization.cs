@@ -50,14 +50,14 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("server_label"u8);
                 writer.WriteStringValue(ServerLabel);
             }
-            if (!Patch.Contains("$.ToolName"u8))
+            if (!Patch.Contains("$.name"u8))
             {
-                writer.WritePropertyName("ToolName"u8);
+                writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(ToolName);
             }
-            if (!Patch.Contains("$.ToolArguments"u8))
+            if (!Patch.Contains("$.arguments"u8))
             {
-                writer.WritePropertyName("ToolArguments"u8);
+                writer.WritePropertyName("arguments"u8);
                 SerializeToolArgumentsValue(writer, options);
             }
 
@@ -109,12 +109,12 @@ namespace OpenAI.Realtime
                     serverLabel = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("ToolName"u8))
+                if (prop.NameEquals("name"u8))
                 {
                     toolName = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("ToolArguments"u8))
+                if (prop.NameEquals("arguments"u8))
                 {
                     DeserializeToolArgumentsValue(prop, ref toolArguments);
                     continue;

@@ -1,4 +1,5 @@
 ﻿using Microsoft.TypeSpec.Generator.Customizations;
+using System;
 
 namespace OpenAI.Realtime;
 
@@ -6,4 +7,17 @@ namespace OpenAI.Realtime;
 [CodeGenType("RealtimeMCPToolCallGA")]
 public partial class GARealtimeMcpToolCallItem
 {
+    // CUSTOM: Renamed.
+    [CodeGenMember("Name")]
+    public string ToolName { get; set; }
+
+    // CUSTOM:
+    // - Renamed.
+    // - Changed type.
+    [CodeGenMember("Arguments")]
+    public BinaryData ToolArguments { get; set; }
+
+    // CUSTOM: Renamed.
+    [CodeGenMember("Output")]
+    public string ToolOutput { get; set; }
 }

@@ -30,34 +30,10 @@ using TypeSpec.HttpClient.CSharp;
 
 @@usage(RealtimeConversationItem_GA, Usage.input | Usage.output);
 
-@@alternateType(RealtimeConversationItemFunctionCall_GA.arguments, unknown);
-@@clientName(RealtimeConversationItemFunctionCall_GA.name, "FunctionName");
-@@clientName(RealtimeConversationItemFunctionCall_GA.arguments, "FunctionArguments");
-
-@@clientName(RealtimeConversationItemFunctionCallOutput_GA.output, "FunctionOutput");
-
-@@alternateType(RealtimeMCPApprovalRequest_GA.arguments, unknown);
-@@clientName(RealtimeMCPApprovalRequest_GA.name, "ToolName");
-@@clientName(RealtimeMCPApprovalRequest_GA.arguments, "ToolArguments");
-
-@@clientName(RealtimeMCPApprovalResponse_GA.approve, "Approved");
-
-@@alternateType(RealtimeMCPToolCall_GA.arguments, unknown);
-// @@alternateType(RealtimeMCPToolCall_GA.error, unknown | null);
-@@clientName(RealtimeMCPToolCall_GA.name, "ToolName");
-@@clientName(RealtimeMCPToolCall_GA.arguments, "ToolArguments");
-@@clientName(RealtimeMCPToolCall_GA.output, "ToolOutput");
-
-// @@alternateType(MCPListToolsItemResource.error, unknown | null);
-@@clientName(MCPListToolsItemResource.tools, "ToolDefinitions");
-
 // ------------ Tools ------------
 
 @@alternateType(MCPTool_GA.server_url, url);
 @@alternateType(MCPTool_GA.allowed_tools, MCPToolFilter_GA | null);
-@@clientName(MCPTool_GA.server_url, "ServerUri");
-@@clientName(MCPTool_GA.authorization, "AuthorizationToken");
-@@clientName(MCPToolFilter_GA.read_only, "IsReadOnly");
 
 // ------------ Response ------------
 
@@ -68,13 +44,7 @@ using TypeSpec.HttpClient.CSharp;
 
 @@alternateType(RealtimeServerEventResponseFunctionCallArgumentsDelta_GA.delta, unknown);
 
-@@alternateType(RealtimeServerEventResponseFunctionCallArgumentsDone_GA.arguments, unknown);
-@@clientName(RealtimeServerEventResponseFunctionCallArgumentsDone_GA.arguments, "FunctionArguments");
-
 @@alternateType(RealtimeServerEventResponseMCPCallArgumentsDelta_GA.delta, unknown);
-
-@@alternateType(RealtimeServerEventResponseMCPCallArgumentsDone_GA.arguments, unknown);
-@@clientName(RealtimeServerEventResponseMCPCallArgumentsDone_GA.arguments, "ToolArguments");
 
 // ------------ JsonPatch ------------
 

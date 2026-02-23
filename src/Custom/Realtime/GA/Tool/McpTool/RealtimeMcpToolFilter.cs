@@ -6,4 +6,6 @@ namespace OpenAI.Realtime;
 [CodeGenType("MCPToolFilterGA")]
 public partial class GARealtimeMcpToolFilter
 {
+    [CodeGenMember("ReadOnly")]
+    public bool? IsReadOnly { get; set; }
 }

@@ -4811,7 +4811,7 @@ namespace OpenAI.Realtime {
     [Experimental("OPENAI002")]
     public readonly partial struct GARealtimeDefaultMaxOutputTokenCount : IEquatable<GARealtimeDefaultMaxOutputTokenCount> {
         public GARealtimeDefaultMaxOutputTokenCount(string value);
-        public static GARealtimeDefaultMaxOutputTokenCount Infinite { get; }
+        public static GARealtimeDefaultMaxOutputTokenCount Infinity { get; }
         public readonly bool Equals(GARealtimeDefaultMaxOutputTokenCount other);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly bool Equals(object obj);
@@ -4905,7 +4905,7 @@ namespace OpenAI.Realtime {
     }
     [Experimental("OPENAI002")]
     public class GARealtimeFunctionCallItem : GARealtimeItem, IJsonModel<GARealtimeFunctionCallItem>, IPersistableModel<GARealtimeFunctionCallItem> {
-        public GARealtimeFunctionCallItem(string functionName, BinaryData functionArguments);
+        public GARealtimeFunctionCallItem(string callId, string functionName, BinaryData functionArguments);
         public string CallId { get; set; }
         public BinaryData FunctionArguments { get; set; }
         public string FunctionName { get; set; }
@@ -5040,6 +5040,18 @@ namespace OpenAI.Realtime {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
+        public static GARealtimeMessageItem CreateAssistantMessageItem(IEnumerable<GARealtimeMessageContentPart> contentParts);
+        public static GARealtimeMessageItem CreateAssistantMessageItem(string outputTextContent);
+        public static GARealtimeFunctionCallItem CreateFunctionCallItem(string callId, string functionName, BinaryData functionArguments);
+        public static GARealtimeFunctionCallOutputItem CreateFunctionCallOutputItem(string callId, string functionOutput);
+        public static GARealtimeMcpToolCallApprovalRequestItem CreateMcpApprovalRequestItem(string id, string serverLabel, string name, BinaryData arguments);
+        public static GARealtimeMcpToolCallApprovalResponseItem CreateMcpApprovalResponseItem(string approvalRequestId, bool approved);
+        public static GARealtimeMcpToolCallItem CreateMcpToolCallItem(string serverLabel, string name, BinaryData arguments);
+        public static GARealtimeMcpToolDefinitionListItem CreateMcpToolDefinitionListItem(string serverLabel, IEnumerable<GARealtimeMcpToolDefinition> toolDefinitions);
+        public static GARealtimeMessageItem CreateSystemMessageItem(IEnumerable<GARealtimeMessageContentPart> contentParts);
+        public static GARealtimeMessageItem CreateSystemMessageItem(string inputTextContent);
+        public static GARealtimeMessageItem CreateUserMessageItem(IEnumerable<GARealtimeMessageContentPart> contentParts);
+        public static GARealtimeMessageItem CreateUserMessageItem(string inputTextContent);
         protected virtual GARealtimeItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual GARealtimeItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -5124,7 +5136,7 @@ namespace OpenAI.Realtime {
     }
     [Experimental("OPENAI002")]
     public class GARealtimeMcpToolCallApprovalResponseItem : GARealtimeItem, IJsonModel<GARealtimeMcpToolCallApprovalResponseItem>, IPersistableModel<GARealtimeMcpToolCallApprovalResponseItem> {
-        public GARealtimeMcpToolCallApprovalResponseItem(string id, string approvalRequestId, bool approved);
+        public GARealtimeMcpToolCallApprovalResponseItem(string approvalRequestId, bool approved);
         public string ApprovalRequestId { get; set; }
         public bool Approved { get; set; }
         public string Id { get; set; }
@@ -5136,7 +5148,7 @@ namespace OpenAI.Realtime {
     }
     [Experimental("OPENAI002")]
     public class GARealtimeMcpToolCallItem : GARealtimeItem, IJsonModel<GARealtimeMcpToolCallItem>, IPersistableModel<GARealtimeMcpToolCallItem> {
-        public GARealtimeMcpToolCallItem(string id, string serverLabel, string toolName, BinaryData toolArguments);
+        public GARealtimeMcpToolCallItem(string serverLabel, string toolName, BinaryData toolArguments);
         public string ApprovalRequestId { get; set; }
         public GARealtimeError Error { get; set; }
         public string Id { get; set; }
@@ -5189,10 +5201,10 @@ namespace OpenAI.Realtime {
     }
     [Experimental("OPENAI002")]
     public class GARealtimeMcpToolDefinitionListItem : GARealtimeItem, IJsonModel<GARealtimeMcpToolDefinitionListItem>, IPersistableModel<GARealtimeMcpToolDefinitionListItem> {
-        public GARealtimeMcpToolDefinitionListItem(string serverLabel, IEnumerable<GARealtimeMcpToolDefinition> tools);
+        public GARealtimeMcpToolDefinitionListItem(string serverLabel, IEnumerable<GARealtimeMcpToolDefinition> toolDefinitions);
         public string Id { get; set; }
         public string ServerLabel { get; set; }
-        public IList<GARealtimeMcpToolDefinition> Tools { get; }
+        public IList<GARealtimeMcpToolDefinition> ToolDefinitions { get; }
         protected override GARealtimeItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override GARealtimeItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -5270,7 +5282,8 @@ namespace OpenAI.Realtime {
     }
     [Experimental("OPENAI002")]
     public class GARealtimeNoiseReduction : IJsonModel<GARealtimeNoiseReduction>, IPersistableModel<GARealtimeNoiseReduction> {
-        public GARealtimeNoiseReductionKind? Kind { get; set; }
+        public GARealtimeNoiseReduction(GARealtimeNoiseReductionKind kind);
+        public GARealtimeNoiseReductionKind Kind { get; set; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
@@ -5483,13 +5496,13 @@ namespace OpenAI.Realtime {
     }
     [Experimental("OPENAI002")]
     public class GARealtimeResponseInputCachedTokenUsageDetails : IJsonModel<GARealtimeResponseInputCachedTokenUsageDetails>, IPersistableModel<GARealtimeResponseInputCachedTokenUsageDetails> {
-        public int? AudioTokens { get; }
-        public int? ImageTokens { get; }
+        public int? AudioTokenCount { get; }
+        public int? ImageTokenCount { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
-        public int? TextTokens { get; }
+        public int? TextTokenCount { get; }
         protected virtual GARealtimeResponseInputCachedTokenUsageDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual GARealtimeResponseInputCachedTokenUsageDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -5497,15 +5510,15 @@ namespace OpenAI.Realtime {
     }
     [Experimental("OPENAI002")]
     public class GARealtimeResponseInputTokenUsageDetails : IJsonModel<GARealtimeResponseInputTokenUsageDetails>, IPersistableModel<GARealtimeResponseInputTokenUsageDetails> {
-        public int? AudioTokens { get; }
-        public int? CachedTokens { get; }
-        public GARealtimeResponseInputCachedTokenUsageDetails CachedTokensDetails { get; }
-        public int? ImageTokens { get; }
+        public int? AudioTokenCount { get; }
+        public int? CachedTokenCount { get; }
+        public GARealtimeResponseInputCachedTokenUsageDetails CachedTokenDetails { get; }
+        public int? ImageTokenCount { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
-        public int? TextTokens { get; }
+        public int? TextTokenCount { get; }
         protected virtual GARealtimeResponseInputTokenUsageDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual GARealtimeResponseInputTokenUsageDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -5546,12 +5559,12 @@ namespace OpenAI.Realtime {
     }
     [Experimental("OPENAI002")]
     public class GARealtimeResponseOutputTokenUsageDetails : IJsonModel<GARealtimeResponseOutputTokenUsageDetails>, IPersistableModel<GARealtimeResponseOutputTokenUsageDetails> {
-        public int? AudioTokens { get; }
+        public int? AudioTokenCount { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
-        public int? TextTokens { get; }
+        public int? TextTokenCount { get; }
         protected virtual GARealtimeResponseOutputTokenUsageDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual GARealtimeResponseOutputTokenUsageDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -5628,15 +5641,15 @@ namespace OpenAI.Realtime {
     }
     [Experimental("OPENAI002")]
     public class GARealtimeResponseUsage : IJsonModel<GARealtimeResponseUsage>, IPersistableModel<GARealtimeResponseUsage> {
+        public int? InputTokenCount { get; }
         public GARealtimeResponseInputTokenUsageDetails InputTokenDetails { get; }
-        public int? InputTokens { get; }
+        public int? OutputTokenCount { get; }
         public GARealtimeResponseOutputTokenUsageDetails OutputTokenDetails { get; }
-        public int? OutputTokens { get; }
         [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
-        public int? TotalTokens { get; }
+        public int? TotalTokenCount { get; }
         protected virtual GARealtimeResponseUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual GARealtimeResponseUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -5851,7 +5864,7 @@ namespace OpenAI.Realtime {
     }
     [Experimental("OPENAI002")]
     public class GARealtimeServerUpdateInputAudioBufferSpeechStarted : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateInputAudioBufferSpeechStarted>, IPersistableModel<GARealtimeServerUpdateInputAudioBufferSpeechStarted> {
-        public TimeSpan AudioStartMs { get; }
+        public TimeSpan AudioStartTime { get; }
         public string EventId { get; }
         public string ItemId { get; }
         protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -5861,7 +5874,7 @@ namespace OpenAI.Realtime {
     }
     [Experimental("OPENAI002")]
     public class GARealtimeServerUpdateInputAudioBufferSpeechStopped : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateInputAudioBufferSpeechStopped>, IPersistableModel<GARealtimeServerUpdateInputAudioBufferSpeechStopped> {
-        public TimeSpan AudioEndMs { get; }
+        public TimeSpan AudioEndTime { get; }
         public string EventId { get; }
         public string ItemId { get; }
         protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -5871,8 +5884,8 @@ namespace OpenAI.Realtime {
     }
     [Experimental("OPENAI002")]
     public class GARealtimeServerUpdateInputAudioBufferTimeoutTriggered : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateInputAudioBufferTimeoutTriggered>, IPersistableModel<GARealtimeServerUpdateInputAudioBufferTimeoutTriggered> {
-        public TimeSpan AudioEndMs { get; }
-        public TimeSpan AudioStartMs { get; }
+        public TimeSpan AudioEndTime { get; }
+        public TimeSpan AudioStartTime { get; }
         public string EventId { get; }
         public string ItemId { get; }
         protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -5937,7 +5950,7 @@ namespace OpenAI.Realtime {
     [Experimental("OPENAI002")]
     public class GARealtimeServerUpdateRateLimitsUpdated : GARealtimeServerUpdate, IJsonModel<GARealtimeServerUpdateRateLimitsUpdated>, IPersistableModel<GARealtimeServerUpdateRateLimitsUpdated> {
         public string EventId { get; }
-        public IList<GARealtimeRateLimitDetails> RateLimits { get; }
+        public IList<GARealtimeRateLimitDetails> RateLimitDetails { get; }
         protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override GARealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -6005,8 +6018,8 @@ namespace OpenAI.Realtime {
         public string CallId { get; }
         public string EventId { get; }
         public BinaryData FunctionArguments { get; }
+        public string FunctionName { get; }
         public string ItemId { get; }
-        public string Name { get; }
         public int OutputIndex { get; }
         public string ResponseId { get; }
         protected override GARealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -6711,12 +6724,12 @@ namespace OpenAI.Realtime {
         public virtual ClientResult CreateRealtimeClientSecret(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<GACreateClientSecretResult>> CreateRealtimeClientSecretAsync(GACreateClientSecretOptions body, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> CreateRealtimeClientSecretAsync(BinaryContent content, RequestOptions options = null);
-        public RealtimeSession StartConversationSession(string model, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual Task<RealtimeSession> StartConversationSessionAsync(string model, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
-        public RealtimeSession StartSession(string model, string intent, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual Task<RealtimeSession> StartSessionAsync(string model, string intent, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
-        public RealtimeSession StartTranscriptionSession(RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual Task<RealtimeSession> StartTranscriptionSessionAsync(RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
+        public RealtimeSessionClient StartConversationSession(string model, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual Task<RealtimeSessionClient> StartConversationSessionAsync(string model, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
+        public RealtimeSessionClient StartSession(string model, string intent, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual Task<RealtimeSessionClient> StartSessionAsync(string model, string intent, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
+        public RealtimeSessionClient StartTranscriptionSession(RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual Task<RealtimeSessionClient> StartTranscriptionSessionAsync(RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
     }
     public class RealtimeClientOptions : ClientPipelineOptions {
         public Uri Endpoint { get; set; }
@@ -6778,47 +6791,6 @@ namespace OpenAI.Realtime {
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     [Experimental("OPENAI002")]
-    public class RealtimeSession : IDisposable {
-        protected internal RealtimeSession(ApiKeyCredential credential, RealtimeClient parentClient, Uri endpoint, string model, string intent);
-        public Net.WebSockets.WebSocket WebSocket { get; protected set; }
-        public virtual void AddItem(RealtimeItem item, string previousItemId, CancellationToken cancellationToken = default);
-        public virtual Task AddItemAsync(GARealtimeClientCommandConversationItemCreate command, CancellationToken cancellationToken = default);
-        public virtual void CancelResponse(CancellationToken cancellationToken = default);
-        public virtual Task CancelResponseAsync(CancellationToken cancellationToken = default);
-        public virtual void ClearInputAudio(CancellationToken cancellationToken = default);
-        public virtual Task ClearInputAudioAsync(CancellationToken cancellationToken = default);
-        public virtual void CommitPendingAudio(CancellationToken cancellationToken = default);
-        public virtual Task CommitPendingAudioAsync(CancellationToken cancellationToken = default);
-        public virtual Task ConfigureConversationSessionAsync(GARealtimeClientCommandSessionUpdate command, CancellationToken cancellationToken = default);
-        public virtual void ConfigureSession(ConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default);
-        public virtual void ConfigureTranscriptionSession(TranscriptionSessionOptions sessionOptions, CancellationToken cancellationToken = default);
-        public virtual Task ConfigureTranscriptionSessionAsync(TranscriptionSessionOptions sessionOptions, CancellationToken cancellationToken = default);
-        protected internal virtual void Connect(string queryString = null, IDictionary<string, string> headers = null, CancellationToken cancellationToken = default);
-        protected internal virtual Task ConnectAsync(string queryString = null, IDictionary<string, string> headers = null, CancellationToken cancellationToken = default);
-        public virtual void DeleteItem(string itemId, CancellationToken cancellationToken = default);
-        public virtual Task DeleteItemAsync(string itemId, CancellationToken cancellationToken = default);
-        public void Dispose();
-        public virtual void InterruptResponse(CancellationToken cancellationToken = default);
-        public virtual Task InterruptResponseAsync(CancellationToken cancellationToken = default);
-        public virtual IEnumerable<ClientResult> ReceiveUpdates(RequestOptions options);
-        public virtual IEnumerable<RealtimeUpdate> ReceiveUpdates(CancellationToken cancellationToken = default);
-        public virtual IAsyncEnumerable<ClientResult> ReceiveUpdatesAsync(RequestOptions options);
-        public virtual IAsyncEnumerable<GARealtimeServerUpdate> ReceiveUpdatesAsync(CancellationToken cancellationToken = default);
-        public virtual void RequestItemRetrieval(string itemId, CancellationToken cancellationToken = default);
-        public virtual Task RequestItemRetrievalAsync(string itemId, CancellationToken cancellationToken = default);
-        public virtual void SendCommand(BinaryData data, RequestOptions options);
-        public virtual Task SendCommandAsync(BinaryData data, RequestOptions options);
-        public virtual void SendInputAudio(BinaryData audio, CancellationToken cancellationToken = default);
-        public virtual void SendInputAudio(Stream audio, CancellationToken cancellationToken = default);
-        public virtual Task SendInputAudioAsync(BinaryData audio, CancellationToken cancellationToken = default);
-        public virtual Task SendInputAudioAsync(Stream audio, CancellationToken cancellationToken = default);
-        public virtual void StartResponse(ConversationResponseOptions options, CancellationToken cancellationToken = default);
-        public void StartResponse(CancellationToken cancellationToken = default);
-        public virtual Task StartResponseAsync(GARealtimeClientCommandResponseCreate command, CancellationToken cancellationToken = default);
-        public virtual void TruncateItem(string itemId, int contentPartIndex, TimeSpan audioDuration, CancellationToken cancellationToken = default);
-        public virtual Task TruncateItemAsync(string itemId, int contentPartIndex, TimeSpan audioDuration, CancellationToken cancellationToken = default);
-    }
-    [Experimental("OPENAI002")]
     public class RealtimeSessionAudioConfiguration : IJsonModel<RealtimeSessionAudioConfiguration>, IPersistableModel<RealtimeSessionAudioConfiguration> {
         public RealtimeSessionAudioInputConfiguration Input { get; set; }
         public RealtimeSessionAudioOutputConfiguration Output { get; set; }
@@ -6847,6 +6819,52 @@ namespace OpenAI.Realtime {
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual RealtimeSessionAudioOutputConfiguration PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI002")]
+    public class RealtimeSessionClient : IDisposable {
+        protected internal RealtimeSessionClient(ApiKeyCredential credential, RealtimeClient parentClient, Uri endpoint, string model, string intent);
+        public Net.WebSockets.WebSocket WebSocket { get; protected set; }
+        public virtual void AddItem(GARealtimeItem item, string previousItemId, CancellationToken cancellationToken = default);
+        public virtual void AddItem(GARealtimeItem item, CancellationToken cancellationToken = default);
+        public virtual Task AddItemAsync(GARealtimeItem item, string previousItemId, CancellationToken cancellationToken = default);
+        public virtual Task AddItemAsync(GARealtimeItem item, CancellationToken cancellationToken = default);
+        public virtual void CancelResponse(CancellationToken cancellationToken = default);
+        public virtual Task CancelResponseAsync(CancellationToken cancellationToken = default);
+        public virtual void ClearInputAudio(CancellationToken cancellationToken = default);
+        public virtual Task ClearInputAudioAsync(CancellationToken cancellationToken = default);
+        public virtual void CommitPendingAudio(CancellationToken cancellationToken = default);
+        public virtual Task CommitPendingAudioAsync(CancellationToken cancellationToken = default);
+        public virtual Task ConfigureConversationSessionAsync(GARealtimeConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default);
+        public virtual void ConfigureSession(GARealtimeConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default);
+        public virtual void ConfigureTranscriptionSession(GARealtimeTranscriptionSessionOptions sessionOptions, CancellationToken cancellationToken = default);
+        public virtual Task ConfigureTranscriptionSessionAsync(GARealtimeTranscriptionSessionOptions sessionOptions, CancellationToken cancellationToken = default);
+        protected internal virtual void Connect(string queryString = null, IDictionary<string, string> headers = null, CancellationToken cancellationToken = default);
+        protected internal virtual Task ConnectAsync(string queryString = null, IDictionary<string, string> headers = null, CancellationToken cancellationToken = default);
+        public virtual void DeleteItem(string itemId, CancellationToken cancellationToken = default);
+        public virtual Task DeleteItemAsync(string itemId, CancellationToken cancellationToken = default);
+        public void Dispose();
+        public virtual void InterruptResponse(CancellationToken cancellationToken = default);
+        public virtual Task InterruptResponseAsync(CancellationToken cancellationToken = default);
+        public virtual IEnumerable<ClientResult> ReceiveUpdates(RequestOptions options);
+        public virtual IEnumerable<RealtimeUpdate> ReceiveUpdates(CancellationToken cancellationToken = default);
+        public virtual IAsyncEnumerable<ClientResult> ReceiveUpdatesAsync(RequestOptions options);
+        public virtual IAsyncEnumerable<GARealtimeServerUpdate> ReceiveUpdatesAsync(CancellationToken cancellationToken = default);
+        public virtual void RequestItemRetrieval(string itemId, CancellationToken cancellationToken = default);
+        public virtual Task RequestItemRetrievalAsync(string itemId, CancellationToken cancellationToken = default);
+        public virtual void SendCommand(GARealtimeClientCommand command, CancellationToken cancellationToken = default);
+        public virtual void SendCommand(BinaryData data, RequestOptions options);
+        public virtual Task SendCommandAsync(GARealtimeClientCommand command, CancellationToken cancellationToken = default);
+        public virtual Task SendCommandAsync(BinaryData data, RequestOptions options);
+        public virtual void SendInputAudio(BinaryData audio, CancellationToken cancellationToken = default);
+        public virtual void SendInputAudio(Stream audio, CancellationToken cancellationToken = default);
+        public virtual Task SendInputAudioAsync(BinaryData audio, CancellationToken cancellationToken = default);
+        public virtual Task SendInputAudioAsync(Stream audio, CancellationToken cancellationToken = default);
+        public virtual void StartResponse(GARealtimeResponseOptions responseOptions, CancellationToken cancellationToken = default);
+        public void StartResponse(CancellationToken cancellationToken = default);
+        public virtual Task StartResponseAsync(GARealtimeResponseOptions responseOptions, CancellationToken cancellationToken = default);
+        public virtual Task StartResponseAsync(CancellationToken cancellationToken = default);
+        public virtual void TruncateItem(string itemId, int contentPartIndex, TimeSpan audioDuration, CancellationToken cancellationToken = default);
+        public virtual Task TruncateItemAsync(string itemId, int contentPartIndex, TimeSpan audioDuration, CancellationToken cancellationToken = default);
     }
     [Experimental("OPENAI002")]
     public class RealtimeSessionCreateResponseUnion : IJsonModel<RealtimeSessionCreateResponseUnion>, IPersistableModel<RealtimeSessionCreateResponseUnion> {

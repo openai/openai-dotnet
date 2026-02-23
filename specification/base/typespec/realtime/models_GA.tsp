@@ -217,7 +217,7 @@ model RealtimeSessionCreateRequestGAAudioInput_GA {
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
 model RealtimeNoiseReduction_GA {
   #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
-  type?: RealtimeNoiseReductionType_GA;
+  type: RealtimeNoiseReductionType_GA;
 }
 
 #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
@@ -812,7 +812,7 @@ model RealtimeConversationItemFunctionCall_GA extends RealtimeConversationItem_G
   status?: "completed" | "incomplete" | "in_progress";
 
   /** The ID of the function call. */
-  call_id?: string;
+  call_id: string;
 
   /** The name of the function being called. */
   name: string;
@@ -850,7 +850,7 @@ model RealtimeMCPApprovalResponse_GA extends RealtimeConversationItem_GA {
   type: RealtimeConversationItemType_GA.mcp_approval_response;
 
   /** The unique ID of the approval response. */
-  id: string;
+  id?: string;
 
   /** The ID of the approval request being answered. */
   approval_request_id: string;
@@ -884,7 +884,7 @@ model RealtimeMCPToolCall_GA extends RealtimeConversationItem_GA {
   type: RealtimeConversationItemType_GA.mcp_call;
 
   /** The unique ID of the tool call. */
-  id: string;
+  id?: string;
 
   /** The label of the MCP server running the tool. */
   server_label: string;

@@ -915,7 +915,7 @@ namespace OpenAI
             return new GARealtimeAudioTranscriptionOptions(model, language, prompt, default);
         }
 
-        public static GARealtimeNoiseReduction GARealtimeNoiseReduction(GARealtimeNoiseReductionKind? kind = default)
+        public static GARealtimeNoiseReduction GARealtimeNoiseReduction(GARealtimeNoiseReductionKind kind = default)
         {
             return new GARealtimeNoiseReduction(kind, default);
         }
@@ -1474,36 +1474,36 @@ namespace OpenAI
             return new GARealtimeResponseOutputAudioOptions(audioFormat, voice, default);
         }
 
-        public static GARealtimeResponseUsage GARealtimeResponseUsage(int? totalTokens = default, int? inputTokens = default, int? outputTokens = default, GARealtimeResponseInputTokenUsageDetails inputTokenDetails = default, GARealtimeResponseOutputTokenUsageDetails outputTokenDetails = default)
+        public static GARealtimeResponseUsage GARealtimeResponseUsage(int? totalTokenCount = default, int? inputTokenCount = default, int? outputTokenCount = default, GARealtimeResponseInputTokenUsageDetails inputTokenDetails = default, GARealtimeResponseOutputTokenUsageDetails outputTokenDetails = default)
         {
             return new GARealtimeResponseUsage(
-                totalTokens,
-                inputTokens,
-                outputTokens,
+                totalTokenCount,
+                inputTokenCount,
+                outputTokenCount,
                 inputTokenDetails,
                 outputTokenDetails,
                 default);
         }
 
-        public static GARealtimeResponseInputTokenUsageDetails GARealtimeResponseInputTokenUsageDetails(int? cachedTokens = default, int? textTokens = default, int? imageTokens = default, int? audioTokens = default, GARealtimeResponseInputCachedTokenUsageDetails cachedTokensDetails = default)
+        public static GARealtimeResponseInputTokenUsageDetails GARealtimeResponseInputTokenUsageDetails(int? cachedTokenCount = default, int? textTokenCount = default, int? imageTokenCount = default, int? audioTokenCount = default, GARealtimeResponseInputCachedTokenUsageDetails cachedTokenDetails = default)
         {
             return new GARealtimeResponseInputTokenUsageDetails(
-                cachedTokens,
-                textTokens,
-                imageTokens,
-                audioTokens,
-                cachedTokensDetails,
+                cachedTokenCount,
+                textTokenCount,
+                imageTokenCount,
+                audioTokenCount,
+                cachedTokenDetails,
                 default);
         }
 
-        public static GARealtimeResponseInputCachedTokenUsageDetails GARealtimeResponseInputCachedTokenUsageDetails(int? textTokens = default, int? imageTokens = default, int? audioTokens = default)
+        public static GARealtimeResponseInputCachedTokenUsageDetails GARealtimeResponseInputCachedTokenUsageDetails(int? textTokenCount = default, int? imageTokenCount = default, int? audioTokenCount = default)
         {
-            return new GARealtimeResponseInputCachedTokenUsageDetails(textTokens, imageTokens, audioTokens, default);
+            return new GARealtimeResponseInputCachedTokenUsageDetails(textTokenCount, imageTokenCount, audioTokenCount, default);
         }
 
-        public static GARealtimeResponseOutputTokenUsageDetails GARealtimeResponseOutputTokenUsageDetails(int? textTokens = default, int? audioTokens = default)
+        public static GARealtimeResponseOutputTokenUsageDetails GARealtimeResponseOutputTokenUsageDetails(int? textTokenCount = default, int? audioTokenCount = default)
         {
-            return new GARealtimeResponseOutputTokenUsageDetails(textTokens, audioTokens, default);
+            return new GARealtimeResponseOutputTokenUsageDetails(textTokenCount, audioTokenCount, default);
         }
 
         public static GARealtimeResponseContentPart GARealtimeResponseContentPart(GARealtimeResponseContentPartKind? kind = default, string text = default, BinaryData audio = default, string transcript = default)

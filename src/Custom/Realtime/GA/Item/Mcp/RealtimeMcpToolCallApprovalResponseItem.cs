@@ -6,4 +6,7 @@ namespace OpenAI.Realtime;
 [CodeGenType("RealtimeMCPApprovalResponseGA")]
 public partial class GARealtimeMcpToolCallApprovalResponseItem
 {
+    // CUSTOM: Renamed.
+    [CodeGenMember("Approve")]
+    public bool Approved { get; set; }
 }

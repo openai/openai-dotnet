@@ -31,11 +31,7 @@ namespace OpenAI.Realtime
 
         public string ServerLabel { get; set; }
 
-        public Uri ServerUri { get; set; }
-
         public GARealtimeMcpToolConnectorId? ConnectorId { get; set; }
-
-        public string AuthorizationToken { get; set; }
 
         public string ServerDescription { get; set; }
 

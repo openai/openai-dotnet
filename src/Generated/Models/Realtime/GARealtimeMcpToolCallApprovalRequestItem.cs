@@ -38,9 +38,5 @@ namespace OpenAI.Realtime
         public string Id { get; set; }
 
         public string ServerLabel { get; set; }
-
-        public string ToolName { get; set; }
-
-        public BinaryData ToolArguments { get; set; }
     }
 }

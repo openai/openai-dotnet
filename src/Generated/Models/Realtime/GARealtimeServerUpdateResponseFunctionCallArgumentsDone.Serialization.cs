@@ -65,15 +65,15 @@ namespace OpenAI.Realtime
                 writer.WritePropertyName("call_id"u8);
                 writer.WriteStringValue(CallId);
             }
-            if (!Patch.Contains("$.FunctionArguments"u8))
+            if (!Patch.Contains("$.arguments"u8))
             {
-                writer.WritePropertyName("FunctionArguments"u8);
+                writer.WritePropertyName("arguments"u8);
                 SerializeFunctionArgumentsValue(writer, options);
             }
             if (!Patch.Contains("$.name"u8))
             {
                 writer.WritePropertyName("name"u8);
-                writer.WriteStringValue(Name);
+                writer.WriteStringValue(FunctionName);
             }
 
             Patch.WriteTo(writer);
@@ -109,7 +109,7 @@ namespace OpenAI.Realtime
             int outputIndex = default;
             string callId = default;
             BinaryData functionArguments = default;
-            string name = default;
+            string functionName = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -142,14 +142,14 @@ namespace OpenAI.Realtime
                     callId = prop.Value.GetString();
                     continue;
                 }
-                if (prop.NameEquals("FunctionArguments"u8))
+                if (prop.NameEquals("arguments"u8))
                 {
                     DeserializeFunctionArgumentsValue(prop, ref functionArguments);
                     continue;
                 }
                 if (prop.NameEquals("name"u8))
                 {
-                    name = prop.Value.GetString();
+                    functionName = prop.Value.GetString();
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
@@ -163,7 +163,7 @@ namespace OpenAI.Realtime
                 outputIndex,
                 callId,
                 functionArguments,
-                name);
+                functionName);
         }
 
         BinaryData IPersistableModel<GARealtimeServerUpdateResponseFunctionCallArgumentsDone>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
