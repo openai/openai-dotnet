@@ -14,19 +14,19 @@ namespace OpenAI.Responses
             }
             else
             {
-                List<ResponseItem> array = new List<ResponseItem>();
+                List<ResponseItem> items = new List<ResponseItem>();
                 if (property.Value.ValueKind == JsonValueKind.String)
                 {
-                    array.Add(ResponseItem.CreateDeveloperMessageItem(property.Value.GetString()));
+                    items.Add(ResponseItem.CreateDeveloperMessageItem(property.Value.GetString()));
                 }
                 else if (property.Value.ValueKind == JsonValueKind.Array)
                 {
                     foreach (var item in property.Value.EnumerateArray())
                     {
-                        array.Add(ResponseItem.DeserializeResponseItem(item, item.GetUtf8Bytes(), ModelSerializationExtensions.WireOptions));
+                        items.Add(ResponseItem.DeserializeResponseItem(item, item.GetUtf8Bytes(), ModelSerializationExtensions.WireOptions));
                     }
                 }
-                instructions = array;
+                instructions = items;
             }
         }
     }
