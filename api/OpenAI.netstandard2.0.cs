@@ -5895,16 +5895,16 @@ namespace OpenAI.Realtime {
             add;
             remove;
         }
-        public virtual ClientResult<GACreateClientSecretResult> CreateRealtimeClientSecret(GACreateClientSecretOptions body, CancellationToken cancellationToken = default);
+        public virtual ClientResult<GACreateClientSecretResult> CreateRealtimeClientSecret(GACreateClientSecretOptions options, CancellationToken cancellationToken = default);
         public virtual ClientResult CreateRealtimeClientSecret(BinaryContent content, RequestOptions options = null);
-        public virtual Task<ClientResult<GACreateClientSecretResult>> CreateRealtimeClientSecretAsync(GACreateClientSecretOptions body, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult<GACreateClientSecretResult>> CreateRealtimeClientSecretAsync(GACreateClientSecretOptions options, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> CreateRealtimeClientSecretAsync(BinaryContent content, RequestOptions options = null);
-        public RealtimeSessionClient StartConversationSession(string model, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual Task<RealtimeSessionClient> StartConversationSessionAsync(string model, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
-        public RealtimeSessionClient StartSession(string model, string intent, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual Task<RealtimeSessionClient> StartSessionAsync(string model, string intent, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
-        public RealtimeSessionClient StartTranscriptionSession(RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual Task<RealtimeSessionClient> StartTranscriptionSessionAsync(RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
+        public RealtimeSessionClient StartConversationSession(string model, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
+        public virtual Task<RealtimeSessionClient> StartConversationSessionAsync(string model, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
+        public RealtimeSessionClient StartSession(string model, string intent, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
+        public virtual Task<RealtimeSessionClient> StartSessionAsync(string model, string intent, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
+        public RealtimeSessionClient StartTranscriptionSession(RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
+        public virtual Task<RealtimeSessionClient> StartTranscriptionSessionAsync(RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
     }
     public class RealtimeClientOptions : ClientPipelineOptions {
         public Uri Endpoint { get; set; }
@@ -5988,7 +5988,7 @@ namespace OpenAI.Realtime {
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class RealtimeSessionClient : IDisposable {
-        protected internal RealtimeSessionClient(ApiKeyCredential credential, RealtimeClient parentClient, Uri endpoint, string model, string intent);
+        protected internal RealtimeSessionClient(ApiKeyCredential credential, Uri endpoint, string model, string intent, RealtimeClient parentClient);
         public Net.WebSockets.WebSocket WebSocket { get; protected set; }
         public virtual void AddItem(GARealtimeItem item, string previousItemId, CancellationToken cancellationToken = default);
         public virtual void AddItem(GARealtimeItem item, CancellationToken cancellationToken = default);
@@ -6000,8 +6000,8 @@ namespace OpenAI.Realtime {
         public virtual Task ClearInputAudioAsync(CancellationToken cancellationToken = default);
         public virtual void CommitPendingAudio(CancellationToken cancellationToken = default);
         public virtual Task CommitPendingAudioAsync(CancellationToken cancellationToken = default);
+        public virtual void ConfigureConversationSession(GARealtimeConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default);
         public virtual Task ConfigureConversationSessionAsync(GARealtimeConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default);
-        public virtual void ConfigureSession(GARealtimeConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default);
         public virtual void ConfigureTranscriptionSession(GARealtimeTranscriptionSessionOptions sessionOptions, CancellationToken cancellationToken = default);
         public virtual Task ConfigureTranscriptionSessionAsync(GARealtimeTranscriptionSessionOptions sessionOptions, CancellationToken cancellationToken = default);
         protected internal virtual void Connect(string queryString = null, IDictionary<string, string> headers = null, CancellationToken cancellationToken = default);
@@ -6009,10 +6009,8 @@ namespace OpenAI.Realtime {
         public virtual void DeleteItem(string itemId, CancellationToken cancellationToken = default);
         public virtual Task DeleteItemAsync(string itemId, CancellationToken cancellationToken = default);
         public void Dispose();
-        public virtual void InterruptResponse(CancellationToken cancellationToken = default);
-        public virtual Task InterruptResponseAsync(CancellationToken cancellationToken = default);
         public virtual IEnumerable<ClientResult> ReceiveUpdates(RequestOptions options);
-        public virtual IEnumerable<RealtimeUpdate> ReceiveUpdates(CancellationToken cancellationToken = default);
+        public virtual IEnumerable<GARealtimeServerUpdate> ReceiveUpdates(CancellationToken cancellationToken = default);
         public virtual IAsyncEnumerable<ClientResult> ReceiveUpdatesAsync(RequestOptions options);
         public virtual IAsyncEnumerable<GARealtimeServerUpdate> ReceiveUpdatesAsync(CancellationToken cancellationToken = default);
         public virtual void RequestItemRetrieval(string itemId, CancellationToken cancellationToken = default);
@@ -6026,11 +6024,16 @@ namespace OpenAI.Realtime {
         public virtual Task SendInputAudioAsync(BinaryData audio, CancellationToken cancellationToken = default);
         public virtual Task SendInputAudioAsync(Stream audio, CancellationToken cancellationToken = default);
         public virtual void StartResponse(GARealtimeResponseOptions responseOptions, CancellationToken cancellationToken = default);
-        public void StartResponse(CancellationToken cancellationToken = default);
+        public virtual void StartResponse(CancellationToken cancellationToken = default);
         public virtual Task StartResponseAsync(GARealtimeResponseOptions responseOptions, CancellationToken cancellationToken = default);
         public virtual Task StartResponseAsync(CancellationToken cancellationToken = default);
         public virtual void TruncateItem(string itemId, int contentPartIndex, TimeSpan audioDuration, CancellationToken cancellationToken = default);
         public virtual Task TruncateItemAsync(string itemId, int contentPartIndex, TimeSpan audioDuration, CancellationToken cancellationToken = default);
+    }
+    public class RealtimeSessionClientOptions {
+        public string ClientSecret { get; set; }
+        public IDictionary<string, string> Headers { get; }
+        public string QueryString { get; set; }
     }
     public class RealtimeSessionCreateResponseUnion : IJsonModel<RealtimeSessionCreateResponseUnion>, IPersistableModel<RealtimeSessionCreateResponseUnion> {
         protected virtual RealtimeSessionCreateResponseUnion JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -6052,10 +6055,6 @@ namespace OpenAI.Realtime {
         public static implicit operator RealtimeSessionCreateResponseUnionType?(string value);
         public static bool operator !=(RealtimeSessionCreateResponseUnionType left, RealtimeSessionCreateResponseUnionType right);
         public override readonly string ToString();
-    }
-    public class RealtimeSessionOptions {
-        public IDictionary<string, string> Headers { get; }
-        public string QueryString { get; set; }
     }
     public readonly partial struct RealtimeSessionType : IEquatable<RealtimeSessionType> {
         public RealtimeSessionType(string value);
