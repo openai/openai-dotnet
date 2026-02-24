@@ -213,7 +213,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ResponsesWithReasoning()
     {
-        ResponsesClient client = TestEnvironment.GetTestClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("What's the best way to fold a burrito?")])
         {
@@ -918,7 +918,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CanGetInputTokenCounts()
     {
-        ResponsesClient client = TestEnvironment.GetTestClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         BinaryData inputTokensRequestBody = BinaryData.FromBytes("""
             {
@@ -942,7 +942,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task CanCompactConversation()
     {
-        ResponsesClient client = TestEnvironment.GetTestClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         // First, create a response to get a real assistant message for compaction.
         ResponseResult initialResponse = await client.CreateResponseAsync(TestModel.Responses, "Create a simple landing page for a dog petting café.");
