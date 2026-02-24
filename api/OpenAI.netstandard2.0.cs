@@ -3201,10 +3201,10 @@ namespace OpenAI.Images {
     public readonly partial struct GeneratedImageQuality : IEquatable<GeneratedImageQuality> {
         public GeneratedImageQuality(string value);
         public static GeneratedImageQuality Auto { get; }
-        public static GeneratedImageQuality HD { get; }
         public static GeneratedImageQuality High { get; }
-        public static GeneratedImageQuality Low { get; }
-        public static GeneratedImageQuality Medium { get; }
+        public static GeneratedImageQuality HighQuality { get; }
+        public static GeneratedImageQuality LowQuality { get; }
+        public static GeneratedImageQuality MediumQuality { get; }
         public static GeneratedImageQuality Standard { get; }
         public readonly bool Equals(GeneratedImageQuality other);
         [EditorBrowsable(EditorBrowsableState.Never)]

@@ -67,7 +67,7 @@ public partial class ImageEditsTests : ImageTestFixtureBase
         ImageEditOptions options = new()
         {
             Background = GeneratedImageBackground.Opaque,
-            Quality = GeneratedImageQuality.Low,
+            Quality = GeneratedImageQuality.LowQuality,
             Size = GeneratedImageSize.W1024xH1024
         };
 

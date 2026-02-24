@@ -3693,13 +3693,13 @@ namespace OpenAI.Images {
         public GeneratedImageQuality(string value);
         [Experimental("OPENAI001")]
         public static GeneratedImageQuality Auto { get; }
-        [Experimental("OPENAI001")]
-        public static GeneratedImageQuality HD { get; }
         public static GeneratedImageQuality High { get; }
         [Experimental("OPENAI001")]
-        public static GeneratedImageQuality Low { get; }
+        public static GeneratedImageQuality HighQuality { get; }
         [Experimental("OPENAI001")]
-        public static GeneratedImageQuality Medium { get; }
+        public static GeneratedImageQuality LowQuality { get; }
+        [Experimental("OPENAI001")]
+        public static GeneratedImageQuality MediumQuality { get; }
         public static GeneratedImageQuality Standard { get; }
         public readonly bool Equals(GeneratedImageQuality other);
         [EditorBrowsable(EditorBrowsableState.Never)]
