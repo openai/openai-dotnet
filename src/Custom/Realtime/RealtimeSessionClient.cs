@@ -204,7 +204,7 @@ public partial class RealtimeSessionClient : IDisposable
         await SendCommandAsync(internalCommand, cancellationToken).ConfigureAwait(false);
     }
 
-    public virtual void ConfigureSession(GARealtimeConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default)
+    public virtual void ConfigureConversationSession(GARealtimeConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(sessionOptions, nameof(sessionOptions));
         GARealtimeClientCommandSessionUpdate internalCommand = new(sessionOptions);
@@ -315,24 +315,12 @@ public partial class RealtimeSessionClient : IDisposable
         SendCommand(internalCommand, cancellationToken);
     }
 
-    public virtual async Task InterruptResponseAsync(CancellationToken cancellationToken = default)
-    {
-        GARealtimeClientCommandResponseCancel internalCommand = new();
-        await SendCommandAsync(internalCommand, cancellationToken).ConfigureAwait(false);
-    }
-
-    public virtual void InterruptResponse(CancellationToken cancellationToken = default)
-    {
-        GARealtimeClientCommandResponseCancel internalCommand = new();
-        SendCommand(internalCommand, cancellationToken);
-    }
-
     public virtual async Task StartResponseAsync(CancellationToken cancellationToken = default)
     {
         await StartResponseAsync(new GARealtimeResponseOptions(), cancellationToken).ConfigureAwait(false);
     }
 
-    public void StartResponse(CancellationToken cancellationToken = default)
+    public virtual void StartResponse(CancellationToken cancellationToken = default)
     {
         StartResponse(new GARealtimeResponseOptions(), cancellationToken);
     }
@@ -381,7 +369,7 @@ public partial class RealtimeSessionClient : IDisposable
         }
     }
 
-    public virtual IEnumerable<RealtimeUpdate> ReceiveUpdates(CancellationToken cancellationToken = default)
+    public virtual IEnumerable<GARealtimeServerUpdate> ReceiveUpdates(CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
