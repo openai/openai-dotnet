@@ -109,16 +109,8 @@ public partial class RealtimeClient
 
     [Experimental("SCME0002")]
     public RealtimeClient(RealtimeClientSettings settings)
+        : this(AuthenticationPolicy.Create(settings), RealtimeClientOptions.FromClientOptions(settings?.Options))
     {
-        Argument.AssertNotNull(settings, nameof(settings));
-
-        AuthenticationPolicy authenticationPolicy = AuthenticationPolicy.Create(settings);
-        Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
-
-        OpenAIClientOptions options = settings.Options ?? new OpenAIClientOptions();
-
-        Pipeline = OpenAIClient.CreatePipeline(authenticationPolicy, options);
-        _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
     /// <summary>
