@@ -1,224 +1,262 @@
-﻿//using NUnit.Framework;
-//using OpenAI.Realtime;
-//using System;
-//using System.ClientModel;
-//using System.Collections.Generic;
-//using System.IO;
-//using System.Linq;
-//using System.Threading.Tasks;
+﻿using NUnit.Framework;
+using OpenAI.Realtime;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
-//namespace OpenAI.Examples;
+namespace OpenAI.Examples;
 
-//#pragma warning disable OPENAI002
+#pragma warning disable OPENAI002
 
-//public partial class RealtimeExamples
-//{
-//    [Test]
-//    public async Task Example01_AudioFromFileWithToolsAsync()
-//    {
-//        RealtimeClient client = new(
-//            credential: new ApiKeyCredential(Environment.GetEnvironmentVariable("OPENAI_API_KEY")));
-//        using RealtimeSession session = await client.StartConversationSessionAsync(
-//            model: "gpt-4o-realtime-preview");
+public partial class RealtimeExamples
+{
+    private static string GetCurrentWeather(string location, string unit = "celsius")
+    {
+        // Call the weather API here.
+        return $"31 {unit}";
+    }
 
-//        // Session options control connection-wide behavior shared across all conversations,
-//        // including audio input format and voice activity detection settings.
-//        ConversationSessionOptions sessionOptions = new()
-//        {
-//            Instructions = "You are a cheerful assistant that talks like a pirate. "
-//                + "Always inform the user when you are about to call a tool. "
-//                + "Prefer to call tools whenever applicable.",
-//            Voice = ConversationVoice.Alloy,
-//            Tools = { CreateSampleWeatherTool() },
-//            Audio = new RealtimeSessionAudioConfiguration()
-//            {
-//                Input = new RealtimeSessionAudioInputConfiguration()
-//                {
-//                    Format = RealtimeAudioFormat.Pcm16,
-//                    // Input transcription options must be provided to enable transcribed feedback for input audio
-//                    Transcription = new InputTranscriptionOptions()
-//                    {
-//                        Model = "whisper-1",
-//                    },
-//                },
-//                Output = new RealtimeSessionAudioOutputConfiguration()
-//                {
-//                    Format = RealtimeAudioFormat.Pcm16,
-//                },
-//            },
-//        };
+    private static readonly GARealtimeFunctionTool getCurrentWeatherTool = new(functionName: nameof(GetCurrentWeather))
+    {
+        FunctionDescription = "gets the weather for a location",
+        FunctionParameters = BinaryData.FromString("""
+            {
+                "type": "object",
+                "properties": {
+                    "location": {
+                        "type": "string",
+                        "description": "The city and state, e.g. Boston, MA"
+                    },
+                    "unit": {
+                        "type": "string",
+                        "enum": [ "celsius", "fahrenheit" ],
+                        "description": "The temperature unit to use. Infer this from the specified location."
+                    }
+                },
+                "required": [ "location" ]
+            }
+            """)
+    };
 
-//        await session.ConfigureConversationSessionAsync(sessionOptions);
+    [Test]
+    public async Task Example01_AudioFromFileWithToolsAsync()
+    {
+        RealtimeClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-//        // Conversation history or text input are provided by adding messages to the conversation.
-//        // Adding a message will not automatically begin a response turn.
-//        await session.AddItemAsync(
-//            RealtimeItem.CreateUserMessage(["I'm trying to decide what to wear on my trip."]));
+        using RealtimeSessionClient sessionClient = await client.StartConversationSessionAsync(model: "gpt-realtime");
 
-//        string inputAudioPath = FindFile("Assets\\realtime_whats_the_weather_pcm16_24khz_mono.wav");
-//        using Stream inputAudioStream = File.OpenRead(inputAudioPath);
-//        _ = session.SendInputAudioAsync(inputAudioStream);
+        GARealtimeConversationSessionOptions sessionOptions = new()
+        {
+            Instructions = "You are a cheerful assistant that talks like a pirate. "
+                + "Always inform the user when you are about to call a tool. "
+                + "Prefer to call tools whenever applicable.",
 
-//        Dictionary<string, Stream> outputAudioStreamsById = [];
+            Tools = { getCurrentWeatherTool },
 
-//        await foreach (RealtimeUpdate update in session.ReceiveUpdatesAsync())
-//        {
-//            if (update is ConversationSessionStartedUpdate sessionStartedUpdate)
-//            {
-//                Console.WriteLine($"<<< Session started. ID: {sessionStartedUpdate.SessionId}");
-//                Console.WriteLine();
-//            }
+            AudioOptions = new()
+            {
+                InputAudioOptions = new()
+                {
+                    // AudioFormat = new GARealtimePcmAudioFormat(),
+                    AudioTranscriptionOptions = new()
+                    {
+                        Model = "gpt-4o-transcribe",
+                    },
+                    TurnDetection = new GARealtimeServerVadTurnDetection(),
+                },
+                OutputAudioOptions = new()
+                {
+                    // AudioFormat = new GARealtimePcmAudioFormat(),
+                    Voice = GARealtimeVoice.Alloy,
+                },
+            },
+        };
 
-//            if (update is InputAudioSpeechStartedUpdate speechStartedUpdate)
-//            {
-//                Console.WriteLine(
-//                    $"  -- Voice activity detection started at {speechStartedUpdate.AudioStartTime}");
-//            }
+        await sessionClient.ConfigureConversationSessionAsync(sessionOptions);
 
-//            if (update is InputAudioSpeechFinishedUpdate speechFinishedUpdate)
-//            {
-//                Console.WriteLine(
-//                    $"  -- Voice activity detection ended at {speechFinishedUpdate.AudioEndTime}");
-//            }
+        // The conversation history (if applicable) can be provided by adding messages to the
+        // conversation one by one. Note that adding a message will not automatically initiate
+        // a response from the model.
+        await sessionClient.AddItemAsync(GARealtimeItem.CreateUserMessageItem("I'm trying to decide what to wear on my trip."));
 
-//            // Item started updates notify that the model generation process will insert a new item into
-//            // the conversation and begin streaming its content via content updates.
-//            if (update is OutputStreamingStartedUpdate itemStreamingStartedUpdate)
-//            {
-//                Console.WriteLine($"  -- Begin streaming of new item");
-//                if (!string.IsNullOrEmpty(itemStreamingStartedUpdate.FunctionName))
-//                {
-//                    Console.Write($"    {itemStreamingStartedUpdate.FunctionName}: ");
-//                }
-//            }
+        string inputAudioFilePath = Path.Join("Assets", "realtime_whats_the_weather_pcm16_24khz_mono.wav");
+        using Stream inputAudioStream = File.OpenRead(inputAudioFilePath);
+        _ = sessionClient.SendInputAudioAsync(inputAudioStream);
 
-//            if (update is OutputDeltaUpdate deltaUpdate)
-//            {
-//                // With audio output enabled, the audio transcript of the delta update contains an approximation of
-//                // the words spoken by the model. Without audio output, the text of the delta update will contain
-//                // the segments making up the text content of a message.
-//                Console.Write(deltaUpdate.AudioTranscript);
-//                Console.Write(deltaUpdate.Text);
-//                Console.Write(deltaUpdate.FunctionArguments);
-//                if (deltaUpdate.AudioBytes is not null)
-//                {
-//                    if (!outputAudioStreamsById.TryGetValue(deltaUpdate.ItemId, out Stream value))
-//                    {
-//                        string filename = $"output_{sessionOptions.Audio?.Output?.Format}_{deltaUpdate.ItemId}.raw";
-//                        value = File.OpenWrite(filename);
-//                        outputAudioStreamsById[deltaUpdate.ItemId] = value;
-//                    }
+        string outputAudioFilePath = Path.Join("output.raw");
+        using Stream outputAudioStream = File.OpenWrite(outputAudioFilePath);
 
-//                    value.Write(deltaUpdate.AudioBytes);
-//                }
-//            }
+        bool done = false;
 
-//            // Item finished updates arrive when all streamed data for an item has arrived and the
-//            // accumulated results are available. In the case of function calls, this is the point
-//            // where all arguments are expected to be present.
-//            if (update is OutputStreamingFinishedUpdate itemStreamingFinishedUpdate)
-//            {
-//                Console.WriteLine();
-//                Console.WriteLine($"  -- Item streaming finished, item_id={itemStreamingFinishedUpdate.ItemId}");
+        await foreach (GARealtimeServerUpdate update in sessionClient.ReceiveUpdatesAsync())
+        {
+            switch (update)
+            {
+                case GARealtimeServerUpdateSessionCreated sessionCreatedUpdate:
+                    {
+                        Console.WriteLine($"[EVENT ID: {sessionCreatedUpdate.EventId}]");
+                        Console.WriteLine($">> Session created.");
+                        Console.WriteLine();
+                        break;
+                    }
+                case GARealtimeServerUpdateSessionUpdated sessionUpdatedUpdate:
+                    {
+                        Console.WriteLine($"[EVENT ID: {sessionUpdatedUpdate.EventId}]");
+                        Console.WriteLine($">> Session updated.");
+                        Console.WriteLine();
+                        break;
+                    }
+                case GARealtimeServerUpdateInputAudioBufferSpeechStarted inputAudioBufferSpeechStartedUpdate:
+                    {
+                        Console.WriteLine($"[EVENT ID: {inputAudioBufferSpeechStartedUpdate.EventId}]");
+                        Console.WriteLine($">> Speech started at {inputAudioBufferSpeechStartedUpdate.AudioStartTime}.");
+                        Console.WriteLine();
+                        break;
+                    }
+                case GARealtimeServerUpdateInputAudioBufferSpeechStopped inputAudioBufferSpeechStoppedUpdate:
+                    {
+                        Console.WriteLine($"[EVENT ID: {inputAudioBufferSpeechStoppedUpdate.EventId}]");
+                        Console.WriteLine($">> Speech stopped at {inputAudioBufferSpeechStoppedUpdate.AudioEndTime}.");
+                        Console.WriteLine();
+                        break;
+                    }
+                case GARealtimeServerUpdateConversationItemDone conversationItemDoneUpdate:
+                    {
+                        Console.WriteLine($"[EVENT ID: {conversationItemDoneUpdate.EventId}]");
+                        Console.WriteLine($">> Conversation item done. Type: {conversationItemDoneUpdate.Item.Patch.GetString("$.type"u8)}.");
 
-//                if (itemStreamingFinishedUpdate.FunctionCallId is not null)
-//                {
-//                    Console.WriteLine($"    + Responding to tool invoked by item: {itemStreamingFinishedUpdate.FunctionName}");
-//                    RealtimeItem functionOutputItem = RealtimeItem.CreateFunctionCallOutput(
-//                        callId: itemStreamingFinishedUpdate.FunctionCallId,
-//                        output: "70 degrees Fahrenheit and sunny");
-//                    await session.AddItemAsync(functionOutputItem);
-//                }
-//                else if (itemStreamingFinishedUpdate.MessageContentParts?.Count > 0)
-//                {
-//                    Console.Write($"    + [{itemStreamingFinishedUpdate.MessageRole}]: ");
-//                    foreach (ConversationContentPart contentPart in itemStreamingFinishedUpdate.MessageContentParts)
-//                    {
-//                        Console.Write(contentPart.AudioTranscript);
-//                    }
-//                    Console.WriteLine();
-//                }
-//            }
+                        GARealtimeMessageItem messageItem = conversationItemDoneUpdate.Item as GARealtimeMessageItem;
 
-//            if (update is InputAudioTranscriptionFinishedUpdate transcriptionCompletedUpdate)
-//            {
-//                Console.WriteLine();
-//                Console.WriteLine($"  -- User audio transcript: {transcriptionCompletedUpdate.Transcript}");
-//                Console.WriteLine();
-//            }
+                        if (messageItem != null)
+                        {
+                            foreach (GARealtimeMessageContentPart contentPart in messageItem.Content)
+                            {
+                                switch (contentPart)
+                                {
+                                    case GARealtimeInputTextMessageContentPart inputTextPart:
+                                        {
+                                            Console.WriteLine();
+                                            Console.WriteLine($"++ [{messageItem.Role.ToString().ToUpperInvariant()}]:");
+                                            Console.WriteLine(inputTextPart.Text);
+                                            break;
+                                        }
+                                    case GARealtimeOutputTextMessageContentPart outputTextPart:
+                                        {
+                                            Console.WriteLine();
+                                            Console.WriteLine($"++ [{messageItem.Role.ToString().ToUpperInvariant()}]:");
+                                            Console.WriteLine(outputTextPart.Text);
+                                            break;
+                                        }
+                                }
+                            }
+                        }
 
-//            if (update is ResponseFinishedUpdate turnFinishedUpdate)
-//            {
-//                Console.WriteLine($"  -- Model turn generation finished. Status: {turnFinishedUpdate.Status}");
+                        Console.WriteLine();
+                        break;
+                    }
+                case GARealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted conversationItemInputAudioTranscriptionCompletedUpdate:
+                    {
+                        Console.WriteLine($"[EVENT ID: {conversationItemInputAudioTranscriptionCompletedUpdate.EventId}]");
+                        Console.WriteLine($">> Conversation item input audio transcription completed.");
 
-//                // Here, if we processed tool calls in the course of the model turn, we finish the
-//                // client turn to resume model generation. The next model turn will reflect the tool
-//                // responses that were already provided.
-//                if (turnFinishedUpdate.CreatedItems.Any(item => item.FunctionName?.Length > 0))
-//                {
-//                    Console.WriteLine($"  -- Ending client turn for pending tool responses");
-//                    await session.StartResponseAsync();
-//                }
-//                else
-//                {
-//                    break;
-//                }
-//            }
+                        Console.WriteLine();
+                        Console.WriteLine($"++ [USER]:");
+                        Console.WriteLine($"{conversationItemInputAudioTranscriptionCompletedUpdate.Transcript}");
+                        Console.WriteLine();
+                        break;
+                    }
+                case GARealtimeServerUpdateResponseOutputAudioDelta responseOutputAudioDeltaUpdate:
+                    {
+                        Console.WriteLine($"[EVENT ID: {responseOutputAudioDeltaUpdate.EventId}]");
+                        Console.WriteLine($">> Response output audio delta. Bytes: {responseOutputAudioDeltaUpdate.Delta.Length}.");
 
-//            if (update is RealtimeErrorUpdate errorUpdate)
-//            {
-//                Console.WriteLine();
-//                Console.WriteLine($"ERROR: {errorUpdate.Message}");
-//                break;
-//            }
-//        }
+                        outputAudioStream.Write(responseOutputAudioDeltaUpdate.Delta);
 
-//        foreach ((string itemId, Stream outputAudioStream) in outputAudioStreamsById)
-//        {
-//            Console.WriteLine($"Raw audio output for {itemId}: {outputAudioStream.Length} bytes");
-//            outputAudioStream.Dispose();
-//        }
-//    }
+                        break;
+                    }
+                case GARealtimeServerUpdateResponseOutputAudioDone responseOutputAudioDoneUpdate:
+                    {
+                        Console.WriteLine($"[EVENT ID: {responseOutputAudioDoneUpdate.EventId}]");
+                        Console.WriteLine($">> Response output audio done. Bytes: {outputAudioStream.Length}.");
+                        Console.WriteLine();
+                        break;
+                    }
+                case GARealtimeServerUpdateResponseOutputAudioTranscriptDone responseOutputAudioTranscriptionDoneUpdate:
+                    {
+                        Console.WriteLine($"[EVENT ID: {responseOutputAudioTranscriptionDoneUpdate.EventId}]");
+                        Console.WriteLine($">> Response output audio transcription done.");
 
-//    private static ConversationFunctionTool CreateSampleWeatherTool()
-//    {
-//        return new ConversationFunctionTool("get_weather_for_location")
-//        {
-//            Description = "gets the weather for a location",
-//            Parameters = BinaryData.FromString("""
-//            {
-//              "type": "object",
-//              "properties": {
-//                "location": {
-//                  "type": "string",
-//                  "description": "The city and state, e.g. San Francisco, CA"
-//                },
-//                "unit": {
-//                  "type": "string",
-//                  "enum": ["c","f"]
-//                }
-//              },
-//              "required": ["location","unit"]
-//            }
-//            """)
-//        };
-//    }
+                        Console.WriteLine();
+                        Console.WriteLine($"++ [ASSISTANT]:");
+                        Console.WriteLine($"{responseOutputAudioTranscriptionDoneUpdate.Transcript}");
+                        Console.WriteLine();
+                        break;
+                    }
+                case GARealtimeServerUpdateResponseDone responseDoneUpdate:
+                    {
+                        Console.WriteLine($"[EVENT ID: {responseDoneUpdate.EventId}]");
+                        Console.WriteLine($">> Response done. Status: {responseDoneUpdate.Response.Status}.");
 
-//    private static string FindFile(string fileName)
-//    {
-//        for (string currentDirectory = Directory.GetCurrentDirectory();
-//             currentDirectory != null && currentDirectory != Path.GetPathRoot(currentDirectory);
-//             currentDirectory = Directory.GetParent(currentDirectory)?.FullName!)
-//        {
-//            string filePath = Path.Combine(currentDirectory, fileName);
-//            if (File.Exists(filePath))
-//            {
-//                return filePath;
-//            }
-//        }
+                        bool hasToolCalls = false;
 
-//        throw new FileNotFoundException($"File '{fileName}' not found.");
-//    }
-//}
+                        List<GARealtimeFunctionCallItem> functionCallItems = responseDoneUpdate.Response.OutputItems
+                            .OfType<GARealtimeFunctionCallItem>()
+                            .ToList();
 
-//#pragma warning restore OPENAI002
+                        foreach (GARealtimeFunctionCallItem functionCallItem in functionCallItems)
+                        {
+                            hasToolCalls = true;
+
+                            Console.WriteLine($">> Calling {functionCallItem.FunctionName} function...");
+
+                            string output = GetCurrentWeather(location: "San Francisco, CA");
+
+                            GARealtimeItem functionCallOutputItem = GARealtimeItem.CreateFunctionCallOutputItem(
+                                callId: functionCallItem.CallId,
+                                functionOutput: output);
+
+                            Console.WriteLine($">> Adding function call output item...");
+
+                            await sessionClient.AddItemAsync(functionCallOutputItem);
+                        }
+
+                        if (hasToolCalls)
+                        {
+                            // If we need the model to process the output of a tool call, we instruct
+                            // the server to create another responses.
+                            Console.WriteLine($">> Requesting follow up response...");
+
+                            await sessionClient.StartResponseAsync();
+                        }
+                        else
+                        {
+                            done = true;
+                            break;
+                        }
+
+                        Console.WriteLine();
+                        break;
+                    }
+                case GARealtimeServerUpdateError errorUpdate:
+                    {
+                        Console.WriteLine($"[EVENT ID: {errorUpdate.EventId}]");
+                        Console.WriteLine($"Error: {errorUpdate.Error.Message}");
+
+                        done = true;
+
+                        Console.WriteLine();
+                        break;
+                    }
+            }
+
+            if (done)
+            {
+                break;
+            }
+        }
+    }
+}
+
+#pragma warning restore OPENAI002
