@@ -2,8 +2,8 @@
 
 namespace OpenAI.Realtime;
 
-[CodeGenType("RealtimeSessionCreateRequestGABaseType_GA")]
-internal readonly partial struct InternalRealtimeSessionCreateRequestUnionType { }
+[CodeGenType("RealtimeSessionCreateRequestGABaseTypeGA")]
+internal readonly partial struct InternalRealtimeSessionCreateRequestGABaseTypeGA { }
 
 [CodeGenType("UnknownRealtimeSessionCreateRequestGABaseGA")]
 internal partial class InternalUnknownRealtimeSessionCreateRequestGABaseGA { }
@@ -89,6 +89,10 @@ internal readonly partial struct InternalRealtimeSessionCreateRequestGAGAModel {
 internal readonly partial struct InternalRealtimeSessionCreateResponseGAGAModel { }
 
 // CUSTOM: Unused.
+[CodeGenType("AudioTranscriptionGAModel")]
+internal readonly partial struct InternalAudioTranscriptionGAModel { }
+
+// CUSTOM: Unused.
 [CodeGenType("RealtimeConversationItemFunctionCallGAObject")]
 internal readonly partial struct InternalRealtimeConversationItemFunctionCallGAObject { }
 
@@ -108,26 +112,3 @@ internal readonly partial struct InternalRealtimeServerEventConversationCreatedC
 // CUSTOM: Unused.
 [CodeGenType("RealtimeResponseGAObject")]
 internal readonly partial struct InternalRealtimeResponseGAObject { }
-
-////////////////
-
-
-[CodeGenType("RealtimeSessionCreateRequestGABaseTypeGA")]
-internal readonly partial struct InternalRealtimeSessionCreateRequestGABaseTypeGA {}
-
-[CodeGenType("AudioTranscriptionGAModel")]
-internal readonly partial struct InternalAudioTranscriptionGAModel {}
-
-[CodeGenType("ToolChoiceOptionsGA")]
-internal readonly partial struct InternalToolChoiceOptionsGA {}
-
-[CodeGenType("RealtimeSessionCreateRequestGAGATruncation")]
-internal readonly partial struct InternalRealtimeSessionCreateRequestGAGATruncation {}
-
-[CodeGenType("RealtimeFunctionToolParametersGA")]
-internal partial class InternalRealtimeFunctionToolParametersGA {}
-
-[CodeGenType("RealtimeSessionCreateRequestGAGATruncation1")]
-internal partial class InternalRealtimeSessionCreateRequestGAGATruncation1 {}
-
-
