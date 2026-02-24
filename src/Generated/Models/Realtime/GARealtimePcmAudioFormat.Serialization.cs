@@ -36,10 +36,10 @@ namespace OpenAI.Realtime
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            if (Optional.IsDefined(Rate) && !Patch.Contains("$.rate"u8))
+            if (!Patch.Contains("$.rate"u8))
             {
                 writer.WritePropertyName("rate"u8);
-                writer.WriteNumberValue(Rate.Value.ToSerialInt32());
+                writer.WriteNumberValue(Rate);
             }
 
             Patch.WriteTo(writer);
@@ -69,7 +69,7 @@ namespace OpenAI.Realtime
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            GARealtimePcmAudioFormatRate? rate = default;
+            int rate = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -79,11 +79,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("rate"u8))
                 {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    rate = new GARealtimePcmAudioFormatRate(prop.Value.GetInt32());
+                    rate = prop.Value.GetInt32();
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());

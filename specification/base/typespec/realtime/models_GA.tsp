@@ -545,7 +545,7 @@ model RealtimeAudioFormat_GA {
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."
 model RealtimeAudioFormatsAudioPcm_GA extends RealtimeAudioFormat_GA {
   type: RealtimeAudioFormatType_GA.audio_pcm;
-  rate?: 24000;
+  rate: 24000;
 }
 
 #suppress "@azure-tools/typespec-azure-core/documentation-required" "Auto-suppressed warnings non-applicable rules during import."

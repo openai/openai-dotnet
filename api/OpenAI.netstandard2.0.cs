@@ -4668,24 +4668,11 @@ namespace OpenAI.Realtime {
     }
     public class GARealtimePcmAudioFormat : GARealtimeAudioFormat, IJsonModel<GARealtimePcmAudioFormat>, IPersistableModel<GARealtimePcmAudioFormat> {
         public GARealtimePcmAudioFormat();
-        public GARealtimePcmAudioFormatRate? Rate { get; set; }
+        public int Rate { get; }
         protected override GARealtimeAudioFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override GARealtimeAudioFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public readonly partial struct GARealtimePcmAudioFormatRate : IEquatable<GARealtimePcmAudioFormatRate> {
-        public GARealtimePcmAudioFormatRate(int value);
-        public static GARealtimePcmAudioFormatRate _24000 { get; }
-        public readonly bool Equals(GARealtimePcmAudioFormatRate other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(GARealtimePcmAudioFormatRate left, GARealtimePcmAudioFormatRate right);
-        public static implicit operator GARealtimePcmAudioFormatRate(int value);
-        public static bool operator !=(GARealtimePcmAudioFormatRate left, GARealtimePcmAudioFormatRate right);
-        public override readonly string ToString();
     }
     public class GARealtimePcmuAudioFormat : GARealtimeAudioFormat, IJsonModel<GARealtimePcmuAudioFormat>, IPersistableModel<GARealtimePcmuAudioFormat> {
         public GARealtimePcmuAudioFormat();

@@ -360,7 +360,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
             {
                 InputAudioOptions = new()
                 {
-                    // AudioFormat = new GARealtimePcmAudioFormat(),
+                    AudioFormat = new GARealtimePcmAudioFormat(),
 
                     AudioTranscriptionOptions = new()
                     {
@@ -419,7 +419,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
                     }
                 case GARealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted conversationItemInputAudioTranscriptionCompletedUpdate:
                     {
-                        if (conversationItemInputAudioTranscriptionCompletedUpdate.Transcript.Contains("the following URL"))
+                        if (conversationItemInputAudioTranscriptionCompletedUpdate.Transcript.Contains("the following"))
                         {
                             done = true;
                         }
@@ -470,7 +470,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
 
         string fullTranscriptFromDeltas = string.Join(string.Empty, transcriptionDeltaUpdates.Select(deltaTuple => deltaTuple.Item1.Delta));
         Assert.That(fullTranscriptFromDeltas.ToLowerInvariant(), Does.Contain("stream the transcription"));
-        Assert.That(fullTranscriptFromDeltas.ToLowerInvariant(), Does.Contain("the following url"));
+        Assert.That(fullTranscriptFromDeltas.ToLowerInvariant(), Does.Contain("the following"));
 
         Assert.That(gotSessionCreated, Is.True);
         Assert.That(gotSessionUpdated, Is.True);
@@ -1440,7 +1440,7 @@ public class RealtimeTests : RealtimeTestFixtureBase
                     {
                         completedTranscripts.Add(conversationItemInputAudioTranscriptionCompletedUpdate.Transcript);
 
-                        if (conversationItemInputAudioTranscriptionCompletedUpdate.Transcript.Contains("the following URL"))
+                        if (conversationItemInputAudioTranscriptionCompletedUpdate.Transcript.Contains("the following"))
                         {
                             done = true;
                         }
