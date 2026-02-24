@@ -1,4 +1,5 @@
 ﻿using Microsoft.TypeSpec.Generator.Customizations;
+using System;
 using System.Collections.Generic;
 
 namespace OpenAI.Realtime;
@@ -24,4 +25,8 @@ public partial class GARealtimeResponseOptions
     // CUSTOM: Renamed.
     [CodeGenMember("Input")]
     public IList<GARealtimeItem> InputItems { get; }
+
+    // CUSTOM: Changed type from BinaryData (generated from the original union) to a custom type.
+    [CodeGenMember("ToolChoice")]
+    public GARealtimeToolChoice ToolChoice { get; set; }
 }

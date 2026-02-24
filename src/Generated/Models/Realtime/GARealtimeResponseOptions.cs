@@ -23,7 +23,7 @@ namespace OpenAI.Realtime
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal GARealtimeResponseOptions(IList<GARealtimeOutputModality> outputModalities, string instructions, GARealtimeResponseAudioOptions audioOptions, IList<GARealtimeTool> tools, BinaryData toolChoice, GARealtimeMaxOutputTokenCount maxOutputTokenCount, GARealtimeResponseDefaultConversationConfiguration? defaultConversationConfiguration, IDictionary<string, BinaryData> metadata, IList<GARealtimeItem> inputItems, in JsonPatch patch)
+        internal GARealtimeResponseOptions(IList<GARealtimeOutputModality> outputModalities, string instructions, GARealtimeResponseAudioOptions audioOptions, IList<GARealtimeTool> tools, GARealtimeToolChoice toolChoice, GARealtimeMaxOutputTokenCount maxOutputTokenCount, GARealtimeResponseDefaultConversationConfiguration? defaultConversationConfiguration, IDictionary<string, BinaryData> metadata, IList<GARealtimeItem> inputItems, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             OutputModalities = outputModalities ?? new ChangeTrackingList<GARealtimeOutputModality>();
@@ -50,8 +50,6 @@ namespace OpenAI.Realtime
         public string Instructions { get; set; }
 
         public IList<GARealtimeTool> Tools { get; }
-
-        public BinaryData ToolChoice { get; set; }
 
         public IDictionary<string, BinaryData> Metadata { get; set; }
     }

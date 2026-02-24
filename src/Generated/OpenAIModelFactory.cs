@@ -1516,7 +1516,7 @@ namespace OpenAI
             return new GARealtimeRateLimitDetails(name, limit, remainingCount, timeUntilReset, default);
         }
 
-        public static GARealtimeResponseOptions GARealtimeResponseOptions(IEnumerable<GARealtimeOutputModality> outputModalities = default, string instructions = default, GARealtimeResponseAudioOptions audioOptions = default, IEnumerable<GARealtimeTool> tools = default, BinaryData toolChoice = default, GARealtimeMaxOutputTokenCount maxOutputTokenCount = default, GARealtimeResponseDefaultConversationConfiguration? defaultConversationConfiguration = default, IDictionary<string, BinaryData> metadata = default, IEnumerable<GARealtimeItem> inputItems = default)
+        public static GARealtimeResponseOptions GARealtimeResponseOptions(IEnumerable<GARealtimeOutputModality> outputModalities = default, string instructions = default, GARealtimeResponseAudioOptions audioOptions = default, IEnumerable<GARealtimeTool> tools = default, GARealtimeToolChoice toolChoice = default, GARealtimeMaxOutputTokenCount maxOutputTokenCount = default, GARealtimeResponseDefaultConversationConfiguration? defaultConversationConfiguration = default, IDictionary<string, BinaryData> metadata = default, IEnumerable<GARealtimeItem> inputItems = default)
         {
             outputModalities ??= new ChangeTrackingList<GARealtimeOutputModality>();
             tools ??= new ChangeTrackingList<GARealtimeTool>();

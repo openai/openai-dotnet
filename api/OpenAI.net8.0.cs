@@ -5523,7 +5523,7 @@ namespace OpenAI.Realtime {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [Experimental("SCME0001")]
         public ref JsonPatch Patch { get; }
-        public BinaryData ToolChoice { get; set; }
+        public GARealtimeToolChoice ToolChoice { get; set; }
         public IList<GARealtimeTool> Tools { get; }
         protected virtual GARealtimeResponseOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);

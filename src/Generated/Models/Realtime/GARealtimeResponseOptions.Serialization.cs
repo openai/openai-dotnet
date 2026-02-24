@@ -95,14 +95,7 @@ namespace OpenAI.Realtime
             if (Optional.IsDefined(ToolChoice) && !Patch.Contains("$.tool_choice"u8))
             {
                 writer.WritePropertyName("tool_choice"u8);
-#if NET6_0_OR_GREATER
-                writer.WriteRawValue(ToolChoice);
-#else
-                using (JsonDocument document = JsonDocument.Parse(ToolChoice))
-                {
-                    JsonSerializer.Serialize(writer, document.RootElement);
-                }
-#endif
+                writer.WriteObjectValue(ToolChoice, options);
             }
             if (Optional.IsDefined(MaxOutputTokenCount) && !Patch.Contains("$.max_output_tokens"u8))
             {
@@ -202,7 +195,7 @@ namespace OpenAI.Realtime
             string instructions = default;
             GARealtimeResponseAudioOptions audioOptions = default;
             IList<GARealtimeTool> tools = default;
-            BinaryData toolChoice = default;
+            GARealtimeToolChoice toolChoice = default;
             GARealtimeMaxOutputTokenCount maxOutputTokenCount = default;
             GARealtimeResponseDefaultConversationConfiguration? defaultConversationConfiguration = default;
             IDictionary<string, BinaryData> metadata = default;
@@ -260,7 +253,7 @@ namespace OpenAI.Realtime
                     {
                         continue;
                     }
-                    toolChoice = BinaryData.FromString(prop.Value.GetRawText());
+                    toolChoice = GARealtimeToolChoice.DeserializeGARealtimeToolChoice(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("max_output_tokens"u8))
@@ -374,6 +367,10 @@ namespace OpenAI.Realtime
             {
                 return AudioOptions.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("audio"u8.Length)], out value);
             }
+            if (local.StartsWith("tool_choice"u8))
+            {
+                return ToolChoice.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("tool_choice"u8.Length)], out value);
+            }
             if (local.StartsWith("max_output_tokens"u8))
             {
                 return MaxOutputTokenCount.Patch.TryGetEncodedValue([.. "$"u8, .. local.Slice("max_output_tokens"u8.Length)], out value);
@@ -410,6 +407,11 @@ namespace OpenAI.Realtime
             if (local.StartsWith("audio"u8))
             {
                 AudioOptions.Patch.Set([.. "$"u8, .. local.Slice("audio"u8.Length)], value);
+                return true;
+            }
+            if (local.StartsWith("tool_choice"u8))
+            {
+                ToolChoice.Patch.Set([.. "$"u8, .. local.Slice("tool_choice"u8.Length)], value);
                 return true;
             }
             if (local.StartsWith("max_output_tokens"u8))
