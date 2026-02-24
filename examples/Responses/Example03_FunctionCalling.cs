@@ -77,9 +77,8 @@ public partial class ResponseExamples
         {
             requiresAction = false;
 
-            CreateResponseOptions options = new(inputItems)
+            CreateResponseOptions options = new("gpt-5-mini", inputItems)
             {
-                Model = "gpt-5-mini",
                 Tools = { getCurrentLocationTool, getCurrentWeatherTool },
             };
 

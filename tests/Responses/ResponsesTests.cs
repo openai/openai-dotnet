@@ -357,9 +357,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
         ResponseResult response = await client.CreateResponseAsync(
-            new CreateResponseOptions([ResponseItem.CreateUserMessageItem("tell me another")])
+            new CreateResponseOptions("gpt-4.1", [ResponseItem.CreateUserMessageItem("tell me another")])
             {
-                Model = "gpt-4.1",
                 ConversationOptions = new(conversationId),
             });
 
@@ -420,9 +419,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         Assert.That(response.GetOutputText().ToLower(), Does.EndWith("more text!"));
 
         response = await client.CreateResponseAsync(
-            new CreateResponseOptions([ResponseItem.CreateUserMessageItem("How's the weather?")])
+            new CreateResponseOptions(TestModel.Responses, [ResponseItem.CreateUserMessageItem("How's the weather?")])
             {
-                Model = TestModel.Responses,
                 Tools =
                 {
                     ResponseTool.CreateFunctionTool(
@@ -625,9 +623,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         ResponseResult response = await client.CreateResponseAsync(
-            new CreateResponseOptions([ResponseItem.CreateUserMessageItem("Write a JSON document with a list of five animals")])
+            new CreateResponseOptions(modelName, [ResponseItem.CreateUserMessageItem("Write a JSON document with a list of five animals")])
             {
-                Model = modelName,
                 TextOptions = new ResponseTextOptions()
                 {
                     TextFormat = ResponseTextFormat.CreateJsonSchemaFormat(
@@ -771,9 +768,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         ResponseResult response = await client.CreateResponseAsync(
-            new CreateResponseOptions([ResponseItem.CreateUserMessageItem("Write three haikus about tropical fruit")])
+            new CreateResponseOptions(TestModel.Responses, [ResponseItem.CreateUserMessageItem("Write three haikus about tropical fruit")])
             {
-                Model = TestModel.Responses,
                 MaxOutputTokenCount = 20,
             });
 

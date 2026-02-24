@@ -381,9 +381,8 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         ResponseResult response = await client.CreateResponseAsync(
-            new CreateResponseOptions([ResponseItem.CreateUserMessageItem("Using the file search tool, what's Travis's favorite food?")])
+            new CreateResponseOptions(TestModel.Responses, [ResponseItem.CreateUserMessageItem("Using the file search tool, what's Travis's favorite food?")])
             {
-                Model = TestModel.Responses,
                 Tools =
                 {
                     ResponseTool.CreateFileSearchTool(vectorStoreIds: [vectorStore.Id]),
@@ -1057,9 +1056,8 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
         ResponseResult response = await client.CreateResponseAsync(
-            new CreateResponseOptions([ResponseItem.CreateUserMessageItem("Searching the internet, what's the weather like in Seattle?")])
+            new CreateResponseOptions(TestModel.Responses, [ResponseItem.CreateUserMessageItem("Searching the internet, what's the weather like in Seattle?")])
             {
-                Model = TestModel.Responses,
                 Tools =
                 {
                     ResponseTool.CreateWebSearchTool()
@@ -1085,9 +1083,8 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
         ResponseResult response = await client.CreateResponseAsync(
-            new CreateResponseOptions([ResponseItem.CreateUserMessageItem("What was a positive news story from today?")])
+            new CreateResponseOptions(TestModel.Responses, [ResponseItem.CreateUserMessageItem("What was a positive news story from today?")])
             {
-                Model = TestModel.Responses,
                 Tools =
                 {
                     ResponseTool.CreateWebSearchPreviewTool()

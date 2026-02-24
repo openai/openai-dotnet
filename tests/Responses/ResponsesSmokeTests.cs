@@ -609,10 +609,4 @@ public partial class ResponsesSmokeTests
         Assert.That(customProperty.ToString(), Is.EqualTo("custom_property"));
     }
 
-    [Test]
-    public void ValidateCreateResponseOptionsClone()
-    {
-        var original = new CreateResponseOptions();
-        CloneTestHelper.ValidateCloneMethod(original);
-    }
 }

@@ -27,9 +27,8 @@ public partial class ResponseExamples
         CodeInterpreterToolContainer container = new(CodeInterpreterToolContainerConfiguration.CreateAutomaticContainerConfiguration());
         CodeInterpreterTool codeInterpreterTool = new(container);
 
-        CreateResponseOptions options = new(inputItems)
+        CreateResponseOptions options = new("gpt-5", inputItems)
         {
-            Model = "gpt-5",
             Tools = { codeInterpreterTool }
         };
 

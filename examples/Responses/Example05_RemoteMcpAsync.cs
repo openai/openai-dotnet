@@ -20,9 +20,8 @@ public partial class ResponseExamples
             ResponseItem.CreateUserMessageItem("Roll 2d4+1"),
         ];
 
-        CreateResponseOptions options = new(inputItems)
+        CreateResponseOptions options = new("gpt-5", inputItems)
         {
-            Model = "gpt-5",
             Tools = {
                 new McpTool(serverLabel: "dmcp", serverUri: new Uri("https://dmcp-server.deno.dev/sse"))
                 {

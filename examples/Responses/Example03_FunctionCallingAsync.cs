@@ -34,9 +34,8 @@ public partial class ResponseExamples
         {
             requiresAction = false;
 
-            CreateResponseOptions options = new(inputItems)
+            CreateResponseOptions options = new("gpt-5", inputItems)
             {
-                Model = "gpt-5",
                 Tools = { getCurrentLocationTool, getCurrentWeatherTool },
             };
 

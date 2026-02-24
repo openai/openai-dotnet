@@ -25,7 +25,7 @@ public partial class ResponseExamples
         // Add extra request fields using Patch.
         // Patch lets you set fields like `reasoning.effort` and `text.verbosity` that aren’t modeled on CreateResponseOptions in the request payload.
         // See the API docs https://platform.openai.com/docs/api-reference/responses/create for supported additional fields.
-        CreateResponseOptions options = new(inputItems) { Model = "gpt-5" };
+        CreateResponseOptions options = new("gpt-5", inputItems);
         options.Patch.Set("$.reasoning.effort"u8, "high");
         options.Patch.Set("$.text.verbosity"u8, "medium");
 

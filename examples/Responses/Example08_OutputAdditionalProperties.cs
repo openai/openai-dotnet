@@ -23,9 +23,8 @@ public partial class ResponseExamples
             ResponseItem.CreateUserMessageItem("Generate an image of gray tabby cat hugging an otter with an orange scarf."),
         ];
 
-        CreateResponseOptions options = new(inputItems)
+        CreateResponseOptions options = new("gpt-5", inputItems)
         {
-            Model = "gpt-5",
             Tools =
             {
                 ResponseTool.CreateImageGenerationTool(
