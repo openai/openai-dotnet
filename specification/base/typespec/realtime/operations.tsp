@@ -24,10 +24,10 @@ interface Realtime {
   @post
   @route("/client_secrets")
   @tag("Realtime")
-  `create-realtime-client-secret`(
+  createRealtimeClientSecret(
     /** Create a client secret with the given session configuration. */
     @body
-    body: RealtimeCreateClientSecretRequest_GA,
+    options: RealtimeCreateClientSecretRequest_GA,
   ): RealtimeCreateClientSecretResponse_GA | {
     @maxValue(499)
     @minValue(400)

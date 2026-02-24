@@ -17,26 +17,32 @@ public partial class RealtimeSessionClient : IDisposable
 {
     public WebSocket WebSocket { get; protected set; }
 
-    private readonly RealtimeClient _parentClient;
+    private readonly ApiKeyCredential _keyCredential;
     private readonly Uri _endpoint;
     private readonly string _model;
     private readonly string _intent;
-    private readonly ApiKeyCredential _credential;
+    private readonly RealtimeClient _parentClient;
+
     private readonly SemaphoreSlim _audioSendSemaphore = new(1, 1);
     private bool _isSendingAudioStream = false;
 
     internal bool ShouldBufferTurnResponseData { get; set; }
 
-    protected internal RealtimeSessionClient(ApiKeyCredential credential, RealtimeClient parentClient, Uri endpoint, string model, string intent)
+    protected internal RealtimeSessionClient(ApiKeyCredential credential, Uri endpoint, string model, string intent, RealtimeClient parentClient)
     {
         Argument.AssertNotNull(endpoint, nameof(endpoint));
         Argument.AssertNotNull(credential, nameof(credential));
 
-        _parentClient = parentClient;
+        _keyCredential = credential;
         _endpoint = endpoint;
         _model = model;
         _intent = intent;
-        _credential = credential;
+        _parentClient = parentClient;
+    }
+
+    public void Dispose()
+    {
+        WebSocket?.Dispose();
     }
 
     /// <summary>
@@ -392,10 +398,5 @@ public partial class RealtimeSessionClient : IDisposable
         BinaryData requestData = ModelReaderWriter.Write(command, ModelReaderWriterOptions.Json, OpenAIContext.Default);
         RequestOptions cancellationOptions = cancellationToken.ToRequestOptions();
         SendCommand(requestData, cancellationOptions);
-    }
-
-    public void Dispose()
-    {
-        WebSocket?.Dispose();
     }
 }

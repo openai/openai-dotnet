@@ -330,7 +330,7 @@ public partial class OpenAIClient
     /// </remarks>
     /// <returns></returns>
     [Experimental("OPENAI002")]
-    public virtual RealtimeClient GetRealtimeClient() => new(_keyCredential, _options);
+    public virtual RealtimeClient GetRealtimeClient() => new(_keyCredential, RealtimeClientOptions.FromClientOptions(_options));
 
     /// <summary>
     /// Gets a new instance of <see cref="ResponsesClient"/> that reuses the client configuration details provided to

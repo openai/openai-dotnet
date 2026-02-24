@@ -3,12 +3,14 @@ using NUnit.Framework;
 using OpenAI.Realtime;
 using System;
 using System.Buffers;
+using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Nodes;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -1230,6 +1232,317 @@ public class RealtimeTests : RealtimeTestFixtureBase
 
         Assert.That(gotSessionCreated, Is.True);
         Assert.That(gotSessionUpdated, Is.True);
+    }
+
+
+    [Test]
+    public async Task CreateConversationSessionClientSecret()
+    {
+        RealtimeClient client = GetTestClient();
+
+        // Step 1: Create an ephemeral client secret.
+        int maxOutputTokenCount = 2048;
+
+        GARealtimeConversationSessionOptions conversationSessionOptions = new()
+        {
+            AudioOptions = new GARealtimeConversationSessionAudioOptions()
+            {
+                InputAudioOptions = new(),
+            },
+
+            MaxOutputTokenCount = maxOutputTokenCount,
+
+            OutputModalities = { GARealtimeOutputModality.Text },
+        };
+
+        conversationSessionOptions.AudioOptions.InputAudioOptions.DisableTurnDetection();
+
+        GACreateClientSecretOptions createClientSecretOptions = new()
+        {
+            SessionOptions = conversationSessionOptions,
+        };
+
+        GACreateClientSecretResult result = client.CreateRealtimeClientSecret(createClientSecretOptions);
+
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.Value, Is.Not.Null.And.Not.Empty);
+        Assert.That(result.Session, Is.Not.Null);
+        Assert.That(result.Session, Is.TypeOf<GARealtimeConversationSession>());
+        Assert.That(result.ExpiresAt, Is.GreaterThan(DateTimeOffset.Now));
+
+        RealtimeSessionClientOptions sessionClientOptions = new()
+        {
+            ClientSecret = result.Value,
+        };
+
+        // Step 2: Create a session using the ephemeral client secret.
+        using RealtimeSessionClient sessionClient = await client.StartConversationSessionAsync(
+            model: GetTestModel(),
+            options: sessionClientOptions,
+            cancellationToken: CancellationToken);
+
+        // Step 3: Add a user message item.
+        await sessionClient.AddItemAsync(
+            GARealtimeItem.CreateUserMessageItem("Hello, assistant! Tell me a joke."),
+            CancellationToken);
+
+        // Step 4: Request a response.
+        await sessionClient.StartResponseAsync(CancellationToken);
+
+        string responseContent = null;
+        bool gotSessionCreated = false;
+        bool gotResponseDone = false;
+        bool done = false;
+
+        await foreach (GARealtimeServerUpdate update in sessionClient.ReceiveUpdatesAsync(CancellationToken))
+        {
+            switch (update)
+            {
+                case GARealtimeServerUpdateSessionCreated sessionCreatedUpdate:
+                    {
+                        GARealtimeConversationSession session = sessionCreatedUpdate.Session as GARealtimeConversationSession;
+                        Assert.That(session, Is.Not.Null);
+                        Assert.That(session.AudioOptions, Is.Not.Null);
+                        Assert.That(session.AudioOptions.InputAudioOptions, Is.Not.Null);
+                        Assert.That(session.AudioOptions.InputAudioOptions.TurnDetection, Is.Null);
+                        Assert.That(session.MaxOutputTokenCount.DefaultMaxOutputTokenCount, Is.Null);
+                        Assert.That(session.MaxOutputTokenCount.CustomMaxOutputTokenCount, Is.EqualTo(maxOutputTokenCount));
+                        Assert.That(session.OutputModalities, Is.Not.Null);
+                        Assert.That(session.OutputModalities, Has.Count.EqualTo(1));
+                        Assert.That(session.OutputModalities[0], Is.EqualTo(GARealtimeOutputModality.Text));
+
+                        gotSessionCreated = true;
+                        break;
+                    }
+                case GARealtimeServerUpdateSessionUpdated sessionUpdatedUpdate:
+                    {
+                        Assert.Fail("Error: Unexpected session.updated event.");
+                        break;
+                    }
+                case GARealtimeServerUpdateResponseDone responseDoneUpdate:
+                    {
+                        Assert.That(responseDoneUpdate.Response.OutputItems, Has.Count.EqualTo(1));
+
+                        GARealtimeMessageItem messageItem = responseDoneUpdate.Response.OutputItems[0] as GARealtimeMessageItem;
+                        Assert.That(messageItem, Is.Not.Null);
+                        Assert.That(messageItem.Content, Has.Count.EqualTo(1));
+
+                        responseContent = (messageItem.Content[0] as GARealtimeOutputTextMessageContentPart)?.Text;
+
+                        gotResponseDone = true;
+                        done = true;
+                        break;
+                    }
+                case GARealtimeServerUpdateError errorUpdate:
+                    {
+                        Assert.Fail($"Error: {ModelReaderWriter.Write(errorUpdate)}");
+                        done = true;
+                        break;
+                    }
+            }
+
+            if (done)
+            {
+                break;
+            }
+        }
+
+        Assert.That(responseContent, Is.Not.Null.And.Not.Empty);
+        Assert.That(gotSessionCreated, Is.True);
+        Assert.That(gotResponseDone, Is.True);
+    }
+
+    [Test]
+    public async Task CreateTranscriptionSessionClientSecret()
+    {
+        RealtimeClient client = GetTestClient();
+
+        // Step 1: Create an ephemeral client secret.
+        string model = "gpt-4o-transcribe";
+
+        GARealtimeTranscriptionSessionOptions transcriptionSessionOptions = new()
+        {
+            AudioOptions = new()
+            {
+                InputAudioOptions = new()
+                {
+                    AudioTranscriptionOptions = new()
+                    {
+                        Model = model,
+                        Prompt = "The audio contains the word 'URL'."
+                    },
+
+                    NoiseReduction = new GARealtimeNoiseReduction(GARealtimeNoiseReductionKind.NearField),
+
+                    TurnDetection = new GARealtimeServerVadTurnDetection()
+                }
+            }
+        };
+
+        GACreateClientSecretOptions createClientSecretOptions = new()
+        {
+            SessionOptions = transcriptionSessionOptions,
+        };
+
+        GACreateClientSecretResult result = client.CreateRealtimeClientSecret(createClientSecretOptions);
+
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result.Value, Is.Not.Null.And.Not.Empty);
+        Assert.That(result.Session, Is.Not.Null);
+        Assert.That(result.Session, Is.TypeOf<GARealtimeTranscriptionSession>());
+        Assert.That(result.ExpiresAt, Is.GreaterThan(DateTimeOffset.Now));
+
+        RealtimeSessionClientOptions sessionClientOptions = new()
+        {
+            ClientSecret = result.Value,
+        };
+
+        // Step 2: Create a session using the ephemeral client secret.
+        using RealtimeSessionClient sessionClient = await client.StartTranscriptionSessionAsync(
+            options: sessionClientOptions,
+            cancellationToken: CancellationToken);
+
+        // Sending the audio in a delayed stream allows us to validate bidirectional behavior, i.e.
+        // transcription data arriving while audio is still being sent.
+        string inputPath = Path.Join("Assets", "realtime_api_description_pcm16_24khz_mono.wav");
+        using TestDelayedFileReadStream inputStream = new(inputPath, TimeSpan.FromMilliseconds(50), readsBeforeDelay: 2);
+        _ = sessionClient.SendInputAudioAsync(inputStream, CancellationToken);
+
+        List<string> completedTranscripts = new();
+        bool gotSessionCreated = false;
+        bool done = false;
+
+        await foreach (GARealtimeServerUpdate update in sessionClient.ReceiveUpdatesAsync(CancellationToken))
+        {
+            switch (update)
+            {
+                case GARealtimeServerUpdateSessionCreated sessionCreatedUpdate:
+                    {
+                        GARealtimeTranscriptionSession session = sessionCreatedUpdate.Session as GARealtimeTranscriptionSession;
+                        Assert.That(session, Is.Not.Null);
+                        Assert.That(session.AudioOptions, Is.Not.Null);
+                        Assert.That(session.AudioOptions.InputAudioOptions, Is.Not.Null);
+                        Assert.That(session.AudioOptions.InputAudioOptions.AudioTranscriptionOptions, Is.Not.Null);
+                        Assert.That(session.AudioOptions.InputAudioOptions.AudioTranscriptionOptions.Model, Is.EqualTo(model));
+                        Assert.That(session.AudioOptions.InputAudioOptions.NoiseReduction, Is.Not.Null);
+                        Assert.That(session.AudioOptions.InputAudioOptions.NoiseReduction.Kind, Is.EqualTo(GARealtimeNoiseReductionKind.NearField));
+                        Assert.That(session.AudioOptions.InputAudioOptions.TurnDetection, Is.TypeOf<GARealtimeServerVadTurnDetection>());
+
+                        gotSessionCreated = true;
+                        break;
+                    }
+                case GARealtimeServerUpdateSessionUpdated sessionUpdatedUpdate:
+                    {
+                        Assert.Fail("Error: Unexpected session.updated event.");
+                        break;
+                    }
+                case GARealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted conversationItemInputAudioTranscriptionCompletedUpdate:
+                    {
+                        completedTranscripts.Add(conversationItemInputAudioTranscriptionCompletedUpdate.Transcript);
+
+                        if (conversationItemInputAudioTranscriptionCompletedUpdate.Transcript.Contains("the following URL"))
+                        {
+                            done = true;
+                        }
+
+                        break;
+                    }
+                case GARealtimeServerUpdateError errorUpdate:
+                    {
+                        Assert.Fail($"Error: {ModelReaderWriter.Write(errorUpdate)}");
+                        done = true;
+                        break;
+                    }
+            }
+
+            if (done)
+            {
+                break;
+            }
+        }
+
+        Assert.That(completedTranscripts, Has.Count.GreaterThan(0));
+        Assert.That(gotSessionCreated, Is.True);
+    }
+
+    [Test]
+    public async Task CanConfigureSessionWithProtocol()
+    {
+        RealtimeClient client = GetTestClient();
+
+        using RealtimeSessionClient session = await client.StartConversationSessionAsync(
+            model: GetTestModel(),
+            cancellationToken: CancellationToken);
+
+        BinaryData configureSessionCommand = BinaryData.FromString("""
+            {
+              "type": "session.update",
+              "session": {
+                "type": "realtime",
+                "audio": {
+                    "input": {
+                        "turn_detection": null
+                    }
+                }
+              }
+            }
+            """);
+
+        await session.SendCommandAsync(configureSessionCommand, CancellationOptions);
+
+        List<JsonNode> receivedUpdates = [];
+
+        bool done = false;
+
+        await foreach (ClientResult update in session.ReceiveUpdatesAsync(CancellationOptions))
+        {
+            BinaryData rawContentBytes = update.GetRawResponse().Content;
+            JsonNode jsonNode = JsonNode.Parse(rawContentBytes);
+            string updateType = jsonNode["type"]?.GetValue<string>();
+            Assert.That(updateType, Is.Not.Null.And.Not.Empty);
+
+            receivedUpdates.Add(jsonNode);
+
+            switch (updateType)
+            {
+                case "session.updated":
+                    {
+                        BinaryData createResponseCommand = BinaryData.FromString("""
+                        {
+                          "type": "response.create"
+                        }
+                        """);
+
+                        await session.SendCommandAsync(createResponseCommand, CancellationOptions);
+
+                        break;
+                    }
+                case "response.done":
+                    {
+                        done = true;
+                        break;
+                    }
+                case "error":
+                    {
+                        Assert.Fail($"Error: Unexpected error.");
+                        done = true;
+                        break;
+                    }
+            }
+
+            if (done)
+            {
+                break;
+            }
+        }
+
+        List<JsonNode> NodesOfType(string type) => receivedUpdates.Where(command => command["type"].GetValue<string>() == type).ToList();
+
+        Assert.That(NodesOfType("session.created"), Has.Count.EqualTo(1));
+        Assert.That(NodesOfType("session.updated"), Has.Count.EqualTo(1));
+        Assert.That(NodesOfType("response.created"), Has.Count.EqualTo(1));
+        Assert.That(NodesOfType("response.output_item.added"), Has.Count.EqualTo(1));
+        Assert.That(NodesOfType("response.done"), Has.Count.EqualTo(1));
     }
 
     private class TestDelayedFileReadStream : FileStream

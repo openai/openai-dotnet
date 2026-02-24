@@ -22,11 +22,17 @@ public partial class RealtimeSessionClient
     {
         WebSocket?.Dispose();
 
-        _credential.Deconstruct(out string dangerousCredential);
-
         ClientWebSocket clientWebSocket = new();
         clientWebSocket.Options.AddSubProtocol("realtime");
-        clientWebSocket.Options.SetRequestHeader("Authorization", $"Bearer {dangerousCredential}");
+
+        // Note: If we do not have a key credential here, it means that we do not have neither an
+        // OpenAI API key nor an ephemeral client secret. At that point, auth is expected to be
+        // handled manually by the user via custom headers or some other mechanism.
+        if (_keyCredential != null)
+        {
+            _keyCredential.Deconstruct(out string dangerousCredential);
+            clientWebSocket.Options.SetRequestHeader("Authorization", $"Bearer {dangerousCredential}");
+        }
 
         if (headers is not null)
         {
@@ -115,7 +121,10 @@ public partial class RealtimeSessionClient
 
     private static Uri BuildSessionUri(Uri endpoint, string model, string intent)
     {
+        Argument.AssertNotNull(endpoint, nameof(endpoint));
+
         ClientUriBuilder builder = new();
+
         builder.Reset(endpoint);
 
         if (!string.IsNullOrEmpty(model))
