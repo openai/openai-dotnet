@@ -93,8 +93,7 @@ public partial class ResponsesClient
     }
 
     [Experimental("SCME0002")]
-    public ResponsesClient(ResponsesClientSettings settings)
-        : this(settings?.Model, AuthenticationPolicy.Create(settings), settings?.Options)
+    public ResponsesClient(ResponsesClientSettings settings) : this(AuthenticationPolicy.Create(settings), settings?.Options)
     {
     }
 

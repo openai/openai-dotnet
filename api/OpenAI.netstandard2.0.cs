@@ -5764,7 +5764,6 @@ namespace OpenAI.Responses {
         public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, CancellationToken cancellationToken = default);
     }
     public sealed class ResponsesClientSettings : ClientSettings {
-        public string Model { get; set; }
         public OpenAIClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }

@@ -6564,7 +6564,6 @@ namespace OpenAI.Responses {
     }
     [Experimental("SCME0002")]
     public sealed class ResponsesClientSettings : ClientSettings {
-        public string Model { get; set; }
         public OpenAIClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }

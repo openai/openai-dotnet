@@ -180,13 +180,13 @@ public class ClientSettingsConstructorTests
             {
                 ["Responses:Credential:CredentialSource"] = "ApiKey",
                 ["Responses:Credential:Key"] = "sk-test-key",
-                ["Responses:Model"] = "gpt-4o"
+                ["Responses:Options:Endpoint"] = "https://responses.openai.com"
             })
             .Build();
 
         var settings = config.GetClientSettings<ResponsesClientSettings>("Responses");
 
-        Assert.That(settings.Model, Is.EqualTo("gpt-4o"));
+        Assert.That(settings.Options.Endpoint, Is.EqualTo(new Uri("https://responses.openai.com")));
     }
 
     [Test]
@@ -654,14 +654,6 @@ public class ClientSettingsConstructorTests
     }
 
     [Test]
-    public void ResponsesClient_SettingsWithoutModel_Throws()
-    {
-        var settings = CreateNonModelSettings<ResponsesClientSettings>();
-
-        Assert.Throws<ArgumentNullException>(() => new ResponsesClient(settings));
-    }
-
-    [Test]
     public void ChatClient_SettingsWithEmptyModel_Throws()
     {
         var settings = CreateModelSettings<ChatClientSettings>("");
@@ -694,6 +686,18 @@ public class ClientSettingsConstructorTests
         var settings = config.GetClientSettings<AssistantClientSettings>("Assistant");
 
         Assert.Throws<ArgumentNullException>(() => new AssistantClient(settings));
+    }
+
+    [Test]
+    public void ResponsesClient_SettingsWithoutCredential_Throws()
+    {
+        var config = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string>())
+            .Build();
+
+        var settings = config.GetClientSettings<ResponsesClientSettings>("Responses");
+
+        Assert.Throws<ArgumentNullException>(() => new ResponsesClient(settings));
     }
 
     #endregion
