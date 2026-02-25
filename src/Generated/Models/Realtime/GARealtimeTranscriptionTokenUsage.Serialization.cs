@@ -43,7 +43,7 @@ namespace OpenAI.Realtime
             if (!Patch.Contains("$.input_tokens"u8))
             {
                 writer.WritePropertyName("input_tokens"u8);
-                writer.WriteNumberValue(TotalTokenCount);
+                writer.WriteNumberValue(InputTokenCount);
             }
             if (Optional.IsDefined(InputTokenDetails) && !Patch.Contains("$.input_token_details"u8))
             {
@@ -53,12 +53,12 @@ namespace OpenAI.Realtime
             if (!Patch.Contains("$.output_tokens"u8))
             {
                 writer.WritePropertyName("output_tokens"u8);
-                writer.WriteNumberValue(OutputTokens);
+                writer.WriteNumberValue(OutputTokenCount);
             }
             if (!Patch.Contains("$.total_tokens"u8))
             {
                 writer.WritePropertyName("total_tokens"u8);
-                writer.WriteNumberValue(TotalTokens);
+                writer.WriteNumberValue(TotalTokenCount);
             }
 
             Patch.WriteTo(writer);
@@ -88,10 +88,10 @@ namespace OpenAI.Realtime
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            int totalTokenCount = default;
+            int inputTokenCount = default;
             GARealtimeTranscriptionInputTokenUsageDetails inputTokenDetails = default;
-            int outputTokens = default;
-            int totalTokens = default;
+            int outputTokenCount = default;
+            int totalTokenCount = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -101,7 +101,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("input_tokens"u8))
                 {
-                    totalTokenCount = prop.Value.GetInt32();
+                    inputTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("input_token_details"u8))
@@ -115,12 +115,12 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("output_tokens"u8))
                 {
-                    outputTokens = prop.Value.GetInt32();
+                    outputTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 if (prop.NameEquals("total_tokens"u8))
                 {
-                    totalTokens = prop.Value.GetInt32();
+                    totalTokenCount = prop.Value.GetInt32();
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
@@ -128,10 +128,10 @@ namespace OpenAI.Realtime
             return new GARealtimeTranscriptionTokenUsage(
                 kind,
                 patch,
-                totalTokenCount,
+                inputTokenCount,
                 inputTokenDetails,
-                outputTokens,
-                totalTokens);
+                outputTokenCount,
+                totalTokenCount);
         }
 
         BinaryData IPersistableModel<GARealtimeTranscriptionTokenUsage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

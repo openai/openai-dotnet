@@ -11,10 +11,10 @@ public partial class GARealtimeTranscriptionTokenUsage
     public int InputTokenCount { get; }
 
     // CUSTOM: Renamed.
-    [CodeGenMember("InputTokens")]
+    [CodeGenMember("OutputTokens")]
     public int OutputTokenCount { get; }
 
     // CUSTOM: Renamed.
-    [CodeGenMember("InputTokens")]
+    [CodeGenMember("TotalTokens")]
     public int TotalTokenCount { get; }
 }

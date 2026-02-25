@@ -15,26 +15,42 @@ public partial class RealtimeClient
     public virtual async Task<RealtimeSessionClient> StartConversationSessionAsync(string model, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(model, nameof(model));
-        return await StartSessionAsync(model, intent: null, options, cancellationToken).ConfigureAwait(false);
+        return await StartSessionAsync(
+            model: model,
+            intent: null,
+            options: options,
+            cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary> Start a new Realtime conversation session. </summary>
     public RealtimeSessionClient StartConversationSession(string model, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(model, nameof(model));
-        return StartSession(model, intent: null, options, cancellationToken);
+        return StartSession(
+            model: model,
+            intent: null,
+            options: options,
+            cancellationToken: cancellationToken);
     }
 
     /// <summary> Start a new Realtime transcription session. </summary>
     public virtual async Task<RealtimeSessionClient> StartTranscriptionSessionAsync(RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default)
     {
-        return await StartSessionAsync(model: null, intent: "transcription", options, cancellationToken).ConfigureAwait(false);
+        return await StartSessionAsync(
+            model: null,
+            intent: "transcription",
+            options: options,
+            cancellationToken: cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary> Start a new Realtime transcription session. </summary>
     public RealtimeSessionClient StartTranscriptionSession(RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default)
     {
-        return StartSession(model: null, intent: "transcription", options, cancellationToken);
+        return StartSession(
+            model: null,
+            intent: "transcription",
+            options: options,
+            cancellationToken: cancellationToken);
     }
 
     /// <summary> Starts a new realtime session. </summary>

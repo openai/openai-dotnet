@@ -25,8 +25,8 @@ public partial class RealtimeSessionClient
         ClientWebSocket clientWebSocket = new();
         clientWebSocket.Options.AddSubProtocol("realtime");
 
-        // Note: If we do not have a key credential here, it means that we do not have neither an
-        // OpenAI API key nor an ephemeral client secret. At that point, auth is expected to be
+        // Note: If we do not have a key credential here, it means that we do not have either an
+        // OpenAI API key or an ephemeral client secret. At that point, auth is expected to be
         // handled manually by the user via custom headers or some other mechanism.
         if (_keyCredential != null)
         {

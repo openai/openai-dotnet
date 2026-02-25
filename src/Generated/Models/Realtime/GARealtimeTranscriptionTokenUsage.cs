@@ -10,28 +10,24 @@ namespace OpenAI.Realtime
     [Experimental("OPENAI002")]
     public partial class GARealtimeTranscriptionTokenUsage : GARealtimeTranscriptionUsage
     {
-        internal GARealtimeTranscriptionTokenUsage(int totalTokenCount, int outputTokens, int totalTokens) : base(InternalTranscriptionTokenUsageBaseTypeGA.Tokens)
+        internal GARealtimeTranscriptionTokenUsage(int inputTokenCount, int outputTokenCount, int totalTokenCount) : base(InternalTranscriptionTokenUsageBaseTypeGA.Tokens)
         {
+            InputTokenCount = inputTokenCount;
+            OutputTokenCount = outputTokenCount;
             TotalTokenCount = totalTokenCount;
-            OutputTokens = outputTokens;
-            TotalTokens = totalTokens;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal GARealtimeTranscriptionTokenUsage(InternalTranscriptionTokenUsageBaseTypeGA kind, in JsonPatch patch, int totalTokenCount, GARealtimeTranscriptionInputTokenUsageDetails inputTokenDetails, int outputTokens, int totalTokens) : base(kind, patch)
+        internal GARealtimeTranscriptionTokenUsage(InternalTranscriptionTokenUsageBaseTypeGA kind, in JsonPatch patch, int inputTokenCount, GARealtimeTranscriptionInputTokenUsageDetails inputTokenDetails, int outputTokenCount, int totalTokenCount) : base(kind, patch)
         {
-            TotalTokenCount = totalTokenCount;
+            InputTokenCount = inputTokenCount;
             InputTokenDetails = inputTokenDetails;
-            OutputTokens = outputTokens;
-            TotalTokens = totalTokens;
+            OutputTokenCount = outputTokenCount;
+            TotalTokenCount = totalTokenCount;
             Patch.SetPropagators(PropagateSet, PropagateGet);
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         public GARealtimeTranscriptionInputTokenUsageDetails InputTokenDetails { get; }
-
-        public int OutputTokens { get; }
-
-        public int TotalTokens { get; }
     }
 }

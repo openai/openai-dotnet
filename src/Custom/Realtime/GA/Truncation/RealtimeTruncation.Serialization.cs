@@ -22,10 +22,7 @@ public partial class GARealtimeTruncation
         JsonModelWriteCore(writer, options);
     }
 
-    // CUSTOM:
-    // - Edited to serialize the DefaultTracing component as a string value.
-    // - Edited to serialize the CustomTracing component as an object value.
-    // - Removed serialization of additional properties.
+    // CUSTOM: Edited to serialize the different components of the union.
     protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
         string format = options.Format == "W" ? ((IPersistableModel<GARealtimeTruncation>)this).GetFormatFromOptions(options) : options.Format;
@@ -42,14 +39,10 @@ public partial class GARealtimeTruncation
         {
             writer.WriteObjectValue(CustomTruncation, options);
         }
-
-        Patch.WriteTo(writer);
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
     }
 
-    // CUSTOM:
-    // - Edited to deserialize a string value into a GlobalPolicy component.
-    // - Edited to deserialize an object value into a CustomPolicy component.
+    // CUSTOM: Edited to deserialize the different components of the union.
     internal static GARealtimeTruncation DeserializeGARealtimeTruncation(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
     {
         if (element.ValueKind == JsonValueKind.Null)
