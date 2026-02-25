@@ -92,6 +92,12 @@ public partial class EmbeddingClient
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
+    [Experimental("SCME0002")]
+    public EmbeddingClient(EmbeddingClientSettings settings)
+        : this(settings?.Model, AuthenticationPolicy.Create(settings), settings?.Options)
+    {
+    }
+
     // CUSTOM:
     // - Added `model` parameter.
     // - Used a custom pipeline.

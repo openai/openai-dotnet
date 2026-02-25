@@ -124,6 +124,12 @@ public partial class FineTuningClient
         _endpoint = endpoint;
     }
 
+    [Experimental("SCME0002")]
+    public FineTuningClient(FineTuningClientSettings settings)
+        : this(AuthenticationPolicy.Create(settings), settings?.Options)
+    {
+    }
+
     /// <summary>
     /// Gets the endpoint URI for the service.
     /// </summary>

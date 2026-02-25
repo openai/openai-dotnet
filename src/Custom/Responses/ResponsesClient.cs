@@ -92,6 +92,12 @@ public partial class ResponsesClient
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
+    [Experimental("SCME0002")]
+    public ResponsesClient(ResponsesClientSettings settings)
+        : this(settings?.Model, AuthenticationPolicy.Create(settings), settings?.Options)
+    {
+    }
+
     /// <summary>
     /// Gets the endpoint URI for the service.
     /// </summary>
@@ -585,7 +591,6 @@ public partial class ResponsesClient
     {
         Argument.AssertNotNull(options, nameof(options));
         Argument.AssertNotNullOrEmpty(options.ResponseId, nameof(options.ResponseId));
-    
         return new ResponsesClientGetResponseInputItemsAsyncCollectionResultOfT(
             client: this,
             responseId: options.ResponseId,

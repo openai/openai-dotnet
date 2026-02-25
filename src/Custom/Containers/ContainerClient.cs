@@ -78,6 +78,12 @@ public partial class ContainerClient
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
+    [Experimental("SCME0002")]
+    public ContainerClient(ContainerClientSettings settings)
+        : this(AuthenticationPolicy.Create(settings), settings?.Options)
+    {
+    }
+
     /// <summary>
     /// Gets the endpoint URI for the service.
     /// </summary>

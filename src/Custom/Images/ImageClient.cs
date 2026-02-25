@@ -90,6 +90,12 @@ public partial class ImageClient
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
+    [Experimental("SCME0002")]
+    public ImageClient(ImageClientSettings settings)
+        : this(settings?.Model, AuthenticationPolicy.Create(settings), settings?.Options)
+    {
+    }
+
     // CUSTOM:
     // - Added `model` parameter.
     // - Used a custom pipeline.
