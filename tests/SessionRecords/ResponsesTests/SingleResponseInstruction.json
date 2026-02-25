@@ -6,12 +6,12 @@
       "RequestHeaders": {
         "Accept": "application/json, text/event-stream",
         "Authorization": "Sanitized",
-        "Content-Length": "178",
+        "Content-Length": "172",
         "Content-Type": "application/json",
         "User-Agent": "OpenAI/2.8.0 (.NET 10.0.3; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
-        "model": "gpt-4o-mini",
+        "model": "gpt-5",
         "input": [
           {
             "type": "message",
@@ -30,9 +30,9 @@
       "ResponseHeaders": {
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9d1272483ec272dd-SEA",
+        "CF-RAY": "9d39a0f4f9a92814-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "1596",
+        "Content-Length": "1723",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -42,34 +42,39 @@
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-ratelimit-limit-requests": "30000",
-        "x-ratelimit-limit-tokens": "150000000",
-        "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "149999957",
-        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-limit-requests": "15000",
+        "x-ratelimit-limit-tokens": "40000000",
+        "x-ratelimit-remaining-requests": "14999",
+        "x-ratelimit-remaining-tokens": "40000000",
+        "x-ratelimit-reset-requests": "4ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "resp_0fc42f8fafc48af70069990962a4c08193bd2f13df057a27e1",
+        "id": "resp_070dcff077093ea200699f4e4b5e6c8193bf98816bab3bcf20",
         "object": "response",
-        "created_at": 1771637090,
+        "created_at": 1772047947,
         "status": "completed",
         "background": false,
         "billing": {
           "payer": "developer"
         },
-        "completed_at": 1771637091,
+        "completed_at": 1772047949,
         "error": null,
         "frequency_penalty": 0.0,
         "incomplete_details": null,
         "instructions": "Always begin your replies with 'Ahoy'",
         "max_output_tokens": null,
         "max_tool_calls": null,
-        "model": "gpt-4o-mini-2024-07-18",
+        "model": "gpt-5-2025-08-07",
         "output": [
           {
-            "id": "msg_0fc42f8fafc48af70069990962f4308193be6287fff49e9741",
+            "id": "rs_070dcff077093ea200699f4e4c4e888193a53564520facfb65",
+            "type": "reasoning",
+            "summary": []
+          },
+          {
+            "id": "msg_070dcff077093ea200699f4e4d40e481938f95966bd008fbc2",
             "type": "message",
             "status": "completed",
             "content": [
@@ -77,7 +82,7 @@
                 "type": "output_text",
                 "annotations": [],
                 "logprobs": [],
-                "text": "Ahoy! How can I assist you today?"
+                "text": "Ahoy! How can I help you today?"
               }
             ],
             "role": "assistant"
@@ -89,7 +94,7 @@
         "prompt_cache_key": null,
         "prompt_cache_retention": null,
         "reasoning": {
-          "effort": null,
+          "effort": "medium",
           "summary": null
         },
         "safety_identifier": null,
@@ -108,15 +113,15 @@
         "top_p": 1.0,
         "truncation": "disabled",
         "usage": {
-          "input_tokens": 24,
+          "input_tokens": 23,
           "input_tokens_details": {
             "cached_tokens": 0
           },
-          "output_tokens": 11,
+          "output_tokens": 89,
           "output_tokens_details": {
-            "reasoning_tokens": 0
+            "reasoning_tokens": 64
           },
-          "total_tokens": 35
+          "total_tokens": 112
         },
         "user": null,
         "metadata": {}

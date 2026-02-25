@@ -992,7 +992,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         const string instructionsText = "Always begin your replies with 'Ahoy'";
-        CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Hello, model!")])
+        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("Hello, model!")])
         {
             Instructions = instructionsText,
         };
@@ -1014,7 +1014,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
-        CreateResponseOptions options = new([
+        CreateResponseOptions options = new("gpt-5", [
             ResponseItem.CreateUserMessageItem([
                 ResponseContentPart.CreateInputTextPart("Hello, model!")
             ])
