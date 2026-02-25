@@ -11,7 +11,6 @@ namespace OpenAI.Responses;
 // - Suppressed client-only OutputText property in favor of a method.
 [CodeGenType("Response")]
 [CodeGenSuppress("OutputText")]
-[CodeGenSerialization(nameof(Instructions), DeserializationValueHook = nameof(DeserializeInstructions))]
 public partial class ResponseResult
 {
     // CUSTOM: Renamed.
