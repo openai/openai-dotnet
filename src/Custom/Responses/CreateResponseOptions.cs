@@ -9,12 +9,13 @@ namespace OpenAI.Responses;
 public partial class CreateResponseOptions
 {
     // CUSTOM: Added as a convenience.
-    public CreateResponseOptions(IEnumerable<ResponseItem> inputItems, string model = default) : this()
+    public CreateResponseOptions(string model, IEnumerable<ResponseItem> inputItems) : this()
     {
+        Argument.AssertNotNullOrEmpty(model, nameof(model));
         Argument.AssertNotNull(inputItems, nameof(inputItems));
 
+        Model = model;
         InputItems = inputItems.ToList();
-        Model = default;
     }
 
     // CUSTOM: Renamed.
@@ -122,46 +123,4 @@ public partial class CreateResponseOptions
     [CodeGenMember("User")]
     public string EndUserId { get; set; }
 
-    internal CreateResponseOptions Clone()
-    {
-        var clone = new CreateResponseOptions();
-        foreach (var kvp in Metadata ?? Enumerable.Empty<KeyValuePair<string, string>>())
-        {
-            clone.Metadata[kvp.Key] = kvp.Value;
-        }
-        clone.Temperature = Temperature;
-        clone.TopLogProbabilityCount = TopLogProbabilityCount;
-        clone.TopP = TopP;
-        clone.EndUserId = EndUserId;
-        clone.SafetyIdentifier = SafetyIdentifier;
-        clone.ServiceTier = ServiceTier;
-        clone.PreviousResponseId = PreviousResponseId;
-        clone.Model = Model;
-        clone.ReasoningOptions = ReasoningOptions;
-        clone.BackgroundModeEnabled = BackgroundModeEnabled;
-        clone.MaxOutputTokenCount = MaxOutputTokenCount;
-        clone.MaxToolCallCount = MaxToolCallCount;
-        clone.Instructions = Instructions;
-        clone.TextOptions = TextOptions;
-        foreach (var tool in Tools)
-        {
-            clone.Tools.Add(tool);
-        }
-        clone.ToolChoice = ToolChoice;
-        clone.TruncationMode = TruncationMode;
-        foreach (var item in InputItems)
-        {
-            clone.InputItems.Add(item);
-        }
-        foreach (var item in IncludedProperties)
-        {
-            clone.IncludedProperties.Add(item);
-        }
-        clone.ParallelToolCallsEnabled = ParallelToolCallsEnabled;
-        clone.StoredOutputEnabled = StoredOutputEnabled;
-        clone.StreamingEnabled = StreamingEnabled;
-        clone.ConversationOptions = ConversationOptions;
-
-        return clone;
-    }
 }

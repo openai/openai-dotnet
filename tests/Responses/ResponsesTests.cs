@@ -105,9 +105,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
         List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("I’m visiting New York for 3 days and love food and art. What’s the best way to plan my trip?")];
 
-        CreateResponseOptions options = new(inputItems)
+        CreateResponseOptions options = new("o3-mini", inputItems)
         {
-            Model = "o3-mini",
             ReasoningOptions = new()
             {
                 ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Auto,
@@ -168,6 +167,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         CreateResponseOptions options = new(
+            model,
             [
                 ResponseItem.CreateUserMessageItem(
                 [
@@ -193,7 +193,6 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
                         """),
                     strictModeEnabled: false),
             },
-            Model = model,
             TruncationMode = ResponseTruncationMode.Auto,
         };
 
@@ -215,9 +214,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
-        CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("What's the best way to fold a burrito?")])
+        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("What's the best way to fold a burrito?")])
         {
-            Model = "gpt-5",
             ReasoningOptions = new()
             {
                 ReasoningSummaryVerbosity = ResponseReasoningSummaryVerbosity.Detailed,
@@ -246,9 +244,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         List<ResponseItem> inputItems = [ResponseItem.CreateUserMessageItem("Hello, world!")];
-        CreateResponseOptions options = new(inputItems)
+        CreateResponseOptions options = new("gpt-5-mini", inputItems)
         {
-            Model = "gpt-5-mini",
             StoredOutputEnabled = false,
             IncludedProperties = { IncludedResponseProperty.ReasoningEncryptedContent }
         };
@@ -281,9 +278,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             = ResponseContentPart.CreateInputTextPart("Hello, responses!");
         ResponseItem inputItem = ResponseItem.CreateUserMessageItem([contentPart]);
 
-        CreateResponseOptions options = new([inputItem])
+        CreateResponseOptions options = new(model, [inputItem])
         {
-            Model = model,
             TruncationMode = ResponseTruncationMode.Auto,
             StreamingEnabled = true,
         };
@@ -320,9 +316,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
-        CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Hello, model!")])
+        CreateResponseOptions options = new(TestModel.Responses, [ResponseItem.CreateUserMessageItem("Hello, model!")])
         {
-            Model = TestModel.Responses,
             StoredOutputEnabled = false,
         };
 
@@ -395,9 +390,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         MessageResponseItem message = ResponseItem.CreateUserMessageItem("Using a comprehensive evaluation of popular media in the 1970s and 1980s, what were the most common sci-fi themes?");
-        CreateResponseOptions options = new([message])
+        CreateResponseOptions options = new(TestModel.Responses, [message])
         {
-            Model = TestModel.Responses,
             ServiceTier = ResponseServiceTier.Default,
         };
         ResponseResult response = await client.CreateResponseAsync(options);
@@ -548,10 +542,7 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         const string userMessage = "Hello, model!";
         messages.Add(ResponseItem.CreateUserMessageItem(userMessage));
 
-        CreateResponseOptions options = new(messages)
-        {
-            Model = TestModel.Responses,
-        };
+        CreateResponseOptions options = new(TestModel.Responses, messages);
 
         if (instructionMethod == ResponsesTestInstructionMethod.InstructionsProperty)
         {
@@ -668,9 +659,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
-        CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")])
+        CreateResponseOptions options = new(TestModel.Responses, [ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")])
         {
-            Model = TestModel.Responses,
             Tools = { s_GetWeatherAtLocationTool }
         };
 
@@ -691,9 +681,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         });
 
         ResponseItem functionReply = ResponseItem.CreateFunctionCallOutputItem(functionCall.CallId, "22 celcius and windy");
-        CreateResponseOptions turn2Options = new([functionReply])
+        CreateResponseOptions turn2Options = new(TestModel.Responses, [functionReply])
         {
-            Model = TestModel.Responses,
             PreviousResponseId = response.Id,
             Tools = { s_GetWeatherAtLocationTool },
         };
@@ -716,9 +705,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
-        CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")])
+        CreateResponseOptions options = new(TestModel.Responses, [ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")])
         {
-            Model = TestModel.Responses,
             Tools = { s_GetWeatherAtLocationTool },
             StreamingEnabled = true,
         };
@@ -789,9 +777,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
         ResponseToolChoice toolChoice
             = ResponseToolChoice.CreateFunctionChoice(s_GetWeatherAtLocationToolName);
 
-        CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")])
+        CreateResponseOptions options = new(TestModel.Responses, [ResponseItem.CreateUserMessageItem("What should I wear for the weather in San Francisco, CA?")])
         {
-            Model = TestModel.Responses,
             Tools = { s_GetWeatherAtLocationTool },
             ToolChoice = toolChoice,
         };
@@ -813,9 +800,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
-        CreateResponseOptions createOptions = new([ResponseItem.CreateUserMessageItem("Tell me a bedtime story.")])
+        CreateResponseOptions createOptions = new("gpt-4.1-mini", [ResponseItem.CreateUserMessageItem("Tell me a bedtime story.")])
         {
-            Model = "gpt-4.1-mini",
             BackgroundModeEnabled = true,
             StreamingEnabled = true,
         };
@@ -881,9 +867,8 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
-        CreateResponseOptions options = new([ResponseItem.CreateUserMessageItem("Hello, model!")])
+        CreateResponseOptions options = new("gpt-4.1-mini", [ResponseItem.CreateUserMessageItem("Hello, model!")])
         {
-            Model = "gpt-4.1-mini",
             BackgroundModeEnabled = true,
         };
 
