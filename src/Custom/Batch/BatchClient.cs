@@ -94,6 +94,12 @@ public partial class BatchClient
         _endpoint = OpenAIClient.GetEndpoint(options);
     }
 
+    [Experimental("SCME0002")]
+    public BatchClient(BatchClientSettings settings)
+        : this(AuthenticationPolicy.Create(settings), settings?.Options)
+    {
+    }
+
     /// <summary>
     /// Gets the endpoint URI for the service.
     /// </summary>

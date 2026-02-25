@@ -29,14 +29,6 @@ namespace OpenAI.Images
         public static GeneratedImageQuality Standard { get; } = new GeneratedImageQuality(StandardValue);
 
         [Experimental("OPENAI001")]
-        public static GeneratedImageQuality Low { get; } = new GeneratedImageQuality(LowValue);
-
-        [Experimental("OPENAI001")]
-        public static GeneratedImageQuality Medium { get; } = new GeneratedImageQuality(MediumValue);
-
-        public static GeneratedImageQuality High { get; } = new GeneratedImageQuality(HighValue);
-
-        [Experimental("OPENAI001")]
         public static GeneratedImageQuality Auto { get; } = new GeneratedImageQuality(AutoValue);
 
         public static bool operator ==(GeneratedImageQuality left, GeneratedImageQuality right) => left.Equals(right);

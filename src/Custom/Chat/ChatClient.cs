@@ -119,6 +119,12 @@ public partial class ChatClient
         _telemetry = new OpenTelemetrySource(model, _endpoint);
     }
 
+    [Experimental("SCME0002")]
+    public ChatClient(ChatClientSettings settings)
+        : this(settings?.Model, AuthenticationPolicy.Create(settings), settings?.Options)
+    {
+    }
+
     /// <summary>
     /// Gets the name of the model used in requests sent to the service.
     /// </summary>

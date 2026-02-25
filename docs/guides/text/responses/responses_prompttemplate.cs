@@ -9,7 +9,7 @@ using OpenAI.Responses;
 using System.ClientModel;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-ResponsesClient client = new(model: "gpt-5.2", apiKey: key);
+ResponsesClient client = new(key);
 
 ResponseResult response = (ResponseResult)client.CreateResponse(
     BinaryContent.Create(BinaryData.FromObjectAsJson(

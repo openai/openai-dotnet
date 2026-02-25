@@ -12,7 +12,21 @@ namespace OpenAI.Images;
 public readonly partial struct GeneratedImageQuality
 {
     // CUSTOM: Renamed.
-    [Experimental("OPENAI001")]
     [CodeGenMember("Hd")]
-    public static GeneratedImageQuality HD { get; } = new GeneratedImageQuality(HdValue);
+    public static GeneratedImageQuality High { get; } = new GeneratedImageQuality(HdValue);
+
+    // CUSTOM: Renamed.
+    [Experimental("OPENAI001")]
+    [CodeGenMember("Low")]
+    public static GeneratedImageQuality LowQuality { get; } = new GeneratedImageQuality(LowValue);
+
+    // CUSTOM: Renamed.
+    [Experimental("OPENAI001")]
+    [CodeGenMember("Medium")]
+    public static GeneratedImageQuality MediumQuality { get; } = new GeneratedImageQuality(MediumValue);
+
+    // CUSTOM: Renamed.
+    [Experimental("OPENAI001")]
+    [CodeGenMember("High")]
+    public static GeneratedImageQuality HighQuality { get; } = new GeneratedImageQuality(HighValue);
 }

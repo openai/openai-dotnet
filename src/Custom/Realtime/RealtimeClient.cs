@@ -107,6 +107,12 @@ public partial class RealtimeClient
         _webSocketEndpoint = GetWebSocketEndpoint(options);
     }
 
+    [Experimental("SCME0002")]
+    public RealtimeClient(RealtimeClientSettings settings)
+        : this(AuthenticationPolicy.Create(settings), RealtimeClientOptions.FromClientOptions(settings?.Options))
+    {
+    }
+
     /// <summary>
     /// Gets the endpoint URI for the service.
     /// </summary>
