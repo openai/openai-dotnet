@@ -23,7 +23,7 @@ public partial class RealtimeClient
     }
 
     /// <summary> Start a new Realtime conversation session. </summary>
-    public RealtimeSessionClient StartConversationSession(string model, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default)
+    public virtual RealtimeSessionClient StartConversationSession(string model, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(model, nameof(model));
         return StartSession(
@@ -44,7 +44,7 @@ public partial class RealtimeClient
     }
 
     /// <summary> Start a new Realtime transcription session. </summary>
-    public RealtimeSessionClient StartTranscriptionSession(RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default)
+    public virtual RealtimeSessionClient StartTranscriptionSession(RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default)
     {
         return StartSession(
             model: null,
@@ -88,7 +88,7 @@ public partial class RealtimeClient
     }
 
     /// <summary> Starts a new realtime session. </summary>
-    public RealtimeSessionClient StartSession(string model, string intent, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default)
+    public virtual RealtimeSessionClient StartSession(string model, string intent, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default)
     {
         return StartSessionAsync(model, intent, options, cancellationToken).ConfigureAwait(false).GetAwaiter().GetResult();
     }

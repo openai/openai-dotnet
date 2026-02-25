@@ -19,5 +19,5 @@ public partial class GARealtimeResponse
     // - Renamed.
     // - Changed type from BinaryData (generated from the original union) to a custom type.
     [CodeGenMember("MaxOutputTokens")]
-    public GARealtimeMaxOutputTokenCount MaxOutputTokenCount { get; set; }
+    public GARealtimeMaxOutputTokenCount MaxOutputTokenCount { get; }
 }

@@ -4713,7 +4713,7 @@ namespace OpenAI.Realtime {
         public GARealtimeResponseAudioOptions AudioOptions { get; }
         public string ConversationId { get; }
         public string Id { get; }
-        public GARealtimeMaxOutputTokenCount MaxOutputTokenCount { get; set; }
+        public GARealtimeMaxOutputTokenCount MaxOutputTokenCount { get; }
         public IDictionary<string, BinaryData> Metadata { get; }
         public IList<GARealtimeItem> OutputItems { get; }
         public IList<GARealtimeOutputModality> OutputModalities { get; }
@@ -5884,11 +5884,11 @@ namespace OpenAI.Realtime {
         public virtual ClientResult CreateRealtimeClientSecret(BinaryContent content, RequestOptions options = null);
         public virtual Task<ClientResult<GACreateClientSecretResult>> CreateRealtimeClientSecretAsync(GACreateClientSecretOptions options, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> CreateRealtimeClientSecretAsync(BinaryContent content, RequestOptions options = null);
-        public RealtimeSessionClient StartConversationSession(string model, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
+        public virtual RealtimeSessionClient StartConversationSession(string model, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<RealtimeSessionClient> StartConversationSessionAsync(string model, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
-        public RealtimeSessionClient StartSession(string model, string intent, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
+        public virtual RealtimeSessionClient StartSession(string model, string intent, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<RealtimeSessionClient> StartSessionAsync(string model, string intent, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
-        public RealtimeSessionClient StartTranscriptionSession(RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
+        public virtual RealtimeSessionClient StartTranscriptionSession(RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<RealtimeSessionClient> StartTranscriptionSessionAsync(RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
     }
     public class RealtimeClientOptions : ClientPipelineOptions {

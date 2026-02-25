@@ -30,9 +30,6 @@ public partial class RealtimeSessionClient : IDisposable
 
     protected internal RealtimeSessionClient(ApiKeyCredential credential, Uri endpoint, string model, string intent, RealtimeClient parentClient)
     {
-        Argument.AssertNotNull(endpoint, nameof(endpoint));
-        Argument.AssertNotNull(credential, nameof(credential));
-
         _keyCredential = credential;
         _endpoint = endpoint;
         _model = model;
