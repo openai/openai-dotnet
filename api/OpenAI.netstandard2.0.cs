@@ -5553,9 +5553,7 @@ namespace OpenAI.Realtime {
         public int InputTokenCount { get; }
         public GARealtimeTranscriptionInputTokenUsageDetails InputTokenDetails { get; }
         public int OutputTokenCount { get; }
-        public int OutputTokens { get; }
         public int TotalTokenCount { get; }
-        public int TotalTokens { get; }
         protected override GARealtimeTranscriptionUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override GARealtimeTranscriptionUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
