@@ -22,7 +22,7 @@ using System.ClientModel;
 using System.ClientModel.Primitives;
 using System.Diagnostics.CodeAnalysis;
 
-namespace OpenAI.DependencyInjection;
+namespace OpenAI;
 
 /// <summary>
 /// Extension methods for adding OpenAI clients with configuration and DI support following System.ClientModel pattern.

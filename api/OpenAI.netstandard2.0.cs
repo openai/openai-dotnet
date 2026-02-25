@@ -2368,7 +2368,7 @@ namespace OpenAI.Conversations {
         public override readonly string ToString();
     }
 }
-namespace OpenAI.DependencyInjection {
+namespace OpenAI {
     public static class OpenAIHostBuilderExtensions {
         public static IClientBuilder AddAssistantClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
         public static IClientBuilder AddAudioClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);

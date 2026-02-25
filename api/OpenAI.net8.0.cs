@@ -2750,7 +2750,7 @@ namespace OpenAI.Conversations {
         public override readonly string ToString();
     }
 }
-namespace OpenAI.DependencyInjection {
+namespace OpenAI {
     [Experimental("SCME0002")]
     public static class OpenAIHostBuilderExtensions {
         public static IClientBuilder AddAssistantClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
