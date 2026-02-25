@@ -5381,7 +5381,7 @@ namespace OpenAI.Responses {
     [Experimental("OPENAI001")]
     public class CreateResponseOptions : IJsonModel<CreateResponseOptions>, IPersistableModel<CreateResponseOptions> {
         public CreateResponseOptions();
-        public CreateResponseOptions(IEnumerable<ResponseItem> inputItems, string model = null);
+        public CreateResponseOptions(string model, IEnumerable<ResponseItem> inputItems);
         public bool? BackgroundModeEnabled { get; set; }
         public ResponseConversationOptions ConversationOptions { get; set; }
         public string EndUserId { get; set; }
