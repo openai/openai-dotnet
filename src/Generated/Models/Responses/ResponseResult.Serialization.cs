@@ -336,7 +336,7 @@ namespace OpenAI.Responses
             ResponseError error = default;
             ResponseIncompleteStatusDetails incompleteStatusDetails = default;
             IList<ResponseItem> outputItems = default;
-            IReadOnlyList<ResponseItem> instructions = default;
+            IList<ResponseItem> instructions = default;
             ResponseTokenUsage usage = default;
             bool parallelToolCallsEnabled = default;
             ResponseConversationOptions conversationOptions = default;

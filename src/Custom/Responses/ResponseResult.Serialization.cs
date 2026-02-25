@@ -11,7 +11,7 @@ namespace OpenAI.Responses
     {
         // CUSTOM: Support instructions returned as either a string or an array of ResponseItem.
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static void DeserializeInstructions(JsonProperty property, ref IReadOnlyList<ResponseItem> instructions, ModelReaderWriterOptions options = null)
+        private static void DeserializeInstructions(JsonProperty property, ref IList<ResponseItem> instructions, ModelReaderWriterOptions options = null)
         {
             if (property.Value.ValueKind == JsonValueKind.Null)
             {

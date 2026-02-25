@@ -73,7 +73,7 @@ public partial class ResponseResult
     // CUSTOM: Changed from BinaryData to IReadOnlyList<ResponseItem> to support instructions returned as
     // either a string or an array of ResponseItem.
     [CodeGenMember("Instructions")]
-    public IReadOnlyList<ResponseItem> Instructions { get; }
+    public IList<ResponseItem> Instructions { get; }
 
     public string GetOutputText()
     {
