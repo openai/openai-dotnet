@@ -46,6 +46,44 @@ namespace OpenAI {
         public static OpenAIContext Default { get; }
         protected override bool TryGetTypeBuilderCore(Type type, out ModelReaderWriterTypeBuilder builder);
     }
+    public static class OpenAIHostBuilderExtensions {
+        public static IClientBuilder AddAssistantClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddAudioClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddBatchClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddChatClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddContainerClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddConversationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddEmbeddingClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddEvaluationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddFineTuningClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddGraderClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddImageClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddKeyedAssistantClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedAudioClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedBatchClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedChatClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedContainerClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedConversationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedEmbeddingClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedEvaluationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedFineTuningClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedGraderClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedImageClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedModerationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedOpenAIFileClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedOpenAIModelClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedRealtimeClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedResponsesClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedVectorStoreClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedVideoClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddModerationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddOpenAIFileClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddOpenAIModelClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddRealtimeClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddResponsesClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddVectorStoreClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddVideoClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+    }
 }
 namespace OpenAI.Assistants {
     public class Assistant : IJsonModel<Assistant>, IPersistableModel<Assistant> {
@@ -2366,46 +2404,6 @@ namespace OpenAI.Conversations {
         public static implicit operator IncludedConversationItemProperty?(string value);
         public static bool operator !=(IncludedConversationItemProperty left, IncludedConversationItemProperty right);
         public override readonly string ToString();
-    }
-}
-namespace OpenAI {
-    public static class OpenAIHostBuilderExtensions {
-        public static IClientBuilder AddAssistantClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddAudioClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddBatchClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddChatClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddContainerClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddConversationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddEmbeddingClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddEvaluationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddFineTuningClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddGraderClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddImageClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddKeyedAssistantClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedAudioClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedBatchClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedChatClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedContainerClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedConversationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedEmbeddingClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedEvaluationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedFineTuningClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedGraderClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedImageClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedModerationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedOpenAIFileClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedOpenAIModelClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedRealtimeClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedResponsesClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedVectorStoreClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedVideoClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddModerationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddOpenAIFileClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddOpenAIModelClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddRealtimeClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddResponsesClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddVectorStoreClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddVideoClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
     }
 }
 namespace OpenAI.Embeddings {
