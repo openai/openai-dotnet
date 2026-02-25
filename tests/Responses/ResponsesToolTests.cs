@@ -684,7 +684,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ComputerToolWithScreenshotRoundTrip()
     {
-        ResponsesClient client = TestEnvironment.GetTestClient<ResponsesClient>("computer-use-preview-2025-03-11");
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>("computer-use-preview-2025-03-11");
         ResponseTool computerTool = ResponseTool.CreateComputerTool(ComputerToolEnvironment.Windows, 1024, 768);
         CreateResponseOptions responseOptions = new(
             [
@@ -1036,7 +1036,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task WebSearchCall()
     {
-        ResponsesClient client = TestEnvironment.GetTestClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
         ResponseResult response = await client.CreateResponseAsync(
             new CreateResponseOptions([ResponseItem.CreateUserMessageItem("Searching the internet, what's the weather like in Seattle?")])
             {
@@ -1063,7 +1063,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task WebSearchCallPreview()
     {
-        ResponsesClient client = TestEnvironment.GetTestClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
         ResponseResult response = await client.CreateResponseAsync(
             new CreateResponseOptions([ResponseItem.CreateUserMessageItem("What was a positive news story from today?")])
             {
@@ -1090,7 +1090,7 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task WebSearchCallStreaming()
     {
-        ResponsesClient client = TestEnvironment.GetTestClient<ResponsesClient>();
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
 
         const string message = "Searching the internet, what's the weather like in San Francisco?";
 
