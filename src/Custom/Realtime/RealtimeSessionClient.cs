@@ -87,7 +87,7 @@ public partial class RealtimeSessionClient : IDisposable
             {
                 ArrayPool<byte>.Shared.Return(buffer);
             }
-            using (await _audioSendSemaphore.AutoReleaseWaitAsync(cancellationToken).ConfigureAwait(false))
+            using (await _audioSendSemaphore.AutoReleaseWaitAsync(CancellationToken.None).ConfigureAwait(false))
             {
                 _isSendingAudioStream = false;
             }
@@ -131,7 +131,7 @@ public partial class RealtimeSessionClient : IDisposable
             {
                 ArrayPool<byte>.Shared.Return(buffer);
             }
-            using (_audioSendSemaphore.AutoReleaseWait(cancellationToken))
+            using (_audioSendSemaphore.AutoReleaseWait(CancellationToken.None))
             {
                 _isSendingAudioStream = false;
             }
