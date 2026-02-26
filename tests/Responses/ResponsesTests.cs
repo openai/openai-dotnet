@@ -563,7 +563,10 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
 
         if (instructionMethod == ResponsesTestInstructionMethod.InstructionsProperty)
         {
-            Assert.That(retrievedResponse.Instructions, Is.EqualTo(instructions));
+            Assert.That(retrievedResponse.Instructions, Has.Count.EqualTo(1));
+            MessageResponseItem instructionMessage = retrievedResponse.Instructions[0] as MessageResponseItem;
+            Assert.That(instructionMessage, Is.Not.Null);
+            Assert.That(instructionMessage.Content?.FirstOrDefault()?.Text, Is.EqualTo(instructions));
         }
 
         List<ResponseItem> listedItems = [];
