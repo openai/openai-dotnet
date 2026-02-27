@@ -48,7 +48,7 @@
   <!-- Versioning -->
   <PropertyGroup>
     <VersionPrefix>2.9.0</VersionPrefix>
-    <VersionSuffix>alpha.20260226.1</VersionSuffix>
+    <VersionSuffix></VersionSuffix>
     <InformationalVersion>$(Version)</InformationalVersion>
   </PropertyGroup>
 
