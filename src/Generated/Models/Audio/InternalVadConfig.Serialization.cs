@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
-namespace OpenAI.Realtime
+namespace OpenAI.Audio
 {
     internal partial class InternalVadConfig : IJsonModel<InternalVadConfig>
     {

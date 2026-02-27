@@ -8,10 +8,7 @@ using OpenAI;
 using Azure.ClientGenerator.Core;
 using TypeSpec.HttpClient.CSharp;
 
-// ------------ Temporary ------------
-
-@@access(RealtimeCreateClientSecretResponse, Access.public);
-@@usage(RealtimeCreateClientSecretResponse, Usage.output);
+// ------------ Events ------------
 
 @@access(RealtimeServerEvent_GA, Access.public);
 @@usage(RealtimeServerEvent_GA, Usage.output);
@@ -19,12 +16,9 @@ using TypeSpec.HttpClient.CSharp;
 @@access(RealtimeClientEvent_GA, Access.public);
 @@usage(RealtimeClientEvent_GA, Usage.input);
 
-// ------------ Converged Types ------------
+@@alternateType(RealtimeServerEventResponseFunctionCallArgumentsDelta_GA.delta, unknown);
 
-@@alternateType(RealtimeServerEventError_GA.error, DotNetRealtimeError_GA);
-@@alternateType(RealtimeServerEventConversationItemInputAudioTranscriptionFailed_GA.error, DotNetRealtimeError_GA);
-@@alternateType(RealtimeMCPToolCall_GA.error, DotNetRealtimeError_GA);
-@@alternateType(RealtimeResponseStatusDetails_GA.error, DotNetRealtimeError_GA);
+@@alternateType(RealtimeServerEventResponseMCPCallArgumentsDelta_GA.delta, unknown);
 
 // ------------ Items ------------
 
@@ -39,12 +33,17 @@ using TypeSpec.HttpClient.CSharp;
 
 @@alternateType(RealtimeResponseCreateParams_GA.audio, RealtimeResponseAudio_GA);
 
+// ------------ Custom Types ------------
 
-// ------------ Server Events ------------
+// Different definitions have been converged into a single definition for simplicity.
+@@alternateType(RealtimeServerEventError_GA.error, DotNetRealtimeError_GA);
+@@alternateType(RealtimeServerEventConversationItemInputAudioTranscriptionFailed_GA.error, DotNetRealtimeError_GA);
+@@alternateType(RealtimeMCPToolCall_GA.error, DotNetRealtimeError_GA);
+@@alternateType(RealtimeResponseStatusDetails_GA.error, DotNetRealtimeError_GA);
 
-@@alternateType(RealtimeServerEventResponseFunctionCallArgumentsDelta_GA.delta, unknown);
-
-@@alternateType(RealtimeServerEventResponseMCPCallArgumentsDelta_GA.delta, unknown);
+// Common definition has been forked into a feature-specific variations to keep them separate.
+@@alternateType(RealtimeServerEventConversationItemInputAudioTranscriptionCompleted_GA.logprobs, DotNetRealtimeLogProbsProperties[] | null);
+@@alternateType(RealtimeServerEventConversationItemInputAudioTranscriptionDelta_GA.logprobs, DotNetRealtimeLogProbsProperties[] | null);
 
 // ------------ JsonPatch ------------
 

@@ -2,19 +2,11 @@ using Microsoft.TypeSpec.Generator.Customizations;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading;
 
 namespace OpenAI.Realtime;
 
 [CodeGenType("Realtime")]
-[CodeGenSuppress("CreateEphemeralToken", typeof(InternalRealtimeSessionCreateRequest), typeof(CancellationToken))]
-[CodeGenSuppress("CreateEphemeralTokenAsync", typeof(InternalRealtimeSessionCreateRequest), typeof(CancellationToken))]
-[CodeGenSuppress("CreateEphemeralTranscriptionToken", typeof(TranscriptionSessionOptions), typeof(CancellationToken))]
-[CodeGenSuppress("CreateEphemeralTranscriptionTokenAsync", typeof(TranscriptionSessionOptions), typeof(CancellationToken))]
-[CodeGenSuppress("StartRealtimeSession", typeof(IEnumerable<InternalRealtimeClientEvent>), typeof(CancellationToken))]
-[CodeGenSuppress("StartRealtimeSessionAsync", typeof(IEnumerable<InternalRealtimeClientEvent>), typeof(CancellationToken))]
 public partial class RealtimeClient
 {
     private const string DefaultEndpoint = "https://api.openai.com/v1";

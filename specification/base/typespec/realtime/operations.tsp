@@ -1,5 +1,4 @@
 import "../common";
-import "./models.tsp";
 import "./models_GA.tsp";
 
 using TypeSpec.Http;
@@ -10,11 +9,6 @@ namespace OpenAI;
 @route("realtime")
 @tag("Realtime")
 interface Realtime {
-  @summary("Starts a real-time session for conversation or transcription.")
-  startRealtimeSession(
-    @body requestMessages: RealtimeClientEvent[],
-  ): RealtimeServerEvent[];
-
   /** Create a Realtime client secret with an associated session configuration. */
   #suppress "@azure-tools/typespec-azure-core/casing-style" "Auto-suppressed warnings non-applicable rules during import."
   #suppress "@azure-tools/typespec-azure-core/response-schema-problem" "Auto-suppressed warnings non-applicable rules during import."

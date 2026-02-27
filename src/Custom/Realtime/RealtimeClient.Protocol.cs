@@ -6,9 +6,6 @@ using System.Threading.Tasks;
 
 namespace OpenAI.Realtime;
 
-[CodeGenSuppress("StartRealtimeSessionAsync", typeof(BinaryContent), typeof(RequestOptions))]
-[CodeGenSuppress("StartRealtimeSession", typeof(BinaryContent), typeof(RequestOptions))]
-[CodeGenSuppress("CreateStartRealtimeSessionRequest", typeof(BinaryContent), typeof(RequestOptions))]
 public partial class RealtimeClient
 {
     /// <summary> Start a new Realtime conversation session. </summary>

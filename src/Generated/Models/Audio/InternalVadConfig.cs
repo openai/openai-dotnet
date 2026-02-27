@@ -5,7 +5,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace OpenAI.Realtime
+namespace OpenAI.Audio
 {
     internal partial class InternalVadConfig
     {

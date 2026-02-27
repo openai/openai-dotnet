@@ -1,11 +1,10 @@
 ﻿using Microsoft.TypeSpec.Generator.Customizations;
 using System;
-using System.Collections.Generic;
 
 namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
-[CodeGenType("LogProbPropertiesGA")]
+[CodeGenType("DotNetRealtimeLogProbsProperties")]
 public partial class GARealtimeLogProbabilityDetails
 {
     // CUSTOM: Renamed.

@@ -111,12 +111,6 @@ union DotNetChatVoiceIds {
   VoiceIdsShared,
 }
 
-@access(Access.public)
-@usage(Usage.input | Usage.output)
-union DotNetRealtimeVoiceIds {
-  VoiceIdsShared,
-}
-
 // CollectionQueryParameters
 
 alias DotNetCollectionLimitQueryParameter = {
