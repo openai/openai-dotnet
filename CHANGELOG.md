@@ -100,7 +100,7 @@ Thank you to our developer community members who helped to make the OpenAI clien
 
 ### Other Changes
 
-- Updated the `System.ClientModel` dependency to version 1.9.0. For more information, see the [System.ClientModel Changelog](https://github.com/Azure/azure-sdk-for-net/blob/System.ClientModel_1.9.0/sdk/core/System.ClientModel/CHANGELOG.md)
+- Updated the `System.ClientModel` dependency to version 1.9.0. For more information, see the [System.ClientModel changelog](https://github.com/Azure/azure-sdk-for-net/blob/System.ClientModel_1.9.0/sdk/core/System.ClientModel/CHANGELOG.md).
 
 ### Breaking Changes in Preview APIs
 
