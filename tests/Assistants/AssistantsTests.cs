@@ -412,15 +412,12 @@ public class AssistantsTests : OpenAIRecordedTestBase
         Assert.That(details?.CreatedMessageId, Is.Not.Null.And.Not.Empty);
 
         details = secondStep.Details;
-        Assert.Multiple(() =>
-        {
-            Assert.That(details?.ToolCalls.Count, Is.GreaterThan(0));
-            Assert.That(details.ToolCalls[0].Kind, Is.EqualTo(RunStepToolCallKind.CodeInterpreter));
-            Assert.That(details.ToolCalls[0].Id, Is.Not.Null.And.Not.Empty);
-            Assert.That(details.ToolCalls[0].CodeInterpreterInput, Is.Not.Null.And.Not.Empty);
-            Assert.That(details.ToolCalls[0].CodeInterpreterOutputs?.Count, Is.GreaterThan(0));
-            Assert.That(details.ToolCalls[0].CodeInterpreterOutputs[0].ImageFileId, Is.Not.Null.And.Not.Empty);
-        });
+        Assert.That(details?.ToolCalls.Count, Is.GreaterThan(0));
+        Assert.That(details.ToolCalls[0].Kind, Is.EqualTo(RunStepToolCallKind.CodeInterpreter));
+        Assert.That(details.ToolCalls[0].Id, Is.Not.Null.And.Not.Empty);
+        Assert.That(details.ToolCalls[0].CodeInterpreterInput, Is.Not.Null.And.Not.Empty);
+        Assert.That(details.ToolCalls[0].CodeInterpreterOutputs?.Count, Is.GreaterThan(0));
+        Assert.That(details.ToolCalls[0].CodeInterpreterOutputs[0].ImageFileId, Is.Not.Null.And.Not.Empty);
     }
 
     [RecordedTest]
