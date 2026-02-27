@@ -609,4 +609,69 @@ public partial class ResponsesSmokeTests
         Assert.That(customProperty.ToString(), Is.EqualTo("custom_property"));
     }
 
+    [Test]
+    public void DeserializeMCPToolAllowedToolsAsObject()
+    {
+        BinaryData data = BinaryData.FromString("""
+        {
+            "type": "mcp",
+            "server_label": "deepwiki",
+            "server_url": "https://mcp.deepwiki.com/mcp",
+            "require_approval": "never",
+            "allowed_tools": {
+                "tool_names": ["ask_question", "read_wiki_structure"],
+                "read_only": true
+            }
+        }
+        """);
+
+        McpTool tool = ModelReaderWriter.Read<McpTool>(data);
+        Assert.That(tool, Is.Not.Null);
+        Assert.That(tool.ServerLabel, Is.EqualTo("deepwiki"));
+        Assert.That(tool.AllowedTools, Is.Not.Null);
+        Assert.That(tool.AllowedTools.ToolNames, Has.Count.EqualTo(2));
+        Assert.That(tool.AllowedTools.ToolNames[0], Is.EqualTo("ask_question"));
+        Assert.That(tool.AllowedTools.ToolNames[1], Is.EqualTo("read_wiki_structure"));
+        Assert.That(tool.AllowedTools.IsReadOnly, Is.True);
+
+        // Round-trip: serialize and verify the object format is preserved.
+        BinaryData serialized = ModelReaderWriter.Write(tool);
+        using JsonDocument doc = JsonDocument.Parse(serialized);
+        Assert.That(doc.RootElement.TryGetProperty("allowed_tools", out JsonElement allowedToolsElement), Is.True);
+        Assert.That(allowedToolsElement.ValueKind, Is.EqualTo(JsonValueKind.Object));
+        Assert.That(allowedToolsElement.TryGetProperty("tool_names", out JsonElement toolNamesElement), Is.True);
+        Assert.That(toolNamesElement.EnumerateArray().Count(), Is.EqualTo(2));
+    }
+
+    [Test]
+    public void DeserializeMCPToolAllowedToolsAsStringArray()
+    {
+        BinaryData data = BinaryData.FromString("""
+        {
+            "type": "mcp",
+            "server_label": "deepwiki",
+            "server_url": "https://mcp.deepwiki.com/mcp",
+            "require_approval": "never",
+            "allowed_tools": ["ask_question", "read_wiki_structure"]
+        }
+        """);
+
+        McpTool tool = ModelReaderWriter.Read<McpTool>(data);
+        Assert.That(tool, Is.Not.Null);
+        Assert.That(tool.ServerLabel, Is.EqualTo("deepwiki"));
+        Assert.That(tool.AllowedTools, Is.Not.Null);
+        Assert.That(tool.AllowedTools.ToolNames, Has.Count.EqualTo(2));
+        Assert.That(tool.AllowedTools.ToolNames[0], Is.EqualTo("ask_question"));
+        Assert.That(tool.AllowedTools.ToolNames[1], Is.EqualTo("read_wiki_structure"));
+
+        // Round-trip: serialize and verify the tool names are preserved.
+        BinaryData serialized = ModelReaderWriter.Write(tool);
+        using JsonDocument doc = JsonDocument.Parse(serialized);
+        Assert.That(doc.RootElement.TryGetProperty("allowed_tools", out JsonElement allowedToolsElement), Is.True);
+        Assert.That(allowedToolsElement.TryGetProperty("tool_names", out JsonElement toolNamesElement), Is.True);
+        Assert.That(toolNamesElement.EnumerateArray().Count(), Is.EqualTo(2));
+        Assert.That(toolNamesElement.EnumerateArray().First().GetString(), Is.EqualTo("ask_question"));
+        Assert.That(toolNamesElement.EnumerateArray().Last().GetString(), Is.EqualTo("read_wiki_structure"));
+    }
+
 }
