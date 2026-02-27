@@ -57,13 +57,14 @@ jobs:
       - name: Check for recording changes
         id: changes
         run: |
-          if git diff --quiet tests/SessionRecords/; then
+          STATUS_OUTPUT="$(git status --porcelain tests/SessionRecords/)"
+          if [ -z "$STATUS_OUTPUT" ]; then
             echo "has_changes=false" >> $GITHUB_OUTPUT
             echo "No recording changes detected"
           else
             echo "has_changes=true" >> $GITHUB_OUTPUT
             echo "Recording changes detected:"
-            git diff --name-only tests/SessionRecords/
+            echo "$STATUS_OUTPUT"
           fi
 
       - name: Validate recordings in Playback mode
