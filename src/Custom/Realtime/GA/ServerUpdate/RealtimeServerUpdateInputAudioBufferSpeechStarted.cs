@@ -17,7 +17,7 @@ namespace OpenAI.Realtime;
 /// </summary>
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeServerEventInputAudioBufferSpeechStartedGA")]
-public partial class GARealtimeServerUpdateInputAudioBufferSpeechStarted
+public partial class RealtimeServerUpdateInputAudioBufferSpeechStarted
 {
     // CUSTOM: Renamed.
     [CodeGenMember("AudioStartMs")]

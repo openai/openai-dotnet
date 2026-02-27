@@ -4,7 +4,7 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("DotNetRealtimeErrorGA")]
-public partial class GARealtimeError
+public partial class RealtimeError
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Param")]

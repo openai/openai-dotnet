@@ -4,9 +4,9 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("DotNetRealtimeDefaultMaxOutputTokenCountGA")]
-public readonly partial struct GARealtimeDefaultMaxOutputTokenCount
+public readonly partial struct RealtimeDefaultMaxOutputTokenCount
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Inf")]
-    public static GARealtimeDefaultMaxOutputTokenCount Infinity { get; } = new GARealtimeDefaultMaxOutputTokenCount(InfValue);
+    public static RealtimeDefaultMaxOutputTokenCount Infinity { get; } = new RealtimeDefaultMaxOutputTokenCount(InfValue);
 }

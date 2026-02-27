@@ -4,6 +4,6 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeTruncationBaseGA")]
-public partial class GARealtimeCustomTruncation
+public partial class RealtimeCustomTruncation
 {
 }

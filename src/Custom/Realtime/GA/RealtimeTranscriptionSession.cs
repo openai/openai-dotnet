@@ -5,13 +5,13 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeTranscriptionSessionCreateResponseGAGA")]
-public partial class GARealtimeTranscriptionSession
+public partial class RealtimeTranscriptionSession
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Include")]
-    public IList<GARealtimeIncludedProperty> IncludedProperties { get; }
+    public IList<RealtimeIncludedProperty> IncludedProperties { get; }
 
     // CUSTOM: Renamed.
     [CodeGenMember("Audio")]
-    public GARealtimeTranscriptionSessionAudioOptions AudioOptions { get; set; }
+    public RealtimeTranscriptionSessionAudioOptions AudioOptions { get; set; }
 }

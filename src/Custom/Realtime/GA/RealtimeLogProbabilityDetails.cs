@@ -5,7 +5,7 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("DotNetRealtimeLogProbsProperties")]
-public partial class GARealtimeLogProbabilityDetails
+public partial class RealtimeLogProbabilityDetails
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Logprob")]

@@ -8,6 +8,6 @@ namespace OpenAI.Realtime;
 /// </summary>
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeServerEventResponseFunctionCallArgumentsDeltaGA")]
-public partial class GARealtimeServerUpdateResponseFunctionCallArgumentsDelta
+public partial class RealtimeServerUpdateResponseFunctionCallArgumentsDelta
 {
 }

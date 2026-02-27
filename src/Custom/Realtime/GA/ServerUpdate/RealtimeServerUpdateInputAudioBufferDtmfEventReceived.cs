@@ -11,6 +11,6 @@ namespace OpenAI.Realtime;
 /// </summary>
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeServerEventInputAudioBufferDtmfEventReceivedGA")]
-public partial class GARealtimeServerUpdateInputAudioBufferDtmfEventReceived
+public partial class RealtimeServerUpdateInputAudioBufferDtmfEventReceived
 {
 }

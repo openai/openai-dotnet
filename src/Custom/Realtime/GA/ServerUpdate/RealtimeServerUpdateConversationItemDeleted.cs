@@ -10,6 +10,6 @@ namespace OpenAI.Realtime;
 /// </summary>
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeServerEventConversationItemDeletedGA")]
-public partial class GARealtimeServerUpdateConversationItemDeleted
+public partial class RealtimeServerUpdateConversationItemDeleted
 {
 }

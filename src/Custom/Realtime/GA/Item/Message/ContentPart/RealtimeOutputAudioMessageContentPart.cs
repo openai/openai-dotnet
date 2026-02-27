@@ -5,7 +5,7 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeConversationItemOutputAudioMessageContentPartGA")]
-public partial class GARealtimeOutputAudioMessageContentPart
+public partial class RealtimeOutputAudioMessageContentPart
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Audio")]

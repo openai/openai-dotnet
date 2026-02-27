@@ -4,6 +4,6 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("DotNetRealtimeSessionCreateRequestGADefaultTracingGA")]
-public readonly partial struct GARealtimeDefaultTracing
+public readonly partial struct RealtimeDefaultTracing
 {
 }

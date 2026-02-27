@@ -4,13 +4,13 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("MCPToolRequireApprovalGA")]
-public partial class GARealtimeCustomMcpToolCallApprovalPolicy
+public partial class RealtimeCustomMcpToolCallApprovalPolicy
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Always")]
-    public GARealtimeMcpToolFilter ToolsAlwaysRequiringApproval { get; set; }
+    public RealtimeMcpToolFilter ToolsAlwaysRequiringApproval { get; set; }
 
     // CUSTOM: Renamed.
     [CodeGenMember("Never")]
-    public GARealtimeMcpToolFilter ToolsNeverRequiringApproval { get; set; }
+    public RealtimeMcpToolFilter ToolsNeverRequiringApproval { get; set; }
 }

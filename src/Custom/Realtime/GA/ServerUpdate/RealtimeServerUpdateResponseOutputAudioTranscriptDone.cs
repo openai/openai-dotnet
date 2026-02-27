@@ -10,6 +10,6 @@ namespace OpenAI.Realtime;
 /// </summary>
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeServerEventResponseOutputAudioTranscriptDoneGA")]
-public partial class GARealtimeServerUpdateResponseOutputAudioTranscriptDone
+public partial class RealtimeServerUpdateResponseOutputAudioTranscriptDone
 {
 }

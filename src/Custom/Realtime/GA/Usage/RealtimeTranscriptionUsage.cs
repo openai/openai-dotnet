@@ -4,6 +4,6 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("TranscriptionTokenUsageBaseGA")]
-public partial class GARealtimeTranscriptionUsage
+public partial class RealtimeTranscriptionUsage
 {
 }

@@ -4,13 +4,13 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeSessionCreateRequestGAAudioGA")]
-public partial class GARealtimeConversationSessionAudioOptions
+public partial class RealtimeConversationSessionAudioOptions
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Input")]
-    public GARealtimeConversationSessionInputAudioOptions InputAudioOptions { get; set; }
+    public RealtimeConversationSessionInputAudioOptions InputAudioOptions { get; set; }
 
     // CUSTOM: Renamed.
     [CodeGenMember("Output")]
-    public GARealtimeConversationSessionOutputAudioOptions OutputAudioOptions { get; set; }
+    public RealtimeConversationSessionOutputAudioOptions OutputAudioOptions { get; set; }
 }

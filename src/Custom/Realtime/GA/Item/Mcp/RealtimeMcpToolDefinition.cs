@@ -4,6 +4,6 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("MCPListToolsToolGA")]
-public partial class GARealtimeMcpToolDefinition
+public partial class RealtimeMcpToolDefinition
 {
 }

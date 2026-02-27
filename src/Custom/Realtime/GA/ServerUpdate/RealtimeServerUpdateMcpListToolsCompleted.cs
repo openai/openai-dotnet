@@ -8,6 +8,6 @@ namespace OpenAI.Realtime;
 /// </summary>
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeServerEventMCPListToolsCompletedGA")]
-public partial class GARealtimeServerUpdateMcpListToolsCompleted
+public partial class RealtimeServerUpdateMcpListToolsCompleted
 {
 }

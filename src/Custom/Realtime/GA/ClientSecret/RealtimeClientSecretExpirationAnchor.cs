@@ -4,6 +4,6 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeCreateClientSecretRequestExpiresAfterAnchorGA")]
-public readonly partial struct GARealtimeClientSecretExpirationAnchor
+public readonly partial struct RealtimeClientSecretExpirationAnchor
 {
 }

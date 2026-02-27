@@ -4,17 +4,17 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Added to represent a non-discriminated union.
 [CodeGenType("DotNetRealtimeToolChoiceGA")]
-[CodeGenVisibility(nameof(GARealtimeToolChoice), CodeGenVisibility.Internal)]
-public partial class GARealtimeToolChoice
+[CodeGenVisibility(nameof(RealtimeToolChoice), CodeGenVisibility.Internal)]
+public partial class RealtimeToolChoice
 {
     // CUSTOM: Added to support the corresponding component of the union.
-    public GARealtimeToolChoice(GARealtimeDefaultToolChoice defaultToolChoice)
+    public RealtimeToolChoice(RealtimeDefaultToolChoice defaultToolChoice)
     {
         DefaultToolChoice = defaultToolChoice;
     }
 
     // CUSTOM: Added to support the corresponding component of the union.
-    public GARealtimeToolChoice(GARealtimeCustomToolChoice customToolChoice)
+    public RealtimeToolChoice(RealtimeCustomToolChoice customToolChoice)
     {
         Argument.AssertNotNull(customToolChoice, nameof(customToolChoice));
 
@@ -23,15 +23,15 @@ public partial class GARealtimeToolChoice
 
     // CUSTOM: Removed setter.
     [CodeGenMember("DefaultToolChoice")]
-    public GARealtimeDefaultToolChoice? DefaultToolChoice { get; }
+    public RealtimeDefaultToolChoice? DefaultToolChoice { get; }
 
     // CUSTOM: Removed setter.
     [CodeGenMember("CustomToolChoice")]
-    public GARealtimeCustomToolChoice CustomToolChoice { get; }
+    public RealtimeCustomToolChoice CustomToolChoice { get; }
 
     // CUSTOM: Added for convenience.
-    public static implicit operator GARealtimeToolChoice(GARealtimeDefaultToolChoice defaultToolChoice) => new(defaultToolChoice);
+    public static implicit operator RealtimeToolChoice(RealtimeDefaultToolChoice defaultToolChoice) => new(defaultToolChoice);
 
     // CUSTOM: Added for convenience.
-    public static implicit operator GARealtimeToolChoice(GARealtimeCustomToolChoice customToolChoice) => customToolChoice is null ? null : new(customToolChoice);
+    public static implicit operator RealtimeToolChoice(RealtimeCustomToolChoice customToolChoice) => customToolChoice is null ? null : new(customToolChoice);
 }

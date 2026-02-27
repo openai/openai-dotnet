@@ -5,7 +5,7 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeServerVADTurnDetectionGA")]
-public partial class GARealtimeServerVadTurnDetection
+public partial class RealtimeServerVadTurnDetection
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Threshold")]

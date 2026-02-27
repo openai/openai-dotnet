@@ -4,7 +4,7 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("TranscriptTextUsageTokensGA")]
-public partial class GARealtimeTranscriptionTokenUsage
+public partial class RealtimeTranscriptionTokenUsage
 {
     // CUSTOM: Renamed.
     [CodeGenMember("InputTokens")]

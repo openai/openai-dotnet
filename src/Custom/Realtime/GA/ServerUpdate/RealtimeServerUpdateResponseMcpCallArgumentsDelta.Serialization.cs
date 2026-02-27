@@ -7,7 +7,7 @@ using System.Text.Json;
 namespace OpenAI.Realtime;
 
 [CodeGenSerialization(nameof(Delta), SerializationValueHook = nameof(SerializeDeltaValue), DeserializationValueHook = nameof(DeserializeDeltaValue))]
-public partial class GARealtimeServerUpdateResponseMcpCallArgumentsDelta
+public partial class RealtimeServerUpdateResponseMcpCallArgumentsDelta
 {
     // CUSTOM: The REST API serializes this as a string.
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

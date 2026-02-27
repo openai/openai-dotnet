@@ -4,9 +4,9 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeResponseAudioOutputGA")]
-public partial class GARealtimeResponseOutputAudioOptions
+public partial class RealtimeResponseOutputAudioOptions
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Format")]
-    public GARealtimeAudioFormat AudioFormat { get; set; }
+    public RealtimeAudioFormat AudioFormat { get; set; }
 }

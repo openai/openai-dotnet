@@ -9,11 +9,11 @@ namespace OpenAI.Realtime;
 //   even though the server URI and the connector ID are specified as optional, in practice, one of
 //   the two must be provided.
 [CodeGenType("MCPToolGA")]
-[CodeGenSuppress(nameof(GARealtimeMcpTool), typeof(string))]
-public partial class GARealtimeMcpTool
+[CodeGenSuppress(nameof(RealtimeMcpTool), typeof(string))]
+public partial class RealtimeMcpTool
 {
     // CUSTOM: Added a constructor that takes the server URI in addition to the server label.
-    public GARealtimeMcpTool(string serverLabel, Uri serverUri) : base(InternalRealtimeToolBaseTypeGA.Mcp)
+    public RealtimeMcpTool(string serverLabel, Uri serverUri) : base(InternalRealtimeToolBaseTypeGA.Mcp)
     {
         Argument.AssertNotNull(serverLabel, nameof(serverLabel));
         Argument.AssertNotNull(serverUri, nameof(serverUri));
@@ -24,7 +24,7 @@ public partial class GARealtimeMcpTool
     }
 
     // CUSTOM: Added a constructor that takes the connector ID in addition to the server label.
-    public GARealtimeMcpTool(string serverLabel, GARealtimeMcpToolConnectorId connectorId) : base(InternalRealtimeToolBaseTypeGA.Mcp)
+    public RealtimeMcpTool(string serverLabel, RealtimeMcpToolConnectorId connectorId) : base(InternalRealtimeToolBaseTypeGA.Mcp)
     {
         Argument.AssertNotNull(serverLabel, nameof(serverLabel));
 
@@ -37,7 +37,7 @@ public partial class GARealtimeMcpTool
     // - Renamed.
     // - Changed type from BinaryData (generated from the original union) to a custom type.
     [CodeGenMember("RequireApproval")]
-    public GARealtimeMcpToolCallApprovalPolicy ToolCallApprovalPolicy { get; set; }
+    public RealtimeMcpToolCallApprovalPolicy ToolCallApprovalPolicy { get; set; }
 
     // CUSTOM: Renamed.
     [CodeGenMember("ServerUrl")]

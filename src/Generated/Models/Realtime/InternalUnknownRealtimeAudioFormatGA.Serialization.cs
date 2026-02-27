@@ -10,13 +10,13 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalUnknownRealtimeAudioFormatGA : GARealtimeAudioFormat, IJsonModel<GARealtimeAudioFormat>
+    internal partial class InternalUnknownRealtimeAudioFormatGA : RealtimeAudioFormat, IJsonModel<RealtimeAudioFormat>
     {
         internal InternalUnknownRealtimeAudioFormatGA() : this(default, default)
         {
         }
 
-        void IJsonModel<GARealtimeAudioFormat>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<RealtimeAudioFormat>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -33,10 +33,10 @@ namespace OpenAI.Realtime
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeAudioFormat>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeAudioFormat>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(GARealtimeAudioFormat)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(RealtimeAudioFormat)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -45,17 +45,17 @@ namespace OpenAI.Realtime
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        GARealtimeAudioFormat IJsonModel<GARealtimeAudioFormat>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        RealtimeAudioFormat IJsonModel<RealtimeAudioFormat>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected override GARealtimeAudioFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected override RealtimeAudioFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeAudioFormat>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeAudioFormat>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(GARealtimeAudioFormat)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(RealtimeAudioFormat)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeGARealtimeAudioFormat(document.RootElement, null, options);
+            return DeserializeRealtimeAudioFormat(document.RootElement, null, options);
         }
 
         internal static InternalUnknownRealtimeAudioFormatGA DeserializeInternalUnknownRealtimeAudioFormatGA(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
@@ -80,37 +80,37 @@ namespace OpenAI.Realtime
             return new InternalUnknownRealtimeAudioFormatGA(kind, patch);
         }
 
-        BinaryData IPersistableModel<GARealtimeAudioFormat>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<RealtimeAudioFormat>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeAudioFormat>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeAudioFormat>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(GARealtimeAudioFormat)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(RealtimeAudioFormat)} does not support writing '{options.Format}' format.");
             }
         }
 
-        GARealtimeAudioFormat IPersistableModel<GARealtimeAudioFormat>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        RealtimeAudioFormat IPersistableModel<RealtimeAudioFormat>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        protected override GARealtimeAudioFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected override RealtimeAudioFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeAudioFormat>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeAudioFormat>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeGARealtimeAudioFormat(document.RootElement, data, options);
+                        return DeserializeRealtimeAudioFormat(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(GARealtimeAudioFormat)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(RealtimeAudioFormat)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<GARealtimeAudioFormat>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<RealtimeAudioFormat>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

@@ -4,6 +4,6 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeSessionCreateRequestGATracingGA")]
-public partial class GARealtimeCustomTracing
+public partial class RealtimeCustomTracing
 {
 }

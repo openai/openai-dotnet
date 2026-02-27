@@ -5,7 +5,7 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeConversationItemInputImageMessageContentPartGA")]
-public partial class GARealtimeInputImageMessageContentPart
+public partial class RealtimeInputImageMessageContentPart
 {
     // CUSTOM: Renamed.
     [CodeGenMember("ImageUrl")]

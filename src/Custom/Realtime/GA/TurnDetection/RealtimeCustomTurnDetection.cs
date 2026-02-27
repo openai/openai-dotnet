@@ -4,6 +4,6 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeTurnDetectionBaseGA")]
-public partial class GARealtimeTurnDetection
+public partial class RealtimeTurnDetection
 {
 }

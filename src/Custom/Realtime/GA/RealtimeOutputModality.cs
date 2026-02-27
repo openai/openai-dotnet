@@ -4,6 +4,6 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeOutputModalitiesGA")]
-public readonly partial struct GARealtimeOutputModality
+public readonly partial struct RealtimeOutputModality
 {
 }

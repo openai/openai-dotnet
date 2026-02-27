@@ -6,7 +6,7 @@ using System.ClientModel.Primitives;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalUnknownRealtimeToolBaseGA : GARealtimeTool
+    internal partial class InternalUnknownRealtimeToolBaseGA : RealtimeTool
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal InternalUnknownRealtimeToolBaseGA(InternalRealtimeToolBaseTypeGA kind, in JsonPatch patch) : base(kind != default ? kind : "unknown", patch)

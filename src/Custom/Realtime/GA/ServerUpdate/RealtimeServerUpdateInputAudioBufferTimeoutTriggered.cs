@@ -23,7 +23,7 @@ namespace OpenAI.Realtime;
 /// </summary>
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeServerEventInputAudioBufferTimeoutTriggeredGA")]
-public partial class GARealtimeServerUpdateInputAudioBufferTimeoutTriggered
+public partial class RealtimeServerUpdateInputAudioBufferTimeoutTriggered
 {
     // CUSTOM: Renamed.
     [CodeGenMember("AudioStartMs")]

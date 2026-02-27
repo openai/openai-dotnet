@@ -10,13 +10,13 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalUnknownRealtimeConversationItemMessageContentPartGA : GARealtimeMessageContentPart, IJsonModel<GARealtimeMessageContentPart>
+    internal partial class InternalUnknownRealtimeConversationItemMessageContentPartGA : RealtimeMessageContentPart, IJsonModel<RealtimeMessageContentPart>
     {
         internal InternalUnknownRealtimeConversationItemMessageContentPartGA() : this(default, default)
         {
         }
 
-        void IJsonModel<GARealtimeMessageContentPart>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<RealtimeMessageContentPart>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -33,10 +33,10 @@ namespace OpenAI.Realtime
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeMessageContentPart>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeMessageContentPart>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(GARealtimeMessageContentPart)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(RealtimeMessageContentPart)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -45,17 +45,17 @@ namespace OpenAI.Realtime
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        GARealtimeMessageContentPart IJsonModel<GARealtimeMessageContentPart>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        RealtimeMessageContentPart IJsonModel<RealtimeMessageContentPart>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected override GARealtimeMessageContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected override RealtimeMessageContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeMessageContentPart>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeMessageContentPart>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(GARealtimeMessageContentPart)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(RealtimeMessageContentPart)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeGARealtimeMessageContentPart(document.RootElement, null, options);
+            return DeserializeRealtimeMessageContentPart(document.RootElement, null, options);
         }
 
         internal static InternalUnknownRealtimeConversationItemMessageContentPartGA DeserializeInternalUnknownRealtimeConversationItemMessageContentPartGA(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
@@ -80,37 +80,37 @@ namespace OpenAI.Realtime
             return new InternalUnknownRealtimeConversationItemMessageContentPartGA(kind, patch);
         }
 
-        BinaryData IPersistableModel<GARealtimeMessageContentPart>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<RealtimeMessageContentPart>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeMessageContentPart>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeMessageContentPart>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(GARealtimeMessageContentPart)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(RealtimeMessageContentPart)} does not support writing '{options.Format}' format.");
             }
         }
 
-        GARealtimeMessageContentPart IPersistableModel<GARealtimeMessageContentPart>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        RealtimeMessageContentPart IPersistableModel<RealtimeMessageContentPart>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        protected override GARealtimeMessageContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected override RealtimeMessageContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeMessageContentPart>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeMessageContentPart>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeGARealtimeMessageContentPart(document.RootElement, data, options);
+                        return DeserializeRealtimeMessageContentPart(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(GARealtimeMessageContentPart)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(RealtimeMessageContentPart)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<GARealtimeMessageContentPart>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<RealtimeMessageContentPart>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

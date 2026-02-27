@@ -9,6 +9,6 @@ namespace OpenAI.Realtime;
 /// </summary>
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeServerEventSessionUpdatedGA")]
-public partial class GARealtimeServerUpdateSessionUpdated
+public partial class RealtimeServerUpdateSessionUpdated
 {
 }

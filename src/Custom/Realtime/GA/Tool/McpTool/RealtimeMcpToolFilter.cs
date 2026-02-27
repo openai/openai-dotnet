@@ -4,7 +4,7 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("MCPToolFilterGA")]
-public partial class GARealtimeMcpToolFilter
+public partial class RealtimeMcpToolFilter
 {
     [CodeGenMember("ReadOnly")]
     public bool? IsReadOnly { get; set; }

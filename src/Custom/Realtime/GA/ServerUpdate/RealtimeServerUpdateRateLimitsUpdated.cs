@@ -12,9 +12,9 @@ namespace OpenAI.Realtime;
 /// </summary>
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeServerEventRateLimitsUpdatedGA")]
-public partial class GARealtimeServerUpdateRateLimitsUpdated
+public partial class RealtimeServerUpdateRateLimitsUpdated
 {
     // CUSTOM: Renamed.
     [CodeGenMember("RateLimits")]
-    public IList<GARealtimeRateLimitDetails> RateLimitDetails { get; }
+    public IList<RealtimeRateLimitDetails> RateLimitDetails { get; }
 }

@@ -4,6 +4,6 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeNoiseReductionGA")]
-public partial class GARealtimeNoiseReduction
+public partial class RealtimeNoiseReduction
 {
 }

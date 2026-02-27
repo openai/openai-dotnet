@@ -8,6 +8,6 @@ namespace OpenAI.Realtime;
 /// </summary>
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeServerEventConversationItemInputAudioTranscriptionDeltaGA")]
-public partial class GARealtimeServerUpdateConversationItemInputAudioTranscriptionDelta
+public partial class RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta
 {
 }

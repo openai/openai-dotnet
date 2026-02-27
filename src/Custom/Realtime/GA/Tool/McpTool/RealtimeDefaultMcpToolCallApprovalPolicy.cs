@@ -4,6 +4,6 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("DotNetRealtimeDefaultToolCallApprovalPolicyGA")]
-public readonly partial struct GARealtimeDefaultMcpToolCallApprovalPolicy
+public readonly partial struct RealtimeDefaultMcpToolCallApprovalPolicy
 {
 }

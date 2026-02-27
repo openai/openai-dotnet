@@ -10,13 +10,13 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalUnknownRealtimeSessionCreateRequestGABaseGA : GARealtimeSessionOptions, IJsonModel<GARealtimeSessionOptions>
+    internal partial class InternalUnknownRealtimeSessionCreateRequestGABaseGA : RealtimeSessionOptions, IJsonModel<RealtimeSessionOptions>
     {
         internal InternalUnknownRealtimeSessionCreateRequestGABaseGA() : this(default, default)
         {
         }
 
-        void IJsonModel<GARealtimeSessionOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<RealtimeSessionOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -33,10 +33,10 @@ namespace OpenAI.Realtime
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeSessionOptions>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeSessionOptions>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(GARealtimeSessionOptions)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(RealtimeSessionOptions)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -45,17 +45,17 @@ namespace OpenAI.Realtime
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        GARealtimeSessionOptions IJsonModel<GARealtimeSessionOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        RealtimeSessionOptions IJsonModel<RealtimeSessionOptions>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected override GARealtimeSessionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected override RealtimeSessionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeSessionOptions>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeSessionOptions>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(GARealtimeSessionOptions)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(RealtimeSessionOptions)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeGARealtimeSessionOptions(document.RootElement, null, options);
+            return DeserializeRealtimeSessionOptions(document.RootElement, null, options);
         }
 
         internal static InternalUnknownRealtimeSessionCreateRequestGABaseGA DeserializeInternalUnknownRealtimeSessionCreateRequestGABaseGA(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
@@ -80,37 +80,37 @@ namespace OpenAI.Realtime
             return new InternalUnknownRealtimeSessionCreateRequestGABaseGA(kind, patch);
         }
 
-        BinaryData IPersistableModel<GARealtimeSessionOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<RealtimeSessionOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeSessionOptions>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeSessionOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(GARealtimeSessionOptions)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(RealtimeSessionOptions)} does not support writing '{options.Format}' format.");
             }
         }
 
-        GARealtimeSessionOptions IPersistableModel<GARealtimeSessionOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        RealtimeSessionOptions IPersistableModel<RealtimeSessionOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        protected override GARealtimeSessionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected override RealtimeSessionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeSessionOptions>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeSessionOptions>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeGARealtimeSessionOptions(document.RootElement, data, options);
+                        return DeserializeRealtimeSessionOptions(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(GARealtimeSessionOptions)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(RealtimeSessionOptions)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<GARealtimeSessionOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<RealtimeSessionOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

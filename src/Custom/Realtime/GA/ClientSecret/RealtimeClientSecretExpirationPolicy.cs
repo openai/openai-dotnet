@@ -4,6 +4,6 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeCreateClientSecretRequestExpiresAfterGA")]
-public partial class GARealtimeClientSecretExpirationPolicy
+public partial class RealtimeClientSecretExpirationPolicy
 {
 }

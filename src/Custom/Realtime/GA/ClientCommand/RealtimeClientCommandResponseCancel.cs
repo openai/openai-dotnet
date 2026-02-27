@@ -12,6 +12,6 @@ namespace OpenAI.Realtime;
 /// </summary>
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeClientEventResponseCancelGA")]
-public partial class GARealtimeClientCommandResponseCancel
+public partial class RealtimeClientCommandResponseCancel
 {
 }

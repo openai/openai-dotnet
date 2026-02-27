@@ -4,6 +4,6 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeResponseCreateParamsGAConversation")]
-public readonly partial struct GARealtimeResponseDefaultConversationConfiguration
+public readonly partial struct RealtimeResponseDefaultConversationConfiguration
 {
 }

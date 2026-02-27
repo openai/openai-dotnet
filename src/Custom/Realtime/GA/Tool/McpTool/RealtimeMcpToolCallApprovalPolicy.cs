@@ -6,17 +6,17 @@ namespace OpenAI.Realtime;
 // * A GlobalPolicy defined as an extensible enum.
 // * A CustomPolicy defined as an object.
 [CodeGenType("DotNetRealtimeToolCallApprovalPolicyGA")]
-[CodeGenVisibility(nameof(GARealtimeMcpToolCallApprovalPolicy), CodeGenVisibility.Internal)]
-public partial class GARealtimeMcpToolCallApprovalPolicy
+[CodeGenVisibility(nameof(RealtimeMcpToolCallApprovalPolicy), CodeGenVisibility.Internal)]
+public partial class RealtimeMcpToolCallApprovalPolicy
 {
     // CUSTOM: Added to support the corresponding component of the union.
-    public GARealtimeMcpToolCallApprovalPolicy(GARealtimeDefaultMcpToolCallApprovalPolicy defaultPolicy)
+    public RealtimeMcpToolCallApprovalPolicy(RealtimeDefaultMcpToolCallApprovalPolicy defaultPolicy)
     {
         DefaultPolicy = defaultPolicy;
     }
 
     // CUSTOM: Added to support the corresponding component of the union.
-    public GARealtimeMcpToolCallApprovalPolicy(GARealtimeCustomMcpToolCallApprovalPolicy customPolicy)
+    public RealtimeMcpToolCallApprovalPolicy(RealtimeCustomMcpToolCallApprovalPolicy customPolicy)
     {
         Argument.AssertNotNull(customPolicy, nameof(customPolicy));
 
@@ -25,15 +25,15 @@ public partial class GARealtimeMcpToolCallApprovalPolicy
 
     // CUSTOM: Removed setter.
     [CodeGenMember("DefaultPolicy")]
-    public GARealtimeDefaultMcpToolCallApprovalPolicy? DefaultPolicy { get; }
+    public RealtimeDefaultMcpToolCallApprovalPolicy? DefaultPolicy { get; }
 
     // CUSTOM: Removed setter.
     [CodeGenMember("CustomPolicy")]
-    public GARealtimeCustomMcpToolCallApprovalPolicy CustomPolicy { get; }
+    public RealtimeCustomMcpToolCallApprovalPolicy CustomPolicy { get; }
 
     // CUSTOM: Added for convenience.
-    public static implicit operator GARealtimeMcpToolCallApprovalPolicy(GARealtimeDefaultMcpToolCallApprovalPolicy defaultPolicy) => new(defaultPolicy);
+    public static implicit operator RealtimeMcpToolCallApprovalPolicy(RealtimeDefaultMcpToolCallApprovalPolicy defaultPolicy) => new(defaultPolicy);
 
     // CUSTOM: Added for convenience.
-    public static implicit operator GARealtimeMcpToolCallApprovalPolicy(GARealtimeCustomMcpToolCallApprovalPolicy customPolicy) => customPolicy is null ? null : new(customPolicy);
+    public static implicit operator RealtimeMcpToolCallApprovalPolicy(RealtimeCustomMcpToolCallApprovalPolicy customPolicy) => customPolicy is null ? null : new(customPolicy);
 }

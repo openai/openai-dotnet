@@ -10,13 +10,13 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalUnknownRealtimeTurnDetectionBaseGA : GARealtimeTurnDetection, IJsonModel<GARealtimeTurnDetection>
+    internal partial class InternalUnknownRealtimeTurnDetectionBaseGA : RealtimeTurnDetection, IJsonModel<RealtimeTurnDetection>
     {
         internal InternalUnknownRealtimeTurnDetectionBaseGA() : this(default, default)
         {
         }
 
-        void IJsonModel<GARealtimeTurnDetection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<RealtimeTurnDetection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -33,10 +33,10 @@ namespace OpenAI.Realtime
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(GARealtimeTurnDetection)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(RealtimeTurnDetection)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -45,17 +45,17 @@ namespace OpenAI.Realtime
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        GARealtimeTurnDetection IJsonModel<GARealtimeTurnDetection>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        RealtimeTurnDetection IJsonModel<RealtimeTurnDetection>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected override GARealtimeTurnDetection JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected override RealtimeTurnDetection JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(GARealtimeTurnDetection)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(RealtimeTurnDetection)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeGARealtimeTurnDetection(document.RootElement, null, options);
+            return DeserializeRealtimeTurnDetection(document.RootElement, null, options);
         }
 
         internal static InternalUnknownRealtimeTurnDetectionBaseGA DeserializeInternalUnknownRealtimeTurnDetectionBaseGA(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
@@ -80,37 +80,37 @@ namespace OpenAI.Realtime
             return new InternalUnknownRealtimeTurnDetectionBaseGA(kind, patch);
         }
 
-        BinaryData IPersistableModel<GARealtimeTurnDetection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<RealtimeTurnDetection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(GARealtimeTurnDetection)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(RealtimeTurnDetection)} does not support writing '{options.Format}' format.");
             }
         }
 
-        GARealtimeTurnDetection IPersistableModel<GARealtimeTurnDetection>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        RealtimeTurnDetection IPersistableModel<RealtimeTurnDetection>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        protected override GARealtimeTurnDetection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected override RealtimeTurnDetection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeGARealtimeTurnDetection(document.RootElement, data, options);
+                        return DeserializeRealtimeTurnDetection(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(GARealtimeTurnDetection)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(RealtimeTurnDetection)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<GARealtimeTurnDetection>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<RealtimeTurnDetection>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

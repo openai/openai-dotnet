@@ -4,6 +4,6 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeSessionCreateRequestGABaseGA")]
-public partial class GARealtimeSessionOptions
+public partial class RealtimeSessionOptions
 {
 }

@@ -4,6 +4,6 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeServerEventResponseContentPartTypeGA")]
-public readonly partial struct GARealtimeResponseContentPartKind
+public readonly partial struct RealtimeResponseContentPartKind
 {
 }

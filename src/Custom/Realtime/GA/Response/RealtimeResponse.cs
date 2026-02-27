@@ -5,19 +5,19 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeResponseGA")]
-public partial class GARealtimeResponse
+public partial class RealtimeResponse
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Output")]
-    public IList<GARealtimeItem> OutputItems { get; }
+    public IList<RealtimeItem> OutputItems { get; }
 
     // CUSTOM: Renamed.
     [CodeGenMember("Audio")]
-    public GARealtimeResponseAudioOptions AudioOptions { get; }
+    public RealtimeResponseAudioOptions AudioOptions { get; }
 
     // CUSTOM:
     // - Renamed.
     // - Changed type from BinaryData (generated from the original union) to a custom type.
     [CodeGenMember("MaxOutputTokens")]
-    public GARealtimeMaxOutputTokenCount MaxOutputTokenCount { get; }
+    public RealtimeMaxOutputTokenCount MaxOutputTokenCount { get; }
 }

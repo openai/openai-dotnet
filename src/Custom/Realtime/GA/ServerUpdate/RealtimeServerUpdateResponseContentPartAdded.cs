@@ -9,6 +9,6 @@ namespace OpenAI.Realtime;
 /// </summary>
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeServerEventResponseContentPartAddedGA")]
-public partial class GARealtimeServerUpdateResponseContentPartAdded
+public partial class RealtimeServerUpdateResponseContentPartAdded
 {
 }

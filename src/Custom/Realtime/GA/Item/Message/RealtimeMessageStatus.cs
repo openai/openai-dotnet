@@ -4,6 +4,6 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeConversationItemMessageGAStatus")]
-public readonly partial struct GARealtimeMessageStatus
+public readonly partial struct RealtimeMessageStatus
 {
 }

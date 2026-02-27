@@ -4,10 +4,10 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeAudioFormatsAudioPcmGA")]
-public partial class GARealtimePcmAudioFormat
+public partial class RealtimePcmAudioFormat
 {
     // CUSTOM: Override default value of rate parameter.
-    public GARealtimePcmAudioFormat() : this(InternalRealtimeAudioFormatType.AudioPcm, default, 24000)
+    public RealtimePcmAudioFormat() : this(InternalRealtimeAudioFormatType.AudioPcm, default, 24000)
     {
     }
 }

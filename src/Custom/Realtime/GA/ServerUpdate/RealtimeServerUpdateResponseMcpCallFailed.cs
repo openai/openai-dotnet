@@ -8,6 +8,6 @@ namespace OpenAI.Realtime;
 /// </summary>
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeServerEventResponseMCPCallFailedGA")]
-public partial class GARealtimeServerUpdateResponseMcpCallFailed
+public partial class RealtimeServerUpdateResponseMcpCallFailed
 {
 }

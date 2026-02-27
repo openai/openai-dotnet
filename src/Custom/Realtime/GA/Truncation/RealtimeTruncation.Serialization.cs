@@ -6,10 +6,10 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: This type is not its own object. Instead, it represents a union, and as such, it must directly forward
 // its serialization and deserialization logic to the components of said union.
-public partial class GARealtimeTruncation
+public partial class RealtimeTruncation
 {
     // CUSTOM: Edited to remove calls to WriteStartObject() and WriteEndObject(). 
-    void IJsonModel<GARealtimeTruncation>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    void IJsonModel<RealtimeTruncation>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         if (Patch.Contains("$"u8))
@@ -25,10 +25,10 @@ public partial class GARealtimeTruncation
     // CUSTOM: Edited to serialize the different components of the union.
     protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
-        string format = options.Format == "W" ? ((IPersistableModel<GARealtimeTruncation>)this).GetFormatFromOptions(options) : options.Format;
+        string format = options.Format == "W" ? ((IPersistableModel<RealtimeTruncation>)this).GetFormatFromOptions(options) : options.Format;
         if (format != "J")
         {
-            throw new FormatException($"The model {nameof(GARealtimeTruncation)} does not support writing '{format}' format.");
+            throw new FormatException($"The model {nameof(RealtimeTruncation)} does not support writing '{format}' format.");
         }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         if (Optional.IsDefined(DefaultTruncation) && !Patch.Contains("$.default_truncation"u8))
@@ -43,28 +43,28 @@ public partial class GARealtimeTruncation
     }
 
     // CUSTOM: Edited to deserialize the different components of the union.
-    internal static GARealtimeTruncation DeserializeGARealtimeTruncation(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+    internal static RealtimeTruncation DeserializeRealtimeTruncation(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
     {
         if (element.ValueKind == JsonValueKind.Null)
         {
             return null;
         }
 
-        GARealtimeDefaultTruncation? defaultTruncation = default;
-        GARealtimeCustomTruncation customTruncation = default;
+        RealtimeDefaultTruncation? defaultTruncation = default;
+        RealtimeCustomTruncation customTruncation = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
         if (element.ValueKind == JsonValueKind.String)
         {
-            defaultTruncation = new GARealtimeDefaultTruncation(element.GetString());
+            defaultTruncation = new RealtimeDefaultTruncation(element.GetString());
         }
         else
         {
-            customTruncation = GARealtimeCustomTruncation.DeserializeGARealtimeCustomTruncation(element, element.GetUtf8Bytes(), options);
+            customTruncation = RealtimeCustomTruncation.DeserializeRealtimeCustomTruncation(element, element.GetUtf8Bytes(), options);
         }
 
-        return new GARealtimeTruncation(defaultTruncation, customTruncation, patch);
+        return new RealtimeTruncation(defaultTruncation, customTruncation, patch);
     }
 }

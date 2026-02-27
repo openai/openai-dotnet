@@ -734,83 +734,83 @@ namespace OpenAI
             return new MessageDeletionResult(messageId, deleted, "thread.message.deleted", additionalBinaryDataProperties: null);
         }
 
-        public static GACreateClientSecretOptions GACreateClientSecretOptions(GARealtimeClientSecretExpirationPolicy expirationPolicy = default, GARealtimeSessionOptions sessionOptions = default)
+        public static CreateClientSecretOptions CreateClientSecretOptions(RealtimeClientSecretExpirationPolicy expirationPolicy = default, RealtimeSessionOptions sessionOptions = default)
         {
-            return new GACreateClientSecretOptions(expirationPolicy, sessionOptions, default);
+            return new CreateClientSecretOptions(expirationPolicy, sessionOptions, default);
         }
 
-        public static GARealtimeClientSecretExpirationPolicy GARealtimeClientSecretExpirationPolicy(GARealtimeClientSecretExpirationAnchor? anchor = default, int? seconds = default)
+        public static RealtimeClientSecretExpirationPolicy RealtimeClientSecretExpirationPolicy(RealtimeClientSecretExpirationAnchor? anchor = default, int? seconds = default)
         {
-            return new GARealtimeClientSecretExpirationPolicy(anchor, seconds, default);
+            return new RealtimeClientSecretExpirationPolicy(anchor, seconds, default);
         }
 
-        public static GARealtimeConversationSessionAudioOptions GARealtimeConversationSessionAudioOptions(GARealtimeConversationSessionInputAudioOptions inputAudioOptions = default, GARealtimeConversationSessionOutputAudioOptions outputAudioOptions = default)
+        public static RealtimeConversationSessionAudioOptions RealtimeConversationSessionAudioOptions(RealtimeConversationSessionInputAudioOptions inputAudioOptions = default, RealtimeConversationSessionOutputAudioOptions outputAudioOptions = default)
         {
-            return new GARealtimeConversationSessionAudioOptions(inputAudioOptions, outputAudioOptions, default);
+            return new RealtimeConversationSessionAudioOptions(inputAudioOptions, outputAudioOptions, default);
         }
 
-        public static GARealtimeConversationSessionInputAudioOptions GARealtimeConversationSessionInputAudioOptions(GARealtimeAudioFormat audioFormat = default, GARealtimeAudioTranscriptionOptions audioTranscriptionOptions = default, GARealtimeNoiseReduction noiseReduction = default, GARealtimeTurnDetection turnDetection = default)
+        public static RealtimeConversationSessionInputAudioOptions RealtimeConversationSessionInputAudioOptions(RealtimeAudioFormat audioFormat = default, RealtimeAudioTranscriptionOptions audioTranscriptionOptions = default, RealtimeNoiseReduction noiseReduction = default, RealtimeTurnDetection turnDetection = default)
         {
-            return new GARealtimeConversationSessionInputAudioOptions(audioFormat, audioTranscriptionOptions, noiseReduction, turnDetection, default);
+            return new RealtimeConversationSessionInputAudioOptions(audioFormat, audioTranscriptionOptions, noiseReduction, turnDetection, default);
         }
 
-        public static GARealtimeAudioTranscriptionOptions GARealtimeAudioTranscriptionOptions(string model = default, string language = default, string prompt = default)
+        public static RealtimeAudioTranscriptionOptions RealtimeAudioTranscriptionOptions(string model = default, string language = default, string prompt = default)
         {
-            return new GARealtimeAudioTranscriptionOptions(model, language, prompt, default);
+            return new RealtimeAudioTranscriptionOptions(model, language, prompt, default);
         }
 
-        public static GARealtimeNoiseReduction GARealtimeNoiseReduction(GARealtimeNoiseReductionKind kind = default)
+        public static RealtimeNoiseReduction RealtimeNoiseReduction(RealtimeNoiseReductionKind kind = default)
         {
-            return new GARealtimeNoiseReduction(kind, default);
+            return new RealtimeNoiseReduction(kind, default);
         }
 
-        public static GARealtimeConversationSessionOutputAudioOptions GARealtimeConversationSessionOutputAudioOptions(GARealtimeAudioFormat audioFormat = default, GARealtimeVoice? voice = default, float? speed = default)
+        public static RealtimeConversationSessionOutputAudioOptions RealtimeConversationSessionOutputAudioOptions(RealtimeAudioFormat audioFormat = default, RealtimeVoice? voice = default, float? speed = default)
         {
-            return new GARealtimeConversationSessionOutputAudioOptions(audioFormat, voice, speed, default);
+            return new RealtimeConversationSessionOutputAudioOptions(audioFormat, voice, speed, default);
         }
 
-        public static GARealtimeCustomTracing GARealtimeCustomTracing(string workflowName = default, string groupId = default, IDictionary<string, BinaryData> metadata = default)
+        public static RealtimeCustomTracing RealtimeCustomTracing(string workflowName = default, string groupId = default, IDictionary<string, BinaryData> metadata = default)
         {
             metadata ??= new ChangeTrackingDictionary<string, BinaryData>();
 
-            return new GARealtimeCustomTracing(workflowName, groupId, metadata, default);
+            return new RealtimeCustomTracing(workflowName, groupId, metadata, default);
         }
 
-        public static GARealtimeMcpToolFilter GARealtimeMcpToolFilter(IEnumerable<string> toolNames = default, bool? isReadOnly = default)
+        public static RealtimeMcpToolFilter RealtimeMcpToolFilter(IEnumerable<string> toolNames = default, bool? isReadOnly = default)
         {
             toolNames ??= new ChangeTrackingList<string>();
 
-            return new GARealtimeMcpToolFilter(toolNames.ToList(), isReadOnly, default);
+            return new RealtimeMcpToolFilter(toolNames.ToList(), isReadOnly, default);
         }
 
-        public static GARealtimeCustomMcpToolCallApprovalPolicy GARealtimeCustomMcpToolCallApprovalPolicy(GARealtimeMcpToolFilter toolsAlwaysRequiringApproval = default, GARealtimeMcpToolFilter toolsNeverRequiringApproval = default)
+        public static RealtimeCustomMcpToolCallApprovalPolicy RealtimeCustomMcpToolCallApprovalPolicy(RealtimeMcpToolFilter toolsAlwaysRequiringApproval = default, RealtimeMcpToolFilter toolsNeverRequiringApproval = default)
         {
-            return new GARealtimeCustomMcpToolCallApprovalPolicy(toolsAlwaysRequiringApproval, toolsNeverRequiringApproval, default);
+            return new RealtimeCustomMcpToolCallApprovalPolicy(toolsAlwaysRequiringApproval, toolsNeverRequiringApproval, default);
         }
 
-        public static GARealtimeRetentionRatioTokenLimitDetails GARealtimeRetentionRatioTokenLimitDetails(int? maxPostInstructionsTokenCount = default)
+        public static RealtimeRetentionRatioTokenLimitDetails RealtimeRetentionRatioTokenLimitDetails(int? maxPostInstructionsTokenCount = default)
         {
-            return new GARealtimeRetentionRatioTokenLimitDetails(maxPostInstructionsTokenCount, default);
+            return new RealtimeRetentionRatioTokenLimitDetails(maxPostInstructionsTokenCount, default);
         }
 
-        public static GARealtimeTranscriptionSessionAudioOptions GARealtimeTranscriptionSessionAudioOptions(GARealtimeTranscriptionSessionInputAudioOptions inputAudioOptions = default)
+        public static RealtimeTranscriptionSessionAudioOptions RealtimeTranscriptionSessionAudioOptions(RealtimeTranscriptionSessionInputAudioOptions inputAudioOptions = default)
         {
-            return new GARealtimeTranscriptionSessionAudioOptions(inputAudioOptions, default);
+            return new RealtimeTranscriptionSessionAudioOptions(inputAudioOptions, default);
         }
 
-        public static GARealtimeTranscriptionSessionInputAudioOptions GARealtimeTranscriptionSessionInputAudioOptions(GARealtimeAudioFormat audioFormat = default, GARealtimeAudioTranscriptionOptions audioTranscriptionOptions = default, GARealtimeNoiseReduction noiseReduction = default, GARealtimeTurnDetection turnDetection = default)
+        public static RealtimeTranscriptionSessionInputAudioOptions RealtimeTranscriptionSessionInputAudioOptions(RealtimeAudioFormat audioFormat = default, RealtimeAudioTranscriptionOptions audioTranscriptionOptions = default, RealtimeNoiseReduction noiseReduction = default, RealtimeTurnDetection turnDetection = default)
         {
-            return new GARealtimeTranscriptionSessionInputAudioOptions(audioFormat, audioTranscriptionOptions, noiseReduction, turnDetection, default);
+            return new RealtimeTranscriptionSessionInputAudioOptions(audioFormat, audioTranscriptionOptions, noiseReduction, turnDetection, default);
         }
 
-        public static GACreateClientSecretResult GACreateClientSecretResult(string value = default, DateTimeOffset expiresAt = default, GARealtimeSession session = default)
+        public static CreateClientSecretResult CreateClientSecretResult(string value = default, DateTimeOffset expiresAt = default, RealtimeSession session = default)
         {
-            return new GACreateClientSecretResult(value, expiresAt, session, default);
+            return new CreateClientSecretResult(value, expiresAt, session, default);
         }
 
-        public static GARealtimeClientSecret GARealtimeClientSecret(string value = default, DateTimeOffset expiresAt = default)
+        public static RealtimeClientSecret RealtimeClientSecret(string value = default, DateTimeOffset expiresAt = default)
         {
-            return new GARealtimeClientSecret(value, expiresAt, default);
+            return new RealtimeClientSecret(value, expiresAt, default);
         }
 
         public static ThreadCreationOptions ThreadCreationOptions(IEnumerable<MessageCreationOptions> internalMessages = default, ToolResources toolResources = default, IDictionary<string, string> metadata = default)
@@ -1267,14 +1267,14 @@ namespace OpenAI
             return new ChatToolChoice(default);
         }
 
-        public static GARealtimeMcpToolDefinition GARealtimeMcpToolDefinition(string name = default, string description = default, BinaryData inputSchema = default, BinaryData annotations = default)
+        public static RealtimeMcpToolDefinition RealtimeMcpToolDefinition(string name = default, string description = default, BinaryData inputSchema = default, BinaryData annotations = default)
         {
-            return new GARealtimeMcpToolDefinition(name, description, inputSchema, annotations, default);
+            return new RealtimeMcpToolDefinition(name, description, inputSchema, annotations, default);
         }
 
-        public static GARealtimeError GARealtimeError(string kind = default, string code = default, string message = default, string parameterName = default, string eventId = default)
+        public static RealtimeError RealtimeError(string kind = default, string code = default, string message = default, string parameterName = default, string eventId = default)
         {
-            return new GARealtimeError(
+            return new RealtimeError(
                 kind,
                 code,
                 message,
@@ -1283,34 +1283,34 @@ namespace OpenAI
                 default);
         }
 
-        public static GARealtimeLogProbabilityDetails GARealtimeLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)
+        public static RealtimeLogProbabilityDetails RealtimeLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)
         {
-            return new GARealtimeLogProbabilityDetails(token, logProbability, utf8Bytes, default);
+            return new RealtimeLogProbabilityDetails(token, logProbability, utf8Bytes, default);
         }
 
-        public static GARealtimeTranscriptionInputTokenUsageDetails GARealtimeTranscriptionInputTokenUsageDetails(int? textTokenCount = default, int? audioTokenCount = default)
+        public static RealtimeTranscriptionInputTokenUsageDetails RealtimeTranscriptionInputTokenUsageDetails(int? textTokenCount = default, int? audioTokenCount = default)
         {
-            return new GARealtimeTranscriptionInputTokenUsageDetails(textTokenCount, audioTokenCount, default);
+            return new RealtimeTranscriptionInputTokenUsageDetails(textTokenCount, audioTokenCount, default);
         }
 
-        public static GARealtimeResponseStatusDetails GARealtimeResponseStatusDetails(GARealtimeResponseStatusErrorKind? kind = default, GARealtimeResponseStatusReason? reason = default, GARealtimeError error = default)
+        public static RealtimeResponseStatusDetails RealtimeResponseStatusDetails(RealtimeResponseStatusErrorKind? kind = default, RealtimeResponseStatusReason? reason = default, RealtimeError error = default)
         {
-            return new GARealtimeResponseStatusDetails(kind, reason, error, default);
+            return new RealtimeResponseStatusDetails(kind, reason, error, default);
         }
 
-        public static GARealtimeResponseAudioOptions GARealtimeResponseAudioOptions(GARealtimeResponseOutputAudioOptions outputAudioOptions = default)
+        public static RealtimeResponseAudioOptions RealtimeResponseAudioOptions(RealtimeResponseOutputAudioOptions outputAudioOptions = default)
         {
-            return new GARealtimeResponseAudioOptions(outputAudioOptions, default);
+            return new RealtimeResponseAudioOptions(outputAudioOptions, default);
         }
 
-        public static GARealtimeResponseOutputAudioOptions GARealtimeResponseOutputAudioOptions(GARealtimeAudioFormat audioFormat = default, GARealtimeVoice? voice = default)
+        public static RealtimeResponseOutputAudioOptions RealtimeResponseOutputAudioOptions(RealtimeAudioFormat audioFormat = default, RealtimeVoice? voice = default)
         {
-            return new GARealtimeResponseOutputAudioOptions(audioFormat, voice, default);
+            return new RealtimeResponseOutputAudioOptions(audioFormat, voice, default);
         }
 
-        public static GARealtimeResponseUsage GARealtimeResponseUsage(int? totalTokenCount = default, int? inputTokenCount = default, int? outputTokenCount = default, GARealtimeResponseInputTokenUsageDetails inputTokenDetails = default, GARealtimeResponseOutputTokenUsageDetails outputTokenDetails = default)
+        public static RealtimeResponseUsage RealtimeResponseUsage(int? totalTokenCount = default, int? inputTokenCount = default, int? outputTokenCount = default, RealtimeResponseInputTokenUsageDetails inputTokenDetails = default, RealtimeResponseOutputTokenUsageDetails outputTokenDetails = default)
         {
-            return new GARealtimeResponseUsage(
+            return new RealtimeResponseUsage(
                 totalTokenCount,
                 inputTokenCount,
                 outputTokenCount,
@@ -1319,9 +1319,9 @@ namespace OpenAI
                 default);
         }
 
-        public static GARealtimeResponseInputTokenUsageDetails GARealtimeResponseInputTokenUsageDetails(int? cachedTokenCount = default, int? textTokenCount = default, int? imageTokenCount = default, int? audioTokenCount = default, GARealtimeResponseInputCachedTokenUsageDetails cachedTokenDetails = default)
+        public static RealtimeResponseInputTokenUsageDetails RealtimeResponseInputTokenUsageDetails(int? cachedTokenCount = default, int? textTokenCount = default, int? imageTokenCount = default, int? audioTokenCount = default, RealtimeResponseInputCachedTokenUsageDetails cachedTokenDetails = default)
         {
-            return new GARealtimeResponseInputTokenUsageDetails(
+            return new RealtimeResponseInputTokenUsageDetails(
                 cachedTokenCount,
                 textTokenCount,
                 imageTokenCount,
@@ -1330,34 +1330,34 @@ namespace OpenAI
                 default);
         }
 
-        public static GARealtimeResponseInputCachedTokenUsageDetails GARealtimeResponseInputCachedTokenUsageDetails(int? textTokenCount = default, int? imageTokenCount = default, int? audioTokenCount = default)
+        public static RealtimeResponseInputCachedTokenUsageDetails RealtimeResponseInputCachedTokenUsageDetails(int? textTokenCount = default, int? imageTokenCount = default, int? audioTokenCount = default)
         {
-            return new GARealtimeResponseInputCachedTokenUsageDetails(textTokenCount, imageTokenCount, audioTokenCount, default);
+            return new RealtimeResponseInputCachedTokenUsageDetails(textTokenCount, imageTokenCount, audioTokenCount, default);
         }
 
-        public static GARealtimeResponseOutputTokenUsageDetails GARealtimeResponseOutputTokenUsageDetails(int? textTokenCount = default, int? audioTokenCount = default)
+        public static RealtimeResponseOutputTokenUsageDetails RealtimeResponseOutputTokenUsageDetails(int? textTokenCount = default, int? audioTokenCount = default)
         {
-            return new GARealtimeResponseOutputTokenUsageDetails(textTokenCount, audioTokenCount, default);
+            return new RealtimeResponseOutputTokenUsageDetails(textTokenCount, audioTokenCount, default);
         }
 
-        public static GARealtimeResponseContentPart GARealtimeResponseContentPart(GARealtimeResponseContentPartKind? kind = default, string text = default, BinaryData audio = default, string transcript = default)
+        public static RealtimeResponseContentPart RealtimeResponseContentPart(RealtimeResponseContentPartKind? kind = default, string text = default, BinaryData audio = default, string transcript = default)
         {
-            return new GARealtimeResponseContentPart(kind, text, audio, transcript, default);
+            return new RealtimeResponseContentPart(kind, text, audio, transcript, default);
         }
 
-        public static GARealtimeRateLimitDetails GARealtimeRateLimitDetails(GARealtimeRateLimitName? name = default, int? limit = default, int? remainingCount = default, TimeSpan? timeUntilReset = default)
+        public static RealtimeRateLimitDetails RealtimeRateLimitDetails(RealtimeRateLimitName? name = default, int? limit = default, int? remainingCount = default, TimeSpan? timeUntilReset = default)
         {
-            return new GARealtimeRateLimitDetails(name, limit, remainingCount, timeUntilReset, default);
+            return new RealtimeRateLimitDetails(name, limit, remainingCount, timeUntilReset, default);
         }
 
-        public static GARealtimeResponseOptions GARealtimeResponseOptions(IEnumerable<GARealtimeOutputModality> outputModalities = default, string instructions = default, GARealtimeResponseAudioOptions audioOptions = default, IEnumerable<GARealtimeTool> tools = default, GARealtimeToolChoice toolChoice = default, GARealtimeMaxOutputTokenCount maxOutputTokenCount = default, GARealtimeResponseDefaultConversationConfiguration? defaultConversationConfiguration = default, IDictionary<string, BinaryData> metadata = default, IEnumerable<GARealtimeItem> inputItems = default)
+        public static RealtimeResponseOptions RealtimeResponseOptions(IEnumerable<RealtimeOutputModality> outputModalities = default, string instructions = default, RealtimeResponseAudioOptions audioOptions = default, IEnumerable<RealtimeTool> tools = default, RealtimeToolChoice toolChoice = default, RealtimeMaxOutputTokenCount maxOutputTokenCount = default, RealtimeResponseDefaultConversationConfiguration? defaultConversationConfiguration = default, IDictionary<string, BinaryData> metadata = default, IEnumerable<RealtimeItem> inputItems = default)
         {
-            outputModalities ??= new ChangeTrackingList<GARealtimeOutputModality>();
-            tools ??= new ChangeTrackingList<GARealtimeTool>();
+            outputModalities ??= new ChangeTrackingList<RealtimeOutputModality>();
+            tools ??= new ChangeTrackingList<RealtimeTool>();
             metadata ??= new ChangeTrackingDictionary<string, BinaryData>();
-            inputItems ??= new ChangeTrackingList<GARealtimeItem>();
+            inputItems ??= new ChangeTrackingList<RealtimeItem>();
 
-            return new GARealtimeResponseOptions(
+            return new RealtimeResponseOptions(
                 outputModalities.ToList(),
                 instructions,
                 audioOptions,
@@ -1452,29 +1452,29 @@ namespace OpenAI
             return new ContainerFileCollectionOptions(afterId, pageSizeLimit, order, additionalBinaryDataProperties: null);
         }
 
-        public static GARealtimeTracing GARealtimeTracing(GARealtimeDefaultTracing? defaultTracing = default, GARealtimeCustomTracing customTracing = default)
+        public static RealtimeTracing RealtimeTracing(RealtimeDefaultTracing? defaultTracing = default, RealtimeCustomTracing customTracing = default)
         {
-            return new GARealtimeTracing(defaultTracing, customTracing, default);
+            return new RealtimeTracing(defaultTracing, customTracing, default);
         }
 
-        public static GARealtimeTruncation GARealtimeTruncation(GARealtimeDefaultTruncation? defaultTruncation = default, GARealtimeCustomTruncation customTruncation = default)
+        public static RealtimeTruncation RealtimeTruncation(RealtimeDefaultTruncation? defaultTruncation = default, RealtimeCustomTruncation customTruncation = default)
         {
-            return new GARealtimeTruncation(defaultTruncation, customTruncation, default);
+            return new RealtimeTruncation(defaultTruncation, customTruncation, default);
         }
 
-        public static GARealtimeToolChoice GARealtimeToolChoice(GARealtimeDefaultToolChoice? defaultToolChoice = default, GARealtimeCustomToolChoice customToolChoice = default)
+        public static RealtimeToolChoice RealtimeToolChoice(RealtimeDefaultToolChoice? defaultToolChoice = default, RealtimeCustomToolChoice customToolChoice = default)
         {
-            return new GARealtimeToolChoice(defaultToolChoice, customToolChoice, default);
+            return new RealtimeToolChoice(defaultToolChoice, customToolChoice, default);
         }
 
-        public static GARealtimeMcpToolCallApprovalPolicy GARealtimeMcpToolCallApprovalPolicy(GARealtimeDefaultMcpToolCallApprovalPolicy? defaultPolicy = default, GARealtimeCustomMcpToolCallApprovalPolicy customPolicy = default)
+        public static RealtimeMcpToolCallApprovalPolicy RealtimeMcpToolCallApprovalPolicy(RealtimeDefaultMcpToolCallApprovalPolicy? defaultPolicy = default, RealtimeCustomMcpToolCallApprovalPolicy customPolicy = default)
         {
-            return new GARealtimeMcpToolCallApprovalPolicy(defaultPolicy, customPolicy, default);
+            return new RealtimeMcpToolCallApprovalPolicy(defaultPolicy, customPolicy, default);
         }
 
-        public static GARealtimeMaxOutputTokenCount GARealtimeMaxOutputTokenCount(GARealtimeDefaultMaxOutputTokenCount? defaultMaxOutputTokenCount = default, int? customMaxOutputTokenCount = default)
+        public static RealtimeMaxOutputTokenCount RealtimeMaxOutputTokenCount(RealtimeDefaultMaxOutputTokenCount? defaultMaxOutputTokenCount = default, int? customMaxOutputTokenCount = default)
         {
-            return new GARealtimeMaxOutputTokenCount(defaultMaxOutputTokenCount, customMaxOutputTokenCount, default);
+            return new RealtimeMaxOutputTokenCount(defaultMaxOutputTokenCount, customMaxOutputTokenCount, default);
         }
 
         public static ResponseItemCollectionOptions ResponseItemCollectionOptions(string responseId = default, string afterId = default, string beforeId = default, int? pageSizeLimit = default, ResponseItemCollectionOrder? order = default)

@@ -4,7 +4,7 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeResponseUsageGA")]
-public partial class GARealtimeResponseUsage
+public partial class RealtimeResponseUsage
 {
     // CUSTOM: Renamed.
     [CodeGenMember("TotalTokens")]

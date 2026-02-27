@@ -4,17 +4,17 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Added to represent a non-discriminated union.
 [CodeGenType("DotNetRealtimeTruncationGA")]
-[CodeGenVisibility(nameof(GARealtimeTruncation), CodeGenVisibility.Internal)]
-public partial class GARealtimeTruncation
+[CodeGenVisibility(nameof(RealtimeTruncation), CodeGenVisibility.Internal)]
+public partial class RealtimeTruncation
 {
     // CUSTOM: Added to support the corresponding component of the union.
-    public GARealtimeTruncation(GARealtimeDefaultTruncation defaultTruncation)
+    public RealtimeTruncation(RealtimeDefaultTruncation defaultTruncation)
     {
         DefaultTruncation = defaultTruncation;
     }
 
     // CUSTOM: Added to support the corresponding component of the union.
-    public GARealtimeTruncation(GARealtimeCustomTruncation customTruncation)
+    public RealtimeTruncation(RealtimeCustomTruncation customTruncation)
     {
         Argument.AssertNotNull(customTruncation, nameof(customTruncation));
 
@@ -23,15 +23,15 @@ public partial class GARealtimeTruncation
 
     // CUSTOM: Removed setter.
     [CodeGenMember("DefaultTruncation")]
-    public GARealtimeDefaultTruncation? DefaultTruncation { get; }
+    public RealtimeDefaultTruncation? DefaultTruncation { get; }
 
     // CUSTOM: Removed setter.
     [CodeGenMember("CustomTruncation")]
-    public GARealtimeCustomTruncation CustomTruncation { get; }
+    public RealtimeCustomTruncation CustomTruncation { get; }
 
     // CUSTOM: Added for convenience.
-    public static implicit operator GARealtimeTruncation(GARealtimeDefaultTruncation defaultTruncation) => new(defaultTruncation);
+    public static implicit operator RealtimeTruncation(RealtimeDefaultTruncation defaultTruncation) => new(defaultTruncation);
 
     // CUSTOM: Added for convenience.
-    public static implicit operator GARealtimeTruncation(GARealtimeCustomTruncation customTruncation) => customTruncation is null ? null : new(customTruncation);
+    public static implicit operator RealtimeTruncation(RealtimeCustomTruncation customTruncation) => customTruncation is null ? null : new(customTruncation);
 }

@@ -21,7 +21,7 @@ namespace OpenAI.Realtime;
 /// </summary>
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeClientEventInputAudioBufferAppendGA")]
-public partial class GARealtimeClientCommandInputAudioBufferAppend
+public partial class RealtimeClientCommandInputAudioBufferAppend
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Audio")]

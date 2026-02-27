@@ -5,17 +5,17 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeCreateClientSecretRequestGA")]
-public partial class GACreateClientSecretOptions
+public partial class CreateClientSecretOptions
 {
     // CUSTOM: Renamed.
     [CodeGenMember("ExpiresAfter")]
-    public GARealtimeClientSecretExpirationPolicy ExpirationPolicy { get; set; }
+    public RealtimeClientSecretExpirationPolicy ExpirationPolicy { get; set; }
 
     // CUSTOM: Renamed.
     [CodeGenMember("Session")]
-    public GARealtimeSessionOptions SessionOptions { get; set; }
+    public RealtimeSessionOptions SessionOptions { get; set; }
 
-    public static implicit operator BinaryContent(GACreateClientSecretOptions createClientSecretOptions)
+    public static implicit operator BinaryContent(CreateClientSecretOptions createClientSecretOptions)
     {
         if (createClientSecretOptions == null)
         {

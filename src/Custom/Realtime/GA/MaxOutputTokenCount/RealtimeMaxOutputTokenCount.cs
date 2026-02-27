@@ -4,32 +4,32 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Added to represent a non-discriminated union.
 [CodeGenType("DotNetRealtimeMaxOutputTokenCountGA")]
-[CodeGenVisibility(nameof(GARealtimeMaxOutputTokenCount), CodeGenVisibility.Internal)]
-public partial class GARealtimeMaxOutputTokenCount
+[CodeGenVisibility(nameof(RealtimeMaxOutputTokenCount), CodeGenVisibility.Internal)]
+public partial class RealtimeMaxOutputTokenCount
 {
     // CUSTOM: Added to support the corresponding component of the union.
-    public GARealtimeMaxOutputTokenCount(GARealtimeDefaultMaxOutputTokenCount defaultMaxOutputTokenCount)
+    public RealtimeMaxOutputTokenCount(RealtimeDefaultMaxOutputTokenCount defaultMaxOutputTokenCount)
     {
         DefaultMaxOutputTokenCount = defaultMaxOutputTokenCount;
     }
 
     // CUSTOM: Added to support the corresponding component of the union.
-    public GARealtimeMaxOutputTokenCount(int customMaxOutputTokenCount)
+    public RealtimeMaxOutputTokenCount(int customMaxOutputTokenCount)
     {
         CustomMaxOutputTokenCount = customMaxOutputTokenCount;
     }
 
     // CUSTOM: Removed setter.
     [CodeGenMember("DefaultMaxOutputTokenCount")]
-    public GARealtimeDefaultMaxOutputTokenCount? DefaultMaxOutputTokenCount { get; }
+    public RealtimeDefaultMaxOutputTokenCount? DefaultMaxOutputTokenCount { get; }
 
     // CUSTOM: Removed setter.
     [CodeGenMember("CustomMaxOutputTokenCount")]
     public int? CustomMaxOutputTokenCount { get; }
 
     // CUSTOM: Added for convenience.
-    public static implicit operator GARealtimeMaxOutputTokenCount(GARealtimeDefaultMaxOutputTokenCount defaultMaxOutputTokenCount) => new(defaultMaxOutputTokenCount);
+    public static implicit operator RealtimeMaxOutputTokenCount(RealtimeDefaultMaxOutputTokenCount defaultMaxOutputTokenCount) => new(defaultMaxOutputTokenCount);
 
     // CUSTOM: Added for convenience.
-    public static implicit operator GARealtimeMaxOutputTokenCount(int customMaxOutputTokenCount) => new(customMaxOutputTokenCount);
+    public static implicit operator RealtimeMaxOutputTokenCount(int customMaxOutputTokenCount) => new(customMaxOutputTokenCount);
 }

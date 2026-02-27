@@ -5,7 +5,7 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeSessionCreateResponseGAGA")]
-public partial class GARealtimeConversationSession
+public partial class RealtimeConversationSession
 {
     // CUSTOM: Changed type.
     [CodeGenMember("Model")]
@@ -13,27 +13,27 @@ public partial class GARealtimeConversationSession
 
     // CUSTOM: Renamed.
     [CodeGenMember("Include")]
-    public IList<GARealtimeIncludedProperty> IncludedProperties { get; }
+    public IList<RealtimeIncludedProperty> IncludedProperties { get; }
 
     // CUSTOM: Renamed.
     [CodeGenMember("Audio")]
-    public GARealtimeConversationSessionAudioOptions AudioOptions { get; set; }
+    public RealtimeConversationSessionAudioOptions AudioOptions { get; set; }
 
     // CUSTOM: Changed type from BinaryData (generated from the original union) to a custom type.
     [CodeGenMember("ToolChoice")]
-    public GARealtimeToolChoice ToolChoice { get; set; }
+    public RealtimeToolChoice ToolChoice { get; set; }
 
     // CUSTOM: Changed type from BinaryData (generated from the original union) to a custom type.
     [CodeGenMember("Tracing")]
-    public GARealtimeTracing Tracing { get; set; }
+    public RealtimeTracing Tracing { get; set; }
 
     // CUSTOM: Changed type from BinaryData (generated from the original union) to a custom type.
     [CodeGenMember("Truncation")]
-    public GARealtimeTruncation Truncation { get; set; }
+    public RealtimeTruncation Truncation { get; set; }
 
     // CUSTOM:
     // - Renamed.
     // - Changed type from BinaryData (generated from the original union) to a custom type.
     [CodeGenMember("MaxOutputTokens")]
-    public GARealtimeMaxOutputTokenCount MaxOutputTokenCount { get; set; }
+    public RealtimeMaxOutputTokenCount MaxOutputTokenCount { get; set; }
 }

@@ -4,6 +4,6 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("DotNetRealtimeDefaultToolChoiceGA")]
-public readonly partial struct GARealtimeDefaultToolChoice
+public readonly partial struct RealtimeDefaultToolChoice
 {
 }

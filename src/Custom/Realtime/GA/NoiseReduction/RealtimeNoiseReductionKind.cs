@@ -4,6 +4,6 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeNoiseReductionTypeGA")]
-public readonly partial struct GARealtimeNoiseReductionKind
+public readonly partial struct RealtimeNoiseReductionKind
 {
 }

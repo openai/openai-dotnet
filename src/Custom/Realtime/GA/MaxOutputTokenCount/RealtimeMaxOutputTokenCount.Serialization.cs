@@ -6,10 +6,10 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: This type is not its own object. Instead, it represents a union, and as such, it must directly forward
 // its serialization and deserialization logic to the components of said union.
-public partial class GARealtimeMaxOutputTokenCount
+public partial class RealtimeMaxOutputTokenCount
 {
     // CUSTOM: Edited to remove calls to WriteStartObject() and WriteEndObject(). 
-    void IJsonModel<GARealtimeMaxOutputTokenCount>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+    void IJsonModel<RealtimeMaxOutputTokenCount>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         if (Patch.Contains("$"u8))
@@ -25,10 +25,10 @@ public partial class GARealtimeMaxOutputTokenCount
     // CUSTOM: Edited to serialize the different components of the union.
     protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
     {
-        string format = options.Format == "W" ? ((IPersistableModel<GARealtimeMaxOutputTokenCount>)this).GetFormatFromOptions(options) : options.Format;
+        string format = options.Format == "W" ? ((IPersistableModel<RealtimeMaxOutputTokenCount>)this).GetFormatFromOptions(options) : options.Format;
         if (format != "J")
         {
-            throw new FormatException($"The model {nameof(GARealtimeMaxOutputTokenCount)} does not support writing '{format}' format.");
+            throw new FormatException($"The model {nameof(RealtimeMaxOutputTokenCount)} does not support writing '{format}' format.");
         }
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         if (Optional.IsDefined(DefaultMaxOutputTokenCount) && !Patch.Contains("$.default_max_output_token_count"u8))
@@ -43,14 +43,14 @@ public partial class GARealtimeMaxOutputTokenCount
     }
 
     // CUSTOM: Edited to deserialize the different components of the union.
-    internal static GARealtimeMaxOutputTokenCount DeserializeGARealtimeMaxOutputTokenCount(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+    internal static RealtimeMaxOutputTokenCount DeserializeRealtimeMaxOutputTokenCount(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
     {
         if (element.ValueKind == JsonValueKind.Null)
         {
             return null;
         }
 
-        GARealtimeDefaultMaxOutputTokenCount? defaultMaxOutputTokenCount = default;
+        RealtimeDefaultMaxOutputTokenCount? defaultMaxOutputTokenCount = default;
         int? customMaxOutputTokenCount = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
@@ -58,13 +58,13 @@ public partial class GARealtimeMaxOutputTokenCount
 
         if (element.ValueKind == JsonValueKind.String)
         {
-            defaultMaxOutputTokenCount = new GARealtimeDefaultMaxOutputTokenCount(element.GetString());
+            defaultMaxOutputTokenCount = new RealtimeDefaultMaxOutputTokenCount(element.GetString());
         }
         else
         {
             customMaxOutputTokenCount = element.GetInt32();
         }
 
-        return new GARealtimeMaxOutputTokenCount(defaultMaxOutputTokenCount, customMaxOutputTokenCount, patch);
+        return new RealtimeMaxOutputTokenCount(defaultMaxOutputTokenCount, customMaxOutputTokenCount, patch);
     }
 }

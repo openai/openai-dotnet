@@ -4,6 +4,6 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeConversationItemInputImageMessageContentPartGADetail")]
-public readonly partial struct GARealtimeImageDetailLevel
+public readonly partial struct RealtimeImageDetailLevel
 {
 }

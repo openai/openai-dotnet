@@ -77,7 +77,7 @@ public partial class RealtimeSessionClient : IDisposable
                 ReadOnlyMemory<byte> audioMemory = buffer.AsMemory(0, bytesRead);
                 BinaryData audioData = BinaryData.FromBytes(audioMemory);
 
-                GARealtimeClientCommandInputAudioBufferAppend internalCommand = new(audioData);
+                RealtimeClientCommandInputAudioBufferAppend internalCommand = new(audioData);
                 await SendCommandAsync(internalCommand, cancellationToken).ConfigureAwait(false);
             }
         }
@@ -121,7 +121,7 @@ public partial class RealtimeSessionClient : IDisposable
                 ReadOnlyMemory<byte> audioMemory = buffer.AsMemory(0, bytesRead);
                 BinaryData audioData = BinaryData.FromBytes(audioMemory);
 
-                GARealtimeClientCommandInputAudioBufferAppend internalCommand = new(audioData);
+                RealtimeClientCommandInputAudioBufferAppend internalCommand = new(audioData);
                 SendCommand(internalCommand, cancellationToken);
             }
         }
@@ -155,7 +155,7 @@ public partial class RealtimeSessionClient : IDisposable
                 throw new InvalidOperationException($"Cannot send a standalone audio chunk while a stream is already in progress.");
             }
             // TODO: consider automatically limiting/breaking size of chunk (as with streaming)
-            GARealtimeClientCommandInputAudioBufferAppend internalCommand = new(audio);
+            RealtimeClientCommandInputAudioBufferAppend internalCommand = new(audio);
             await SendCommandAsync(internalCommand, cancellationToken).ConfigureAwait(false);
         }
     }
@@ -177,75 +177,75 @@ public partial class RealtimeSessionClient : IDisposable
                 throw new InvalidOperationException($"Cannot send a standalone audio chunk while a stream is already in progress.");
             }
             // TODO: consider automatically limiting/breaking size of chunk (as with streaming)
-            GARealtimeClientCommandInputAudioBufferAppend internalCommand = new(audio);
+            RealtimeClientCommandInputAudioBufferAppend internalCommand = new(audio);
             SendCommand(internalCommand, cancellationToken);
         }
     }
 
     public virtual async Task ClearInputAudioAsync(CancellationToken cancellationToken = default)
     {
-        GARealtimeClientCommandInputAudioBufferClear internalCommand = new();
+        RealtimeClientCommandInputAudioBufferClear internalCommand = new();
         await SendCommandAsync(internalCommand, cancellationToken).ConfigureAwait(false);
     }
 
     public virtual void ClearInputAudio(CancellationToken cancellationToken = default)
     {
-        GARealtimeClientCommandInputAudioBufferClear internalCommand = new();
+        RealtimeClientCommandInputAudioBufferClear internalCommand = new();
         SendCommand(internalCommand, cancellationToken);
     }
 
-    public virtual async Task ConfigureConversationSessionAsync(GARealtimeConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default)
+    public virtual async Task ConfigureConversationSessionAsync(RealtimeConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(sessionOptions, nameof(sessionOptions));
-        GARealtimeClientCommandSessionUpdate internalCommand = new(sessionOptions);
+        RealtimeClientCommandSessionUpdate internalCommand = new(sessionOptions);
         await SendCommandAsync(internalCommand, cancellationToken).ConfigureAwait(false);
     }
 
-    public virtual void ConfigureConversationSession(GARealtimeConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default)
+    public virtual void ConfigureConversationSession(RealtimeConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(sessionOptions, nameof(sessionOptions));
-        GARealtimeClientCommandSessionUpdate internalCommand = new(sessionOptions);
+        RealtimeClientCommandSessionUpdate internalCommand = new(sessionOptions);
         SendCommand(internalCommand, cancellationToken);
     }
 
-    public virtual async Task ConfigureTranscriptionSessionAsync(GARealtimeTranscriptionSessionOptions sessionOptions, CancellationToken cancellationToken = default)
+    public virtual async Task ConfigureTranscriptionSessionAsync(RealtimeTranscriptionSessionOptions sessionOptions, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(sessionOptions, nameof(sessionOptions));
-        GARealtimeClientCommandSessionUpdate internalCommand = new(sessionOptions);
+        RealtimeClientCommandSessionUpdate internalCommand = new(sessionOptions);
         await SendCommandAsync(internalCommand, cancellationToken).ConfigureAwait(false);
     }
 
-    public virtual void ConfigureTranscriptionSession(GARealtimeTranscriptionSessionOptions sessionOptions, CancellationToken cancellationToken = default)
+    public virtual void ConfigureTranscriptionSession(RealtimeTranscriptionSessionOptions sessionOptions, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(sessionOptions, nameof(sessionOptions));
-        GARealtimeClientCommandSessionUpdate internalCommand = new(sessionOptions);
+        RealtimeClientCommandSessionUpdate internalCommand = new(sessionOptions);
         SendCommand(internalCommand, cancellationToken);
     }
 
-    public virtual async Task AddItemAsync(GARealtimeItem item, CancellationToken cancellationToken = default)
+    public virtual async Task AddItemAsync(RealtimeItem item, CancellationToken cancellationToken = default)
     {
         await AddItemAsync(item, previousItemId: null, cancellationToken).ConfigureAwait(false);
     }
 
-    public virtual void AddItem(GARealtimeItem item, CancellationToken cancellationToken = default)
+    public virtual void AddItem(RealtimeItem item, CancellationToken cancellationToken = default)
     {
         AddItem(item, previousItemId: null, cancellationToken);
     }
 
-    public virtual async Task AddItemAsync(GARealtimeItem item, string previousItemId, CancellationToken cancellationToken = default)
+    public virtual async Task AddItemAsync(RealtimeItem item, string previousItemId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(item, nameof(item));
-        GARealtimeClientCommandConversationItemCreate internalCommand = new(item)
+        RealtimeClientCommandConversationItemCreate internalCommand = new(item)
         {
             PreviousItemId = previousItemId,
         };
         await SendCommandAsync(internalCommand, cancellationToken).ConfigureAwait(false);
     }
 
-    public virtual void AddItem(GARealtimeItem item, string previousItemId, CancellationToken cancellationToken = default)
+    public virtual void AddItem(RealtimeItem item, string previousItemId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(item, nameof(item));
-        GARealtimeClientCommandConversationItemCreate internalCommand = new(item)
+        RealtimeClientCommandConversationItemCreate internalCommand = new(item)
         {
             PreviousItemId = previousItemId,
         };
@@ -255,35 +255,35 @@ public partial class RealtimeSessionClient : IDisposable
     public virtual async Task RequestItemRetrievalAsync(string itemId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(itemId, nameof(itemId));
-        GARealtimeClientCommandConversationItemRetrieve internalCommand = new(itemId);
+        RealtimeClientCommandConversationItemRetrieve internalCommand = new(itemId);
         await SendCommandAsync(internalCommand, cancellationToken).ConfigureAwait(false);
     }
 
     public virtual void RequestItemRetrieval(string itemId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(itemId, nameof(itemId));
-        GARealtimeClientCommandConversationItemRetrieve internalCommand = new(itemId);
+        RealtimeClientCommandConversationItemRetrieve internalCommand = new(itemId);
         SendCommand(internalCommand, cancellationToken);
     }
 
     public virtual async Task DeleteItemAsync(string itemId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(itemId, nameof(itemId));
-        GARealtimeClientCommandConversationItemDelete internalCommand = new(itemId);
+        RealtimeClientCommandConversationItemDelete internalCommand = new(itemId);
         await SendCommandAsync(internalCommand, cancellationToken).ConfigureAwait(false);
     }
 
     public virtual void DeleteItem(string itemId, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(itemId, nameof(itemId));
-        GARealtimeClientCommandConversationItemDelete internalCommand = new(itemId);
+        RealtimeClientCommandConversationItemDelete internalCommand = new(itemId);
         SendCommand(internalCommand, cancellationToken);
     }
 
     public virtual async Task TruncateItemAsync(string itemId, int contentPartIndex, TimeSpan audioDuration, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(itemId, nameof(itemId));
-        GARealtimeClientCommandConversationItemTruncate internalCommand = new(
+        RealtimeClientCommandConversationItemTruncate internalCommand = new(
             itemId: itemId,
             contentIndex: contentPartIndex,
             audioEndTime: audioDuration);
@@ -293,7 +293,7 @@ public partial class RealtimeSessionClient : IDisposable
     public virtual void TruncateItem(string itemId, int contentPartIndex, TimeSpan audioDuration, CancellationToken cancellationToken = default)
     {
         Argument.AssertNotNull(itemId, nameof(itemId));
-        GARealtimeClientCommandConversationItemTruncate internalCommand = new(
+        RealtimeClientCommandConversationItemTruncate internalCommand = new(
             itemId: itemId,
             contentIndex: contentPartIndex,
             audioEndTime: audioDuration);
@@ -302,38 +302,38 @@ public partial class RealtimeSessionClient : IDisposable
 
     public virtual async Task CommitPendingAudioAsync(CancellationToken cancellationToken = default)
     {
-        GARealtimeClientCommandInputAudioBufferCommit internalCommand = new();
+        RealtimeClientCommandInputAudioBufferCommit internalCommand = new();
         await SendCommandAsync(internalCommand, cancellationToken).ConfigureAwait(false);
     }
 
     public virtual void CommitPendingAudio(CancellationToken cancellationToken = default)
     {
-        GARealtimeClientCommandInputAudioBufferCommit internalCommand = new();
+        RealtimeClientCommandInputAudioBufferCommit internalCommand = new();
         SendCommand(internalCommand, cancellationToken);
     }
 
     public virtual async Task StartResponseAsync(CancellationToken cancellationToken = default)
     {
-        await StartResponseAsync(new GARealtimeResponseOptions(), cancellationToken).ConfigureAwait(false);
+        await StartResponseAsync(new RealtimeResponseOptions(), cancellationToken).ConfigureAwait(false);
     }
 
     public virtual void StartResponse(CancellationToken cancellationToken = default)
     {
-        StartResponse(new GARealtimeResponseOptions(), cancellationToken);
+        StartResponse(new RealtimeResponseOptions(), cancellationToken);
     }
 
-    public virtual async Task StartResponseAsync(GARealtimeResponseOptions responseOptions, CancellationToken cancellationToken = default)
+    public virtual async Task StartResponseAsync(RealtimeResponseOptions responseOptions, CancellationToken cancellationToken = default)
     {
-        GARealtimeClientCommandResponseCreate internalCommand = new()
+        RealtimeClientCommandResponseCreate internalCommand = new()
         {
             ResponseOptions = responseOptions,
         };
         await SendCommandAsync(internalCommand, cancellationToken).ConfigureAwait(false);
     }
 
-    public virtual void StartResponse(GARealtimeResponseOptions responseOptions, CancellationToken cancellationToken = default)
+    public virtual void StartResponse(RealtimeResponseOptions responseOptions, CancellationToken cancellationToken = default)
     {
-        GARealtimeClientCommandResponseCreate internalCommand = new()
+        RealtimeClientCommandResponseCreate internalCommand = new()
         {
             ResponseOptions = responseOptions,
         };
@@ -342,22 +342,22 @@ public partial class RealtimeSessionClient : IDisposable
 
     public virtual async Task CancelResponseAsync(CancellationToken cancellationToken = default)
     {
-        GARealtimeClientCommandResponseCancel internalCommand = new();
+        RealtimeClientCommandResponseCancel internalCommand = new();
         await SendCommandAsync(internalCommand, cancellationToken).ConfigureAwait(false);
     }
 
     public virtual void CancelResponse(CancellationToken cancellationToken = default)
     {
-        GARealtimeClientCommandResponseCancel internalCommand = new();
+        RealtimeClientCommandResponseCancel internalCommand = new();
         SendCommand(internalCommand, cancellationToken);
     }
 
-    public virtual async IAsyncEnumerable<GARealtimeServerUpdate> ReceiveUpdatesAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
+    public virtual async IAsyncEnumerable<RealtimeServerUpdate> ReceiveUpdatesAsync([EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
         await foreach (ClientResult protocolEvent in ReceiveUpdatesAsync(cancellationToken.ToRequestOptions()))
         {
             using PipelineResponse response = protocolEvent.GetRawResponse();
-            GARealtimeServerUpdate nextUpdate = ModelReaderWriter.Read<GARealtimeServerUpdate>(response.Content, ModelReaderWriterOptions.Json, OpenAIContext.Default);
+            RealtimeServerUpdate nextUpdate = ModelReaderWriter.Read<RealtimeServerUpdate>(response.Content, ModelReaderWriterOptions.Json, OpenAIContext.Default);
             // Skip null updates (e.g., conversation.item.done events that are intentionally ignored)
             if (nextUpdate is not null)
             {
@@ -366,19 +366,19 @@ public partial class RealtimeSessionClient : IDisposable
         }
     }
 
-    public virtual IEnumerable<GARealtimeServerUpdate> ReceiveUpdates(CancellationToken cancellationToken = default)
+    public virtual IEnumerable<RealtimeServerUpdate> ReceiveUpdates(CancellationToken cancellationToken = default)
     {
         throw new NotImplementedException();
     }
 
-    public virtual async Task SendCommandAsync(GARealtimeClientCommand command, CancellationToken cancellationToken = default)
+    public virtual async Task SendCommandAsync(RealtimeClientCommand command, CancellationToken cancellationToken = default)
     {
         BinaryData requestData = ModelReaderWriter.Write(command, ModelReaderWriterOptions.Json, OpenAIContext.Default);
         RequestOptions cancellationOptions = cancellationToken.ToRequestOptions();
         await SendCommandAsync(requestData, cancellationOptions).ConfigureAwait(false);
     }
 
-    public virtual void SendCommand(GARealtimeClientCommand command, CancellationToken cancellationToken = default)
+    public virtual void SendCommand(RealtimeClientCommand command, CancellationToken cancellationToken = default)
     {
         BinaryData requestData = ModelReaderWriter.Write(command, ModelReaderWriterOptions.Json, OpenAIContext.Default);
         RequestOptions cancellationOptions = cancellationToken.ToRequestOptions();

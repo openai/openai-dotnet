@@ -10,6 +10,6 @@ namespace OpenAI.Realtime;
 /// </summary>
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeServerEventOutputAudioBufferStoppedGA")]
-public partial class GARealtimeServerUpdateOutputAudioBufferStopped
+public partial class RealtimeServerUpdateOutputAudioBufferStopped
 {
 }

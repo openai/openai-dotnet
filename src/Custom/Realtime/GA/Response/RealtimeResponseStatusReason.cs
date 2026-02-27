@@ -4,6 +4,6 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeResponseStatusDetailsGAReason")]
-public readonly partial struct GARealtimeResponseStatusReason
+public readonly partial struct RealtimeResponseStatusReason
 {
 }

@@ -4,6 +4,6 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeResponseStatusDetailsGA")]
-public partial class GARealtimeResponseStatusDetails
+public partial class RealtimeResponseStatusDetails
 {
 }

@@ -4,6 +4,6 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("VoiceIdsSharedGA")]
-public readonly partial struct GARealtimeVoice
+public readonly partial struct RealtimeVoice
 {
 }

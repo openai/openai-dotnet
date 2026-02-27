@@ -10,13 +10,13 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalUnknownToolChoiceBaseGA : GARealtimeCustomToolChoice, IJsonModel<GARealtimeCustomToolChoice>
+    internal partial class InternalUnknownToolChoiceBaseGA : RealtimeCustomToolChoice, IJsonModel<RealtimeCustomToolChoice>
     {
         internal InternalUnknownToolChoiceBaseGA() : this(default, default)
         {
         }
 
-        void IJsonModel<GARealtimeCustomToolChoice>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<RealtimeCustomToolChoice>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             if (Patch.Contains("$"u8))
@@ -33,10 +33,10 @@ namespace OpenAI.Realtime
 
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeCustomToolChoice>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeCustomToolChoice>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(GARealtimeCustomToolChoice)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(RealtimeCustomToolChoice)} does not support writing '{format}' format.");
             }
             base.JsonModelWriteCore(writer, options);
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -45,17 +45,17 @@ namespace OpenAI.Realtime
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         }
 
-        GARealtimeCustomToolChoice IJsonModel<GARealtimeCustomToolChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        RealtimeCustomToolChoice IJsonModel<RealtimeCustomToolChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected override GARealtimeCustomToolChoice JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected override RealtimeCustomToolChoice JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeCustomToolChoice>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeCustomToolChoice>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(GARealtimeCustomToolChoice)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(RealtimeCustomToolChoice)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeGARealtimeCustomToolChoice(document.RootElement, null, options);
+            return DeserializeRealtimeCustomToolChoice(document.RootElement, null, options);
         }
 
         internal static InternalUnknownToolChoiceBaseGA DeserializeInternalUnknownToolChoiceBaseGA(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
@@ -80,37 +80,37 @@ namespace OpenAI.Realtime
             return new InternalUnknownToolChoiceBaseGA(kind, patch);
         }
 
-        BinaryData IPersistableModel<GARealtimeCustomToolChoice>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<RealtimeCustomToolChoice>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeCustomToolChoice>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeCustomToolChoice>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(GARealtimeCustomToolChoice)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(RealtimeCustomToolChoice)} does not support writing '{options.Format}' format.");
             }
         }
 
-        GARealtimeCustomToolChoice IPersistableModel<GARealtimeCustomToolChoice>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        RealtimeCustomToolChoice IPersistableModel<RealtimeCustomToolChoice>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        protected override GARealtimeCustomToolChoice PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected override RealtimeCustomToolChoice PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<GARealtimeCustomToolChoice>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeCustomToolChoice>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeGARealtimeCustomToolChoice(document.RootElement, data, options);
+                        return DeserializeRealtimeCustomToolChoice(document.RootElement, data, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(GARealtimeCustomToolChoice)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(RealtimeCustomToolChoice)} does not support reading '{options.Format}' format.");
             }
         }
 
-        string IPersistableModel<GARealtimeCustomToolChoice>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<RealtimeCustomToolChoice>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

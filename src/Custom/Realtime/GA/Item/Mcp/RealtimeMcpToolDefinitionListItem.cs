@@ -5,9 +5,9 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeMCPListToolsGA")]
-public partial class GARealtimeMcpToolDefinitionListItem
+public partial class RealtimeMcpToolDefinitionListItem
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Tools")]
-    public IList<GARealtimeMcpToolDefinition> ToolDefinitions { get; }
+    public IList<RealtimeMcpToolDefinition> ToolDefinitions { get; }
 }

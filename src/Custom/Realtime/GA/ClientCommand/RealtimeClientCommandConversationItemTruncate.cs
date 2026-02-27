@@ -17,7 +17,7 @@ namespace OpenAI.Realtime;
 /// </summary>
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeClientEventConversationItemTruncateGA")]
-public partial class GARealtimeClientCommandConversationItemTruncate
+public partial class RealtimeClientCommandConversationItemTruncate
 {
     // CUSTOM: Renamed.
     [CodeGenMember("AudioEndMs")]

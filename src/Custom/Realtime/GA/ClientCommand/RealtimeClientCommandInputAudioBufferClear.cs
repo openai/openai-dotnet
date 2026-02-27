@@ -9,6 +9,6 @@ namespace OpenAI.Realtime;
 /// </summary>
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeClientEventInputAudioBufferClearGA")]
-public partial class GARealtimeClientCommandInputAudioBufferClear
+public partial class RealtimeClientCommandInputAudioBufferClear
 {
 }

@@ -4,7 +4,7 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("ToolChoiceFunctionGA")]
-public partial class GARealtimeCustomFunctionToolChoice
+public partial class RealtimeCustomFunctionToolChoice
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Name")]

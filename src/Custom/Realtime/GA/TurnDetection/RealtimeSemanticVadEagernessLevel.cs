@@ -3,6 +3,6 @@
 namespace OpenAI.Realtime;
 
 [CodeGenType("RealtimeTimeSemanticVADTurnDetectionEagernessGA")]
-public readonly partial struct GARealtimeSemanticVadEagernessLevel
+public readonly partial struct RealtimeSemanticVadEagernessLevel
 {
 }

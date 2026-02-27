@@ -6,7 +6,7 @@ using System.ClientModel.Primitives;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalUnknownRealtimeTurnDetectionBaseGA : GARealtimeTurnDetection
+    internal partial class InternalUnknownRealtimeTurnDetectionBaseGA : RealtimeTurnDetection
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal InternalUnknownRealtimeTurnDetectionBaseGA(InternalRealtimeTurnDetectionBaseTypeGA kind, in JsonPatch patch) : base(kind != default ? kind : "unknown", patch)

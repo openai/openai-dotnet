@@ -37,9 +37,9 @@ namespace OpenAI.Realtime;
 /// </summary>
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeClientEventResponseCreateGA")]
-public partial class GARealtimeClientCommandResponseCreate
+public partial class RealtimeClientCommandResponseCreate
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Response")]
-    public GARealtimeResponseOptions ResponseOptions { get; set; }
+    public RealtimeResponseOptions ResponseOptions { get; set; }
 }

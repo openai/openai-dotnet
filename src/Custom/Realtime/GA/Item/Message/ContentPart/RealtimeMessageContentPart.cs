@@ -4,6 +4,6 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeConversationItemMessageContentPartGA")]
-public partial class GARealtimeMessageContentPart
+public partial class RealtimeMessageContentPart
 {
 }

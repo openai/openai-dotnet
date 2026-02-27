@@ -4,7 +4,7 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeConversationItemFunctionCallOutputGA")]
-public partial class GARealtimeFunctionCallOutputItem
+public partial class RealtimeFunctionCallOutputItem
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Output")]

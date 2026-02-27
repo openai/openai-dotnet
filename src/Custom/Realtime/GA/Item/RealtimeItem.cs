@@ -6,68 +6,68 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeConversationItemGA")]
-public partial class GARealtimeItem
+public partial class RealtimeItem
 {
-    public static GARealtimeMessageItem CreateAssistantMessageItem(IEnumerable<GARealtimeMessageContentPart> contentParts)
+    public static RealtimeMessageItem CreateAssistantMessageItem(IEnumerable<RealtimeMessageContentPart> contentParts)
     {
-        return new GARealtimeMessageItem(GARealtimeMessageRole.Assistant, contentParts);
+        return new RealtimeMessageItem(RealtimeMessageRole.Assistant, contentParts);
     }
 
-    public static GARealtimeMessageItem CreateAssistantMessageItem(string outputTextContent)
+    public static RealtimeMessageItem CreateAssistantMessageItem(string outputTextContent)
     {
-        IEnumerable<GARealtimeMessageContentPart> contentParts = [new GARealtimeOutputTextMessageContentPart(outputTextContent)];
-        return new GARealtimeMessageItem(GARealtimeMessageRole.Assistant, contentParts);
+        IEnumerable<RealtimeMessageContentPart> contentParts = [new RealtimeOutputTextMessageContentPart(outputTextContent)];
+        return new RealtimeMessageItem(RealtimeMessageRole.Assistant, contentParts);
     }
 
-    public static GARealtimeMessageItem CreateSystemMessageItem(IEnumerable<GARealtimeMessageContentPart> contentParts)
+    public static RealtimeMessageItem CreateSystemMessageItem(IEnumerable<RealtimeMessageContentPart> contentParts)
     {
-        return new GARealtimeMessageItem(GARealtimeMessageRole.System, contentParts);
+        return new RealtimeMessageItem(RealtimeMessageRole.System, contentParts);
     }
 
-    public static GARealtimeMessageItem CreateSystemMessageItem(string inputTextContent)
+    public static RealtimeMessageItem CreateSystemMessageItem(string inputTextContent)
     {
-        IEnumerable<GARealtimeMessageContentPart> contentParts = [new GARealtimeInputTextMessageContentPart(inputTextContent)];
-        return new GARealtimeMessageItem(GARealtimeMessageRole.System, contentParts);
+        IEnumerable<RealtimeMessageContentPart> contentParts = [new RealtimeInputTextMessageContentPart(inputTextContent)];
+        return new RealtimeMessageItem(RealtimeMessageRole.System, contentParts);
     }
 
-    public static GARealtimeMessageItem CreateUserMessageItem(IEnumerable<GARealtimeMessageContentPart> contentParts)
+    public static RealtimeMessageItem CreateUserMessageItem(IEnumerable<RealtimeMessageContentPart> contentParts)
     {
-        return new GARealtimeMessageItem(GARealtimeMessageRole.User, contentParts);
+        return new RealtimeMessageItem(RealtimeMessageRole.User, contentParts);
     }
 
-    public static GARealtimeMessageItem CreateUserMessageItem(string inputTextContent)
+    public static RealtimeMessageItem CreateUserMessageItem(string inputTextContent)
     {
-        IEnumerable<GARealtimeMessageContentPart> contentParts = [new GARealtimeInputTextMessageContentPart(inputTextContent)];
-        return new GARealtimeMessageItem(GARealtimeMessageRole.User, contentParts);
+        IEnumerable<RealtimeMessageContentPart> contentParts = [new RealtimeInputTextMessageContentPart(inputTextContent)];
+        return new RealtimeMessageItem(RealtimeMessageRole.User, contentParts);
     }
 
-    public static GARealtimeFunctionCallItem CreateFunctionCallItem(string callId, string functionName, BinaryData functionArguments)
+    public static RealtimeFunctionCallItem CreateFunctionCallItem(string callId, string functionName, BinaryData functionArguments)
     {
-        return new GARealtimeFunctionCallItem(callId, functionName, functionArguments);
+        return new RealtimeFunctionCallItem(callId, functionName, functionArguments);
     }
 
-    public static GARealtimeFunctionCallOutputItem CreateFunctionCallOutputItem(string callId, string functionOutput)
+    public static RealtimeFunctionCallOutputItem CreateFunctionCallOutputItem(string callId, string functionOutput)
     {
-        return new GARealtimeFunctionCallOutputItem(callId, functionOutput);
+        return new RealtimeFunctionCallOutputItem(callId, functionOutput);
     }
 
-    public static GARealtimeMcpToolCallApprovalRequestItem CreateMcpApprovalRequestItem(string id, string serverLabel, string name, BinaryData arguments)
+    public static RealtimeMcpToolCallApprovalRequestItem CreateMcpApprovalRequestItem(string id, string serverLabel, string name, BinaryData arguments)
     {
-        return new GARealtimeMcpToolCallApprovalRequestItem(id, serverLabel, name, arguments);
+        return new RealtimeMcpToolCallApprovalRequestItem(id, serverLabel, name, arguments);
     }
 
-    public static GARealtimeMcpToolCallApprovalResponseItem CreateMcpApprovalResponseItem(string approvalRequestId, bool approved)
+    public static RealtimeMcpToolCallApprovalResponseItem CreateMcpApprovalResponseItem(string approvalRequestId, bool approved)
     {
-        return new GARealtimeMcpToolCallApprovalResponseItem(approvalRequestId, approved);
+        return new RealtimeMcpToolCallApprovalResponseItem(approvalRequestId, approved);
     }
 
-    public static GARealtimeMcpToolCallItem CreateMcpToolCallItem(string serverLabel, string name, BinaryData arguments)
+    public static RealtimeMcpToolCallItem CreateMcpToolCallItem(string serverLabel, string name, BinaryData arguments)
     {
-        return new GARealtimeMcpToolCallItem(serverLabel, name, arguments);
+        return new RealtimeMcpToolCallItem(serverLabel, name, arguments);
     }
 
-    public static GARealtimeMcpToolDefinitionListItem CreateMcpToolDefinitionListItem(string serverLabel, IEnumerable<GARealtimeMcpToolDefinition> toolDefinitions)
+    public static RealtimeMcpToolDefinitionListItem CreateMcpToolDefinitionListItem(string serverLabel, IEnumerable<RealtimeMcpToolDefinition> toolDefinitions)
     {
-        return new GARealtimeMcpToolDefinitionListItem(serverLabel, toolDefinitions);
+        return new RealtimeMcpToolDefinitionListItem(serverLabel, toolDefinitions);
     }
 }

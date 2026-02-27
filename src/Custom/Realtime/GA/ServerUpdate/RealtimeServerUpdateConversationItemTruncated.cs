@@ -13,7 +13,7 @@ namespace OpenAI.Realtime;
 /// </summary>
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeServerEventConversationItemTruncatedGA")]
-public partial class GARealtimeServerUpdateConversationItemTruncated
+public partial class RealtimeServerUpdateConversationItemTruncated
 {
     // CUSTOM: Renamed.
     [CodeGenMember("AudioEndMs")]

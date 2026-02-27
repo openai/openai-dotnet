@@ -6,7 +6,7 @@ using System.ClientModel.Primitives;
 
 namespace OpenAI.Realtime
 {
-    internal partial class InternalUnknownRealtimeConversationItemMessageContentPartGA : GARealtimeMessageContentPart
+    internal partial class InternalUnknownRealtimeConversationItemMessageContentPartGA : RealtimeMessageContentPart
     {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         internal InternalUnknownRealtimeConversationItemMessageContentPartGA(InternalRealtimeConversationItemMessageContentPartTypeGA kind, in JsonPatch patch) : base(kind != default ? kind : "unknown", patch)

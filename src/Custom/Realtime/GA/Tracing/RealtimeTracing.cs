@@ -4,17 +4,17 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Added to represent a non-discriminated union.
 [CodeGenType("DotNetRealtimeTracingGA")]
-[CodeGenVisibility(nameof(GARealtimeTracing), CodeGenVisibility.Internal)]
-public partial class GARealtimeTracing
+[CodeGenVisibility(nameof(RealtimeTracing), CodeGenVisibility.Internal)]
+public partial class RealtimeTracing
 {
     // CUSTOM: Added to support the corresponding component of the union.
-    public GARealtimeTracing(GARealtimeDefaultTracing defaultTracing)
+    public RealtimeTracing(RealtimeDefaultTracing defaultTracing)
     {
         DefaultTracing = defaultTracing;
     }
 
     // CUSTOM: Added to support the corresponding component of the union.
-    public GARealtimeTracing(GARealtimeCustomTracing customTracing)
+    public RealtimeTracing(RealtimeCustomTracing customTracing)
     {
         Argument.AssertNotNull(customTracing, nameof(customTracing));
 
@@ -23,15 +23,15 @@ public partial class GARealtimeTracing
 
     // CUSTOM: Removed setter.
     [CodeGenMember("DefaultTracing")]
-    public GARealtimeDefaultTracing? DefaultTracing { get; }
+    public RealtimeDefaultTracing? DefaultTracing { get; }
 
     // CUSTOM: Removed setter.
     [CodeGenMember("CustomTracing")]
-    public GARealtimeCustomTracing CustomTracing { get; }
+    public RealtimeCustomTracing CustomTracing { get; }
 
     // CUSTOM: Added for convenience.
-    public static implicit operator GARealtimeTracing(GARealtimeDefaultTracing defaultTracing) => new(defaultTracing);
+    public static implicit operator RealtimeTracing(RealtimeDefaultTracing defaultTracing) => new(defaultTracing);
 
     // CUSTOM: Added for convenience.
-    public static implicit operator GARealtimeTracing(GARealtimeCustomTracing customTracing) => customTracing is null ? null : new(customTracing);
+    public static implicit operator RealtimeTracing(RealtimeCustomTracing customTracing) => customTracing is null ? null : new(customTracing);
 }

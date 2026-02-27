@@ -4,15 +4,15 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("RealtimeTranscriptionSessionCreateRequestGAAudioInputGA")]
-public partial class GARealtimeTranscriptionSessionInputAudioOptions
+public partial class RealtimeTranscriptionSessionInputAudioOptions
 {
     // CUSTOM: Renamed.
     [CodeGenMember("Format")]
-    public GARealtimeAudioFormat AudioFormat { get; set; }
+    public RealtimeAudioFormat AudioFormat { get; set; }
 
     // CUSTOM: Renamed.
     [CodeGenMember("Transcription")]
-    public GARealtimeAudioTranscriptionOptions AudioTranscriptionOptions { get; set; }
+    public RealtimeAudioTranscriptionOptions AudioTranscriptionOptions { get; set; }
 
     public void DisableTurnDetection()
     {

@@ -4,7 +4,7 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("TokenLimitsGA")]
-public partial class GARealtimeRetentionRatioTokenLimitDetails
+public partial class RealtimeRetentionRatioTokenLimitDetails
 {
     // CUSTOM: Renamed.
     [CodeGenMember("PostInstructions")]

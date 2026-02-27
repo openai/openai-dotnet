@@ -4,7 +4,7 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("AudioTranscriptionGA")]
-public partial class GARealtimeAudioTranscriptionOptions
+public partial class RealtimeAudioTranscriptionOptions
 {
     // CUSTOM: Changed type.
     [CodeGenMember("Model")]

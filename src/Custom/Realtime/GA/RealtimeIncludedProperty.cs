@@ -4,9 +4,9 @@ namespace OpenAI.Realtime;
 
 // CUSTOM: Renamed.
 [CodeGenType("IncludableGA")]
-public readonly partial struct GARealtimeIncludedProperty
+public readonly partial struct RealtimeIncludedProperty
 {
     // CUSTOM: Renamed.
     [CodeGenMember("ItemInputAudioTranscriptionLogprobs")]
-    public static GARealtimeIncludedProperty ItemInputAudioTranscriptionLogProbabilities { get; } = new GARealtimeIncludedProperty(ItemInputAudioTranscriptionLogprobsValue);
+    public static RealtimeIncludedProperty ItemInputAudioTranscriptionLogProbabilities { get; } = new RealtimeIncludedProperty(ItemInputAudioTranscriptionLogprobsValue);
 }

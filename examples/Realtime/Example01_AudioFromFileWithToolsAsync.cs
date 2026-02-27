@@ -18,7 +18,7 @@ public partial class RealtimeExamples
         return $"31 {unit}";
     }
 
-    private static readonly GARealtimeFunctionTool getCurrentWeatherTool = new(functionName: nameof(GetCurrentWeather))
+    private static readonly RealtimeFunctionTool getCurrentWeatherTool = new(functionName: nameof(GetCurrentWeather))
     {
         FunctionDescription = "gets the weather for a location",
         FunctionParameters = BinaryData.FromString("""
@@ -47,7 +47,7 @@ public partial class RealtimeExamples
 
         using RealtimeSessionClient sessionClient = await client.StartConversationSessionAsync(model: "gpt-realtime");
 
-        GARealtimeConversationSessionOptions sessionOptions = new()
+        RealtimeConversationSessionOptions sessionOptions = new()
         {
             Instructions = "You are a cheerful assistant that talks like a pirate. "
                 + "Always inform the user when you are about to call a tool. "
@@ -64,12 +64,12 @@ public partial class RealtimeExamples
                     {
                         Model = "gpt-4o-transcribe",
                     },
-                    TurnDetection = new GARealtimeServerVadTurnDetection(),
+                    TurnDetection = new RealtimeServerVadTurnDetection(),
                 },
                 OutputAudioOptions = new()
                 {
                     // AudioFormat = new GARealtimePcmAudioFormat(),
-                    Voice = GARealtimeVoice.Alloy,
+                    Voice = RealtimeVoice.Alloy,
                 },
             },
         };
@@ -79,7 +79,7 @@ public partial class RealtimeExamples
         // The conversation history (if applicable) can be provided by adding messages to the
         // conversation one by one. Note that adding a message will not automatically initiate
         // a response from the model.
-        await sessionClient.AddItemAsync(GARealtimeItem.CreateUserMessageItem("I'm trying to decide what to wear on my trip."));
+        await sessionClient.AddItemAsync(RealtimeItem.CreateUserMessageItem("I'm trying to decide what to wear on my trip."));
 
         string inputAudioFilePath = Path.Join("Assets", "realtime_whats_the_weather_pcm16_24khz_mono.wav");
         using Stream inputAudioStream = File.OpenRead(inputAudioFilePath);
@@ -90,59 +90,59 @@ public partial class RealtimeExamples
 
         bool done = false;
 
-        await foreach (GARealtimeServerUpdate update in sessionClient.ReceiveUpdatesAsync())
+        await foreach (RealtimeServerUpdate update in sessionClient.ReceiveUpdatesAsync())
         {
             switch (update)
             {
-                case GARealtimeServerUpdateSessionCreated sessionCreatedUpdate:
+                case RealtimeServerUpdateSessionCreated sessionCreatedUpdate:
                     {
                         Console.WriteLine($"[EVENT ID: {sessionCreatedUpdate.EventId}]");
                         Console.WriteLine($">> Session created.");
                         Console.WriteLine();
                         break;
                     }
-                case GARealtimeServerUpdateSessionUpdated sessionUpdatedUpdate:
+                case RealtimeServerUpdateSessionUpdated sessionUpdatedUpdate:
                     {
                         Console.WriteLine($"[EVENT ID: {sessionUpdatedUpdate.EventId}]");
                         Console.WriteLine($">> Session updated.");
                         Console.WriteLine();
                         break;
                     }
-                case GARealtimeServerUpdateInputAudioBufferSpeechStarted inputAudioBufferSpeechStartedUpdate:
+                case RealtimeServerUpdateInputAudioBufferSpeechStarted inputAudioBufferSpeechStartedUpdate:
                     {
                         Console.WriteLine($"[EVENT ID: {inputAudioBufferSpeechStartedUpdate.EventId}]");
                         Console.WriteLine($">> Speech started at {inputAudioBufferSpeechStartedUpdate.AudioStartTime}.");
                         Console.WriteLine();
                         break;
                     }
-                case GARealtimeServerUpdateInputAudioBufferSpeechStopped inputAudioBufferSpeechStoppedUpdate:
+                case RealtimeServerUpdateInputAudioBufferSpeechStopped inputAudioBufferSpeechStoppedUpdate:
                     {
                         Console.WriteLine($"[EVENT ID: {inputAudioBufferSpeechStoppedUpdate.EventId}]");
                         Console.WriteLine($">> Speech stopped at {inputAudioBufferSpeechStoppedUpdate.AudioEndTime}.");
                         Console.WriteLine();
                         break;
                     }
-                case GARealtimeServerUpdateConversationItemDone conversationItemDoneUpdate:
+                case RealtimeServerUpdateConversationItemDone conversationItemDoneUpdate:
                     {
                         Console.WriteLine($"[EVENT ID: {conversationItemDoneUpdate.EventId}]");
                         Console.WriteLine($">> Conversation item done. Type: {conversationItemDoneUpdate.Item.Patch.GetString("$.type"u8)}.");
 
-                        GARealtimeMessageItem messageItem = conversationItemDoneUpdate.Item as GARealtimeMessageItem;
+                        RealtimeMessageItem messageItem = conversationItemDoneUpdate.Item as RealtimeMessageItem;
 
                         if (messageItem != null)
                         {
-                            foreach (GARealtimeMessageContentPart contentPart in messageItem.Content)
+                            foreach (RealtimeMessageContentPart contentPart in messageItem.Content)
                             {
                                 switch (contentPart)
                                 {
-                                    case GARealtimeInputTextMessageContentPart inputTextPart:
+                                    case RealtimeInputTextMessageContentPart inputTextPart:
                                         {
                                             Console.WriteLine();
                                             Console.WriteLine($"++ [{messageItem.Role.ToString().ToUpperInvariant()}]:");
                                             Console.WriteLine(inputTextPart.Text);
                                             break;
                                         }
-                                    case GARealtimeOutputTextMessageContentPart outputTextPart:
+                                    case RealtimeOutputTextMessageContentPart outputTextPart:
                                         {
                                             Console.WriteLine();
                                             Console.WriteLine($"++ [{messageItem.Role.ToString().ToUpperInvariant()}]:");
@@ -156,7 +156,7 @@ public partial class RealtimeExamples
                         Console.WriteLine();
                         break;
                     }
-                case GARealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted conversationItemInputAudioTranscriptionCompletedUpdate:
+                case RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted conversationItemInputAudioTranscriptionCompletedUpdate:
                     {
                         Console.WriteLine($"[EVENT ID: {conversationItemInputAudioTranscriptionCompletedUpdate.EventId}]");
                         Console.WriteLine($">> Conversation item input audio transcription completed.");
@@ -167,7 +167,7 @@ public partial class RealtimeExamples
                         Console.WriteLine();
                         break;
                     }
-                case GARealtimeServerUpdateResponseOutputAudioDelta responseOutputAudioDeltaUpdate:
+                case RealtimeServerUpdateResponseOutputAudioDelta responseOutputAudioDeltaUpdate:
                     {
                         Console.WriteLine($"[EVENT ID: {responseOutputAudioDeltaUpdate.EventId}]");
                         Console.WriteLine($">> Response output audio delta. Bytes: {responseOutputAudioDeltaUpdate.Delta.Length}.");
@@ -176,14 +176,14 @@ public partial class RealtimeExamples
 
                         break;
                     }
-                case GARealtimeServerUpdateResponseOutputAudioDone responseOutputAudioDoneUpdate:
+                case RealtimeServerUpdateResponseOutputAudioDone responseOutputAudioDoneUpdate:
                     {
                         Console.WriteLine($"[EVENT ID: {responseOutputAudioDoneUpdate.EventId}]");
                         Console.WriteLine($">> Response output audio done. Bytes: {outputAudioStream.Length}.");
                         Console.WriteLine();
                         break;
                     }
-                case GARealtimeServerUpdateResponseOutputAudioTranscriptDone responseOutputAudioTranscriptionDoneUpdate:
+                case RealtimeServerUpdateResponseOutputAudioTranscriptDone responseOutputAudioTranscriptionDoneUpdate:
                     {
                         Console.WriteLine($"[EVENT ID: {responseOutputAudioTranscriptionDoneUpdate.EventId}]");
                         Console.WriteLine($">> Response output audio transcription done.");
@@ -194,18 +194,18 @@ public partial class RealtimeExamples
                         Console.WriteLine();
                         break;
                     }
-                case GARealtimeServerUpdateResponseDone responseDoneUpdate:
+                case RealtimeServerUpdateResponseDone responseDoneUpdate:
                     {
                         Console.WriteLine($"[EVENT ID: {responseDoneUpdate.EventId}]");
                         Console.WriteLine($">> Response done. Status: {responseDoneUpdate.Response.Status}.");
 
                         bool hasToolCalls = false;
 
-                        List<GARealtimeFunctionCallItem> functionCallItems = responseDoneUpdate.Response.OutputItems
-                            .OfType<GARealtimeFunctionCallItem>()
+                        List<RealtimeFunctionCallItem> functionCallItems = responseDoneUpdate.Response.OutputItems
+                            .OfType<RealtimeFunctionCallItem>()
                             .ToList();
 
-                        foreach (GARealtimeFunctionCallItem functionCallItem in functionCallItems)
+                        foreach (RealtimeFunctionCallItem functionCallItem in functionCallItems)
                         {
                             hasToolCalls = true;
 
@@ -213,7 +213,7 @@ public partial class RealtimeExamples
 
                             string output = GetCurrentWeather(location: "San Francisco, CA");
 
-                            GARealtimeItem functionCallOutputItem = GARealtimeItem.CreateFunctionCallOutputItem(
+                            RealtimeItem functionCallOutputItem = RealtimeItem.CreateFunctionCallOutputItem(
                                 callId: functionCallItem.CallId,
                                 functionOutput: output);
 
@@ -239,7 +239,7 @@ public partial class RealtimeExamples
                         Console.WriteLine();
                         break;
                     }
-                case GARealtimeServerUpdateError errorUpdate:
+                case RealtimeServerUpdateError errorUpdate:
                     {
                         Console.WriteLine($"[EVENT ID: {errorUpdate.EventId}]");
                         Console.WriteLine($"Error: {errorUpdate.Error.Message}");
