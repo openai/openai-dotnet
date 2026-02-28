@@ -1,5 +1,12 @@
 # Release History
 
+## 2.10.0-beta.1 (Unreleased)
+
+### Bugs Fixed
+
+- OpenAI.Chat:
+  - Fixed an issue where `JsonPatch` customizations applied to `ChatCompletionOptions` were lost when the options were cloned internally before an API call.
+
 ## 2.9.0 (2026-02-27)
 
 ### Acknowledgments
@@ -92,7 +99,6 @@ Thank you to our developer community members who helped to make the OpenAI clien
 
 - OpenAI.Chat:
   - Fixed a concurrency issue corrupting the state of the `ChatCompletionOptions` argument when the same instance was passed into concurrent calls of `CompleteChat`/`CompleteChatAsync` and/or `CompleteChatStreaming`/`CompleteChatStreamingAsync`.
-  - Fixed an issue where `JsonPatch` customizations applied to `ChatCompletionOptions` were lost when the options were cloned internally before an API call.
 - OpenAI.Realtime:
   - Fixed an issue causing permanent state corruption when sending audio was cancelled in `RealtimeSessionClient`.
   - Fixed an issue with `RealtimeSessionClient` always requiring an API key.
