@@ -92,6 +92,7 @@ Thank you to our developer community members who helped to make the OpenAI clien
 
 - OpenAI.Chat:
   - Fixed a concurrency issue corrupting the state of the `ChatCompletionOptions` argument when the same instance was passed into concurrent calls of `CompleteChat`/`CompleteChatAsync` and/or `CompleteChatStreaming`/`CompleteChatStreamingAsync`.
+  - Fixed an issue where `JsonPatch` customizations applied to `ChatCompletionOptions` were lost when the options were cloned internally before an API call.
 - OpenAI.Realtime:
   - Fixed an issue causing permanent state corruption when sending audio was cancelled in `RealtimeSessionClient`.
   - Fixed an issue with `RealtimeSessionClient` always requiring an API key.
