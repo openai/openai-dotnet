@@ -23,7 +23,7 @@
 
   <!-- Build-only dependencies -->
   <ItemGroup>
-    <PackageReference Include="Microsoft.SourceLink.GitHub" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
   </ItemGroup>
 
   <!-- LEGACY: Azure OpenAI bridge-->
