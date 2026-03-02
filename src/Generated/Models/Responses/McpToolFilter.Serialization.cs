@@ -4,7 +4,6 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
 using OpenAI;
@@ -85,54 +84,6 @@ namespace OpenAI.Responses
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeMcpToolFilter(document.RootElement, null, options);
-        }
-
-        internal static McpToolFilter DeserializeMcpToolFilter(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
-        {
-            if (element.ValueKind == JsonValueKind.Null)
-            {
-                return null;
-            }
-            IList<string> toolNames = default;
-            bool? isReadOnly = default;
-#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
-#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-            foreach (var prop in element.EnumerateObject())
-            {
-                if (prop.NameEquals("tool_names"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    List<string> array = new List<string>();
-                    foreach (var item in prop.Value.EnumerateArray())
-                    {
-                        if (item.ValueKind == JsonValueKind.Null)
-                        {
-                            array.Add(null);
-                        }
-                        else
-                        {
-                            array.Add(item.GetString());
-                        }
-                    }
-                    toolNames = array;
-                    continue;
-                }
-                if (prop.NameEquals("read_only"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    isReadOnly = prop.Value.GetBoolean();
-                    continue;
-                }
-                patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
-            }
-            return new McpToolFilter(toolNames ?? new ChangeTrackingList<string>(), isReadOnly, patch);
         }
 
         BinaryData IPersistableModel<McpToolFilter>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
