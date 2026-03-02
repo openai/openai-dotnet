@@ -2,6 +2,11 @@
 
 ## 2.10.0-beta.1 (Unreleased)
 
+### Features Added
+
+- OpenAI.Responses:
+  - Added `InputFileUri` property and `CreateInputFilePart(Uri)` factory method to `ResponseContentPart` to support file URL inputs.
+
 ### Bugs Fixed
 
 - OpenAI.Chat:
