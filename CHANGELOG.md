@@ -1,6 +1,6 @@
 # Release History
 
-## 2.10.0-beta.1 (Unreleased)
+## 2.9.1 (2026-03-02)
 
 ### Bugs Fixed
 
