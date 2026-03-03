@@ -99,7 +99,6 @@
     <Configurations>Debug;Release</Configurations>
     <IsAotCompatible>false</IsAotCompatible>
     <IsTrimmable>false</IsTrimmable>
-    <EnableSourceLink>false</EnableSourceLink>
 
     <!-- Signing and Publishing -->
     <GenerateDocumentationFile>false</GenerateDocumentationFile>

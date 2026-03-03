@@ -101,7 +101,6 @@ The library is organized into namespaces by feature areas in the OpenAI REST API
 | `OpenAI.Responses`            | `ResponsesClient`            |
 | `OpenAI.VectorStores`         | `VectorStoreClient`          |
 
-The `OpenAI.Shared` namespace contains common types and utilities used across the library.
 
 ### Using the async API
 

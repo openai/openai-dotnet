@@ -390,6 +390,4 @@ public partial class ResponseStoreTests : OpenAIRecordedTestBase
 
         Assert.That(items, Has.Count.GreaterThan(0));
     }
-
-    private ResponsesClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<ResponsesClient>(overrideModel);
 }

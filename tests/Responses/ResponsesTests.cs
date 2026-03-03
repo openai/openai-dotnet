@@ -1019,6 +1019,4 @@ public partial class ResponsesTests : OpenAIRecordedTestBase
             }
             """),
         strictModeEnabled: false);
-
-    private ResponsesClient GetTestClient(string overrideModel = null) => GetProxiedOpenAIClient<ResponsesClient>(overrideModel);
 }
