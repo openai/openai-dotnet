@@ -175,7 +175,7 @@ internal static partial class TestHelpers
             public RealtimeScenario() : base("gpt-realtime") { }
             public override object CreateClient(string model, ApiKeyCredential credential, OpenAIClientOptions options)
 #pragma warning disable OPENAI002
-                => new RealtimeClient(credential, options);
+                => new RealtimeClient(credential, RealtimeClientOptions.FromClientOptions(options));
 #pragma warning restore OPENAI002
         }
 
