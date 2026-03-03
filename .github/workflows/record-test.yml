@@ -21,6 +21,7 @@ jobs:
     environment: Live Testing
     env:
       version_suffix_args: ${{ format('/p:VersionSuffix="alpha.{0}"', github.run_number) }}
+      TEST_FILTER: ${{ inputs.filter }}
     steps:
       - name: Setup .NET 10
         uses: actions/setup-dotnet@v5
@@ -53,7 +54,6 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           CLIENTMODEL_TEST_MODE: Record
-          TEST_FILTER: ${{ inputs.filter }}
 
       - name: Check for recording changes
         id: changes
@@ -79,13 +79,11 @@ jobs:
         env:
           CLIENTMODEL_TEST_MODE: Playback
           CLIENTMODEL_DISABLE_AUTO_RECORDING: "true"
-          TEST_FILTER: ${{ inputs.filter }}
 
       - name: Create PR with recordings
         if: steps.changes.outputs.has_changes == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TEST_FILTER: ${{ inputs.filter }}
         run: |
           BASE_BRANCH="${{ github.ref_name }}"
           RECORDING_BRANCH="record-test/${{ github.run_id }}"
