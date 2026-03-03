@@ -6293,6 +6293,7 @@ namespace OpenAI.Responses {
         public string InputFileBytesMediaType { get; }
         public string InputFileId { get; }
         public string InputFilename { get; }
+        public Uri InputFileUri { get; }
         public ResponseImageDetailLevel? InputImageDetailLevel { get; }
         public string InputImageFileId { get; }
         public Uri InputImageUri { get; }
@@ -6305,6 +6306,7 @@ namespace OpenAI.Responses {
         public string Text { get; }
         public static ResponseContentPart CreateInputFilePart(BinaryData fileBytes, string fileBytesMediaType, string filename);
         public static ResponseContentPart CreateInputFilePart(string fileId);
+        public static ResponseContentPart CreateInputFilePart(Uri fileUri);
         public static ResponseContentPart CreateInputImagePart(string imageFileId, ResponseImageDetailLevel? imageDetailLevel = null);
         public static ResponseContentPart CreateInputImagePart(Uri imageUri, ResponseImageDetailLevel? imageDetailLevel = null);
         public static ResponseContentPart CreateInputTextPart(string text);

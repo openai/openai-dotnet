@@ -1236,6 +1236,9 @@ model ItemContentInputFile extends ItemContent {
   /** The ID of the file to be sent to the model. */
   file_id?: string | null;
 
+  /** The URL of the file to be sent to the model. */
+  file_url?: url | null;
+
   /** The name of the file to be sent to the model. */
   filename?: string;
 
