@@ -221,7 +221,7 @@ model FineTuningJob {
 
   /** A list of integrations to enable for this fine-tuning job. */
   // Tool note: can't automatically apply to nullable: @maxItems(5)
-  integrations?: FineTuningIntegration[] | null;
+  integrations?: CreateFineTuningJobRequestIntegration[] | null;
 
   /** The seed used for the fine-tuning job. */
   seed: int32;
@@ -236,7 +236,7 @@ model FineTuningJob {
 }
 
 // Tool customization (apply_discriminator): Convert to instantiation of discriminated type
-model FineTuningIntegrationWandb extends FineTuningIntegration {
+model FineTuningIntegrationWandb extends CreateFineTuningJobRequestWandbIntegration {
   /** The type of the integration being enabled for the fine-tuning job */
   type: "wandb";
 
