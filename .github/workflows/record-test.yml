@@ -1,12 +1,14 @@
-# This workflow is triggered manually and runs tests in Record mode, then commits the session
-# recordings and creates a PR against the target branch.
+# This workflow is triggered manually for a target branch and requires a filter expression to run a
+# subset of tests in Record mode. It commits the resulting session recordings and creates a PR
+# against the target branch. Use this workflow to record new tests or re-record existing tests on
+# behalf of the Copilot Coding Agent.
 name: "[Test] Record tests"
 
 on:
   workflow_dispatch:
     inputs:
       filter:
-        description: 'Test filter (e.g., TestCategory=Chat or FullyQualifiedName~ChatTests). Syntax: https://learn.microsoft.com/dotnet/core/testing/selective-unit-tests?pivots=nunit'
+        description: 'Test filter expression (e.g., TestCategory=Chat or FullyQualifiedName~ChatTests). Syntax: https://learn.microsoft.com/dotnet/core/testing/selective-unit-tests?pivots=nunit'
         required: true
         type: string
 
