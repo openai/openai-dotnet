@@ -16,6 +16,39 @@ namespace OpenAI.Realtime
         {
         }
 
+        protected virtual RealtimeCustomTruncation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeCustomTruncation>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRealtimeCustomTruncation(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeCustomTruncation)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeCustomTruncation>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeCustomTruncation)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RealtimeCustomTruncation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RealtimeCustomTruncation IPersistableModel<RealtimeCustomTruncation>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RealtimeCustomTruncation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RealtimeCustomTruncation>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -76,38 +109,5 @@ namespace OpenAI.Realtime
             }
             return InternalUnknownRealtimeTruncationBaseGA.DeserializeInternalUnknownRealtimeTruncationBaseGA(element, data, options);
         }
-
-        BinaryData IPersistableModel<RealtimeCustomTruncation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeCustomTruncation>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeCustomTruncation)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RealtimeCustomTruncation IPersistableModel<RealtimeCustomTruncation>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual RealtimeCustomTruncation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeCustomTruncation>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRealtimeCustomTruncation(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeCustomTruncation)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RealtimeCustomTruncation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

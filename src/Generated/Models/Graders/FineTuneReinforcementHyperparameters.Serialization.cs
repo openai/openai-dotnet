@@ -13,6 +13,39 @@ namespace OpenAI.Graders
 {
     public partial class FineTuneReinforcementHyperparameters : IJsonModel<FineTuneReinforcementHyperparameters>
     {
+        protected virtual FineTuneReinforcementHyperparameters PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<FineTuneReinforcementHyperparameters>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeFineTuneReinforcementHyperparameters(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(FineTuneReinforcementHyperparameters)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<FineTuneReinforcementHyperparameters>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(FineTuneReinforcementHyperparameters)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<FineTuneReinforcementHyperparameters>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        FineTuneReinforcementHyperparameters IPersistableModel<FineTuneReinforcementHyperparameters>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<FineTuneReinforcementHyperparameters>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<FineTuneReinforcementHyperparameters>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -231,38 +264,5 @@ namespace OpenAI.Graders
                 evalSamples,
                 additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<FineTuneReinforcementHyperparameters>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<FineTuneReinforcementHyperparameters>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(FineTuneReinforcementHyperparameters)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        FineTuneReinforcementHyperparameters IPersistableModel<FineTuneReinforcementHyperparameters>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual FineTuneReinforcementHyperparameters PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<FineTuneReinforcementHyperparameters>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeFineTuneReinforcementHyperparameters(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(FineTuneReinforcementHyperparameters)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<FineTuneReinforcementHyperparameters>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

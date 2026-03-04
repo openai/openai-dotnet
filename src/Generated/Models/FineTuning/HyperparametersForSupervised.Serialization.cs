@@ -12,6 +12,39 @@ namespace OpenAI.FineTuning
 {
     public partial class HyperparametersForSupervised : MethodHyperparameters, IJsonModel<HyperparametersForSupervised>
     {
+        protected virtual HyperparametersForSupervised PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<HyperparametersForSupervised>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeHyperparametersForSupervised(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(HyperparametersForSupervised)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<HyperparametersForSupervised>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(HyperparametersForSupervised)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<HyperparametersForSupervised>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        HyperparametersForSupervised IPersistableModel<HyperparametersForSupervised>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<HyperparametersForSupervised>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<HyperparametersForSupervised>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -141,38 +174,5 @@ namespace OpenAI.FineTuning
             }
             return new HyperparametersForSupervised(batchSize, learningRateMultiplier, nEpochs, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<HyperparametersForSupervised>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<HyperparametersForSupervised>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(HyperparametersForSupervised)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        HyperparametersForSupervised IPersistableModel<HyperparametersForSupervised>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual HyperparametersForSupervised PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<HyperparametersForSupervised>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeHyperparametersForSupervised(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(HyperparametersForSupervised)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<HyperparametersForSupervised>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

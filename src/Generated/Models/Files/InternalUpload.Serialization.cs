@@ -17,6 +17,46 @@ namespace OpenAI.Files
         {
         }
 
+        protected virtual InternalUpload PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalUpload>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalUpload(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalUpload)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalUpload>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalUpload)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalUpload>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalUpload IPersistableModel<InternalUpload>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalUpload>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator InternalUpload(ClientResult result)
+        {
+            PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeInternalUpload(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
+
         void IJsonModel<InternalUpload>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -197,46 +237,6 @@ namespace OpenAI.Files
                 @object,
                 @file,
                 additionalBinaryDataProperties);
-        }
-
-        BinaryData IPersistableModel<InternalUpload>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalUpload>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalUpload)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalUpload IPersistableModel<InternalUpload>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalUpload PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalUpload>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalUpload(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalUpload)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalUpload>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static explicit operator InternalUpload(ClientResult result)
-        {
-            PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
-            return DeserializeInternalUpload(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

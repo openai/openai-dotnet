@@ -16,6 +16,39 @@ namespace OpenAI.Audio
         {
         }
 
+        protected virtual AudioTokenLogProbabilityDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<AudioTokenLogProbabilityDetails>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeAudioTokenLogProbabilityDetails(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(AudioTokenLogProbabilityDetails)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<AudioTokenLogProbabilityDetails>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(AudioTokenLogProbabilityDetails)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<AudioTokenLogProbabilityDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        AudioTokenLogProbabilityDetails IPersistableModel<AudioTokenLogProbabilityDetails>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<AudioTokenLogProbabilityDetails>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<AudioTokenLogProbabilityDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -128,38 +161,5 @@ namespace OpenAI.Audio
             }
             return new AudioTokenLogProbabilityDetails(token, logProbability, utf8Bytes, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<AudioTokenLogProbabilityDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<AudioTokenLogProbabilityDetails>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(AudioTokenLogProbabilityDetails)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        AudioTokenLogProbabilityDetails IPersistableModel<AudioTokenLogProbabilityDetails>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual AudioTokenLogProbabilityDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<AudioTokenLogProbabilityDetails>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeAudioTokenLogProbabilityDetails(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(AudioTokenLogProbabilityDetails)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<AudioTokenLogProbabilityDetails>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

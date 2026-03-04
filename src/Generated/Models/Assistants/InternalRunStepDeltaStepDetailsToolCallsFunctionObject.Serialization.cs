@@ -16,6 +16,39 @@ namespace OpenAI.Assistants
         {
         }
 
+        protected override InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsFunctionObject>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalRunStepDeltaStepDetailsToolCallsFunctionObject(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalRunStepDeltaStepDetailsToolCallsFunctionObject)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsFunctionObject>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalRunStepDeltaStepDetailsToolCallsFunctionObject)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsFunctionObject>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalRunStepDeltaStepDetailsToolCallsFunctionObject IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsFunctionObject>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalRunStepDeltaStepDetailsToolCallsFunctionObject)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsFunctionObject>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalRunStepDeltaStepDetailsToolCallsFunctionObject>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -103,38 +136,5 @@ namespace OpenAI.Assistants
             }
             return new InternalRunStepDeltaStepDetailsToolCallsFunctionObject(kind, additionalBinaryDataProperties, index, id, function);
         }
-
-        BinaryData IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsFunctionObject>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsFunctionObject>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalRunStepDeltaStepDetailsToolCallsFunctionObject)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalRunStepDeltaStepDetailsToolCallsFunctionObject IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsFunctionObject>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalRunStepDeltaStepDetailsToolCallsFunctionObject)PersistableModelCreateCore(data, options);
-
-        protected override InternalRunStepDeltaStepDetailsToolCallsObjectToolCallsObject PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsFunctionObject>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalRunStepDeltaStepDetailsToolCallsFunctionObject(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalRunStepDeltaStepDetailsToolCallsFunctionObject)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalRunStepDeltaStepDetailsToolCallsFunctionObject>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

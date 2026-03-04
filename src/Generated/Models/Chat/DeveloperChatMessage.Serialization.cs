@@ -12,6 +12,39 @@ namespace OpenAI.Chat
 {
     public partial class DeveloperChatMessage : ChatMessage, IJsonModel<DeveloperChatMessage>
     {
+        protected override ChatMessage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<DeveloperChatMessage>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeDeveloperChatMessage(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(DeveloperChatMessage)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<DeveloperChatMessage>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(DeveloperChatMessage)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<DeveloperChatMessage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        DeveloperChatMessage IPersistableModel<DeveloperChatMessage>.Create(BinaryData data, ModelReaderWriterOptions options) => (DeveloperChatMessage)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<DeveloperChatMessage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<DeveloperChatMessage>)this).GetFormatFromOptions(options) : options.Format;
@@ -65,7 +98,7 @@ namespace OpenAI.Chat
                 }
                 if (prop.NameEquals("content"u8))
                 {
-                    DeserializeContentValue(prop, ref content);
+                    DeserializeContentValue(prop, ref content, options);
                     continue;
                 }
                 if (prop.NameEquals("name"u8))
@@ -77,38 +110,5 @@ namespace OpenAI.Chat
             }
             return new DeveloperChatMessage(role, content, patch, participantName);
         }
-
-        BinaryData IPersistableModel<DeveloperChatMessage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<DeveloperChatMessage>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(DeveloperChatMessage)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        DeveloperChatMessage IPersistableModel<DeveloperChatMessage>.Create(BinaryData data, ModelReaderWriterOptions options) => (DeveloperChatMessage)PersistableModelCreateCore(data, options);
-
-        protected override ChatMessage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<DeveloperChatMessage>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeDeveloperChatMessage(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(DeveloperChatMessage)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<DeveloperChatMessage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

@@ -16,6 +16,39 @@ namespace OpenAI.Realtime
         {
         }
 
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerUpdateConversationItemDeleted>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRealtimeServerUpdateConversationItemDeleted(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeServerUpdateConversationItemDeleted)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerUpdateConversationItemDeleted>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeServerUpdateConversationItemDeleted)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RealtimeServerUpdateConversationItemDeleted>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RealtimeServerUpdateConversationItemDeleted IPersistableModel<RealtimeServerUpdateConversationItemDeleted>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeServerUpdateConversationItemDeleted)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RealtimeServerUpdateConversationItemDeleted>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RealtimeServerUpdateConversationItemDeleted>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -101,38 +134,5 @@ namespace OpenAI.Realtime
             }
             return new RealtimeServerUpdateConversationItemDeleted(kind, patch, eventId, itemId);
         }
-
-        BinaryData IPersistableModel<RealtimeServerUpdateConversationItemDeleted>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerUpdateConversationItemDeleted>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeServerUpdateConversationItemDeleted)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RealtimeServerUpdateConversationItemDeleted IPersistableModel<RealtimeServerUpdateConversationItemDeleted>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeServerUpdateConversationItemDeleted)PersistableModelCreateCore(data, options);
-
-        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerUpdateConversationItemDeleted>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRealtimeServerUpdateConversationItemDeleted(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeServerUpdateConversationItemDeleted)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RealtimeServerUpdateConversationItemDeleted>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

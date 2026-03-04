@@ -16,6 +16,39 @@ namespace OpenAI.Assistants
         {
         }
 
+        protected virtual InternalRequiredFunctionToolCall PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRequiredFunctionToolCall>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalRequiredFunctionToolCall(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalRequiredFunctionToolCall)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRequiredFunctionToolCall>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalRequiredFunctionToolCall)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalRequiredFunctionToolCall>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalRequiredFunctionToolCall IPersistableModel<InternalRequiredFunctionToolCall>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalRequiredFunctionToolCall>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalRequiredFunctionToolCall>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -112,38 +145,5 @@ namespace OpenAI.Assistants
             }
             return new InternalRequiredFunctionToolCall(id, kind, internalFunction, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalRequiredFunctionToolCall>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalRequiredFunctionToolCall>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalRequiredFunctionToolCall)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalRequiredFunctionToolCall IPersistableModel<InternalRequiredFunctionToolCall>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalRequiredFunctionToolCall PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalRequiredFunctionToolCall>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalRequiredFunctionToolCall(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalRequiredFunctionToolCall)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalRequiredFunctionToolCall>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

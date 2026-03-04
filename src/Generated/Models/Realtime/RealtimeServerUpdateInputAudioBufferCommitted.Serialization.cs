@@ -16,6 +16,39 @@ namespace OpenAI.Realtime
         {
         }
 
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerUpdateInputAudioBufferCommitted>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRealtimeServerUpdateInputAudioBufferCommitted(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeServerUpdateInputAudioBufferCommitted)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerUpdateInputAudioBufferCommitted>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeServerUpdateInputAudioBufferCommitted)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RealtimeServerUpdateInputAudioBufferCommitted>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RealtimeServerUpdateInputAudioBufferCommitted IPersistableModel<RealtimeServerUpdateInputAudioBufferCommitted>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeServerUpdateInputAudioBufferCommitted)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RealtimeServerUpdateInputAudioBufferCommitted>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RealtimeServerUpdateInputAudioBufferCommitted>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -117,38 +150,5 @@ namespace OpenAI.Realtime
             }
             return new RealtimeServerUpdateInputAudioBufferCommitted(kind, patch, eventId, previousItemId, itemId);
         }
-
-        BinaryData IPersistableModel<RealtimeServerUpdateInputAudioBufferCommitted>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerUpdateInputAudioBufferCommitted>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeServerUpdateInputAudioBufferCommitted)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RealtimeServerUpdateInputAudioBufferCommitted IPersistableModel<RealtimeServerUpdateInputAudioBufferCommitted>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeServerUpdateInputAudioBufferCommitted)PersistableModelCreateCore(data, options);
-
-        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerUpdateInputAudioBufferCommitted>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRealtimeServerUpdateInputAudioBufferCommitted(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeServerUpdateInputAudioBufferCommitted)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RealtimeServerUpdateInputAudioBufferCommitted>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

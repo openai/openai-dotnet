@@ -12,6 +12,39 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath : IJsonModel<InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath>
     {
+        protected virtual InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath IPersistableModel<InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -86,38 +119,5 @@ namespace OpenAI.Assistants
             }
             return new InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath(fileId, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath IPersistableModel<InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalMessageDeltaContentTextAnnotationsFilePathObjectFilePath>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

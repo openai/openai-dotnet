@@ -16,6 +16,39 @@ namespace OpenAI.Realtime
         {
         }
 
+        protected override RealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeClientCommandConversationItemRetrieve>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRealtimeClientCommandConversationItemRetrieve(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeClientCommandConversationItemRetrieve)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeClientCommandConversationItemRetrieve>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeClientCommandConversationItemRetrieve)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RealtimeClientCommandConversationItemRetrieve>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RealtimeClientCommandConversationItemRetrieve IPersistableModel<RealtimeClientCommandConversationItemRetrieve>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeClientCommandConversationItemRetrieve)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RealtimeClientCommandConversationItemRetrieve>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RealtimeClientCommandConversationItemRetrieve>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -101,38 +134,5 @@ namespace OpenAI.Realtime
             }
             return new RealtimeClientCommandConversationItemRetrieve(kind, patch, eventId, itemId);
         }
-
-        BinaryData IPersistableModel<RealtimeClientCommandConversationItemRetrieve>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeClientCommandConversationItemRetrieve>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeClientCommandConversationItemRetrieve)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RealtimeClientCommandConversationItemRetrieve IPersistableModel<RealtimeClientCommandConversationItemRetrieve>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeClientCommandConversationItemRetrieve)PersistableModelCreateCore(data, options);
-
-        protected override RealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeClientCommandConversationItemRetrieve>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRealtimeClientCommandConversationItemRetrieve(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeClientCommandConversationItemRetrieve)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RealtimeClientCommandConversationItemRetrieve>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

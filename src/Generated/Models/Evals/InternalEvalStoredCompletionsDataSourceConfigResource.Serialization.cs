@@ -16,6 +16,39 @@ namespace OpenAI.Evals
         {
         }
 
+        protected override InternalEvalDataSourceConfigResource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalEvalStoredCompletionsDataSourceConfigResource>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalEvalStoredCompletionsDataSourceConfigResource(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalEvalStoredCompletionsDataSourceConfigResource)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalEvalStoredCompletionsDataSourceConfigResource>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalEvalStoredCompletionsDataSourceConfigResource)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalEvalStoredCompletionsDataSourceConfigResource>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalEvalStoredCompletionsDataSourceConfigResource IPersistableModel<InternalEvalStoredCompletionsDataSourceConfigResource>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalEvalStoredCompletionsDataSourceConfigResource)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalEvalStoredCompletionsDataSourceConfigResource>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalEvalStoredCompletionsDataSourceConfigResource>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -153,38 +186,5 @@ namespace OpenAI.Evals
             }
             return new InternalEvalStoredCompletionsDataSourceConfigResource(kind, additionalBinaryDataProperties, metadata, schema);
         }
-
-        BinaryData IPersistableModel<InternalEvalStoredCompletionsDataSourceConfigResource>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalEvalStoredCompletionsDataSourceConfigResource>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalEvalStoredCompletionsDataSourceConfigResource)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalEvalStoredCompletionsDataSourceConfigResource IPersistableModel<InternalEvalStoredCompletionsDataSourceConfigResource>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalEvalStoredCompletionsDataSourceConfigResource)PersistableModelCreateCore(data, options);
-
-        protected override InternalEvalDataSourceConfigResource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalEvalStoredCompletionsDataSourceConfigResource>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalEvalStoredCompletionsDataSourceConfigResource(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalEvalStoredCompletionsDataSourceConfigResource)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalEvalStoredCompletionsDataSourceConfigResource>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

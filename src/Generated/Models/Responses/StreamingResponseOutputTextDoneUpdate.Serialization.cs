@@ -16,6 +16,39 @@ namespace OpenAI.Responses
         {
         }
 
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseOutputTextDoneUpdate>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeStreamingResponseOutputTextDoneUpdate(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(StreamingResponseOutputTextDoneUpdate)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseOutputTextDoneUpdate>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(StreamingResponseOutputTextDoneUpdate)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<StreamingResponseOutputTextDoneUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        StreamingResponseOutputTextDoneUpdate IPersistableModel<StreamingResponseOutputTextDoneUpdate>.Create(BinaryData data, ModelReaderWriterOptions options) => (StreamingResponseOutputTextDoneUpdate)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<StreamingResponseOutputTextDoneUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<StreamingResponseOutputTextDoneUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -136,38 +169,5 @@ namespace OpenAI.Responses
                 contentIndex,
                 text);
         }
-
-        BinaryData IPersistableModel<StreamingResponseOutputTextDoneUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseOutputTextDoneUpdate>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(StreamingResponseOutputTextDoneUpdate)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        StreamingResponseOutputTextDoneUpdate IPersistableModel<StreamingResponseOutputTextDoneUpdate>.Create(BinaryData data, ModelReaderWriterOptions options) => (StreamingResponseOutputTextDoneUpdate)PersistableModelCreateCore(data, options);
-
-        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseOutputTextDoneUpdate>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeStreamingResponseOutputTextDoneUpdate(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(StreamingResponseOutputTextDoneUpdate)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<StreamingResponseOutputTextDoneUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

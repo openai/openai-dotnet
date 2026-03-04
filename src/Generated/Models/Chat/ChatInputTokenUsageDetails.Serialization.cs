@@ -13,6 +13,41 @@ namespace OpenAI.Chat
 {
     public partial class ChatInputTokenUsageDetails : IJsonModel<ChatInputTokenUsageDetails>
     {
+        [Experimental("OPENAI001")]
+        protected virtual ChatInputTokenUsageDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ChatInputTokenUsageDetails>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeChatInputTokenUsageDetails(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(ChatInputTokenUsageDetails)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        [Experimental("OPENAI001")]
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ChatInputTokenUsageDetails>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(ChatInputTokenUsageDetails)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<ChatInputTokenUsageDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        ChatInputTokenUsageDetails IPersistableModel<ChatInputTokenUsageDetails>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<ChatInputTokenUsageDetails>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<ChatInputTokenUsageDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -101,40 +136,5 @@ namespace OpenAI.Chat
             }
             return new ChatInputTokenUsageDetails(audioTokenCount, cachedTokenCount, patch);
         }
-
-        BinaryData IPersistableModel<ChatInputTokenUsageDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        [Experimental("OPENAI001")]
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ChatInputTokenUsageDetails>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(ChatInputTokenUsageDetails)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        ChatInputTokenUsageDetails IPersistableModel<ChatInputTokenUsageDetails>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        [Experimental("OPENAI001")]
-        protected virtual ChatInputTokenUsageDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ChatInputTokenUsageDetails>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeChatInputTokenUsageDetails(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(ChatInputTokenUsageDetails)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<ChatInputTokenUsageDetails>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

@@ -16,6 +16,39 @@ namespace OpenAI.Responses
         {
         }
 
+        protected override InternalItemParam PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalImageGenToolCallItemParam>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalImageGenToolCallItemParam(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalImageGenToolCallItemParam)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalImageGenToolCallItemParam>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalImageGenToolCallItemParam)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalImageGenToolCallItemParam>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalImageGenToolCallItemParam IPersistableModel<InternalImageGenToolCallItemParam>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalImageGenToolCallItemParam)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalImageGenToolCallItemParam>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalImageGenToolCallItemParam>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -99,38 +132,5 @@ namespace OpenAI.Responses
             }
             return new InternalImageGenToolCallItemParam(kind, patch, result);
         }
-
-        BinaryData IPersistableModel<InternalImageGenToolCallItemParam>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalImageGenToolCallItemParam>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalImageGenToolCallItemParam)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalImageGenToolCallItemParam IPersistableModel<InternalImageGenToolCallItemParam>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalImageGenToolCallItemParam)PersistableModelCreateCore(data, options);
-
-        protected override InternalItemParam PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalImageGenToolCallItemParam>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalImageGenToolCallItemParam(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalImageGenToolCallItemParam)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalImageGenToolCallItemParam>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

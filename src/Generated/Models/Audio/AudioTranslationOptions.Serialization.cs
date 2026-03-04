@@ -17,6 +17,41 @@ namespace OpenAI.Audio
         {
         }
 
+        [Experimental("OPENAI001")]
+        protected virtual AudioTranslationOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<AudioTranslationOptions>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeAudioTranslationOptions(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(AudioTranslationOptions)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        [Experimental("OPENAI001")]
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<AudioTranslationOptions>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(AudioTranslationOptions)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<AudioTranslationOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        AudioTranslationOptions IPersistableModel<AudioTranslationOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<AudioTranslationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<AudioTranslationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -151,40 +186,5 @@ namespace OpenAI.Audio
                 temperature,
                 additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<AudioTranslationOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        [Experimental("OPENAI001")]
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<AudioTranslationOptions>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(AudioTranslationOptions)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        AudioTranslationOptions IPersistableModel<AudioTranslationOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        [Experimental("OPENAI001")]
-        protected virtual AudioTranslationOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<AudioTranslationOptions>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeAudioTranslationOptions(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(AudioTranslationOptions)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<AudioTranslationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

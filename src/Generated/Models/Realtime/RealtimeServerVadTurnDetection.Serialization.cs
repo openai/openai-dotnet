@@ -12,6 +12,39 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeServerVadTurnDetection : RealtimeTurnDetection, IJsonModel<RealtimeServerVadTurnDetection>
     {
+        protected override RealtimeTurnDetection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRealtimeServerVadTurnDetection(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeServerVadTurnDetection)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeServerVadTurnDetection)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RealtimeServerVadTurnDetection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RealtimeServerVadTurnDetection IPersistableModel<RealtimeServerVadTurnDetection>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeServerVadTurnDetection)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RealtimeServerVadTurnDetection>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RealtimeServerVadTurnDetection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -174,38 +207,5 @@ namespace OpenAI.Realtime
                 interruptResponseEnabled,
                 idleTimeout);
         }
-
-        BinaryData IPersistableModel<RealtimeServerVadTurnDetection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeServerVadTurnDetection)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RealtimeServerVadTurnDetection IPersistableModel<RealtimeServerVadTurnDetection>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeServerVadTurnDetection)PersistableModelCreateCore(data, options);
-
-        protected override RealtimeTurnDetection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRealtimeServerVadTurnDetection(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeServerVadTurnDetection)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RealtimeServerVadTurnDetection>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

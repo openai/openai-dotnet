@@ -16,6 +16,39 @@ namespace OpenAI.Responses
         {
         }
 
+        protected override ResponseContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalItemContentInputAudio>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalItemContentInputAudio(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalItemContentInputAudio)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalItemContentInputAudio>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalItemContentInputAudio)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalItemContentInputAudio>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalItemContentInputAudio IPersistableModel<InternalItemContentInputAudio>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalItemContentInputAudio)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalItemContentInputAudio>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalItemContentInputAudio>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -101,38 +134,5 @@ namespace OpenAI.Responses
             }
             return new InternalItemContentInputAudio(internalType, patch, data0, format);
         }
-
-        BinaryData IPersistableModel<InternalItemContentInputAudio>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalItemContentInputAudio>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalItemContentInputAudio)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalItemContentInputAudio IPersistableModel<InternalItemContentInputAudio>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalItemContentInputAudio)PersistableModelCreateCore(data, options);
-
-        protected override ResponseContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalItemContentInputAudio>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalItemContentInputAudio(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalItemContentInputAudio)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalItemContentInputAudio>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

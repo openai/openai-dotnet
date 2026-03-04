@@ -16,6 +16,39 @@ namespace OpenAI.Responses
         {
         }
 
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseImageGenerationCallCompletedUpdate>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeStreamingResponseImageGenerationCallCompletedUpdate(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(StreamingResponseImageGenerationCallCompletedUpdate)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseImageGenerationCallCompletedUpdate>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(StreamingResponseImageGenerationCallCompletedUpdate)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<StreamingResponseImageGenerationCallCompletedUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        StreamingResponseImageGenerationCallCompletedUpdate IPersistableModel<StreamingResponseImageGenerationCallCompletedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options) => (StreamingResponseImageGenerationCallCompletedUpdate)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<StreamingResponseImageGenerationCallCompletedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<StreamingResponseImageGenerationCallCompletedUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -107,38 +140,5 @@ namespace OpenAI.Responses
             }
             return new StreamingResponseImageGenerationCallCompletedUpdate(kind, sequenceNumber, patch, outputIndex, itemId);
         }
-
-        BinaryData IPersistableModel<StreamingResponseImageGenerationCallCompletedUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseImageGenerationCallCompletedUpdate>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(StreamingResponseImageGenerationCallCompletedUpdate)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        StreamingResponseImageGenerationCallCompletedUpdate IPersistableModel<StreamingResponseImageGenerationCallCompletedUpdate>.Create(BinaryData data, ModelReaderWriterOptions options) => (StreamingResponseImageGenerationCallCompletedUpdate)PersistableModelCreateCore(data, options);
-
-        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseImageGenerationCallCompletedUpdate>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeStreamingResponseImageGenerationCallCompletedUpdate(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(StreamingResponseImageGenerationCallCompletedUpdate)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<StreamingResponseImageGenerationCallCompletedUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

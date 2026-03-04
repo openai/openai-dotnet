@@ -16,6 +16,39 @@ namespace OpenAI.Assistants
         {
         }
 
+        protected override InternalMessageDeltaTextContentAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaTextContentAnnotation>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalMessageDeltaTextContentAnnotation(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalMessageDeltaTextContentAnnotation)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaTextContentAnnotation>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalMessageDeltaTextContentAnnotation)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalMessageDeltaTextContentAnnotation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalMessageDeltaTextContentAnnotation IPersistableModel<InternalMessageDeltaTextContentAnnotation>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalMessageDeltaTextContentAnnotation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalMessageDeltaTextContentAnnotation>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -66,38 +99,5 @@ namespace OpenAI.Assistants
             }
             return new UnknownMessageDeltaTextContentAnnotation(kind, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalMessageDeltaTextContentAnnotation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaTextContentAnnotation>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalMessageDeltaTextContentAnnotation)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalMessageDeltaTextContentAnnotation IPersistableModel<InternalMessageDeltaTextContentAnnotation>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected override InternalMessageDeltaTextContentAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaTextContentAnnotation>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalMessageDeltaTextContentAnnotation(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalMessageDeltaTextContentAnnotation)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalMessageDeltaTextContentAnnotation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

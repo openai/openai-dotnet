@@ -16,6 +16,39 @@ namespace OpenAI.FineTuning
         {
         }
 
+        protected virtual FineTuningIntegrationWandbWandb PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<FineTuningIntegrationWandbWandb>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeFineTuningIntegrationWandbWandb(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(FineTuningIntegrationWandbWandb)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<FineTuningIntegrationWandbWandb>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(FineTuningIntegrationWandbWandb)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<FineTuningIntegrationWandbWandb>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        FineTuningIntegrationWandbWandb IPersistableModel<FineTuningIntegrationWandbWandb>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<FineTuningIntegrationWandbWandb>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<FineTuningIntegrationWandbWandb>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -159,38 +192,5 @@ namespace OpenAI.FineTuning
             }
             return new FineTuningIntegrationWandbWandb(project, name, entity, tags ?? new ChangeTrackingList<string>(), additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<FineTuningIntegrationWandbWandb>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<FineTuningIntegrationWandbWandb>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(FineTuningIntegrationWandbWandb)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        FineTuningIntegrationWandbWandb IPersistableModel<FineTuningIntegrationWandbWandb>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual FineTuningIntegrationWandbWandb PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<FineTuningIntegrationWandbWandb>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeFineTuningIntegrationWandbWandb(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(FineTuningIntegrationWandbWandb)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<FineTuningIntegrationWandbWandb>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

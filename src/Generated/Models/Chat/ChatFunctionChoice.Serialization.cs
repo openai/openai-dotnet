@@ -13,6 +13,41 @@ namespace OpenAI.Chat
     public partial class ChatFunctionChoice : IJsonModel<ChatFunctionChoice>
     {
         [Experimental("OPENAI001")]
+        protected virtual ChatFunctionChoice PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ChatFunctionChoice>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeChatFunctionChoice(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(ChatFunctionChoice)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        [Experimental("OPENAI001")]
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ChatFunctionChoice>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(ChatFunctionChoice)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<ChatFunctionChoice>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        ChatFunctionChoice IPersistableModel<ChatFunctionChoice>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<ChatFunctionChoice>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        [Experimental("OPENAI001")]
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<ChatFunctionChoice>)this).GetFormatFromOptions(options) : options.Format;
@@ -39,40 +74,5 @@ namespace OpenAI.Chat
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
             return DeserializeChatFunctionChoice(document.RootElement, null, options);
         }
-
-        BinaryData IPersistableModel<ChatFunctionChoice>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        [Experimental("OPENAI001")]
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ChatFunctionChoice>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(ChatFunctionChoice)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        ChatFunctionChoice IPersistableModel<ChatFunctionChoice>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        [Experimental("OPENAI001")]
-        protected virtual ChatFunctionChoice PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ChatFunctionChoice>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeChatFunctionChoice(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(ChatFunctionChoice)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<ChatFunctionChoice>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

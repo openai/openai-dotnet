@@ -16,6 +16,39 @@ namespace OpenAI.Chat
         {
         }
 
+        protected virtual InternalChatCompletionRequestMessageContentPartImageImageUrl PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionRequestMessageContentPartImageImageUrl>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalChatCompletionRequestMessageContentPartImageImageUrl(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalChatCompletionRequestMessageContentPartImageImageUrl)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionRequestMessageContentPartImageImageUrl>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalChatCompletionRequestMessageContentPartImageImageUrl)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalChatCompletionRequestMessageContentPartImageImageUrl>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalChatCompletionRequestMessageContentPartImageImageUrl IPersistableModel<InternalChatCompletionRequestMessageContentPartImageImageUrl>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalChatCompletionRequestMessageContentPartImageImageUrl>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalChatCompletionRequestMessageContentPartImageImageUrl>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -98,38 +131,5 @@ namespace OpenAI.Chat
             }
             return new InternalChatCompletionRequestMessageContentPartImageImageUrl(internalUrl, detail, patch);
         }
-
-        BinaryData IPersistableModel<InternalChatCompletionRequestMessageContentPartImageImageUrl>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionRequestMessageContentPartImageImageUrl>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalChatCompletionRequestMessageContentPartImageImageUrl)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalChatCompletionRequestMessageContentPartImageImageUrl IPersistableModel<InternalChatCompletionRequestMessageContentPartImageImageUrl>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalChatCompletionRequestMessageContentPartImageImageUrl PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionRequestMessageContentPartImageImageUrl>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalChatCompletionRequestMessageContentPartImageImageUrl(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalChatCompletionRequestMessageContentPartImageImageUrl)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalChatCompletionRequestMessageContentPartImageImageUrl>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

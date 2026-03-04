@@ -12,6 +12,39 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeSemanticVadTurnDetection : RealtimeTurnDetection, IJsonModel<RealtimeSemanticVadTurnDetection>
     {
+        protected override RealtimeTurnDetection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeSemanticVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRealtimeSemanticVadTurnDetection(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeSemanticVadTurnDetection)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeSemanticVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeSemanticVadTurnDetection)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RealtimeSemanticVadTurnDetection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RealtimeSemanticVadTurnDetection IPersistableModel<RealtimeSemanticVadTurnDetection>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeSemanticVadTurnDetection)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RealtimeSemanticVadTurnDetection>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RealtimeSemanticVadTurnDetection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -120,38 +153,5 @@ namespace OpenAI.Realtime
             }
             return new RealtimeSemanticVadTurnDetection(kind, patch, eagernessLevel, createResponseEnabled, interruptResponseEnabled);
         }
-
-        BinaryData IPersistableModel<RealtimeSemanticVadTurnDetection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeSemanticVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeSemanticVadTurnDetection)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RealtimeSemanticVadTurnDetection IPersistableModel<RealtimeSemanticVadTurnDetection>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeSemanticVadTurnDetection)PersistableModelCreateCore(data, options);
-
-        protected override RealtimeTurnDetection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeSemanticVadTurnDetection>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRealtimeSemanticVadTurnDetection(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeSemanticVadTurnDetection)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RealtimeSemanticVadTurnDetection>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

@@ -13,6 +13,39 @@ namespace OpenAI.Chat
 {
     internal partial class InternalDotNetChatResponseFormatJsonObject : ChatResponseFormat, IJsonModel<InternalDotNetChatResponseFormatJsonObject>
     {
+        protected override ChatResponseFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalDotNetChatResponseFormatJsonObject>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalDotNetChatResponseFormatJsonObject(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalDotNetChatResponseFormatJsonObject)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalDotNetChatResponseFormatJsonObject>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalDotNetChatResponseFormatJsonObject)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalDotNetChatResponseFormatJsonObject>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalDotNetChatResponseFormatJsonObject IPersistableModel<InternalDotNetChatResponseFormatJsonObject>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalDotNetChatResponseFormatJsonObject)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalDotNetChatResponseFormatJsonObject>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalDotNetChatResponseFormatJsonObject>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -76,38 +109,5 @@ namespace OpenAI.Chat
             }
             return new InternalDotNetChatResponseFormatJsonObject(kind, patch);
         }
-
-        BinaryData IPersistableModel<InternalDotNetChatResponseFormatJsonObject>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalDotNetChatResponseFormatJsonObject>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalDotNetChatResponseFormatJsonObject)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalDotNetChatResponseFormatJsonObject IPersistableModel<InternalDotNetChatResponseFormatJsonObject>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalDotNetChatResponseFormatJsonObject)PersistableModelCreateCore(data, options);
-
-        protected override ChatResponseFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalDotNetChatResponseFormatJsonObject>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalDotNetChatResponseFormatJsonObject(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalDotNetChatResponseFormatJsonObject)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalDotNetChatResponseFormatJsonObject>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

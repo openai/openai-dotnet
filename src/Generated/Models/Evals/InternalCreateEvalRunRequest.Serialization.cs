@@ -16,6 +16,39 @@ namespace OpenAI.Evals
         {
         }
 
+        protected virtual InternalCreateEvalRunRequest PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateEvalRunRequest>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalCreateEvalRunRequest(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalCreateEvalRunRequest)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateEvalRunRequest>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalCreateEvalRunRequest)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalCreateEvalRunRequest>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalCreateEvalRunRequest IPersistableModel<InternalCreateEvalRunRequest>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalCreateEvalRunRequest>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalCreateEvalRunRequest>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -139,38 +172,5 @@ namespace OpenAI.Evals
             }
             return new InternalCreateEvalRunRequest(name, metadata ?? new ChangeTrackingDictionary<string, string>(), dataSource, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalCreateEvalRunRequest>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateEvalRunRequest>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalCreateEvalRunRequest)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalCreateEvalRunRequest IPersistableModel<InternalCreateEvalRunRequest>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalCreateEvalRunRequest PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateEvalRunRequest>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalCreateEvalRunRequest(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalCreateEvalRunRequest)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalCreateEvalRunRequest>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

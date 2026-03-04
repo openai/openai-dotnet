@@ -17,6 +17,39 @@ namespace OpenAI.Responses
         {
         }
 
+        protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ComputerCallOutputResponseItem>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeComputerCallOutputResponseItem(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(ComputerCallOutputResponseItem)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ComputerCallOutputResponseItem>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(ComputerCallOutputResponseItem)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<ComputerCallOutputResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        ComputerCallOutputResponseItem IPersistableModel<ComputerCallOutputResponseItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (ComputerCallOutputResponseItem)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<ComputerCallOutputResponseItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<ComputerCallOutputResponseItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -166,39 +199,6 @@ namespace OpenAI.Responses
                 acknowledgedSafetyChecks ?? new ChangeTrackingList<ComputerCallSafetyCheck>(),
                 output);
         }
-
-        BinaryData IPersistableModel<ComputerCallOutputResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ComputerCallOutputResponseItem>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(ComputerCallOutputResponseItem)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        ComputerCallOutputResponseItem IPersistableModel<ComputerCallOutputResponseItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (ComputerCallOutputResponseItem)PersistableModelCreateCore(data, options);
-
-        protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ComputerCallOutputResponseItem>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeComputerCallOutputResponseItem(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(ComputerCallOutputResponseItem)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<ComputerCallOutputResponseItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)

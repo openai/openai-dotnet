@@ -12,6 +12,39 @@ namespace OpenAI.Audio
 {
     internal partial class InternalVadConfig : IJsonModel<InternalVadConfig>
     {
+        protected virtual InternalVadConfig PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalVadConfig>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalVadConfig(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalVadConfig)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalVadConfig>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalVadConfig)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalVadConfig>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalVadConfig IPersistableModel<InternalVadConfig>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalVadConfig>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalVadConfig>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -131,38 +164,5 @@ namespace OpenAI.Audio
             }
             return new InternalVadConfig(kind, prefixPaddingMs, silenceDurationMs, threshold, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalVadConfig>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalVadConfig>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalVadConfig)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalVadConfig IPersistableModel<InternalVadConfig>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalVadConfig PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalVadConfig>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalVadConfig(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalVadConfig)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalVadConfig>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

@@ -16,6 +16,39 @@ namespace OpenAI.Chat
         {
         }
 
+        protected virtual InternalChatCompletionResponseMessageAnnotationUrlCitation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionResponseMessageAnnotationUrlCitation>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalChatCompletionResponseMessageAnnotationUrlCitation(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalChatCompletionResponseMessageAnnotationUrlCitation)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionResponseMessageAnnotationUrlCitation>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalChatCompletionResponseMessageAnnotationUrlCitation)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalChatCompletionResponseMessageAnnotationUrlCitation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalChatCompletionResponseMessageAnnotationUrlCitation IPersistableModel<InternalChatCompletionResponseMessageAnnotationUrlCitation>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalChatCompletionResponseMessageAnnotationUrlCitation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalChatCompletionResponseMessageAnnotationUrlCitation>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -104,7 +137,7 @@ namespace OpenAI.Chat
                 }
                 if (prop.NameEquals("url"u8))
                 {
-                    url = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString());
+                    url = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString(), UriKind.RelativeOrAbsolute);
                     continue;
                 }
                 if (prop.NameEquals("title"u8))
@@ -116,38 +149,5 @@ namespace OpenAI.Chat
             }
             return new InternalChatCompletionResponseMessageAnnotationUrlCitation(endIndex, startIndex, url, title, patch);
         }
-
-        BinaryData IPersistableModel<InternalChatCompletionResponseMessageAnnotationUrlCitation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionResponseMessageAnnotationUrlCitation>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalChatCompletionResponseMessageAnnotationUrlCitation)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalChatCompletionResponseMessageAnnotationUrlCitation IPersistableModel<InternalChatCompletionResponseMessageAnnotationUrlCitation>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalChatCompletionResponseMessageAnnotationUrlCitation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionResponseMessageAnnotationUrlCitation>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalChatCompletionResponseMessageAnnotationUrlCitation(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalChatCompletionResponseMessageAnnotationUrlCitation)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalChatCompletionResponseMessageAnnotationUrlCitation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

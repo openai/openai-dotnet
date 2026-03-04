@@ -11,35 +11,6 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeToolChoice : IJsonModel<RealtimeToolChoice>
     {
-        RealtimeToolChoice IJsonModel<RealtimeToolChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
-
-        protected virtual RealtimeToolChoice JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeToolChoice>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(RealtimeToolChoice)} does not support reading '{format}' format.");
-            }
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeToolChoice(document.RootElement, null, options);
-        }
-
-        BinaryData IPersistableModel<RealtimeToolChoice>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeToolChoice>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeToolChoice)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RealtimeToolChoice IPersistableModel<RealtimeToolChoice>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
         protected virtual RealtimeToolChoice PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<RealtimeToolChoice>)this).GetFormatFromOptions(options) : options.Format;
@@ -55,7 +26,36 @@ namespace OpenAI.Realtime
             }
         }
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeToolChoice>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeToolChoice)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RealtimeToolChoice>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RealtimeToolChoice IPersistableModel<RealtimeToolChoice>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
         string IPersistableModel<RealtimeToolChoice>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        RealtimeToolChoice IJsonModel<RealtimeToolChoice>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual RealtimeToolChoice JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeToolChoice>)this).GetFormatFromOptions(options) : options.Format;
+            if (format != "J")
+            {
+                throw new FormatException($"The model {nameof(RealtimeToolChoice)} does not support reading '{format}' format.");
+            }
+            using JsonDocument document = JsonDocument.ParseValue(ref reader);
+            return DeserializeRealtimeToolChoice(document.RootElement, null, options);
+        }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)

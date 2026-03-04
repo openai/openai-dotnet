@@ -12,6 +12,39 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeClientSecretExpirationPolicy : IJsonModel<RealtimeClientSecretExpirationPolicy>
     {
+        protected virtual RealtimeClientSecretExpirationPolicy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeClientSecretExpirationPolicy>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRealtimeClientSecretExpirationPolicy(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeClientSecretExpirationPolicy)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeClientSecretExpirationPolicy>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeClientSecretExpirationPolicy)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RealtimeClientSecretExpirationPolicy>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RealtimeClientSecretExpirationPolicy IPersistableModel<RealtimeClientSecretExpirationPolicy>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RealtimeClientSecretExpirationPolicy>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RealtimeClientSecretExpirationPolicy>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -98,38 +131,5 @@ namespace OpenAI.Realtime
             }
             return new RealtimeClientSecretExpirationPolicy(anchor, seconds, patch);
         }
-
-        BinaryData IPersistableModel<RealtimeClientSecretExpirationPolicy>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeClientSecretExpirationPolicy>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeClientSecretExpirationPolicy)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RealtimeClientSecretExpirationPolicy IPersistableModel<RealtimeClientSecretExpirationPolicy>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual RealtimeClientSecretExpirationPolicy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeClientSecretExpirationPolicy>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRealtimeClientSecretExpirationPolicy(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeClientSecretExpirationPolicy)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RealtimeClientSecretExpirationPolicy>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

@@ -16,6 +16,39 @@ namespace OpenAI.Responses
         {
         }
 
+        protected override ComputerCallAction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionDoubleClick>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalComputerActionDoubleClick(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalComputerActionDoubleClick)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionDoubleClick>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalComputerActionDoubleClick)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalComputerActionDoubleClick>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalComputerActionDoubleClick IPersistableModel<InternalComputerActionDoubleClick>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalComputerActionDoubleClick)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalComputerActionDoubleClick>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalComputerActionDoubleClick>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -101,38 +134,5 @@ namespace OpenAI.Responses
             }
             return new InternalComputerActionDoubleClick(kind, patch, x, y);
         }
-
-        BinaryData IPersistableModel<InternalComputerActionDoubleClick>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionDoubleClick>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalComputerActionDoubleClick)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalComputerActionDoubleClick IPersistableModel<InternalComputerActionDoubleClick>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalComputerActionDoubleClick)PersistableModelCreateCore(data, options);
-
-        protected override ComputerCallAction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionDoubleClick>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalComputerActionDoubleClick(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalComputerActionDoubleClick)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalComputerActionDoubleClick>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

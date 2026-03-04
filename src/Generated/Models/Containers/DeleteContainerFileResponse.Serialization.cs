@@ -17,6 +17,46 @@ namespace OpenAI.Containers
         {
         }
 
+        protected virtual DeleteContainerFileResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<DeleteContainerFileResponse>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeDeleteContainerFileResponse(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(DeleteContainerFileResponse)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<DeleteContainerFileResponse>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(DeleteContainerFileResponse)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<DeleteContainerFileResponse>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        DeleteContainerFileResponse IPersistableModel<DeleteContainerFileResponse>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<DeleteContainerFileResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator DeleteContainerFileResponse(ClientResult result)
+        {
+            PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeDeleteContainerFileResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
+
         void IJsonModel<DeleteContainerFileResponse>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -112,46 +152,6 @@ namespace OpenAI.Containers
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new DeleteContainerFileResponse(id, @object, deleted, additionalBinaryDataProperties);
-        }
-
-        BinaryData IPersistableModel<DeleteContainerFileResponse>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<DeleteContainerFileResponse>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(DeleteContainerFileResponse)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        DeleteContainerFileResponse IPersistableModel<DeleteContainerFileResponse>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual DeleteContainerFileResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<DeleteContainerFileResponse>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeDeleteContainerFileResponse(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(DeleteContainerFileResponse)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<DeleteContainerFileResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static explicit operator DeleteContainerFileResponse(ClientResult result)
-        {
-            PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
-            return DeserializeDeleteContainerFileResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

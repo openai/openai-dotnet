@@ -12,6 +12,39 @@ namespace OpenAI.Batch
 {
     internal partial class InternalBatchRequestInput : IJsonModel<InternalBatchRequestInput>
     {
+        protected virtual InternalBatchRequestInput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalBatchRequestInput>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalBatchRequestInput(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalBatchRequestInput)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalBatchRequestInput>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalBatchRequestInput)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalBatchRequestInput>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalBatchRequestInput IPersistableModel<InternalBatchRequestInput>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalBatchRequestInput>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalBatchRequestInput>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -108,7 +141,7 @@ namespace OpenAI.Batch
                     {
                         continue;
                     }
-                    url = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString());
+                    url = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString(), UriKind.RelativeOrAbsolute);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
@@ -116,38 +149,5 @@ namespace OpenAI.Batch
             }
             return new InternalBatchRequestInput(customId, @method, url, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalBatchRequestInput>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalBatchRequestInput>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalBatchRequestInput)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalBatchRequestInput IPersistableModel<InternalBatchRequestInput>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalBatchRequestInput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalBatchRequestInput>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalBatchRequestInput(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalBatchRequestInput)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalBatchRequestInput>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

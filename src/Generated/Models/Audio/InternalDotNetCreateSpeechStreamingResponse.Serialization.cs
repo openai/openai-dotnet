@@ -16,6 +16,39 @@ namespace OpenAI.Audio
         {
         }
 
+        protected virtual InternalDotNetCreateSpeechStreamingResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalDotNetCreateSpeechStreamingResponse>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalDotNetCreateSpeechStreamingResponse(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalDotNetCreateSpeechStreamingResponse)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalDotNetCreateSpeechStreamingResponse>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalDotNetCreateSpeechStreamingResponse)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalDotNetCreateSpeechStreamingResponse>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalDotNetCreateSpeechStreamingResponse IPersistableModel<InternalDotNetCreateSpeechStreamingResponse>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalDotNetCreateSpeechStreamingResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalDotNetCreateSpeechStreamingResponse>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -88,38 +121,5 @@ namespace OpenAI.Audio
             }
             return InternalUnknownDotNetCreateSpeechStreamingResponse.DeserializeInternalUnknownDotNetCreateSpeechStreamingResponse(element, options);
         }
-
-        BinaryData IPersistableModel<InternalDotNetCreateSpeechStreamingResponse>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalDotNetCreateSpeechStreamingResponse>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalDotNetCreateSpeechStreamingResponse)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalDotNetCreateSpeechStreamingResponse IPersistableModel<InternalDotNetCreateSpeechStreamingResponse>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalDotNetCreateSpeechStreamingResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalDotNetCreateSpeechStreamingResponse>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalDotNetCreateSpeechStreamingResponse(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalDotNetCreateSpeechStreamingResponse)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalDotNetCreateSpeechStreamingResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

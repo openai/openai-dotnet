@@ -12,6 +12,39 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimePcmAudioFormat : RealtimeAudioFormat, IJsonModel<RealtimePcmAudioFormat>
     {
+        protected override RealtimeAudioFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimePcmAudioFormat>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRealtimePcmAudioFormat(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RealtimePcmAudioFormat)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimePcmAudioFormat>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RealtimePcmAudioFormat)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RealtimePcmAudioFormat>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RealtimePcmAudioFormat IPersistableModel<RealtimePcmAudioFormat>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimePcmAudioFormat)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RealtimePcmAudioFormat>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RealtimePcmAudioFormat>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -86,38 +119,5 @@ namespace OpenAI.Realtime
             }
             return new RealtimePcmAudioFormat(kind, patch, rate);
         }
-
-        BinaryData IPersistableModel<RealtimePcmAudioFormat>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimePcmAudioFormat>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RealtimePcmAudioFormat)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RealtimePcmAudioFormat IPersistableModel<RealtimePcmAudioFormat>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimePcmAudioFormat)PersistableModelCreateCore(data, options);
-
-        protected override RealtimeAudioFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimePcmAudioFormat>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRealtimePcmAudioFormat(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RealtimePcmAudioFormat)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RealtimePcmAudioFormat>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

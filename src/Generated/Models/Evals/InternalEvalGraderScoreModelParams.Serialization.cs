@@ -17,6 +17,39 @@ namespace OpenAI.Evals
         {
         }
 
+        protected override InternalEvalGraderParams PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalEvalGraderScoreModelParams>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalEvalGraderScoreModelParams(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalEvalGraderScoreModelParams)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalEvalGraderScoreModelParams>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalEvalGraderScoreModelParams)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalEvalGraderScoreModelParams>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalEvalGraderScoreModelParams IPersistableModel<InternalEvalGraderScoreModelParams>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalEvalGraderScoreModelParams)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalEvalGraderScoreModelParams>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalEvalGraderScoreModelParams>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -180,38 +213,5 @@ namespace OpenAI.Evals
                 range ?? new ChangeTrackingList<float>(),
                 passThreshold);
         }
-
-        BinaryData IPersistableModel<InternalEvalGraderScoreModelParams>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalEvalGraderScoreModelParams>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalEvalGraderScoreModelParams)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalEvalGraderScoreModelParams IPersistableModel<InternalEvalGraderScoreModelParams>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalEvalGraderScoreModelParams)PersistableModelCreateCore(data, options);
-
-        protected override InternalEvalGraderParams PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalEvalGraderScoreModelParams>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalEvalGraderScoreModelParams(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalEvalGraderScoreModelParams)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalEvalGraderScoreModelParams>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

@@ -16,6 +16,39 @@ namespace OpenAI.Assistants
         {
         }
 
+        protected override InternalMessageDeltaContent PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContentRefusalObject>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalMessageDeltaContentRefusalObject(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalMessageDeltaContentRefusalObject)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContentRefusalObject>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalMessageDeltaContentRefusalObject)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalMessageDeltaContentRefusalObject>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalMessageDeltaContentRefusalObject IPersistableModel<InternalMessageDeltaContentRefusalObject>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalMessageDeltaContentRefusalObject)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalMessageDeltaContentRefusalObject>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalMessageDeltaContentRefusalObject>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -88,38 +121,5 @@ namespace OpenAI.Assistants
             }
             return new InternalMessageDeltaContentRefusalObject(kind, additionalBinaryDataProperties, index, refusal);
         }
-
-        BinaryData IPersistableModel<InternalMessageDeltaContentRefusalObject>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContentRefusalObject>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalMessageDeltaContentRefusalObject)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalMessageDeltaContentRefusalObject IPersistableModel<InternalMessageDeltaContentRefusalObject>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalMessageDeltaContentRefusalObject)PersistableModelCreateCore(data, options);
-
-        protected override InternalMessageDeltaContent PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContentRefusalObject>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalMessageDeltaContentRefusalObject(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalMessageDeltaContentRefusalObject)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalMessageDeltaContentRefusalObject>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

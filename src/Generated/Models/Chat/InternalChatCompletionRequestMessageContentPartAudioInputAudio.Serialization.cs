@@ -16,6 +16,39 @@ namespace OpenAI.Chat
         {
         }
 
+        protected virtual InternalChatCompletionRequestMessageContentPartAudioInputAudio PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionRequestMessageContentPartAudioInputAudio>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalChatCompletionRequestMessageContentPartAudioInputAudio(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalChatCompletionRequestMessageContentPartAudioInputAudio)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionRequestMessageContentPartAudioInputAudio>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalChatCompletionRequestMessageContentPartAudioInputAudio)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalChatCompletionRequestMessageContentPartAudioInputAudio>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalChatCompletionRequestMessageContentPartAudioInputAudio IPersistableModel<InternalChatCompletionRequestMessageContentPartAudioInputAudio>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalChatCompletionRequestMessageContentPartAudioInputAudio>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalChatCompletionRequestMessageContentPartAudioInputAudio>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -94,38 +127,5 @@ namespace OpenAI.Chat
             }
             return new InternalChatCompletionRequestMessageContentPartAudioInputAudio(data0, format, patch);
         }
-
-        BinaryData IPersistableModel<InternalChatCompletionRequestMessageContentPartAudioInputAudio>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionRequestMessageContentPartAudioInputAudio>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalChatCompletionRequestMessageContentPartAudioInputAudio)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalChatCompletionRequestMessageContentPartAudioInputAudio IPersistableModel<InternalChatCompletionRequestMessageContentPartAudioInputAudio>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalChatCompletionRequestMessageContentPartAudioInputAudio PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionRequestMessageContentPartAudioInputAudio>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalChatCompletionRequestMessageContentPartAudioInputAudio(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalChatCompletionRequestMessageContentPartAudioInputAudio)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalChatCompletionRequestMessageContentPartAudioInputAudio>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

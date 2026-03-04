@@ -16,6 +16,39 @@ namespace OpenAI.Chat
         {
         }
 
+        protected virtual InternalChatCompletionNamedToolChoiceFunction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionNamedToolChoiceFunction>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalChatCompletionNamedToolChoiceFunction(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalChatCompletionNamedToolChoiceFunction)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionNamedToolChoiceFunction>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalChatCompletionNamedToolChoiceFunction)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalChatCompletionNamedToolChoiceFunction>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalChatCompletionNamedToolChoiceFunction IPersistableModel<InternalChatCompletionNamedToolChoiceFunction>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalChatCompletionNamedToolChoiceFunction>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalChatCompletionNamedToolChoiceFunction>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -83,38 +116,5 @@ namespace OpenAI.Chat
             }
             return new InternalChatCompletionNamedToolChoiceFunction(name, patch);
         }
-
-        BinaryData IPersistableModel<InternalChatCompletionNamedToolChoiceFunction>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionNamedToolChoiceFunction>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalChatCompletionNamedToolChoiceFunction)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalChatCompletionNamedToolChoiceFunction IPersistableModel<InternalChatCompletionNamedToolChoiceFunction>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalChatCompletionNamedToolChoiceFunction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionNamedToolChoiceFunction>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalChatCompletionNamedToolChoiceFunction(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalChatCompletionNamedToolChoiceFunction)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalChatCompletionNamedToolChoiceFunction>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

@@ -17,6 +17,39 @@ namespace OpenAI.Chat
         {
         }
 
+        protected virtual InternalChatCompletionResponseMessage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionResponseMessage>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalChatCompletionResponseMessage(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalChatCompletionResponseMessage)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionResponseMessage>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalChatCompletionResponseMessage)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalChatCompletionResponseMessage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalChatCompletionResponseMessage IPersistableModel<InternalChatCompletionResponseMessage>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalChatCompletionResponseMessage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalChatCompletionResponseMessage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -157,7 +190,7 @@ namespace OpenAI.Chat
             {
                 if (prop.NameEquals("content"u8))
                 {
-                    DeserializeContentValue(prop, ref content);
+                    DeserializeContentValue(prop, ref content, options);
                     continue;
                 }
                 if (prop.NameEquals("refusal"u8))
@@ -234,39 +267,6 @@ namespace OpenAI.Chat
                 audio,
                 patch);
         }
-
-        BinaryData IPersistableModel<InternalChatCompletionResponseMessage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionResponseMessage>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalChatCompletionResponseMessage)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalChatCompletionResponseMessage IPersistableModel<InternalChatCompletionResponseMessage>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalChatCompletionResponseMessage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalChatCompletionResponseMessage>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalChatCompletionResponseMessage(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalChatCompletionResponseMessage)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalChatCompletionResponseMessage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)

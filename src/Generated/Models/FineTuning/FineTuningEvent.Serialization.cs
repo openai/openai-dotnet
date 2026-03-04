@@ -16,6 +16,39 @@ namespace OpenAI.FineTuning
         {
         }
 
+        protected virtual FineTuningEvent PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<FineTuningEvent>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeFineTuningEvent(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(FineTuningEvent)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<FineTuningEvent>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(FineTuningEvent)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<FineTuningEvent>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        FineTuningEvent IPersistableModel<FineTuningEvent>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<FineTuningEvent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<FineTuningEvent>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -179,38 +212,5 @@ namespace OpenAI.FineTuning
                 @object,
                 additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<FineTuningEvent>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<FineTuningEvent>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(FineTuningEvent)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        FineTuningEvent IPersistableModel<FineTuningEvent>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual FineTuningEvent PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<FineTuningEvent>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeFineTuningEvent(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(FineTuningEvent)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<FineTuningEvent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

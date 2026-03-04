@@ -18,6 +18,41 @@ namespace OpenAI.Chat
         {
         }
 
+        [Experimental("OPENAI001")]
+        protected virtual ChatTokenLogProbabilityDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ChatTokenLogProbabilityDetails>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeChatTokenLogProbabilityDetails(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(ChatTokenLogProbabilityDetails)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        [Experimental("OPENAI001")]
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ChatTokenLogProbabilityDetails>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(ChatTokenLogProbabilityDetails)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<ChatTokenLogProbabilityDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        ChatTokenLogProbabilityDetails IPersistableModel<ChatTokenLogProbabilityDetails>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<ChatTokenLogProbabilityDetails>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<ChatTokenLogProbabilityDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -176,41 +211,6 @@ namespace OpenAI.Chat
             }
             return new ChatTokenLogProbabilityDetails(token, logProbability, utf8Bytes, topLogProbabilities, patch);
         }
-
-        BinaryData IPersistableModel<ChatTokenLogProbabilityDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        [Experimental("OPENAI001")]
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ChatTokenLogProbabilityDetails>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(ChatTokenLogProbabilityDetails)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        ChatTokenLogProbabilityDetails IPersistableModel<ChatTokenLogProbabilityDetails>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        [Experimental("OPENAI001")]
-        protected virtual ChatTokenLogProbabilityDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ChatTokenLogProbabilityDetails>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeChatTokenLogProbabilityDetails(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(ChatTokenLogProbabilityDetails)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<ChatTokenLogProbabilityDetails>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)

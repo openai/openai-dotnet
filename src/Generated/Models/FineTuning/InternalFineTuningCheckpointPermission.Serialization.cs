@@ -16,6 +16,39 @@ namespace OpenAI.FineTuning
         {
         }
 
+        protected virtual InternalFineTuningCheckpointPermission PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalFineTuningCheckpointPermission>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalFineTuningCheckpointPermission(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalFineTuningCheckpointPermission)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalFineTuningCheckpointPermission>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalFineTuningCheckpointPermission)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalFineTuningCheckpointPermission>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalFineTuningCheckpointPermission IPersistableModel<InternalFineTuningCheckpointPermission>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalFineTuningCheckpointPermission>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalFineTuningCheckpointPermission>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -123,38 +156,5 @@ namespace OpenAI.FineTuning
             }
             return new InternalFineTuningCheckpointPermission(id, createdAt, projectId, @object, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalFineTuningCheckpointPermission>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalFineTuningCheckpointPermission>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalFineTuningCheckpointPermission)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalFineTuningCheckpointPermission IPersistableModel<InternalFineTuningCheckpointPermission>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalFineTuningCheckpointPermission PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalFineTuningCheckpointPermission>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalFineTuningCheckpointPermission(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalFineTuningCheckpointPermission)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalFineTuningCheckpointPermission>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

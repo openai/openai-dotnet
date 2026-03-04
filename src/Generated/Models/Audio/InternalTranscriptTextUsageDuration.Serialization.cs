@@ -16,6 +16,39 @@ namespace OpenAI.Audio
         {
         }
 
+        protected override InternalCreateTranscriptionResponseJsonUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalTranscriptTextUsageDuration>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalTranscriptTextUsageDuration(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalTranscriptTextUsageDuration)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalTranscriptTextUsageDuration>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalTranscriptTextUsageDuration)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalTranscriptTextUsageDuration>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalTranscriptTextUsageDuration IPersistableModel<InternalTranscriptTextUsageDuration>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalTranscriptTextUsageDuration)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalTranscriptTextUsageDuration>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalTranscriptTextUsageDuration>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -77,38 +110,5 @@ namespace OpenAI.Audio
             }
             return new InternalTranscriptTextUsageDuration(kind, additionalBinaryDataProperties, seconds);
         }
-
-        BinaryData IPersistableModel<InternalTranscriptTextUsageDuration>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalTranscriptTextUsageDuration>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalTranscriptTextUsageDuration)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalTranscriptTextUsageDuration IPersistableModel<InternalTranscriptTextUsageDuration>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalTranscriptTextUsageDuration)PersistableModelCreateCore(data, options);
-
-        protected override InternalCreateTranscriptionResponseJsonUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalTranscriptTextUsageDuration>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalTranscriptTextUsageDuration(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalTranscriptTextUsageDuration)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalTranscriptTextUsageDuration>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

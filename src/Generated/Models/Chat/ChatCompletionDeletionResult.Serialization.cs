@@ -17,6 +17,47 @@ namespace OpenAI.Chat
         {
         }
 
+        protected virtual ChatCompletionDeletionResult PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionDeletionResult>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeChatCompletionDeletionResult(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(ChatCompletionDeletionResult)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionDeletionResult>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(ChatCompletionDeletionResult)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<ChatCompletionDeletionResult>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        ChatCompletionDeletionResult IPersistableModel<ChatCompletionDeletionResult>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<ChatCompletionDeletionResult>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator ChatCompletionDeletionResult(ClientResult result)
+        {
+            PipelineResponse response = result.GetRawResponse();
+            BinaryData data = response.Content;
+            using JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeChatCompletionDeletionResult(document.RootElement, data, ModelSerializationExtensions.WireOptions);
+        }
+
         void IJsonModel<ChatCompletionDeletionResult>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -105,47 +146,6 @@ namespace OpenAI.Chat
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new ChatCompletionDeletionResult(@object, chatCompletionId, deleted, patch);
-        }
-
-        BinaryData IPersistableModel<ChatCompletionDeletionResult>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionDeletionResult>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(ChatCompletionDeletionResult)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        ChatCompletionDeletionResult IPersistableModel<ChatCompletionDeletionResult>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual ChatCompletionDeletionResult PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ChatCompletionDeletionResult>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeChatCompletionDeletionResult(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(ChatCompletionDeletionResult)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<ChatCompletionDeletionResult>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static explicit operator ChatCompletionDeletionResult(ClientResult result)
-        {
-            PipelineResponse response = result.GetRawResponse();
-            BinaryData data = response.Content;
-            using JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions);
-            return DeserializeChatCompletionDeletionResult(document.RootElement, data, ModelSerializationExtensions.WireOptions);
         }
     }
 }

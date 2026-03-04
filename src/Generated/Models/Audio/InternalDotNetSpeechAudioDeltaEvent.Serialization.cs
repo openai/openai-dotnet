@@ -16,6 +16,39 @@ namespace OpenAI.Audio
         {
         }
 
+        protected override InternalDotNetCreateSpeechStreamingResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalDotNetSpeechAudioDeltaEvent>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalDotNetSpeechAudioDeltaEvent(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalDotNetSpeechAudioDeltaEvent)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalDotNetSpeechAudioDeltaEvent>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalDotNetSpeechAudioDeltaEvent)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalDotNetSpeechAudioDeltaEvent>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalDotNetSpeechAudioDeltaEvent IPersistableModel<InternalDotNetSpeechAudioDeltaEvent>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalDotNetSpeechAudioDeltaEvent)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalDotNetSpeechAudioDeltaEvent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalDotNetSpeechAudioDeltaEvent>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -77,38 +110,5 @@ namespace OpenAI.Audio
             }
             return new InternalDotNetSpeechAudioDeltaEvent(kind, additionalBinaryDataProperties, audio);
         }
-
-        BinaryData IPersistableModel<InternalDotNetSpeechAudioDeltaEvent>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalDotNetSpeechAudioDeltaEvent>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalDotNetSpeechAudioDeltaEvent)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalDotNetSpeechAudioDeltaEvent IPersistableModel<InternalDotNetSpeechAudioDeltaEvent>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalDotNetSpeechAudioDeltaEvent)PersistableModelCreateCore(data, options);
-
-        protected override InternalDotNetCreateSpeechStreamingResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalDotNetSpeechAudioDeltaEvent>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalDotNetSpeechAudioDeltaEvent(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalDotNetSpeechAudioDeltaEvent)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalDotNetSpeechAudioDeltaEvent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

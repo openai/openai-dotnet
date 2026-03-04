@@ -17,6 +17,46 @@ namespace OpenAI.Assistants
         {
         }
 
+        protected virtual InternalListRunsResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalListRunsResponse>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalListRunsResponse(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalListRunsResponse)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalListRunsResponse>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalListRunsResponse)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalListRunsResponse>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalListRunsResponse IPersistableModel<InternalListRunsResponse>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalListRunsResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator InternalListRunsResponse(ClientResult result)
+        {
+            PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeInternalListRunsResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
+
         void IJsonModel<InternalListRunsResponse>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -151,46 +191,6 @@ namespace OpenAI.Assistants
                 lastId,
                 hasMore,
                 additionalBinaryDataProperties);
-        }
-
-        BinaryData IPersistableModel<InternalListRunsResponse>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalListRunsResponse>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalListRunsResponse)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalListRunsResponse IPersistableModel<InternalListRunsResponse>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalListRunsResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalListRunsResponse>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalListRunsResponse(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalListRunsResponse)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalListRunsResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static explicit operator InternalListRunsResponse(ClientResult result)
-        {
-            PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
-            return DeserializeInternalListRunsResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

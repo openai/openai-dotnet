@@ -17,6 +17,39 @@ namespace OpenAI.Assistants
         {
         }
 
+        protected override AssistantResponseFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalDotNetAssistantResponseFormatJsonSchema>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalDotNetAssistantResponseFormatJsonSchema(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalDotNetAssistantResponseFormatJsonSchema)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalDotNetAssistantResponseFormatJsonSchema>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalDotNetAssistantResponseFormatJsonSchema)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalDotNetAssistantResponseFormatJsonSchema>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalDotNetAssistantResponseFormatJsonSchema IPersistableModel<InternalDotNetAssistantResponseFormatJsonSchema>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalDotNetAssistantResponseFormatJsonSchema)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalDotNetAssistantResponseFormatJsonSchema>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalDotNetAssistantResponseFormatJsonSchema>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -78,38 +111,5 @@ namespace OpenAI.Assistants
             }
             return new InternalDotNetAssistantResponseFormatJsonSchema(kind, additionalBinaryDataProperties, jsonSchema);
         }
-
-        BinaryData IPersistableModel<InternalDotNetAssistantResponseFormatJsonSchema>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalDotNetAssistantResponseFormatJsonSchema>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalDotNetAssistantResponseFormatJsonSchema)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalDotNetAssistantResponseFormatJsonSchema IPersistableModel<InternalDotNetAssistantResponseFormatJsonSchema>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalDotNetAssistantResponseFormatJsonSchema)PersistableModelCreateCore(data, options);
-
-        protected override AssistantResponseFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalDotNetAssistantResponseFormatJsonSchema>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalDotNetAssistantResponseFormatJsonSchema(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalDotNetAssistantResponseFormatJsonSchema)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalDotNetAssistantResponseFormatJsonSchema>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

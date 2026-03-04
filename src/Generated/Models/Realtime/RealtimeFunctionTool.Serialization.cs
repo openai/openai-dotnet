@@ -16,6 +16,39 @@ namespace OpenAI.Realtime
         {
         }
 
+        protected override RealtimeTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeFunctionTool>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRealtimeFunctionTool(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeFunctionTool)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeFunctionTool>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeFunctionTool)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RealtimeFunctionTool>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RealtimeFunctionTool IPersistableModel<RealtimeFunctionTool>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeFunctionTool)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RealtimeFunctionTool>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RealtimeFunctionTool>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -123,38 +156,5 @@ namespace OpenAI.Realtime
             }
             return new RealtimeFunctionTool(kind, patch, functionName, functionDescription, functionParameters);
         }
-
-        BinaryData IPersistableModel<RealtimeFunctionTool>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeFunctionTool>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeFunctionTool)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RealtimeFunctionTool IPersistableModel<RealtimeFunctionTool>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeFunctionTool)PersistableModelCreateCore(data, options);
-
-        protected override RealtimeTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeFunctionTool>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRealtimeFunctionTool(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeFunctionTool)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RealtimeFunctionTool>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

@@ -16,6 +16,39 @@ namespace OpenAI.Moderations
         {
         }
 
+        protected virtual InternalModerationImagePartImageUrl PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalModerationImagePartImageUrl>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalModerationImagePartImageUrl(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalModerationImagePartImageUrl)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalModerationImagePartImageUrl>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalModerationImagePartImageUrl)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalModerationImagePartImageUrl>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalModerationImagePartImageUrl IPersistableModel<InternalModerationImagePartImageUrl>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalModerationImagePartImageUrl>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalModerationImagePartImageUrl>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -82,7 +115,7 @@ namespace OpenAI.Moderations
             {
                 if (prop.NameEquals("url"u8))
                 {
-                    url = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString());
+                    url = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString(), UriKind.RelativeOrAbsolute);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
@@ -90,38 +123,5 @@ namespace OpenAI.Moderations
             }
             return new InternalModerationImagePartImageUrl(url, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalModerationImagePartImageUrl>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalModerationImagePartImageUrl>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalModerationImagePartImageUrl)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalModerationImagePartImageUrl IPersistableModel<InternalModerationImagePartImageUrl>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalModerationImagePartImageUrl PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalModerationImagePartImageUrl>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalModerationImagePartImageUrl(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalModerationImagePartImageUrl)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalModerationImagePartImageUrl>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

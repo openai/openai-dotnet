@@ -11,35 +11,6 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeMaxOutputTokenCount : IJsonModel<RealtimeMaxOutputTokenCount>
     {
-        RealtimeMaxOutputTokenCount IJsonModel<RealtimeMaxOutputTokenCount>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
-
-        protected virtual RealtimeMaxOutputTokenCount JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeMaxOutputTokenCount>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(RealtimeMaxOutputTokenCount)} does not support reading '{format}' format.");
-            }
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeMaxOutputTokenCount(document.RootElement, null, options);
-        }
-
-        BinaryData IPersistableModel<RealtimeMaxOutputTokenCount>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeMaxOutputTokenCount>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeMaxOutputTokenCount)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RealtimeMaxOutputTokenCount IPersistableModel<RealtimeMaxOutputTokenCount>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
         protected virtual RealtimeMaxOutputTokenCount PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<RealtimeMaxOutputTokenCount>)this).GetFormatFromOptions(options) : options.Format;
@@ -55,6 +26,35 @@ namespace OpenAI.Realtime
             }
         }
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeMaxOutputTokenCount>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeMaxOutputTokenCount)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RealtimeMaxOutputTokenCount>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RealtimeMaxOutputTokenCount IPersistableModel<RealtimeMaxOutputTokenCount>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
         string IPersistableModel<RealtimeMaxOutputTokenCount>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        RealtimeMaxOutputTokenCount IJsonModel<RealtimeMaxOutputTokenCount>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual RealtimeMaxOutputTokenCount JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeMaxOutputTokenCount>)this).GetFormatFromOptions(options) : options.Format;
+            if (format != "J")
+            {
+                throw new FormatException($"The model {nameof(RealtimeMaxOutputTokenCount)} does not support reading '{format}' format.");
+            }
+            using JsonDocument document = JsonDocument.ParseValue(ref reader);
+            return DeserializeRealtimeMaxOutputTokenCount(document.RootElement, null, options);
+        }
     }
 }

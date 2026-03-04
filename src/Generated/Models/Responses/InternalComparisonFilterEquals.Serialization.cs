@@ -16,6 +16,39 @@ namespace OpenAI.Responses
         {
         }
 
+        protected override InternalComparisonFilter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalComparisonFilterEquals>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalComparisonFilterEquals(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalComparisonFilterEquals)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalComparisonFilterEquals>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalComparisonFilterEquals)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalComparisonFilterEquals>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalComparisonFilterEquals IPersistableModel<InternalComparisonFilterEquals>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalComparisonFilterEquals)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalComparisonFilterEquals>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalComparisonFilterEquals>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -91,38 +124,5 @@ namespace OpenAI.Responses
             }
             return new InternalComparisonFilterEquals(kind, key, value, patch);
         }
-
-        BinaryData IPersistableModel<InternalComparisonFilterEquals>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalComparisonFilterEquals>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalComparisonFilterEquals)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalComparisonFilterEquals IPersistableModel<InternalComparisonFilterEquals>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalComparisonFilterEquals)PersistableModelCreateCore(data, options);
-
-        protected override InternalComparisonFilter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalComparisonFilterEquals>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalComparisonFilterEquals(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalComparisonFilterEquals)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalComparisonFilterEquals>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

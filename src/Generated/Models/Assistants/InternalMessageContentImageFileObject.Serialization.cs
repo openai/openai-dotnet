@@ -16,6 +16,39 @@ namespace OpenAI.Assistants
         {
         }
 
+        protected override MessageContent PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentImageFileObject>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalMessageContentImageFileObject(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalMessageContentImageFileObject)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentImageFileObject>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalMessageContentImageFileObject)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalMessageContentImageFileObject>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalMessageContentImageFileObject IPersistableModel<InternalMessageContentImageFileObject>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalMessageContentImageFileObject)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalMessageContentImageFileObject>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalMessageContentImageFileObject>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -77,38 +110,5 @@ namespace OpenAI.Assistants
             }
             return new InternalMessageContentImageFileObject(kind, additionalBinaryDataProperties, imageFile);
         }
-
-        BinaryData IPersistableModel<InternalMessageContentImageFileObject>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentImageFileObject>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalMessageContentImageFileObject)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalMessageContentImageFileObject IPersistableModel<InternalMessageContentImageFileObject>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalMessageContentImageFileObject)PersistableModelCreateCore(data, options);
-
-        protected override MessageContent PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentImageFileObject>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalMessageContentImageFileObject(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalMessageContentImageFileObject)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalMessageContentImageFileObject>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

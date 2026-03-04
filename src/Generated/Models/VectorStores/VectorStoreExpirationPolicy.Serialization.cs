@@ -16,6 +16,39 @@ namespace OpenAI.VectorStores
         {
         }
 
+        protected virtual VectorStoreExpirationPolicy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<VectorStoreExpirationPolicy>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeVectorStoreExpirationPolicy(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(VectorStoreExpirationPolicy)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<VectorStoreExpirationPolicy>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(VectorStoreExpirationPolicy)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<VectorStoreExpirationPolicy>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        VectorStoreExpirationPolicy IPersistableModel<VectorStoreExpirationPolicy>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<VectorStoreExpirationPolicy>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<VectorStoreExpirationPolicy>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -101,38 +134,5 @@ namespace OpenAI.VectorStores
             }
             return new VectorStoreExpirationPolicy(anchor, days, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<VectorStoreExpirationPolicy>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<VectorStoreExpirationPolicy>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(VectorStoreExpirationPolicy)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        VectorStoreExpirationPolicy IPersistableModel<VectorStoreExpirationPolicy>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual VectorStoreExpirationPolicy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<VectorStoreExpirationPolicy>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeVectorStoreExpirationPolicy(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(VectorStoreExpirationPolicy)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<VectorStoreExpirationPolicy>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

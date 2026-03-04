@@ -12,6 +12,39 @@ namespace OpenAI.Containers
 {
     public partial class ContainerResourceExpiresAfter : IJsonModel<ContainerResourceExpiresAfter>
     {
+        protected virtual ContainerResourceExpiresAfter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ContainerResourceExpiresAfter>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeContainerResourceExpiresAfter(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(ContainerResourceExpiresAfter)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ContainerResourceExpiresAfter>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(ContainerResourceExpiresAfter)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<ContainerResourceExpiresAfter>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        ContainerResourceExpiresAfter IPersistableModel<ContainerResourceExpiresAfter>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<ContainerResourceExpiresAfter>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<ContainerResourceExpiresAfter>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -101,38 +134,5 @@ namespace OpenAI.Containers
             }
             return new ContainerResourceExpiresAfter(anchor, minutes, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<ContainerResourceExpiresAfter>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ContainerResourceExpiresAfter>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(ContainerResourceExpiresAfter)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        ContainerResourceExpiresAfter IPersistableModel<ContainerResourceExpiresAfter>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual ContainerResourceExpiresAfter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ContainerResourceExpiresAfter>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeContainerResourceExpiresAfter(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(ContainerResourceExpiresAfter)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<ContainerResourceExpiresAfter>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

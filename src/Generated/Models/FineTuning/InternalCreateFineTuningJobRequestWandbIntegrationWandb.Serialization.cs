@@ -16,6 +16,39 @@ namespace OpenAI.FineTuning
         {
         }
 
+        protected virtual InternalCreateFineTuningJobRequestWandbIntegrationWandb PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateFineTuningJobRequestWandbIntegrationWandb>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalCreateFineTuningJobRequestWandbIntegrationWandb(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalCreateFineTuningJobRequestWandbIntegrationWandb)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateFineTuningJobRequestWandbIntegrationWandb>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalCreateFineTuningJobRequestWandbIntegrationWandb)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalCreateFineTuningJobRequestWandbIntegrationWandb>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalCreateFineTuningJobRequestWandbIntegrationWandb IPersistableModel<InternalCreateFineTuningJobRequestWandbIntegrationWandb>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalCreateFineTuningJobRequestWandbIntegrationWandb>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalCreateFineTuningJobRequestWandbIntegrationWandb>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -159,38 +192,5 @@ namespace OpenAI.FineTuning
             }
             return new InternalCreateFineTuningJobRequestWandbIntegrationWandb(project, name, entity, tags ?? new ChangeTrackingList<string>(), additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalCreateFineTuningJobRequestWandbIntegrationWandb>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateFineTuningJobRequestWandbIntegrationWandb>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalCreateFineTuningJobRequestWandbIntegrationWandb)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalCreateFineTuningJobRequestWandbIntegrationWandb IPersistableModel<InternalCreateFineTuningJobRequestWandbIntegrationWandb>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalCreateFineTuningJobRequestWandbIntegrationWandb PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateFineTuningJobRequestWandbIntegrationWandb>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalCreateFineTuningJobRequestWandbIntegrationWandb(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalCreateFineTuningJobRequestWandbIntegrationWandb)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalCreateFineTuningJobRequestWandbIntegrationWandb>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

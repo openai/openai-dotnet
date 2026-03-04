@@ -17,6 +17,39 @@ namespace OpenAI.Responses
         {
         }
 
+        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<McpTool>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeMcpTool(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(McpTool)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<McpTool>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(McpTool)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<McpTool>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        McpTool IPersistableModel<McpTool>.Create(BinaryData data, ModelReaderWriterOptions options) => (McpTool)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<McpTool>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<McpTool>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -160,7 +193,7 @@ namespace OpenAI.Responses
                     {
                         continue;
                     }
-                    serverUri = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString());
+                    serverUri = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString(), UriKind.RelativeOrAbsolute);
                     continue;
                 }
                 if (prop.NameEquals("connector_id"u8))
@@ -237,39 +270,6 @@ namespace OpenAI.Responses
                 allowedTools,
                 toolCallApprovalPolicy);
         }
-
-        BinaryData IPersistableModel<McpTool>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<McpTool>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(McpTool)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        McpTool IPersistableModel<McpTool>.Create(BinaryData data, ModelReaderWriterOptions options) => (McpTool)PersistableModelCreateCore(data, options);
-
-        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<McpTool>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeMcpTool(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(McpTool)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<McpTool>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)

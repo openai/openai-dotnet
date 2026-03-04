@@ -16,6 +16,39 @@ namespace OpenAI.Audio
         {
         }
 
+        protected virtual InternalSpeechAudioDoneEventUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalSpeechAudioDoneEventUsage>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalSpeechAudioDoneEventUsage(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalSpeechAudioDoneEventUsage)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalSpeechAudioDoneEventUsage>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalSpeechAudioDoneEventUsage)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalSpeechAudioDoneEventUsage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalSpeechAudioDoneEventUsage IPersistableModel<InternalSpeechAudioDoneEventUsage>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalSpeechAudioDoneEventUsage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalSpeechAudioDoneEventUsage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -112,38 +145,5 @@ namespace OpenAI.Audio
             }
             return new InternalSpeechAudioDoneEventUsage(inputTokens, outputTokens, totalTokens, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalSpeechAudioDoneEventUsage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalSpeechAudioDoneEventUsage>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalSpeechAudioDoneEventUsage)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalSpeechAudioDoneEventUsage IPersistableModel<InternalSpeechAudioDoneEventUsage>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalSpeechAudioDoneEventUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalSpeechAudioDoneEventUsage>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalSpeechAudioDoneEventUsage(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalSpeechAudioDoneEventUsage)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalSpeechAudioDoneEventUsage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

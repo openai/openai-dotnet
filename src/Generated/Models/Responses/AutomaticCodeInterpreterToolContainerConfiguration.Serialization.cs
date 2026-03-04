@@ -13,6 +13,39 @@ namespace OpenAI.Responses
 {
     public partial class AutomaticCodeInterpreterToolContainerConfiguration : CodeInterpreterToolContainerConfiguration, IJsonModel<AutomaticCodeInterpreterToolContainerConfiguration>
     {
+        protected override CodeInterpreterToolContainerConfiguration PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<AutomaticCodeInterpreterToolContainerConfiguration>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeAutomaticCodeInterpreterToolContainerConfiguration(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(AutomaticCodeInterpreterToolContainerConfiguration)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<AutomaticCodeInterpreterToolContainerConfiguration>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(AutomaticCodeInterpreterToolContainerConfiguration)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<AutomaticCodeInterpreterToolContainerConfiguration>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        AutomaticCodeInterpreterToolContainerConfiguration IPersistableModel<AutomaticCodeInterpreterToolContainerConfiguration>.Create(BinaryData data, ModelReaderWriterOptions options) => (AutomaticCodeInterpreterToolContainerConfiguration)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<AutomaticCodeInterpreterToolContainerConfiguration>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<AutomaticCodeInterpreterToolContainerConfiguration>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -126,38 +159,5 @@ namespace OpenAI.Responses
             }
             return new AutomaticCodeInterpreterToolContainerConfiguration(kind, patch, fileIds ?? new ChangeTrackingList<string>());
         }
-
-        BinaryData IPersistableModel<AutomaticCodeInterpreterToolContainerConfiguration>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<AutomaticCodeInterpreterToolContainerConfiguration>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(AutomaticCodeInterpreterToolContainerConfiguration)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        AutomaticCodeInterpreterToolContainerConfiguration IPersistableModel<AutomaticCodeInterpreterToolContainerConfiguration>.Create(BinaryData data, ModelReaderWriterOptions options) => (AutomaticCodeInterpreterToolContainerConfiguration)PersistableModelCreateCore(data, options);
-
-        protected override CodeInterpreterToolContainerConfiguration PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<AutomaticCodeInterpreterToolContainerConfiguration>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeAutomaticCodeInterpreterToolContainerConfiguration(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(AutomaticCodeInterpreterToolContainerConfiguration)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<AutomaticCodeInterpreterToolContainerConfiguration>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

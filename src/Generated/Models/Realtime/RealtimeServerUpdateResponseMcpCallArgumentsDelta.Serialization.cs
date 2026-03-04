@@ -16,6 +16,39 @@ namespace OpenAI.Realtime
         {
         }
 
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerUpdateResponseMcpCallArgumentsDelta>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRealtimeServerUpdateResponseMcpCallArgumentsDelta(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeServerUpdateResponseMcpCallArgumentsDelta)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerUpdateResponseMcpCallArgumentsDelta>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeServerUpdateResponseMcpCallArgumentsDelta)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RealtimeServerUpdateResponseMcpCallArgumentsDelta>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RealtimeServerUpdateResponseMcpCallArgumentsDelta IPersistableModel<RealtimeServerUpdateResponseMcpCallArgumentsDelta>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeServerUpdateResponseMcpCallArgumentsDelta)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RealtimeServerUpdateResponseMcpCallArgumentsDelta>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RealtimeServerUpdateResponseMcpCallArgumentsDelta>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -133,7 +166,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("delta"u8))
                 {
-                    DeserializeDeltaValue(prop, ref delta);
+                    DeserializeDeltaValue(prop, ref delta, options);
                     continue;
                 }
                 if (prop.NameEquals("obfuscation"u8))
@@ -158,38 +191,5 @@ namespace OpenAI.Realtime
                 delta,
                 obfuscation);
         }
-
-        BinaryData IPersistableModel<RealtimeServerUpdateResponseMcpCallArgumentsDelta>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerUpdateResponseMcpCallArgumentsDelta>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeServerUpdateResponseMcpCallArgumentsDelta)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RealtimeServerUpdateResponseMcpCallArgumentsDelta IPersistableModel<RealtimeServerUpdateResponseMcpCallArgumentsDelta>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeServerUpdateResponseMcpCallArgumentsDelta)PersistableModelCreateCore(data, options);
-
-        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerUpdateResponseMcpCallArgumentsDelta>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRealtimeServerUpdateResponseMcpCallArgumentsDelta(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeServerUpdateResponseMcpCallArgumentsDelta)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RealtimeServerUpdateResponseMcpCallArgumentsDelta>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

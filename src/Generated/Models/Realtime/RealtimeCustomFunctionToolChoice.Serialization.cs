@@ -16,6 +16,39 @@ namespace OpenAI.Realtime
         {
         }
 
+        protected override RealtimeCustomToolChoice PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeCustomFunctionToolChoice>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRealtimeCustomFunctionToolChoice(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeCustomFunctionToolChoice)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeCustomFunctionToolChoice>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeCustomFunctionToolChoice)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RealtimeCustomFunctionToolChoice>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RealtimeCustomFunctionToolChoice IPersistableModel<RealtimeCustomFunctionToolChoice>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeCustomFunctionToolChoice)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RealtimeCustomFunctionToolChoice>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RealtimeCustomFunctionToolChoice>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -90,38 +123,5 @@ namespace OpenAI.Realtime
             }
             return new RealtimeCustomFunctionToolChoice(kind, patch, functionName);
         }
-
-        BinaryData IPersistableModel<RealtimeCustomFunctionToolChoice>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeCustomFunctionToolChoice>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeCustomFunctionToolChoice)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RealtimeCustomFunctionToolChoice IPersistableModel<RealtimeCustomFunctionToolChoice>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeCustomFunctionToolChoice)PersistableModelCreateCore(data, options);
-
-        protected override RealtimeCustomToolChoice PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeCustomFunctionToolChoice>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRealtimeCustomFunctionToolChoice(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeCustomFunctionToolChoice)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RealtimeCustomFunctionToolChoice>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

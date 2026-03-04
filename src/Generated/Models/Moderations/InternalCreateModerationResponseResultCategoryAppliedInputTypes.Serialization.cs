@@ -16,6 +16,39 @@ namespace OpenAI.Moderations
         {
         }
 
+        protected virtual InternalCreateModerationResponseResultCategoryAppliedInputTypes PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalCreateModerationResponseResultCategoryAppliedInputTypes(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalCreateModerationResponseResultCategoryAppliedInputTypes)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalCreateModerationResponseResultCategoryAppliedInputTypes)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalCreateModerationResponseResultCategoryAppliedInputTypes IPersistableModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -522,38 +555,5 @@ namespace OpenAI.Moderations
                 violenceGraphic,
                 additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalCreateModerationResponseResultCategoryAppliedInputTypes)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalCreateModerationResponseResultCategoryAppliedInputTypes IPersistableModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalCreateModerationResponseResultCategoryAppliedInputTypes PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalCreateModerationResponseResultCategoryAppliedInputTypes(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalCreateModerationResponseResultCategoryAppliedInputTypes)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalCreateModerationResponseResultCategoryAppliedInputTypes>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

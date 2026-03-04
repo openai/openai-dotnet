@@ -11,35 +11,6 @@ namespace OpenAI.Responses
 {
     public partial class McpToolCallApprovalPolicy : IJsonModel<McpToolCallApprovalPolicy>
     {
-        McpToolCallApprovalPolicy IJsonModel<McpToolCallApprovalPolicy>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
-
-        protected virtual McpToolCallApprovalPolicy JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<McpToolCallApprovalPolicy>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(McpToolCallApprovalPolicy)} does not support reading '{format}' format.");
-            }
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeMcpToolCallApprovalPolicy(document.RootElement, null, options);
-        }
-
-        BinaryData IPersistableModel<McpToolCallApprovalPolicy>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<McpToolCallApprovalPolicy>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(McpToolCallApprovalPolicy)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        McpToolCallApprovalPolicy IPersistableModel<McpToolCallApprovalPolicy>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
         protected virtual McpToolCallApprovalPolicy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<McpToolCallApprovalPolicy>)this).GetFormatFromOptions(options) : options.Format;
@@ -55,7 +26,36 @@ namespace OpenAI.Responses
             }
         }
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<McpToolCallApprovalPolicy>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(McpToolCallApprovalPolicy)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<McpToolCallApprovalPolicy>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        McpToolCallApprovalPolicy IPersistableModel<McpToolCallApprovalPolicy>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
         string IPersistableModel<McpToolCallApprovalPolicy>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        McpToolCallApprovalPolicy IJsonModel<McpToolCallApprovalPolicy>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual McpToolCallApprovalPolicy JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<McpToolCallApprovalPolicy>)this).GetFormatFromOptions(options) : options.Format;
+            if (format != "J")
+            {
+                throw new FormatException($"The model {nameof(McpToolCallApprovalPolicy)} does not support reading '{format}' format.");
+            }
+            using JsonDocument document = JsonDocument.ParseValue(ref reader);
+            return DeserializeMcpToolCallApprovalPolicy(document.RootElement, null, options);
+        }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)

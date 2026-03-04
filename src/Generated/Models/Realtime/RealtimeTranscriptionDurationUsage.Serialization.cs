@@ -16,6 +16,39 @@ namespace OpenAI.Realtime
         {
         }
 
+        protected override RealtimeTranscriptionUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeTranscriptionDurationUsage>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRealtimeTranscriptionDurationUsage(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeTranscriptionDurationUsage)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeTranscriptionDurationUsage>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeTranscriptionDurationUsage)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RealtimeTranscriptionDurationUsage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RealtimeTranscriptionDurationUsage IPersistableModel<RealtimeTranscriptionDurationUsage>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeTranscriptionDurationUsage)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RealtimeTranscriptionDurationUsage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RealtimeTranscriptionDurationUsage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -90,38 +123,5 @@ namespace OpenAI.Realtime
             }
             return new RealtimeTranscriptionDurationUsage(kind, patch, duration);
         }
-
-        BinaryData IPersistableModel<RealtimeTranscriptionDurationUsage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeTranscriptionDurationUsage>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeTranscriptionDurationUsage)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RealtimeTranscriptionDurationUsage IPersistableModel<RealtimeTranscriptionDurationUsage>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeTranscriptionDurationUsage)PersistableModelCreateCore(data, options);
-
-        protected override RealtimeTranscriptionUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeTranscriptionDurationUsage>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRealtimeTranscriptionDurationUsage(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeTranscriptionDurationUsage)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RealtimeTranscriptionDurationUsage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

@@ -16,6 +16,39 @@ namespace OpenAI.Assistants
         {
         }
 
+        protected override MessageContent PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentRefusalObject>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalMessageContentRefusalObject(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalMessageContentRefusalObject)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentRefusalObject>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalMessageContentRefusalObject)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalMessageContentRefusalObject>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalMessageContentRefusalObject IPersistableModel<InternalMessageContentRefusalObject>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalMessageContentRefusalObject)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalMessageContentRefusalObject>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalMessageContentRefusalObject>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -77,38 +110,5 @@ namespace OpenAI.Assistants
             }
             return new InternalMessageContentRefusalObject(kind, additionalBinaryDataProperties, internalRefusal);
         }
-
-        BinaryData IPersistableModel<InternalMessageContentRefusalObject>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentRefusalObject>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalMessageContentRefusalObject)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalMessageContentRefusalObject IPersistableModel<InternalMessageContentRefusalObject>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalMessageContentRefusalObject)PersistableModelCreateCore(data, options);
-
-        protected override MessageContent PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageContentRefusalObject>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalMessageContentRefusalObject(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalMessageContentRefusalObject)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalMessageContentRefusalObject>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

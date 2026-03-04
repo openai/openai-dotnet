@@ -13,6 +13,39 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeConversationSessionOptions : RealtimeSessionOptions, IJsonModel<RealtimeConversationSessionOptions>
     {
+        protected override RealtimeSessionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeConversationSessionOptions>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRealtimeConversationSessionOptions(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeConversationSessionOptions)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeConversationSessionOptions>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeConversationSessionOptions)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RealtimeConversationSessionOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RealtimeConversationSessionOptions IPersistableModel<RealtimeConversationSessionOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeConversationSessionOptions)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RealtimeConversationSessionOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RealtimeConversationSessionOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -300,39 +333,6 @@ namespace OpenAI.Realtime
                 maxOutputTokenCount,
                 truncation);
         }
-
-        BinaryData IPersistableModel<RealtimeConversationSessionOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeConversationSessionOptions>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeConversationSessionOptions)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RealtimeConversationSessionOptions IPersistableModel<RealtimeConversationSessionOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeConversationSessionOptions)PersistableModelCreateCore(data, options);
-
-        protected override RealtimeSessionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeConversationSessionOptions>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRealtimeConversationSessionOptions(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeConversationSessionOptions)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RealtimeConversationSessionOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)

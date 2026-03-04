@@ -12,6 +12,39 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalMessageDeltaContentImageUrlObjectImageUrl : IJsonModel<InternalMessageDeltaContentImageUrlObjectImageUrl>
     {
+        protected virtual InternalMessageDeltaContentImageUrlObjectImageUrl PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContentImageUrlObjectImageUrl>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalMessageDeltaContentImageUrlObjectImageUrl(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalMessageDeltaContentImageUrlObjectImageUrl)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContentImageUrlObjectImageUrl>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalMessageDeltaContentImageUrlObjectImageUrl)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalMessageDeltaContentImageUrlObjectImageUrl>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalMessageDeltaContentImageUrlObjectImageUrl IPersistableModel<InternalMessageDeltaContentImageUrlObjectImageUrl>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalMessageDeltaContentImageUrlObjectImageUrl>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalMessageDeltaContentImageUrlObjectImageUrl>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -88,7 +121,7 @@ namespace OpenAI.Assistants
                     {
                         continue;
                     }
-                    url = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString());
+                    url = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString(), UriKind.RelativeOrAbsolute);
                     continue;
                 }
                 if (prop.NameEquals("detail"u8))
@@ -101,38 +134,5 @@ namespace OpenAI.Assistants
             }
             return new InternalMessageDeltaContentImageUrlObjectImageUrl(url, detail, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalMessageDeltaContentImageUrlObjectImageUrl>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContentImageUrlObjectImageUrl>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalMessageDeltaContentImageUrlObjectImageUrl)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalMessageDeltaContentImageUrlObjectImageUrl IPersistableModel<InternalMessageDeltaContentImageUrlObjectImageUrl>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalMessageDeltaContentImageUrlObjectImageUrl PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalMessageDeltaContentImageUrlObjectImageUrl>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalMessageDeltaContentImageUrlObjectImageUrl(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalMessageDeltaContentImageUrlObjectImageUrl)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalMessageDeltaContentImageUrlObjectImageUrl>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

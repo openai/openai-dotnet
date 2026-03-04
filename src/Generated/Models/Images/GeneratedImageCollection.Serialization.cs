@@ -15,6 +15,49 @@ namespace OpenAI.Images
 {
     public partial class GeneratedImageCollection : ReadOnlyCollection<GeneratedImage>, IJsonModel<GeneratedImageCollection>
     {
+        [Experimental("OPENAI001")]
+        protected virtual GeneratedImageCollection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<GeneratedImageCollection>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeGeneratedImageCollection(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(GeneratedImageCollection)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        [Experimental("OPENAI001")]
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<GeneratedImageCollection>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(GeneratedImageCollection)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<GeneratedImageCollection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        GeneratedImageCollection IPersistableModel<GeneratedImageCollection>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<GeneratedImageCollection>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        [Experimental("OPENAI001")]
+        public static explicit operator GeneratedImageCollection(ClientResult result)
+        {
+            PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeGeneratedImageCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
+
         void IJsonModel<GeneratedImageCollection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -198,49 +241,6 @@ namespace OpenAI.Images
                 quality,
                 usage,
                 additionalBinaryDataProperties);
-        }
-
-        BinaryData IPersistableModel<GeneratedImageCollection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        [Experimental("OPENAI001")]
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<GeneratedImageCollection>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(GeneratedImageCollection)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        GeneratedImageCollection IPersistableModel<GeneratedImageCollection>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        [Experimental("OPENAI001")]
-        protected virtual GeneratedImageCollection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<GeneratedImageCollection>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeGeneratedImageCollection(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(GeneratedImageCollection)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<GeneratedImageCollection>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        [Experimental("OPENAI001")]
-        public static explicit operator GeneratedImageCollection(ClientResult result)
-        {
-            PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
-            return DeserializeGeneratedImageCollection(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

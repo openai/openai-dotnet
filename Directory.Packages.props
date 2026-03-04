@@ -38,6 +38,6 @@
 
   <!-- Generator-Only Dependencies -->
   <ItemGroup Condition="'$(IsGeneratorProject)' == 'true' or $(MSBuildProjectName.EndsWith('Plugin'))">
-    <PackageVersion Include="Microsoft.TypeSpec.Generator.ClientModel" Version="1.0.0-alpha.20251223.2" />
+    <PackageVersion Include="Microsoft.TypeSpec.Generator.ClientModel" Version="1.0.0-alpha.20260227.3" />
   </ItemGroup>
 </Project>

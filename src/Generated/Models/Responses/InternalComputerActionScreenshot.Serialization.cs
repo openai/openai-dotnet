@@ -12,6 +12,39 @@ namespace OpenAI.Responses
 {
     internal partial class InternalComputerActionScreenshot : ComputerCallAction, IJsonModel<InternalComputerActionScreenshot>
     {
+        protected override ComputerCallAction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionScreenshot>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalComputerActionScreenshot(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalComputerActionScreenshot)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionScreenshot>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalComputerActionScreenshot)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalComputerActionScreenshot>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalComputerActionScreenshot IPersistableModel<InternalComputerActionScreenshot>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalComputerActionScreenshot)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalComputerActionScreenshot>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalComputerActionScreenshot>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -75,38 +108,5 @@ namespace OpenAI.Responses
             }
             return new InternalComputerActionScreenshot(kind, patch);
         }
-
-        BinaryData IPersistableModel<InternalComputerActionScreenshot>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionScreenshot>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalComputerActionScreenshot)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalComputerActionScreenshot IPersistableModel<InternalComputerActionScreenshot>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalComputerActionScreenshot)PersistableModelCreateCore(data, options);
-
-        protected override ComputerCallAction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionScreenshot>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalComputerActionScreenshot(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalComputerActionScreenshot)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalComputerActionScreenshot>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

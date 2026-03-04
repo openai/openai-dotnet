@@ -17,6 +17,39 @@ namespace OpenAI.Realtime
         {
         }
 
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRealtimeServerUpdateConversationItemInputAudioTranscriptionDelta(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta IPersistableModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -173,39 +206,6 @@ namespace OpenAI.Realtime
                 delta,
                 logprobs ?? new ChangeTrackingList<RealtimeLogProbabilityDetails>());
         }
-
-        BinaryData IPersistableModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta IPersistableModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta)PersistableModelCreateCore(data, options);
-
-        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRealtimeServerUpdateConversationItemInputAudioTranscriptionDelta(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)

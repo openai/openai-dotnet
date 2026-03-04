@@ -17,6 +17,39 @@ namespace OpenAI.Responses
         {
         }
 
+        protected override InternalCompoundFilter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCompoundFilterOr>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalCompoundFilterOr(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalCompoundFilterOr)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCompoundFilterOr>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalCompoundFilterOr)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalCompoundFilterOr>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalCompoundFilterOr IPersistableModel<InternalCompoundFilterOr>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalCompoundFilterOr)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalCompoundFilterOr>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalCompoundFilterOr>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -98,38 +131,5 @@ namespace OpenAI.Responses
             }
             return new InternalCompoundFilterOr(kind, filters, patch);
         }
-
-        BinaryData IPersistableModel<InternalCompoundFilterOr>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalCompoundFilterOr>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalCompoundFilterOr)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalCompoundFilterOr IPersistableModel<InternalCompoundFilterOr>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalCompoundFilterOr)PersistableModelCreateCore(data, options);
-
-        protected override InternalCompoundFilter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalCompoundFilterOr>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalCompoundFilterOr(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalCompoundFilterOr)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalCompoundFilterOr>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

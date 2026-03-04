@@ -17,6 +17,39 @@ namespace OpenAI.Responses
         {
         }
 
+        protected override InternalItemParam PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalFileSearchToolCallItemParam>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalFileSearchToolCallItemParam(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalFileSearchToolCallItemParam)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalFileSearchToolCallItemParam>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalFileSearchToolCallItemParam)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalFileSearchToolCallItemParam>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalFileSearchToolCallItemParam IPersistableModel<InternalFileSearchToolCallItemParam>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalFileSearchToolCallItemParam)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalFileSearchToolCallItemParam>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalFileSearchToolCallItemParam>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -164,39 +197,6 @@ namespace OpenAI.Responses
             }
             return new InternalFileSearchToolCallItemParam(kind, patch, queries, results ?? new ChangeTrackingList<FileSearchCallResult>());
         }
-
-        BinaryData IPersistableModel<InternalFileSearchToolCallItemParam>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalFileSearchToolCallItemParam>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalFileSearchToolCallItemParam)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalFileSearchToolCallItemParam IPersistableModel<InternalFileSearchToolCallItemParam>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalFileSearchToolCallItemParam)PersistableModelCreateCore(data, options);
-
-        protected override InternalItemParam PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalFileSearchToolCallItemParam>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalFileSearchToolCallItemParam(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalFileSearchToolCallItemParam)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalFileSearchToolCallItemParam>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)

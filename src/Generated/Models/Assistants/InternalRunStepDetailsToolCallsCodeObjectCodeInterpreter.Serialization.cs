@@ -16,6 +16,39 @@ namespace OpenAI.Assistants
         {
         }
 
+        protected virtual InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalRunStepDetailsToolCallsCodeObjectCodeInterpreter(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter IPersistableModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -112,38 +145,5 @@ namespace OpenAI.Assistants
             }
             return new InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter(input, outputs, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter IPersistableModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalRunStepDetailsToolCallsCodeObjectCodeInterpreter(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalRunStepDetailsToolCallsCodeObjectCodeInterpreter>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

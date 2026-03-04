@@ -17,6 +17,39 @@ namespace OpenAI.Responses
         {
         }
 
+        protected override ComputerCallAction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionDrag>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalComputerActionDrag(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalComputerActionDrag)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionDrag>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalComputerActionDrag)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalComputerActionDrag>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalComputerActionDrag IPersistableModel<InternalComputerActionDrag>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalComputerActionDrag)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalComputerActionDrag>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalComputerActionDrag>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -114,39 +147,6 @@ namespace OpenAI.Responses
             }
             return new InternalComputerActionDrag(kind, patch, path);
         }
-
-        BinaryData IPersistableModel<InternalComputerActionDrag>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionDrag>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalComputerActionDrag)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalComputerActionDrag IPersistableModel<InternalComputerActionDrag>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalComputerActionDrag)PersistableModelCreateCore(data, options);
-
-        protected override ComputerCallAction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionDrag>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalComputerActionDrag(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalComputerActionDrag)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalComputerActionDrag>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)

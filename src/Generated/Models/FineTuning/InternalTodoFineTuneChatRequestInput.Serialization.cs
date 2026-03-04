@@ -13,6 +13,39 @@ namespace OpenAI.FineTuning
 {
     internal partial class InternalTodoFineTuneChatRequestInput : IJsonModel<InternalTodoFineTuneChatRequestInput>
     {
+        protected virtual InternalTodoFineTuneChatRequestInput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalTodoFineTuneChatRequestInput>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalTodoFineTuneChatRequestInput(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalTodoFineTuneChatRequestInput)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalTodoFineTuneChatRequestInput>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalTodoFineTuneChatRequestInput)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalTodoFineTuneChatRequestInput>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalTodoFineTuneChatRequestInput IPersistableModel<InternalTodoFineTuneChatRequestInput>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalTodoFineTuneChatRequestInput>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalTodoFineTuneChatRequestInput>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -185,38 +218,5 @@ namespace OpenAI.FineTuning
             }
             return new InternalTodoFineTuneChatRequestInput(messages ?? new ChangeTrackingList<BinaryData>(), tools ?? new ChangeTrackingList<ChatTool>(), parallelToolCalls, functions ?? new ChangeTrackingList<ChatFunction>(), additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalTodoFineTuneChatRequestInput>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalTodoFineTuneChatRequestInput>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalTodoFineTuneChatRequestInput)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalTodoFineTuneChatRequestInput IPersistableModel<InternalTodoFineTuneChatRequestInput>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalTodoFineTuneChatRequestInput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalTodoFineTuneChatRequestInput>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalTodoFineTuneChatRequestInput(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalTodoFineTuneChatRequestInput)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalTodoFineTuneChatRequestInput>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

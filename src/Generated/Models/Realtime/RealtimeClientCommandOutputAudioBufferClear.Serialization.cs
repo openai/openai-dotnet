@@ -12,6 +12,39 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeClientCommandOutputAudioBufferClear : RealtimeClientCommand, IJsonModel<RealtimeClientCommandOutputAudioBufferClear>
     {
+        protected override RealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeClientCommandOutputAudioBufferClear>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRealtimeClientCommandOutputAudioBufferClear(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeClientCommandOutputAudioBufferClear)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeClientCommandOutputAudioBufferClear>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeClientCommandOutputAudioBufferClear)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RealtimeClientCommandOutputAudioBufferClear>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RealtimeClientCommandOutputAudioBufferClear IPersistableModel<RealtimeClientCommandOutputAudioBufferClear>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeClientCommandOutputAudioBufferClear)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RealtimeClientCommandOutputAudioBufferClear>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RealtimeClientCommandOutputAudioBufferClear>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -86,38 +119,5 @@ namespace OpenAI.Realtime
             }
             return new RealtimeClientCommandOutputAudioBufferClear(kind, patch, eventId);
         }
-
-        BinaryData IPersistableModel<RealtimeClientCommandOutputAudioBufferClear>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeClientCommandOutputAudioBufferClear>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeClientCommandOutputAudioBufferClear)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RealtimeClientCommandOutputAudioBufferClear IPersistableModel<RealtimeClientCommandOutputAudioBufferClear>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeClientCommandOutputAudioBufferClear)PersistableModelCreateCore(data, options);
-
-        protected override RealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeClientCommandOutputAudioBufferClear>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRealtimeClientCommandOutputAudioBufferClear(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeClientCommandOutputAudioBufferClear)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RealtimeClientCommandOutputAudioBufferClear>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

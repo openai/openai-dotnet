@@ -16,6 +16,39 @@ namespace OpenAI.Realtime
         {
         }
 
+        protected override RealtimeMessageContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeInputAudioMessageContentPart>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRealtimeInputAudioMessageContentPart(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeInputAudioMessageContentPart)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeInputAudioMessageContentPart>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeInputAudioMessageContentPart)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RealtimeInputAudioMessageContentPart>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RealtimeInputAudioMessageContentPart IPersistableModel<RealtimeInputAudioMessageContentPart>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeInputAudioMessageContentPart)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RealtimeInputAudioMessageContentPart>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RealtimeInputAudioMessageContentPart>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -101,38 +134,5 @@ namespace OpenAI.Realtime
             }
             return new RealtimeInputAudioMessageContentPart(kind, patch, audioBytes, transcript);
         }
-
-        BinaryData IPersistableModel<RealtimeInputAudioMessageContentPart>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeInputAudioMessageContentPart>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeInputAudioMessageContentPart)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RealtimeInputAudioMessageContentPart IPersistableModel<RealtimeInputAudioMessageContentPart>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeInputAudioMessageContentPart)PersistableModelCreateCore(data, options);
-
-        protected override RealtimeMessageContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeInputAudioMessageContentPart>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRealtimeInputAudioMessageContentPart(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeInputAudioMessageContentPart)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RealtimeInputAudioMessageContentPart>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

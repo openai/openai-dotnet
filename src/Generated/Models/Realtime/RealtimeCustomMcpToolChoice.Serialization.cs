@@ -16,6 +16,39 @@ namespace OpenAI.Realtime
         {
         }
 
+        protected override RealtimeCustomToolChoice PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeCustomMcpToolChoice>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRealtimeCustomMcpToolChoice(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeCustomMcpToolChoice)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeCustomMcpToolChoice>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeCustomMcpToolChoice)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RealtimeCustomMcpToolChoice>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RealtimeCustomMcpToolChoice IPersistableModel<RealtimeCustomMcpToolChoice>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeCustomMcpToolChoice)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RealtimeCustomMcpToolChoice>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RealtimeCustomMcpToolChoice>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -106,38 +139,5 @@ namespace OpenAI.Realtime
             }
             return new RealtimeCustomMcpToolChoice(kind, patch, serverLabel, mcpToolName);
         }
-
-        BinaryData IPersistableModel<RealtimeCustomMcpToolChoice>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeCustomMcpToolChoice>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeCustomMcpToolChoice)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RealtimeCustomMcpToolChoice IPersistableModel<RealtimeCustomMcpToolChoice>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeCustomMcpToolChoice)PersistableModelCreateCore(data, options);
-
-        protected override RealtimeCustomToolChoice PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeCustomMcpToolChoice>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRealtimeCustomMcpToolChoice(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeCustomMcpToolChoice)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RealtimeCustomMcpToolChoice>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

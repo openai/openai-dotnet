@@ -12,6 +12,39 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalCreateAssistantRequestToolResources : IJsonModel<InternalCreateAssistantRequestToolResources>
     {
+        protected virtual InternalCreateAssistantRequestToolResources PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateAssistantRequestToolResources>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalCreateAssistantRequestToolResources(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalCreateAssistantRequestToolResources)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateAssistantRequestToolResources>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalCreateAssistantRequestToolResources)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalCreateAssistantRequestToolResources>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalCreateAssistantRequestToolResources IPersistableModel<InternalCreateAssistantRequestToolResources>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalCreateAssistantRequestToolResources>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalCreateAssistantRequestToolResources>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -105,38 +138,5 @@ namespace OpenAI.Assistants
             }
             return new InternalCreateAssistantRequestToolResources(codeInterpreter, fileSearch, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalCreateAssistantRequestToolResources>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateAssistantRequestToolResources>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalCreateAssistantRequestToolResources)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalCreateAssistantRequestToolResources IPersistableModel<InternalCreateAssistantRequestToolResources>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalCreateAssistantRequestToolResources PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateAssistantRequestToolResources>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalCreateAssistantRequestToolResources(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalCreateAssistantRequestToolResources)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalCreateAssistantRequestToolResources>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

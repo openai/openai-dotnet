@@ -16,6 +16,39 @@ namespace OpenAI.Responses
         {
         }
 
+        protected override ResponseMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ContainerFileCitationMessageAnnotation>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeContainerFileCitationMessageAnnotation(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(ContainerFileCitationMessageAnnotation)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ContainerFileCitationMessageAnnotation>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(ContainerFileCitationMessageAnnotation)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<ContainerFileCitationMessageAnnotation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        ContainerFileCitationMessageAnnotation IPersistableModel<ContainerFileCitationMessageAnnotation>.Create(BinaryData data, ModelReaderWriterOptions options) => (ContainerFileCitationMessageAnnotation)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<ContainerFileCitationMessageAnnotation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<ContainerFileCitationMessageAnnotation>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -141,38 +174,5 @@ namespace OpenAI.Responses
                 endIndex,
                 filename);
         }
-
-        BinaryData IPersistableModel<ContainerFileCitationMessageAnnotation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ContainerFileCitationMessageAnnotation>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(ContainerFileCitationMessageAnnotation)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        ContainerFileCitationMessageAnnotation IPersistableModel<ContainerFileCitationMessageAnnotation>.Create(BinaryData data, ModelReaderWriterOptions options) => (ContainerFileCitationMessageAnnotation)PersistableModelCreateCore(data, options);
-
-        protected override ResponseMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ContainerFileCitationMessageAnnotation>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeContainerFileCitationMessageAnnotation(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(ContainerFileCitationMessageAnnotation)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<ContainerFileCitationMessageAnnotation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

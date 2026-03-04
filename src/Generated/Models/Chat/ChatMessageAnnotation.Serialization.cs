@@ -16,6 +16,39 @@ namespace OpenAI.Chat
         {
         }
 
+        protected virtual ChatMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ChatMessageAnnotation>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeChatMessageAnnotation(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(ChatMessageAnnotation)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ChatMessageAnnotation>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(ChatMessageAnnotation)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<ChatMessageAnnotation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        ChatMessageAnnotation IPersistableModel<ChatMessageAnnotation>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<ChatMessageAnnotation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<ChatMessageAnnotation>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -83,39 +116,6 @@ namespace OpenAI.Chat
             }
             return new ChatMessageAnnotation(urlCitation, patch);
         }
-
-        BinaryData IPersistableModel<ChatMessageAnnotation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ChatMessageAnnotation>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(ChatMessageAnnotation)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        ChatMessageAnnotation IPersistableModel<ChatMessageAnnotation>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual ChatMessageAnnotation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ChatMessageAnnotation>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeChatMessageAnnotation(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(ChatMessageAnnotation)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<ChatMessageAnnotation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)

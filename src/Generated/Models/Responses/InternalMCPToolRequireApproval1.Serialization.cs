@@ -12,6 +12,39 @@ namespace OpenAI.Responses
 {
     internal partial class InternalMCPToolRequireApproval1 : IJsonModel<InternalMCPToolRequireApproval1>
     {
+        protected virtual InternalMCPToolRequireApproval1 PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMCPToolRequireApproval1>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalMCPToolRequireApproval1(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalMCPToolRequireApproval1)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMCPToolRequireApproval1>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalMCPToolRequireApproval1)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalMCPToolRequireApproval1>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalMCPToolRequireApproval1 IPersistableModel<InternalMCPToolRequireApproval1>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalMCPToolRequireApproval1>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalMCPToolRequireApproval1>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -98,39 +131,6 @@ namespace OpenAI.Responses
             }
             return new InternalMCPToolRequireApproval1(always, never, patch);
         }
-
-        BinaryData IPersistableModel<InternalMCPToolRequireApproval1>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalMCPToolRequireApproval1>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalMCPToolRequireApproval1)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalMCPToolRequireApproval1 IPersistableModel<InternalMCPToolRequireApproval1>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalMCPToolRequireApproval1 PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalMCPToolRequireApproval1>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalMCPToolRequireApproval1(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalMCPToolRequireApproval1)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalMCPToolRequireApproval1>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)

@@ -16,6 +16,39 @@ namespace OpenAI.Audio
         {
         }
 
+        protected override StreamingAudioTranscriptionUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingAudioTranscriptionTextSegmentUpdate>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeStreamingAudioTranscriptionTextSegmentUpdate(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(StreamingAudioTranscriptionTextSegmentUpdate)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingAudioTranscriptionTextSegmentUpdate>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(StreamingAudioTranscriptionTextSegmentUpdate)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<StreamingAudioTranscriptionTextSegmentUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        StreamingAudioTranscriptionTextSegmentUpdate IPersistableModel<StreamingAudioTranscriptionTextSegmentUpdate>.Create(BinaryData data, ModelReaderWriterOptions options) => (StreamingAudioTranscriptionTextSegmentUpdate)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<StreamingAudioTranscriptionTextSegmentUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<StreamingAudioTranscriptionTextSegmentUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -128,38 +161,5 @@ namespace OpenAI.Audio
                 text,
                 speakerLabel);
         }
-
-        BinaryData IPersistableModel<StreamingAudioTranscriptionTextSegmentUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<StreamingAudioTranscriptionTextSegmentUpdate>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(StreamingAudioTranscriptionTextSegmentUpdate)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        StreamingAudioTranscriptionTextSegmentUpdate IPersistableModel<StreamingAudioTranscriptionTextSegmentUpdate>.Create(BinaryData data, ModelReaderWriterOptions options) => (StreamingAudioTranscriptionTextSegmentUpdate)PersistableModelCreateCore(data, options);
-
-        protected override StreamingAudioTranscriptionUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<StreamingAudioTranscriptionTextSegmentUpdate>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeStreamingAudioTranscriptionTextSegmentUpdate(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(StreamingAudioTranscriptionTextSegmentUpdate)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<StreamingAudioTranscriptionTextSegmentUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }
