@@ -4,11 +4,10 @@
     <IsTestProject>true</IsTestProject>
 
     <!-- 
-      Exclude Responses subproject build artifacts and utility files.
-      The Responses/Utility files are standalone copies designed for the separate 
-      OpenAI.Responses.Tests project. The main test project has its own utilities.
+      Exclude Responses subproject build artifacts, utility files, and the Responses-only
+      TestHelpers (the full SDK version is in Responses.FullSdk/TestHelpers.Responses.FullSdk.cs).
     -->
-    <DefaultItemExcludes>$(DefaultItemExcludes);Responses/OpenAI.Responses.Tests.csproj;Responses/bin/**;Responses/obj/**;Responses/Utility/**</DefaultItemExcludes>
+    <DefaultItemExcludes>$(DefaultItemExcludes);Responses/OpenAI.Responses.Tests.csproj;Responses/bin/**;Responses/obj/**;Responses/Utility/**;Responses/TestHelpers.Responses.cs</DefaultItemExcludes>
 
     <!-- Re-enable signing for InternalsVisibleTo compatibility -->
     <SignAssembly Condition="'$(Configuration)' != 'Unsigned'">true</SignAssembly>
