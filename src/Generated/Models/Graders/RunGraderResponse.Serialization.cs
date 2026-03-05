@@ -17,6 +17,46 @@ namespace OpenAI.Graders
         {
         }
 
+        protected virtual RunGraderResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RunGraderResponse>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRunGraderResponse(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RunGraderResponse)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RunGraderResponse>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RunGraderResponse)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RunGraderResponse>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RunGraderResponse IPersistableModel<RunGraderResponse>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RunGraderResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator RunGraderResponse(ClientResult result)
+        {
+            PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeRunGraderResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
+
         void IJsonModel<RunGraderResponse>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -137,46 +177,6 @@ namespace OpenAI.Graders
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new RunGraderResponse(reward, metadata, subRewards, modelGraderTokenUsagePerModel, additionalBinaryDataProperties);
-        }
-
-        BinaryData IPersistableModel<RunGraderResponse>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RunGraderResponse>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RunGraderResponse)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RunGraderResponse IPersistableModel<RunGraderResponse>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual RunGraderResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RunGraderResponse>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRunGraderResponse(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RunGraderResponse)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RunGraderResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static explicit operator RunGraderResponse(ClientResult result)
-        {
-            PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
-            return DeserializeRunGraderResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

@@ -16,6 +16,39 @@ namespace OpenAI.Responses
         {
         }
 
+        protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<FunctionCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeFunctionCallResponseItem(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(FunctionCallResponseItem)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<FunctionCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(FunctionCallResponseItem)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<FunctionCallResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        FunctionCallResponseItem IPersistableModel<FunctionCallResponseItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (FunctionCallResponseItem)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<FunctionCallResponseItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<FunctionCallResponseItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -124,7 +157,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("arguments"u8))
                 {
-                    DeserializeFunctionArgumentsValue(prop, ref functionArguments);
+                    DeserializeFunctionArgumentsValue(prop, ref functionArguments, options);
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
@@ -138,38 +171,5 @@ namespace OpenAI.Responses
                 functionName,
                 functionArguments);
         }
-
-        BinaryData IPersistableModel<FunctionCallResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<FunctionCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(FunctionCallResponseItem)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        FunctionCallResponseItem IPersistableModel<FunctionCallResponseItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (FunctionCallResponseItem)PersistableModelCreateCore(data, options);
-
-        protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<FunctionCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeFunctionCallResponseItem(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(FunctionCallResponseItem)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<FunctionCallResponseItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

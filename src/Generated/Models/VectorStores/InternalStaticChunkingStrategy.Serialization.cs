@@ -16,6 +16,39 @@ namespace OpenAI.VectorStores
         {
         }
 
+        protected virtual InternalStaticChunkingStrategy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalStaticChunkingStrategy>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalStaticChunkingStrategy(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalStaticChunkingStrategy)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalStaticChunkingStrategy>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalStaticChunkingStrategy)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalStaticChunkingStrategy>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalStaticChunkingStrategy IPersistableModel<InternalStaticChunkingStrategy>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalStaticChunkingStrategy>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalStaticChunkingStrategy>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -101,38 +134,5 @@ namespace OpenAI.VectorStores
             }
             return new InternalStaticChunkingStrategy(maxChunkSizeTokens, chunkOverlapTokens, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalStaticChunkingStrategy>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalStaticChunkingStrategy>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalStaticChunkingStrategy)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalStaticChunkingStrategy IPersistableModel<InternalStaticChunkingStrategy>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalStaticChunkingStrategy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalStaticChunkingStrategy>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalStaticChunkingStrategy(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalStaticChunkingStrategy)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalStaticChunkingStrategy>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

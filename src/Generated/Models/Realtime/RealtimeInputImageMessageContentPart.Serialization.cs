@@ -16,6 +16,39 @@ namespace OpenAI.Realtime
         {
         }
 
+        protected override RealtimeMessageContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeInputImageMessageContentPart>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRealtimeInputImageMessageContentPart(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeInputImageMessageContentPart)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeInputImageMessageContentPart>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeInputImageMessageContentPart)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RealtimeInputImageMessageContentPart>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RealtimeInputImageMessageContentPart IPersistableModel<RealtimeInputImageMessageContentPart>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeInputImageMessageContentPart)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RealtimeInputImageMessageContentPart>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RealtimeInputImageMessageContentPart>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -89,7 +122,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("image_url"u8))
                 {
-                    imageUri = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString());
+                    imageUri = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString(), UriKind.RelativeOrAbsolute);
                     continue;
                 }
                 if (prop.NameEquals("detail"u8))
@@ -105,38 +138,5 @@ namespace OpenAI.Realtime
             }
             return new RealtimeInputImageMessageContentPart(kind, patch, imageUri, detail);
         }
-
-        BinaryData IPersistableModel<RealtimeInputImageMessageContentPart>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeInputImageMessageContentPart>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeInputImageMessageContentPart)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RealtimeInputImageMessageContentPart IPersistableModel<RealtimeInputImageMessageContentPart>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeInputImageMessageContentPart)PersistableModelCreateCore(data, options);
-
-        protected override RealtimeMessageContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeInputImageMessageContentPart>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRealtimeInputImageMessageContentPart(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeInputImageMessageContentPart)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RealtimeInputImageMessageContentPart>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

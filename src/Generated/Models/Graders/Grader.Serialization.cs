@@ -16,6 +16,39 @@ namespace OpenAI.Graders
         {
         }
 
+        protected virtual Grader PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<Grader>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeGrader(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(Grader)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<Grader>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(Grader)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<Grader>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        Grader IPersistableModel<Grader>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<Grader>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<Grader>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -96,38 +129,5 @@ namespace OpenAI.Graders
             }
             return UnknownGrader.DeserializeUnknownGrader(element, options);
         }
-
-        BinaryData IPersistableModel<Grader>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<Grader>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(Grader)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        Grader IPersistableModel<Grader>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual Grader PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<Grader>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeGrader(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(Grader)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<Grader>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

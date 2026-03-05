@@ -12,6 +12,39 @@ namespace OpenAI.Responses
 {
     public partial class WebSearchPreviewTool : ResponseTool, IJsonModel<WebSearchPreviewTool>
     {
+        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<WebSearchPreviewTool>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeWebSearchPreviewTool(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(WebSearchPreviewTool)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<WebSearchPreviewTool>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(WebSearchPreviewTool)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<WebSearchPreviewTool>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        WebSearchPreviewTool IPersistableModel<WebSearchPreviewTool>.Create(BinaryData data, ModelReaderWriterOptions options) => (WebSearchPreviewTool)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<WebSearchPreviewTool>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<WebSearchPreviewTool>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -106,39 +139,6 @@ namespace OpenAI.Responses
             }
             return new WebSearchPreviewTool(kind, patch, userLocation, searchContextSize);
         }
-
-        BinaryData IPersistableModel<WebSearchPreviewTool>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<WebSearchPreviewTool>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(WebSearchPreviewTool)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        WebSearchPreviewTool IPersistableModel<WebSearchPreviewTool>.Create(BinaryData data, ModelReaderWriterOptions options) => (WebSearchPreviewTool)PersistableModelCreateCore(data, options);
-
-        protected override ResponseTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<WebSearchPreviewTool>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeWebSearchPreviewTool(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(WebSearchPreviewTool)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<WebSearchPreviewTool>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)

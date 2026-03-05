@@ -13,6 +13,39 @@ namespace OpenAI.Responses
 {
     public partial class FileSearchCallResult : IJsonModel<FileSearchCallResult>
     {
+        protected virtual FileSearchCallResult PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<FileSearchCallResult>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeFileSearchCallResult(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(FileSearchCallResult)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<FileSearchCallResult>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(FileSearchCallResult)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<FileSearchCallResult>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        FileSearchCallResult IPersistableModel<FileSearchCallResult>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<FileSearchCallResult>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<FileSearchCallResult>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -182,38 +215,5 @@ namespace OpenAI.Responses
                 score,
                 patch);
         }
-
-        BinaryData IPersistableModel<FileSearchCallResult>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<FileSearchCallResult>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(FileSearchCallResult)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        FileSearchCallResult IPersistableModel<FileSearchCallResult>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual FileSearchCallResult PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<FileSearchCallResult>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeFileSearchCallResult(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(FileSearchCallResult)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<FileSearchCallResult>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

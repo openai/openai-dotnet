@@ -12,6 +12,39 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalCreateThreadAndRunRequestToolResources : IJsonModel<InternalCreateThreadAndRunRequestToolResources>
     {
+        protected virtual InternalCreateThreadAndRunRequestToolResources PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateThreadAndRunRequestToolResources>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalCreateThreadAndRunRequestToolResources(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalCreateThreadAndRunRequestToolResources)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateThreadAndRunRequestToolResources>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalCreateThreadAndRunRequestToolResources)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalCreateThreadAndRunRequestToolResources>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalCreateThreadAndRunRequestToolResources IPersistableModel<InternalCreateThreadAndRunRequestToolResources>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalCreateThreadAndRunRequestToolResources>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalCreateThreadAndRunRequestToolResources>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -105,38 +138,5 @@ namespace OpenAI.Assistants
             }
             return new InternalCreateThreadAndRunRequestToolResources(codeInterpreter, fileSearch, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalCreateThreadAndRunRequestToolResources>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateThreadAndRunRequestToolResources>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalCreateThreadAndRunRequestToolResources)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalCreateThreadAndRunRequestToolResources IPersistableModel<InternalCreateThreadAndRunRequestToolResources>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalCreateThreadAndRunRequestToolResources PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateThreadAndRunRequestToolResources>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalCreateThreadAndRunRequestToolResources(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalCreateThreadAndRunRequestToolResources)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalCreateThreadAndRunRequestToolResources>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

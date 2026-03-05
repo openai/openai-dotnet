@@ -16,6 +16,39 @@ namespace OpenAI.Realtime
         {
         }
 
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerUpdateResponseMcpCallInProgress>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRealtimeServerUpdateResponseMcpCallInProgress(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeServerUpdateResponseMcpCallInProgress)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerUpdateResponseMcpCallInProgress>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeServerUpdateResponseMcpCallInProgress)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RealtimeServerUpdateResponseMcpCallInProgress>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RealtimeServerUpdateResponseMcpCallInProgress IPersistableModel<RealtimeServerUpdateResponseMcpCallInProgress>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeServerUpdateResponseMcpCallInProgress)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RealtimeServerUpdateResponseMcpCallInProgress>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RealtimeServerUpdateResponseMcpCallInProgress>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -112,38 +145,5 @@ namespace OpenAI.Realtime
             }
             return new RealtimeServerUpdateResponseMcpCallInProgress(kind, patch, eventId, outputIndex, itemId);
         }
-
-        BinaryData IPersistableModel<RealtimeServerUpdateResponseMcpCallInProgress>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerUpdateResponseMcpCallInProgress>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeServerUpdateResponseMcpCallInProgress)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RealtimeServerUpdateResponseMcpCallInProgress IPersistableModel<RealtimeServerUpdateResponseMcpCallInProgress>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeServerUpdateResponseMcpCallInProgress)PersistableModelCreateCore(data, options);
-
-        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerUpdateResponseMcpCallInProgress>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRealtimeServerUpdateResponseMcpCallInProgress(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeServerUpdateResponseMcpCallInProgress)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RealtimeServerUpdateResponseMcpCallInProgress>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

@@ -16,6 +16,39 @@ namespace OpenAI.Chat
         {
         }
 
+        protected override ChatOutputPrediction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalChatOutputPredictionContent>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalChatOutputPredictionContent(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalChatOutputPredictionContent)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalChatOutputPredictionContent>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalChatOutputPredictionContent)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalChatOutputPredictionContent>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalChatOutputPredictionContent IPersistableModel<InternalChatOutputPredictionContent>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalChatOutputPredictionContent)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalChatOutputPredictionContent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalChatOutputPredictionContent>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -90,38 +123,5 @@ namespace OpenAI.Chat
             }
             return new InternalChatOutputPredictionContent(kind, patch, content);
         }
-
-        BinaryData IPersistableModel<InternalChatOutputPredictionContent>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalChatOutputPredictionContent>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalChatOutputPredictionContent)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalChatOutputPredictionContent IPersistableModel<InternalChatOutputPredictionContent>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalChatOutputPredictionContent)PersistableModelCreateCore(data, options);
-
-        protected override ChatOutputPrediction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalChatOutputPredictionContent>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalChatOutputPredictionContent(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalChatOutputPredictionContent)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalChatOutputPredictionContent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

@@ -13,7 +13,7 @@ namespace OpenAI.Conversations
     {
         private static PipelineMessageClassifier _pipelineMessageClassifier200;
 
-        private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 = PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
+        private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
         internal virtual PipelineMessage CreateGetConversationItemsRequest(string conversationId, long? limit, string order, string after, IEnumerable<IncludedConversationItemProperty> include, RequestOptions options)
         {

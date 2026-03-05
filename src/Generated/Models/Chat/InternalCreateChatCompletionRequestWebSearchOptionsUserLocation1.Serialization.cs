@@ -17,6 +17,39 @@ namespace OpenAI.Chat
         {
         }
 
+        protected virtual InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1 PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalCreateChatCompletionRequestWebSearchOptionsUserLocation1(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1 IPersistableModel<InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -95,39 +128,6 @@ namespace OpenAI.Chat
             }
             return new InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1(kind, approximate, patch);
         }
-
-        BinaryData IPersistableModel<InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1 IPersistableModel<InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1 PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalCreateChatCompletionRequestWebSearchOptionsUserLocation1(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalCreateChatCompletionRequestWebSearchOptionsUserLocation1>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)

@@ -16,6 +16,50 @@ namespace OpenAI.Embeddings
 {
     public partial class OpenAIEmbeddingCollection : ReadOnlyCollection<OpenAIEmbedding>, IJsonModel<OpenAIEmbeddingCollection>
     {
+        [Experimental("OPENAI001")]
+        protected virtual OpenAIEmbeddingCollection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<OpenAIEmbeddingCollection>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeOpenAIEmbeddingCollection(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(OpenAIEmbeddingCollection)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        [Experimental("OPENAI001")]
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<OpenAIEmbeddingCollection>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(OpenAIEmbeddingCollection)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<OpenAIEmbeddingCollection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        OpenAIEmbeddingCollection IPersistableModel<OpenAIEmbeddingCollection>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<OpenAIEmbeddingCollection>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        [Experimental("OPENAI001")]
+        public static explicit operator OpenAIEmbeddingCollection(ClientResult result)
+        {
+            PipelineResponse response = result.GetRawResponse();
+            BinaryData data = response.Content;
+            using JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeOpenAIEmbeddingCollection(document.RootElement, data, ModelSerializationExtensions.WireOptions);
+        }
+
         void IJsonModel<OpenAIEmbeddingCollection>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -140,50 +184,6 @@ namespace OpenAI.Embeddings
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
             return new OpenAIEmbeddingCollection(items, model, @object, usage, patch);
-        }
-
-        BinaryData IPersistableModel<OpenAIEmbeddingCollection>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        [Experimental("OPENAI001")]
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<OpenAIEmbeddingCollection>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(OpenAIEmbeddingCollection)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        OpenAIEmbeddingCollection IPersistableModel<OpenAIEmbeddingCollection>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        [Experimental("OPENAI001")]
-        protected virtual OpenAIEmbeddingCollection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<OpenAIEmbeddingCollection>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeOpenAIEmbeddingCollection(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(OpenAIEmbeddingCollection)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<OpenAIEmbeddingCollection>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        [Experimental("OPENAI001")]
-        public static explicit operator OpenAIEmbeddingCollection(ClientResult result)
-        {
-            PipelineResponse response = result.GetRawResponse();
-            BinaryData data = response.Content;
-            using JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions);
-            return DeserializeOpenAIEmbeddingCollection(document.RootElement, data, ModelSerializationExtensions.WireOptions);
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

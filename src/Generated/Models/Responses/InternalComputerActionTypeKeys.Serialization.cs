@@ -16,6 +16,39 @@ namespace OpenAI.Responses
         {
         }
 
+        protected override ComputerCallAction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionTypeKeys>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalComputerActionTypeKeys(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalComputerActionTypeKeys)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionTypeKeys>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalComputerActionTypeKeys)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalComputerActionTypeKeys>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalComputerActionTypeKeys IPersistableModel<InternalComputerActionTypeKeys>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalComputerActionTypeKeys)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalComputerActionTypeKeys>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalComputerActionTypeKeys>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -90,38 +123,5 @@ namespace OpenAI.Responses
             }
             return new InternalComputerActionTypeKeys(kind, patch, text);
         }
-
-        BinaryData IPersistableModel<InternalComputerActionTypeKeys>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionTypeKeys>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalComputerActionTypeKeys)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalComputerActionTypeKeys IPersistableModel<InternalComputerActionTypeKeys>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalComputerActionTypeKeys)PersistableModelCreateCore(data, options);
-
-        protected override ComputerCallAction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionTypeKeys>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalComputerActionTypeKeys(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalComputerActionTypeKeys)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalComputerActionTypeKeys>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

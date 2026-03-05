@@ -16,6 +16,39 @@ namespace OpenAI.Assistants
         {
         }
 
+        protected override RunStepDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsMessageCreationObject>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalRunStepDetailsMessageCreationObject(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalRunStepDetailsMessageCreationObject)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsMessageCreationObject>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalRunStepDetailsMessageCreationObject)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalRunStepDetailsMessageCreationObject>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalRunStepDetailsMessageCreationObject IPersistableModel<InternalRunStepDetailsMessageCreationObject>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalRunStepDetailsMessageCreationObject)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalRunStepDetailsMessageCreationObject>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalRunStepDetailsMessageCreationObject>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -77,38 +110,5 @@ namespace OpenAI.Assistants
             }
             return new InternalRunStepDetailsMessageCreationObject(kind, additionalBinaryDataProperties, messageCreation);
         }
-
-        BinaryData IPersistableModel<InternalRunStepDetailsMessageCreationObject>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsMessageCreationObject>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalRunStepDetailsMessageCreationObject)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalRunStepDetailsMessageCreationObject IPersistableModel<InternalRunStepDetailsMessageCreationObject>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalRunStepDetailsMessageCreationObject)PersistableModelCreateCore(data, options);
-
-        protected override RunStepDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsMessageCreationObject>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalRunStepDetailsMessageCreationObject(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalRunStepDetailsMessageCreationObject)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalRunStepDetailsMessageCreationObject>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

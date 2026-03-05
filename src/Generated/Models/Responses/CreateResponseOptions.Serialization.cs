@@ -14,6 +14,48 @@ namespace OpenAI.Responses
 {
     public partial class CreateResponseOptions : IJsonModel<CreateResponseOptions>
     {
+        protected virtual CreateResponseOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<CreateResponseOptions>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeCreateResponseOptions(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(CreateResponseOptions)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<CreateResponseOptions>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(CreateResponseOptions)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<CreateResponseOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        CreateResponseOptions IPersistableModel<CreateResponseOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<CreateResponseOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static implicit operator BinaryContent(CreateResponseOptions createResponseOptions)
+        {
+            if (createResponseOptions == null)
+            {
+                return null;
+            }
+            return BinaryContent.Create(createResponseOptions, ModelSerializationExtensions.WireOptions);
+        }
+
         void IJsonModel<CreateResponseOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -561,48 +603,6 @@ namespace OpenAI.Responses
                 streamingEnabled,
                 conversationOptions,
                 patch);
-        }
-
-        BinaryData IPersistableModel<CreateResponseOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<CreateResponseOptions>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(CreateResponseOptions)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        CreateResponseOptions IPersistableModel<CreateResponseOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual CreateResponseOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<CreateResponseOptions>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeCreateResponseOptions(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(CreateResponseOptions)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<CreateResponseOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static implicit operator BinaryContent(CreateResponseOptions createResponseOptions)
-        {
-            if (createResponseOptions == null)
-            {
-                return null;
-            }
-            return BinaryContent.Create(createResponseOptions, ModelSerializationExtensions.WireOptions);
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.

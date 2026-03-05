@@ -17,6 +17,39 @@ namespace OpenAI.Responses
         {
         }
 
+        protected override InternalItemParam PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalResponsesUserMessageItemParam>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalResponsesUserMessageItemParam(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalResponsesUserMessageItemParam)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalResponsesUserMessageItemParam>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalResponsesUserMessageItemParam)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalResponsesUserMessageItemParam>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalResponsesUserMessageItemParam IPersistableModel<InternalResponsesUserMessageItemParam>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalResponsesUserMessageItemParam)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalResponsesUserMessageItemParam>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalResponsesUserMessageItemParam>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -120,39 +153,6 @@ namespace OpenAI.Responses
             }
             return new InternalResponsesUserMessageItemParam(kind, patch, role, content);
         }
-
-        BinaryData IPersistableModel<InternalResponsesUserMessageItemParam>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalResponsesUserMessageItemParam>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalResponsesUserMessageItemParam)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalResponsesUserMessageItemParam IPersistableModel<InternalResponsesUserMessageItemParam>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalResponsesUserMessageItemParam)PersistableModelCreateCore(data, options);
-
-        protected override InternalItemParam PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalResponsesUserMessageItemParam>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalResponsesUserMessageItemParam(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalResponsesUserMessageItemParam)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalResponsesUserMessageItemParam>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)

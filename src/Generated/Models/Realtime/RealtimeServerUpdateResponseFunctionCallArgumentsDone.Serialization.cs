@@ -16,6 +16,39 @@ namespace OpenAI.Realtime
         {
         }
 
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerUpdateResponseFunctionCallArgumentsDone>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRealtimeServerUpdateResponseFunctionCallArgumentsDone(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeServerUpdateResponseFunctionCallArgumentsDone)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerUpdateResponseFunctionCallArgumentsDone>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeServerUpdateResponseFunctionCallArgumentsDone)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RealtimeServerUpdateResponseFunctionCallArgumentsDone>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RealtimeServerUpdateResponseFunctionCallArgumentsDone IPersistableModel<RealtimeServerUpdateResponseFunctionCallArgumentsDone>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeServerUpdateResponseFunctionCallArgumentsDone)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RealtimeServerUpdateResponseFunctionCallArgumentsDone>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RealtimeServerUpdateResponseFunctionCallArgumentsDone>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -144,7 +177,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("arguments"u8))
                 {
-                    DeserializeFunctionArgumentsValue(prop, ref functionArguments);
+                    DeserializeFunctionArgumentsValue(prop, ref functionArguments, options);
                     continue;
                 }
                 if (prop.NameEquals("name"u8))
@@ -165,38 +198,5 @@ namespace OpenAI.Realtime
                 functionArguments,
                 functionName);
         }
-
-        BinaryData IPersistableModel<RealtimeServerUpdateResponseFunctionCallArgumentsDone>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerUpdateResponseFunctionCallArgumentsDone>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeServerUpdateResponseFunctionCallArgumentsDone)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RealtimeServerUpdateResponseFunctionCallArgumentsDone IPersistableModel<RealtimeServerUpdateResponseFunctionCallArgumentsDone>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeServerUpdateResponseFunctionCallArgumentsDone)PersistableModelCreateCore(data, options);
-
-        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeServerUpdateResponseFunctionCallArgumentsDone>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRealtimeServerUpdateResponseFunctionCallArgumentsDone(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeServerUpdateResponseFunctionCallArgumentsDone)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RealtimeServerUpdateResponseFunctionCallArgumentsDone>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

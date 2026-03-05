@@ -17,6 +17,46 @@ namespace OpenAI.Assistants
         {
         }
 
+        protected virtual InternalListRunStepsResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalListRunStepsResponse>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalListRunStepsResponse(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalListRunStepsResponse)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalListRunStepsResponse>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalListRunStepsResponse)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalListRunStepsResponse>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalListRunStepsResponse IPersistableModel<InternalListRunStepsResponse>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalListRunStepsResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator InternalListRunStepsResponse(ClientResult result)
+        {
+            PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeInternalListRunStepsResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
+
         void IJsonModel<InternalListRunStepsResponse>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -151,46 +191,6 @@ namespace OpenAI.Assistants
                 lastId,
                 hasMore,
                 additionalBinaryDataProperties);
-        }
-
-        BinaryData IPersistableModel<InternalListRunStepsResponse>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalListRunStepsResponse>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalListRunStepsResponse)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalListRunStepsResponse IPersistableModel<InternalListRunStepsResponse>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalListRunStepsResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalListRunStepsResponse>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalListRunStepsResponse(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalListRunStepsResponse)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalListRunStepsResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static explicit operator InternalListRunStepsResponse(ClientResult result)
-        {
-            PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
-            return DeserializeInternalListRunStepsResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

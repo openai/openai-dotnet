@@ -16,6 +16,39 @@ namespace OpenAI.FineTuning
         {
         }
 
+        protected virtual FineTuningCheckpoint PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<FineTuningCheckpoint>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeFineTuningCheckpoint(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(FineTuningCheckpoint)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<FineTuningCheckpoint>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(FineTuningCheckpoint)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<FineTuningCheckpoint>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        FineTuningCheckpoint IPersistableModel<FineTuningCheckpoint>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<FineTuningCheckpoint>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<FineTuningCheckpoint>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -164,38 +197,5 @@ namespace OpenAI.FineTuning
                 @object,
                 additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<FineTuningCheckpoint>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<FineTuningCheckpoint>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(FineTuningCheckpoint)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        FineTuningCheckpoint IPersistableModel<FineTuningCheckpoint>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual FineTuningCheckpoint PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<FineTuningCheckpoint>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeFineTuningCheckpoint(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(FineTuningCheckpoint)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<FineTuningCheckpoint>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

@@ -16,6 +16,39 @@ namespace OpenAI.Graders
         {
         }
 
+        protected override Grader PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<GraderTextSimilarity>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeGraderTextSimilarity(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(GraderTextSimilarity)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<GraderTextSimilarity>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(GraderTextSimilarity)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<GraderTextSimilarity>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        GraderTextSimilarity IPersistableModel<GraderTextSimilarity>.Create(BinaryData data, ModelReaderWriterOptions options) => (GraderTextSimilarity)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<GraderTextSimilarity>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<GraderTextSimilarity>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -116,38 +149,5 @@ namespace OpenAI.Graders
                 reference,
                 evaluationMetric);
         }
-
-        BinaryData IPersistableModel<GraderTextSimilarity>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<GraderTextSimilarity>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(GraderTextSimilarity)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        GraderTextSimilarity IPersistableModel<GraderTextSimilarity>.Create(BinaryData data, ModelReaderWriterOptions options) => (GraderTextSimilarity)PersistableModelCreateCore(data, options);
-
-        protected override Grader PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<GraderTextSimilarity>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeGraderTextSimilarity(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(GraderTextSimilarity)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<GraderTextSimilarity>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

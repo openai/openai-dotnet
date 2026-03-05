@@ -17,6 +17,39 @@ namespace OpenAI.Evals
         {
         }
 
+        protected override InternalEvalGraderResource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalEvalGraderTextSimilarityResource>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalEvalGraderTextSimilarityResource(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalEvalGraderTextSimilarityResource)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalEvalGraderTextSimilarityResource>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalEvalGraderTextSimilarityResource)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalEvalGraderTextSimilarityResource>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalEvalGraderTextSimilarityResource IPersistableModel<InternalEvalGraderTextSimilarityResource>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalEvalGraderTextSimilarityResource)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalEvalGraderTextSimilarityResource>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalEvalGraderTextSimilarityResource>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -129,38 +162,5 @@ namespace OpenAI.Evals
                 evaluationMetric,
                 passThreshold);
         }
-
-        BinaryData IPersistableModel<InternalEvalGraderTextSimilarityResource>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalEvalGraderTextSimilarityResource>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalEvalGraderTextSimilarityResource)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalEvalGraderTextSimilarityResource IPersistableModel<InternalEvalGraderTextSimilarityResource>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalEvalGraderTextSimilarityResource)PersistableModelCreateCore(data, options);
-
-        protected override InternalEvalGraderResource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalEvalGraderTextSimilarityResource>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalEvalGraderTextSimilarityResource(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalEvalGraderTextSimilarityResource)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalEvalGraderTextSimilarityResource>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

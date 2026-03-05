@@ -13,6 +13,39 @@ namespace OpenAI.Assistants
 {
     public partial class AssistantModificationOptions : IJsonModel<AssistantModificationOptions>
     {
+        protected virtual AssistantModificationOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<AssistantModificationOptions>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeAssistantModificationOptions(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(AssistantModificationOptions)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<AssistantModificationOptions>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(AssistantModificationOptions)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<AssistantModificationOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        AssistantModificationOptions IPersistableModel<AssistantModificationOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<AssistantModificationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<AssistantModificationOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -290,38 +323,5 @@ namespace OpenAI.Assistants
                 responseFormat,
                 additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<AssistantModificationOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<AssistantModificationOptions>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(AssistantModificationOptions)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        AssistantModificationOptions IPersistableModel<AssistantModificationOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual AssistantModificationOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<AssistantModificationOptions>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeAssistantModificationOptions(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(AssistantModificationOptions)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<AssistantModificationOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

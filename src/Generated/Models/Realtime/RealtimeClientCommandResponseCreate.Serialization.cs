@@ -12,6 +12,39 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeClientCommandResponseCreate : RealtimeClientCommand, IJsonModel<RealtimeClientCommandResponseCreate>
     {
+        protected override RealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeClientCommandResponseCreate>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRealtimeClientCommandResponseCreate(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeClientCommandResponseCreate)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeClientCommandResponseCreate>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeClientCommandResponseCreate)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RealtimeClientCommandResponseCreate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RealtimeClientCommandResponseCreate IPersistableModel<RealtimeClientCommandResponseCreate>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeClientCommandResponseCreate)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RealtimeClientCommandResponseCreate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RealtimeClientCommandResponseCreate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -101,39 +134,6 @@ namespace OpenAI.Realtime
             }
             return new RealtimeClientCommandResponseCreate(kind, patch, eventId, responseOptions);
         }
-
-        BinaryData IPersistableModel<RealtimeClientCommandResponseCreate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeClientCommandResponseCreate>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeClientCommandResponseCreate)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RealtimeClientCommandResponseCreate IPersistableModel<RealtimeClientCommandResponseCreate>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeClientCommandResponseCreate)PersistableModelCreateCore(data, options);
-
-        protected override RealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeClientCommandResponseCreate>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRealtimeClientCommandResponseCreate(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeClientCommandResponseCreate)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RealtimeClientCommandResponseCreate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)

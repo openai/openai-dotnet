@@ -16,6 +16,39 @@ namespace OpenAI.Images
         {
         }
 
+        protected virtual ImageTokenUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ImageTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeImageTokenUsage(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(ImageTokenUsage)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ImageTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(ImageTokenUsage)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<ImageTokenUsage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        ImageTokenUsage IPersistableModel<ImageTokenUsage>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<ImageTokenUsage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<ImageTokenUsage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -144,38 +177,5 @@ namespace OpenAI.Images
                 inputTokenDetails,
                 additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<ImageTokenUsage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ImageTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(ImageTokenUsage)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        ImageTokenUsage IPersistableModel<ImageTokenUsage>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual ImageTokenUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ImageTokenUsage>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeImageTokenUsage(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(ImageTokenUsage)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<ImageTokenUsage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

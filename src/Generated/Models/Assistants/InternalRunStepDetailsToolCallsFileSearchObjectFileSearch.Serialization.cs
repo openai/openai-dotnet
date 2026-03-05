@@ -12,6 +12,39 @@ namespace OpenAI.Assistants
 {
     internal partial class InternalRunStepDetailsToolCallsFileSearchObjectFileSearch : IJsonModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>
     {
+        protected virtual InternalRunStepDetailsToolCallsFileSearchObjectFileSearch PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalRunStepDetailsToolCallsFileSearchObjectFileSearch(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalRunStepDetailsToolCallsFileSearchObjectFileSearch)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalRunStepDetailsToolCallsFileSearchObjectFileSearch)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalRunStepDetailsToolCallsFileSearchObjectFileSearch IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -116,38 +149,5 @@ namespace OpenAI.Assistants
             }
             return new InternalRunStepDetailsToolCallsFileSearchObjectFileSearch(rankingOptions, results ?? new ChangeTrackingList<RunStepFileSearchResult>(), additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalRunStepDetailsToolCallsFileSearchObjectFileSearch)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalRunStepDetailsToolCallsFileSearchObjectFileSearch IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalRunStepDetailsToolCallsFileSearchObjectFileSearch PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalRunStepDetailsToolCallsFileSearchObjectFileSearch(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalRunStepDetailsToolCallsFileSearchObjectFileSearch)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalRunStepDetailsToolCallsFileSearchObjectFileSearch>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

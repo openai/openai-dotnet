@@ -16,6 +16,39 @@ namespace OpenAI.Assistants
         {
         }
 
+        protected virtual RunStepUpdateCodeInterpreterOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RunStepUpdateCodeInterpreterOutput>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRunStepUpdateCodeInterpreterOutput(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RunStepUpdateCodeInterpreterOutput)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RunStepUpdateCodeInterpreterOutput>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RunStepUpdateCodeInterpreterOutput)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RunStepUpdateCodeInterpreterOutput>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RunStepUpdateCodeInterpreterOutput IPersistableModel<RunStepUpdateCodeInterpreterOutput>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RunStepUpdateCodeInterpreterOutput>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RunStepUpdateCodeInterpreterOutput>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -88,38 +121,5 @@ namespace OpenAI.Assistants
             }
             return UnknownRunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject.DeserializeUnknownRunStepDeltaStepDetailsToolCallsCodeObjectCodeInterpreterOutputsObject(element, options);
         }
-
-        BinaryData IPersistableModel<RunStepUpdateCodeInterpreterOutput>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RunStepUpdateCodeInterpreterOutput>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RunStepUpdateCodeInterpreterOutput)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RunStepUpdateCodeInterpreterOutput IPersistableModel<RunStepUpdateCodeInterpreterOutput>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual RunStepUpdateCodeInterpreterOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RunStepUpdateCodeInterpreterOutput>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRunStepUpdateCodeInterpreterOutput(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RunStepUpdateCodeInterpreterOutput)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RunStepUpdateCodeInterpreterOutput>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

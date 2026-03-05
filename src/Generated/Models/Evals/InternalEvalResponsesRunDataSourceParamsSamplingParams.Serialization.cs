@@ -13,6 +13,39 @@ namespace OpenAI.Evals
 {
     internal partial class InternalEvalResponsesRunDataSourceParamsSamplingParams : IJsonModel<InternalEvalResponsesRunDataSourceParamsSamplingParams>
     {
+        protected virtual InternalEvalResponsesRunDataSourceParamsSamplingParams PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalEvalResponsesRunDataSourceParamsSamplingParams>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalEvalResponsesRunDataSourceParamsSamplingParams(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalEvalResponsesRunDataSourceParamsSamplingParams)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalEvalResponsesRunDataSourceParamsSamplingParams>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalEvalResponsesRunDataSourceParamsSamplingParams)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalEvalResponsesRunDataSourceParamsSamplingParams>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalEvalResponsesRunDataSourceParamsSamplingParams IPersistableModel<InternalEvalResponsesRunDataSourceParamsSamplingParams>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalEvalResponsesRunDataSourceParamsSamplingParams>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalEvalResponsesRunDataSourceParamsSamplingParams>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -183,38 +216,5 @@ namespace OpenAI.Evals
                 text,
                 additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalEvalResponsesRunDataSourceParamsSamplingParams>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalEvalResponsesRunDataSourceParamsSamplingParams>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalEvalResponsesRunDataSourceParamsSamplingParams)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalEvalResponsesRunDataSourceParamsSamplingParams IPersistableModel<InternalEvalResponsesRunDataSourceParamsSamplingParams>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalEvalResponsesRunDataSourceParamsSamplingParams PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalEvalResponsesRunDataSourceParamsSamplingParams>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalEvalResponsesRunDataSourceParamsSamplingParams(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalEvalResponsesRunDataSourceParamsSamplingParams)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalEvalResponsesRunDataSourceParamsSamplingParams>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

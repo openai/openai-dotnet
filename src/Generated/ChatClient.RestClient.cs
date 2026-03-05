@@ -13,7 +13,7 @@ namespace OpenAI.Chat
     {
         private static PipelineMessageClassifier _pipelineMessageClassifier200;
 
-        private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 = PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
+        private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
         internal virtual PipelineMessage CreateGetChatCompletionsRequest(string after, int? limit, string order, IDictionary<string, string> metadata, string model, RequestOptions options)
         {

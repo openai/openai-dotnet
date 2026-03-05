@@ -12,6 +12,39 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeRetentionRatioTokenLimitDetails : IJsonModel<RealtimeRetentionRatioTokenLimitDetails>
     {
+        protected virtual RealtimeRetentionRatioTokenLimitDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeRetentionRatioTokenLimitDetails>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRealtimeRetentionRatioTokenLimitDetails(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeRetentionRatioTokenLimitDetails)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeRetentionRatioTokenLimitDetails>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeRetentionRatioTokenLimitDetails)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RealtimeRetentionRatioTokenLimitDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RealtimeRetentionRatioTokenLimitDetails IPersistableModel<RealtimeRetentionRatioTokenLimitDetails>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RealtimeRetentionRatioTokenLimitDetails>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RealtimeRetentionRatioTokenLimitDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -83,38 +116,5 @@ namespace OpenAI.Realtime
             }
             return new RealtimeRetentionRatioTokenLimitDetails(maxPostInstructionsTokenCount, patch);
         }
-
-        BinaryData IPersistableModel<RealtimeRetentionRatioTokenLimitDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeRetentionRatioTokenLimitDetails>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeRetentionRatioTokenLimitDetails)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RealtimeRetentionRatioTokenLimitDetails IPersistableModel<RealtimeRetentionRatioTokenLimitDetails>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual RealtimeRetentionRatioTokenLimitDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeRetentionRatioTokenLimitDetails>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRealtimeRetentionRatioTokenLimitDetails(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeRetentionRatioTokenLimitDetails)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RealtimeRetentionRatioTokenLimitDetails>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

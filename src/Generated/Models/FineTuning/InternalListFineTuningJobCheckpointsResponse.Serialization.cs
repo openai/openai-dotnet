@@ -17,6 +17,46 @@ namespace OpenAI.FineTuning
         {
         }
 
+        protected virtual InternalListFineTuningJobCheckpointsResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalListFineTuningJobCheckpointsResponse>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalListFineTuningJobCheckpointsResponse(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalListFineTuningJobCheckpointsResponse)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalListFineTuningJobCheckpointsResponse>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalListFineTuningJobCheckpointsResponse)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalListFineTuningJobCheckpointsResponse>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalListFineTuningJobCheckpointsResponse IPersistableModel<InternalListFineTuningJobCheckpointsResponse>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalListFineTuningJobCheckpointsResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator InternalListFineTuningJobCheckpointsResponse(ClientResult result)
+        {
+            PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeInternalListFineTuningJobCheckpointsResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
+
         void IJsonModel<InternalListFineTuningJobCheckpointsResponse>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -160,46 +200,6 @@ namespace OpenAI.FineTuning
                 lastId,
                 hasMore,
                 additionalBinaryDataProperties);
-        }
-
-        BinaryData IPersistableModel<InternalListFineTuningJobCheckpointsResponse>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalListFineTuningJobCheckpointsResponse>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalListFineTuningJobCheckpointsResponse)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalListFineTuningJobCheckpointsResponse IPersistableModel<InternalListFineTuningJobCheckpointsResponse>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalListFineTuningJobCheckpointsResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalListFineTuningJobCheckpointsResponse>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalListFineTuningJobCheckpointsResponse(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalListFineTuningJobCheckpointsResponse)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalListFineTuningJobCheckpointsResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static explicit operator InternalListFineTuningJobCheckpointsResponse(ClientResult result)
-        {
-            PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
-            return DeserializeInternalListFineTuningJobCheckpointsResponse(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

@@ -16,6 +16,39 @@ namespace OpenAI.Responses
         {
         }
 
+        protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<McpToolCallApprovalResponseItem>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeMcpToolCallApprovalResponseItem(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(McpToolCallApprovalResponseItem)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<McpToolCallApprovalResponseItem>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(McpToolCallApprovalResponseItem)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<McpToolCallApprovalResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        McpToolCallApprovalResponseItem IPersistableModel<McpToolCallApprovalResponseItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (McpToolCallApprovalResponseItem)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<McpToolCallApprovalResponseItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<McpToolCallApprovalResponseItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -129,38 +162,5 @@ namespace OpenAI.Responses
                 approved,
                 reason);
         }
-
-        BinaryData IPersistableModel<McpToolCallApprovalResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<McpToolCallApprovalResponseItem>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(McpToolCallApprovalResponseItem)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        McpToolCallApprovalResponseItem IPersistableModel<McpToolCallApprovalResponseItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (McpToolCallApprovalResponseItem)PersistableModelCreateCore(data, options);
-
-        protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<McpToolCallApprovalResponseItem>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeMcpToolCallApprovalResponseItem(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(McpToolCallApprovalResponseItem)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<McpToolCallApprovalResponseItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

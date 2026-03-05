@@ -16,6 +16,39 @@ namespace OpenAI.Images
         {
         }
 
+        protected virtual InternalImageEditCompletedEvent PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalImageEditCompletedEvent>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalImageEditCompletedEvent(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalImageEditCompletedEvent)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalImageEditCompletedEvent>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalImageEditCompletedEvent)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalImageEditCompletedEvent>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalImageEditCompletedEvent IPersistableModel<InternalImageEditCompletedEvent>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalImageEditCompletedEvent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalImageEditCompletedEvent>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -176,38 +209,5 @@ namespace OpenAI.Images
                 usage,
                 additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalImageEditCompletedEvent>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalImageEditCompletedEvent>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalImageEditCompletedEvent)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalImageEditCompletedEvent IPersistableModel<InternalImageEditCompletedEvent>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalImageEditCompletedEvent PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalImageEditCompletedEvent>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalImageEditCompletedEvent(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalImageEditCompletedEvent)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalImageEditCompletedEvent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

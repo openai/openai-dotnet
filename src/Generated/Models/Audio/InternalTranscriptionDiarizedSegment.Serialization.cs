@@ -16,6 +16,39 @@ namespace OpenAI.Audio
         {
         }
 
+        protected virtual InternalTranscriptionDiarizedSegment PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalTranscriptionDiarizedSegment>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalTranscriptionDiarizedSegment(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalTranscriptionDiarizedSegment)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalTranscriptionDiarizedSegment>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalTranscriptionDiarizedSegment)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalTranscriptionDiarizedSegment>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalTranscriptionDiarizedSegment IPersistableModel<InternalTranscriptionDiarizedSegment>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalTranscriptionDiarizedSegment>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalTranscriptionDiarizedSegment>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -152,38 +185,5 @@ namespace OpenAI.Audio
                 speaker,
                 additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalTranscriptionDiarizedSegment>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalTranscriptionDiarizedSegment>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalTranscriptionDiarizedSegment)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalTranscriptionDiarizedSegment IPersistableModel<InternalTranscriptionDiarizedSegment>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalTranscriptionDiarizedSegment PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalTranscriptionDiarizedSegment>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalTranscriptionDiarizedSegment(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalTranscriptionDiarizedSegment)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalTranscriptionDiarizedSegment>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

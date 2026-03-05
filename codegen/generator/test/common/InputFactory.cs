@@ -598,7 +598,8 @@ namespace OpenAILibraryPlugin.Tests.Common
             IEnumerable<InputOperationResponse>? responses = null,
             IEnumerable<string>? requestMediaTypes = null,
             string? path = null,
-            IReadOnlyList<InputDecoratorInfo>? decorators = null)
+            IReadOnlyList<InputDecoratorInfo>? decorators = null,
+            string? ns = null)
         {
             var operation = new InputOperation(
                 name,
@@ -617,7 +618,8 @@ namespace OpenAILibraryPlugin.Tests.Common
                 false,
                 true,
                 true,
-                name);
+                name,
+                ns);
             if (decorators is not null)
             {
                 var decoratorProperty = typeof(InputOperation).GetProperty(nameof(InputOperation.Decorators));
@@ -656,7 +658,7 @@ namespace OpenAILibraryPlugin.Tests.Common
         /// <param name="decorators"></param>
         /// <param name="crossLanguageDefinitionId"></param>
         /// <returns></returns>
-        public static InputClient Client(string name, string clientNamespace = "Samples", string? doc = null, IEnumerable<InputServiceMethod>? methods = null, IEnumerable<InputParameter>? parameters = null, InputClient? parent = null, IReadOnlyList<InputDecoratorInfo>? decorators = null, string? crossLanguageDefinitionId = null)
+        public static InputClient Client(string name, string clientNamespace = "Samples", string? doc = null, IEnumerable<InputServiceMethod>? methods = null, IEnumerable<InputParameter>? parameters = null, InputClient? parent = null, IReadOnlyList<InputDecoratorInfo>? decorators = null, string? crossLanguageDefinitionId = null, bool? isMultiServiceClient = false)
         {
             // when this client has parent, we add the constructed client into the `children` list of the parent
             var clientChildren = new List<InputClient>();
@@ -666,6 +668,7 @@ namespace OpenAILibraryPlugin.Tests.Common
                 crossLanguageDefinitionId ?? $"{clientNamespace}.{name}",
                 string.Empty,
                 doc ?? $"{name} description",
+                isMultiServiceClient ?? false,
                 methods is null ? [] : [.. methods],
                 parameters is null ? [] : [.. parameters],
                 parent,

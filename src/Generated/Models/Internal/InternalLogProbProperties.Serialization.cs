@@ -16,6 +16,39 @@ namespace OpenAI.Internal
         {
         }
 
+        protected virtual InternalLogProbProperties PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalLogProbProperties>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalLogProbProperties(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalLogProbProperties)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalLogProbProperties>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalLogProbProperties)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalLogProbProperties>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalLogProbProperties IPersistableModel<InternalLogProbProperties>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalLogProbProperties>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalLogProbProperties>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -122,38 +155,5 @@ namespace OpenAI.Internal
             }
             return new InternalLogProbProperties(token, logprob, bytes, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalLogProbProperties>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalLogProbProperties>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalLogProbProperties)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalLogProbProperties IPersistableModel<InternalLogProbProperties>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalLogProbProperties PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalLogProbProperties>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalLogProbProperties(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalLogProbProperties)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalLogProbProperties>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

@@ -16,6 +16,39 @@ namespace OpenAI.Responses
         {
         }
 
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseFunctionCallArgumentsDeltaUpdate>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeStreamingResponseFunctionCallArgumentsDeltaUpdate(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(StreamingResponseFunctionCallArgumentsDeltaUpdate)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseFunctionCallArgumentsDeltaUpdate>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(StreamingResponseFunctionCallArgumentsDeltaUpdate)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<StreamingResponseFunctionCallArgumentsDeltaUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        StreamingResponseFunctionCallArgumentsDeltaUpdate IPersistableModel<StreamingResponseFunctionCallArgumentsDeltaUpdate>.Create(BinaryData data, ModelReaderWriterOptions options) => (StreamingResponseFunctionCallArgumentsDeltaUpdate)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<StreamingResponseFunctionCallArgumentsDeltaUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<StreamingResponseFunctionCallArgumentsDeltaUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -111,7 +144,7 @@ namespace OpenAI.Responses
                 }
                 if (prop.NameEquals("delta"u8))
                 {
-                    DeserializeDeltaValue(prop, ref delta);
+                    DeserializeDeltaValue(prop, ref delta, options);
                     continue;
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
@@ -124,38 +157,5 @@ namespace OpenAI.Responses
                 outputIndex,
                 delta);
         }
-
-        BinaryData IPersistableModel<StreamingResponseFunctionCallArgumentsDeltaUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseFunctionCallArgumentsDeltaUpdate>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(StreamingResponseFunctionCallArgumentsDeltaUpdate)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        StreamingResponseFunctionCallArgumentsDeltaUpdate IPersistableModel<StreamingResponseFunctionCallArgumentsDeltaUpdate>.Create(BinaryData data, ModelReaderWriterOptions options) => (StreamingResponseFunctionCallArgumentsDeltaUpdate)PersistableModelCreateCore(data, options);
-
-        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseFunctionCallArgumentsDeltaUpdate>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeStreamingResponseFunctionCallArgumentsDeltaUpdate(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(StreamingResponseFunctionCallArgumentsDeltaUpdate)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<StreamingResponseFunctionCallArgumentsDeltaUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

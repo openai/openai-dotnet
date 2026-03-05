@@ -12,6 +12,39 @@ namespace OpenAI.Responses
 {
     internal partial class InternalToolChoiceObjectFileSearch : InternalToolChoiceObject, IJsonModel<InternalToolChoiceObjectFileSearch>
     {
+        protected override InternalToolChoiceObject PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalToolChoiceObjectFileSearch>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalToolChoiceObjectFileSearch(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalToolChoiceObjectFileSearch)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalToolChoiceObjectFileSearch>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalToolChoiceObjectFileSearch)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalToolChoiceObjectFileSearch>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalToolChoiceObjectFileSearch IPersistableModel<InternalToolChoiceObjectFileSearch>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalToolChoiceObjectFileSearch)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalToolChoiceObjectFileSearch>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalToolChoiceObjectFileSearch>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -75,38 +108,5 @@ namespace OpenAI.Responses
             }
             return new InternalToolChoiceObjectFileSearch(kind, patch);
         }
-
-        BinaryData IPersistableModel<InternalToolChoiceObjectFileSearch>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalToolChoiceObjectFileSearch>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalToolChoiceObjectFileSearch)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalToolChoiceObjectFileSearch IPersistableModel<InternalToolChoiceObjectFileSearch>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalToolChoiceObjectFileSearch)PersistableModelCreateCore(data, options);
-
-        protected override InternalToolChoiceObject PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalToolChoiceObjectFileSearch>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalToolChoiceObjectFileSearch(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalToolChoiceObjectFileSearch)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalToolChoiceObjectFileSearch>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

@@ -16,6 +16,39 @@ namespace OpenAI.Realtime
         {
         }
 
+        protected override RealtimeItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeMcpToolCallItem>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRealtimeMcpToolCallItem(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeMcpToolCallItem)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeMcpToolCallItem>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeMcpToolCallItem)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RealtimeMcpToolCallItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RealtimeMcpToolCallItem IPersistableModel<RealtimeMcpToolCallItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeMcpToolCallItem)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RealtimeMcpToolCallItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RealtimeMcpToolCallItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -134,7 +167,7 @@ namespace OpenAI.Realtime
                 }
                 if (prop.NameEquals("arguments"u8))
                 {
-                    DeserializeToolArgumentsValue(prop, ref toolArguments);
+                    DeserializeToolArgumentsValue(prop, ref toolArguments, options);
                     continue;
                 }
                 if (prop.NameEquals("approval_request_id"u8))
@@ -179,39 +212,6 @@ namespace OpenAI.Realtime
                 toolOutput,
                 error);
         }
-
-        BinaryData IPersistableModel<RealtimeMcpToolCallItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeMcpToolCallItem>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeMcpToolCallItem)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RealtimeMcpToolCallItem IPersistableModel<RealtimeMcpToolCallItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeMcpToolCallItem)PersistableModelCreateCore(data, options);
-
-        protected override RealtimeItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeMcpToolCallItem>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRealtimeMcpToolCallItem(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeMcpToolCallItem)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RealtimeMcpToolCallItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)

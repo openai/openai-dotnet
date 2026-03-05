@@ -12,6 +12,39 @@ namespace OpenAI.Audio
 {
     internal partial class InternalTranscriptTextDeltaEventLogprobs : IJsonModel<InternalTranscriptTextDeltaEventLogprobs>
     {
+        protected virtual InternalTranscriptTextDeltaEventLogprobs PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalTranscriptTextDeltaEventLogprobs>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalTranscriptTextDeltaEventLogprobs(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalTranscriptTextDeltaEventLogprobs)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalTranscriptTextDeltaEventLogprobs>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalTranscriptTextDeltaEventLogprobs)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalTranscriptTextDeltaEventLogprobs>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalTranscriptTextDeltaEventLogprobs IPersistableModel<InternalTranscriptTextDeltaEventLogprobs>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalTranscriptTextDeltaEventLogprobs>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalTranscriptTextDeltaEventLogprobs>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -126,38 +159,5 @@ namespace OpenAI.Audio
             }
             return new InternalTranscriptTextDeltaEventLogprobs(token, logprob, bytes ?? new ChangeTrackingList<long>(), additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalTranscriptTextDeltaEventLogprobs>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalTranscriptTextDeltaEventLogprobs>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalTranscriptTextDeltaEventLogprobs)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalTranscriptTextDeltaEventLogprobs IPersistableModel<InternalTranscriptTextDeltaEventLogprobs>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalTranscriptTextDeltaEventLogprobs PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalTranscriptTextDeltaEventLogprobs>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalTranscriptTextDeltaEventLogprobs(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalTranscriptTextDeltaEventLogprobs)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalTranscriptTextDeltaEventLogprobs>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

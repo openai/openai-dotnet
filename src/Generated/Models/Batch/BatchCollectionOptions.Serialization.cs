@@ -12,6 +12,39 @@ namespace OpenAI.Batch
 {
     public partial class BatchCollectionOptions : IJsonModel<BatchCollectionOptions>
     {
+        protected virtual BatchCollectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<BatchCollectionOptions>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeBatchCollectionOptions(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(BatchCollectionOptions)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<BatchCollectionOptions>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(BatchCollectionOptions)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<BatchCollectionOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        BatchCollectionOptions IPersistableModel<BatchCollectionOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<BatchCollectionOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<BatchCollectionOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -77,38 +110,5 @@ namespace OpenAI.Batch
             }
             return new BatchCollectionOptions(afterId, pageSizeLimit, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<BatchCollectionOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<BatchCollectionOptions>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(BatchCollectionOptions)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        BatchCollectionOptions IPersistableModel<BatchCollectionOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual BatchCollectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<BatchCollectionOptions>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeBatchCollectionOptions(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(BatchCollectionOptions)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<BatchCollectionOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

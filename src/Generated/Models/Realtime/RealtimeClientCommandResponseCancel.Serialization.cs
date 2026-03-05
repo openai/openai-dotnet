@@ -12,6 +12,39 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeClientCommandResponseCancel : RealtimeClientCommand, IJsonModel<RealtimeClientCommandResponseCancel>
     {
+        protected override RealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeClientCommandResponseCancel>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRealtimeClientCommandResponseCancel(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeClientCommandResponseCancel)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeClientCommandResponseCancel>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeClientCommandResponseCancel)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RealtimeClientCommandResponseCancel>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RealtimeClientCommandResponseCancel IPersistableModel<RealtimeClientCommandResponseCancel>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeClientCommandResponseCancel)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RealtimeClientCommandResponseCancel>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RealtimeClientCommandResponseCancel>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -97,38 +130,5 @@ namespace OpenAI.Realtime
             }
             return new RealtimeClientCommandResponseCancel(kind, patch, eventId, responseId);
         }
-
-        BinaryData IPersistableModel<RealtimeClientCommandResponseCancel>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeClientCommandResponseCancel>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeClientCommandResponseCancel)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RealtimeClientCommandResponseCancel IPersistableModel<RealtimeClientCommandResponseCancel>.Create(BinaryData data, ModelReaderWriterOptions options) => (RealtimeClientCommandResponseCancel)PersistableModelCreateCore(data, options);
-
-        protected override RealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeClientCommandResponseCancel>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRealtimeClientCommandResponseCancel(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeClientCommandResponseCancel)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RealtimeClientCommandResponseCancel>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

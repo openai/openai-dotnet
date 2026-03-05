@@ -17,6 +17,39 @@ namespace OpenAI.Responses
         {
         }
 
+        protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeCodeInterpreterCallResponseItem(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(CodeInterpreterCallResponseItem)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(CodeInterpreterCallResponseItem)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<CodeInterpreterCallResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        CodeInterpreterCallResponseItem IPersistableModel<CodeInterpreterCallResponseItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (CodeInterpreterCallResponseItem)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<CodeInterpreterCallResponseItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<CodeInterpreterCallResponseItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -165,39 +198,6 @@ namespace OpenAI.Responses
                 code,
                 outputs ?? new ChangeTrackingList<CodeInterpreterCallOutput>());
         }
-
-        BinaryData IPersistableModel<CodeInterpreterCallResponseItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(CodeInterpreterCallResponseItem)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        CodeInterpreterCallResponseItem IPersistableModel<CodeInterpreterCallResponseItem>.Create(BinaryData data, ModelReaderWriterOptions options) => (CodeInterpreterCallResponseItem)PersistableModelCreateCore(data, options);
-
-        protected override ResponseItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterCallResponseItem>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeCodeInterpreterCallResponseItem(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(CodeInterpreterCallResponseItem)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<CodeInterpreterCallResponseItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)

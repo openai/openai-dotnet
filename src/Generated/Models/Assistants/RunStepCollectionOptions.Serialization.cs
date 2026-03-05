@@ -12,6 +12,39 @@ namespace OpenAI.Assistants
 {
     public partial class RunStepCollectionOptions : IJsonModel<RunStepCollectionOptions>
     {
+        protected virtual RunStepCollectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RunStepCollectionOptions>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRunStepCollectionOptions(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RunStepCollectionOptions)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RunStepCollectionOptions>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RunStepCollectionOptions)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RunStepCollectionOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RunStepCollectionOptions IPersistableModel<RunStepCollectionOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RunStepCollectionOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RunStepCollectionOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -79,38 +112,5 @@ namespace OpenAI.Assistants
             }
             return new RunStepCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<RunStepCollectionOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RunStepCollectionOptions>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RunStepCollectionOptions)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RunStepCollectionOptions IPersistableModel<RunStepCollectionOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual RunStepCollectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RunStepCollectionOptions>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRunStepCollectionOptions(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RunStepCollectionOptions)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RunStepCollectionOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

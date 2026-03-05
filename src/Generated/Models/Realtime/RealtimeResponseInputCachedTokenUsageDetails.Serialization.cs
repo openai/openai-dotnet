@@ -12,6 +12,39 @@ namespace OpenAI.Realtime
 {
     public partial class RealtimeResponseInputCachedTokenUsageDetails : IJsonModel<RealtimeResponseInputCachedTokenUsageDetails>
     {
+        protected virtual RealtimeResponseInputCachedTokenUsageDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeResponseInputCachedTokenUsageDetails>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRealtimeResponseInputCachedTokenUsageDetails(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeResponseInputCachedTokenUsageDetails)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeResponseInputCachedTokenUsageDetails>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeResponseInputCachedTokenUsageDetails)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RealtimeResponseInputCachedTokenUsageDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RealtimeResponseInputCachedTokenUsageDetails IPersistableModel<RealtimeResponseInputCachedTokenUsageDetails>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RealtimeResponseInputCachedTokenUsageDetails>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RealtimeResponseInputCachedTokenUsageDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -113,38 +146,5 @@ namespace OpenAI.Realtime
             }
             return new RealtimeResponseInputCachedTokenUsageDetails(textTokenCount, imageTokenCount, audioTokenCount, patch);
         }
-
-        BinaryData IPersistableModel<RealtimeResponseInputCachedTokenUsageDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeResponseInputCachedTokenUsageDetails>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeResponseInputCachedTokenUsageDetails)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RealtimeResponseInputCachedTokenUsageDetails IPersistableModel<RealtimeResponseInputCachedTokenUsageDetails>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual RealtimeResponseInputCachedTokenUsageDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeResponseInputCachedTokenUsageDetails>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRealtimeResponseInputCachedTokenUsageDetails(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeResponseInputCachedTokenUsageDetails)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RealtimeResponseInputCachedTokenUsageDetails>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

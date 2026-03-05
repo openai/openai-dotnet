@@ -50,11 +50,6 @@ model CreateFineTuningJobRequestWandbIntegration
   };
 }
 
-@discriminator("type")
-model FineTuningIntegration {
-  type: string | "wandb";
-}
-
 model FineTuningJobsPageToken {
   limit?: int32;
   after?: string;

@@ -12,6 +12,39 @@ namespace OpenAI.FineTuning
 {
     public partial class HyperparametersForDPO : MethodHyperparameters, IJsonModel<HyperparametersForDPO>
     {
+        protected virtual HyperparametersForDPO PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<HyperparametersForDPO>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeHyperparametersForDPO(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(HyperparametersForDPO)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<HyperparametersForDPO>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(HyperparametersForDPO)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<HyperparametersForDPO>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        HyperparametersForDPO IPersistableModel<HyperparametersForDPO>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<HyperparametersForDPO>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<HyperparametersForDPO>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -163,38 +196,5 @@ namespace OpenAI.FineTuning
             }
             return new HyperparametersForDPO(beta, batchSize, learningRateMultiplier, nEpochs, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<HyperparametersForDPO>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<HyperparametersForDPO>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(HyperparametersForDPO)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        HyperparametersForDPO IPersistableModel<HyperparametersForDPO>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual HyperparametersForDPO PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<HyperparametersForDPO>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeHyperparametersForDPO(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(HyperparametersForDPO)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<HyperparametersForDPO>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

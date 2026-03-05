@@ -11,35 +11,6 @@ namespace OpenAI.Responses
 {
     public partial class CodeInterpreterToolContainer : IJsonModel<CodeInterpreterToolContainer>
     {
-        CodeInterpreterToolContainer IJsonModel<CodeInterpreterToolContainer>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
-
-        protected virtual CodeInterpreterToolContainer JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterToolContainer>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(CodeInterpreterToolContainer)} does not support reading '{format}' format.");
-            }
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeCodeInterpreterToolContainer(document.RootElement, null, options);
-        }
-
-        BinaryData IPersistableModel<CodeInterpreterToolContainer>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterToolContainer>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(CodeInterpreterToolContainer)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        CodeInterpreterToolContainer IPersistableModel<CodeInterpreterToolContainer>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
         protected virtual CodeInterpreterToolContainer PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterToolContainer>)this).GetFormatFromOptions(options) : options.Format;
@@ -55,7 +26,36 @@ namespace OpenAI.Responses
             }
         }
 
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterToolContainer>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(CodeInterpreterToolContainer)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<CodeInterpreterToolContainer>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        CodeInterpreterToolContainer IPersistableModel<CodeInterpreterToolContainer>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
         string IPersistableModel<CodeInterpreterToolContainer>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        CodeInterpreterToolContainer IJsonModel<CodeInterpreterToolContainer>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual CodeInterpreterToolContainer JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<CodeInterpreterToolContainer>)this).GetFormatFromOptions(options) : options.Format;
+            if (format != "J")
+            {
+                throw new FormatException($"The model {nameof(CodeInterpreterToolContainer)} does not support reading '{format}' format.");
+            }
+            using JsonDocument document = JsonDocument.ParseValue(ref reader);
+            return DeserializeCodeInterpreterToolContainer(document.RootElement, null, options);
+        }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)

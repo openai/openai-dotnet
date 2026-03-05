@@ -12,6 +12,39 @@ namespace OpenAI.VectorStores
 {
     internal partial class InternalVectorStoreSearchRequestRankingOptions : IJsonModel<InternalVectorStoreSearchRequestRankingOptions>
     {
+        protected virtual InternalVectorStoreSearchRequestRankingOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalVectorStoreSearchRequestRankingOptions>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalVectorStoreSearchRequestRankingOptions(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalVectorStoreSearchRequestRankingOptions)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalVectorStoreSearchRequestRankingOptions>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalVectorStoreSearchRequestRankingOptions)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalVectorStoreSearchRequestRankingOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalVectorStoreSearchRequestRankingOptions IPersistableModel<InternalVectorStoreSearchRequestRankingOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalVectorStoreSearchRequestRankingOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalVectorStoreSearchRequestRankingOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -105,38 +138,5 @@ namespace OpenAI.VectorStores
             }
             return new InternalVectorStoreSearchRequestRankingOptions(ranker, scoreThreshold, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalVectorStoreSearchRequestRankingOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalVectorStoreSearchRequestRankingOptions>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalVectorStoreSearchRequestRankingOptions)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalVectorStoreSearchRequestRankingOptions IPersistableModel<InternalVectorStoreSearchRequestRankingOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalVectorStoreSearchRequestRankingOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalVectorStoreSearchRequestRankingOptions>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalVectorStoreSearchRequestRankingOptions(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalVectorStoreSearchRequestRankingOptions)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalVectorStoreSearchRequestRankingOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

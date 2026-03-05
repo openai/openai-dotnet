@@ -12,6 +12,39 @@ namespace OpenAI.Evals
 {
     internal partial class InternalMetadataPropertyForRequest : IJsonModel<InternalMetadataPropertyForRequest>
     {
+        protected virtual InternalMetadataPropertyForRequest PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMetadataPropertyForRequest>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalMetadataPropertyForRequest(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalMetadataPropertyForRequest)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMetadataPropertyForRequest>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalMetadataPropertyForRequest)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalMetadataPropertyForRequest>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalMetadataPropertyForRequest IPersistableModel<InternalMetadataPropertyForRequest>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalMetadataPropertyForRequest>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalMetadataPropertyForRequest>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -113,38 +146,5 @@ namespace OpenAI.Evals
             }
             return new InternalMetadataPropertyForRequest(metadata ?? new ChangeTrackingDictionary<string, string>(), additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalMetadataPropertyForRequest>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalMetadataPropertyForRequest>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalMetadataPropertyForRequest)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalMetadataPropertyForRequest IPersistableModel<InternalMetadataPropertyForRequest>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalMetadataPropertyForRequest PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalMetadataPropertyForRequest>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalMetadataPropertyForRequest(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalMetadataPropertyForRequest)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalMetadataPropertyForRequest>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

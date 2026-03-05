@@ -12,6 +12,39 @@ namespace OpenAI.Responses
 {
     internal partial class InternalComputerActionWait : ComputerCallAction, IJsonModel<InternalComputerActionWait>
     {
+        protected override ComputerCallAction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionWait>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalComputerActionWait(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalComputerActionWait)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionWait>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalComputerActionWait)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalComputerActionWait>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalComputerActionWait IPersistableModel<InternalComputerActionWait>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalComputerActionWait)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalComputerActionWait>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalComputerActionWait>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -75,38 +108,5 @@ namespace OpenAI.Responses
             }
             return new InternalComputerActionWait(kind, patch);
         }
-
-        BinaryData IPersistableModel<InternalComputerActionWait>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionWait>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalComputerActionWait)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalComputerActionWait IPersistableModel<InternalComputerActionWait>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalComputerActionWait)PersistableModelCreateCore(data, options);
-
-        protected override ComputerCallAction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerActionWait>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalComputerActionWait(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalComputerActionWait)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalComputerActionWait>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

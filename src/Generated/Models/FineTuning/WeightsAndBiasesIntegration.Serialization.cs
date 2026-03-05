@@ -16,6 +16,39 @@ namespace OpenAI.FineTuning
         {
         }
 
+        protected override FineTuningIntegration PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<WeightsAndBiasesIntegration>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeWeightsAndBiasesIntegration(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(WeightsAndBiasesIntegration)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<WeightsAndBiasesIntegration>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(WeightsAndBiasesIntegration)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<WeightsAndBiasesIntegration>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        WeightsAndBiasesIntegration IPersistableModel<WeightsAndBiasesIntegration>.Create(BinaryData data, ModelReaderWriterOptions options) => (WeightsAndBiasesIntegration)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<WeightsAndBiasesIntegration>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<WeightsAndBiasesIntegration>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -77,38 +110,5 @@ namespace OpenAI.FineTuning
             }
             return new WeightsAndBiasesIntegration(kind, additionalBinaryDataProperties, innerWandb);
         }
-
-        BinaryData IPersistableModel<WeightsAndBiasesIntegration>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<WeightsAndBiasesIntegration>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(WeightsAndBiasesIntegration)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        WeightsAndBiasesIntegration IPersistableModel<WeightsAndBiasesIntegration>.Create(BinaryData data, ModelReaderWriterOptions options) => (WeightsAndBiasesIntegration)PersistableModelCreateCore(data, options);
-
-        protected override FineTuningIntegration PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<WeightsAndBiasesIntegration>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeWeightsAndBiasesIntegration(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(WeightsAndBiasesIntegration)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<WeightsAndBiasesIntegration>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

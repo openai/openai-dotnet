@@ -18,6 +18,49 @@ namespace OpenAI.Models
         {
         }
 
+        [Experimental("OPENAI001")]
+        protected virtual ModelDeletionResult PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ModelDeletionResult>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeModelDeletionResult(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(ModelDeletionResult)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        [Experimental("OPENAI001")]
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ModelDeletionResult>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(ModelDeletionResult)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<ModelDeletionResult>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        ModelDeletionResult IPersistableModel<ModelDeletionResult>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<ModelDeletionResult>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        [Experimental("OPENAI001")]
+        public static explicit operator ModelDeletionResult(ClientResult result)
+        {
+            PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeModelDeletionResult(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
+
         void IJsonModel<ModelDeletionResult>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -115,49 +158,6 @@ namespace OpenAI.Models
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
             return new ModelDeletionResult(modelId, deleted, @object, additionalBinaryDataProperties);
-        }
-
-        BinaryData IPersistableModel<ModelDeletionResult>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        [Experimental("OPENAI001")]
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ModelDeletionResult>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(ModelDeletionResult)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        ModelDeletionResult IPersistableModel<ModelDeletionResult>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        [Experimental("OPENAI001")]
-        protected virtual ModelDeletionResult PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ModelDeletionResult>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeModelDeletionResult(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(ModelDeletionResult)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<ModelDeletionResult>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        [Experimental("OPENAI001")]
-        public static explicit operator ModelDeletionResult(ClientResult result)
-        {
-            PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
-            return DeserializeModelDeletionResult(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }
