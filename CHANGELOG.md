@@ -1,9 +1,15 @@
 # Release History
 
-## 2.10.0-beta.1 (Unreleased)
+## 2.9.1 (2026-03-02)
+
+### Features Added
+
+- OpenAI.Responses:
+  - Added `InputFileUri` property and `CreateInputFilePart(Uri)` factory method to `ResponseContentPart` to support file URL inputs.
 
 ### Bugs Fixed
 
+- Fixed an issue where `Microsoft.SourceLink.GitHub` was inadvertently included as a runtime dependency of the package, causing downstream build failures with "Source control information is not available" errors. The package is now correctly treated as a build-only dependency.
 - OpenAI.Chat:
   - Fixed an issue where `JsonPatch` customizations applied to `ChatCompletionOptions` were lost when the options were cloned internally before an API call.
 
