@@ -25,7 +25,7 @@ public class UploadsTests : OpenAIRecordedTestBase
         // are setting the internal Uploads client correctly.
 
         OpenAIFileClient fileClient = useTopLevelClient
-            ? TestEnvironment.GetTestClient<OpenAIClient>().GetOpenAIFileClient()
+            ? GetProxiedOpenAIClient<OpenAIClient>().GetOpenAIFileClient()
             : GetProxiedOpenAIClient<OpenAIFileClient>();
         BinaryContent content = BinaryContent.Create(BinaryData.FromObjectAsJson(new
         {

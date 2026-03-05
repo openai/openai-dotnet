@@ -21,24 +21,19 @@ public partial class ResponseExamples
     {
         ResponsesClient client = new(apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
-        List<ResponseItem> inputItems =
-        [
-            ResponseItem.CreateUserMessageItem("What's the weather like today for my current location?"),
-        ];
+        CreateResponseOptions options = new("gpt-5", [ResponseItem.CreateUserMessageItem("What's the weather like today for my current location?")])
+        {
+            Tools = { getCurrentLocationTool, getCurrentWeatherTool },
+            StreamingEnabled = true,
+        };
 
-        PrintMessageItems(inputItems.OfType<MessageResponseItem>());
+        PrintMessageItems(options.InputItems.OfType<MessageResponseItem>());
 
         bool requiresAction;
 
         do
         {
             requiresAction = false;
-
-            CreateResponseOptions options = new("gpt-5", inputItems)
-            {
-                Tools = { getCurrentLocationTool, getCurrentWeatherTool },
-                StreamingEnabled = true,
-            };
 
             CollectionResult<StreamingResponseUpdate> responseUpdates = client.CreateResponseStreaming(options);
 
@@ -59,7 +54,7 @@ public partial class ResponseExamples
 
                 if (update is StreamingResponseOutputItemDoneUpdate outputItemDoneUpdate)
                 {
-                    inputItems.Add(outputItemDoneUpdate.Item);
+                    options.InputItems.Add(outputItemDoneUpdate.Item);
 
                     if (outputItemDoneUpdate.Item is FunctionCallResponseItem functionCall)
                     {
@@ -68,7 +63,7 @@ public partial class ResponseExamples
                             case nameof(GetCurrentLocation):
                                 {
                                     string functionOutput = GetCurrentLocation();
-                                    inputItems.Add(new FunctionCallOutputResponseItem(functionCall.CallId, functionOutput));
+                                    options.InputItems.Add(new FunctionCallOutputResponseItem(functionCall.CallId, functionOutput));
                                     break;
                                 }
 
@@ -90,7 +85,7 @@ public partial class ResponseExamples
                                     string functionOutput = hasUnit
                                         ? GetCurrentWeather(location.GetString(), unit.GetString())
                                         : GetCurrentWeather(location.GetString());
-                                    inputItems.Add(new FunctionCallOutputResponseItem(functionCall.CallId, functionOutput));
+                                    options.InputItems.Add(new FunctionCallOutputResponseItem(functionCall.CallId, functionOutput));
                                     break;
                                 }
 

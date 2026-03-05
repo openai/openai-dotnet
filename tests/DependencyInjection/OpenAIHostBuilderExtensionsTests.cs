@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Moq;
 using NUnit.Framework;
-using OpenAI.DependencyInjection;
 using System;
 using System.ClientModel.Primitives;
 using System.Collections.Generic;

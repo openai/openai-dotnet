@@ -127,11 +127,6 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("max_tool_calls"u8);
                 writer.WriteNumberValue(MaxToolCallCount.Value);
             }
-            if (Optional.IsDefined(Instructions) && !Patch.Contains("$.instructions"u8))
-            {
-                writer.WritePropertyName("instructions"u8);
-                writer.WriteStringValue(Instructions);
-            }
             if (Optional.IsDefined(TextOptions) && !Patch.Contains("$.text"u8))
             {
                 writer.WritePropertyName("text"u8);
@@ -226,6 +221,11 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("store"u8);
                 writer.WriteBooleanValue(StoredOutputEnabled.Value);
             }
+            if (Optional.IsDefined(Instructions) && !Patch.Contains("$.instructions"u8))
+            {
+                writer.WritePropertyName("instructions"u8);
+                writer.WriteStringValue(Instructions);
+            }
             if (Optional.IsDefined(StreamingEnabled) && !Patch.Contains("$.stream"u8))
             {
                 writer.WritePropertyName("stream"u8);
@@ -273,7 +273,6 @@ namespace OpenAI.Responses
             bool? backgroundModeEnabled = default;
             int? maxOutputTokenCount = default;
             int? maxToolCallCount = default;
-            string instructions = default;
             ResponseTextOptions textOptions = default;
             IList<ResponseTool> tools = default;
             ResponseToolChoice toolChoice = default;
@@ -282,6 +281,7 @@ namespace OpenAI.Responses
             IList<IncludedResponseProperty> includedProperties = default;
             bool? parallelToolCallsEnabled = default;
             bool? storedOutputEnabled = default;
+            string instructions = default;
             bool? streamingEnabled = default;
             ResponseConversationOptions conversationOptions = default;
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -414,16 +414,6 @@ namespace OpenAI.Responses
                     maxToolCallCount = prop.Value.GetInt32();
                     continue;
                 }
-                if (prop.NameEquals("instructions"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        instructions = null;
-                        continue;
-                    }
-                    instructions = prop.Value.GetString();
-                    continue;
-                }
                 if (prop.NameEquals("text"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -514,6 +504,16 @@ namespace OpenAI.Responses
                     storedOutputEnabled = prop.Value.GetBoolean();
                     continue;
                 }
+                if (prop.NameEquals("instructions"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        instructions = null;
+                        continue;
+                    }
+                    instructions = prop.Value.GetString();
+                    continue;
+                }
                 if (prop.NameEquals("stream"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -549,7 +549,6 @@ namespace OpenAI.Responses
                 backgroundModeEnabled,
                 maxOutputTokenCount,
                 maxToolCallCount,
-                instructions,
                 textOptions,
                 tools ?? new ChangeTrackingList<ResponseTool>(),
                 toolChoice,
@@ -558,6 +557,7 @@ namespace OpenAI.Responses
                 includedProperties ?? new ChangeTrackingList<IncludedResponseProperty>(),
                 parallelToolCallsEnabled,
                 storedOutputEnabled,
+                instructions,
                 streamingEnabled,
                 conversationOptions,
                 patch);

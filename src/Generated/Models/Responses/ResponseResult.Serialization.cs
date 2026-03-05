@@ -14,7 +14,7 @@ namespace OpenAI.Responses
 {
     public partial class ResponseResult : IJsonModel<ResponseResult>
     {
-        public ResponseResult() : this(null, default, default, default, null, null, default, null, null, null, default, default, default, null, null, null, null, default, null, null, default, default, null, null, null, null, default, null, default)
+        public ResponseResult() : this(null, default, default, default, null, null, default, null, null, null, default, default, default, null, null, null, default, null, null, default, default, null, null, null, null, null, default, null, default)
         {
         }
 
@@ -147,11 +147,6 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("max_tool_calls"u8);
                 writer.WriteNumberValue(MaxToolCallCount.Value);
             }
-            if (Optional.IsDefined(Instructions) && !Patch.Contains("$.instructions"u8))
-            {
-                writer.WritePropertyName("instructions"u8);
-                writer.WriteStringValue(Instructions);
-            }
             if (Optional.IsDefined(TextOptions) && !Patch.Contains("$.text"u8))
             {
                 writer.WritePropertyName("text"u8);
@@ -251,6 +246,33 @@ namespace OpenAI.Responses
                 Patch.WriteTo(writer, "$.output"u8);
                 writer.WriteEndArray();
             }
+            if (Patch.Contains("$.instructions"u8))
+            {
+                if (!Patch.IsRemoved("$.instructions"u8))
+                {
+                    writer.WritePropertyName("instructions"u8);
+                    writer.WriteRawValue(Patch.GetJson("$.instructions"u8));
+                }
+            }
+            else if (Optional.IsCollectionDefined(Instructions))
+            {
+                writer.WritePropertyName("instructions"u8);
+                writer.WriteStartArray();
+                for (int i = 0; i < Instructions.Count; i++)
+                {
+                    if (Instructions[i].Patch.IsRemoved("$"u8))
+                    {
+                        continue;
+                    }
+                    writer.WriteObjectValue(Instructions[i], options);
+                }
+                Patch.WriteTo(writer, "$.instructions"u8);
+                writer.WriteEndArray();
+            }
+            else
+            {
+                writer.WriteNull("instructions"u8);
+            }
             if (Optional.IsDefined(Usage) && !Patch.Contains("$.usage"u8))
             {
                 writer.WritePropertyName("usage"u8);
@@ -303,7 +325,6 @@ namespace OpenAI.Responses
             bool? backgroundModeEnabled = default;
             int? maxOutputTokenCount = default;
             int? maxToolCallCount = default;
-            string instructions = default;
             ResponseTextOptions textOptions = default;
             IList<ResponseTool> tools = default;
             ResponseToolChoice toolChoice = default;
@@ -315,6 +336,7 @@ namespace OpenAI.Responses
             ResponseError error = default;
             ResponseIncompleteStatusDetails incompleteStatusDetails = default;
             IList<ResponseItem> outputItems = default;
+            IList<ResponseItem> instructions = default;
             ResponseTokenUsage usage = default;
             bool parallelToolCallsEnabled = default;
             ResponseConversationOptions conversationOptions = default;
@@ -454,16 +476,6 @@ namespace OpenAI.Responses
                     maxToolCallCount = prop.Value.GetInt32();
                     continue;
                 }
-                if (prop.NameEquals("instructions"u8))
-                {
-                    if (prop.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        instructions = null;
-                        continue;
-                    }
-                    instructions = prop.Value.GetString();
-                    continue;
-                }
                 if (prop.NameEquals("text"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -560,6 +572,11 @@ namespace OpenAI.Responses
                     outputItems = array;
                     continue;
                 }
+                if (prop.NameEquals("instructions"u8))
+                {
+                    DeserializeInstructions(prop, ref instructions);
+                    continue;
+                }
                 if (prop.NameEquals("usage"u8))
                 {
                     if (prop.Value.ValueKind == JsonValueKind.Null)
@@ -600,7 +617,6 @@ namespace OpenAI.Responses
                 backgroundModeEnabled,
                 maxOutputTokenCount,
                 maxToolCallCount,
-                instructions,
                 textOptions,
                 tools ?? new ChangeTrackingList<ResponseTool>(),
                 toolChoice,
@@ -612,6 +628,7 @@ namespace OpenAI.Responses
                 error,
                 incompleteStatusDetails,
                 outputItems,
+                instructions,
                 usage,
                 parallelToolCallsEnabled,
                 conversationOptions,
@@ -709,6 +726,16 @@ namespace OpenAI.Responses
                 }
                 return OutputItems[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
             }
+            if (local.StartsWith("instructions"u8))
+            {
+                int propertyLength = "instructions"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                return Instructions[index].Patch.TryGetEncodedValue([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], out value);
+            }
             return false;
         }
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -768,6 +795,17 @@ namespace OpenAI.Responses
                     return false;
                 }
                 OutputItems[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
+                return true;
+            }
+            if (local.StartsWith("instructions"u8))
+            {
+                int propertyLength = "instructions"u8.Length;
+                ReadOnlySpan<byte> currentSlice = local.Slice(propertyLength);
+                if (!currentSlice.TryGetIndex(out int index, out int bytesConsumed))
+                {
+                    return false;
+                }
+                Instructions[index].Patch.Set([.. "$"u8, .. currentSlice.Slice(bytesConsumed)], value);
                 return true;
             }
             return false;

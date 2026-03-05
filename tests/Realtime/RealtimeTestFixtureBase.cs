@@ -13,7 +13,7 @@ namespace OpenAI.Tests.Realtime;
 
 #pragma warning disable OPENAI002
 
-[Category("Conversation")]
+[Category("Realtime")]
 public class RealtimeTestFixtureBase : OpenAIRecordedTestBase
 {
     public CancellationTokenSource CancellationTokenSource { get; private set; }

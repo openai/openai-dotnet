@@ -1,5 +1,190 @@
 # Release History
 
+## 2.9.1 (2026-03-02)
+
+### Features Added
+
+- OpenAI.Responses:
+  - Added `InputFileUri` property and `CreateInputFilePart(Uri)` factory method to `ResponseContentPart` to support file URL inputs.
+
+### Bugs Fixed
+
+- Fixed an issue where `Microsoft.SourceLink.GitHub` was inadvertently included as a runtime dependency of the package, causing downstream build failures with "Source control information is not available" errors. The package is now correctly treated as a build-only dependency.
+- OpenAI.Chat:
+  - Fixed an issue where `JsonPatch` customizations applied to `ChatCompletionOptions` were lost when the options were cloned internally before an API call.
+
+## 2.9.0 (2026-02-27)
+
+### Acknowledgments
+
+Thank you to our developer community members who helped to make the OpenAI client library better with their contributions to this release:
+
+- [@mokarchi](https://github.com/mokarchi)
+- [@alty-ir](https://github.com/alty-ir)
+- [@peibekwe](https://github.com/peibekwe)
+- [@crickman](https://github.com/crickman)
+- [@jpaarhuis](https://github.com/jpaarhuis)
+- [@salmanmkc](https://github.com/salmanmkc)
+
+### Features Added
+
+- OpenAI.Audio:
+  - Added support for `AudioClient` configuration and dependency injection via the new `AudioClientSettings` class.
+- OpenAI.Batch:
+  - Added support for `BatchClient` configuration and dependency injection via the new `BatchClientSettings` class.
+- OpenAI.Chat:
+  - Added support for `ChatClient` configuration and dependency injection via the new `ChatClientSettings` class.
+  - Added value of `None` to `ChatReasoningEffortLevel` enum to allow opting out of reasoning.
+- OpenAI.Containers:
+  - Added support for `ContainerClient` configuration and dependency injection via the new `ContainerClientSettings` class.
+- OpenAI.Conversations:
+  - Added support for `ConversationClient` configuration and dependency injection via the new `ConversationClientSettings` class.
+- OpenAI.Embeddings:
+  - Added support for `EmbeddingClient` configuration and dependency injection via the new `EmbeddingClientSettings` class.
+- OpenAI.Evals:
+  - Added support for `EvaluationClient` configuration and dependency injection via the new `EvaluationClientSettings` class.
+- OpenAI.Files:
+  - Added support for `OpenAIFileClient` configuration and dependency injection via the new `OpenAIFileClientSettings` class.
+  - Added support for retrieving files using pagination via new overloads of the `GetFiles` and `GetFilesAsync` methods in the `OpenAIFileClient`.
+- OpenAI.FineTuning:
+  - Added support for `FineTuningClient` configuration and dependency injection via the new `FineTuningClientSettings` class.
+- OpenAI.Graders:
+  - Added support for `GraderClient` configuration and dependency injection via the new `GraderClientSettings` class.
+- OpenAI.Images:
+  - Added support for `ImageClient` configuration and dependency injection via the new `ImageClientSettings` class.
+  - Added value of `HighQuality` to `GeneratedImageQuality` enum to allow generating higher quality images.
+  - Added `InputFidelity` property to `ImageEditOptions` to control how closely distinctive features from the input are preserved.
+  - Added `OutputCompressionFactor` property to `ImageEditOptions` to set the compression level (0-100%) for `jpeg` or `webp` outputs.
+  - Added `OutputFileFormat` property to `ImageEditOptions` to set the file format in which the generated images are returned.
+  - Added `Background` property to `GeneratedImageCollection`.
+  - Added `OutputFileFormat` property to `GeneratedImageCollection`.
+  - Added `Quality` property to `GeneratedImageCollection`.
+  - Added `Size` property to `GeneratedImageCollection`.
+- OpenAI.Models:
+  - Added support for `OpenAIModelClient` configuration and dependency injection via the new `OpenAIModelClientSettings` class.
+- OpenAI.Moderations:
+  - Added support for `ModerationClient` configuration and dependency injection via the new `ModerationClientSettings` class.
+  - Added support for classifying multi-modal inputs via new `ClassifyInputs` and `ClassifyInputsAsync` methods in the `ModerationClient`.
+    - Use the new `ModerationInputPart` class to create text or image inputs for classication.
+    - Use the new `ApplicableInputKinds` property of the `ModerationCategory` class to understand to which parts of the input the moderation results apply.
+- OpenAI.Realtime:
+  - Added support for the stable version of the Realtime REST API.
+  - Added support for `RealtimeClient` configuration and dependency injection via the new `RealtimeClientSettings` class.
+  - Added support for integrating with remote MCP servers.
+    - Users can add the new `RealtimeMcpTool` to the `Tools` property of their `RealtimeConversationSessionOptions` and configure it.
+      - Use the `AllowedTools` property to limit which of the server tools can be called by the model.
+      - Use the `ToolCallApprovalPolicy` property to specify which tools require an explicit approval before being called by the model.
+      - Use the `AuthorizationToken` property to specify the access token to used when authenticating with the remote MCP server.
+      - Use the `ConnectorId` property to use the OpenAI-maintained MCP wrappers for popular services like Microsoft Outlook or Dropbox.
+  - Added a new `RealtimeClientCommand` class that represents client events to be used with the new `SendCommand` and `SendCommandAsync` overloads in the `RealtimeSessionClient` and exposed all supported client events as derived types:
+    - `RealtimeClientCommandConversationItemCreate`
+    - `RealtimeClientCommandConversationItemDelete`
+    - `RealtimeClientCommandConversationItemRetrieve`
+    - `RealtimeClientCommandConversationItemTruncate`
+    - `RealtimeClientCommandInputAudioBufferAppend`
+    - `RealtimeClientCommandInputAudioBufferClear`
+    - `RealtimeClientCommandInputAudioBufferCommit`
+    - `RealtimeClientCommandOutputAudioBufferClear`
+    - `RealtimeClientCommandResponseCancel`
+    - `RealtimeClientCommandResponseCreate`
+    - `RealtimeClientCommandSessionUpdate`
+  - Added support for System.Client.Model's `JsonPatch`, which enables users to get and set additional JSON properties in response and request payloads.
+- OpenAI.Responses:
+  - Added support for `ResponsesClient` configuration and dependency injection via the new `ResponsesClientSettings` class.
+  - Added support for compacting conversations via the new `CompactResponse` and `CompactResponseAsync` protocol methods in the `ResponsesClient`.
+  - Added support for returning the number of input tokens that a Response would consume via the new `GetInputTokenCount` and `GetInputTokenCountAsync` protocol methods in the `ResponsesClient`.
+  - Added value of `None` to `ResponseReasoningEffortLevel` enum to allow opting out of reasoning.
+  - Added `InputImageUri` property to `ResponseContentPart` to manage image inputs as URIs.
+  - Added implicit conversion operators to `McpToolCallApprovalPolicy` to facilitate its assignment.
+- OpenAI.VectorStores:
+  - Added support for `VectorStoreClient` configuration and dependency injection via the new `VectorStoreClientSettings` class.
+- OpenAI.Videos:
+  - Added support for `VideoClient` configuration and dependency injection via the new `VideoClientSettings` class.
+
+### Bugs Fixed
+
+- OpenAI.Chat:
+  - Fixed a concurrency issue corrupting the state of the `ChatCompletionOptions` argument when the same instance was passed into concurrent calls of `CompleteChat`/`CompleteChatAsync` and/or `CompleteChatStreaming`/`CompleteChatStreamingAsync`.
+- OpenAI.Realtime:
+  - Fixed an issue causing permanent state corruption when sending audio was cancelled in `RealtimeSessionClient`.
+  - Fixed an issue with `RealtimeSessionClient` always requiring an API key.
+- OpenAI.Responses:
+  - Fixed a concurrency issue corrupting the state of the `CreateResponseOptions` argument when the same instance was passed into concurrent calls of `CreateResponse`/`CreateResponseAsync` and/or `CreateResponseStreaming`/`CreateResponseStreamingAsync`.
+
+### Other Changes
+
+- Updated the `System.ClientModel` dependency to version 1.9.0. For more information, see the [System.ClientModel changelog](https://github.com/Azure/azure-sdk-for-net/blob/System.ClientModel_1.9.0/sdk/core/System.ClientModel/CHANGELOG.md).
+
+### Breaking Changes in Preview APIs
+
+- OpenAI.Images:
+  - Changed the type of the `InputTokenCount`, `OutputTokenCount`, and `TotalTokenCount` properties of `ImageTokenUsage` from `int` to `long`.
+- OpenAI.Realtime:
+  - This release migrates the implementation of the Realtime API from the beta REST API to the GA REST API. As such, it contains numerous breaking changes, including the following:
+    - Renamed `RealtimeSession` to `RealtimeSessionClient`.
+    - Renamed `ConversationTool` to `RealtimeTool` and exposed all supported tools as derived types:
+      - `RealtimeFunctionTool`
+      - `RealtimeMcpTool`
+    - Changed `RealtimeItem` into a class hierarchy and exposed all supported item types as derived types:
+      - `RealtimeMessageItem`
+      - `RealtimeFunctionCallItem`
+      - `RealtimeFunctionCallOutputItem`
+      - `RealtimeMcpToolCallItem`
+      - `RealtimeMcpToolDefinitionListItem`
+      - `RealtimeMcpToolCallApprovalRequestItem`
+      - `RealtimeMcpToolCallApprovalResponseItem`
+    - Renamed `RealtimeUpdate` to `RealtimeServerUpdate` and exposed all supported server events as derived types:
+      - `RealtimeServerUpdateConversationCreated`
+      - `RealtimeServerUpdateConversationItemAdded`
+      - `RealtimeServerUpdateConversationItemCreated`
+      - `RealtimeServerUpdateConversationItemDeleted`
+      - `RealtimeServerUpdateConversationItemDone`
+      - `RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted`
+      - `RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta`
+      - `RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed`
+      - `RealtimeServerUpdateConversationItemInputAudioTranscriptionSegment`
+      - `RealtimeServerUpdateConversationItemRetrieved`
+      - `RealtimeServerUpdateConversationItemTruncated`
+      - `RealtimeServerUpdateError`
+      - `RealtimeServerUpdateInputAudioBufferCleared`
+      - `RealtimeServerUpdateInputAudioBufferCommitted`
+      - `RealtimeServerUpdateInputAudioBufferDtmfEventReceived`
+      - `RealtimeServerUpdateInputAudioBufferSpeechStarted`
+      - `RealtimeServerUpdateInputAudioBufferSpeechStopped`
+      - `RealtimeServerUpdateInputAudioBufferTimeoutTriggered`
+      - `RealtimeServerUpdateMcpListToolsCompleted`
+      - `RealtimeServerUpdateMcpListToolsFailed`
+      - `RealtimeServerUpdateMcpListToolsInProgress`
+      - `RealtimeServerUpdateOutputAudioBufferCleared`
+      - `RealtimeServerUpdateOutputAudioBufferStarted`
+      - `RealtimeServerUpdateOutputAudioBufferStopped`
+      - `RealtimeServerUpdateRateLimitsUpdated`
+      - `RealtimeServerUpdateResponseContentPartAdded`
+      - `RealtimeServerUpdateResponseContentPartDone`
+      - `RealtimeServerUpdateResponseCreated`
+      - `RealtimeServerUpdateResponseDone`
+      - `RealtimeServerUpdateResponseFunctionCallArgumentsDelta`
+      - `RealtimeServerUpdateResponseFunctionCallArgumentsDone`
+      - `RealtimeServerUpdateResponseMcpCallArgumentsDelta`
+      - `RealtimeServerUpdateResponseMcpCallArgumentsDone`
+      - `RealtimeServerUpdateResponseMcpCallCompleted`
+      - `RealtimeServerUpdateResponseMcpCallFailed`
+      - `RealtimeServerUpdateResponseMcpCallInProgress`
+      - `RealtimeServerUpdateResponseOutputAudioDelta`
+      - `RealtimeServerUpdateResponseOutputAudioDone`
+      - `RealtimeServerUpdateResponseOutputAudioTranscriptDelta`
+      - `RealtimeServerUpdateResponseOutputAudioTranscriptDone`
+      - `RealtimeServerUpdateResponseOutputItemAdded`
+      - `RealtimeServerUpdateResponseOutputItemDone`
+      - `RealtimeServerUpdateResponseOutputTextDelta`
+      - `RealtimeServerUpdateResponseOutputTextDone`
+      - `RealtimeServerUpdateSessionCreated`
+      - `RealtimeServerUpdateSessionUpdated`
+  - We recommend checking out our [examples](https://github.com/openai/openai-dotnet/tree/main/examples/Realtime) and tests as well as the [migration guide](https://developers.openai.com/api/docs/guides/realtime/#beta-to-ga-migration) for tips on how to use the new API surface.
+- OpenAI.Responses:
+  - Removed the `Model` property of the `ResponsesClient` in favor of specifying the model on a per-call basis when calling `CreateResponse`/`CreateResponseAsync` or `CreateResponseStreaming`/`CreateResponseStreamingAsync`. To do this, set the `Model` property of the `CreateResponseOptions` parameter. With this change, users no longer have to provide a model unless it is actually needed.
+  - Changed the type of the `Instructions` property of `ResponseResult` from `string` to `IList<ResponseItem>` to handle multi-item instructions.
+
 ## 2.8.0 (2025-12-11)
 
 ### Features Added

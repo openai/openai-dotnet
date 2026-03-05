@@ -23,6 +23,7 @@ namespace OpenAI.Audio;
 [CodeGenType("TranscriptTextUsageDuration")] internal partial class InternalTranscriptTextUsageDuration { }
 [CodeGenType("CreateTranscriptionResponseDiarizedJson")] internal partial class InternalCreateTranscriptionResponseDiarizedJson { }
 [CodeGenType("TranscriptionDiarizedSegment")] internal partial class InternalTranscriptionDiarizedSegment { }
+[CodeGenType("VadConfig")] internal partial class InternalVadConfig { }
 
 // Remove these after https://github.com/microsoft/openai-openapi-pr/issues/478 is fixed
 [CodeGenType("TranscriptTextDeltaEvent")] internal partial class InternalTranscriptTextDeltaEvent { }

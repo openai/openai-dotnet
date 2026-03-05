@@ -195,6 +195,32 @@ public partial class ResponsesSmokeTests
     }
 
     [Test]
+    public void StableInputFileUrlContentPartSerialization()
+    {
+        static void AssertExpectedFilePart(ResponseContentPart filePart)
+        {
+            Assert.That(filePart.Kind, Is.EqualTo(ResponseContentPartKind.InputFile));
+            Assert.That(filePart.InputFileUri, Is.EqualTo("https://example.com/document.pdf"));
+            Assert.That(filePart.InputFileId, Is.Null);
+            Assert.That(filePart.InputFileBytes, Is.Null);
+            Assert.That(filePart.InputFileBytesMediaType, Is.Null);
+            Assert.That(filePart.InputFilename, Is.Null);
+        }
+
+        ResponseContentPart filePart = ResponseContentPart.CreateInputFilePart(
+            new Uri("https://example.com/document.pdf"));
+
+        AssertExpectedFilePart(filePart);
+
+        BinaryData serializedFilePart = ModelReaderWriter.Write(filePart);
+        Assert.That(serializedFilePart, Is.Not.Null);
+
+        ResponseContentPart deserializedFilePart = ModelReaderWriter.Read<ResponseContentPart>(serializedFilePart);
+
+        AssertExpectedFilePart(deserializedFilePart);
+    }
+
+    [Test]
     public void StableInputImageDataContentPartSerialization()
     {
         static void AssertExpectedImagePart(ResponseContentPart filePart)

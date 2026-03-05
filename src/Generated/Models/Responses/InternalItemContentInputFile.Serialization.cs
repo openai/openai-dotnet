@@ -41,6 +41,11 @@ namespace OpenAI.Responses
                 writer.WritePropertyName("file_id"u8);
                 writer.WriteStringValue(FileId);
             }
+            if (Optional.IsDefined(FileUrl) && !Patch.Contains("$.file_url"u8))
+            {
+                writer.WritePropertyName("file_url"u8);
+                writer.WriteStringValue(FileUrl.AbsoluteUri);
+            }
             if (Optional.IsDefined(Filename) && !Patch.Contains("$.filename"u8))
             {
                 writer.WritePropertyName("filename"u8);
@@ -80,6 +85,7 @@ namespace OpenAI.Responses
             JsonPatch patch = new JsonPatch(data is null ? ReadOnlyMemory<byte>.Empty : data.ToMemory());
 #pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
             string fileId = default;
+            Uri fileUrl = default;
             string filename = default;
             string internalFileData = default;
             foreach (var prop in element.EnumerateObject())
@@ -99,6 +105,16 @@ namespace OpenAI.Responses
                     fileId = prop.Value.GetString();
                     continue;
                 }
+                if (prop.NameEquals("file_url"u8))
+                {
+                    if (prop.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        fileUrl = null;
+                        continue;
+                    }
+                    fileUrl = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString());
+                    continue;
+                }
                 if (prop.NameEquals("filename"u8))
                 {
                     filename = prop.Value.GetString();
@@ -111,7 +127,13 @@ namespace OpenAI.Responses
                 }
                 patch.Set([.. "$."u8, .. Encoding.UTF8.GetBytes(prop.Name)], prop.Value.GetUtf8Bytes());
             }
-            return new InternalItemContentInputFile(internalType, patch, fileId, filename, internalFileData);
+            return new InternalItemContentInputFile(
+                internalType,
+                patch,
+                fileId,
+                fileUrl,
+                filename,
+                internalFileData);
         }
 
         BinaryData IPersistableModel<InternalItemContentInputFile>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);

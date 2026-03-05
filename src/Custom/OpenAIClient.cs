@@ -323,14 +323,14 @@ public partial class OpenAIClient
     /// In contrast to other clients, <see cref="RealtimeClient"/> does not manage input/output operations directly,
     /// instead delegating stateful interaction to a child session object.
     /// </para>
-    /// Create <see cref="IDisposable"/> instances of <see cref="RealtimeSession"/> using methods like
+    /// Create <see cref="IDisposable"/> instances of <see cref="RealtimeSessionClient"/> using methods like
     /// <see cref="RealtimeClient.StartConversationSessionAsync(string, System.Threading.CancellationToken)"/> and
     /// <see cref="RealtimeClient.StartTranscriptionSessionAsync(System.Threading.CancellationToken)"/>
     /// to access full <c>/realtime</c> functionality.
     /// </remarks>
     /// <returns></returns>
     [Experimental("OPENAI002")]
-    public virtual RealtimeClient GetRealtimeClient() => new(_keyCredential, _options);
+    public virtual RealtimeClient GetRealtimeClient() => new(_keyCredential, RealtimeClientOptions.FromClientOptions(_options));
 
     /// <summary>
     /// Gets a new instance of <see cref="ResponsesClient"/> that reuses the client configuration details provided to

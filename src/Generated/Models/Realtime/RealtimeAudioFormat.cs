@@ -2,50 +2,37 @@
 
 #nullable disable
 
-using System;
+using System.ClientModel.Primitives;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using OpenAI;
+using System.Text.Json.Serialization;
 
 namespace OpenAI.Realtime
 {
     [Experimental("OPENAI002")]
-    public readonly partial struct RealtimeAudioFormat : IEquatable<RealtimeAudioFormat>
+    public partial class RealtimeAudioFormat
     {
-        private readonly string _value;
-        private const string Pcm16Value = "pcm16";
-        private const string G711UlawValue = "g711_ulaw";
-        private const string G711AlawValue = "g711_alaw";
+        [Experimental("SCME0001")]
+        private JsonPatch _patch;
 
-        public RealtimeAudioFormat(string value)
+        private protected RealtimeAudioFormat(InternalRealtimeAudioFormatType kind)
         {
-            Argument.AssertNotNull(value, nameof(value));
-
-            _value = value;
+            Kind = kind;
         }
 
-        public static RealtimeAudioFormat Pcm16 { get; } = new RealtimeAudioFormat(Pcm16Value);
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        internal RealtimeAudioFormat(InternalRealtimeAudioFormatType kind, in JsonPatch patch)
+        {
+            Kind = kind;
+            _patch = patch;
+        }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 
-        public static RealtimeAudioFormat G711Ulaw { get; } = new RealtimeAudioFormat(G711UlawValue);
-
-        public static RealtimeAudioFormat G711Alaw { get; } = new RealtimeAudioFormat(G711AlawValue);
-
-        public static bool operator ==(RealtimeAudioFormat left, RealtimeAudioFormat right) => left.Equals(right);
-
-        public static bool operator !=(RealtimeAudioFormat left, RealtimeAudioFormat right) => !left.Equals(right);
-
-        public static implicit operator RealtimeAudioFormat(string value) => new RealtimeAudioFormat(value);
-
-        public static implicit operator RealtimeAudioFormat?(string value) => value == null ? null : new RealtimeAudioFormat(value);
-
+        [JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool Equals(object obj) => obj is RealtimeAudioFormat other && Equals(other);
+        [Experimental("SCME0001")]
+        public ref JsonPatch Patch => ref _patch;
 
-        public bool Equals(RealtimeAudioFormat other) => string.Equals(_value, other._value, StringComparison.InvariantCultureIgnoreCase);
-
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override int GetHashCode() => _value != null ? StringComparer.InvariantCultureIgnoreCase.GetHashCode(_value) : 0;
-
-        public override string ToString() => _value;
+        internal InternalRealtimeAudioFormatType Kind { get; set; }
     }
 }

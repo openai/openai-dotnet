@@ -303,7 +303,7 @@ public partial class TranscriptionTests : OpenAIRecordedTestBase
             }
         }
 
-        Assert.That(deltaBuilder.ToString().ToLower(), Does.Contain("hello world"));
+        Assert.That(deltaBuilder.ToString().ToLower(), Does.Contain("this is a test"));
 
         inputStream?.Dispose();
     }

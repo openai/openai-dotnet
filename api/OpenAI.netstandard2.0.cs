@@ -46,6 +46,44 @@ namespace OpenAI {
         public static OpenAIContext Default { get; }
         protected override bool TryGetTypeBuilderCore(Type type, out ModelReaderWriterTypeBuilder builder);
     }
+    public static class OpenAIHostBuilderExtensions {
+        public static IClientBuilder AddAssistantClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddAudioClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddBatchClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddChatClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddContainerClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddConversationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddEmbeddingClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddEvaluationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddFineTuningClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddGraderClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddImageClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddKeyedAssistantClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedAudioClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedBatchClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedChatClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedContainerClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedConversationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedEmbeddingClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedEvaluationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedFineTuningClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedGraderClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedImageClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedModerationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedOpenAIFileClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedOpenAIModelClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedRealtimeClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedResponsesClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedVectorStoreClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddKeyedVideoClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
+        public static IClientBuilder AddModerationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddOpenAIFileClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddOpenAIModelClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddRealtimeClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddResponsesClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddVectorStoreClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+        public static IClientBuilder AddVideoClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
+    }
 }
 namespace OpenAI.Assistants {
     public class Assistant : IJsonModel<Assistant>, IPersistableModel<Assistant> {
@@ -2368,46 +2406,6 @@ namespace OpenAI.Conversations {
         public override readonly string ToString();
     }
 }
-namespace OpenAI.DependencyInjection {
-    public static class OpenAIHostBuilderExtensions {
-        public static IClientBuilder AddAssistantClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddAudioClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddBatchClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddChatClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddContainerClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddConversationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddEmbeddingClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddEvaluationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddFineTuningClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddGraderClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddImageClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddKeyedAssistantClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedAudioClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedBatchClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedChatClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedContainerClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedConversationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedEmbeddingClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedEvaluationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedFineTuningClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedGraderClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedImageClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedModerationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedOpenAIFileClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedOpenAIModelClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedRealtimeClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedResponsesClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedVectorStoreClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddKeyedVideoClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string serviceKey, string sectionName);
-        public static IClientBuilder AddModerationClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddOpenAIFileClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddOpenAIModelClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddRealtimeClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddResponsesClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddVectorStoreClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-        public static IClientBuilder AddVideoClient(this Microsoft.Extensions.Hosting.IHostApplicationBuilder builder, string sectionName);
-    }
-}
 namespace OpenAI.Embeddings {
     public class EmbeddingClient {
         protected EmbeddingClient();
@@ -3645,553 +3643,51 @@ namespace OpenAI.Moderations {
     }
 }
 namespace OpenAI.Realtime {
-    public class ConversationContentPart : IJsonModel<ConversationContentPart>, IPersistableModel<ConversationContentPart> {
-        public string AudioTranscript { get; }
-        public string Text { get; }
-        public static ConversationContentPart CreateInputAudioTranscriptPart(string transcript = null);
-        public static ConversationContentPart CreateInputTextPart(string text);
-        public static ConversationContentPart CreateOutputAudioTranscriptPart(string transcript = null);
-        public static ConversationContentPart CreateOutputTextPart(string text);
-        protected virtual ConversationContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+    public class CreateClientSecretOptions : IJsonModel<CreateClientSecretOptions>, IPersistableModel<CreateClientSecretOptions> {
+        public RealtimeClientSecretExpirationPolicy ExpirationPolicy { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public RealtimeSessionOptions SessionOptions { get; set; }
+        protected virtual CreateClientSecretOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        public static implicit operator ConversationContentPart(string text);
-        protected virtual ConversationContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        public static implicit operator BinaryContent(CreateClientSecretOptions createClientSecretOptions);
+        protected virtual CreateClientSecretOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
-    public readonly partial struct ConversationContentPartKind : IEquatable<ConversationContentPartKind> {
-        public ConversationContentPartKind(string value);
-        public static ConversationContentPartKind InputAudio { get; }
-        public static ConversationContentPartKind InputText { get; }
-        public static ConversationContentPartKind OutputAudio { get; }
-        public static ConversationContentPartKind OutputText { get; }
-        public readonly bool Equals(ConversationContentPartKind other);
+    public class CreateClientSecretResult : IJsonModel<CreateClientSecretResult>, IPersistableModel<CreateClientSecretResult> {
+        public DateTimeOffset ExpiresAt { get; }
+        [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(ConversationContentPartKind left, ConversationContentPartKind right);
-        public static implicit operator ConversationContentPartKind(string value);
-        public static implicit operator ConversationContentPartKind?(string value);
-        public static bool operator !=(ConversationContentPartKind left, ConversationContentPartKind right);
-        public override readonly string ToString();
-    }
-    public class ConversationFunctionTool : ConversationTool, IJsonModel<ConversationFunctionTool>, IPersistableModel<ConversationFunctionTool> {
-        public ConversationFunctionTool(string name);
-        public string Description { get; set; }
-        public string Name { get; set; }
-        public BinaryData Parameters { get; set; }
-        protected override ConversationTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override ConversationTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public readonly partial struct ConversationIncompleteReason : IEquatable<ConversationIncompleteReason> {
-        public ConversationIncompleteReason(string value);
-        public static ConversationIncompleteReason ClientCancelled { get; }
-        public static ConversationIncompleteReason ContentFilter { get; }
-        public static ConversationIncompleteReason MaxOutputTokens { get; }
-        public static ConversationIncompleteReason TurnDetected { get; }
-        public readonly bool Equals(ConversationIncompleteReason other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(ConversationIncompleteReason left, ConversationIncompleteReason right);
-        public static implicit operator ConversationIncompleteReason(string value);
-        public static implicit operator ConversationIncompleteReason?(string value);
-        public static bool operator !=(ConversationIncompleteReason left, ConversationIncompleteReason right);
-        public override readonly string ToString();
-    }
-    public class ConversationInputTokenUsageDetails : IJsonModel<ConversationInputTokenUsageDetails>, IPersistableModel<ConversationInputTokenUsageDetails> {
-        public int AudioTokenCount { get; }
-        public int CachedTokenCount { get; }
-        public int TextTokenCount { get; }
-        protected virtual ConversationInputTokenUsageDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        public ref JsonPatch Patch { get; }
+        public RealtimeSession Session { get; }
+        public string Value { get; }
+        protected virtual CreateClientSecretResult JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual ConversationInputTokenUsageDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        public static explicit operator CreateClientSecretResult(ClientResult result);
+        protected virtual CreateClientSecretResult PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
-    public readonly partial struct ConversationItemStatus : IEquatable<ConversationItemStatus> {
-        public ConversationItemStatus(string value);
-        public static ConversationItemStatus Completed { get; }
-        public static ConversationItemStatus Incomplete { get; }
-        public static ConversationItemStatus InProgress { get; }
-        public readonly bool Equals(ConversationItemStatus other);
+    public class RealtimeAudioFormat : IJsonModel<RealtimeAudioFormat>, IPersistableModel<RealtimeAudioFormat> {
+        [Serialization.JsonIgnore]
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(ConversationItemStatus left, ConversationItemStatus right);
-        public static implicit operator ConversationItemStatus(string value);
-        public static implicit operator ConversationItemStatus?(string value);
-        public static bool operator !=(ConversationItemStatus left, ConversationItemStatus right);
-        public override readonly string ToString();
-    }
-    public class ConversationMaxTokensChoice : IJsonModel<ConversationMaxTokensChoice>, IPersistableModel<ConversationMaxTokensChoice> {
-        public ConversationMaxTokensChoice(int numberValue);
-        public int? NumericValue { get; }
-        public static ConversationMaxTokensChoice CreateDefaultMaxTokensChoice();
-        public static ConversationMaxTokensChoice CreateInfiniteMaxTokensChoice();
-        public static ConversationMaxTokensChoice CreateNumericMaxTokensChoice(int maxTokens);
-        public static implicit operator ConversationMaxTokensChoice(int maxTokens);
-    }
-    public readonly partial struct ConversationMessageRole : IEquatable<ConversationMessageRole> {
-        public ConversationMessageRole(string value);
-        public static ConversationMessageRole Assistant { get; }
-        public static ConversationMessageRole System { get; }
-        public static ConversationMessageRole User { get; }
-        public readonly bool Equals(ConversationMessageRole other);
-        [EditorBrowsable(global::EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(global::EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(ConversationMessageRole left, ConversationMessageRole right);
-        public static implicit operator ConversationMessageRole(string value);
-        public static implicit operator ConversationMessageRole?(string value);
-        public static bool operator !=(ConversationMessageRole left, ConversationMessageRole right);
-        public override readonly string ToString();
-    }
-    public class ConversationOutputTokenUsageDetails : IJsonModel<ConversationOutputTokenUsageDetails>, IPersistableModel<ConversationOutputTokenUsageDetails> {
-        public int AudioTokenCount { get; }
-        public int TextTokenCount { get; }
-        protected virtual ConversationOutputTokenUsageDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        public ref JsonPatch Patch { get; }
+        protected virtual RealtimeAudioFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual ConversationOutputTokenUsageDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual RealtimeAudioFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
-    public class ConversationRateLimitDetailsItem : IJsonModel<ConversationRateLimitDetailsItem>, IPersistableModel<ConversationRateLimitDetailsItem> {
-        public int MaximumCount { get; }
-        public string Name { get; }
-        public int RemainingCount { get; }
-        public TimeSpan TimeUntilReset { get; }
-        protected virtual ConversationRateLimitDetailsItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual ConversationRateLimitDetailsItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class ConversationResponseOptions : IJsonModel<ConversationResponseOptions>, IPersistableModel<ConversationResponseOptions> {
-        public ConversationVoice? Voice;
-        public RealtimeContentModalities ContentModalities { get; set; }
-        public ResponseConversationSelection? ConversationSelection { get; set; }
-        public string Instructions { get; set; }
-        public ConversationMaxTokensChoice MaxOutputTokens { get; set; }
-        public IDictionary<string, string> Metadata { get; }
-        public RealtimeAudioFormat? OutputAudioFormat { get; set; }
-        public IList<RealtimeItem> OverrideItems { get; }
-        public float? Temperature { get; set; }
-        public ConversationToolChoice ToolChoice { get; set; }
-        public IList<ConversationTool> Tools { get; }
-        protected virtual ConversationResponseOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual ConversationResponseOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class ConversationSessionConfiguredUpdate : RealtimeUpdate, IJsonModel<ConversationSessionConfiguredUpdate>, IPersistableModel<ConversationSessionConfiguredUpdate> {
-        public RealtimeContentModalities ContentModalities { get; }
-        public new string EventId { get; }
-        public RealtimeAudioFormat InputAudioFormat { get; }
-        public InputTranscriptionOptions InputTranscriptionOptions { get; }
-        public string Instructions { get; }
-        public ConversationMaxTokensChoice MaxOutputTokens { get; }
-        public string Model { get; }
-        public RealtimeAudioFormat OutputAudioFormat { get; }
-        public string SessionId { get; }
-        public float Temperature { get; }
-        public ConversationToolChoice ToolChoice { get; }
-        public IReadOnlyList<ConversationTool> Tools { get; }
-        public TurnDetectionOptions TurnDetectionOptions { get; }
-        public ConversationVoice Voice { get; }
-        protected override RealtimeUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override RealtimeUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class ConversationSessionOptions : RealtimeRequestSessionBase, IJsonModel<ConversationSessionOptions>, IPersistableModel<ConversationSessionOptions> {
-        public ConversationSessionOptions();
-        public RealtimeSessionAudioConfiguration Audio { get; set; }
-        public RealtimeContentModalities ContentModalities { get; set; }
-        public IList<string> Include { get; }
-        public InputNoiseReductionOptions InputNoiseReductionOptions { get; set; }
-        public InputTranscriptionOptions InputTranscriptionOptions { get; set; }
-        public string Instructions { get; set; }
-        public ConversationMaxTokensChoice MaxOutputTokens { get; set; }
-        public float? Temperature { get; set; }
-        public ConversationToolChoice ToolChoice { get; set; }
-        public IList<ConversationTool> Tools { get; }
-        public BinaryData Tracing { get; set; }
-        public TurnDetectionOptions TurnDetectionOptions { get; set; }
-        public ConversationVoice? Voice { get; set; }
-        protected override RealtimeRequestSessionBase JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override RealtimeRequestSessionBase PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class ConversationSessionStartedUpdate : RealtimeUpdate, IJsonModel<ConversationSessionStartedUpdate>, IPersistableModel<ConversationSessionStartedUpdate> {
-        public RealtimeContentModalities ContentModalities { get; }
-        public RealtimeAudioFormat InputAudioFormat { get; }
-        public InputTranscriptionOptions InputTranscriptionOptions { get; }
-        public string Instructions { get; }
-        public ConversationMaxTokensChoice MaxOutputTokens { get; }
-        public string Model { get; }
-        public RealtimeAudioFormat OutputAudioFormat { get; }
-        public string SessionId { get; }
-        public float Temperature { get; }
-        public ConversationToolChoice ToolChoice { get; }
-        public IReadOnlyList<ConversationTool> Tools { get; }
-        public TurnDetectionOptions TurnDetectionOptions { get; }
-        public ConversationVoice Voice { get; }
-        protected override RealtimeUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override RealtimeUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public readonly partial struct ConversationStatus : IEquatable<ConversationStatus> {
-        public ConversationStatus(string value);
-        public static ConversationStatus Cancelled { get; }
-        public static ConversationStatus Completed { get; }
-        public static ConversationStatus Failed { get; }
-        public static ConversationStatus Incomplete { get; }
-        public static ConversationStatus InProgress { get; }
-        public readonly bool Equals(ConversationStatus other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(ConversationStatus left, ConversationStatus right);
-        public static implicit operator ConversationStatus(string value);
-        public static implicit operator ConversationStatus?(string value);
-        public static bool operator !=(ConversationStatus left, ConversationStatus right);
-        public override readonly string ToString();
-    }
-    public class ConversationStatusDetails : IJsonModel<ConversationStatusDetails>, IPersistableModel<ConversationStatusDetails> {
-        public string ErrorCode { get; }
-        public string ErrorKind { get; }
-        public ConversationIncompleteReason? IncompleteReason { get; }
-        public ConversationStatus StatusKind { get; }
-        protected virtual ConversationStatusDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual ConversationStatusDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class ConversationTokenUsage : IJsonModel<ConversationTokenUsage>, IPersistableModel<ConversationTokenUsage> {
-        public int InputTokenCount { get; }
-        public ConversationInputTokenUsageDetails InputTokenDetails { get; }
-        public int OutputTokenCount { get; }
-        public ConversationOutputTokenUsageDetails OutputTokenDetails { get; }
-        public int TotalTokenCount { get; }
-        protected virtual ConversationTokenUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual ConversationTokenUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class ConversationTool : IJsonModel<ConversationTool>, IPersistableModel<ConversationTool> {
-        public ConversationToolKind Kind { get; }
-        public static ConversationTool CreateFunctionTool(string name, string description = null, BinaryData parameters = null);
-        protected virtual ConversationTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual ConversationTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class ConversationToolChoice : IJsonModel<ConversationToolChoice>, IPersistableModel<ConversationToolChoice> {
-        public string FunctionName { get; }
-        public ConversationToolChoiceKind Kind { get; }
-        public static ConversationToolChoice CreateAutoToolChoice();
-        public static ConversationToolChoice CreateFunctionToolChoice(string functionName);
-        public static ConversationToolChoice CreateNoneToolChoice();
-        public static ConversationToolChoice CreateRequiredToolChoice();
-    }
-    public enum ConversationToolChoiceKind {
-        Unknown = 0,
-        Auto = 1,
-        None = 2,
-        Required = 3,
-        Function = 4
-    }
-    public readonly partial struct ConversationToolKind : IEquatable<ConversationToolKind> {
-        public ConversationToolKind(string value);
-        public static ConversationToolKind Function { get; }
-        public static ConversationToolKind Mcp { get; }
-        public readonly bool Equals(ConversationToolKind other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(ConversationToolKind left, ConversationToolKind right);
-        public static implicit operator ConversationToolKind(string value);
-        public static implicit operator ConversationToolKind?(string value);
-        public static bool operator !=(ConversationToolKind left, ConversationToolKind right);
-        public override readonly string ToString();
-    }
-    public readonly partial struct ConversationVoice : IEquatable<ConversationVoice> {
-        public ConversationVoice(string value);
-        public static ConversationVoice Alloy { get; }
-        public static ConversationVoice Ash { get; }
-        public static ConversationVoice Ballad { get; }
-        public static ConversationVoice Coral { get; }
-        public static ConversationVoice Echo { get; }
-        public static ConversationVoice Fable { get; }
-        public static ConversationVoice Nova { get; }
-        public static ConversationVoice Onyx { get; }
-        public static ConversationVoice Sage { get; }
-        public static ConversationVoice Shimmer { get; }
-        public static ConversationVoice Verse { get; }
-        public readonly bool Equals(ConversationVoice other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(ConversationVoice left, ConversationVoice right);
-        public static implicit operator ConversationVoice(string value);
-        public static implicit operator ConversationVoice?(string value);
-        public static bool operator !=(ConversationVoice left, ConversationVoice right);
-        public override readonly string ToString();
-    }
-    public class InputAudioClearedUpdate : RealtimeUpdate, IJsonModel<InputAudioClearedUpdate>, IPersistableModel<InputAudioClearedUpdate> {
-        protected override RealtimeUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override RealtimeUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class InputAudioCommittedUpdate : RealtimeUpdate, IJsonModel<InputAudioCommittedUpdate>, IPersistableModel<InputAudioCommittedUpdate> {
-        public string ItemId { get; }
-        public string PreviousItemId { get; }
-        protected override RealtimeUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override RealtimeUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class InputAudioSpeechFinishedUpdate : RealtimeUpdate, IJsonModel<InputAudioSpeechFinishedUpdate>, IPersistableModel<InputAudioSpeechFinishedUpdate> {
-        public TimeSpan AudioEndTime { get; }
-        public string ItemId { get; }
-        protected override RealtimeUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override RealtimeUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class InputAudioSpeechStartedUpdate : RealtimeUpdate, IJsonModel<InputAudioSpeechStartedUpdate>, IPersistableModel<InputAudioSpeechStartedUpdate> {
-        public TimeSpan AudioStartTime { get; }
-        public string ItemId { get; }
-        protected override RealtimeUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override RealtimeUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class InputAudioTranscriptionDeltaUpdate : RealtimeUpdate, IJsonModel<InputAudioTranscriptionDeltaUpdate>, IPersistableModel<InputAudioTranscriptionDeltaUpdate> {
-        public int? ContentIndex { get; }
-        public string Delta { get; }
-        public string ItemId { get; }
-        protected override RealtimeUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override RealtimeUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class InputAudioTranscriptionFailedUpdate : RealtimeUpdate, IJsonModel<InputAudioTranscriptionFailedUpdate>, IPersistableModel<InputAudioTranscriptionFailedUpdate> {
-        public int ContentIndex { get; }
-        public string ErrorCode { get; }
-        public string ErrorMessage { get; }
-        public string ErrorParameterName { get; }
-        public string ItemId { get; }
-        protected override RealtimeUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override RealtimeUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class InputAudioTranscriptionFinishedUpdate : RealtimeUpdate, IJsonModel<InputAudioTranscriptionFinishedUpdate>, IPersistableModel<InputAudioTranscriptionFinishedUpdate> {
-        public int ContentIndex { get; }
-        public string ItemId { get; }
-        public string Transcript { get; }
-        protected override RealtimeUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override RealtimeUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public enum InputNoiseReductionKind {
-        Unknown = 0,
-        NearField = 1,
-        FarField = 2,
-        Disabled = 3
-    }
-    public class InputNoiseReductionOptions : IJsonModel<InputNoiseReductionOptions>, IPersistableModel<InputNoiseReductionOptions> {
-        public InputNoiseReductionKind Kind { get; set; }
-        public static InputNoiseReductionOptions CreateDisabledOptions();
-        public static InputNoiseReductionOptions CreateFarFieldOptions();
-        public static InputNoiseReductionOptions CreateNearFieldOptions();
-        protected virtual InputNoiseReductionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual InputNoiseReductionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public readonly partial struct InputTranscriptionModel : IEquatable<InputTranscriptionModel> {
-        public InputTranscriptionModel(string value);
-        public static InputTranscriptionModel Gpt4oMiniTranscribe { get; }
-        public static InputTranscriptionModel Gpt4oMiniTranscribe20251215 { get; }
-        public static InputTranscriptionModel Gpt4oTranscribe { get; }
-        public static InputTranscriptionModel Gpt4oTranscribeDiarize { get; }
-        public static InputTranscriptionModel Whisper1 { get; }
-        public readonly bool Equals(InputTranscriptionModel other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(InputTranscriptionModel left, InputTranscriptionModel right);
-        public static implicit operator InputTranscriptionModel(string value);
-        public static implicit operator InputTranscriptionModel?(string value);
-        public static bool operator !=(InputTranscriptionModel left, InputTranscriptionModel right);
-        public override readonly string ToString();
-    }
-    public class InputTranscriptionOptions : IJsonModel<InputTranscriptionOptions>, IPersistableModel<InputTranscriptionOptions> {
+    public class RealtimeAudioTranscriptionOptions : IJsonModel<RealtimeAudioTranscriptionOptions>, IPersistableModel<RealtimeAudioTranscriptionOptions> {
         public string Language { get; set; }
-        public InputTranscriptionModel? Model { get; set; }
+        public string Model { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
         public string Prompt { get; set; }
-        protected virtual InputTranscriptionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual RealtimeAudioTranscriptionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual InputTranscriptionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual RealtimeAudioTranscriptionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class ItemCreatedUpdate : RealtimeUpdate, IJsonModel<ItemCreatedUpdate>, IPersistableModel<ItemCreatedUpdate> {
-        public string FunctionCallArguments { get; }
-        public string FunctionCallId { get; }
-        public string FunctionCallOutput { get; }
-        public string FunctionName { get; }
-        public string ItemId { get; }
-        public IReadOnlyList<ConversationContentPart> MessageContentParts { get; }
-        public ConversationMessageRole? MessageRole { get; }
-        public string PreviousItemId { get; }
-        protected override RealtimeUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override RealtimeUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class ItemDeletedUpdate : RealtimeUpdate, IJsonModel<ItemDeletedUpdate>, IPersistableModel<ItemDeletedUpdate> {
-        public string ItemId { get; }
-        protected override RealtimeUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override RealtimeUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class ItemRetrievedUpdate : RealtimeUpdate, IJsonModel<ItemRetrievedUpdate>, IPersistableModel<ItemRetrievedUpdate> {
-        public RealtimeItem Item { get; }
-        protected override RealtimeUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override RealtimeUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class ItemTruncatedUpdate : RealtimeUpdate, IJsonModel<ItemTruncatedUpdate>, IPersistableModel<ItemTruncatedUpdate> {
-        public int AudioEndMs { get; }
-        public int ContentIndex { get; }
-        public string ItemId { get; }
-        protected override RealtimeUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override RealtimeUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class OutputAudioFinishedUpdate : RealtimeUpdate, IJsonModel<OutputAudioFinishedUpdate>, IPersistableModel<OutputAudioFinishedUpdate> {
-        public int ContentIndex { get; }
-        public string ItemId { get; }
-        public int OutputIndex { get; }
-        public string ResponseId { get; }
-        protected override RealtimeUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override RealtimeUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class OutputAudioTranscriptionFinishedUpdate : RealtimeUpdate, IJsonModel<OutputAudioTranscriptionFinishedUpdate>, IPersistableModel<OutputAudioTranscriptionFinishedUpdate> {
-        public int ContentIndex { get; }
-        public string ItemId { get; }
-        public int OutputIndex { get; }
-        public string ResponseId { get; }
-        public string Transcript { get; }
-        protected override RealtimeUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override RealtimeUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class OutputDeltaUpdate : RealtimeUpdate, IJsonModel<OutputDeltaUpdate>, IPersistableModel<OutputDeltaUpdate> {
-        public BinaryData AudioBytes { get; }
-        public string AudioTranscript { get; }
-        public int ContentPartIndex { get; }
-        public string FunctionArguments { get; }
-        public string FunctionCallId { get; }
-        public string ItemId { get; }
-        public int ItemIndex { get; }
-        public string ResponseId { get; }
-        public string Text { get; }
-    }
-    public class OutputPartFinishedUpdate : RealtimeUpdate, IJsonModel<OutputPartFinishedUpdate>, IPersistableModel<OutputPartFinishedUpdate> {
-        public string AudioTranscript { get; }
-        public int ContentPartIndex { get; }
-        public string FunctionArguments { get; }
-        public string FunctionCallId { get; }
-        public string ItemId { get; }
-        public int ItemIndex { get; }
-        public string ResponseId { get; }
-        public string Text { get; }
-    }
-    public class OutputStreamingFinishedUpdate : RealtimeUpdate, IJsonModel<OutputStreamingFinishedUpdate>, IPersistableModel<OutputStreamingFinishedUpdate> {
-        public string FunctionCallArguments { get; }
-        public string FunctionCallId { get; }
-        public string FunctionCallOutput { get; }
-        public string FunctionName { get; }
-        public string ItemId { get; }
-        public IReadOnlyList<ConversationContentPart> MessageContentParts { get; }
-        public ConversationMessageRole? MessageRole { get; }
-        public int OutputIndex { get; }
-        public string ResponseId { get; }
-        protected override RealtimeUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override RealtimeUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class OutputStreamingStartedUpdate : RealtimeUpdate, IJsonModel<OutputStreamingStartedUpdate>, IPersistableModel<OutputStreamingStartedUpdate> {
-        public string FunctionCallArguments { get; }
-        public string FunctionCallId { get; }
-        public string FunctionCallOutput { get; }
-        public string FunctionName { get; }
-        public string ItemId { get; }
-        public int ItemIndex { get; }
-        public IReadOnlyList<ConversationContentPart> MessageContentParts { get; }
-        public ConversationMessageRole? MessageRole { get; }
-        public string ResponseId { get; }
-        protected override RealtimeUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override RealtimeUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class OutputTextFinishedUpdate : RealtimeUpdate, IJsonModel<OutputTextFinishedUpdate>, IPersistableModel<OutputTextFinishedUpdate> {
-        public int ContentIndex { get; }
-        public string ItemId { get; }
-        public int OutputIndex { get; }
-        public string ResponseId { get; }
-        public string Text { get; }
-        protected override RealtimeUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override RealtimeUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class RateLimitsUpdate : RealtimeUpdate, IJsonModel<RateLimitsUpdate>, IPersistableModel<RateLimitsUpdate> {
-        public IReadOnlyList<ConversationRateLimitDetailsItem> AllDetails { get; }
-        public ConversationRateLimitDetailsItem RequestDetails { get; }
-        public ConversationRateLimitDetailsItem TokenDetails { get; }
-        protected override RealtimeUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override RealtimeUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public readonly partial struct RealtimeAudioFormat : IEquatable<RealtimeAudioFormat> {
-        public RealtimeAudioFormat(string value);
-        public static RealtimeAudioFormat G711Alaw { get; }
-        public static RealtimeAudioFormat G711Ulaw { get; }
-        public static RealtimeAudioFormat Pcm16 { get; }
-        public readonly bool Equals(RealtimeAudioFormat other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(RealtimeAudioFormat left, RealtimeAudioFormat right);
-        public static implicit operator RealtimeAudioFormat(string value);
-        public static implicit operator RealtimeAudioFormat?(string value);
-        public static bool operator !=(RealtimeAudioFormat left, RealtimeAudioFormat right);
-        public override readonly string ToString();
     }
     public class RealtimeClient {
         protected RealtimeClient();
@@ -4212,16 +3708,124 @@ namespace OpenAI.Realtime {
             add;
             remove;
         }
-        public virtual ClientResult<RealtimeCreateClientSecretResponse> CreateRealtimeClientSecret(RealtimeCreateClientSecretRequest body, CancellationToken cancellationToken = default);
+        public virtual ClientResult<CreateClientSecretResult> CreateRealtimeClientSecret(CreateClientSecretOptions options, CancellationToken cancellationToken = default);
         public virtual ClientResult CreateRealtimeClientSecret(BinaryContent content, RequestOptions options = null);
-        public virtual Task<ClientResult<RealtimeCreateClientSecretResponse>> CreateRealtimeClientSecretAsync(RealtimeCreateClientSecretRequest body, CancellationToken cancellationToken = default);
+        public virtual Task<ClientResult<CreateClientSecretResult>> CreateRealtimeClientSecretAsync(CreateClientSecretOptions options, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult> CreateRealtimeClientSecretAsync(BinaryContent content, RequestOptions options = null);
-        public RealtimeSession StartConversationSession(string model, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual Task<RealtimeSession> StartConversationSessionAsync(string model, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
-        public RealtimeSession StartSession(string model, string intent, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual Task<RealtimeSession> StartSessionAsync(string model, string intent, RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
-        public RealtimeSession StartTranscriptionSession(RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
-        public virtual Task<RealtimeSession> StartTranscriptionSessionAsync(RealtimeSessionOptions options = null, CancellationToken cancellationToken = default);
+        public virtual RealtimeSessionClient StartConversationSession(string model, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
+        public virtual Task<RealtimeSessionClient> StartConversationSessionAsync(string model, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
+        public virtual RealtimeSessionClient StartSession(string model, string intent, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
+        public virtual Task<RealtimeSessionClient> StartSessionAsync(string model, string intent, RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
+        public virtual RealtimeSessionClient StartTranscriptionSession(RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
+        public virtual Task<RealtimeSessionClient> StartTranscriptionSessionAsync(RealtimeSessionClientOptions options = null, CancellationToken cancellationToken = default);
+    }
+    public class RealtimeClientCommand : IJsonModel<RealtimeClientCommand>, IPersistableModel<RealtimeClientCommand> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        protected virtual RealtimeClientCommand JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeClientCommandConversationItemCreate : RealtimeClientCommand, IJsonModel<RealtimeClientCommandConversationItemCreate>, IPersistableModel<RealtimeClientCommandConversationItemCreate> {
+        public RealtimeClientCommandConversationItemCreate(RealtimeItem item);
+        public string EventId { get; set; }
+        public RealtimeItem Item { get; }
+        public string PreviousItemId { get; set; }
+        protected override RealtimeClientCommand JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeClientCommandConversationItemDelete : RealtimeClientCommand, IJsonModel<RealtimeClientCommandConversationItemDelete>, IPersistableModel<RealtimeClientCommandConversationItemDelete> {
+        public RealtimeClientCommandConversationItemDelete(string itemId);
+        public string EventId { get; set; }
+        public string ItemId { get; }
+        protected override RealtimeClientCommand JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeClientCommandConversationItemRetrieve : RealtimeClientCommand, IJsonModel<RealtimeClientCommandConversationItemRetrieve>, IPersistableModel<RealtimeClientCommandConversationItemRetrieve> {
+        public RealtimeClientCommandConversationItemRetrieve(string itemId);
+        public string EventId { get; set; }
+        public string ItemId { get; }
+        protected override RealtimeClientCommand JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeClientCommandConversationItemTruncate : RealtimeClientCommand, IJsonModel<RealtimeClientCommandConversationItemTruncate>, IPersistableModel<RealtimeClientCommandConversationItemTruncate> {
+        public RealtimeClientCommandConversationItemTruncate(string itemId, int contentIndex, TimeSpan audioEndTime);
+        public TimeSpan AudioEndTime { get; }
+        public int ContentIndex { get; }
+        public string EventId { get; set; }
+        public string ItemId { get; }
+        protected override RealtimeClientCommand JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeClientCommandInputAudioBufferAppend : RealtimeClientCommand, IJsonModel<RealtimeClientCommandInputAudioBufferAppend>, IPersistableModel<RealtimeClientCommandInputAudioBufferAppend> {
+        public RealtimeClientCommandInputAudioBufferAppend(BinaryData audioBytes);
+        public BinaryData AudioBytes { get; }
+        public string EventId { get; set; }
+        protected override RealtimeClientCommand JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeClientCommandInputAudioBufferClear : RealtimeClientCommand, IJsonModel<RealtimeClientCommandInputAudioBufferClear>, IPersistableModel<RealtimeClientCommandInputAudioBufferClear> {
+        public RealtimeClientCommandInputAudioBufferClear();
+        public string EventId { get; set; }
+        protected override RealtimeClientCommand JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeClientCommandInputAudioBufferCommit : RealtimeClientCommand, IJsonModel<RealtimeClientCommandInputAudioBufferCommit>, IPersistableModel<RealtimeClientCommandInputAudioBufferCommit> {
+        public RealtimeClientCommandInputAudioBufferCommit();
+        public string EventId { get; set; }
+        protected override RealtimeClientCommand JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeClientCommandOutputAudioBufferClear : RealtimeClientCommand, IJsonModel<RealtimeClientCommandOutputAudioBufferClear>, IPersistableModel<RealtimeClientCommandOutputAudioBufferClear> {
+        public RealtimeClientCommandOutputAudioBufferClear();
+        public string EventId { get; set; }
+        protected override RealtimeClientCommand JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeClientCommandResponseCancel : RealtimeClientCommand, IJsonModel<RealtimeClientCommandResponseCancel>, IPersistableModel<RealtimeClientCommandResponseCancel> {
+        public RealtimeClientCommandResponseCancel();
+        public string EventId { get; set; }
+        public string ResponseId { get; set; }
+        protected override RealtimeClientCommand JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeClientCommandResponseCreate : RealtimeClientCommand, IJsonModel<RealtimeClientCommandResponseCreate>, IPersistableModel<RealtimeClientCommandResponseCreate> {
+        public RealtimeClientCommandResponseCreate();
+        public string EventId { get; set; }
+        public RealtimeResponseOptions ResponseOptions { get; set; }
+        protected override RealtimeClientCommand JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeClientCommandSessionUpdate : RealtimeClientCommand, IJsonModel<RealtimeClientCommandSessionUpdate>, IPersistableModel<RealtimeClientCommandSessionUpdate> {
+        public RealtimeClientCommandSessionUpdate(RealtimeSessionOptions sessionOptions);
+        public string EventId { get; set; }
+        public RealtimeSessionOptions SessionOptions { get; }
+        protected override RealtimeClientCommand JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeClientCommand PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class RealtimeClientOptions : ClientPipelineOptions {
         public Uri Endpoint { get; set; }
@@ -4229,92 +3833,1466 @@ namespace OpenAI.Realtime {
         public string ProjectId { get; set; }
         public string UserAgentApplicationId { get; set; }
     }
-    public sealed class RealtimeClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
-        protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
-    }
-    [Flags]
-    public enum RealtimeContentModalities {
-        Default = 0,
-        Text = 1,
-        Audio = 2
-    }
-    public class RealtimeCreateClientSecretRequest : IJsonModel<RealtimeCreateClientSecretRequest>, IPersistableModel<RealtimeCreateClientSecretRequest> {
-        public RealtimeCreateClientSecretRequestExpiresAfter ExpiresAfter { get; set; }
-        public RealtimeSessionCreateRequestUnion Session { get; set; }
-        protected virtual RealtimeCreateClientSecretRequest JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+    public class RealtimeClientSecret : IJsonModel<RealtimeClientSecret>, IPersistableModel<RealtimeClientSecret> {
+        public DateTimeOffset ExpiresAt { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public string Value { get; }
+        protected virtual RealtimeClientSecret JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        public static implicit operator BinaryContent(RealtimeCreateClientSecretRequest realtimeCreateClientSecretRequest);
-        protected virtual RealtimeCreateClientSecretRequest PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual RealtimeClientSecret PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
-    public class RealtimeCreateClientSecretRequestExpiresAfter : IJsonModel<RealtimeCreateClientSecretRequestExpiresAfter>, IPersistableModel<RealtimeCreateClientSecretRequestExpiresAfter> {
-        public RealtimeCreateClientSecretRequestExpiresAfterAnchor? Anchor { get; set; }
-        public int? Seconds { get; set; }
-        protected virtual RealtimeCreateClientSecretRequestExpiresAfter JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual RealtimeCreateClientSecretRequestExpiresAfter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public readonly partial struct RealtimeCreateClientSecretRequestExpiresAfterAnchor : IEquatable<RealtimeCreateClientSecretRequestExpiresAfterAnchor> {
-        public RealtimeCreateClientSecretRequestExpiresAfterAnchor(string value);
-        public static RealtimeCreateClientSecretRequestExpiresAfterAnchor CreatedAt { get; }
-        public readonly bool Equals(RealtimeCreateClientSecretRequestExpiresAfterAnchor other);
+    public readonly partial struct RealtimeClientSecretExpirationAnchor : IEquatable<RealtimeClientSecretExpirationAnchor> {
+        public RealtimeClientSecretExpirationAnchor(string value);
+        public static RealtimeClientSecretExpirationAnchor CreatedAt { get; }
+        public readonly bool Equals(RealtimeClientSecretExpirationAnchor other);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly bool Equals(object obj);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly int GetHashCode();
-        public static bool operator ==(RealtimeCreateClientSecretRequestExpiresAfterAnchor left, RealtimeCreateClientSecretRequestExpiresAfterAnchor right);
-        public static implicit operator RealtimeCreateClientSecretRequestExpiresAfterAnchor(string value);
-        public static implicit operator RealtimeCreateClientSecretRequestExpiresAfterAnchor?(string value);
-        public static bool operator !=(RealtimeCreateClientSecretRequestExpiresAfterAnchor left, RealtimeCreateClientSecretRequestExpiresAfterAnchor right);
+        public static bool operator ==(RealtimeClientSecretExpirationAnchor left, RealtimeClientSecretExpirationAnchor right);
+        public static implicit operator RealtimeClientSecretExpirationAnchor(string value);
+        public static implicit operator RealtimeClientSecretExpirationAnchor?(string value);
+        public static bool operator !=(RealtimeClientSecretExpirationAnchor left, RealtimeClientSecretExpirationAnchor right);
         public override readonly string ToString();
     }
-    public class RealtimeCreateClientSecretResponse : IJsonModel<RealtimeCreateClientSecretResponse>, IPersistableModel<RealtimeCreateClientSecretResponse> {
-        public DateTimeOffset ExpiresAt { get; }
-        public RealtimeSessionCreateResponseUnion Session { get; }
-        public string Value { get; }
-        protected virtual RealtimeCreateClientSecretResponse JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+    public class RealtimeClientSecretExpirationPolicy : IJsonModel<RealtimeClientSecretExpirationPolicy>, IPersistableModel<RealtimeClientSecretExpirationPolicy> {
+        public RealtimeClientSecretExpirationAnchor? Anchor { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public int? Seconds { get; set; }
+        protected virtual RealtimeClientSecretExpirationPolicy JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        public static explicit operator RealtimeCreateClientSecretResponse(ClientResult result);
-        protected virtual RealtimeCreateClientSecretResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual RealtimeClientSecretExpirationPolicy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
-    public class RealtimeErrorUpdate : RealtimeUpdate, IJsonModel<RealtimeErrorUpdate>, IPersistableModel<RealtimeErrorUpdate> {
-        public string ErrorCode { get; }
-        public string ErrorEventId { get; }
-        public string Message { get; }
-        public string ParameterName { get; }
-        protected override RealtimeUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+    public sealed class RealtimeClientSettings : ClientSettings {
+        public OpenAIClientOptions Options { get; set; }
+        protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
+    }
+    public class RealtimeConversation : IJsonModel<RealtimeConversation>, IPersistableModel<RealtimeConversation> {
+        public string Id { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        protected virtual RealtimeConversation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeConversation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeConversationSession : RealtimeSession, IJsonModel<RealtimeConversationSession>, IPersistableModel<RealtimeConversationSession> {
+        public RealtimeConversationSessionAudioOptions AudioOptions { get; set; }
+        public RealtimeClientSecret ClientSecret { get; }
+        public IList<RealtimeIncludedProperty> IncludedProperties { get; }
+        public string Instructions { get; }
+        public RealtimeMaxOutputTokenCount MaxOutputTokenCount { get; set; }
+        public string Model { get; set; }
+        public IList<RealtimeOutputModality> OutputModalities { get; }
+        public RealtimeToolChoice ToolChoice { get; set; }
+        public IList<RealtimeTool> Tools { get; }
+        public RealtimeTracing Tracing { get; set; }
+        public RealtimeTruncation Truncation { get; set; }
+        protected override RealtimeSession JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override RealtimeUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override RealtimeSession PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeConversationSessionAudioOptions : IJsonModel<RealtimeConversationSessionAudioOptions>, IPersistableModel<RealtimeConversationSessionAudioOptions> {
+        public RealtimeConversationSessionInputAudioOptions InputAudioOptions { get; set; }
+        public RealtimeConversationSessionOutputAudioOptions OutputAudioOptions { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        protected virtual RealtimeConversationSessionAudioOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeConversationSessionAudioOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeConversationSessionInputAudioOptions : IJsonModel<RealtimeConversationSessionInputAudioOptions>, IPersistableModel<RealtimeConversationSessionInputAudioOptions> {
+        public RealtimeAudioFormat AudioFormat { get; set; }
+        public RealtimeAudioTranscriptionOptions AudioTranscriptionOptions { get; set; }
+        public RealtimeNoiseReduction NoiseReduction { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public RealtimeTurnDetection TurnDetection { get; set; }
+        public void DisableTurnDetection();
+        protected virtual RealtimeConversationSessionInputAudioOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeConversationSessionInputAudioOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeConversationSessionOptions : RealtimeSessionOptions, IJsonModel<RealtimeConversationSessionOptions>, IPersistableModel<RealtimeConversationSessionOptions> {
+        public RealtimeConversationSessionOptions();
+        public RealtimeConversationSessionAudioOptions AudioOptions { get; set; }
+        public IList<RealtimeIncludedProperty> IncludedProperties { get; }
+        public string Instructions { get; set; }
+        public RealtimeMaxOutputTokenCount MaxOutputTokenCount { get; set; }
+        public string Model { get; set; }
+        public IList<RealtimeOutputModality> OutputModalities { get; }
+        public RealtimeToolChoice ToolChoice { get; set; }
+        public IList<RealtimeTool> Tools { get; }
+        public RealtimeTracing Tracing { get; set; }
+        public RealtimeTruncation Truncation { get; set; }
+        protected override RealtimeSessionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeSessionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeConversationSessionOutputAudioOptions : IJsonModel<RealtimeConversationSessionOutputAudioOptions>, IPersistableModel<RealtimeConversationSessionOutputAudioOptions> {
+        public RealtimeAudioFormat AudioFormat { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public float? Speed { get; set; }
+        public RealtimeVoice? Voice { get; set; }
+        protected virtual RealtimeConversationSessionOutputAudioOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeConversationSessionOutputAudioOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeCustomFunctionToolChoice : RealtimeCustomToolChoice, IJsonModel<RealtimeCustomFunctionToolChoice>, IPersistableModel<RealtimeCustomFunctionToolChoice> {
+        public RealtimeCustomFunctionToolChoice(string functionName);
+        public string FunctionName { get; set; }
+        protected override RealtimeCustomToolChoice JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeCustomToolChoice PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeCustomMcpToolCallApprovalPolicy : IJsonModel<RealtimeCustomMcpToolCallApprovalPolicy>, IPersistableModel<RealtimeCustomMcpToolCallApprovalPolicy> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public RealtimeMcpToolFilter ToolsAlwaysRequiringApproval { get; set; }
+        public RealtimeMcpToolFilter ToolsNeverRequiringApproval { get; set; }
+        protected virtual RealtimeCustomMcpToolCallApprovalPolicy JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeCustomMcpToolCallApprovalPolicy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeCustomMcpToolChoice : RealtimeCustomToolChoice, IJsonModel<RealtimeCustomMcpToolChoice>, IPersistableModel<RealtimeCustomMcpToolChoice> {
+        public RealtimeCustomMcpToolChoice(string serverLabel);
+        public string McpToolName { get; set; }
+        public string ServerLabel { get; set; }
+        protected override RealtimeCustomToolChoice JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeCustomToolChoice PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeCustomRetentionRatioTruncation : RealtimeCustomTruncation, IJsonModel<RealtimeCustomRetentionRatioTruncation>, IPersistableModel<RealtimeCustomRetentionRatioTruncation> {
+        public RealtimeCustomRetentionRatioTruncation(float retentionRatio);
+        public float RetentionRatio { get; set; }
+        public RealtimeRetentionRatioTokenLimitDetails TokenLimitDetails { get; set; }
+        protected override RealtimeCustomTruncation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeCustomTruncation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeCustomToolChoice : IJsonModel<RealtimeCustomToolChoice>, IPersistableModel<RealtimeCustomToolChoice> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        protected virtual RealtimeCustomToolChoice JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeCustomToolChoice PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeCustomTracing : IJsonModel<RealtimeCustomTracing>, IPersistableModel<RealtimeCustomTracing> {
+        public string GroupId { get; set; }
+        public IDictionary<string, BinaryData> Metadata { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public string WorkflowName { get; set; }
+        protected virtual RealtimeCustomTracing JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeCustomTracing PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeCustomTruncation : IJsonModel<RealtimeCustomTruncation>, IPersistableModel<RealtimeCustomTruncation> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        protected virtual RealtimeCustomTruncation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeCustomTruncation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct RealtimeDefaultMaxOutputTokenCount : IEquatable<RealtimeDefaultMaxOutputTokenCount> {
+        public RealtimeDefaultMaxOutputTokenCount(string value);
+        public static RealtimeDefaultMaxOutputTokenCount Infinity { get; }
+        public readonly bool Equals(RealtimeDefaultMaxOutputTokenCount other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeDefaultMaxOutputTokenCount left, RealtimeDefaultMaxOutputTokenCount right);
+        public static implicit operator RealtimeDefaultMaxOutputTokenCount(string value);
+        public static implicit operator RealtimeDefaultMaxOutputTokenCount?(string value);
+        public static bool operator !=(RealtimeDefaultMaxOutputTokenCount left, RealtimeDefaultMaxOutputTokenCount right);
+        public override readonly string ToString();
+    }
+    public readonly partial struct RealtimeDefaultMcpToolCallApprovalPolicy : IEquatable<RealtimeDefaultMcpToolCallApprovalPolicy> {
+        public RealtimeDefaultMcpToolCallApprovalPolicy(string value);
+        public static RealtimeDefaultMcpToolCallApprovalPolicy AlwaysRequireApproval { get; }
+        public static RealtimeDefaultMcpToolCallApprovalPolicy NeverRequireApproval { get; }
+        public readonly bool Equals(RealtimeDefaultMcpToolCallApprovalPolicy other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeDefaultMcpToolCallApprovalPolicy left, RealtimeDefaultMcpToolCallApprovalPolicy right);
+        public static implicit operator RealtimeDefaultMcpToolCallApprovalPolicy(string value);
+        public static implicit operator RealtimeDefaultMcpToolCallApprovalPolicy?(string value);
+        public static bool operator !=(RealtimeDefaultMcpToolCallApprovalPolicy left, RealtimeDefaultMcpToolCallApprovalPolicy right);
+        public override readonly string ToString();
+    }
+    public readonly partial struct RealtimeDefaultToolChoice : IEquatable<RealtimeDefaultToolChoice> {
+        public RealtimeDefaultToolChoice(string value);
+        public static RealtimeDefaultToolChoice Auto { get; }
+        public static RealtimeDefaultToolChoice None { get; }
+        public static RealtimeDefaultToolChoice Required { get; }
+        public readonly bool Equals(RealtimeDefaultToolChoice other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeDefaultToolChoice left, RealtimeDefaultToolChoice right);
+        public static implicit operator RealtimeDefaultToolChoice(string value);
+        public static implicit operator RealtimeDefaultToolChoice?(string value);
+        public static bool operator !=(RealtimeDefaultToolChoice left, RealtimeDefaultToolChoice right);
+        public override readonly string ToString();
+    }
+    public readonly partial struct RealtimeDefaultTracing : IEquatable<RealtimeDefaultTracing> {
+        public RealtimeDefaultTracing(string value);
+        public static RealtimeDefaultTracing Auto { get; }
+        public readonly bool Equals(RealtimeDefaultTracing other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeDefaultTracing left, RealtimeDefaultTracing right);
+        public static implicit operator RealtimeDefaultTracing(string value);
+        public static implicit operator RealtimeDefaultTracing?(string value);
+        public static bool operator !=(RealtimeDefaultTracing left, RealtimeDefaultTracing right);
+        public override readonly string ToString();
+    }
+    public readonly partial struct RealtimeDefaultTruncation : IEquatable<RealtimeDefaultTruncation> {
+        public RealtimeDefaultTruncation(string value);
+        public static RealtimeDefaultTruncation Auto { get; }
+        public static RealtimeDefaultTruncation Disabled { get; }
+        public readonly bool Equals(RealtimeDefaultTruncation other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeDefaultTruncation left, RealtimeDefaultTruncation right);
+        public static implicit operator RealtimeDefaultTruncation(string value);
+        public static implicit operator RealtimeDefaultTruncation?(string value);
+        public static bool operator !=(RealtimeDefaultTruncation left, RealtimeDefaultTruncation right);
+        public override readonly string ToString();
+    }
+    public class RealtimeError : IJsonModel<RealtimeError>, IPersistableModel<RealtimeError> {
+        public string Code { get; set; }
+        public string EventId { get; set; }
+        public string Kind { get; set; }
+        public string Message { get; set; }
+        public string ParameterName { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        protected virtual RealtimeError JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeError PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeFunctionCallItem : RealtimeItem, IJsonModel<RealtimeFunctionCallItem>, IPersistableModel<RealtimeFunctionCallItem> {
+        public RealtimeFunctionCallItem(string callId, string functionName, BinaryData functionArguments);
+        public string CallId { get; set; }
+        public BinaryData FunctionArguments { get; set; }
+        public string FunctionName { get; set; }
+        public string Id { get; set; }
+        public RealtimeFunctionCallStatus? Status { get; set; }
+        protected override RealtimeItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeFunctionCallOutputItem : RealtimeItem, IJsonModel<RealtimeFunctionCallOutputItem>, IPersistableModel<RealtimeFunctionCallOutputItem> {
+        public RealtimeFunctionCallOutputItem(string callId, string functionOutput);
+        public string CallId { get; set; }
+        public string FunctionOutput { get; set; }
+        public string Id { get; set; }
+        public RealtimeFunctionCallOutputStatus? Status { get; set; }
+        protected override RealtimeItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct RealtimeFunctionCallOutputStatus : IEquatable<RealtimeFunctionCallOutputStatus> {
+        public RealtimeFunctionCallOutputStatus(string value);
+        public static RealtimeFunctionCallOutputStatus Completed { get; }
+        public static RealtimeFunctionCallOutputStatus Incomplete { get; }
+        public static RealtimeFunctionCallOutputStatus InProgress { get; }
+        public readonly bool Equals(RealtimeFunctionCallOutputStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeFunctionCallOutputStatus left, RealtimeFunctionCallOutputStatus right);
+        public static implicit operator RealtimeFunctionCallOutputStatus(string value);
+        public static implicit operator RealtimeFunctionCallOutputStatus?(string value);
+        public static bool operator !=(RealtimeFunctionCallOutputStatus left, RealtimeFunctionCallOutputStatus right);
+        public override readonly string ToString();
+    }
+    public readonly partial struct RealtimeFunctionCallStatus : IEquatable<RealtimeFunctionCallStatus> {
+        public RealtimeFunctionCallStatus(string value);
+        public static RealtimeFunctionCallStatus Completed { get; }
+        public static RealtimeFunctionCallStatus Incomplete { get; }
+        public static RealtimeFunctionCallStatus InProgress { get; }
+        public readonly bool Equals(RealtimeFunctionCallStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeFunctionCallStatus left, RealtimeFunctionCallStatus right);
+        public static implicit operator RealtimeFunctionCallStatus(string value);
+        public static implicit operator RealtimeFunctionCallStatus?(string value);
+        public static bool operator !=(RealtimeFunctionCallStatus left, RealtimeFunctionCallStatus right);
+        public override readonly string ToString();
+    }
+    public class RealtimeFunctionTool : RealtimeTool, IJsonModel<RealtimeFunctionTool>, IPersistableModel<RealtimeFunctionTool> {
+        public RealtimeFunctionTool(string functionName);
+        public string FunctionDescription { get; set; }
+        public string FunctionName { get; }
+        public BinaryData FunctionParameters { get; set; }
+        protected override RealtimeTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct RealtimeImageDetailLevel : IEquatable<RealtimeImageDetailLevel> {
+        public RealtimeImageDetailLevel(string value);
+        public static RealtimeImageDetailLevel Auto { get; }
+        public static RealtimeImageDetailLevel High { get; }
+        public static RealtimeImageDetailLevel Low { get; }
+        public readonly bool Equals(RealtimeImageDetailLevel other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeImageDetailLevel left, RealtimeImageDetailLevel right);
+        public static implicit operator RealtimeImageDetailLevel(string value);
+        public static implicit operator RealtimeImageDetailLevel?(string value);
+        public static bool operator !=(RealtimeImageDetailLevel left, RealtimeImageDetailLevel right);
+        public override readonly string ToString();
+    }
+    public readonly partial struct RealtimeIncludedProperty : IEquatable<RealtimeIncludedProperty> {
+        public RealtimeIncludedProperty(string value);
+        public static RealtimeIncludedProperty ItemInputAudioTranscriptionLogProbabilities { get; }
+        public readonly bool Equals(RealtimeIncludedProperty other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeIncludedProperty left, RealtimeIncludedProperty right);
+        public static implicit operator RealtimeIncludedProperty(string value);
+        public static implicit operator RealtimeIncludedProperty?(string value);
+        public static bool operator !=(RealtimeIncludedProperty left, RealtimeIncludedProperty right);
+        public override readonly string ToString();
+    }
+    public class RealtimeInputAudioMessageContentPart : RealtimeMessageContentPart, IJsonModel<RealtimeInputAudioMessageContentPart>, IPersistableModel<RealtimeInputAudioMessageContentPart> {
+        public RealtimeInputAudioMessageContentPart(BinaryData audioBytes);
+        public BinaryData AudioBytes { get; set; }
+        public string Transcript { get; set; }
+        protected override RealtimeMessageContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeMessageContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeInputImageMessageContentPart : RealtimeMessageContentPart, IJsonModel<RealtimeInputImageMessageContentPart>, IPersistableModel<RealtimeInputImageMessageContentPart> {
+        public RealtimeInputImageMessageContentPart(Uri imageUri);
+        public RealtimeImageDetailLevel? Detail { get; set; }
+        public Uri ImageUri { get; set; }
+        protected override RealtimeMessageContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeMessageContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeInputTextMessageContentPart : RealtimeMessageContentPart, IJsonModel<RealtimeInputTextMessageContentPart>, IPersistableModel<RealtimeInputTextMessageContentPart> {
+        public RealtimeInputTextMessageContentPart(string text);
+        public string Text { get; set; }
+        protected override RealtimeMessageContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeMessageContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public class RealtimeItem : IJsonModel<RealtimeItem>, IPersistableModel<RealtimeItem> {
-        public string FunctionArguments { get; }
-        public string FunctionCallId { get; }
-        public string FunctionName { get; }
-        public string Id { get; set; }
-        public IReadOnlyList<ConversationContentPart> MessageContentParts { get; }
-        public ConversationMessageRole? MessageRole { get; }
-        public static RealtimeItem CreateAssistantMessage(IEnumerable<ConversationContentPart> contentItems);
-        public static RealtimeItem CreateFunctionCall(string name, string callId, string arguments);
-        public static RealtimeItem CreateFunctionCallOutput(string callId, string output);
-        public static RealtimeItem CreateSystemMessage(IEnumerable<ConversationContentPart> contentItems);
-        public static RealtimeItem CreateUserMessage(IEnumerable<ConversationContentPart> contentItems);
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public static RealtimeMessageItem CreateAssistantMessageItem(IEnumerable<RealtimeMessageContentPart> contentParts);
+        public static RealtimeMessageItem CreateAssistantMessageItem(string outputTextContent);
+        public static RealtimeFunctionCallItem CreateFunctionCallItem(string callId, string functionName, BinaryData functionArguments);
+        public static RealtimeFunctionCallOutputItem CreateFunctionCallOutputItem(string callId, string functionOutput);
+        public static RealtimeMcpToolCallApprovalRequestItem CreateMcpApprovalRequestItem(string id, string serverLabel, string name, BinaryData arguments);
+        public static RealtimeMcpToolCallApprovalResponseItem CreateMcpApprovalResponseItem(string approvalRequestId, bool approved);
+        public static RealtimeMcpToolCallItem CreateMcpToolCallItem(string serverLabel, string name, BinaryData arguments);
+        public static RealtimeMcpToolDefinitionListItem CreateMcpToolDefinitionListItem(string serverLabel, IEnumerable<RealtimeMcpToolDefinition> toolDefinitions);
+        public static RealtimeMessageItem CreateSystemMessageItem(IEnumerable<RealtimeMessageContentPart> contentParts);
+        public static RealtimeMessageItem CreateSystemMessageItem(string inputTextContent);
+        public static RealtimeMessageItem CreateUserMessageItem(IEnumerable<RealtimeMessageContentPart> contentParts);
+        public static RealtimeMessageItem CreateUserMessageItem(string inputTextContent);
         protected virtual RealtimeItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected virtual RealtimeItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
-    public class RealtimeRequestSessionBase : IJsonModel<RealtimeRequestSessionBase>, IPersistableModel<RealtimeRequestSessionBase> {
-        protected virtual RealtimeRequestSessionBase JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+    public class RealtimeLogProbabilityDetails : IJsonModel<RealtimeLogProbabilityDetails>, IPersistableModel<RealtimeLogProbabilityDetails> {
+        public float LogProbability { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public string Token { get; }
+        public ReadOnlyMemory<byte> Utf8Bytes { get; }
+        protected virtual RealtimeLogProbabilityDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual RealtimeRequestSessionBase PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual RealtimeLogProbabilityDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
-    public class RealtimeSession : IDisposable {
-        protected internal RealtimeSession(ApiKeyCredential credential, RealtimeClient parentClient, Uri endpoint, string model, string intent);
+    public class RealtimeMaxOutputTokenCount : IJsonModel<RealtimeMaxOutputTokenCount>, IPersistableModel<RealtimeMaxOutputTokenCount> {
+        public RealtimeMaxOutputTokenCount(RealtimeDefaultMaxOutputTokenCount defaultMaxOutputTokenCount);
+        public RealtimeMaxOutputTokenCount(int customMaxOutputTokenCount);
+        public int? CustomMaxOutputTokenCount { get; }
+        public RealtimeDefaultMaxOutputTokenCount? DefaultMaxOutputTokenCount { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        protected virtual RealtimeMaxOutputTokenCount JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public static implicit operator RealtimeMaxOutputTokenCount(RealtimeDefaultMaxOutputTokenCount defaultMaxOutputTokenCount);
+        public static implicit operator RealtimeMaxOutputTokenCount(int customMaxOutputTokenCount);
+        protected virtual RealtimeMaxOutputTokenCount PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeMcpTool : RealtimeTool, IJsonModel<RealtimeMcpTool>, IPersistableModel<RealtimeMcpTool> {
+        public RealtimeMcpTool(string serverLabel, RealtimeMcpToolConnectorId connectorId);
+        public RealtimeMcpTool(string serverLabel, Uri serverUri);
+        public RealtimeMcpToolFilter AllowedTools { get; set; }
+        public string AuthorizationToken { get; set; }
+        public RealtimeMcpToolConnectorId? ConnectorId { get; set; }
+        public IDictionary<string, string> Headers { get; set; }
+        public string ServerDescription { get; set; }
+        public string ServerLabel { get; set; }
+        public Uri ServerUri { get; set; }
+        public RealtimeMcpToolCallApprovalPolicy ToolCallApprovalPolicy { get; set; }
+        protected override RealtimeTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeMcpToolCallApprovalPolicy : IJsonModel<RealtimeMcpToolCallApprovalPolicy>, IPersistableModel<RealtimeMcpToolCallApprovalPolicy> {
+        public RealtimeMcpToolCallApprovalPolicy(RealtimeCustomMcpToolCallApprovalPolicy customPolicy);
+        public RealtimeMcpToolCallApprovalPolicy(RealtimeDefaultMcpToolCallApprovalPolicy defaultPolicy);
+        public RealtimeCustomMcpToolCallApprovalPolicy CustomPolicy { get; }
+        public RealtimeDefaultMcpToolCallApprovalPolicy? DefaultPolicy { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        protected virtual RealtimeMcpToolCallApprovalPolicy JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public static implicit operator RealtimeMcpToolCallApprovalPolicy(RealtimeCustomMcpToolCallApprovalPolicy customPolicy);
+        public static implicit operator RealtimeMcpToolCallApprovalPolicy(RealtimeDefaultMcpToolCallApprovalPolicy defaultPolicy);
+        protected virtual RealtimeMcpToolCallApprovalPolicy PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeMcpToolCallApprovalRequestItem : RealtimeItem, IJsonModel<RealtimeMcpToolCallApprovalRequestItem>, IPersistableModel<RealtimeMcpToolCallApprovalRequestItem> {
+        public RealtimeMcpToolCallApprovalRequestItem(string id, string serverLabel, string toolName, BinaryData toolArguments);
+        public string Id { get; set; }
+        public string ServerLabel { get; set; }
+        public BinaryData ToolArguments { get; set; }
+        public string ToolName { get; set; }
+        protected override RealtimeItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeMcpToolCallApprovalResponseItem : RealtimeItem, IJsonModel<RealtimeMcpToolCallApprovalResponseItem>, IPersistableModel<RealtimeMcpToolCallApprovalResponseItem> {
+        public RealtimeMcpToolCallApprovalResponseItem(string approvalRequestId, bool approved);
+        public string ApprovalRequestId { get; set; }
+        public bool Approved { get; set; }
+        public string Id { get; set; }
+        public string Reason { get; set; }
+        protected override RealtimeItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeMcpToolCallItem : RealtimeItem, IJsonModel<RealtimeMcpToolCallItem>, IPersistableModel<RealtimeMcpToolCallItem> {
+        public RealtimeMcpToolCallItem(string serverLabel, string toolName, BinaryData toolArguments);
+        public string ApprovalRequestId { get; set; }
+        public RealtimeError Error { get; set; }
+        public string Id { get; set; }
+        public string ServerLabel { get; set; }
+        public BinaryData ToolArguments { get; set; }
+        public string ToolName { get; set; }
+        public string ToolOutput { get; set; }
+        protected override RealtimeItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct RealtimeMcpToolConnectorId : IEquatable<RealtimeMcpToolConnectorId> {
+        public RealtimeMcpToolConnectorId(string value);
+        public static RealtimeMcpToolConnectorId Dropbox { get; }
+        public static RealtimeMcpToolConnectorId Gmail { get; }
+        public static RealtimeMcpToolConnectorId GoogleCalendar { get; }
+        public static RealtimeMcpToolConnectorId GoogleDrive { get; }
+        public static RealtimeMcpToolConnectorId MicrosoftTeams { get; }
+        public static RealtimeMcpToolConnectorId OutlookCalendar { get; }
+        public static RealtimeMcpToolConnectorId OutlookEmail { get; }
+        public static RealtimeMcpToolConnectorId SharePoint { get; }
+        public readonly bool Equals(RealtimeMcpToolConnectorId other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeMcpToolConnectorId left, RealtimeMcpToolConnectorId right);
+        public static implicit operator RealtimeMcpToolConnectorId(string value);
+        public static implicit operator RealtimeMcpToolConnectorId?(string value);
+        public static bool operator !=(RealtimeMcpToolConnectorId left, RealtimeMcpToolConnectorId right);
+        public override readonly string ToString();
+    }
+    public class RealtimeMcpToolDefinition : IJsonModel<RealtimeMcpToolDefinition>, IPersistableModel<RealtimeMcpToolDefinition> {
+        public RealtimeMcpToolDefinition(string name, BinaryData inputSchema);
+        public BinaryData Annotations { get; set; }
+        public string Description { get; set; }
+        public BinaryData InputSchema { get; set; }
+        public string Name { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        protected virtual RealtimeMcpToolDefinition JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeMcpToolDefinition PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeMcpToolDefinitionListItem : RealtimeItem, IJsonModel<RealtimeMcpToolDefinitionListItem>, IPersistableModel<RealtimeMcpToolDefinitionListItem> {
+        public RealtimeMcpToolDefinitionListItem(string serverLabel, IEnumerable<RealtimeMcpToolDefinition> toolDefinitions);
+        public string Id { get; set; }
+        public string ServerLabel { get; set; }
+        public IList<RealtimeMcpToolDefinition> ToolDefinitions { get; }
+        protected override RealtimeItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeMcpToolFilter : IJsonModel<RealtimeMcpToolFilter>, IPersistableModel<RealtimeMcpToolFilter> {
+        public bool? IsReadOnly { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public IList<string> ToolNames { get; }
+        protected virtual RealtimeMcpToolFilter JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeMcpToolFilter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeMessageContentPart : IJsonModel<RealtimeMessageContentPart>, IPersistableModel<RealtimeMessageContentPart> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        protected virtual RealtimeMessageContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeMessageContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeMessageItem : RealtimeItem, IJsonModel<RealtimeMessageItem>, IPersistableModel<RealtimeMessageItem> {
+        public RealtimeMessageItem(RealtimeMessageRole role, IEnumerable<RealtimeMessageContentPart> content);
+        public IList<RealtimeMessageContentPart> Content { get; }
+        public string Id { get; set; }
+        public RealtimeMessageRole Role { get; set; }
+        public RealtimeMessageStatus? Status { get; set; }
+        protected override RealtimeItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct RealtimeMessageRole : IEquatable<RealtimeMessageRole> {
+        public RealtimeMessageRole(string value);
+        public static RealtimeMessageRole Assistant { get; }
+        public static RealtimeMessageRole System { get; }
+        public static RealtimeMessageRole User { get; }
+        public readonly bool Equals(RealtimeMessageRole other);
+        [EditorBrowsable(global::EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(global::EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeMessageRole left, RealtimeMessageRole right);
+        public static implicit operator RealtimeMessageRole(string value);
+        public static implicit operator RealtimeMessageRole?(string value);
+        public static bool operator !=(RealtimeMessageRole left, RealtimeMessageRole right);
+        public override readonly string ToString();
+    }
+    public readonly partial struct RealtimeMessageStatus : IEquatable<RealtimeMessageStatus> {
+        public RealtimeMessageStatus(string value);
+        public static RealtimeMessageStatus Completed { get; }
+        public static RealtimeMessageStatus Incomplete { get; }
+        public static RealtimeMessageStatus InProgress { get; }
+        public readonly bool Equals(RealtimeMessageStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeMessageStatus left, RealtimeMessageStatus right);
+        public static implicit operator RealtimeMessageStatus(string value);
+        public static implicit operator RealtimeMessageStatus?(string value);
+        public static bool operator !=(RealtimeMessageStatus left, RealtimeMessageStatus right);
+        public override readonly string ToString();
+    }
+    public class RealtimeNoiseReduction : IJsonModel<RealtimeNoiseReduction>, IPersistableModel<RealtimeNoiseReduction> {
+        public RealtimeNoiseReduction(RealtimeNoiseReductionKind kind);
+        public RealtimeNoiseReductionKind Kind { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        protected virtual RealtimeNoiseReduction JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeNoiseReduction PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct RealtimeNoiseReductionKind : IEquatable<RealtimeNoiseReductionKind> {
+        public RealtimeNoiseReductionKind(string value);
+        public static RealtimeNoiseReductionKind FarField { get; }
+        public static RealtimeNoiseReductionKind NearField { get; }
+        public readonly bool Equals(RealtimeNoiseReductionKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeNoiseReductionKind left, RealtimeNoiseReductionKind right);
+        public static implicit operator RealtimeNoiseReductionKind(string value);
+        public static implicit operator RealtimeNoiseReductionKind?(string value);
+        public static bool operator !=(RealtimeNoiseReductionKind left, RealtimeNoiseReductionKind right);
+        public override readonly string ToString();
+    }
+    public class RealtimeOutputAudioMessageContentPart : RealtimeMessageContentPart, IJsonModel<RealtimeOutputAudioMessageContentPart>, IPersistableModel<RealtimeOutputAudioMessageContentPart> {
+        public RealtimeOutputAudioMessageContentPart(BinaryData audioBytes, string transcript);
+        public BinaryData AudioBytes { get; set; }
+        public string Transcript { get; set; }
+        protected override RealtimeMessageContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeMessageContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct RealtimeOutputModality : IEquatable<RealtimeOutputModality> {
+        public RealtimeOutputModality(string value);
+        public static RealtimeOutputModality Audio { get; }
+        public static RealtimeOutputModality Text { get; }
+        public readonly bool Equals(RealtimeOutputModality other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeOutputModality left, RealtimeOutputModality right);
+        public static implicit operator RealtimeOutputModality(string value);
+        public static implicit operator RealtimeOutputModality?(string value);
+        public static bool operator !=(RealtimeOutputModality left, RealtimeOutputModality right);
+        public override readonly string ToString();
+    }
+    public class RealtimeOutputTextMessageContentPart : RealtimeMessageContentPart, IJsonModel<RealtimeOutputTextMessageContentPart>, IPersistableModel<RealtimeOutputTextMessageContentPart> {
+        public RealtimeOutputTextMessageContentPart(string text);
+        public string Text { get; set; }
+        protected override RealtimeMessageContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeMessageContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimePcmaAudioFormat : RealtimeAudioFormat, IJsonModel<RealtimePcmaAudioFormat>, IPersistableModel<RealtimePcmaAudioFormat> {
+        public RealtimePcmaAudioFormat();
+        protected override RealtimeAudioFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeAudioFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimePcmAudioFormat : RealtimeAudioFormat, IJsonModel<RealtimePcmAudioFormat>, IPersistableModel<RealtimePcmAudioFormat> {
+        public RealtimePcmAudioFormat();
+        public int Rate { get; }
+        protected override RealtimeAudioFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeAudioFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimePcmuAudioFormat : RealtimeAudioFormat, IJsonModel<RealtimePcmuAudioFormat>, IPersistableModel<RealtimePcmuAudioFormat> {
+        public RealtimePcmuAudioFormat();
+        protected override RealtimeAudioFormat JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeAudioFormat PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeRateLimitDetails : IJsonModel<RealtimeRateLimitDetails>, IPersistableModel<RealtimeRateLimitDetails> {
+        public int? Limit { get; }
+        public RealtimeRateLimitName? Name { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public int? RemainingCount { get; }
+        public TimeSpan? TimeUntilReset { get; }
+        protected virtual RealtimeRateLimitDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeRateLimitDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct RealtimeRateLimitName : IEquatable<RealtimeRateLimitName> {
+        public RealtimeRateLimitName(string value);
+        public static RealtimeRateLimitName Requests { get; }
+        public static RealtimeRateLimitName Tokens { get; }
+        public readonly bool Equals(RealtimeRateLimitName other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeRateLimitName left, RealtimeRateLimitName right);
+        public static implicit operator RealtimeRateLimitName(string value);
+        public static implicit operator RealtimeRateLimitName?(string value);
+        public static bool operator !=(RealtimeRateLimitName left, RealtimeRateLimitName right);
+        public override readonly string ToString();
+    }
+    public class RealtimeResponse : IJsonModel<RealtimeResponse>, IPersistableModel<RealtimeResponse> {
+        public RealtimeResponseAudioOptions AudioOptions { get; }
+        public string ConversationId { get; }
+        public string Id { get; }
+        public RealtimeMaxOutputTokenCount MaxOutputTokenCount { get; }
+        public IDictionary<string, BinaryData> Metadata { get; }
+        public IList<RealtimeItem> OutputItems { get; }
+        public IList<RealtimeOutputModality> OutputModalities { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public RealtimeResponseStatus? Status { get; }
+        public RealtimeResponseStatusDetails StatusDetails { get; }
+        public RealtimeResponseUsage Usage { get; }
+        protected virtual RealtimeResponse JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeResponseAudioOptions : IJsonModel<RealtimeResponseAudioOptions>, IPersistableModel<RealtimeResponseAudioOptions> {
+        public RealtimeResponseOutputAudioOptions OutputAudioOptions { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        protected virtual RealtimeResponseAudioOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeResponseAudioOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeResponseContentPart : IJsonModel<RealtimeResponseContentPart>, IPersistableModel<RealtimeResponseContentPart> {
+        public BinaryData Audio { get; }
+        public RealtimeResponseContentPartKind? Kind { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public string Text { get; }
+        public string Transcript { get; }
+        protected virtual RealtimeResponseContentPart JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeResponseContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct RealtimeResponseContentPartKind : IEquatable<RealtimeResponseContentPartKind> {
+        public RealtimeResponseContentPartKind(string value);
+        public static RealtimeResponseContentPartKind Audio { get; }
+        public static RealtimeResponseContentPartKind Text { get; }
+        public readonly bool Equals(RealtimeResponseContentPartKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeResponseContentPartKind left, RealtimeResponseContentPartKind right);
+        public static implicit operator RealtimeResponseContentPartKind(string value);
+        public static implicit operator RealtimeResponseContentPartKind?(string value);
+        public static bool operator !=(RealtimeResponseContentPartKind left, RealtimeResponseContentPartKind right);
+        public override readonly string ToString();
+    }
+    public readonly partial struct RealtimeResponseDefaultConversationConfiguration : IEquatable<RealtimeResponseDefaultConversationConfiguration> {
+        public RealtimeResponseDefaultConversationConfiguration(string value);
+        public static RealtimeResponseDefaultConversationConfiguration Auto { get; }
+        public static RealtimeResponseDefaultConversationConfiguration None { get; }
+        public readonly bool Equals(RealtimeResponseDefaultConversationConfiguration other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeResponseDefaultConversationConfiguration left, RealtimeResponseDefaultConversationConfiguration right);
+        public static implicit operator RealtimeResponseDefaultConversationConfiguration(string value);
+        public static implicit operator RealtimeResponseDefaultConversationConfiguration?(string value);
+        public static bool operator !=(RealtimeResponseDefaultConversationConfiguration left, RealtimeResponseDefaultConversationConfiguration right);
+        public override readonly string ToString();
+    }
+    public class RealtimeResponseInputCachedTokenUsageDetails : IJsonModel<RealtimeResponseInputCachedTokenUsageDetails>, IPersistableModel<RealtimeResponseInputCachedTokenUsageDetails> {
+        public int? AudioTokenCount { get; }
+        public int? ImageTokenCount { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public int? TextTokenCount { get; }
+        protected virtual RealtimeResponseInputCachedTokenUsageDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeResponseInputCachedTokenUsageDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeResponseInputTokenUsageDetails : IJsonModel<RealtimeResponseInputTokenUsageDetails>, IPersistableModel<RealtimeResponseInputTokenUsageDetails> {
+        public int? AudioTokenCount { get; }
+        public int? CachedTokenCount { get; }
+        public RealtimeResponseInputCachedTokenUsageDetails CachedTokenDetails { get; }
+        public int? ImageTokenCount { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public int? TextTokenCount { get; }
+        protected virtual RealtimeResponseInputTokenUsageDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeResponseInputTokenUsageDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeResponseOptions : IJsonModel<RealtimeResponseOptions>, IPersistableModel<RealtimeResponseOptions> {
+        public RealtimeResponseAudioOptions AudioOptions { get; set; }
+        public RealtimeResponseDefaultConversationConfiguration? DefaultConversationConfiguration { get; set; }
+        public IList<RealtimeItem> InputItems { get; }
+        public string Instructions { get; set; }
+        public RealtimeMaxOutputTokenCount MaxOutputTokenCount { get; set; }
+        public IDictionary<string, BinaryData> Metadata { get; set; }
+        public IList<RealtimeOutputModality> OutputModalities { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public RealtimeToolChoice ToolChoice { get; set; }
+        public IList<RealtimeTool> Tools { get; }
+        protected virtual RealtimeResponseOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeResponseOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeResponseOutputAudioOptions : IJsonModel<RealtimeResponseOutputAudioOptions>, IPersistableModel<RealtimeResponseOutputAudioOptions> {
+        public RealtimeAudioFormat AudioFormat { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public RealtimeVoice? Voice { get; set; }
+        protected virtual RealtimeResponseOutputAudioOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeResponseOutputAudioOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeResponseOutputTokenUsageDetails : IJsonModel<RealtimeResponseOutputTokenUsageDetails>, IPersistableModel<RealtimeResponseOutputTokenUsageDetails> {
+        public int? AudioTokenCount { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public int? TextTokenCount { get; }
+        protected virtual RealtimeResponseOutputTokenUsageDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeResponseOutputTokenUsageDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct RealtimeResponseStatus : IEquatable<RealtimeResponseStatus> {
+        public RealtimeResponseStatus(string value);
+        public static RealtimeResponseStatus Cancelled { get; }
+        public static RealtimeResponseStatus Completed { get; }
+        public static RealtimeResponseStatus Failed { get; }
+        public static RealtimeResponseStatus Incomplete { get; }
+        public static RealtimeResponseStatus InProgress { get; }
+        public readonly bool Equals(RealtimeResponseStatus other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeResponseStatus left, RealtimeResponseStatus right);
+        public static implicit operator RealtimeResponseStatus(string value);
+        public static implicit operator RealtimeResponseStatus?(string value);
+        public static bool operator !=(RealtimeResponseStatus left, RealtimeResponseStatus right);
+        public override readonly string ToString();
+    }
+    public class RealtimeResponseStatusDetails : IJsonModel<RealtimeResponseStatusDetails>, IPersistableModel<RealtimeResponseStatusDetails> {
+        public RealtimeError Error { get; }
+        public RealtimeResponseStatusErrorKind? Kind { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public RealtimeResponseStatusReason? Reason { get; }
+        protected virtual RealtimeResponseStatusDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeResponseStatusDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct RealtimeResponseStatusErrorKind : IEquatable<RealtimeResponseStatusErrorKind> {
+        public RealtimeResponseStatusErrorKind(string value);
+        public static RealtimeResponseStatusErrorKind Cancelled { get; }
+        public static RealtimeResponseStatusErrorKind Completed { get; }
+        public static RealtimeResponseStatusErrorKind Failed { get; }
+        public static RealtimeResponseStatusErrorKind Incomplete { get; }
+        public readonly bool Equals(RealtimeResponseStatusErrorKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeResponseStatusErrorKind left, RealtimeResponseStatusErrorKind right);
+        public static implicit operator RealtimeResponseStatusErrorKind(string value);
+        public static implicit operator RealtimeResponseStatusErrorKind?(string value);
+        public static bool operator !=(RealtimeResponseStatusErrorKind left, RealtimeResponseStatusErrorKind right);
+        public override readonly string ToString();
+    }
+    public readonly partial struct RealtimeResponseStatusReason : IEquatable<RealtimeResponseStatusReason> {
+        public RealtimeResponseStatusReason(string value);
+        public static RealtimeResponseStatusReason ClientCancelled { get; }
+        public static RealtimeResponseStatusReason ContentFilter { get; }
+        public static RealtimeResponseStatusReason MaxOutputTokens { get; }
+        public static RealtimeResponseStatusReason TurnDetected { get; }
+        public readonly bool Equals(RealtimeResponseStatusReason other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeResponseStatusReason left, RealtimeResponseStatusReason right);
+        public static implicit operator RealtimeResponseStatusReason(string value);
+        public static implicit operator RealtimeResponseStatusReason?(string value);
+        public static bool operator !=(RealtimeResponseStatusReason left, RealtimeResponseStatusReason right);
+        public override readonly string ToString();
+    }
+    public class RealtimeResponseUsage : IJsonModel<RealtimeResponseUsage>, IPersistableModel<RealtimeResponseUsage> {
+        public int? InputTokenCount { get; }
+        public RealtimeResponseInputTokenUsageDetails InputTokenDetails { get; }
+        public int? OutputTokenCount { get; }
+        public RealtimeResponseOutputTokenUsageDetails OutputTokenDetails { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public int? TotalTokenCount { get; }
+        protected virtual RealtimeResponseUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeResponseUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeRetentionRatioTokenLimitDetails : IJsonModel<RealtimeRetentionRatioTokenLimitDetails>, IPersistableModel<RealtimeRetentionRatioTokenLimitDetails> {
+        public int? MaxPostInstructionsTokenCount { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        protected virtual RealtimeRetentionRatioTokenLimitDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeRetentionRatioTokenLimitDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct RealtimeSemanticVadEagernessLevel : IEquatable<RealtimeSemanticVadEagernessLevel> {
+        public RealtimeSemanticVadEagernessLevel(string value);
+        public static RealtimeSemanticVadEagernessLevel Auto { get; }
+        public static RealtimeSemanticVadEagernessLevel High { get; }
+        public static RealtimeSemanticVadEagernessLevel Low { get; }
+        public static RealtimeSemanticVadEagernessLevel Medium { get; }
+        public readonly bool Equals(RealtimeSemanticVadEagernessLevel other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(RealtimeSemanticVadEagernessLevel left, RealtimeSemanticVadEagernessLevel right);
+        public static implicit operator RealtimeSemanticVadEagernessLevel(string value);
+        public static implicit operator RealtimeSemanticVadEagernessLevel?(string value);
+        public static bool operator !=(RealtimeSemanticVadEagernessLevel left, RealtimeSemanticVadEagernessLevel right);
+        public override readonly string ToString();
+    }
+    public class RealtimeSemanticVadTurnDetection : RealtimeTurnDetection, IJsonModel<RealtimeSemanticVadTurnDetection>, IPersistableModel<RealtimeSemanticVadTurnDetection> {
+        public RealtimeSemanticVadTurnDetection();
+        public bool? CreateResponseEnabled { get; set; }
+        public RealtimeSemanticVadEagernessLevel? EagernessLevel { get; set; }
+        public bool? InterruptResponseEnabled { get; set; }
+        protected override RealtimeTurnDetection JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeTurnDetection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdate : IJsonModel<RealtimeServerUpdate>, IPersistableModel<RealtimeServerUpdate> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        protected virtual RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateConversationCreated : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateConversationCreated>, IPersistableModel<RealtimeServerUpdateConversationCreated> {
+        public RealtimeConversation Conversation { get; }
+        public string EventId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateConversationItemAdded : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateConversationItemAdded>, IPersistableModel<RealtimeServerUpdateConversationItemAdded> {
+        public string EventId { get; }
+        public RealtimeItem Item { get; }
+        public string PreviousItemId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateConversationItemCreated : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateConversationItemCreated>, IPersistableModel<RealtimeServerUpdateConversationItemCreated> {
+        public string EventId { get; }
+        public RealtimeItem Item { get; }
+        public string PreviousItemId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateConversationItemDeleted : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateConversationItemDeleted>, IPersistableModel<RealtimeServerUpdateConversationItemDeleted> {
+        public string EventId { get; }
+        public string ItemId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateConversationItemDone : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateConversationItemDone>, IPersistableModel<RealtimeServerUpdateConversationItemDone> {
+        public string EventId { get; }
+        public RealtimeItem Item { get; }
+        public string PreviousItemId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted>, IPersistableModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionCompleted> {
+        public int ContentIndex { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        public IList<RealtimeLogProbabilityDetails> Logprobs { get; }
+        public string Transcript { get; }
+        public RealtimeTranscriptionUsage Usage { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta>, IPersistableModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionDelta> {
+        public int? ContentIndex { get; }
+        public string Delta { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        public IList<RealtimeLogProbabilityDetails> Logprobs { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed>, IPersistableModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionFailed> {
+        public int ContentIndex { get; }
+        public RealtimeError Error { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateConversationItemInputAudioTranscriptionSegment : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionSegment>, IPersistableModel<RealtimeServerUpdateConversationItemInputAudioTranscriptionSegment> {
+        public int ContentIndex { get; }
+        public float End { get; }
+        public string EventId { get; }
+        public string Id { get; }
+        public string ItemId { get; }
+        public string Speaker { get; }
+        public float Start { get; }
+        public string Text { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateConversationItemRetrieved : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateConversationItemRetrieved>, IPersistableModel<RealtimeServerUpdateConversationItemRetrieved> {
+        public string EventId { get; }
+        public RealtimeItem Item { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateConversationItemTruncated : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateConversationItemTruncated>, IPersistableModel<RealtimeServerUpdateConversationItemTruncated> {
+        public TimeSpan AudioEndTime { get; }
+        public int ContentIndex { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateError : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateError>, IPersistableModel<RealtimeServerUpdateError> {
+        public RealtimeError Error { get; }
+        public string EventId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateInputAudioBufferCleared : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateInputAudioBufferCleared>, IPersistableModel<RealtimeServerUpdateInputAudioBufferCleared> {
+        public string EventId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateInputAudioBufferCommitted : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateInputAudioBufferCommitted>, IPersistableModel<RealtimeServerUpdateInputAudioBufferCommitted> {
+        public string EventId { get; }
+        public string ItemId { get; }
+        public string PreviousItemId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateInputAudioBufferDtmfEventReceived : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateInputAudioBufferDtmfEventReceived>, IPersistableModel<RealtimeServerUpdateInputAudioBufferDtmfEventReceived> {
+        public string Event { get; }
+        public DateTimeOffset ReceivedAt { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateInputAudioBufferSpeechStarted : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateInputAudioBufferSpeechStarted>, IPersistableModel<RealtimeServerUpdateInputAudioBufferSpeechStarted> {
+        public TimeSpan AudioStartTime { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateInputAudioBufferSpeechStopped : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateInputAudioBufferSpeechStopped>, IPersistableModel<RealtimeServerUpdateInputAudioBufferSpeechStopped> {
+        public TimeSpan AudioEndTime { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateInputAudioBufferTimeoutTriggered : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateInputAudioBufferTimeoutTriggered>, IPersistableModel<RealtimeServerUpdateInputAudioBufferTimeoutTriggered> {
+        public TimeSpan AudioEndTime { get; }
+        public TimeSpan AudioStartTime { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateMcpListToolsCompleted : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateMcpListToolsCompleted>, IPersistableModel<RealtimeServerUpdateMcpListToolsCompleted> {
+        public string EventId { get; }
+        public string ItemId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateMcpListToolsFailed : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateMcpListToolsFailed>, IPersistableModel<RealtimeServerUpdateMcpListToolsFailed> {
+        public string EventId { get; }
+        public string ItemId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateMcpListToolsInProgress : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateMcpListToolsInProgress>, IPersistableModel<RealtimeServerUpdateMcpListToolsInProgress> {
+        public string EventId { get; }
+        public string ItemId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateOutputAudioBufferCleared : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateOutputAudioBufferCleared>, IPersistableModel<RealtimeServerUpdateOutputAudioBufferCleared> {
+        public string EventId { get; }
+        public string ResponseId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateOutputAudioBufferStarted : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateOutputAudioBufferStarted>, IPersistableModel<RealtimeServerUpdateOutputAudioBufferStarted> {
+        public string EventId { get; }
+        public string ResponseId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateOutputAudioBufferStopped : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateOutputAudioBufferStopped>, IPersistableModel<RealtimeServerUpdateOutputAudioBufferStopped> {
+        public string EventId { get; }
+        public string ResponseId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateRateLimitsUpdated : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateRateLimitsUpdated>, IPersistableModel<RealtimeServerUpdateRateLimitsUpdated> {
+        public string EventId { get; }
+        public IList<RealtimeRateLimitDetails> RateLimitDetails { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateResponseContentPartAdded : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseContentPartAdded>, IPersistableModel<RealtimeServerUpdateResponseContentPartAdded> {
+        public int ContentIndex { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public RealtimeResponseContentPart Part { get; }
+        public string ResponseId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateResponseContentPartDone : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseContentPartDone>, IPersistableModel<RealtimeServerUpdateResponseContentPartDone> {
+        public int ContentIndex { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public RealtimeResponseContentPart Part { get; }
+        public string ResponseId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateResponseCreated : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseCreated>, IPersistableModel<RealtimeServerUpdateResponseCreated> {
+        public string EventId { get; }
+        public RealtimeResponse Response { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateResponseDone : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseDone>, IPersistableModel<RealtimeServerUpdateResponseDone> {
+        public string EventId { get; }
+        public RealtimeResponse Response { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateResponseFunctionCallArgumentsDelta : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseFunctionCallArgumentsDelta>, IPersistableModel<RealtimeServerUpdateResponseFunctionCallArgumentsDelta> {
+        public string CallId { get; }
+        public BinaryData Delta { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateResponseFunctionCallArgumentsDone : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseFunctionCallArgumentsDone>, IPersistableModel<RealtimeServerUpdateResponseFunctionCallArgumentsDone> {
+        public string CallId { get; }
+        public string EventId { get; }
+        public BinaryData FunctionArguments { get; }
+        public string FunctionName { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateResponseMcpCallArgumentsDelta : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseMcpCallArgumentsDelta>, IPersistableModel<RealtimeServerUpdateResponseMcpCallArgumentsDelta> {
+        public BinaryData Delta { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        public string Obfuscation { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateResponseMcpCallArgumentsDone : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseMcpCallArgumentsDone>, IPersistableModel<RealtimeServerUpdateResponseMcpCallArgumentsDone> {
+        public string EventId { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        public BinaryData ToolArguments { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateResponseMcpCallCompleted : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseMcpCallCompleted>, IPersistableModel<RealtimeServerUpdateResponseMcpCallCompleted> {
+        public string EventId { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateResponseMcpCallFailed : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseMcpCallFailed>, IPersistableModel<RealtimeServerUpdateResponseMcpCallFailed> {
+        public string EventId { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateResponseMcpCallInProgress : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseMcpCallInProgress>, IPersistableModel<RealtimeServerUpdateResponseMcpCallInProgress> {
+        public string EventId { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateResponseOutputAudioDelta : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseOutputAudioDelta>, IPersistableModel<RealtimeServerUpdateResponseOutputAudioDelta> {
+        public int ContentIndex { get; }
+        public BinaryData Delta { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateResponseOutputAudioDone : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseOutputAudioDone>, IPersistableModel<RealtimeServerUpdateResponseOutputAudioDone> {
+        public int ContentIndex { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateResponseOutputAudioTranscriptDelta : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseOutputAudioTranscriptDelta>, IPersistableModel<RealtimeServerUpdateResponseOutputAudioTranscriptDelta> {
+        public int ContentIndex { get; }
+        public string Delta { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateResponseOutputAudioTranscriptDone : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseOutputAudioTranscriptDone>, IPersistableModel<RealtimeServerUpdateResponseOutputAudioTranscriptDone> {
+        public int ContentIndex { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        public string Transcript { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateResponseOutputItemAdded : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseOutputItemAdded>, IPersistableModel<RealtimeServerUpdateResponseOutputItemAdded> {
+        public string EventId { get; }
+        public RealtimeItem Item { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateResponseOutputItemDone : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseOutputItemDone>, IPersistableModel<RealtimeServerUpdateResponseOutputItemDone> {
+        public string EventId { get; }
+        public RealtimeItem Item { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateResponseOutputTextDelta : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseOutputTextDelta>, IPersistableModel<RealtimeServerUpdateResponseOutputTextDelta> {
+        public int ContentIndex { get; }
+        public string Delta { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateResponseOutputTextDone : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateResponseOutputTextDone>, IPersistableModel<RealtimeServerUpdateResponseOutputTextDone> {
+        public int ContentIndex { get; }
+        public string EventId { get; }
+        public string ItemId { get; }
+        public int OutputIndex { get; }
+        public string ResponseId { get; }
+        public string Text { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateSessionCreated : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateSessionCreated>, IPersistableModel<RealtimeServerUpdateSessionCreated> {
+        public string EventId { get; }
+        public RealtimeSession Session { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerUpdateSessionUpdated : RealtimeServerUpdate, IJsonModel<RealtimeServerUpdateSessionUpdated>, IPersistableModel<RealtimeServerUpdateSessionUpdated> {
+        public string EventId { get; }
+        public RealtimeSession Session { get; }
+        protected override RealtimeServerUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeServerUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeServerVadTurnDetection : RealtimeTurnDetection, IJsonModel<RealtimeServerVadTurnDetection>, IPersistableModel<RealtimeServerVadTurnDetection> {
+        public RealtimeServerVadTurnDetection();
+        public bool? CreateResponseEnabled { get; set; }
+        public float? DetectionThreshold { get; set; }
+        public TimeSpan? IdleTimeout { get; set; }
+        public bool? InterruptResponseEnabled { get; set; }
+        public TimeSpan? PrefixPadding { get; set; }
+        public TimeSpan? SilenceDuration { get; set; }
+        protected override RealtimeTurnDetection JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeTurnDetection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeSession : IJsonModel<RealtimeSession>, IPersistableModel<RealtimeSession> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        protected virtual RealtimeSession JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeSession PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeSessionClient : IDisposable {
+        protected internal RealtimeSessionClient(ApiKeyCredential credential, Uri endpoint, string model, string intent, RealtimeClient parentClient);
         public Net.WebSockets.WebSocket WebSocket { get; protected set; }
         public virtual void AddItem(RealtimeItem item, string previousItemId, CancellationToken cancellationToken = default);
         public virtual void AddItem(RealtimeItem item, CancellationToken cancellationToken = default);
@@ -4326,274 +5304,216 @@ namespace OpenAI.Realtime {
         public virtual Task ClearInputAudioAsync(CancellationToken cancellationToken = default);
         public virtual void CommitPendingAudio(CancellationToken cancellationToken = default);
         public virtual Task CommitPendingAudioAsync(CancellationToken cancellationToken = default);
-        public virtual Task ConfigureConversationSessionAsync(ConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default);
-        public virtual void ConfigureSession(ConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default);
-        public virtual void ConfigureTranscriptionSession(TranscriptionSessionOptions sessionOptions, CancellationToken cancellationToken = default);
-        public virtual Task ConfigureTranscriptionSessionAsync(TranscriptionSessionOptions sessionOptions, CancellationToken cancellationToken = default);
+        public virtual void ConfigureConversationSession(RealtimeConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default);
+        public virtual Task ConfigureConversationSessionAsync(RealtimeConversationSessionOptions sessionOptions, CancellationToken cancellationToken = default);
+        public virtual void ConfigureTranscriptionSession(RealtimeTranscriptionSessionOptions sessionOptions, CancellationToken cancellationToken = default);
+        public virtual Task ConfigureTranscriptionSessionAsync(RealtimeTranscriptionSessionOptions sessionOptions, CancellationToken cancellationToken = default);
         protected internal virtual void Connect(string queryString = null, IDictionary<string, string> headers = null, CancellationToken cancellationToken = default);
         protected internal virtual Task ConnectAsync(string queryString = null, IDictionary<string, string> headers = null, CancellationToken cancellationToken = default);
         public virtual void DeleteItem(string itemId, CancellationToken cancellationToken = default);
         public virtual Task DeleteItemAsync(string itemId, CancellationToken cancellationToken = default);
         public void Dispose();
-        public virtual void InterruptResponse(CancellationToken cancellationToken = default);
-        public virtual Task InterruptResponseAsync(CancellationToken cancellationToken = default);
         public virtual IEnumerable<ClientResult> ReceiveUpdates(RequestOptions options);
-        public virtual IEnumerable<RealtimeUpdate> ReceiveUpdates(CancellationToken cancellationToken = default);
+        public virtual IEnumerable<RealtimeServerUpdate> ReceiveUpdates(CancellationToken cancellationToken = default);
         public virtual IAsyncEnumerable<ClientResult> ReceiveUpdatesAsync(RequestOptions options);
-        public virtual IAsyncEnumerable<RealtimeUpdate> ReceiveUpdatesAsync(CancellationToken cancellationToken = default);
+        public virtual IAsyncEnumerable<RealtimeServerUpdate> ReceiveUpdatesAsync(CancellationToken cancellationToken = default);
         public virtual void RequestItemRetrieval(string itemId, CancellationToken cancellationToken = default);
         public virtual Task RequestItemRetrievalAsync(string itemId, CancellationToken cancellationToken = default);
+        public virtual void SendCommand(RealtimeClientCommand command, CancellationToken cancellationToken = default);
         public virtual void SendCommand(BinaryData data, RequestOptions options);
+        public virtual Task SendCommandAsync(RealtimeClientCommand command, CancellationToken cancellationToken = default);
         public virtual Task SendCommandAsync(BinaryData data, RequestOptions options);
         public virtual void SendInputAudio(BinaryData audio, CancellationToken cancellationToken = default);
         public virtual void SendInputAudio(Stream audio, CancellationToken cancellationToken = default);
         public virtual Task SendInputAudioAsync(BinaryData audio, CancellationToken cancellationToken = default);
         public virtual Task SendInputAudioAsync(Stream audio, CancellationToken cancellationToken = default);
-        public virtual void StartResponse(ConversationResponseOptions options, CancellationToken cancellationToken = default);
-        public void StartResponse(CancellationToken cancellationToken = default);
-        public virtual Task StartResponseAsync(ConversationResponseOptions options, CancellationToken cancellationToken = default);
+        public virtual void StartResponse(RealtimeResponseOptions responseOptions, CancellationToken cancellationToken = default);
+        public virtual void StartResponse(CancellationToken cancellationToken = default);
+        public virtual Task StartResponseAsync(RealtimeResponseOptions responseOptions, CancellationToken cancellationToken = default);
         public virtual Task StartResponseAsync(CancellationToken cancellationToken = default);
         public virtual void TruncateItem(string itemId, int contentPartIndex, TimeSpan audioDuration, CancellationToken cancellationToken = default);
         public virtual Task TruncateItemAsync(string itemId, int contentPartIndex, TimeSpan audioDuration, CancellationToken cancellationToken = default);
     }
-    public class RealtimeSessionAudioConfiguration : IJsonModel<RealtimeSessionAudioConfiguration>, IPersistableModel<RealtimeSessionAudioConfiguration> {
-        public RealtimeSessionAudioInputConfiguration Input { get; set; }
-        public RealtimeSessionAudioOutputConfiguration Output { get; set; }
-        protected virtual RealtimeSessionAudioConfiguration JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual RealtimeSessionAudioConfiguration PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class RealtimeSessionAudioInputConfiguration : IJsonModel<RealtimeSessionAudioInputConfiguration>, IPersistableModel<RealtimeSessionAudioInputConfiguration> {
-        public RealtimeAudioFormat? Format { get; set; }
-        public InputNoiseReductionOptions NoiseReduction { get; set; }
-        public InputTranscriptionOptions Transcription { get; set; }
-        public TurnDetectionOptions TurnDetection { get; set; }
-        protected virtual RealtimeSessionAudioInputConfiguration JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual RealtimeSessionAudioInputConfiguration PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class RealtimeSessionAudioOutputConfiguration : IJsonModel<RealtimeSessionAudioOutputConfiguration>, IPersistableModel<RealtimeSessionAudioOutputConfiguration> {
-        public RealtimeAudioFormat? Format { get; set; }
-        public float? Speed { get; set; }
-        public ConversationVoice? Voice { get; set; }
-        protected virtual RealtimeSessionAudioOutputConfiguration JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual RealtimeSessionAudioOutputConfiguration PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class RealtimeSessionCreateRequestUnion : IJsonModel<RealtimeSessionCreateRequestUnion>, IPersistableModel<RealtimeSessionCreateRequestUnion> {
-        protected virtual RealtimeSessionCreateRequestUnion JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual RealtimeSessionCreateRequestUnion PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public readonly partial struct RealtimeSessionCreateRequestUnionType : IEquatable<RealtimeSessionCreateRequestUnionType> {
-        public RealtimeSessionCreateRequestUnionType(string value);
-        public static RealtimeSessionCreateRequestUnionType Realtime { get; }
-        public static RealtimeSessionCreateRequestUnionType Transcription { get; }
-        public readonly bool Equals(RealtimeSessionCreateRequestUnionType other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(RealtimeSessionCreateRequestUnionType left, RealtimeSessionCreateRequestUnionType right);
-        public static implicit operator RealtimeSessionCreateRequestUnionType(string value);
-        public static implicit operator RealtimeSessionCreateRequestUnionType?(string value);
-        public static bool operator !=(RealtimeSessionCreateRequestUnionType left, RealtimeSessionCreateRequestUnionType right);
-        public override readonly string ToString();
-    }
-    public class RealtimeSessionCreateResponseUnion : IJsonModel<RealtimeSessionCreateResponseUnion>, IPersistableModel<RealtimeSessionCreateResponseUnion> {
-        protected virtual RealtimeSessionCreateResponseUnion JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual RealtimeSessionCreateResponseUnion PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public readonly partial struct RealtimeSessionCreateResponseUnionType : IEquatable<RealtimeSessionCreateResponseUnionType> {
-        public RealtimeSessionCreateResponseUnionType(string value);
-        public static RealtimeSessionCreateResponseUnionType Realtime { get; }
-        public static RealtimeSessionCreateResponseUnionType Transcription { get; }
-        public readonly bool Equals(RealtimeSessionCreateResponseUnionType other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(RealtimeSessionCreateResponseUnionType left, RealtimeSessionCreateResponseUnionType right);
-        public static implicit operator RealtimeSessionCreateResponseUnionType(string value);
-        public static implicit operator RealtimeSessionCreateResponseUnionType?(string value);
-        public static bool operator !=(RealtimeSessionCreateResponseUnionType left, RealtimeSessionCreateResponseUnionType right);
-        public override readonly string ToString();
-    }
-    public class RealtimeSessionOptions {
+    public class RealtimeSessionClientOptions {
+        public string ClientSecret { get; set; }
         public IDictionary<string, string> Headers { get; }
         public string QueryString { get; set; }
     }
-    public readonly partial struct RealtimeSessionType : IEquatable<RealtimeSessionType> {
-        public RealtimeSessionType(string value);
-        public static RealtimeSessionType Realtime { get; }
-        public static RealtimeSessionType Transcription { get; }
-        public readonly bool Equals(RealtimeSessionType other);
+    public class RealtimeSessionOptions : IJsonModel<RealtimeSessionOptions>, IPersistableModel<RealtimeSessionOptions> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        protected virtual RealtimeSessionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeSessionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeTool : IJsonModel<RealtimeTool>, IPersistableModel<RealtimeTool> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        protected virtual RealtimeTool JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeTool PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeToolChoice : IJsonModel<RealtimeToolChoice>, IPersistableModel<RealtimeToolChoice> {
+        public RealtimeToolChoice(RealtimeCustomToolChoice customToolChoice);
+        public RealtimeToolChoice(RealtimeDefaultToolChoice defaultToolChoice);
+        public RealtimeCustomToolChoice CustomToolChoice { get; }
+        public RealtimeDefaultToolChoice? DefaultToolChoice { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        protected virtual RealtimeToolChoice JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public static implicit operator RealtimeToolChoice(RealtimeCustomToolChoice customToolChoice);
+        public static implicit operator RealtimeToolChoice(RealtimeDefaultToolChoice defaultToolChoice);
+        protected virtual RealtimeToolChoice PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeTracing : IJsonModel<RealtimeTracing>, IPersistableModel<RealtimeTracing> {
+        public RealtimeTracing(RealtimeCustomTracing customTracing);
+        public RealtimeTracing(RealtimeDefaultTracing defaultTracing);
+        public RealtimeCustomTracing CustomTracing { get; }
+        public RealtimeDefaultTracing? DefaultTracing { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        protected virtual RealtimeTracing JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public static implicit operator RealtimeTracing(RealtimeCustomTracing customTracing);
+        public static implicit operator RealtimeTracing(RealtimeDefaultTracing defaultTracing);
+        protected virtual RealtimeTracing PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeTranscriptionDurationUsage : RealtimeTranscriptionUsage, IJsonModel<RealtimeTranscriptionDurationUsage>, IPersistableModel<RealtimeTranscriptionDurationUsage> {
+        public TimeSpan Duration { get; }
+        protected override RealtimeTranscriptionUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeTranscriptionUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeTranscriptionInputTokenUsageDetails : IJsonModel<RealtimeTranscriptionInputTokenUsageDetails>, IPersistableModel<RealtimeTranscriptionInputTokenUsageDetails> {
+        public int? AudioTokenCount { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public int? TextTokenCount { get; }
+        protected virtual RealtimeTranscriptionInputTokenUsageDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeTranscriptionInputTokenUsageDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeTranscriptionSession : RealtimeSession, IJsonModel<RealtimeTranscriptionSession>, IPersistableModel<RealtimeTranscriptionSession> {
+        public RealtimeTranscriptionSessionAudioOptions AudioOptions { get; set; }
+        public DateTimeOffset? ExpiresAt { get; }
+        public string Id { get; }
+        public IList<RealtimeIncludedProperty> IncludedProperties { get; }
+        public string Object { get; }
+        protected override RealtimeSession JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeSession PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeTranscriptionSessionAudioOptions : IJsonModel<RealtimeTranscriptionSessionAudioOptions>, IPersistableModel<RealtimeTranscriptionSessionAudioOptions> {
+        public RealtimeTranscriptionSessionInputAudioOptions InputAudioOptions { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        protected virtual RealtimeTranscriptionSessionAudioOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeTranscriptionSessionAudioOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeTranscriptionSessionInputAudioOptions : IJsonModel<RealtimeTranscriptionSessionInputAudioOptions>, IPersistableModel<RealtimeTranscriptionSessionInputAudioOptions> {
+        public RealtimeAudioFormat AudioFormat { get; set; }
+        public RealtimeAudioTranscriptionOptions AudioTranscriptionOptions { get; set; }
+        public RealtimeNoiseReduction NoiseReduction { get; set; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        public RealtimeTurnDetection TurnDetection { get; set; }
+        public void DisableTurnDetection();
+        protected virtual RealtimeTranscriptionSessionInputAudioOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeTranscriptionSessionInputAudioOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeTranscriptionSessionOptions : RealtimeSessionOptions, IJsonModel<RealtimeTranscriptionSessionOptions>, IPersistableModel<RealtimeTranscriptionSessionOptions> {
+        public RealtimeTranscriptionSessionOptions();
+        public RealtimeTranscriptionSessionAudioOptions AudioOptions { get; set; }
+        public IList<RealtimeIncludedProperty> IncludedProperties { get; }
+        protected override RealtimeSessionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeSessionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeTranscriptionTokenUsage : RealtimeTranscriptionUsage, IJsonModel<RealtimeTranscriptionTokenUsage>, IPersistableModel<RealtimeTranscriptionTokenUsage> {
+        public int InputTokenCount { get; }
+        public RealtimeTranscriptionInputTokenUsageDetails InputTokenDetails { get; }
+        public int OutputTokenCount { get; }
+        public int TotalTokenCount { get; }
+        protected override RealtimeTranscriptionUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override RealtimeTranscriptionUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeTranscriptionUsage : IJsonModel<RealtimeTranscriptionUsage>, IPersistableModel<RealtimeTranscriptionUsage> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        protected virtual RealtimeTranscriptionUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeTranscriptionUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeTruncation : IJsonModel<RealtimeTruncation>, IPersistableModel<RealtimeTruncation> {
+        public RealtimeTruncation(RealtimeCustomTruncation customTruncation);
+        public RealtimeTruncation(RealtimeDefaultTruncation defaultTruncation);
+        public RealtimeCustomTruncation CustomTruncation { get; }
+        public RealtimeDefaultTruncation? DefaultTruncation { get; }
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        protected virtual RealtimeTruncation JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        public static implicit operator RealtimeTruncation(RealtimeCustomTruncation customTruncation);
+        public static implicit operator RealtimeTruncation(RealtimeDefaultTruncation defaultTruncation);
+        protected virtual RealtimeTruncation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public class RealtimeTurnDetection : IJsonModel<RealtimeTurnDetection>, IPersistableModel<RealtimeTurnDetection> {
+        [Serialization.JsonIgnore]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public ref JsonPatch Patch { get; }
+        protected virtual RealtimeTurnDetection JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual RealtimeTurnDetection PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    public readonly partial struct RealtimeVoice : IEquatable<RealtimeVoice> {
+        public RealtimeVoice(string value);
+        public static RealtimeVoice Alloy { get; }
+        public static RealtimeVoice Ash { get; }
+        public static RealtimeVoice Ballad { get; }
+        public static RealtimeVoice Cedar { get; }
+        public static RealtimeVoice Coral { get; }
+        public static RealtimeVoice Echo { get; }
+        public static RealtimeVoice Marin { get; }
+        public static RealtimeVoice Sage { get; }
+        public static RealtimeVoice Shimmer { get; }
+        public static RealtimeVoice Verse { get; }
+        public readonly bool Equals(RealtimeVoice other);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly bool Equals(object obj);
         [EditorBrowsable(EditorBrowsableState.Never)]
         public override readonly int GetHashCode();
-        public static bool operator ==(RealtimeSessionType left, RealtimeSessionType right);
-        public static implicit operator RealtimeSessionType(string value);
-        public static implicit operator RealtimeSessionType?(string value);
-        public static bool operator !=(RealtimeSessionType left, RealtimeSessionType right);
+        public static bool operator ==(RealtimeVoice left, RealtimeVoice right);
+        public static implicit operator RealtimeVoice(string value);
+        public static implicit operator RealtimeVoice?(string value);
+        public static bool operator !=(RealtimeVoice left, RealtimeVoice right);
         public override readonly string ToString();
-    }
-    public class RealtimeUpdate : IJsonModel<RealtimeUpdate>, IPersistableModel<RealtimeUpdate> {
-        public string EventId { get; }
-        public RealtimeUpdateKind Kind { get; }
-        public BinaryData GetRawContent();
-        protected virtual RealtimeUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        public static explicit operator RealtimeUpdate(ClientResult result);
-        protected virtual RealtimeUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public enum RealtimeUpdateKind {
-        Unknown = 0,
-        SessionStarted = 1,
-        SessionConfigured = 2,
-        ItemCreated = 3,
-        ConversationCreated = 4,
-        ItemRetrieved = 5,
-        ItemDeleted = 6,
-        ItemTruncated = 7,
-        ResponseStarted = 8,
-        ResponseFinished = 9,
-        RateLimitsUpdated = 10,
-        ItemStreamingStarted = 11,
-        ItemStreamingFinished = 12,
-        ItemContentPartStarted = 13,
-        ItemContentPartFinished = 14,
-        ItemStreamingPartAudioDelta = 15,
-        ItemStreamingPartAudioFinished = 16,
-        ItemStreamingPartAudioTranscriptionDelta = 17,
-        ItemStreamingPartAudioTranscriptionFinished = 18,
-        ItemStreamingPartTextDelta = 19,
-        ItemStreamingPartTextFinished = 20,
-        ItemStreamingFunctionCallArgumentsDelta = 21,
-        ItemStreamingFunctionCallArgumentsFinished = 22,
-        InputSpeechStarted = 23,
-        InputSpeechStopped = 24,
-        InputTranscriptionFinished = 25,
-        InputTranscriptionDelta = 26,
-        InputTranscriptionFailed = 27,
-        InputAudioCommitted = 28,
-        InputAudioCleared = 29,
-        OutputAudioBufferCleared = 30,
-        OutputAudioBufferStarted = 31,
-        OutputAudioBufferStopped = 32,
-        TranscriptionSessionStarted = 33,
-        TranscriptionSessionConfigured = 34,
-        Error = 35,
-        InputTranscriptionSegment = 36,
-        InputAudioBufferTimeoutTriggered = 37,
-        InputAudioBufferDtmfEventReceived = 38,
-        McpListToolsInProgress = 39,
-        McpListToolsCompleted = 40,
-        McpListToolsFailed = 41,
-        ResponseMcpCallArgumentsDelta = 42,
-        ResponseMcpCallArgumentsDone = 43,
-        ResponseMcpCallInProgress = 44,
-        ResponseMcpCallCompleted = 45,
-        ResponseMcpCallFailed = 46
-    }
-    public readonly partial struct ResponseConversationSelection : IEquatable<ResponseConversationSelection> {
-        public ResponseConversationSelection(string value);
-        public static ResponseConversationSelection Auto { get; }
-        public static ResponseConversationSelection None { get; }
-        public readonly bool Equals(ResponseConversationSelection other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(ResponseConversationSelection left, ResponseConversationSelection right);
-        public static implicit operator ResponseConversationSelection(string value);
-        public static implicit operator ResponseConversationSelection?(string value);
-        public static bool operator !=(ResponseConversationSelection left, ResponseConversationSelection right);
-        public override readonly string ToString();
-    }
-    public class ResponseFinishedUpdate : RealtimeUpdate, IJsonModel<ResponseFinishedUpdate>, IPersistableModel<ResponseFinishedUpdate> {
-        public IReadOnlyList<RealtimeItem> CreatedItems { get; }
-        public string ResponseId { get; }
-        public ConversationStatus? Status { get; }
-        public ConversationStatusDetails StatusDetails { get; }
-        public ConversationTokenUsage Usage { get; }
-        protected override RealtimeUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override RealtimeUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class ResponseStartedUpdate : RealtimeUpdate, IJsonModel<ResponseStartedUpdate>, IPersistableModel<ResponseStartedUpdate> {
-        public IReadOnlyList<RealtimeItem> CreatedItems { get; }
-        public string ResponseId { get; }
-        public ConversationStatus Status { get; }
-        public ConversationStatusDetails StatusDetails { get; }
-        public ConversationTokenUsage Usage { get; }
-        protected override RealtimeUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override RealtimeUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public readonly partial struct SemanticEagernessLevel : IEquatable<SemanticEagernessLevel> {
-        public SemanticEagernessLevel(string value);
-        public static SemanticEagernessLevel Auto { get; }
-        public static SemanticEagernessLevel High { get; }
-        public static SemanticEagernessLevel Low { get; }
-        public static SemanticEagernessLevel Medium { get; }
-        public readonly bool Equals(SemanticEagernessLevel other);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly bool Equals(object obj);
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override readonly int GetHashCode();
-        public static bool operator ==(SemanticEagernessLevel left, SemanticEagernessLevel right);
-        public static implicit operator SemanticEagernessLevel(string value);
-        public static implicit operator SemanticEagernessLevel?(string value);
-        public static bool operator !=(SemanticEagernessLevel left, SemanticEagernessLevel right);
-        public override readonly string ToString();
-    }
-    public class TranscriptionSessionConfiguredUpdate : RealtimeUpdate, IJsonModel<TranscriptionSessionConfiguredUpdate>, IPersistableModel<TranscriptionSessionConfiguredUpdate> {
-        public RealtimeContentModalities ContentModalities { get; }
-        public RealtimeAudioFormat InputAudioFormat { get; }
-        public InputTranscriptionOptions InputAudioTranscription { get; }
-        public TurnDetectionOptions TurnDetection { get; }
-        protected override RealtimeUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected override RealtimeUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public class TranscriptionSessionOptions : IJsonModel<TranscriptionSessionOptions>, IPersistableModel<TranscriptionSessionOptions> {
-        public RealtimeContentModalities ContentModalities { get; set; }
-        public IList<string> Include { get; }
-        public RealtimeAudioFormat? InputAudioFormat { get; set; }
-        public InputNoiseReductionOptions InputNoiseReductionOptions { get; set; }
-        public InputTranscriptionOptions InputTranscriptionOptions { get; set; }
-        public TurnDetectionOptions TurnDetectionOptions { get; set; }
-        protected virtual TranscriptionSessionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual TranscriptionSessionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
-    }
-    public enum TurnDetectionKind {
-        Unknown = 0,
-        ServerVoiceActivityDetection = 1,
-        SemanticVoiceActivityDetection = 2,
-        Disabled = 3
-    }
-    public class TurnDetectionOptions : IJsonModel<TurnDetectionOptions>, IPersistableModel<TurnDetectionOptions> {
-        public TurnDetectionKind Kind { get; }
-        public static TurnDetectionOptions CreateDisabledTurnDetectionOptions();
-        public static TurnDetectionOptions CreateSemanticVoiceActivityTurnDetectionOptions(SemanticEagernessLevel? eagernessLevel = null, bool? enableAutomaticResponseCreation = null, bool? enableResponseInterruption = null);
-        public static TurnDetectionOptions CreateServerVoiceActivityTurnDetectionOptions(float? detectionThreshold = null, TimeSpan? prefixPaddingDuration = null, TimeSpan? silenceDuration = null, bool? enableAutomaticResponseCreation = null, bool? enableResponseInterruption = null);
-        protected virtual TurnDetectionOptions JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
-        protected virtual TurnDetectionOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
 }
 namespace OpenAI.Responses {
@@ -5373,6 +6293,7 @@ namespace OpenAI.Responses {
         public string InputFileBytesMediaType { get; }
         public string InputFileId { get; }
         public string InputFilename { get; }
+        public Uri InputFileUri { get; }
         public ResponseImageDetailLevel? InputImageDetailLevel { get; }
         public string InputImageFileId { get; }
         public Uri InputImageUri { get; }
@@ -5385,6 +6306,7 @@ namespace OpenAI.Responses {
         public string Text { get; }
         public static ResponseContentPart CreateInputFilePart(BinaryData fileBytes, string fileBytesMediaType, string filename);
         public static ResponseContentPart CreateInputFilePart(string fileId);
+        public static ResponseContentPart CreateInputFilePart(Uri fileUri);
         public static ResponseContentPart CreateInputImagePart(string imageFileId, ResponseImageDetailLevel? imageDetailLevel = null);
         public static ResponseContentPart CreateInputImagePart(Uri imageUri, ResponseImageDetailLevel? imageDetailLevel = null);
         public static ResponseContentPart CreateInputTextPart(string text);
@@ -5675,7 +6597,7 @@ namespace OpenAI.Responses {
         public ResponseError Error { get; set; }
         public string Id { get; set; }
         public ResponseIncompleteStatusDetails IncompleteStatusDetails { get; set; }
-        public string Instructions { get; set; }
+        public IList<ResponseItem> Instructions { get; }
         public int? MaxOutputTokenCount { get; set; }
         public int? MaxToolCallCount { get; set; }
         public IDictionary<string, string> Metadata { get; }

@@ -478,7 +478,7 @@ namespace OpenAI
             return new McpToolFilter(toolNames.ToList(), isReadOnly, default);
         }
 
-        public static CreateResponseOptions CreateResponseOptions(IDictionary<string, string> metadata = default, float? temperature = default, int? topLogProbabilityCount = default, float? topP = default, string endUserId = default, string safetyIdentifier = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? backgroundModeEnabled = default, int? maxOutputTokenCount = default, int? maxToolCallCount = default, string instructions = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, IEnumerable<ResponseItem> inputItems = default, IEnumerable<IncludedResponseProperty> includedProperties = default, bool? parallelToolCallsEnabled = default, bool? storedOutputEnabled = default, bool? streamingEnabled = default, ResponseConversationOptions conversationOptions = default)
+        public static CreateResponseOptions CreateResponseOptions(IDictionary<string, string> metadata = default, float? temperature = default, int? topLogProbabilityCount = default, float? topP = default, string endUserId = default, string safetyIdentifier = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? backgroundModeEnabled = default, int? maxOutputTokenCount = default, int? maxToolCallCount = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, IEnumerable<ResponseItem> inputItems = default, IEnumerable<IncludedResponseProperty> includedProperties = default, bool? parallelToolCallsEnabled = default, bool? storedOutputEnabled = default, string instructions = default, bool? streamingEnabled = default, ResponseConversationOptions conversationOptions = default)
         {
             metadata ??= new ChangeTrackingDictionary<string, string>();
             tools ??= new ChangeTrackingList<ResponseTool>();
@@ -499,7 +499,6 @@ namespace OpenAI
                 backgroundModeEnabled,
                 maxOutputTokenCount,
                 maxToolCallCount,
-                instructions,
                 textOptions,
                 tools.ToList(),
                 toolChoice,
@@ -508,6 +507,7 @@ namespace OpenAI
                 includedProperties.ToList(),
                 parallelToolCallsEnabled,
                 storedOutputEnabled,
+                instructions,
                 streamingEnabled,
                 conversationOptions,
                 default);
@@ -589,11 +589,12 @@ namespace OpenAI
             return new ResponseConversationOptions(conversationId, default);
         }
 
-        public static ResponseResult ResponseResult(IDictionary<string, string> metadata = default, float? temperature = default, int? topLogProbabilityCount = default, float? topP = default, string endUserId = default, string safetyIdentifier = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? backgroundModeEnabled = default, int? maxOutputTokenCount = default, int? maxToolCallCount = default, string instructions = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, string id = default, ResponseStatus? status = default, DateTimeOffset createdAt = default, ResponseError error = default, ResponseIncompleteStatusDetails incompleteStatusDetails = default, IEnumerable<ResponseItem> outputItems = default, ResponseTokenUsage usage = default, bool parallelToolCallsEnabled = default, ResponseConversationOptions conversationOptions = default)
+        public static ResponseResult ResponseResult(IDictionary<string, string> metadata = default, float? temperature = default, int? topLogProbabilityCount = default, float? topP = default, string endUserId = default, string safetyIdentifier = default, ResponseServiceTier? serviceTier = default, string previousResponseId = default, string model = default, ResponseReasoningOptions reasoningOptions = default, bool? backgroundModeEnabled = default, int? maxOutputTokenCount = default, int? maxToolCallCount = default, ResponseTextOptions textOptions = default, IEnumerable<ResponseTool> tools = default, ResponseToolChoice toolChoice = default, ResponseTruncationMode? truncationMode = default, string id = default, ResponseStatus? status = default, DateTimeOffset createdAt = default, ResponseError error = default, ResponseIncompleteStatusDetails incompleteStatusDetails = default, IEnumerable<ResponseItem> outputItems = default, IEnumerable<ResponseItem> instructions = default, ResponseTokenUsage usage = default, bool parallelToolCallsEnabled = default, ResponseConversationOptions conversationOptions = default)
         {
             metadata ??= new ChangeTrackingDictionary<string, string>();
             tools ??= new ChangeTrackingList<ResponseTool>();
             outputItems ??= new ChangeTrackingList<ResponseItem>();
+            instructions ??= new ChangeTrackingList<ResponseItem>();
 
             return new ResponseResult(
                 metadata,
@@ -609,7 +610,6 @@ namespace OpenAI
                 backgroundModeEnabled,
                 maxOutputTokenCount,
                 maxToolCallCount,
-                instructions,
                 textOptions,
                 tools.ToList(),
                 toolChoice,
@@ -621,6 +621,7 @@ namespace OpenAI
                 error,
                 incompleteStatusDetails,
                 outputItems.ToList(),
+                instructions.ToList(),
                 usage,
                 parallelToolCallsEnabled,
                 conversationOptions,
@@ -731,6 +732,85 @@ namespace OpenAI
         public static MessageDeletionResult MessageDeletionResult(string messageId = default, bool deleted = default)
         {
             return new MessageDeletionResult(messageId, deleted, "thread.message.deleted", additionalBinaryDataProperties: null);
+        }
+
+        public static CreateClientSecretOptions CreateClientSecretOptions(RealtimeClientSecretExpirationPolicy expirationPolicy = default, RealtimeSessionOptions sessionOptions = default)
+        {
+            return new CreateClientSecretOptions(expirationPolicy, sessionOptions, default);
+        }
+
+        public static RealtimeClientSecretExpirationPolicy RealtimeClientSecretExpirationPolicy(RealtimeClientSecretExpirationAnchor? anchor = default, int? seconds = default)
+        {
+            return new RealtimeClientSecretExpirationPolicy(anchor, seconds, default);
+        }
+
+        public static RealtimeConversationSessionAudioOptions RealtimeConversationSessionAudioOptions(RealtimeConversationSessionInputAudioOptions inputAudioOptions = default, RealtimeConversationSessionOutputAudioOptions outputAudioOptions = default)
+        {
+            return new RealtimeConversationSessionAudioOptions(inputAudioOptions, outputAudioOptions, default);
+        }
+
+        public static RealtimeConversationSessionInputAudioOptions RealtimeConversationSessionInputAudioOptions(RealtimeAudioFormat audioFormat = default, RealtimeAudioTranscriptionOptions audioTranscriptionOptions = default, RealtimeNoiseReduction noiseReduction = default, RealtimeTurnDetection turnDetection = default)
+        {
+            return new RealtimeConversationSessionInputAudioOptions(audioFormat, audioTranscriptionOptions, noiseReduction, turnDetection, default);
+        }
+
+        public static RealtimeAudioTranscriptionOptions RealtimeAudioTranscriptionOptions(string model = default, string language = default, string prompt = default)
+        {
+            return new RealtimeAudioTranscriptionOptions(model, language, prompt, default);
+        }
+
+        public static RealtimeNoiseReduction RealtimeNoiseReduction(RealtimeNoiseReductionKind kind = default)
+        {
+            return new RealtimeNoiseReduction(kind, default);
+        }
+
+        public static RealtimeConversationSessionOutputAudioOptions RealtimeConversationSessionOutputAudioOptions(RealtimeAudioFormat audioFormat = default, RealtimeVoice? voice = default, float? speed = default)
+        {
+            return new RealtimeConversationSessionOutputAudioOptions(audioFormat, voice, speed, default);
+        }
+
+        public static RealtimeCustomTracing RealtimeCustomTracing(string workflowName = default, string groupId = default, IDictionary<string, BinaryData> metadata = default)
+        {
+            metadata ??= new ChangeTrackingDictionary<string, BinaryData>();
+
+            return new RealtimeCustomTracing(workflowName, groupId, metadata, default);
+        }
+
+        public static RealtimeMcpToolFilter RealtimeMcpToolFilter(IEnumerable<string> toolNames = default, bool? isReadOnly = default)
+        {
+            toolNames ??= new ChangeTrackingList<string>();
+
+            return new RealtimeMcpToolFilter(toolNames.ToList(), isReadOnly, default);
+        }
+
+        public static RealtimeCustomMcpToolCallApprovalPolicy RealtimeCustomMcpToolCallApprovalPolicy(RealtimeMcpToolFilter toolsAlwaysRequiringApproval = default, RealtimeMcpToolFilter toolsNeverRequiringApproval = default)
+        {
+            return new RealtimeCustomMcpToolCallApprovalPolicy(toolsAlwaysRequiringApproval, toolsNeverRequiringApproval, default);
+        }
+
+        public static RealtimeRetentionRatioTokenLimitDetails RealtimeRetentionRatioTokenLimitDetails(int? maxPostInstructionsTokenCount = default)
+        {
+            return new RealtimeRetentionRatioTokenLimitDetails(maxPostInstructionsTokenCount, default);
+        }
+
+        public static RealtimeTranscriptionSessionAudioOptions RealtimeTranscriptionSessionAudioOptions(RealtimeTranscriptionSessionInputAudioOptions inputAudioOptions = default)
+        {
+            return new RealtimeTranscriptionSessionAudioOptions(inputAudioOptions, default);
+        }
+
+        public static RealtimeTranscriptionSessionInputAudioOptions RealtimeTranscriptionSessionInputAudioOptions(RealtimeAudioFormat audioFormat = default, RealtimeAudioTranscriptionOptions audioTranscriptionOptions = default, RealtimeNoiseReduction noiseReduction = default, RealtimeTurnDetection turnDetection = default)
+        {
+            return new RealtimeTranscriptionSessionInputAudioOptions(audioFormat, audioTranscriptionOptions, noiseReduction, turnDetection, default);
+        }
+
+        public static CreateClientSecretResult CreateClientSecretResult(string value = default, DateTimeOffset expiresAt = default, RealtimeSession session = default)
+        {
+            return new CreateClientSecretResult(value, expiresAt, session, default);
+        }
+
+        public static RealtimeClientSecret RealtimeClientSecret(string value = default, DateTimeOffset expiresAt = default)
+        {
+            return new RealtimeClientSecret(value, expiresAt, default);
         }
 
         public static ThreadCreationOptions ThreadCreationOptions(IEnumerable<MessageCreationOptions> internalMessages = default, ToolResources toolResources = default, IDictionary<string, string> metadata = default)
@@ -971,188 +1051,6 @@ namespace OpenAI
             return new FileFromStoreRemovalResult(fileId, removed, "vector_store.file.deleted", additionalBinaryDataProperties: null);
         }
 
-        public static RealtimeRequestSessionBase RealtimeRequestSessionBase(string kind = default)
-        {
-            return new InternalUnknownRealtimeRequestSessionBase(new RealtimeSessionType(kind), additionalBinaryDataProperties: null);
-        }
-
-        public static RealtimeSessionAudioConfiguration RealtimeSessionAudioConfiguration(RealtimeSessionAudioInputConfiguration input = default, RealtimeSessionAudioOutputConfiguration output = default)
-        {
-            return new RealtimeSessionAudioConfiguration(input, output, additionalBinaryDataProperties: null);
-        }
-
-        public static InputTranscriptionOptions InputTranscriptionOptions(InputTranscriptionModel? model = default, string language = default, string prompt = default)
-        {
-            return new InputTranscriptionOptions(model, language, prompt, additionalBinaryDataProperties: null);
-        }
-
-        public static InputNoiseReductionOptions InputNoiseReductionOptions(string kind = default)
-        {
-            return new InternalUnknownRealtimeAudioNoiseReduction(kind.ToInputNoiseReductionKind(), additionalBinaryDataProperties: null);
-        }
-
-        public static TurnDetectionOptions TurnDetectionOptions(string kind = default, bool? responseCreationEnabled = default, bool? responseInterruptionEnabled = default)
-        {
-            return new UnknownRealtimeTurnDetection(kind.ToTurnDetectionKind(), responseCreationEnabled, responseInterruptionEnabled, additionalBinaryDataProperties: null);
-        }
-
-        public static ConversationTool ConversationTool(string kind = default)
-        {
-            return new UnknownRealtimeTool(new ConversationToolKind(kind), additionalBinaryDataProperties: null);
-        }
-
-        public static ConversationFunctionTool ConversationFunctionTool(string name = default, string description = default, BinaryData parameters = default)
-        {
-            return new ConversationFunctionTool(default, additionalBinaryDataProperties: null, name, description, parameters);
-        }
-
-        public static ConversationContentPart ConversationContentPart(string kind = default)
-        {
-            return new UnknownRealtimeContentPart(new ConversationContentPartKind(kind), additionalBinaryDataProperties: null);
-        }
-
-        public static RealtimeUpdate RealtimeUpdate(string kind = default, string eventId = default)
-        {
-            return new UnknownRealtimeServerEvent(kind.ToRealtimeUpdateKind(), eventId, additionalBinaryDataProperties: null);
-        }
-
-        public static InputAudioCommittedUpdate InputAudioCommittedUpdate(string eventId = default, string previousItemId = default, string itemId = default)
-        {
-            return new InputAudioCommittedUpdate(RealtimeUpdateKind.InputAudioCommitted, eventId, additionalBinaryDataProperties: null, previousItemId, itemId);
-        }
-
-        public static InputAudioClearedUpdate InputAudioClearedUpdate(string eventId = default)
-        {
-            return new InputAudioClearedUpdate(RealtimeUpdateKind.InputAudioCleared, eventId, additionalBinaryDataProperties: null);
-        }
-
-        public static InputAudioSpeechStartedUpdate InputAudioSpeechStartedUpdate(string eventId = default, string itemId = default, int audioStartMs = default)
-        {
-            return new InputAudioSpeechStartedUpdate(RealtimeUpdateKind.InputSpeechStarted, eventId, additionalBinaryDataProperties: null, itemId, audioStartMs);
-        }
-
-        public static InputAudioSpeechFinishedUpdate InputAudioSpeechFinishedUpdate(string eventId = default, string itemId = default, int audioEndMs = default)
-        {
-            return new InputAudioSpeechFinishedUpdate(RealtimeUpdateKind.InputSpeechStopped, eventId, additionalBinaryDataProperties: null, itemId, audioEndMs);
-        }
-
-        public static ItemTruncatedUpdate ItemTruncatedUpdate(string eventId = default, string itemId = default, int contentIndex = default, int audioEndMs = default)
-        {
-            return new ItemTruncatedUpdate(
-                RealtimeUpdateKind.ItemTruncated,
-                eventId,
-                additionalBinaryDataProperties: null,
-                itemId,
-                contentIndex,
-                audioEndMs);
-        }
-
-        public static ItemDeletedUpdate ItemDeletedUpdate(string eventId = default, string itemId = default)
-        {
-            return new ItemDeletedUpdate(RealtimeUpdateKind.ItemDeleted, eventId, additionalBinaryDataProperties: null, itemId);
-        }
-
-        public static ConversationTokenUsage ConversationTokenUsage(int totalTokenCount = default, int inputTokenCount = default, int outputTokenCount = default, ConversationInputTokenUsageDetails inputTokenDetails = default, ConversationOutputTokenUsageDetails outputTokenDetails = default)
-        {
-            return new ConversationTokenUsage(
-                totalTokenCount,
-                inputTokenCount,
-                outputTokenCount,
-                inputTokenDetails,
-                outputTokenDetails,
-                additionalBinaryDataProperties: null);
-        }
-
-        public static ConversationInputTokenUsageDetails ConversationInputTokenUsageDetails(int cachedTokenCount = default, int textTokenCount = default, int audioTokenCount = default)
-        {
-            return new ConversationInputTokenUsageDetails(cachedTokenCount, textTokenCount, audioTokenCount, additionalBinaryDataProperties: null);
-        }
-
-        public static ConversationOutputTokenUsageDetails ConversationOutputTokenUsageDetails(int textTokenCount = default, int audioTokenCount = default)
-        {
-            return new ConversationOutputTokenUsageDetails(textTokenCount, audioTokenCount, additionalBinaryDataProperties: null);
-        }
-
-        public static OutputTextFinishedUpdate OutputTextFinishedUpdate(string eventId = default, string responseId = default, string itemId = default, int outputIndex = default, int contentIndex = default, string text = default)
-        {
-            return new OutputTextFinishedUpdate(
-                RealtimeUpdateKind.ItemStreamingPartTextFinished,
-                eventId,
-                additionalBinaryDataProperties: null,
-                responseId,
-                itemId,
-                outputIndex,
-                contentIndex,
-                text);
-        }
-
-        public static OutputAudioTranscriptionFinishedUpdate OutputAudioTranscriptionFinishedUpdate(string eventId = default, string responseId = default, string itemId = default, int outputIndex = default, int contentIndex = default, string transcript = default)
-        {
-            return new OutputAudioTranscriptionFinishedUpdate(
-                RealtimeUpdateKind.ItemStreamingPartAudioTranscriptionFinished,
-                eventId,
-                additionalBinaryDataProperties: null,
-                responseId,
-                itemId,
-                outputIndex,
-                contentIndex,
-                transcript);
-        }
-
-        public static OutputAudioFinishedUpdate OutputAudioFinishedUpdate(string eventId = default, string responseId = default, string itemId = default, int outputIndex = default, int contentIndex = default)
-        {
-            return new OutputAudioFinishedUpdate(
-                RealtimeUpdateKind.ItemStreamingPartAudioFinished,
-                eventId,
-                additionalBinaryDataProperties: null,
-                responseId,
-                itemId,
-                outputIndex,
-                contentIndex);
-        }
-
-        public static RateLimitsUpdate RateLimitsUpdate(string eventId = default, IEnumerable<ConversationRateLimitDetailsItem> allDetails = default)
-        {
-            allDetails ??= new ChangeTrackingList<ConversationRateLimitDetailsItem>();
-
-            return new RateLimitsUpdate(RealtimeUpdateKind.RateLimitsUpdated, eventId, additionalBinaryDataProperties: null, allDetails.ToList());
-        }
-
-        public static ConversationRateLimitDetailsItem ConversationRateLimitDetailsItem(string name = default, int maximumCount = default, int remainingCount = default, TimeSpan timeUntilReset = default)
-        {
-            return new ConversationRateLimitDetailsItem(name, maximumCount, remainingCount, timeUntilReset, additionalBinaryDataProperties: null);
-        }
-
-        public static ItemRetrievedUpdate ItemRetrievedUpdate(string eventId = default, RealtimeItem item = default)
-        {
-            return new ItemRetrievedUpdate(RealtimeUpdateKind.ItemRetrieved, eventId, additionalBinaryDataProperties: null, item);
-        }
-
-        public static RealtimeCreateClientSecretRequest RealtimeCreateClientSecretRequest(RealtimeCreateClientSecretRequestExpiresAfter expiresAfter = default, RealtimeSessionCreateRequestUnion session = default)
-        {
-            return new RealtimeCreateClientSecretRequest(expiresAfter, session, additionalBinaryDataProperties: null);
-        }
-
-        public static RealtimeCreateClientSecretRequestExpiresAfter RealtimeCreateClientSecretRequestExpiresAfter(RealtimeCreateClientSecretRequestExpiresAfterAnchor? anchor = default, int? seconds = default)
-        {
-            return new RealtimeCreateClientSecretRequestExpiresAfter(anchor, seconds, additionalBinaryDataProperties: null);
-        }
-
-        public static RealtimeSessionCreateRequestUnion RealtimeSessionCreateRequestUnion(string kind = default)
-        {
-            return new UnknownRealtimeSessionCreateRequestUnion(new RealtimeSessionCreateRequestUnionType(kind), additionalBinaryDataProperties: null);
-        }
-
-        public static RealtimeCreateClientSecretResponse RealtimeCreateClientSecretResponse(string value = default, DateTimeOffset expiresAt = default, RealtimeSessionCreateResponseUnion session = default)
-        {
-            return new RealtimeCreateClientSecretResponse(value, expiresAt, session, additionalBinaryDataProperties: null);
-        }
-
-        public static RealtimeSessionCreateResponseUnion RealtimeSessionCreateResponseUnion(string kind = default)
-        {
-            return new UnknownRealtimeSessionCreateResponseUnion(new RealtimeSessionCreateResponseUnionType(kind), additionalBinaryDataProperties: null);
-        }
-
         public static OpenAIFile OpenAIFile(string id = default, long? sizeInBytesLong = default, DateTimeOffset createdAt = default, DateTimeOffset? expiresAt = default, string filename = default, FilePurpose purpose = default, FileStatus status = default, string statusDetails = default)
         {
             return new OpenAIFile(
@@ -1369,6 +1267,109 @@ namespace OpenAI
             return new ChatToolChoice(default);
         }
 
+        public static RealtimeMcpToolDefinition RealtimeMcpToolDefinition(string name = default, string description = default, BinaryData inputSchema = default, BinaryData annotations = default)
+        {
+            return new RealtimeMcpToolDefinition(name, description, inputSchema, annotations, default);
+        }
+
+        public static RealtimeError RealtimeError(string kind = default, string code = default, string message = default, string parameterName = default, string eventId = default)
+        {
+            return new RealtimeError(
+                kind,
+                code,
+                message,
+                parameterName,
+                eventId,
+                default);
+        }
+
+        public static RealtimeLogProbabilityDetails RealtimeLogProbabilityDetails(string token = default, float logProbability = default, ReadOnlyMemory<byte> utf8Bytes = default)
+        {
+            return new RealtimeLogProbabilityDetails(token, logProbability, utf8Bytes, default);
+        }
+
+        public static RealtimeTranscriptionInputTokenUsageDetails RealtimeTranscriptionInputTokenUsageDetails(int? textTokenCount = default, int? audioTokenCount = default)
+        {
+            return new RealtimeTranscriptionInputTokenUsageDetails(textTokenCount, audioTokenCount, default);
+        }
+
+        public static RealtimeResponseStatusDetails RealtimeResponseStatusDetails(RealtimeResponseStatusErrorKind? kind = default, RealtimeResponseStatusReason? reason = default, RealtimeError error = default)
+        {
+            return new RealtimeResponseStatusDetails(kind, reason, error, default);
+        }
+
+        public static RealtimeResponseAudioOptions RealtimeResponseAudioOptions(RealtimeResponseOutputAudioOptions outputAudioOptions = default)
+        {
+            return new RealtimeResponseAudioOptions(outputAudioOptions, default);
+        }
+
+        public static RealtimeResponseOutputAudioOptions RealtimeResponseOutputAudioOptions(RealtimeAudioFormat audioFormat = default, RealtimeVoice? voice = default)
+        {
+            return new RealtimeResponseOutputAudioOptions(audioFormat, voice, default);
+        }
+
+        public static RealtimeResponseUsage RealtimeResponseUsage(int? totalTokenCount = default, int? inputTokenCount = default, int? outputTokenCount = default, RealtimeResponseInputTokenUsageDetails inputTokenDetails = default, RealtimeResponseOutputTokenUsageDetails outputTokenDetails = default)
+        {
+            return new RealtimeResponseUsage(
+                totalTokenCount,
+                inputTokenCount,
+                outputTokenCount,
+                inputTokenDetails,
+                outputTokenDetails,
+                default);
+        }
+
+        public static RealtimeResponseInputTokenUsageDetails RealtimeResponseInputTokenUsageDetails(int? cachedTokenCount = default, int? textTokenCount = default, int? imageTokenCount = default, int? audioTokenCount = default, RealtimeResponseInputCachedTokenUsageDetails cachedTokenDetails = default)
+        {
+            return new RealtimeResponseInputTokenUsageDetails(
+                cachedTokenCount,
+                textTokenCount,
+                imageTokenCount,
+                audioTokenCount,
+                cachedTokenDetails,
+                default);
+        }
+
+        public static RealtimeResponseInputCachedTokenUsageDetails RealtimeResponseInputCachedTokenUsageDetails(int? textTokenCount = default, int? imageTokenCount = default, int? audioTokenCount = default)
+        {
+            return new RealtimeResponseInputCachedTokenUsageDetails(textTokenCount, imageTokenCount, audioTokenCount, default);
+        }
+
+        public static RealtimeResponseOutputTokenUsageDetails RealtimeResponseOutputTokenUsageDetails(int? textTokenCount = default, int? audioTokenCount = default)
+        {
+            return new RealtimeResponseOutputTokenUsageDetails(textTokenCount, audioTokenCount, default);
+        }
+
+        public static RealtimeResponseContentPart RealtimeResponseContentPart(RealtimeResponseContentPartKind? kind = default, string text = default, BinaryData audio = default, string transcript = default)
+        {
+            return new RealtimeResponseContentPart(kind, text, audio, transcript, default);
+        }
+
+        public static RealtimeRateLimitDetails RealtimeRateLimitDetails(RealtimeRateLimitName? name = default, int? limit = default, int? remainingCount = default, TimeSpan? timeUntilReset = default)
+        {
+            return new RealtimeRateLimitDetails(name, limit, remainingCount, timeUntilReset, default);
+        }
+
+        public static RealtimeResponseOptions RealtimeResponseOptions(IEnumerable<RealtimeOutputModality> outputModalities = default, string instructions = default, RealtimeResponseAudioOptions audioOptions = default, IEnumerable<RealtimeTool> tools = default, RealtimeToolChoice toolChoice = default, RealtimeMaxOutputTokenCount maxOutputTokenCount = default, RealtimeResponseDefaultConversationConfiguration? defaultConversationConfiguration = default, IDictionary<string, BinaryData> metadata = default, IEnumerable<RealtimeItem> inputItems = default)
+        {
+            outputModalities ??= new ChangeTrackingList<RealtimeOutputModality>();
+            tools ??= new ChangeTrackingList<RealtimeTool>();
+            metadata ??= new ChangeTrackingDictionary<string, BinaryData>();
+            inputItems ??= new ChangeTrackingList<RealtimeItem>();
+
+            return new RealtimeResponseOptions(
+                outputModalities.ToList(),
+                instructions,
+                audioOptions,
+                tools.ToList(),
+                toolChoice,
+                maxOutputTokenCount,
+                defaultConversationConfiguration,
+                metadata,
+                inputItems.ToList(),
+                default);
+        }
+
         public static AssistantCollectionOptions AssistantCollectionOptions(string afterId = default, string beforeId = default, int? pageSizeLimit = default, AssistantCollectionOrder? order = default)
         {
             return new AssistantCollectionOptions(afterId, beforeId, pageSizeLimit, order, additionalBinaryDataProperties: null);
@@ -1449,6 +1450,31 @@ namespace OpenAI
         public static ContainerFileCollectionOptions ContainerFileCollectionOptions(string afterId = default, int? pageSizeLimit = default, ContainerCollectionOrder? order = default)
         {
             return new ContainerFileCollectionOptions(afterId, pageSizeLimit, order, additionalBinaryDataProperties: null);
+        }
+
+        public static RealtimeTracing RealtimeTracing(RealtimeDefaultTracing? defaultTracing = default, RealtimeCustomTracing customTracing = default)
+        {
+            return new RealtimeTracing(defaultTracing, customTracing, default);
+        }
+
+        public static RealtimeTruncation RealtimeTruncation(RealtimeDefaultTruncation? defaultTruncation = default, RealtimeCustomTruncation customTruncation = default)
+        {
+            return new RealtimeTruncation(defaultTruncation, customTruncation, default);
+        }
+
+        public static RealtimeToolChoice RealtimeToolChoice(RealtimeDefaultToolChoice? defaultToolChoice = default, RealtimeCustomToolChoice customToolChoice = default)
+        {
+            return new RealtimeToolChoice(defaultToolChoice, customToolChoice, default);
+        }
+
+        public static RealtimeMcpToolCallApprovalPolicy RealtimeMcpToolCallApprovalPolicy(RealtimeDefaultMcpToolCallApprovalPolicy? defaultPolicy = default, RealtimeCustomMcpToolCallApprovalPolicy customPolicy = default)
+        {
+            return new RealtimeMcpToolCallApprovalPolicy(defaultPolicy, customPolicy, default);
+        }
+
+        public static RealtimeMaxOutputTokenCount RealtimeMaxOutputTokenCount(RealtimeDefaultMaxOutputTokenCount? defaultMaxOutputTokenCount = default, int? customMaxOutputTokenCount = default)
+        {
+            return new RealtimeMaxOutputTokenCount(defaultMaxOutputTokenCount, customMaxOutputTokenCount, default);
         }
 
         public static ResponseItemCollectionOptions ResponseItemCollectionOptions(string responseId = default, string afterId = default, string beforeId = default, int? pageSizeLimit = default, ResponseItemCollectionOrder? order = default)
