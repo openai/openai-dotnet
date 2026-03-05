@@ -4,42 +4,41 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
 namespace OpenAI.Audio
 {
-    internal partial class InternalCreateTranscriptionResponseDiarizedJson
+    [Experimental("OPENAI001")]
+    public partial class DiarizedAudioTranscription
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalCreateTranscriptionResponseDiarizedJson(TimeSpan duration, string text, IEnumerable<InternalTranscriptionDiarizedSegment> segments)
+        internal DiarizedAudioTranscription(TimeSpan duration, string text)
         {
             Duration = duration;
             Text = text;
-            Segments = segments.ToList();
+            Segments = new ChangeTrackingList<DiarizedTranscriptionSegment>();
         }
 
-        internal InternalCreateTranscriptionResponseDiarizedJson(string task, TimeSpan duration, string text, IList<InternalTranscriptionDiarizedSegment> segments, InternalCreateTranscriptionResponseJsonUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal DiarizedAudioTranscription(string task, TimeSpan duration, string text, IReadOnlyList<DiarizedTranscriptionSegment> segments, TranscriptionUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Task = task;
             Duration = duration;
             Text = text;
-            Segments = segments ?? new ChangeTrackingList<InternalTranscriptionDiarizedSegment>();
+            Segments = segments ?? new ChangeTrackingList<DiarizedTranscriptionSegment>();
             Usage = usage;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
-
-        public string Task { get; } = "transcribe";
 
         public TimeSpan Duration { get; }
 
         public string Text { get; }
 
-        internal IList<InternalTranscriptionDiarizedSegment> Segments { get; }
+        public IReadOnlyList<DiarizedTranscriptionSegment> Segments { get; }
 
-        internal InternalCreateTranscriptionResponseJsonUsage Usage { get; }
+        public TranscriptionUsage Usage { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

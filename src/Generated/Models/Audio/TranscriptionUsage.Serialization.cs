@@ -4,19 +4,19 @@
 
 using System;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 
 namespace OpenAI.Audio
 {
-    internal partial class InternalUnknownCreateTranscriptionResponseJsonUsage : TranscriptionUsage, IJsonModel<TranscriptionUsage>
+    [PersistableModelProxy(typeof(InternalUnknownCreateTranscriptionResponseJsonUsage))]
+    public partial class TranscriptionUsage : IJsonModel<TranscriptionUsage>
     {
-        internal InternalUnknownCreateTranscriptionResponseJsonUsage() : this(default, null)
+        internal TranscriptionUsage()
         {
         }
 
-        protected override TranscriptionUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual TranscriptionUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<TranscriptionUsage>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -31,7 +31,7 @@ namespace OpenAI.Audio
             }
         }
 
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<TranscriptionUsage>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
@@ -56,19 +56,43 @@ namespace OpenAI.Audio
             writer.WriteEndObject();
         }
 
-        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<TranscriptionUsage>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
                 throw new FormatException($"The model {nameof(TranscriptionUsage)} does not support writing '{format}' format.");
             }
-            base.JsonModelWriteCore(writer, options);
+            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
+            {
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Kind.ToString());
+            }
+            // Plugin customization: remove options.Format != "W" check
+            if (_additionalBinaryDataProperties != null)
+            {
+                foreach (var item in _additionalBinaryDataProperties)
+                {
+                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                    {
+                        continue;
+                    }
+                    writer.WritePropertyName(item.Key);
+#if NET6_0_OR_GREATER
+                    writer.WriteRawValue(item.Value);
+#else
+                    using (JsonDocument document = JsonDocument.Parse(item.Value))
+                    {
+                        JsonSerializer.Serialize(writer, document.RootElement);
+                    }
+#endif
+                }
+            }
         }
 
         TranscriptionUsage IJsonModel<TranscriptionUsage>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected override TranscriptionUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual TranscriptionUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<TranscriptionUsage>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
@@ -79,25 +103,23 @@ namespace OpenAI.Audio
             return DeserializeTranscriptionUsage(document.RootElement, options);
         }
 
-        internal static InternalUnknownCreateTranscriptionResponseJsonUsage DeserializeInternalUnknownCreateTranscriptionResponseJsonUsage(JsonElement element, ModelReaderWriterOptions options)
+        internal static TranscriptionUsage DeserializeTranscriptionUsage(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
                 return null;
             }
-            TranscriptionUsageKind kind = default;
-            IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
-            foreach (var prop in element.EnumerateObject())
+            if (element.TryGetProperty("type"u8, out JsonElement discriminator))
             {
-                if (prop.NameEquals("type"u8))
+                switch (discriminator.GetString())
                 {
-                    kind = new TranscriptionUsageKind(prop.Value.GetString());
-                    continue;
+                    case "tokens":
+                        return TranscriptionTokenUsage.DeserializeTranscriptionTokenUsage(element, options);
+                    case "duration":
+                        return TranscriptionDurationUsage.DeserializeTranscriptionDurationUsage(element, options);
                 }
-                // Plugin customization: remove options.Format != "W" check
-                additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalUnknownCreateTranscriptionResponseJsonUsage(kind, additionalBinaryDataProperties);
+            return InternalUnknownCreateTranscriptionResponseJsonUsage.DeserializeInternalUnknownCreateTranscriptionResponseJsonUsage(element, options);
         }
     }
 }

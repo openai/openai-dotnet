@@ -4,18 +4,20 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace OpenAI.Audio
 {
-    internal partial class InternalTranscriptTextUsageTokensInputTokenDetails
+    [Experimental("OPENAI001")]
+    public partial class TranscriptionInputTokenDetails
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal InternalTranscriptTextUsageTokensInputTokenDetails()
+        internal TranscriptionInputTokenDetails()
         {
         }
 
-        internal InternalTranscriptTextUsageTokensInputTokenDetails(int? textTokens, int? audioTokens, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal TranscriptionInputTokenDetails(int? textTokens, int? audioTokens, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             TextTokens = textTokens;
             AudioTokens = audioTokens;
