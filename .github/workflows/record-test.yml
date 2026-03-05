@@ -80,6 +80,17 @@ jobs:
             echo '```' >> $GITHUB_STEP_SUMMARY
           fi
 
+      - name: Scan recordings for unsanitized secrets
+        if: steps.changes.outputs.has_changes == 'true'
+        run: |
+          CHANGED_FILES="$(git status --porcelain tests/SessionRecords/ | awk '{print $NF}')"
+          if echo "$CHANGED_FILES" | xargs grep -qE '(sk-|ek-)[A-Za-z0-9]'; then
+            echo "::error::Potential unsanitized secret key detected in session recordings. Please inspect and sanitize before committing."
+            exit 1
+          else
+            echo "### No unsanitized secrets detected in recordings" >> $GITHUB_STEP_SUMMARY
+          fi
+
       # Playback deliberately omits --framework to validate recordings across all TFMs.
       - name: Validate recordings in Playback mode
         if: steps.changes.outputs.has_changes == 'true'
