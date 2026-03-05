@@ -1,0 +1,220 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "163",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI.Responses/2.8.0 (.NET 10.0.3; macOS 26.3.0)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Create a simple landing page for a dog petting café."
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9d1188ab7a2eb162-DFW",
+        "Connection": "keep-alive",
+        "Content-Length": "4841",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Set-Cookie": "Sanitized",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999962",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_0602f4c7a201fb6c006998e401dc7c8194a64192b2f23e2175",
+        "object": "response",
+        "created_at": 1771627521,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "completed_at": 1771627540,
+        "error": null,
+        "frequency_penalty": 0.0,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4o-mini-2024-07-18",
+        "output": [
+          {
+            "id": "msg_0602f4c7a201fb6c006998e40249ec8194a2a589a90e65f25d",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "Sure! Here's a simple HTML and CSS structure for a landing page for a dog petting café. You can customize the text, images, and styles to fit your brand.\n\n### HTML (index.html)\n\n```html\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Furry Friends Café</title>\n    <link rel=\"stylesheet\" href=\"styles.css\">\n</head>\n<body>\n    <header>\n        <div class=\"container\">\n            <h1>Welcome to Furry Friends Café</h1>\n            <p>Your cozy spot for dog petting and delicious treats!</p>\n        </div>\n    </header>\n    \n    <main>\n        <section class=\"about\">\n            <h2>About Us</h2>\n            <p>At Furry Friends Café, we celebrate the joy of dogs! Enjoy cuddles with our friendly pups while sipping on your favorite coffee.</p>\n        </section>\n        \n        <section class=\"menu\">\n            <h2>Menu</h2>\n            <ul>\n                <li>Coffee</li>\n                <li>Tea</li>\n                <li>Pastries</li>\n                <li>Dog Treats</li>\n            </ul>\n        </section>\n\n        <section class=\"gallery\">\n            <h2>Gallery</h2>\n            <img src=\"dog1.jpg\" alt=\"Happy dog\">\n            <img src=\"dog2.jpg\" alt=\"Pup playing\">\n            <img src=\"dog3.jpg\" alt=\"Café interior\">\n        </section>\n        \n        <section class=\"contact\">\n            <h2>Contact Us</h2>\n            <p>Email: info@furryfriendscafe.com</p>\n            <p>Phone: (555) 123-4567</p>\n            <p>Visit us at: 123 Bark Street, Dogtown</p>\n        </section>\n    </main>\n\n    <footer>\n        <p>&copy; 2023 Furry Friends Café. All Rights Reserved.</p>\n        <p>Follow us on social media!</p>\n    </footer>\n</body>\n</html>\n```\n\n### CSS (styles.css)\n\n```css\nbody {\n    font-family: Arial, sans-serif;\n    margin: 0;\n    padding: 0;\n    background-color: #f5f5f5;\n}\n\nheader {\n    background-color: #ffcc00;\n    padding: 20px;\n    text-align: center;\n}\n\nh1 {\n    margin: 0;\n    font-size: 2.5em;\n}\n\nmain {\n    padding: 20px;\n    max-width: 800px;\n    margin: auto;\n}\n\n.about, .menu, .gallery, .contact {\n    margin-bottom: 30px;\n    background-color: #fff;\n    padding: 20px;\n    border-radius: 5px;\n    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);\n}\n\nh2 {\n    font-size: 2em;\n    margin-bottom: 10px;\n}\n\n.gallery img {\n    max-width: 100%;\n    height: auto;\n    margin: 5px;\n}\n\nfooter {\n    text-align: center;\n    padding: 10px;\n    background-color: #232323;\n    color: white;\n    position: relative;\n    bottom: 0;\n    width: 100%;\n}\n```\n\n### Instructions to Set Up\n\n1. **Create Two Files**: Create `index.html` and `styles.css` in the same directory.\n\n2. **Images**: Replace the `src` attributes in the `<img>` tags within the gallery section with the actual image paths for your dog images.\n\n3. **Customize Content**: Feel free to modify text and styling to match your desired aesthetic.\n\n4. **Open in Browser**: Open `index.html` in a web browser to see your landing page in action!\n\nThis simple landing page can serve as a great starting point for your dog petting café!"
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "presence_penalty": 0.0,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "prompt_cache_retention": null,
+        "reasoning": {
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 19,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 876,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 895
+        },
+        "user": null,
+        "metadata": {}
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/responses/compact",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "4762",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI.Responses/2.8.0 (.NET 10.0.3; macOS 26.3.0)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini-2024-07-18",
+        "input": [
+          {
+            "role": "user",
+            "content": "Create a simple landing page for a dog petting café."
+          },
+          {
+            "id": "msg_0602f4c7a201fb6c006998e40249ec8194a2a589a90e65f25d",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "text": "Sure! Here's a simple HTML and CSS structure for a landing page for a dog petting café. You can customize the text, images, and styles to fit your brand.\n\n### HTML (index.html)\n\n```html\n<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Furry Friends Café</title>\n    <link rel=\"stylesheet\" href=\"styles.css\">\n</head>\n<body>\n    <header>\n        <div class=\"container\">\n            <h1>Welcome to Furry Friends Café</h1>\n            <p>Your cozy spot for dog petting and delicious treats!</p>\n        </div>\n    </header>\n    \n    <main>\n        <section class=\"about\">\n            <h2>About Us</h2>\n            <p>At Furry Friends Café, we celebrate the joy of dogs! Enjoy cuddles with our friendly pups while sipping on your favorite coffee.</p>\n        </section>\n        \n        <section class=\"menu\">\n            <h2>Menu</h2>\n            <ul>\n                <li>Coffee</li>\n                <li>Tea</li>\n                <li>Pastries</li>\n                <li>Dog Treats</li>\n            </ul>\n        </section>\n\n        <section class=\"gallery\">\n            <h2>Gallery</h2>\n            <img src=\"dog1.jpg\" alt=\"Happy dog\">\n            <img src=\"dog2.jpg\" alt=\"Pup playing\">\n            <img src=\"dog3.jpg\" alt=\"Café interior\">\n        </section>\n        \n        <section class=\"contact\">\n            <h2>Contact Us</h2>\n            <p>Email: info@furryfriendscafe.com</p>\n            <p>Phone: (555) 123-4567</p>\n            <p>Visit us at: 123 Bark Street, Dogtown</p>\n        </section>\n    </main>\n\n    <footer>\n        <p>&copy; 2023 Furry Friends Café. All Rights Reserved.</p>\n        <p>Follow us on social media!</p>\n    </footer>\n</body>\n</html>\n```\n\n### CSS (styles.css)\n\n```css\nbody {\n    font-family: Arial, sans-serif;\n    margin: 0;\n    padding: 0;\n    background-color: #f5f5f5;\n}\n\nheader {\n    background-color: #ffcc00;\n    padding: 20px;\n    text-align: center;\n}\n\nh1 {\n    margin: 0;\n    font-size: 2.5em;\n}\n\nmain {\n    padding: 20px;\n    max-width: 800px;\n    margin: auto;\n}\n\n.about, .menu, .gallery, .contact {\n    margin-bottom: 30px;\n    background-color: #fff;\n    padding: 20px;\n    border-radius: 5px;\n    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);\n}\n\nh2 {\n    font-size: 2em;\n    margin-bottom: 10px;\n}\n\n.gallery img {\n    max-width: 100%;\n    height: auto;\n    margin: 5px;\n}\n\nfooter {\n    text-align: center;\n    padding: 10px;\n    background-color: #232323;\n    color: white;\n    position: relative;\n    bottom: 0;\n    width: 100%;\n}\n```\n\n### Instructions to Set Up\n\n1. **Create Two Files**: Create `index.html` and `styles.css` in the same directory.\n\n2. **Images**: Replace the `src` attributes in the `<img>` tags within the gallery section with the actual image paths for your dog images.\n\n3. **Customize Content**: Feel free to modify text and styling to match your desired aesthetic.\n\n4. **Open in Browser**: Open `index.html` in a web browser to see your landing page in action!\n\nThis simple landing page can serve as a great starting point for your dog petting café!"
+              }
+            ],
+            "role": "assistant"
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9d1189224846b162-DFW",
+        "Connection": "keep-alive",
+        "Content-Length": "618",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149998990",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_0602f4c7a201fb6c016998e414e5cc8194923e56abf1159d67",
+        "object": "response.compaction",
+        "created_at": 1771627548,
+        "output": [
+          {
+            "id": "msg_0602f4c7a201fb6c016998e415168c8194aab5f0ceafb56b62",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Create a simple landing page for a dog petting café."
+              }
+            ],
+            "role": "user"
+          },
+          {
+            "id": "cmp_0602f4c7a201fb6c016998e415aaa88194801a70ab401f2941",
+            "type": "compaction",
+            "encrypted_content": "Sanitized"
+          }
+        ],
+        "usage": {
+          "input_tokens": 991,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 342,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 1333
+        }
+      }
+    }
+  ],
+  "Variables": {
+    "OPENAI_API_KEY": "api-key"
+  }
+}

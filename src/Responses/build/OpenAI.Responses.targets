@@ -1,0 +1,13 @@
+<!--
+  This targets file is included in the OpenAI.Responses NuGet package. It detects if
+  the full OpenAI package is also referenced and emits a clear error, preventing
+  the cryptic CS0433 duplicate-type errors that would otherwise appear.
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Target Name="_CheckOpenAIResponsesMutualExclusivity"
+          BeforeTargets="ResolveAssemblyReferences"
+          Condition="'$(DisableOpenAIPackageConflictCheck)' != 'true'">
+    <Error Condition="@(PackageReference->AnyHaveMetadataValue('Identity', 'OpenAI'))"
+           Text="The 'OpenAI' and 'OpenAI.Responses' packages cannot be referenced together because they contain overlapping types. Use 'OpenAI' (which includes Responses support) or 'OpenAI.Responses' (standalone), but not both. To suppress this check, set &lt;DisableOpenAIPackageConflictCheck&gt;true&lt;/DisableOpenAIPackageConflictCheck&gt;." />
+  </Target>
+</Project>

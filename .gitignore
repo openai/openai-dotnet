@@ -23,6 +23,8 @@ binaries/
 [Dd]ebug*/
 [Rr]elease/
 build/
+!src/build/
+!src/Responses/build/
 restoredPackages/
 PolicheckOutput/
 tools/net46/

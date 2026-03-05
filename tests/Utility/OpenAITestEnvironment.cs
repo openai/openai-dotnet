@@ -154,7 +154,7 @@ public class OpenAITestEnvironment : TestEnvironment
             nameof(VectorStoreClient) => new VectorStoreClient(credential, options),
             nameof(OpenAIClient) => new OpenAIClient(credential, options),
             nameof(RealtimeClient) => new RealtimeClient(credential, CreateRealtimeClientOptions(options)),
-            nameof(ResponsesClient) => new ResponsesClient(credential, options),
+            nameof(ResponsesClient) => new ResponsesClient(credential, ResponsesClientOptionsFactory.FromOpenAIClientOptions(options)),
             _ => throw new NotImplementedException($"Unsupported client type: {typeof(T).Name}"),
         };
 

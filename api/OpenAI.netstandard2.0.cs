@@ -6632,11 +6632,11 @@ namespace OpenAI.Responses {
     public class ResponsesClient {
         protected ResponsesClient();
         public ResponsesClient(ResponsesClientSettings settings);
-        public ResponsesClient(ApiKeyCredential credential, OpenAIClientOptions options);
+        public ResponsesClient(ApiKeyCredential credential, ResponsesClientOptions options);
         public ResponsesClient(ApiKeyCredential credential);
-        public ResponsesClient(AuthenticationPolicy authenticationPolicy, OpenAIClientOptions options);
+        public ResponsesClient(AuthenticationPolicy authenticationPolicy, ResponsesClientOptions options);
         public ResponsesClient(AuthenticationPolicy authenticationPolicy);
-        protected internal ResponsesClient(ClientPipeline pipeline, OpenAIClientOptions options);
+        protected internal ResponsesClient(ClientPipeline pipeline, ResponsesClientOptions options);
         public ResponsesClient(string apiKey);
         public virtual Uri Endpoint { get; }
         public ClientPipeline Pipeline { get; }
@@ -6685,8 +6685,14 @@ namespace OpenAI.Responses {
         public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(GetResponseOptions options, CancellationToken cancellationToken = default);
         public virtual AsyncCollectionResult<StreamingResponseUpdate> GetResponseStreamingAsync(string responseId, CancellationToken cancellationToken = default);
     }
+    public class ResponsesClientOptions : ClientPipelineOptions {
+        public Uri Endpoint { get; set; }
+        public string OrganizationId { get; set; }
+        public string ProjectId { get; set; }
+        public string UserAgentApplicationId { get; set; }
+    }
     public sealed class ResponsesClientSettings : ClientSettings {
-        public OpenAIClientOptions Options { get; set; }
+        public ResponsesClientOptions Options { get; set; }
         protected override void BindCore(Microsoft.Extensions.Configuration.IConfigurationSection section);
     }
     public readonly partial struct ResponseServiceTier : IEquatable<ResponseServiceTier> {

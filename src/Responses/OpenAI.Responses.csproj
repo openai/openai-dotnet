@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>OpenAI Responses client library for .NET</Description>
+    <AssemblyTitle>OpenAI Responses Library</AssemblyTitle>
+    <PackageTags>OpenAI;openai-dotnet;Responses</PackageTags>
+
+    <!-- VersionPrefix is inherited from Directory.Build.props to prevent drift -->
+
+    <TargetFrameworks>$(ClientTargetFrameworks)</TargetFrameworks>
+    <DefineConstants>$(DefineConstants);OPENAI_RESPONSES</DefineConstants>
+
+    <IsTrimmable Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net6.0'))">true</IsTrimmable>
+    <IsAotCompatible Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'net7.0'))">true</IsAotCompatible>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="$(RepositoryRoot)eng\OpenAI.png" Pack="true" PackagePath="\" />
+    <None Include="$(RepositoryRoot)CHANGELOG.md" Pack="true" PackagePath="\" />
+    <None Include="$(RepositoryRoot)README.md" Pack="true" PackagePath="\" />
+    <None Include="build\OpenAI.Responses.targets" Pack="true" PackagePath="build\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.ClientModel" />
+  </ItemGroup>
+
+  <!-- Generated code needed by the Responses assembly -->
+  <ItemGroup>
+    <Compile Include="..\Generated\Internal\**\*.cs" Link="Generated\Internal\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\Generated\Models\Responses\**\*.cs" Link="Generated\Models\Responses\%(RecursiveDir)%(Filename)%(Extension)" />
+    <Compile Include="..\Generated\ResponsesClient.cs" Link="Generated\ResponsesClient.cs" />
+    <Compile Include="..\Generated\ResponsesClient.RestClient.cs" Link="Generated\ResponsesClient.RestClient.cs" />
+    <Compile Include="..\Generated\CollectionResults\ResponsesClient*.cs" Link="Generated\CollectionResults\%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <!-- Custom Responses code -->
+  <ItemGroup>
+    <Compile Include="..\Custom\Responses\**\*.cs" Link="Custom\Responses\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <!-- Utility code shared via source linking -->
+  <ItemGroup>
+    <Compile Include="..\Utility\*.cs" Link="Utility\%(Filename)%(Extension)" />
+    <Compile Include="..\Utility\Polyfill\*.cs" Link="Utility\Polyfill\%(Filename)%(Extension)" />
+    <Compile Include="..\Utility\CodeGen\*.cs" Link="Utility\CodeGen\%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Net.ServerSentEvents" />
+  </ItemGroup>
+
+</Project>

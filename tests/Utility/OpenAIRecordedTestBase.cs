@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace OpenAI.Tests.Utility
 {
     [LiveParallelizable(ParallelScope.Fixtures)]
-    public class OpenAIRecordedTestBase : RecordedTestBase<OpenAITestEnvironment>
+    public partial class OpenAIRecordedTestBase : RecordedTestBase<OpenAITestEnvironment>
     {
         public OpenAIRecordedTestBase(bool isAsync, RecordedTestMode? mode = null) : base(isAsync, mode)
         {
@@ -25,17 +25,6 @@ namespace OpenAI.Tests.Utility
             SanitizedHeaders.Add("Set-Cookie");
             JsonPathSanitizers.Add("$.system_fingerprint");
             JsonPathSanitizers.Add("$..encrypted_content");
-        }
-
-        internal T GetProxiedOpenAIClient<T>(string overrideModel = null, OpenAIClientOptions options = default) where T : class
-        {
-            options ??= new OpenAIClientOptions();
-
-            OpenAIClientOptions instrumentedOptions = InstrumentClientOptions(options);
-            T client = TestEnvironment.GetTestClient<T>(overrideModel, instrumentedOptions);
-            T proxiedClient = CreateProxyFromClient<T>(client, null);
-
-            return proxiedClient;
         }
     }
 }

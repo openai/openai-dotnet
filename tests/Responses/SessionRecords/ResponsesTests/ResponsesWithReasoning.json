@@ -1,0 +1,144 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "265",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI.Responses/2.8.0 (.NET 10.0.3; macOS 26.3.0)"
+      },
+      "RequestBody": {
+        "model": "gpt-5",
+        "reasoning": {
+          "effort": "low",
+          "summary": "detailed"
+        },
+        "instructions": "Perform reasoning over any questions asked by the user.",
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "What's the best way to fold a burrito?"
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9d118d601959e088-DFW",
+        "Connection": "keep-alive",
+        "Content-Length": "3904",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Set-Cookie": "Sanitized",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-ratelimit-limit-requests": "15000",
+        "x-ratelimit-limit-tokens": "40000000",
+        "x-ratelimit-remaining-requests": "14999",
+        "x-ratelimit-remaining-tokens": "39999692",
+        "x-ratelimit-reset-requests": "4ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_06121290fc325f5d006998e4c29cc0819f9998386579ed53e7",
+        "object": "response",
+        "created_at": 1771627714,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "completed_at": 1771627727,
+        "error": null,
+        "frequency_penalty": 0.0,
+        "incomplete_details": null,
+        "instructions": "Perform reasoning over any questions asked by the user.",
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-5-2025-08-07",
+        "output": [
+          {
+            "id": "rs_06121290fc325f5d006998e4c30f84819f916b652f7eede4e6",
+            "type": "reasoning",
+            "summary": [
+              {
+                "type": "summary_text",
+                "text": "**Providing burrito folding instructions**\n\nThe user asks for the best way to fold a burrito, so I plan to provide clear step-by-step instructions without images. I’ll include tips for avoiding tearing, such as warming the tortilla, using the right size (10-12 inches), and managing moisture in the filling. The process will involve tucking and rolling, and I may offer options for overstuffed burritos or different techniques like chimichangas. I’ll also touch on troubleshooting tips. Let's keep it concise."
+              }
+            ]
+          },
+          {
+            "id": "msg_06121290fc325f5d006998e4c90874819f9b1ca32a2d53cd4d",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "Here’s a reliable, tidy way to fold a burrito so it stays sealed and eats well:\n\n1) Warm the tortilla\n- Use a 10–12 inch flour tortilla. Warm it until flexible (skillet 15–30 seconds/side, or 10–15 seconds in the microwave under a damp towel). Warm = less cracking.\n\n2) Prep the filling\n- Keep wet stuff minimal or drained (salsas/beans/rice not too saucy).\n- Use less than you think: about 1 to 1½ cups total.\n- Layer heaviest/driest on bottom (rice/beans), then proteins, then cheese, then moist items (salsa, guac, crema) on top.\n\n3) Placement\n- Put filling in a horizontal line just below the center, leaving 1–2 inches clear on left/right edges.\n\n4) Fold\n- Fold the left and right sides inward to create “walls.”\n- Lift the bottom edge up over the filling.\n- Tuck snugly back toward you to compress the filling.\n- Roll forward tightly until the seam is underneath.\n\n5) Seal and set\n- Rest seam-side down 30–60 seconds, or toast seam-side down in a dry pan 30–60 seconds to “seal.”\n- Optionally wrap tightly in foil for structure and heat retention.\n\nTroubleshooting tips\n- Tortilla cracking: warm more, or use a fresh tortilla.\n- Overstuffing: remove some filling or use a larger tortilla; aim for a uniform cylinder.\n- Too wet: add rice, beans, or shredded lettuce as a moisture buffer; drain salsas.\n- Ends opening: make sure side folds are in before the initial roll; keep tension as you roll.\n- For giant/wet burritos: double-tortilla with a slight overlap, or wrap in foil before slicing."
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "presence_penalty": 0.0,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "prompt_cache_retention": null,
+        "reasoning": {
+          "effort": "low",
+          "summary": "detailed"
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 30,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 524,
+          "output_tokens_details": {
+            "reasoning_tokens": 128
+          },
+          "total_tokens": 554
+        },
+        "user": null,
+        "metadata": {}
+      }
+    }
+  ],
+  "Variables": {
+    "OPENAI_API_KEY": "api-key"
+  }
+}

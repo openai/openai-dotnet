@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.TypeSpec.Generator.Customizations;
+using OpenAI.Responses;
 using System;
 using System.ClientModel.Primitives;
 
@@ -103,5 +104,21 @@ public partial class OpenAIClientOptions : ClientPipelineOptions
         {
             UserAgentApplicationId = userAgentApplicationId;
         }
+    }
+
+    /// <summary>
+    /// Creates a new <see cref="ResponsesClientOptions"/> instance initialized with the same property values
+    /// as the specified <see cref="OpenAIClientOptions"/>.
+    /// </summary>
+    /// <returns> A new <see cref="ResponsesClientOptions"/> with the same property values. </returns>
+    internal ResponsesClientOptions ToResponsesClientOptionss()
+    {
+        return new ResponsesClientOptions
+        {
+            Endpoint = Endpoint,
+            OrganizationId = OrganizationId,
+            ProjectId = ProjectId,
+            UserAgentApplicationId = UserAgentApplicationId,
+        };
     }
 }

@@ -1,0 +1,128 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "249",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI.Shared/2.8.0 (.NET 8.0.16; Darwin 25.2.0 Darwin Kernel Version 25.2.0: Tue Nov 18 21:08:48 PST 2025; root:xnu-12377.61.12~1/RELEASE_ARM64_T8132)"
+      },
+      "RequestBody": {
+        "service_tier": "default",
+        "model": "gpt-4o-mini",
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Using a comprehensive evaluation of popular media in the 1970s and 1980s, what were the most common sci-fi themes?"
+              }
+            ]
+          }
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9ba5469ed8986c57-DFW",
+        "Connection": "keep-alive",
+        "Content-Length": "4577",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-envoy-upstream-service-time": "14527",
+        "x-ratelimit-limit-requests": "30000",
+        "x-ratelimit-limit-tokens": "150000000",
+        "x-ratelimit-remaining-requests": "29999",
+        "x-ratelimit-remaining-tokens": "149999945",
+        "x-ratelimit-reset-requests": "2ms",
+        "x-ratelimit-reset-tokens": "0s",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "resp_04ed474eb0fe67d100695e9bffdbe4819ebd249b8e79e4407e",
+        "object": "response",
+        "created_at": 1767807999,
+        "status": "completed",
+        "background": false,
+        "billing": {
+          "payer": "developer"
+        },
+        "completed_at": 1767808014,
+        "error": null,
+        "incomplete_details": null,
+        "instructions": null,
+        "max_output_tokens": null,
+        "max_tool_calls": null,
+        "model": "gpt-4o-mini-2024-07-18",
+        "output": [
+          {
+            "id": "msg_04ed474eb0fe67d100695e9c002b58819e9b354f49813121ee",
+            "type": "message",
+            "status": "completed",
+            "content": [
+              {
+                "type": "output_text",
+                "annotations": [],
+                "logprobs": [],
+                "text": "The 1970s and 1980s were pivotal decades for science fiction, both in literature and visual media. The themes explored during this time reflected societal anxieties, technological advancements, and philosophical questions. Here are some of the most common sci-fi themes from that era:\n\n### 1. **Dystopian Futures**\n   - Many works depicted bleak, authoritarian societies where technology exacerbated human suffering. Examples include \"A Clockwork Orange\" and the film adaptation of \"Fahrenheit 451.\"\n\n### 2. **Space Exploration and Alien Encounters**\n   - The fascination with space travel and extraterrestrial life was prominent. Popular films like \"Star Wars,\" \"Close Encounters of the Third Kind,\" and \"Alien\" showcased both friendly and hostile alien species.\n\n### 3. **Technological Advancement and Dependence**\n   - The impact of technology on human life was a recurring theme. Films like \"2001: A Space Odyssey\" explored artificial intelligence and the ethical dilemmas that arise from it, while shows like \"The Six Million Dollar Man\" highlighted technological enhancements.\n\n### 4. **Time Travel**\n   - Time travel narratives became increasingly popular, exploring the consequences of altering the past. Movies like \"Back to the Future\" and \"The Terminator\" tackled the complexities of timelines and causality.\n\n### 5. **Human Augmentation and Genetic Manipulation**\n   - The idea of enhancing humans through technology or genetic modification gained traction. Works like \"The Island of Dr. Moreau\" and \"Blade Runner\" raised questions about identity and what it means to be human.\n\n### 6. **Environmental Collapse**\n   - A growing awareness of environmental issues led to themes of ecological disaster. Films like \"Soylent Green\" and \"Silent Running\" addressed resource scarcity and the consequences of human negligence toward the planet.\n\n### 7. **The Metaverse and Virtual Reality**\n   - Even in the early stages, the notion of virtual worlds began surfacing. Works like \"Tron\" introduced concepts of digital realities and the interplay between man and machine.\n\n### 8. **Psychological and Existential Questions**\n   - Many narratives delved into the human psyche, exploring themes of isolation, identity crises, and existential dread. Works like \"Solaris\" and \"The Terminator\" examined the relationship between humanity and technology.\n\n### 9. **Social Commentary and Satire**\n   - Sci-fi often served as a lens for critiquing contemporary societal issues, including war, politics, and consumerism. \"Robocop\" and \"Brazil\" used exaggerated futures to comment on real-world socio-political events.\n\n### 10. **The Role of the Individual vs. the State**\n   - Tension between personal freedom and state control was a frequent theme, as seen in \"Logan's Run\" and \"THX 1138,\" reflecting concerns over privacy and individual rights.\n\nThese themes not only captured the imagination of audiences but also mirrored the cultural and political climate of the times, making them resonant and reflective of broader societal concerns."
+              }
+            ],
+            "role": "assistant"
+          }
+        ],
+        "parallel_tool_calls": true,
+        "previous_response_id": null,
+        "prompt_cache_key": null,
+        "prompt_cache_retention": null,
+        "reasoning": {
+          "effort": null,
+          "summary": null
+        },
+        "safety_identifier": null,
+        "service_tier": "default",
+        "store": true,
+        "temperature": 1.0,
+        "text": {
+          "format": {
+            "type": "text"
+          },
+          "verbosity": "medium"
+        },
+        "tool_choice": "auto",
+        "tools": [],
+        "top_logprobs": 0,
+        "top_p": 1.0,
+        "truncation": "disabled",
+        "usage": {
+          "input_tokens": 35,
+          "input_tokens_details": {
+            "cached_tokens": 0
+          },
+          "output_tokens": 619,
+          "output_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "total_tokens": 654
+        },
+        "user": null,
+        "metadata": {}
+      }
+    }
+  ],
+  "Variables": {
+    "OPEN-API-KEY": "api-key"
+  }
+}

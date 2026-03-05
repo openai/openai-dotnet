@@ -2,6 +2,15 @@
   <PropertyGroup>
     <TargetFrameworks>$(TestTargetFrameworks)</TargetFrameworks>
     <IsTestProject>true</IsTestProject>
+
+    <!-- 
+      Exclude Responses subproject build artifacts, utility files, and the Responses-only
+      TestHelpers (the full SDK version is in Responses.FullSdk/TestHelpers.Responses.FullSdk.cs).
+    -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);Responses/OpenAI.Responses.Tests.csproj;Responses/bin/**;Responses/obj/**;Responses/Utility/**;Responses/TestHelpers.Responses.cs</DefaultItemExcludes>
+
+    <!-- Re-enable signing for InternalsVisibleTo compatibility -->
+    <SignAssembly Condition="'$(Configuration)' != 'Unsigned'">true</SignAssembly>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,8 +38,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\src\Utility\Telemetry\*.cs" LinkBase="Telemetry\Shared" />
-    <Compile Include="..\src\Utility\AppContextSwitchHelper.cs" LinkBase="Telemetry\Shared" />
   </ItemGroup>
 
   <ItemGroup>
