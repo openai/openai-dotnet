@@ -17,6 +17,39 @@ namespace OpenAI.Graders
         {
         }
 
+        protected override Grader PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<GraderLabelModel>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeGraderLabelModel(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(GraderLabelModel)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<GraderLabelModel>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(GraderLabelModel)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<GraderLabelModel>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        GraderLabelModel IPersistableModel<GraderLabelModel>.Create(BinaryData data, ModelReaderWriterOptions options) => (GraderLabelModel)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<GraderLabelModel>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<GraderLabelModel>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -183,38 +216,5 @@ namespace OpenAI.Graders
                 labels,
                 passingLabels);
         }
-
-        BinaryData IPersistableModel<GraderLabelModel>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<GraderLabelModel>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(GraderLabelModel)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        GraderLabelModel IPersistableModel<GraderLabelModel>.Create(BinaryData data, ModelReaderWriterOptions options) => (GraderLabelModel)PersistableModelCreateCore(data, options);
-
-        protected override Grader PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<GraderLabelModel>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeGraderLabelModel(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(GraderLabelModel)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<GraderLabelModel>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

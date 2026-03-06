@@ -12,6 +12,39 @@ namespace OpenAI.Responses
 {
     internal partial class InternalItemContentInputImage : ResponseContentPart, IJsonModel<InternalItemContentInputImage>
     {
+        protected override ResponseContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalItemContentInputImage>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalItemContentInputImage(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalItemContentInputImage)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalItemContentInputImage>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalItemContentInputImage)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalItemContentInputImage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalItemContentInputImage IPersistableModel<InternalItemContentInputImage>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalItemContentInputImage)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalItemContentInputImage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalItemContentInputImage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -96,7 +129,7 @@ namespace OpenAI.Responses
                         imageUrl = null;
                         continue;
                     }
-                    imageUrl = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString());
+                    imageUrl = string.IsNullOrEmpty(prop.Value.GetString()) ? null : new Uri(prop.Value.GetString(), UriKind.RelativeOrAbsolute);
                     continue;
                 }
                 if (prop.NameEquals("file_id"u8))
@@ -122,38 +155,5 @@ namespace OpenAI.Responses
             }
             return new InternalItemContentInputImage(internalType, patch, imageUrl, fileId, detail);
         }
-
-        BinaryData IPersistableModel<InternalItemContentInputImage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalItemContentInputImage>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalItemContentInputImage)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalItemContentInputImage IPersistableModel<InternalItemContentInputImage>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalItemContentInputImage)PersistableModelCreateCore(data, options);
-
-        protected override ResponseContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalItemContentInputImage>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalItemContentInputImage(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalItemContentInputImage)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalItemContentInputImage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

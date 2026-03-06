@@ -16,6 +16,39 @@ namespace OpenAI.Responses
         {
         }
 
+        protected virtual ResponseContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ResponseContentPart>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeResponseContentPart(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(ResponseContentPart)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ResponseContentPart>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(ResponseContentPart)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<ResponseContentPart>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        ResponseContentPart IPersistableModel<ResponseContentPart>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<ResponseContentPart>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<ResponseContentPart>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -88,38 +121,5 @@ namespace OpenAI.Responses
             }
             return InternalUnknownItemContent.DeserializeInternalUnknownItemContent(element, data, options);
         }
-
-        BinaryData IPersistableModel<ResponseContentPart>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ResponseContentPart>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(ResponseContentPart)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        ResponseContentPart IPersistableModel<ResponseContentPart>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual ResponseContentPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ResponseContentPart>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeResponseContentPart(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(ResponseContentPart)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<ResponseContentPart>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

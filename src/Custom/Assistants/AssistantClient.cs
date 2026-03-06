@@ -82,6 +82,12 @@ public partial class AssistantClient
         _threadSubClient = new(Pipeline, options);
     }
 
+    [Experimental("SCME0002")]
+    public AssistantClient(AssistantClientSettings settings)
+        : this(AuthenticationPolicy.Create(settings), settings?.Options)
+    {
+    }
+
     /// <summary>
     /// Gets the endpoint URI for the service.
     /// </summary>

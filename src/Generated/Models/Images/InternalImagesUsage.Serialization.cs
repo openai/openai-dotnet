@@ -16,6 +16,39 @@ namespace OpenAI.Images
         {
         }
 
+        protected virtual InternalImagesUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalImagesUsage>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalImagesUsage(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalImagesUsage)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalImagesUsage>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalImagesUsage)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalImagesUsage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalImagesUsage IPersistableModel<InternalImagesUsage>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalImagesUsage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalImagesUsage>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -123,38 +156,5 @@ namespace OpenAI.Images
             }
             return new InternalImagesUsage(totalTokens, inputTokens, outputTokens, inputTokensDetails, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalImagesUsage>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalImagesUsage>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalImagesUsage)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalImagesUsage IPersistableModel<InternalImagesUsage>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalImagesUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalImagesUsage>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalImagesUsage(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalImagesUsage)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalImagesUsage>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

@@ -19,7 +19,7 @@ namespace OpenAI.Responses
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        internal ResponseResult(IDictionary<string, string> metadata, float? temperature, float? topP, string endUserId, string id, DateTimeOffset createdAt, ResponseError error, ResponseIncompleteStatusDetails incompleteStatusDetails, IEnumerable<ResponseItem> outputItems, bool parallelToolCallsEnabled)
+        internal ResponseResult(IDictionary<string, string> metadata, float? temperature, float? topP, string endUserId, string id, DateTimeOffset createdAt, ResponseError error, ResponseIncompleteStatusDetails incompleteStatusDetails, IEnumerable<ResponseItem> outputItems, IEnumerable<ResponseItem> instructions, bool parallelToolCallsEnabled)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -32,11 +32,12 @@ namespace OpenAI.Responses
             Error = error;
             IncompleteStatusDetails = incompleteStatusDetails;
             OutputItems = outputItems.ToList();
+            Instructions = instructions.ToList();
             ParallelToolCallsEnabled = parallelToolCallsEnabled;
         }
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
-        internal ResponseResult(IDictionary<string, string> metadata, float? temperature, int? topLogProbabilityCount, float? topP, string endUserId, string safetyIdentifier, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? backgroundModeEnabled, int? maxOutputTokenCount, int? maxToolCallCount, string instructions, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncationMode, string id, string @object, ResponseStatus? status, DateTimeOffset createdAt, ResponseError error, ResponseIncompleteStatusDetails incompleteStatusDetails, IList<ResponseItem> outputItems, ResponseTokenUsage usage, bool parallelToolCallsEnabled, ResponseConversationOptions conversationOptions, in JsonPatch patch)
+        internal ResponseResult(IDictionary<string, string> metadata, float? temperature, int? topLogProbabilityCount, float? topP, string endUserId, string safetyIdentifier, ResponseServiceTier? serviceTier, string previousResponseId, string model, ResponseReasoningOptions reasoningOptions, bool? backgroundModeEnabled, int? maxOutputTokenCount, int? maxToolCallCount, ResponseTextOptions textOptions, IList<ResponseTool> tools, ResponseToolChoice toolChoice, ResponseTruncationMode? truncationMode, string id, string @object, ResponseStatus? status, DateTimeOffset createdAt, ResponseError error, ResponseIncompleteStatusDetails incompleteStatusDetails, IList<ResponseItem> outputItems, IList<ResponseItem> instructions, ResponseTokenUsage usage, bool parallelToolCallsEnabled, ResponseConversationOptions conversationOptions, in JsonPatch patch)
         {
             // Plugin customization: ensure initialization of collections
             Metadata = metadata ?? new ChangeTrackingDictionary<string, string>();
@@ -52,7 +53,6 @@ namespace OpenAI.Responses
             BackgroundModeEnabled = backgroundModeEnabled;
             MaxOutputTokenCount = maxOutputTokenCount;
             MaxToolCallCount = maxToolCallCount;
-            Instructions = instructions;
             TextOptions = textOptions;
             Tools = tools ?? new ChangeTrackingList<ResponseTool>();
             ToolChoice = toolChoice;
@@ -64,6 +64,7 @@ namespace OpenAI.Responses
             Error = error;
             IncompleteStatusDetails = incompleteStatusDetails;
             OutputItems = outputItems ?? new ChangeTrackingList<ResponseItem>();
+            Instructions = instructions ?? new ChangeTrackingList<ResponseItem>();
             Usage = usage;
             ParallelToolCallsEnabled = parallelToolCallsEnabled;
             ConversationOptions = conversationOptions;
@@ -90,8 +91,6 @@ namespace OpenAI.Responses
         public string PreviousResponseId { get; set; }
 
         public string Model { get; set; }
-
-        public string Instructions { get; set; }
 
         public IList<ResponseTool> Tools { get; }
 

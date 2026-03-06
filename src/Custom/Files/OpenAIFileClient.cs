@@ -95,6 +95,12 @@ public partial class OpenAIFileClient
         _internalUploadsClient = new(pipeline, options);
     }
 
+    [Experimental("SCME0002")]
+    public OpenAIFileClient(OpenAIFileClientSettings settings)
+        : this(AuthenticationPolicy.Create(settings), settings?.Options)
+    {
+    }
+
     /// <summary>
     /// Gets the endpoint URI for the service.
     /// </summary>

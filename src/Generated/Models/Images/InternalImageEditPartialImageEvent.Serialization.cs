@@ -16,6 +16,39 @@ namespace OpenAI.Images
         {
         }
 
+        protected virtual InternalImageEditPartialImageEvent PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalImageEditPartialImageEvent>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalImageEditPartialImageEvent(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalImageEditPartialImageEvent)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalImageEditPartialImageEvent>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalImageEditPartialImageEvent)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalImageEditPartialImageEvent>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalImageEditPartialImageEvent IPersistableModel<InternalImageEditPartialImageEvent>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalImageEditPartialImageEvent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalImageEditPartialImageEvent>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -176,38 +209,5 @@ namespace OpenAI.Images
                 partialImageIndex,
                 additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalImageEditPartialImageEvent>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalImageEditPartialImageEvent>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalImageEditPartialImageEvent)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalImageEditPartialImageEvent IPersistableModel<InternalImageEditPartialImageEvent>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalImageEditPartialImageEvent PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalImageEditPartialImageEvent>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalImageEditPartialImageEvent(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalImageEditPartialImageEvent)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalImageEditPartialImageEvent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

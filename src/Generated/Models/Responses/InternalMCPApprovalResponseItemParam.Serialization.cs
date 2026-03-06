@@ -16,6 +16,39 @@ namespace OpenAI.Responses
         {
         }
 
+        protected override InternalItemParam PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMCPApprovalResponseItemParam>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalMCPApprovalResponseItemParam(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalMCPApprovalResponseItemParam)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalMCPApprovalResponseItemParam>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalMCPApprovalResponseItemParam)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalMCPApprovalResponseItemParam>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalMCPApprovalResponseItemParam IPersistableModel<InternalMCPApprovalResponseItemParam>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalMCPApprovalResponseItemParam)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalMCPApprovalResponseItemParam>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalMCPApprovalResponseItemParam>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -117,38 +150,5 @@ namespace OpenAI.Responses
             }
             return new InternalMCPApprovalResponseItemParam(kind, patch, approvalRequestId, approve, reason);
         }
-
-        BinaryData IPersistableModel<InternalMCPApprovalResponseItemParam>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalMCPApprovalResponseItemParam>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalMCPApprovalResponseItemParam)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalMCPApprovalResponseItemParam IPersistableModel<InternalMCPApprovalResponseItemParam>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalMCPApprovalResponseItemParam)PersistableModelCreateCore(data, options);
-
-        protected override InternalItemParam PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalMCPApprovalResponseItemParam>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalMCPApprovalResponseItemParam(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalMCPApprovalResponseItemParam)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalMCPApprovalResponseItemParam>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

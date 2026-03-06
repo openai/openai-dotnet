@@ -357,9 +357,11 @@ do
             throw new NotImplementedException(completion.FinishReason.ToString());
     }
 } while (requiresAction);
-```\n\n## How to use chat completions with structured outputs
+```
 
-Beginning with the `gpt-4o-mini`, `gpt-4o-mini-2024-07-18`, and `gpt-4o-2024-08-06` model snapshots, structured outputs are available for both top-level response content and tool calls in the chat completion and assistants APIs. For information about the feature, see [the Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs/introduction).
+## How to use chat completions with structured outputs
+
+Beginning with the `gpt-4o-mini`, `gpt-4o-mini-2024-07-18`, and `gpt-4o-2024-08-06` model snapshots, structured outputs are available for both top-level response content and tool calls in the chat completion and assistants APIs. For information about the feature, see [the Structured Outputs guide](https://platform.openai.com/docs/guides/structured-outputs).
 
 To use structured outputs to constrain chat completion content, set an appropriate `ChatResponseFormat` as in the following example:
 
@@ -486,11 +488,11 @@ contain any of:
 
 ```C# Snippet:ReadMe_ResponsesStreaming
 ResponsesClient client = new(
-    model: "gpt-5.1",
     apiKey: Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
 CreateResponseOptions options = new()
 {
+    Model = "gpt-5.1",
     ReasoningOptions = new ResponseReasoningOptions()
     {
         ReasoningEffortLevel = ResponseReasoningEffortLevel.High,
@@ -502,6 +504,7 @@ ResponseResult response = await client.CreateResponseAsync(options);
 
 CreateResponseOptions streamingOptions = new()
 {
+    Model = "gpt-5.1",
     ReasoningOptions = new ResponseReasoningOptions()
     {
         ReasoningEffortLevel = ResponseReasoningEffortLevel.High,
@@ -534,7 +537,7 @@ await foreach (StreamingResponseUpdate update
 ## How to use responses with file search
 
 ```C# Snippet:ReadMe_ResponsesFileSearch
-ResponsesClient client = new("gpt-5.1", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+ResponsesClient client = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 string vectorStoreId = "vs-123";
 
 ResponseTool fileSearchTool
@@ -542,6 +545,7 @@ ResponseTool fileSearchTool
 
 CreateResponseOptions options = new()
 {
+    Model = "gpt-5.1",
     Tools = { fileSearchTool }
 };
 
@@ -568,10 +572,11 @@ foreach (ResponseItem outputItem in response.OutputItems)
 ## How to use responses with web search
 
 ```C# Snippet:ReadMe_ResponsesWebSearch
-ResponsesClient client = new("gpt-5.1", Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
+ResponsesClient client = new(Environment.GetEnvironmentVariable("OPENAI_API_KEY"));
 
 CreateResponseOptions options = new()
 {
+    Model = "gpt-5.1",
     Tools = { ResponseTool.CreateWebSearchTool() },
 };
 
@@ -972,12 +977,11 @@ var endpoint = Environment.GetEnvironmentVariable("AZURE_OPENAI_ENDPOINT")
     ?? throw new InvalidOperationException("AZURE_OPENAI_ENDPOINT is required.");
 
 var client = new ResponsesClient(
-    "gpt-5-mini",
     new BearerTokenPolicy(new DefaultAzureCredential(), "https://ai.azure.com/.default"),
     new OpenAIClientOptions { Endpoint = new Uri($"{endpoint}/openai/v1/") }
 );
 
-var response = await client.CreateResponseAsync("Hello world!");
+var response = await client.CreateResponseAsync("gpt-5-mini", "Hello world!");
 Console.WriteLine(response.Value.GetOutputText());
 ```
 

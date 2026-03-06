@@ -16,6 +16,39 @@ namespace OpenAI.Moderations
         {
         }
 
+        protected virtual ModerationInputPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ModerationInputPart>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeModerationInputPart(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(ModerationInputPart)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ModerationInputPart>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(ModerationInputPart)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<ModerationInputPart>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        ModerationInputPart IPersistableModel<ModerationInputPart>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<ModerationInputPart>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<ModerationInputPart>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -88,38 +121,5 @@ namespace OpenAI.Moderations
             }
             return InternalUnknownModerationInputPart.DeserializeInternalUnknownModerationInputPart(element, options);
         }
-
-        BinaryData IPersistableModel<ModerationInputPart>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ModerationInputPart>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(ModerationInputPart)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        ModerationInputPart IPersistableModel<ModerationInputPart>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual ModerationInputPart PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ModerationInputPart>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeModerationInputPart(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(ModerationInputPart)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<ModerationInputPart>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

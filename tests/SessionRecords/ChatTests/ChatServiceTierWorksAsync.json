@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "200",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.7.0 (.NET 9.0.10; Darwin 25.1.0 Darwin Kernel Version 25.1.0: Mon Oct 20 19:32:56 PDT 2025; root:xnu-12377.41.6~2/RELEASE_ARM64_T8132)"
+        "User-Agent": "OpenAI/2.8.0 (.NET 9.0.13; Microsoft Windows 10.0.26200)"
       },
       "RequestBody": {
         "service_tier": "default",
@@ -25,9 +25,9 @@
         "Access-Control-Expose-Headers": "X-Request-ID",
         "Alt-Svc": "h3=\":443\"",
         "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "9aad8d452a73e5bd-DFW",
+        "CF-RAY": "9cd10188ddf8a32e-SEA",
         "Connection": "keep-alive",
-        "Content-Length": "4019",
+        "Content-Length": "4534",
         "Content-Type": "application/json",
         "Date": "Sanitized",
         "openai-organization": "Sanitized",
@@ -35,33 +35,29 @@
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
-        "Set-Cookie": [
-          "Sanitized",
-          "Sanitized"
-        ],
+        "Set-Cookie": "Sanitized",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "13312",
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-requests": "30000",
         "x-ratelimit-limit-tokens": "150000000",
         "x-ratelimit-remaining-requests": "29999",
-        "x-ratelimit-remaining-tokens": "149999967",
+        "x-ratelimit-remaining-tokens": "149999970",
         "x-ratelimit-reset-requests": "2ms",
         "x-ratelimit-reset-tokens": "0s",
         "X-Request-ID": "Sanitized"
       },
       "ResponseBody": {
-        "id": "chatcmpl-CkY9pTg4idwG29Lu1aHjNoUx3ekqE",
+        "id": "chatcmpl-D8dW6hisWGO8ADCoXG03Uholor5iU",
         "object": "chat.completion",
-        "created": 1765210425,
+        "created": 1770950898,
         "model": "o3-mini-2025-01-31",
         "choices": [
           {
             "index": 0,
             "message": {
               "role": "assistant",
-              "content": "A look back at the 1970s and 1980s reveals that science fiction in film, television, and literature was deeply influenced by contemporary cultural, technological, and political currents. Here are some of the most common sci-fi themes during that period:\n\n1. Space Exploration and Alien Encounters\n\u2003• Following the excitement of real-life space missions, many works embraced space opera elements—vast interstellar adventures, epic battles, and encounters with diverse alien species.\n\u2003• Franchises like Star Wars (1977) epitomized this theme, combining mythic storytelling with futuristic technology to explore questions of good versus evil on a cosmic scale.\n\n2. Dystopian Futures and Post-Apocalyptic Worlds\n\u2003• Amid the Cold War and nuclear anxieties, a recurring motif was the fear of societal collapse. Stories often imagined bleak, totalitarian futures or worlds devastated by war or environmental disaster.\n\u2003• Films such as \"A Clockwork Orange\" (1971), \"Soylent Green\" (1973), and later, \"Blade Runner\" (1982) tapped into the unease about where rapid technological and political change might lead.\n\n3. The Rise—and Risks—of Technology and Artificial Intelligence\n\u2003• As computers began to permeate everyday life, science fiction started exploring themes related to AI, robotics, and the merging of man with machine.\n\u2003• Movies like \"The Terminator\" (1984) and \"Upgrade\" narratives highlighted both the potential benefits and the existential threats posed by intelligent machines that might one day challenge human authority or even our very definition of consciousness.\n\n4. Cyberpunk and the Urban Future\n\u2003• Influenced by rapid advances in computing and a growing awareness of corporate power, cyberpunk began to emerge as a distinct subgenre in the 1980s.\n\u2003• Works such as \"Blade Runner\" not only presented dystopian narratives but also painted a gritty, neon-lit picture of urban decay, high tech mingled with low life, and the blurring lines between human and machine.\n\u2003• This aesthetic and thematic exploration questioned how technology might reshape identity and society, especially in densely populated, hyper-commercialized environments.\n\n5. Time Travel and Alternate Realities\n\u2003• The 1970s and 1980s also witnessed a fascination with the possibilities of time travel—a theme that allowed storytellers to invert history, foresee consequences, or consider alternate realities.\n\u2003• These narratives often served as allegories for personal or societal transformation, exploring how choices and events might ripple through time to alter human existence.\n\n6. The Ethical and Existential Implications of Scientific Progress\n\u2003• Many stories delved into the unintended consequences of tampering with nature, whether through gene editing, cloning, or other forms of scientific advancement.\n\u2003• This theme questioned where the line should be drawn between human ambition and ethical responsibility, posing timeless questions about the nature of humanity and the moral limits of scientific endeavor.\n\nIn summary, popular media in the 1970s and 1980s used science fiction as a canvas to reflect the hopes, fears, and uncertainties of the time. Whether through grand interstellar epics or gritty urban narratives, the period’s sci-fi was characterized by an exploration of humanity’s place in an increasingly complex, technologically driven universe.",
+              "content": "A review of the most influential sci‑fi media of the 1970s and 1980s—from films and television series to novels—reveals a set of recurring themes that spoke directly to the cultural, technological, and political climates of the time. Here are some of the most common sci‑fi themes from that era:\n\n1. Space Exploration and the Final Frontier\n\u2003• During the era of the Apollo missions and a renewed global interest in space, many stories focused on journeys to distant planets, the challenges of life in space, and the wonder of discovering new worlds.\n\u2003• Franchises like Star Wars (starting in 1977) and Star Trek (which, while originating in the 1960s, continued to influence subsequent media) celebrated large‑scale adventures among the stars, blending mythic storytelling with futuristic technology.\n\n2. Dystopian Futures and Post‑Apocalyptic Narratives\n\u2003• Reflecting the pervasive anxieties of the Cold War—fear of nuclear conflict, political instability, and social upheaval—numerous works projected grim, dystopian futures.\n\u2003• Films like Blade Runner (1982) exemplified this theme by portraying urban decay, environmental degradation, and a corporatized society, while literature and television explored similar themes of surveillance and authoritarian control.\n\n3. The Ethics and Consequences of Advanced Technology\n\u2003• Rapid technological advancements raised questions about humanity’s reliance on machines. Stories grappled with the potential for technology to both empower and dehumanize.\n\u2003• This theme was prominently explored in narratives featuring artificial intelligence, robotics, and cybernetics. For example, The Terminator (1984) tapped into fears of computer‑controlled futures and self‑aware machines threatening human survival.\n\u2003• These works often served as cautionary tales about the unforeseen repercussions of technological progress.\n\n4. Alien Encounters and the Other\n\u2003• The fascination with extraterrestrial life was ever‑present. Media from the era frequently used aliens as metaphors for the unknown, challenging the boundaries of human identity and societal norms.\n\u2003• Close Encounters of the Third Kind (1977) and other similar works delved into themes of communication, misunderstanding, and the potential for both conflict and cooperation between vastly different species.\n\u2003• Such stories reflected a desire to understand what “the other” means—whether that represents a truly alien being or a mirror reflecting aspects of humanity back at itself.\n\n5. Man vs. Machine and the Blurring Line Between Human and Artificial\n\u2003• As computers and robotics gradually entered everyday life, cultural products began exploring the nature of humanity when juxtaposed with artificial beings.\n\u2003• This theme not only questioned what it means to be human but also predicted a future in which the intermingling of organic and synthetic life could upend conventional boundaries, a theme that would later evolve into cyberpunk in the 1980s.\n\n6. Societal and Political Critique\n\u2003• Many stories used futuristic settings as a backdrop to comment on contemporary political and social issues. Whether it was the dangers of unchecked corporate power, environmental neglect, or political disenfranchisement, sci‑fi provided a lens through which present‑day issues could be magnified.\n\u2003• This allegorical dimension allowed creators to critique modern society while envisioning radical alternatives or warnings for the future.\n\nIn summary, the sci‑fi media of the 1970s and 1980s were marked by an exploration of space and time, an interrogation of technology’s role in society, and a preoccupation with dystopian outcomes—all reflecting a world grappling with rapid change and uncertainty. These themes not only entertained but also invited audiences to consider important questions about progress, identity, and the future of humanity.",
               "refusal": null,
               "annotations": []
             },
@@ -70,14 +66,14 @@
         ],
         "usage": {
           "prompt_tokens": 34,
-          "completion_tokens": 1378,
-          "total_tokens": 1412,
+          "completion_tokens": 1276,
+          "total_tokens": 1310,
           "prompt_tokens_details": {
             "cached_tokens": 0,
             "audio_tokens": 0
           },
           "completion_tokens_details": {
-            "reasoning_tokens": 704,
+            "reasoning_tokens": 512,
             "audio_tokens": 0,
             "accepted_prediction_tokens": 0,
             "rejected_prediction_tokens": 0
@@ -89,6 +85,6 @@
     }
   ],
   "Variables": {
-    "OPEN-API-KEY": "api-key"
+    "OPENAI_API_KEY": "api-key"
   }
 }

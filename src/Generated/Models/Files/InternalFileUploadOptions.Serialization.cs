@@ -13,6 +13,39 @@ namespace OpenAI.Files
 {
     internal partial class InternalFileUploadOptions : IJsonModel<InternalFileUploadOptions>
     {
+        protected virtual InternalFileUploadOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalFileUploadOptions>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalFileUploadOptions(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalFileUploadOptions)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalFileUploadOptions>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalFileUploadOptions)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalFileUploadOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalFileUploadOptions IPersistableModel<InternalFileUploadOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalFileUploadOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalFileUploadOptions>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -120,38 +153,5 @@ namespace OpenAI.Files
             }
             return new InternalFileUploadOptions(@file, purpose, expiresAfter, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<InternalFileUploadOptions>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalFileUploadOptions>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalFileUploadOptions)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalFileUploadOptions IPersistableModel<InternalFileUploadOptions>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual InternalFileUploadOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalFileUploadOptions>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalFileUploadOptions(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalFileUploadOptions)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalFileUploadOptions>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

@@ -12,6 +12,39 @@ namespace OpenAI.Responses
 {
     internal partial class InternalToolChoiceObjectImageGen : InternalToolChoiceObject, IJsonModel<InternalToolChoiceObjectImageGen>
     {
+        protected override InternalToolChoiceObject PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalToolChoiceObjectImageGen>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalToolChoiceObjectImageGen(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalToolChoiceObjectImageGen)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalToolChoiceObjectImageGen>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalToolChoiceObjectImageGen)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalToolChoiceObjectImageGen>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalToolChoiceObjectImageGen IPersistableModel<InternalToolChoiceObjectImageGen>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalToolChoiceObjectImageGen)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalToolChoiceObjectImageGen>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalToolChoiceObjectImageGen>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -75,38 +108,5 @@ namespace OpenAI.Responses
             }
             return new InternalToolChoiceObjectImageGen(kind, patch);
         }
-
-        BinaryData IPersistableModel<InternalToolChoiceObjectImageGen>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalToolChoiceObjectImageGen>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalToolChoiceObjectImageGen)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalToolChoiceObjectImageGen IPersistableModel<InternalToolChoiceObjectImageGen>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalToolChoiceObjectImageGen)PersistableModelCreateCore(data, options);
-
-        protected override InternalToolChoiceObject PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalToolChoiceObjectImageGen>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalToolChoiceObjectImageGen(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalToolChoiceObjectImageGen)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalToolChoiceObjectImageGen>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

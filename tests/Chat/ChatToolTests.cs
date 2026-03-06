@@ -9,7 +9,6 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
-using static OpenAI.Tests.TestHelpers;
 
 namespace OpenAI.Tests.Chat;
 
@@ -28,7 +27,7 @@ public class ChatToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ConstraintsWork()
     {
-        ChatClient client = GetProxiedOpenAIClient<ChatClient>(TestScenario.Chat);
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
         IEnumerable<ChatMessage> messages = [new UserChatMessage("What's the number for the word 'banana'?")];
 
         foreach (var (choice, reason) in new (ChatToolChoice, ChatFinishReason)[]
@@ -53,7 +52,7 @@ public class ChatToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task NoParameterToolWorks()
     {
-        ChatClient client = GetProxiedOpenAIClient<ChatClient>(TestScenario.Chat);
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
         ICollection<ChatMessage> messages = [new UserChatMessage("What's my favorite color?")];
         ChatCompletionOptions options = new()
         {
@@ -80,7 +79,7 @@ public class ChatToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ParametersWork()
     {
-        ChatClient client = GetProxiedOpenAIClient<ChatClient>(TestScenario.Chat);
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
         ChatCompletionOptions options = new()
         {
             Tools = { s_getFavoriteColorForMonthTool },
@@ -110,7 +109,7 @@ public class ChatToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task FunctionsWork()
     {
-        ChatClient client = GetProxiedOpenAIClient<ChatClient>(TestScenario.Chat);
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
         ChatCompletionOptions options = new()
         {
             Functions = { s_getFavoriteColorForMonthFunction },
@@ -138,7 +137,7 @@ public class ChatToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ParallelToolCalls()
     {
-        ChatClient client = GetProxiedOpenAIClient<ChatClient>(TestScenario.Chat);
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
         ChatCompletionOptions options = new()
         {
             Tools = { s_getWeatherForCityTool },
@@ -178,7 +177,7 @@ public class ChatToolTests : OpenAIRecordedTestBase
     [RecordedTest]
     public async Task ConsecutiveToolCalls()
     {
-        ChatClient client = GetProxiedOpenAIClient<ChatClient>(TestScenario.Chat);
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>();
         ChatCompletionOptions options = new()
         {
             Tools = { s_getWeatherForCityTool, s_getMoodForWeatherTool },
@@ -230,7 +229,7 @@ public class ChatToolTests : OpenAIRecordedTestBase
         FailureExpectation failureExpectation = FailureExpectation.FailureNotExpected)
     {
         // Note: proper output requires 2024-08-06 or later models
-        ChatClient client = GetProxiedOpenAIClient<ChatClient>(TestScenario.Chat, "gpt-4o-2024-08-06");
+        ChatClient client = GetProxiedOpenAIClient<ChatClient>("gpt-4o-2024-08-06");
 
         const string toolName = "get_favorite_color_for_day_of_week";
         const string toolDescription = "Given a weekday name like Tuesday, gets the favorite color of the user on that day.";

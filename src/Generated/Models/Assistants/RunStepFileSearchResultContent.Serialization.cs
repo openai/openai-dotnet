@@ -16,6 +16,39 @@ namespace OpenAI.Assistants
         {
         }
 
+        protected virtual RunStepFileSearchResultContent PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RunStepFileSearchResultContent>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeRunStepFileSearchResultContent(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(RunStepFileSearchResultContent)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RunStepFileSearchResultContent>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(RunStepFileSearchResultContent)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<RunStepFileSearchResultContent>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        RunStepFileSearchResultContent IPersistableModel<RunStepFileSearchResultContent>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<RunStepFileSearchResultContent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<RunStepFileSearchResultContent>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -101,38 +134,5 @@ namespace OpenAI.Assistants
             }
             return new RunStepFileSearchResultContent(kind, text, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<RunStepFileSearchResultContent>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RunStepFileSearchResultContent>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(RunStepFileSearchResultContent)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        RunStepFileSearchResultContent IPersistableModel<RunStepFileSearchResultContent>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual RunStepFileSearchResultContent PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RunStepFileSearchResultContent>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRunStepFileSearchResultContent(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RunStepFileSearchResultContent)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<RunStepFileSearchResultContent>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

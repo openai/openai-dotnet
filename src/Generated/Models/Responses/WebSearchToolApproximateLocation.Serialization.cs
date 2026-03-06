@@ -12,6 +12,39 @@ namespace OpenAI.Responses
 {
     public partial class WebSearchToolApproximateLocation : WebSearchToolLocation, IJsonModel<WebSearchToolApproximateLocation>
     {
+        protected override WebSearchToolLocation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<WebSearchToolApproximateLocation>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeWebSearchToolApproximateLocation(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(WebSearchToolApproximateLocation)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<WebSearchToolApproximateLocation>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(WebSearchToolApproximateLocation)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<WebSearchToolApproximateLocation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        WebSearchToolApproximateLocation IPersistableModel<WebSearchToolApproximateLocation>.Create(BinaryData data, ModelReaderWriterOptions options) => (WebSearchToolApproximateLocation)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<WebSearchToolApproximateLocation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<WebSearchToolApproximateLocation>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -145,38 +178,5 @@ namespace OpenAI.Responses
                 city,
                 timezone);
         }
-
-        BinaryData IPersistableModel<WebSearchToolApproximateLocation>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<WebSearchToolApproximateLocation>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(WebSearchToolApproximateLocation)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        WebSearchToolApproximateLocation IPersistableModel<WebSearchToolApproximateLocation>.Create(BinaryData data, ModelReaderWriterOptions options) => (WebSearchToolApproximateLocation)PersistableModelCreateCore(data, options);
-
-        protected override WebSearchToolLocation PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<WebSearchToolApproximateLocation>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeWebSearchToolApproximateLocation(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(WebSearchToolApproximateLocation)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<WebSearchToolApproximateLocation>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

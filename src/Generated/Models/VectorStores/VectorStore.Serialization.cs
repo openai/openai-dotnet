@@ -17,6 +17,46 @@ namespace OpenAI.VectorStores
         {
         }
 
+        protected virtual VectorStore PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<VectorStore>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeVectorStore(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(VectorStore)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<VectorStore>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(VectorStore)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<VectorStore>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        VectorStore IPersistableModel<VectorStore>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<VectorStore>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator VectorStore(ClientResult result)
+        {
+            PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeVectorStore(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
+
         void IJsonModel<VectorStore>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -262,46 +302,6 @@ namespace OpenAI.VectorStores
                 lastActiveAt,
                 metadata,
                 additionalBinaryDataProperties);
-        }
-
-        BinaryData IPersistableModel<VectorStore>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<VectorStore>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(VectorStore)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        VectorStore IPersistableModel<VectorStore>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual VectorStore PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<VectorStore>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeVectorStore(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(VectorStore)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<VectorStore>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static explicit operator VectorStore(ClientResult result)
-        {
-            PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
-            return DeserializeVectorStore(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

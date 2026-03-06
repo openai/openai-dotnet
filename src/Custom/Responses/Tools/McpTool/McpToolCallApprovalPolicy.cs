@@ -14,6 +14,7 @@ public partial class McpToolCallApprovalPolicy
     {
         GlobalPolicy = globalPolicy;
     }
+
     // CUSTOM: Added to support the corresponding component of the union.
     public McpToolCallApprovalPolicy(CustomMcpToolCallApprovalPolicy customPolicy)
     {

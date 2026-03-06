@@ -16,6 +16,39 @@ namespace OpenAI.Responses
         {
         }
 
+        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseCodeInterpreterCallCodeDoneUpdate>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeStreamingResponseCodeInterpreterCallCodeDoneUpdate(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(StreamingResponseCodeInterpreterCallCodeDoneUpdate)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseCodeInterpreterCallCodeDoneUpdate>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(StreamingResponseCodeInterpreterCallCodeDoneUpdate)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<StreamingResponseCodeInterpreterCallCodeDoneUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        StreamingResponseCodeInterpreterCallCodeDoneUpdate IPersistableModel<StreamingResponseCodeInterpreterCallCodeDoneUpdate>.Create(BinaryData data, ModelReaderWriterOptions options) => (StreamingResponseCodeInterpreterCallCodeDoneUpdate)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<StreamingResponseCodeInterpreterCallCodeDoneUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<StreamingResponseCodeInterpreterCallCodeDoneUpdate>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -124,38 +157,5 @@ namespace OpenAI.Responses
                 itemId,
                 code);
         }
-
-        BinaryData IPersistableModel<StreamingResponseCodeInterpreterCallCodeDoneUpdate>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseCodeInterpreterCallCodeDoneUpdate>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(StreamingResponseCodeInterpreterCallCodeDoneUpdate)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        StreamingResponseCodeInterpreterCallCodeDoneUpdate IPersistableModel<StreamingResponseCodeInterpreterCallCodeDoneUpdate>.Create(BinaryData data, ModelReaderWriterOptions options) => (StreamingResponseCodeInterpreterCallCodeDoneUpdate)PersistableModelCreateCore(data, options);
-
-        protected override StreamingResponseUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<StreamingResponseCodeInterpreterCallCodeDoneUpdate>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeStreamingResponseCodeInterpreterCallCodeDoneUpdate(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(StreamingResponseCodeInterpreterCallCodeDoneUpdate)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<StreamingResponseCodeInterpreterCallCodeDoneUpdate>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

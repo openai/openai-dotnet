@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.TypeSpec.Generator.Customizations;
 using System;
 using System.ClientModel.Primitives;
@@ -69,6 +70,38 @@ public partial class OpenAIClientOptions : ClientPipelineOptions
         {
             AssertNotFrozen();
             _userAgentApplicationId = value;
+        }
+    }
+
+    public OpenAIClientOptions()
+    {
+
+    }
+
+    /// <summary>
+    /// Internal constructor for binding from a configuration section.
+    /// Used by ClientSettings classes to bind nested "Options" section.
+    /// </summary>
+    internal OpenAIClientOptions(IConfigurationSection section)
+    {
+        if (Uri.TryCreate(section[nameof(Endpoint)], UriKind.Absolute, out Uri endpoint))
+        {
+            Endpoint = endpoint;
+        }
+
+        if (section[nameof(OrganizationId)] is string organizationId)
+        {
+            OrganizationId = organizationId;
+        }
+
+        if (section[nameof(ProjectId)] is string projectId)
+        {
+            ProjectId = projectId;
+        }
+
+        if (section[nameof(UserAgentApplicationId)] is string userAgentApplicationId)
+        {
+            UserAgentApplicationId = userAgentApplicationId;
         }
     }
 }

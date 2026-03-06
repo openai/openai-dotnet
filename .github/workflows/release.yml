@@ -68,7 +68,8 @@ jobs:
           --results-directory ${{ github.workspace }}/artifacts/test-results
           ${{ env.version_suffix_args }}
         env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          CLIENTMODEL_TEST_MODE: Playback
+          CLIENTMODEL_DISABLE_AUTO_RECORDING: true
 
       - name: Upload artifact
         uses: actions/upload-artifact@v6

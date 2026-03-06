@@ -9,102 +9,27 @@ using OpenAI;
 
 namespace OpenAI.Realtime
 {
-    [PersistableModelProxy(typeof(UnknownRealtimeRequestItem))]
+    [PersistableModelProxy(typeof(InternalUnknownRealtimeConversationItemGA))]
     public partial class RealtimeItem : IJsonModel<RealtimeItem>
     {
         internal RealtimeItem()
         {
         }
 
-        void IJsonModel<RealtimeItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
-        {
-            writer.WriteStartObject();
-            JsonModelWriteCore(writer, options);
-            writer.WriteEndObject();
-        }
-
-        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        protected virtual RealtimeItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
             string format = options.Format == "W" ? ((IPersistableModel<RealtimeItem>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
+            switch (format)
             {
-                throw new FormatException($"The model {nameof(RealtimeItem)} does not support writing '{format}' format.");
-            }
-            if (_additionalBinaryDataProperties?.ContainsKey("type") != true)
-            {
-                writer.WritePropertyName("type"u8);
-                writer.WriteStringValue(Kind.ToString());
-            }
-            if (Optional.IsDefined(Id) && _additionalBinaryDataProperties?.ContainsKey("id") != true)
-            {
-                writer.WritePropertyName("id"u8);
-                writer.WriteStringValue(Id);
-            }
-            // Plugin customization: remove options.Format != "W" check
-            if (_additionalBinaryDataProperties != null)
-            {
-                foreach (var item in _additionalBinaryDataProperties)
-                {
-                    if (ModelSerializationExtensions.IsSentinelValue(item.Value))
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        continue;
+                        return DeserializeRealtimeItem(document.RootElement, data, options);
                     }
-                    writer.WritePropertyName(item.Key);
-#if NET6_0_OR_GREATER
-                    writer.WriteRawValue(item.Value);
-#else
-                    using (JsonDocument document = JsonDocument.Parse(item.Value))
-                    {
-                        JsonSerializer.Serialize(writer, document.RootElement);
-                    }
-#endif
-                }
+                default:
+                    throw new FormatException($"The model {nameof(RealtimeItem)} does not support reading '{options.Format}' format.");
             }
         }
-
-        RealtimeItem IJsonModel<RealtimeItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
-
-        protected virtual RealtimeItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeItem>)this).GetFormatFromOptions(options) : options.Format;
-            if (format != "J")
-            {
-                throw new FormatException($"The model {nameof(RealtimeItem)} does not support reading '{format}' format.");
-            }
-            using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeRealtimeItem(document.RootElement, options);
-        }
-
-        internal static RealtimeItem DeserializeRealtimeItem(JsonElement element, ModelReaderWriterOptions options)
-        {
-            if (element.ValueKind == JsonValueKind.Null)
-            {
-                return null;
-            }
-            if (element.TryGetProperty("type"u8, out JsonElement discriminator))
-            {
-                switch (discriminator.GetString())
-                {
-                    case "message":
-                        return InternalRealtimeRequestMessageItem.DeserializeInternalRealtimeRequestMessageItem(element, options);
-                    case "function_call":
-                        return InternalRealtimeRequestFunctionCallItem.DeserializeInternalRealtimeRequestFunctionCallItem(element, options);
-                    case "function_call_output":
-                        return InternalRealtimeRequestFunctionCallOutputItem.DeserializeInternalRealtimeRequestFunctionCallOutputItem(element, options);
-                    case "mcp_call":
-                        return InternalRealtimeRequestMCPCallItem.DeserializeInternalRealtimeRequestMCPCallItem(element, options);
-                    case "mcp_list_tools":
-                        return InternalRealtimeRequestMCPListToolsItem.DeserializeInternalRealtimeRequestMCPListToolsItem(element, options);
-                    case "mcp_approval_request":
-                        return InternalRealtimeRequestMCPApprovalRequestItem.DeserializeInternalRealtimeRequestMCPApprovalRequestItem(element, options);
-                    case "mcp_approval_response":
-                        return InternalRealtimeRequestMCPApprovalResponseItem.DeserializeInternalRealtimeRequestMCPApprovalResponseItem(element, options);
-                }
-            }
-            return UnknownRealtimeRequestItem.DeserializeUnknownRealtimeRequestItem(element, options);
-        }
-
-        BinaryData IPersistableModel<RealtimeItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
@@ -118,23 +43,83 @@ namespace OpenAI.Realtime
             }
         }
 
+        BinaryData IPersistableModel<RealtimeItem>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
         RealtimeItem IPersistableModel<RealtimeItem>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        protected virtual RealtimeItem PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        string IPersistableModel<RealtimeItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        void IJsonModel<RealtimeItem>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<RealtimeItem>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (Patch.Contains("$"u8))
             {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeRealtimeItem(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(RealtimeItem)} does not support reading '{options.Format}' format.");
+                writer.WriteRawValue(Patch.GetJson("$"u8));
+                return;
             }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+
+            writer.WriteStartObject();
+            JsonModelWriteCore(writer, options);
+            writer.WriteEndObject();
         }
 
-        string IPersistableModel<RealtimeItem>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeItem>)this).GetFormatFromOptions(options) : options.Format;
+            if (format != "J")
+            {
+                throw new FormatException($"The model {nameof(RealtimeItem)} does not support writing '{format}' format.");
+            }
+#pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+            if (!Patch.Contains("$.type"u8))
+            {
+                writer.WritePropertyName("type"u8);
+                writer.WriteStringValue(Kind.ToString());
+            }
+#pragma warning restore SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
+        }
+
+        RealtimeItem IJsonModel<RealtimeItem>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+
+        protected virtual RealtimeItem JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<RealtimeItem>)this).GetFormatFromOptions(options) : options.Format;
+            if (format != "J")
+            {
+                throw new FormatException($"The model {nameof(RealtimeItem)} does not support reading '{format}' format.");
+            }
+            using JsonDocument document = JsonDocument.ParseValue(ref reader);
+            return DeserializeRealtimeItem(document.RootElement, null, options);
+        }
+
+        internal static RealtimeItem DeserializeRealtimeItem(JsonElement element, BinaryData data, ModelReaderWriterOptions options)
+        {
+            if (element.ValueKind == JsonValueKind.Null)
+            {
+                return null;
+            }
+            if (element.TryGetProperty("type"u8, out JsonElement discriminator))
+            {
+                switch (discriminator.GetString())
+                {
+                    case "function_call":
+                        return RealtimeFunctionCallItem.DeserializeRealtimeFunctionCallItem(element, data, options);
+                    case "function_call_output":
+                        return RealtimeFunctionCallOutputItem.DeserializeRealtimeFunctionCallOutputItem(element, data, options);
+                    case "mcp_approval_response":
+                        return RealtimeMcpToolCallApprovalResponseItem.DeserializeRealtimeMcpToolCallApprovalResponseItem(element, data, options);
+                    case "mcp_list_tools":
+                        return RealtimeMcpToolDefinitionListItem.DeserializeRealtimeMcpToolDefinitionListItem(element, data, options);
+                    case "mcp_call":
+                        return RealtimeMcpToolCallItem.DeserializeRealtimeMcpToolCallItem(element, data, options);
+                    case "mcp_approval_request":
+                        return RealtimeMcpToolCallApprovalRequestItem.DeserializeRealtimeMcpToolCallApprovalRequestItem(element, data, options);
+                    case "message":
+                        return RealtimeMessageItem.DeserializeRealtimeMessageItem(element, data, options);
+                }
+            }
+            return InternalUnknownRealtimeConversationItemGA.DeserializeInternalUnknownRealtimeConversationItemGA(element, data, options);
+        }
     }
 }

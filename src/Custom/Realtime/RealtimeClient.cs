@@ -2,19 +2,11 @@ using Microsoft.TypeSpec.Generator.Customizations;
 using System;
 using System.ClientModel;
 using System.ClientModel.Primitives;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Threading;
 
 namespace OpenAI.Realtime;
 
 [CodeGenType("Realtime")]
-[CodeGenSuppress("CreateEphemeralToken", typeof(InternalRealtimeSessionCreateRequest), typeof(CancellationToken))]
-[CodeGenSuppress("CreateEphemeralTokenAsync", typeof(InternalRealtimeSessionCreateRequest), typeof(CancellationToken))]
-[CodeGenSuppress("CreateEphemeralTranscriptionToken", typeof(TranscriptionSessionOptions), typeof(CancellationToken))]
-[CodeGenSuppress("CreateEphemeralTranscriptionTokenAsync", typeof(TranscriptionSessionOptions), typeof(CancellationToken))]
-[CodeGenSuppress("StartRealtimeSession", typeof(IEnumerable<InternalRealtimeClientEvent>), typeof(CancellationToken))]
-[CodeGenSuppress("StartRealtimeSessionAsync", typeof(IEnumerable<InternalRealtimeClientEvent>), typeof(CancellationToken))]
 public partial class RealtimeClient
 {
     private const string DefaultEndpoint = "https://api.openai.com/v1";
@@ -57,16 +49,9 @@ public partial class RealtimeClient
     /// <param name="credential"> The <see cref="ApiKeyCredential"/> to authenticate with the service. </param>
     /// <param name="options"> The options to configure the client. </param>
     /// <exception cref="ArgumentNullException"> <paramref name="credential"/> is null. </exception>
-    public RealtimeClient(ApiKeyCredential credential, RealtimeClientOptions options)
-        : this(CreatePipeline(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options ??= new RealtimeClientOptions()), options)
+    public RealtimeClient(ApiKeyCredential credential, RealtimeClientOptions options) : this(OpenAIClient.CreateApiKeyAuthenticationPolicy(credential), options)
     {
         _keyCredential = credential;
-    }
-
-    // CUSTOM: Internal overload for use by OpenAIClient.GetRealtimeClient().
-    internal RealtimeClient(ApiKeyCredential credential, OpenAIClientOptions options)
-        : this(credential, RealtimeClientOptions.FromClientOptions(options))
-    {
     }
 
     // CUSTOM: Added as a convenience.
@@ -85,8 +70,13 @@ public partial class RealtimeClient
     /// <exception cref="ArgumentNullException"> <paramref name="authenticationPolicy"/> is null. </exception>
     [Experimental("OPENAI001")]
     public RealtimeClient(AuthenticationPolicy authenticationPolicy, RealtimeClientOptions options)
-        : this(CreatePipeline(authenticationPolicy, options ??= new RealtimeClientOptions()), options)
     {
+        Argument.AssertNotNull(authenticationPolicy, nameof(authenticationPolicy));
+        options ??= new RealtimeClientOptions();
+
+        Pipeline = CreatePipeline(authenticationPolicy, options);
+        _endpoint = GetEndpoint(options);
+        _webSocketEndpoint = GetWebSocketEndpoint(options);
     }
 
     // CUSTOM:
@@ -107,6 +97,12 @@ public partial class RealtimeClient
         _webSocketEndpoint = GetWebSocketEndpoint(options);
     }
 
+    [Experimental("SCME0002")]
+    public RealtimeClient(RealtimeClientSettings settings)
+        : this(AuthenticationPolicy.Create(settings), RealtimeClientOptions.FromClientOptions(settings?.Options))
+    {
+    }
+
     /// <summary>
     /// Gets the endpoint URI for the service.
     /// </summary>
@@ -118,7 +114,7 @@ public partial class RealtimeClient
         return options?.Endpoint ?? new(DefaultEndpoint);
     }
 
-    private static Uri GetWebSocketEndpoint(RealtimeClientOptions options)
+    private static Uri GetWebSocketEndpoint(RealtimeClientOptions options = null)
     {
         UriBuilder uriBuilder = new(options?.Endpoint ?? new(DefaultEndpoint));
         uriBuilder.Scheme = uriBuilder.Scheme.ToLowerInvariant() switch

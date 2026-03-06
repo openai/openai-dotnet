@@ -16,6 +16,39 @@ namespace OpenAI.Graders
         {
         }
 
+        protected virtual ValidateGraderRequest PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ValidateGraderRequest>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeValidateGraderRequest(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(ValidateGraderRequest)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ValidateGraderRequest>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(ValidateGraderRequest)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<ValidateGraderRequest>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        ValidateGraderRequest IPersistableModel<ValidateGraderRequest>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<ValidateGraderRequest>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<ValidateGraderRequest>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -97,38 +130,5 @@ namespace OpenAI.Graders
             }
             return new ValidateGraderRequest(grader, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<ValidateGraderRequest>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ValidateGraderRequest>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(ValidateGraderRequest)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        ValidateGraderRequest IPersistableModel<ValidateGraderRequest>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual ValidateGraderRequest PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ValidateGraderRequest>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeValidateGraderRequest(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(ValidateGraderRequest)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<ValidateGraderRequest>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

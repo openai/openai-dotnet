@@ -12,6 +12,39 @@ namespace OpenAI.Responses
 {
     internal partial class InternalComputerToolCallOutputItemOutputComputerScreenshot : ComputerCallOutput, IJsonModel<InternalComputerToolCallOutputItemOutputComputerScreenshot>
     {
+        protected override ComputerCallOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerToolCallOutputItemOutputComputerScreenshot>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalComputerToolCallOutputItemOutputComputerScreenshot(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalComputerToolCallOutputItemOutputComputerScreenshot)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerToolCallOutputItemOutputComputerScreenshot>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalComputerToolCallOutputItemOutputComputerScreenshot)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalComputerToolCallOutputItemOutputComputerScreenshot>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalComputerToolCallOutputItemOutputComputerScreenshot IPersistableModel<InternalComputerToolCallOutputItemOutputComputerScreenshot>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalComputerToolCallOutputItemOutputComputerScreenshot)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalComputerToolCallOutputItemOutputComputerScreenshot>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalComputerToolCallOutputItemOutputComputerScreenshot>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -97,38 +130,5 @@ namespace OpenAI.Responses
             }
             return new InternalComputerToolCallOutputItemOutputComputerScreenshot(kind, patch, imageUrl, fileId);
         }
-
-        BinaryData IPersistableModel<InternalComputerToolCallOutputItemOutputComputerScreenshot>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerToolCallOutputItemOutputComputerScreenshot>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalComputerToolCallOutputItemOutputComputerScreenshot)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalComputerToolCallOutputItemOutputComputerScreenshot IPersistableModel<InternalComputerToolCallOutputItemOutputComputerScreenshot>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalComputerToolCallOutputItemOutputComputerScreenshot)PersistableModelCreateCore(data, options);
-
-        protected override ComputerCallOutput PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerToolCallOutputItemOutputComputerScreenshot>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalComputerToolCallOutputItemOutputComputerScreenshot(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalComputerToolCallOutputItemOutputComputerScreenshot)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalComputerToolCallOutputItemOutputComputerScreenshot>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

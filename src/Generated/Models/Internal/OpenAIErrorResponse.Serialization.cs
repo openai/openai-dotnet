@@ -16,6 +16,39 @@ namespace OpenAI.Internal
         {
         }
 
+        protected virtual OpenAIErrorResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<OpenAIErrorResponse>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeOpenAIErrorResponse(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(OpenAIErrorResponse)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<OpenAIErrorResponse>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(OpenAIErrorResponse)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<OpenAIErrorResponse>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        OpenAIErrorResponse IPersistableModel<OpenAIErrorResponse>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<OpenAIErrorResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<OpenAIErrorResponse>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -90,38 +123,5 @@ namespace OpenAI.Internal
             }
             return new OpenAIErrorResponse(error, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<OpenAIErrorResponse>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<OpenAIErrorResponse>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(OpenAIErrorResponse)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        OpenAIErrorResponse IPersistableModel<OpenAIErrorResponse>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual OpenAIErrorResponse PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<OpenAIErrorResponse>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeOpenAIErrorResponse(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(OpenAIErrorResponse)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<OpenAIErrorResponse>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

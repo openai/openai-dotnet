@@ -16,6 +16,39 @@ namespace OpenAI.Evals
         {
         }
 
+        protected override InternalEvalRunDataContentSource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalEvalRunFileContentDataContentSource>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalEvalRunFileContentDataContentSource(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalEvalRunFileContentDataContentSource)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalEvalRunFileContentDataContentSource>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalEvalRunFileContentDataContentSource)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalEvalRunFileContentDataContentSource>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalEvalRunFileContentDataContentSource IPersistableModel<InternalEvalRunFileContentDataContentSource>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalEvalRunFileContentDataContentSource)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalEvalRunFileContentDataContentSource>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalEvalRunFileContentDataContentSource>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -87,38 +120,5 @@ namespace OpenAI.Evals
             }
             return new InternalEvalRunFileContentDataContentSource(kind, additionalBinaryDataProperties, content);
         }
-
-        BinaryData IPersistableModel<InternalEvalRunFileContentDataContentSource>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalEvalRunFileContentDataContentSource>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalEvalRunFileContentDataContentSource)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalEvalRunFileContentDataContentSource IPersistableModel<InternalEvalRunFileContentDataContentSource>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalEvalRunFileContentDataContentSource)PersistableModelCreateCore(data, options);
-
-        protected override InternalEvalRunDataContentSource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalEvalRunFileContentDataContentSource>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalEvalRunFileContentDataContentSource(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalEvalRunFileContentDataContentSource)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalEvalRunFileContentDataContentSource>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

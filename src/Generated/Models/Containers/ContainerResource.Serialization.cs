@@ -17,6 +17,46 @@ namespace OpenAI.Containers
         {
         }
 
+        protected virtual ContainerResource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ContainerResource>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeContainerResource(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(ContainerResource)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ContainerResource>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(ContainerResource)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<ContainerResource>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        ContainerResource IPersistableModel<ContainerResource>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<ContainerResource>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        public static explicit operator ContainerResource(ClientResult result)
+        {
+            PipelineResponse response = result.GetRawResponse();
+            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
+            return DeserializeContainerResource(document.RootElement, ModelSerializationExtensions.WireOptions);
+        }
+
         void IJsonModel<ContainerResource>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -156,46 +196,6 @@ namespace OpenAI.Containers
                 status,
                 expiresAfter,
                 additionalBinaryDataProperties);
-        }
-
-        BinaryData IPersistableModel<ContainerResource>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ContainerResource>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(ContainerResource)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        ContainerResource IPersistableModel<ContainerResource>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual ContainerResource PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ContainerResource>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeContainerResource(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(ContainerResource)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<ContainerResource>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
-        public static explicit operator ContainerResource(ClientResult result)
-        {
-            PipelineResponse response = result.GetRawResponse();
-            using JsonDocument document = JsonDocument.Parse(response.Content, ModelSerializationExtensions.JsonDocumentOptions);
-            return DeserializeContainerResource(document.RootElement, ModelSerializationExtensions.WireOptions);
         }
     }
 }

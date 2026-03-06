@@ -13,6 +13,39 @@ namespace OpenAI.Responses
 {
     public partial class WebSearchToolFilters : IJsonModel<WebSearchToolFilters>
     {
+        protected virtual WebSearchToolFilters PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<WebSearchToolFilters>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeWebSearchToolFilters(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(WebSearchToolFilters)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<WebSearchToolFilters>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(WebSearchToolFilters)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<WebSearchToolFilters>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        WebSearchToolFilters IPersistableModel<WebSearchToolFilters>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<WebSearchToolFilters>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<WebSearchToolFilters>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -119,38 +152,5 @@ namespace OpenAI.Responses
             }
             return new WebSearchToolFilters(allowedDomains ?? new ChangeTrackingList<string>(), patch);
         }
-
-        BinaryData IPersistableModel<WebSearchToolFilters>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<WebSearchToolFilters>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(WebSearchToolFilters)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        WebSearchToolFilters IPersistableModel<WebSearchToolFilters>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual WebSearchToolFilters PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<WebSearchToolFilters>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeWebSearchToolFilters(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(WebSearchToolFilters)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<WebSearchToolFilters>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

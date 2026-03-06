@@ -33,11 +33,11 @@
     <PackageVersion Include="Moq" Version="[4.18.2]" />
 
     <!-- Development Feed Packages -->
-    <PackageVersion Include="Microsoft.ClientModel.TestFramework" Version="1.0.0-alpha.20260121.1" />
+    <PackageVersion Include="Microsoft.ClientModel.TestFramework" Version="1.0.0-alpha.20260212.1" />
   </ItemGroup>
 
   <!-- Generator-Only Dependencies -->
   <ItemGroup Condition="'$(IsGeneratorProject)' == 'true' or $(MSBuildProjectName.EndsWith('Plugin'))">
-    <PackageVersion Include="Microsoft.TypeSpec.Generator.ClientModel" Version="1.0.0-alpha.20251223.2" />
+    <PackageVersion Include="Microsoft.TypeSpec.Generator.ClientModel" Version="1.0.0-alpha.20260227.3" />
   </ItemGroup>
 </Project>

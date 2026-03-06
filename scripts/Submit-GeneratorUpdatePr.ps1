@@ -167,19 +167,18 @@ try {
     $openAiPackageJson.dependencies.'@typespec/http-client-csharp' = $PackageVersion
     $openAiPackageJson | ConvertTo-Json -Depth 10 | Set-Content -Path $openAiPackageJsonPath
 
-    # Update Microsoft.TypeSpec.Generator.ClientModel version in csproj files
-    $openAiCsprojPath = "codegen/generator/src/OpenAI.Library.Plugin.csproj"
+    # Update Microsoft.TypeSpec.Generator.ClientModel version in Directory.Packages.props (central package management)
+    $directoryPackagesPropsPath = "Directory.Packages.props"
     
-    Write-Log "Updating Microsoft.TypeSpec.Generator.ClientModel version in csproj files"
+    Write-Log "Updating Microsoft.TypeSpec.Generator.ClientModel version in Directory.Packages.props"
     
-    # Update OpenAI csproj
-    if (Test-Path $openAiCsprojPath) {
-        $openAiCsproj = Get-Content $openAiCsprojPath -Raw
-        $openAiCsproj = $openAiCsproj -replace '(<PackageReference Include="Microsoft\.TypeSpec\.Generator\.ClientModel" Version=")[^"]*(")', "`${1}$PackageVersion`${2}"
-        Set-Content -Path $openAiCsprojPath -Value $openAiCsproj -NoNewline
-        Write-Log "Updated OpenAI csproj: $openAiCsprojPath"
+    if (Test-Path $directoryPackagesPropsPath) {
+        $directoryPackagesProps = Get-Content $directoryPackagesPropsPath -Raw
+        $directoryPackagesProps = $directoryPackagesProps -replace '(<PackageVersion Include="Microsoft\.TypeSpec\.Generator\.ClientModel" Version=")[^"]*(")', "`${1}$PackageVersion`${2}"
+        Set-Content -Path $directoryPackagesPropsPath -Value $directoryPackagesProps -NoNewline
+        Write-Log "Updated Directory.Packages.props: $directoryPackagesPropsPath"
     } else {
-        Write-Warning-Log "OpenAI csproj not found at: $openAiCsprojPath"
+        Write-Warning-Log "Directory.Packages.props not found at: $directoryPackagesPropsPath"
     }
     
     # Delete previous package-lock.json
@@ -241,7 +240,7 @@ try {
     # Add and commit changes
     Write-Log "Adding and committing changes"
     git add codegen/package.json
-    git add codegen/generator/src/OpenAI.Library.Plugin.csproj
+    git add Directory.Packages.props
     git add api
     git add package-lock.json
     git add ./ # Add any generated code changes
@@ -283,7 +282,7 @@ This PR automatically updates the TypeSpec HTTP client C# generator version and 
 - Updated ``@typespec/http-client-csharp`` from ``$currentVersion`` to ``$PackageVersion``
 - Updated ``Microsoft.TypeSpec.Generator.ClientModel`` from ``$currentVersion`` to ``$PackageVersion``
 - Updated OpenAI plugin package.json file
-- Updated OpenAI plugin csproj file
+- Updated ``Directory.Packages.props`` with new generator package version
 - Regenerated OpenAI SDK code using the new generator version
 - Updated centrally managed package-lock.json file with new dependency versions
 

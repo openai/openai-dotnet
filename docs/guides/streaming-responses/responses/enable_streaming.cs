@@ -9,9 +9,10 @@
 using OpenAI.Responses;
 
 string key = Environment.GetEnvironmentVariable("OPENAI_API_KEY")!;
-ResponsesClient client = new(model: "gpt-5.2", apiKey: key);
+ResponsesClient client = new(key);
 
 var responses = client.CreateResponseStreamingAsync(
+    "gpt-5.2",
     "Say 'double bubble bath' ten times fast."
 );
 

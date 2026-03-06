@@ -12,6 +12,39 @@ namespace OpenAI.Assistants
 {
     public partial class ToolResources : IJsonModel<ToolResources>
     {
+        protected virtual ToolResources PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ToolResources>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeToolResources(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(ToolResources)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<ToolResources>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(ToolResources)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<ToolResources>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        ToolResources IPersistableModel<ToolResources>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<ToolResources>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<ToolResources>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -105,38 +138,5 @@ namespace OpenAI.Assistants
             }
             return new ToolResources(codeInterpreter, fileSearch, additionalBinaryDataProperties);
         }
-
-        BinaryData IPersistableModel<ToolResources>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ToolResources>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(ToolResources)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        ToolResources IPersistableModel<ToolResources>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        protected virtual ToolResources PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<ToolResources>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeToolResources(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(ToolResources)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<ToolResources>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
     }
 }

@@ -33,6 +33,7 @@ public partial class ResponseContentPart
     // CUSTOM: Exposed input file properties.
     public string InputFileId => (this as InternalItemContentInputFile)?.FileId;
     public string InputFilename => (this as InternalItemContentInputFile)?.Filename;
+    public Uri InputFileUri => (this as InternalItemContentInputFile)?.FileUrl;
     public BinaryData InputFileBytes => (this as InternalItemContentInputFile)?.InternalFileBytes;
     public string InputFileBytesMediaType => (this as InternalItemContentInputFile)?.InternalFileBytesMediaType;
 
@@ -80,6 +81,16 @@ public partial class ResponseContentPart
         Argument.AssertNotNullOrEmpty(filename, nameof(filename));
 
         return new InternalItemContentInputFile(filename, fileBytes, fileBytesMediaType);
+    }
+
+    public static ResponseContentPart CreateInputFilePart(Uri fileUri)
+    {
+        Argument.AssertNotNull(fileUri, nameof(fileUri));
+
+        return new InternalItemContentInputFile()
+        {
+            FileUrl = fileUri,
+        };
     }
 
     public static ResponseContentPart CreateOutputTextPart(string text, IEnumerable<ResponseMessageAnnotation> annotations)

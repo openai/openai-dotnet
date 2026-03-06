@@ -16,6 +16,45 @@ namespace OpenAI.Files
         {
         }
 
+        private InternalFileExpirationAfter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalFileExpirationAfter>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalFileExpirationAfter(document.RootElement, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalFileExpirationAfter)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        private BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalFileExpirationAfter>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalFileExpirationAfter)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalFileExpirationAfter>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalFileExpirationAfter IPersistableModel<InternalFileExpirationAfter>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalFileExpirationAfter>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
+        BinaryData IPersistableModel<object>.Write(ModelReaderWriterOptions options) => ((IPersistableModel<InternalFileExpirationAfter>)this).Write(options);
+
+        string IPersistableModel<object>.GetFormatFromOptions(ModelReaderWriterOptions options) => ((IPersistableModel<InternalFileExpirationAfter>)this).GetFormatFromOptions(options);
+
+        object IPersistableModel<object>.Create(BinaryData data, ModelReaderWriterOptions options) => ((IPersistableModel<InternalFileExpirationAfter>)this).Create(data, options);
+
         void IJsonModel<InternalFileExpirationAfter>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
@@ -102,47 +141,8 @@ namespace OpenAI.Files
             return new InternalFileExpirationAfter(anchor, seconds, additionalBinaryDataProperties);
         }
 
-        BinaryData IPersistableModel<InternalFileExpirationAfter>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        private BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalFileExpirationAfter>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalFileExpirationAfter)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalFileExpirationAfter IPersistableModel<InternalFileExpirationAfter>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
-
-        private InternalFileExpirationAfter PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalFileExpirationAfter>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalFileExpirationAfter(document.RootElement, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalFileExpirationAfter)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalFileExpirationAfter>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
-
         void IJsonModel<object>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options) => ((IJsonModel<InternalFileExpirationAfter>)this).Write(writer, options);
 
         object IJsonModel<object>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => ((IJsonModel<InternalFileExpirationAfter>)this).Create(ref reader, options);
-
-        BinaryData IPersistableModel<object>.Write(ModelReaderWriterOptions options) => ((IPersistableModel<InternalFileExpirationAfter>)this).Write(options);
-
-        string IPersistableModel<object>.GetFormatFromOptions(ModelReaderWriterOptions options) => ((IPersistableModel<InternalFileExpirationAfter>)this).GetFormatFromOptions(options);
-
-        object IPersistableModel<object>.Create(BinaryData data, ModelReaderWriterOptions options) => ((IPersistableModel<InternalFileExpirationAfter>)this).Create(data, options);
     }
 }

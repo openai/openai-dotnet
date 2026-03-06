@@ -21,5 +21,13 @@ namespace OpenAI
             IEnumerable<string> stringValues = value.Select(v => TypeFormatters.ConvertToString(v, format));
             headers.Set(name, string.Join(delimiter, stringValues));
         }
+
+        public static void Add(this PipelineRequestHeaders headers, string prefix, IDictionary<string, string> value)
+        {
+            foreach (var header in value)
+            {
+                headers.Add(prefix + header.Key, header.Value);
+            }
+        }
     }
 }

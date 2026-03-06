@@ -253,6 +253,8 @@ public partial class ChatCompletionOptions
         clone.PresencePenalty = PresencePenalty;
         clone.WebSearchOptions = WebSearchOptions;
         clone.Seed = Seed;
+        clone._patch = _patch;
+        clone._patch.SetPropagators(clone.PropagateSet, clone.PropagateGet);
         return clone;
     }
 }

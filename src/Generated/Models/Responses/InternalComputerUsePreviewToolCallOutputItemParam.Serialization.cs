@@ -17,6 +17,39 @@ namespace OpenAI.Responses
         {
         }
 
+        protected override InternalItemParam PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerUsePreviewToolCallOutputItemParam>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
+                    {
+                        return DeserializeInternalComputerUsePreviewToolCallOutputItemParam(document.RootElement, data, options);
+                    }
+                default:
+                    throw new FormatException($"The model {nameof(InternalComputerUsePreviewToolCallOutputItemParam)} does not support reading '{options.Format}' format.");
+            }
+        }
+
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
+        {
+            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerUsePreviewToolCallOutputItemParam>)this).GetFormatFromOptions(options) : options.Format;
+            switch (format)
+            {
+                case "J":
+                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
+                default:
+                    throw new FormatException($"The model {nameof(InternalComputerUsePreviewToolCallOutputItemParam)} does not support writing '{options.Format}' format.");
+            }
+        }
+
+        BinaryData IPersistableModel<InternalComputerUsePreviewToolCallOutputItemParam>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+
+        InternalComputerUsePreviewToolCallOutputItemParam IPersistableModel<InternalComputerUsePreviewToolCallOutputItemParam>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalComputerUsePreviewToolCallOutputItemParam)PersistableModelCreateCore(data, options);
+
+        string IPersistableModel<InternalComputerUsePreviewToolCallOutputItemParam>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+
         void IJsonModel<InternalComputerUsePreviewToolCallOutputItemParam>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
@@ -140,39 +173,6 @@ namespace OpenAI.Responses
             }
             return new InternalComputerUsePreviewToolCallOutputItemParam(kind, patch, callId, acknowledgedSafetyChecks ?? new ChangeTrackingList<ComputerCallSafetyCheck>(), output);
         }
-
-        BinaryData IPersistableModel<InternalComputerUsePreviewToolCallOutputItemParam>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
-
-        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerUsePreviewToolCallOutputItemParam>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
-                default:
-                    throw new FormatException($"The model {nameof(InternalComputerUsePreviewToolCallOutputItemParam)} does not support writing '{options.Format}' format.");
-            }
-        }
-
-        InternalComputerUsePreviewToolCallOutputItemParam IPersistableModel<InternalComputerUsePreviewToolCallOutputItemParam>.Create(BinaryData data, ModelReaderWriterOptions options) => (InternalComputerUsePreviewToolCallOutputItemParam)PersistableModelCreateCore(data, options);
-
-        protected override InternalItemParam PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
-        {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalComputerUsePreviewToolCallOutputItemParam>)this).GetFormatFromOptions(options) : options.Format;
-            switch (format)
-            {
-                case "J":
-                    using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
-                    {
-                        return DeserializeInternalComputerUsePreviewToolCallOutputItemParam(document.RootElement, data, options);
-                    }
-                default:
-                    throw new FormatException($"The model {nameof(InternalComputerUsePreviewToolCallOutputItemParam)} does not support reading '{options.Format}' format.");
-            }
-        }
-
-        string IPersistableModel<InternalComputerUsePreviewToolCallOutputItemParam>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
 #pragma warning disable SCME0001 // Type is for evaluation purposes only and is subject to change or removal in future updates.
         private bool PropagateGet(ReadOnlySpan<byte> jsonPath, out JsonPatch.EncodedValue value)
