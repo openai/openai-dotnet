@@ -39,24 +39,25 @@ internal class OpenTelemetryScope : IDisposable
     private static bool IsChatEnabled => s_chatSource.HasListeners() || s_tokens.Enabled || s_duration.Enabled;
 
     public static OpenTelemetryScope StartChat(string model, string operationName,
-        string serverAddress, int serverPort, ChatCompletionOptions options)
+        string serverAddress, int serverPort, ChatCompletionOptions options,
+        string systemKey)
     {
         if (IsChatEnabled)
         {
             var scope = new OpenTelemetryScope(model, operationName, serverAddress, serverPort);
-            scope.StartChat(options);
+            scope.StartChat(options, systemKey);
             return scope;
         }
 
         return null;
     }
 
-    private void StartChat(ChatCompletionOptions options)
+    private void StartChat(ChatCompletionOptions options, string systemKey)
     {
         _duration = Stopwatch.StartNew();
         _commonTags = new TagList
         {
-            { GenAiSystemKey, GenAiSystemValue },
+            { systemKey, GenAiSystemValue },
             { GenAiRequestModelKey, _requestModel },
             { ServerAddressKey, _serverAddress },
             { ServerPortKey, _serverPort },
@@ -103,11 +104,10 @@ internal class OpenTelemetryScope : IDisposable
 
     private void RecordCommonAttributes()
     {
-        _activity.SetTag(GenAiSystemKey, GenAiSystemValue);
-        _activity.SetTag(GenAiRequestModelKey, _requestModel);
-        _activity.SetTag(ServerAddressKey, _serverAddress);
-        _activity.SetTag(ServerPortKey, _serverPort);
-        _activity.SetTag(GenAiOperationNameKey, _operationName);
+        foreach (var tag in _commonTags)
+        {
+            _activity.SetTag(tag.Key, tag.Value);
+        }
     }
 
     private void RecordMetrics(string responseModel, string errorType, int? inputTokensUsage, int? outputTokensUsage)
