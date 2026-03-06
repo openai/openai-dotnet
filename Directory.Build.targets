@@ -59,10 +59,15 @@
     <ItemGroup>
       <_ExportApiTargetFramework Include="$(TargetFrameworks)" />
     </ItemGroup>
-    
-    <MSBuild Projects="$(MSBuildProjectFile)"
+
+    <ItemGroup>
+      <_ExportApiProject Include="$(MSBuildProjectFile)"
+                         AdditionalProperties="TargetFramework=%(_ExportApiTargetFramework.Identity);ExportingApi=true" />
+    </ItemGroup>
+
+    <MSBuild Projects="@(_ExportApiProject)"
              Targets="ExportApiInner"
-             Properties="TargetFramework=%(_ExportApiTargetFramework.Identity);ExportingApi=true" />
+             BuildInParallel="true" />
   </Target>
 
   <!-- Inner build target: Runs for each specific target framework -->
