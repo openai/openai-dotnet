@@ -12,13 +12,13 @@ namespace OpenAI.Conversations
     {
         private readonly ConversationClient _client;
         private readonly string _conversationId;
-        private readonly long? _limit;
+        private readonly int? _limit;
         private readonly string _order;
         private readonly string _after;
         private readonly IEnumerable<IncludedConversationItemProperty> _include;
         private readonly RequestOptions _options;
 
-        public ConversationClientGetConversationItemsCollectionResult(ConversationClient client, string conversationId, long? limit, string order, string after, IEnumerable<IncludedConversationItemProperty> include, RequestOptions options)
+        public ConversationClientGetConversationItemsCollectionResult(ConversationClient client, string conversationId, int? limit, string order, string after, IEnumerable<IncludedConversationItemProperty> include, RequestOptions options)
         {
             _client = client;
             _conversationId = conversationId;

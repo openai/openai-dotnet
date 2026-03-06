@@ -13,12 +13,12 @@ using OpenAI;
 
 namespace OpenAI.Responses
 {
-    internal abstract partial class InternalCompoundFilter
+    internal partial class InternalCompoundFilter
     {
         [Experimental("SCME0001")]
         private JsonPatch _patch;
 
-        private protected InternalCompoundFilter(InternalCompoundFilterType kind, IEnumerable<BinaryData> filters)
+        internal InternalCompoundFilter(InternalCompoundFilterType kind, IEnumerable<BinaryData> filters)
         {
             Kind = kind;
             Filters = filters.ToList();

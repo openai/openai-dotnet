@@ -10,6 +10,7 @@ namespace OpenAI.VectorStores
     internal readonly partial struct InternalVectorStoreSearchRequestRankingOptionsRanker : IEquatable<InternalVectorStoreSearchRequestRankingOptionsRanker>
     {
         private readonly string _value;
+        private const string NoneValue = "none";
         private const string AutoValue = "auto";
         private const string Default20241115Value = "default-2024-11-15";
 
@@ -17,6 +18,8 @@ namespace OpenAI.VectorStores
         {
             _value = value;
         }
+
+        internal static InternalVectorStoreSearchRequestRankingOptionsRanker None { get; } = new InternalVectorStoreSearchRequestRankingOptionsRanker(NoneValue);
 
         internal static InternalVectorStoreSearchRequestRankingOptionsRanker Auto { get; } = new InternalVectorStoreSearchRequestRankingOptionsRanker(AutoValue);
 

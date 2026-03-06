@@ -79,6 +79,11 @@ namespace OpenAI.VectorStores
                 writer.WritePropertyName("name"u8);
                 writer.WriteStringValue(Name);
             }
+            if (Optional.IsDefined(Description) && _additionalBinaryDataProperties?.ContainsKey("description") != true)
+            {
+                writer.WritePropertyName("description"u8);
+                writer.WriteStringValue(Description);
+            }
             if (Optional.IsDefined(ExpirationPolicy) && _additionalBinaryDataProperties?.ContainsKey("expires_after") != true)
             {
                 writer.WritePropertyName("expires_after"u8);
@@ -148,6 +153,7 @@ namespace OpenAI.VectorStores
             }
             IList<string> fileIds = default;
             string name = default;
+            string description = default;
             VectorStoreExpirationPolicy expirationPolicy = default;
             FileChunkingStrategy chunkingStrategy = default;
             IDictionary<string, string> metadata = default;
@@ -178,6 +184,11 @@ namespace OpenAI.VectorStores
                 if (prop.NameEquals("name"u8))
                 {
                     name = prop.Value.GetString();
+                    continue;
+                }
+                if (prop.NameEquals("description"u8))
+                {
+                    description = prop.Value.GetString();
                     continue;
                 }
                 if (prop.NameEquals("expires_after"u8))
@@ -225,6 +236,7 @@ namespace OpenAI.VectorStores
             return new VectorStoreCreationOptions(
                 fileIds ?? new ChangeTrackingList<string>(),
                 name,
+                description,
                 expirationPolicy,
                 chunkingStrategy,
                 metadata ?? new ChangeTrackingDictionary<string, string>(),
