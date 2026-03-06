@@ -12,3 +12,7 @@ This ensures that any modifications to the TypeSpec definitions are properly ref
 
 
 When making Changes to TypeSpec files (`.tsp` files), Do not use type unions and instead use discriminators to ensure that we don't use binary data types when the generation occurs.
+
+## Test Recording
+
+When adding or modifying tests that connect to the live OpenAI service, follow the test recording skill at `.github/skills/test-recording/SKILL.md` to record or re-record session recordings.
