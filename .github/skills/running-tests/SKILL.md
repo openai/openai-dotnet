@@ -1,6 +1,6 @@
 ---
 name: running-tests
-description: Guide for running tests in the openai-dotnet repository. Use this when asked to run, debug, or validate tests. Explains test modes (Playback, Record, Live), how to identify recorded vs non-recorded tests, environment variable configuration, and what to do when recordings are missing or outdated.
+description: Guide for running tests in the openai-dotnet repository. Use this when asked to run, debug, or validate tests, or when writing new tests. Explains test modes (Playback, Record, Live), how to identify recorded vs non-recorded tests, environment variable configuration, and what to do when recordings are missing or outdated.
 ---
 
 # Running Tests
@@ -48,9 +48,13 @@ $env:CLIENTMODEL_TEST_MODE = "Playback"
 $env:CLIENTMODEL_DISABLE_AUTO_RECORDING = "true"
 ```
 
-## When Tests Fail Due to Missing or Outdated Recordings
+## When Recordings Are Missing or Outdated
 
-If one or more recorded tests fail because no recordings exist (e.g., the tests are new and have not been recorded yet) or because the recordings are outdated (e.g., the tests were modified), new recordings must be captured. **You cannot capture recordings yourself** — you must request a human to do it.
+Recordings must be captured by a human. **You cannot capture recordings yourself.** There are two scenarios where you must request recordings:
+
+1. **You wrote new recorded tests.** You must proactively request a human to record them as part of your workflow — do not wait for tests to fail. New recorded tests will not have session recordings and cannot pass in Playback mode until recordings are captured. Request recordings before considering your work complete.
+
+2. **Existing recorded tests fail in Playback mode** because recordings are missing or outdated (e.g., the tests were modified and the existing recordings no longer match). Request a human to re-record the affected tests.
 
 When requesting recordings, provide the exact `NUnit.Where` expression so the human can copy and paste it directly. Format the request like this:
 
