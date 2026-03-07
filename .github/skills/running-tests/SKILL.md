@@ -48,32 +48,20 @@ $env:CLIENTMODEL_TEST_MODE = "Playback"
 $env:CLIENTMODEL_DISABLE_AUTO_RECORDING = "true"
 ```
 
-Then run tests with:
-
-```powershell
-dotnet test OpenAI.slnx
-```
-
-Or to run specific tests:
-
-```powershell
-dotnet test OpenAI.slnx --filter "FullyQualifiedName~YourTestName"
-```
-
 ## When Tests Fail Due to Missing or Outdated Recordings
 
 If one or more recorded tests fail because no recordings exist (e.g., the tests are new and have not been recorded yet) or because the recordings are outdated (e.g., the tests were modified), new recordings must be captured. **You cannot capture recordings yourself** — you must request a human to do it.
 
 When requesting recordings, provide the exact `dotnet test --filter` expression so the human can copy and paste it directly. Format the request like this:
 
-> Please record or re-record tests using the following filter expression:
+> Please record tests using the following filter expression:
 > ```
 > FullyQualifiedName=Namespace.TestClass.TestMethodName
 > ```
 
 If multiple tests need recording, combine them in a single filter expression:
 
-> Please record or re-record tests using the following filter expression:
+> Please record tests using the following filter expression:
 > ```
 > FullyQualifiedName=Namespace.TestClass.TestA|FullyQualifiedName=Namespace.TestClass.TestB
 > ```
