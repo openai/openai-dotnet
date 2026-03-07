@@ -7,9 +7,9 @@ using System.Collections.Generic;
 
 namespace OpenAI.Audio
 {
-    internal partial class InternalUnknownCreateTranscriptionResponseJsonUsage : InternalCreateTranscriptionResponseJsonUsage
+    internal partial class InternalUnknownCreateTranscriptionResponseJsonUsage : TranscriptionUsage
     {
-        internal InternalUnknownCreateTranscriptionResponseJsonUsage(InternalCreateTranscriptionResponseJsonUsageType kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
+        internal InternalUnknownCreateTranscriptionResponseJsonUsage(TranscriptionUsageKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties) : base(kind != default ? kind : "unknown", additionalBinaryDataProperties)
         {
         }
     }

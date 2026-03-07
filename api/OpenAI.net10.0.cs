@@ -1174,6 +1174,14 @@ namespace OpenAI.Audio {
         public virtual Task<ClientResult<AudioTranscription>> TranscribeAudioAsync(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         public virtual Task<ClientResult<AudioTranscription>> TranscribeAudioAsync(string audioFilePath, AudioTranscriptionOptions options = null);
         [Experimental("OPENAI001")]
+        public virtual ClientResult<DiarizedAudioTranscription> TranscribeAudioDiarized(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
+        public virtual ClientResult<DiarizedAudioTranscription> TranscribeAudioDiarized(string audioFilePath, AudioTranscriptionOptions options = null);
+        [Experimental("OPENAI001")]
+        public virtual Task<ClientResult<DiarizedAudioTranscription>> TranscribeAudioDiarizedAsync(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
+        [Experimental("OPENAI001")]
+        public virtual Task<ClientResult<DiarizedAudioTranscription>> TranscribeAudioDiarizedAsync(string audioFilePath, AudioTranscriptionOptions options = null);
+        [Experimental("OPENAI001")]
         public virtual CollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(Stream audio, string audioFilename, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
         [Experimental("OPENAI001")]
         public virtual CollectionResult<StreamingAudioTranscriptionUpdate> TranscribeAudioStreaming(string audioFilePath, AudioTranscriptionOptions options = null, CancellationToken cancellationToken = default);
@@ -1217,6 +1225,8 @@ namespace OpenAI.Audio {
         public string Text { get; }
         [Experimental("OPENAI001")]
         public IReadOnlyList<AudioTokenLogProbabilityDetails> TranscriptionTokenLogProbabilities { get; }
+        [Experimental("OPENAI001")]
+        public TranscriptionUsage Usage { get; }
         public IReadOnlyList<TranscribedWord> Words { get; }
         [Experimental("OPENAI001")]
         protected virtual AudioTranscription JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
@@ -1231,6 +1241,7 @@ namespace OpenAI.Audio {
     }
     public readonly partial struct AudioTranscriptionFormat : IEquatable<AudioTranscriptionFormat> {
         public AudioTranscriptionFormat(string value);
+        public static AudioTranscriptionFormat DiarizedJson { get; }
         public static AudioTranscriptionFormat Simple { get; }
         public static AudioTranscriptionFormat Srt { get; }
         [EditorBrowsable(EditorBrowsableState.Never)]
@@ -1257,6 +1268,10 @@ namespace OpenAI.Audio {
     public class AudioTranscriptionOptions : IJsonModel<AudioTranscriptionOptions>, IPersistableModel<AudioTranscriptionOptions> {
         [Experimental("OPENAI001")]
         public AudioTranscriptionIncludes Includes { get; set; }
+        [Experimental("OPENAI001")]
+        public IList<string> KnownSpeakerNames { get; }
+        [Experimental("OPENAI001")]
+        public IList<string> KnownSpeakerReferences { get; }
         public string Language { get; set; }
         public string Prompt { get; set; }
         public AudioTranscriptionFormat? ResponseFormat { get; set; }
@@ -1317,6 +1332,29 @@ namespace OpenAI.Audio {
         [Experimental("OPENAI001")]
         protected virtual AudioTranslationOptions PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         [Experimental("OPENAI001")]
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class DiarizedAudioTranscription : IJsonModel<DiarizedAudioTranscription>, IPersistableModel<DiarizedAudioTranscription> {
+        public TimeSpan Duration { get; }
+        public IReadOnlyList<DiarizedTranscriptionSegment> Segments { get; }
+        public string Text { get; }
+        public TranscriptionUsage Usage { get; }
+        protected virtual DiarizedAudioTranscription JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual DiarizedAudioTranscription PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class DiarizedTranscriptionSegment : IJsonModel<DiarizedTranscriptionSegment>, IPersistableModel<DiarizedTranscriptionSegment> {
+        public TimeSpan EndTime { get; }
+        public string Id { get; }
+        public string Speaker { get; }
+        public TimeSpan StartTime { get; }
+        public string Text { get; }
+        protected virtual DiarizedTranscriptionSegment JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual DiarizedTranscriptionSegment PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
     }
     public readonly partial struct GeneratedSpeechFormat : IEquatable<GeneratedSpeechFormat> {
@@ -1404,6 +1442,7 @@ namespace OpenAI.Audio {
     public class StreamingAudioTranscriptionTextDoneUpdate : StreamingAudioTranscriptionUpdate, IJsonModel<StreamingAudioTranscriptionTextDoneUpdate>, IPersistableModel<StreamingAudioTranscriptionTextDoneUpdate> {
         public string Text { get; }
         public IReadOnlyList<AudioTokenLogProbabilityDetails> TranscriptionTokenLogProbabilities { get; }
+        public TranscriptionTokenUsage Usage { get; }
         protected override StreamingAudioTranscriptionUpdate JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
         protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
         protected override StreamingAudioTranscriptionUpdate PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
@@ -1461,6 +1500,58 @@ namespace OpenAI.Audio {
         public TimeSpan EndTime { get; }
         public TimeSpan StartTime { get; }
         public string Word { get; }
+    }
+    [Experimental("OPENAI001")]
+    public class TranscriptionDurationUsage : TranscriptionUsage, IJsonModel<TranscriptionDurationUsage>, IPersistableModel<TranscriptionDurationUsage> {
+        public TimeSpan Seconds { get; }
+        protected override TranscriptionUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override TranscriptionUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class TranscriptionInputTokenDetails : IJsonModel<TranscriptionInputTokenDetails>, IPersistableModel<TranscriptionInputTokenDetails> {
+        public int? AudioTokens { get; }
+        public int? TextTokens { get; }
+        protected virtual TranscriptionInputTokenDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual TranscriptionInputTokenDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class TranscriptionTokenUsage : TranscriptionUsage, IJsonModel<TranscriptionTokenUsage>, IPersistableModel<TranscriptionTokenUsage> {
+        public TranscriptionInputTokenDetails InputTokenDetails { get; }
+        public int InputTokens { get; }
+        public int OutputTokens { get; }
+        public int TotalTokens { get; }
+        protected override TranscriptionUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected override void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected override TranscriptionUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected override BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public class TranscriptionUsage : IJsonModel<TranscriptionUsage>, IPersistableModel<TranscriptionUsage> {
+        public TranscriptionUsageKind Kind { get; }
+        protected virtual TranscriptionUsage JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options);
+        protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options);
+        protected virtual TranscriptionUsage PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options);
+        protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options);
+    }
+    [Experimental("OPENAI001")]
+    public readonly partial struct TranscriptionUsageKind : IEquatable<TranscriptionUsageKind> {
+        public TranscriptionUsageKind(string value);
+        public static TranscriptionUsageKind Duration { get; }
+        public static TranscriptionUsageKind Tokens { get; }
+        public readonly bool Equals(TranscriptionUsageKind other);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly bool Equals(object obj);
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public override readonly int GetHashCode();
+        public static bool operator ==(TranscriptionUsageKind left, TranscriptionUsageKind right);
+        public static implicit operator TranscriptionUsageKind(string value);
+        public static implicit operator TranscriptionUsageKind?(string value);
+        public static bool operator !=(TranscriptionUsageKind left, TranscriptionUsageKind right);
+        public override readonly string ToString();
     }
 }
 namespace OpenAI.Batch {

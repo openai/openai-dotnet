@@ -4,6 +4,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using OpenAI;
 
 namespace OpenAI.Audio
@@ -37,6 +38,12 @@ namespace OpenAI.Audio
         public AudioTranscriptionFormat? ResponseFormat { get; set; }
 
         public float? Temperature { get; set; }
+
+        [Experimental("OPENAI001")]
+        public IList<string> KnownSpeakerNames { get; }
+
+        [Experimental("OPENAI001")]
+        public IList<string> KnownSpeakerReferences { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

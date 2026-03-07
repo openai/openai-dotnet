@@ -36,5 +36,5 @@ public readonly partial struct AudioTranscriptionFormat
     // CUSTOM: Added custom doc comments.
     /// <summary> JSON containing transcription text with diarization metadata, such as speakers and segments. </summary>
     [CodeGenMember("diarized_json")]
-    internal static AudioTranscriptionFormat DiarizedJson { get; } = new AudioTranscriptionFormat(DiarizedJsonValue);
+    public static AudioTranscriptionFormat DiarizedJson { get; } = new AudioTranscriptionFormat(DiarizedJsonValue);
 }

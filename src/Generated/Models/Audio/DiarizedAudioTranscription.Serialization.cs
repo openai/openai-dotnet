@@ -10,46 +10,46 @@ using OpenAI;
 
 namespace OpenAI.Audio
 {
-    internal partial class InternalCreateTranscriptionResponseDiarizedJson : IJsonModel<InternalCreateTranscriptionResponseDiarizedJson>
+    public partial class DiarizedAudioTranscription : IJsonModel<DiarizedAudioTranscription>
     {
-        internal InternalCreateTranscriptionResponseDiarizedJson() : this(null, default, null, null, null, null)
+        internal DiarizedAudioTranscription() : this(null, default, null, null, null, null)
         {
         }
 
-        protected virtual InternalCreateTranscriptionResponseDiarizedJson PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual DiarizedAudioTranscription PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateTranscriptionResponseDiarizedJson>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<DiarizedAudioTranscription>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalCreateTranscriptionResponseDiarizedJson(document.RootElement, options);
+                        return DeserializeDiarizedAudioTranscription(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalCreateTranscriptionResponseDiarizedJson)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(DiarizedAudioTranscription)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateTranscriptionResponseDiarizedJson>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<DiarizedAudioTranscription>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(InternalCreateTranscriptionResponseDiarizedJson)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(DiarizedAudioTranscription)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<InternalCreateTranscriptionResponseDiarizedJson>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<DiarizedAudioTranscription>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        InternalCreateTranscriptionResponseDiarizedJson IPersistableModel<InternalCreateTranscriptionResponseDiarizedJson>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        DiarizedAudioTranscription IPersistableModel<DiarizedAudioTranscription>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<InternalCreateTranscriptionResponseDiarizedJson>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<DiarizedAudioTranscription>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        void IJsonModel<InternalCreateTranscriptionResponseDiarizedJson>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<DiarizedAudioTranscription>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
@@ -58,10 +58,10 @@ namespace OpenAI.Audio
 
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateTranscriptionResponseDiarizedJson>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<DiarizedAudioTranscription>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalCreateTranscriptionResponseDiarizedJson)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(DiarizedAudioTranscription)} does not support writing '{format}' format.");
             }
             if (_additionalBinaryDataProperties?.ContainsKey("task") != true)
             {
@@ -78,11 +78,12 @@ namespace OpenAI.Audio
                 writer.WritePropertyName("text"u8);
                 writer.WriteStringValue(Text);
             }
+            // Plugin customization: remove options.Format != "W" check
             if (_additionalBinaryDataProperties?.ContainsKey("segments") != true)
             {
                 writer.WritePropertyName("segments"u8);
                 writer.WriteStartArray();
-                foreach (InternalTranscriptionDiarizedSegment item in Segments)
+                foreach (DiarizedTranscriptionSegment item in Segments)
                 {
                     writer.WriteObjectValue(item, options);
                 }
@@ -115,20 +116,20 @@ namespace OpenAI.Audio
             }
         }
 
-        InternalCreateTranscriptionResponseDiarizedJson IJsonModel<InternalCreateTranscriptionResponseDiarizedJson>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        DiarizedAudioTranscription IJsonModel<DiarizedAudioTranscription>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected virtual InternalCreateTranscriptionResponseDiarizedJson JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual DiarizedAudioTranscription JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalCreateTranscriptionResponseDiarizedJson>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<DiarizedAudioTranscription>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalCreateTranscriptionResponseDiarizedJson)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(DiarizedAudioTranscription)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalCreateTranscriptionResponseDiarizedJson(document.RootElement, options);
+            return DeserializeDiarizedAudioTranscription(document.RootElement, options);
         }
 
-        internal static InternalCreateTranscriptionResponseDiarizedJson DeserializeInternalCreateTranscriptionResponseDiarizedJson(JsonElement element, ModelReaderWriterOptions options)
+        internal static DiarizedAudioTranscription DeserializeDiarizedAudioTranscription(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -137,8 +138,8 @@ namespace OpenAI.Audio
             string task = default;
             TimeSpan duration = default;
             string text = default;
-            IList<InternalTranscriptionDiarizedSegment> segments = default;
-            InternalCreateTranscriptionResponseJsonUsage usage = default;
+            IReadOnlyList<DiarizedTranscriptionSegment> segments = default;
+            TranscriptionUsage usage = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -159,10 +160,10 @@ namespace OpenAI.Audio
                 }
                 if (prop.NameEquals("segments"u8))
                 {
-                    List<InternalTranscriptionDiarizedSegment> array = new List<InternalTranscriptionDiarizedSegment>();
+                    List<DiarizedTranscriptionSegment> array = new List<DiarizedTranscriptionSegment>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(InternalTranscriptionDiarizedSegment.DeserializeInternalTranscriptionDiarizedSegment(item, options));
+                        array.Add(DiarizedTranscriptionSegment.DeserializeDiarizedTranscriptionSegment(item, options));
                     }
                     segments = array;
                     continue;
@@ -173,13 +174,13 @@ namespace OpenAI.Audio
                     {
                         continue;
                     }
-                    usage = InternalCreateTranscriptionResponseJsonUsage.DeserializeInternalCreateTranscriptionResponseJsonUsage(prop.Value, options);
+                    usage = TranscriptionUsage.DeserializeTranscriptionUsage(prop.Value, options);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalCreateTranscriptionResponseDiarizedJson(
+            return new DiarizedAudioTranscription(
                 task,
                 duration,
                 text,

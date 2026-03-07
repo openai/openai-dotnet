@@ -10,42 +10,42 @@ using OpenAI;
 
 namespace OpenAI.Audio
 {
-    internal partial class InternalTranscriptTextUsageTokensInputTokenDetails : IJsonModel<InternalTranscriptTextUsageTokensInputTokenDetails>
+    public partial class TranscriptionInputTokenDetails : IJsonModel<TranscriptionInputTokenDetails>
     {
-        protected virtual InternalTranscriptTextUsageTokensInputTokenDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
+        protected virtual TranscriptionInputTokenDetails PersistableModelCreateCore(BinaryData data, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalTranscriptTextUsageTokensInputTokenDetails>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<TranscriptionInputTokenDetails>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     using (JsonDocument document = JsonDocument.Parse(data, ModelSerializationExtensions.JsonDocumentOptions))
                     {
-                        return DeserializeInternalTranscriptTextUsageTokensInputTokenDetails(document.RootElement, options);
+                        return DeserializeTranscriptionInputTokenDetails(document.RootElement, options);
                     }
                 default:
-                    throw new FormatException($"The model {nameof(InternalTranscriptTextUsageTokensInputTokenDetails)} does not support reading '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(TranscriptionInputTokenDetails)} does not support reading '{options.Format}' format.");
             }
         }
 
         protected virtual BinaryData PersistableModelWriteCore(ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalTranscriptTextUsageTokensInputTokenDetails>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<TranscriptionInputTokenDetails>)this).GetFormatFromOptions(options) : options.Format;
             switch (format)
             {
                 case "J":
                     return ModelReaderWriter.Write(this, options, OpenAIContext.Default);
                 default:
-                    throw new FormatException($"The model {nameof(InternalTranscriptTextUsageTokensInputTokenDetails)} does not support writing '{options.Format}' format.");
+                    throw new FormatException($"The model {nameof(TranscriptionInputTokenDetails)} does not support writing '{options.Format}' format.");
             }
         }
 
-        BinaryData IPersistableModel<InternalTranscriptTextUsageTokensInputTokenDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
+        BinaryData IPersistableModel<TranscriptionInputTokenDetails>.Write(ModelReaderWriterOptions options) => PersistableModelWriteCore(options);
 
-        InternalTranscriptTextUsageTokensInputTokenDetails IPersistableModel<InternalTranscriptTextUsageTokensInputTokenDetails>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
+        TranscriptionInputTokenDetails IPersistableModel<TranscriptionInputTokenDetails>.Create(BinaryData data, ModelReaderWriterOptions options) => PersistableModelCreateCore(data, options);
 
-        string IPersistableModel<InternalTranscriptTextUsageTokensInputTokenDetails>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
+        string IPersistableModel<TranscriptionInputTokenDetails>.GetFormatFromOptions(ModelReaderWriterOptions options) => "J";
 
-        void IJsonModel<InternalTranscriptTextUsageTokensInputTokenDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
+        void IJsonModel<TranscriptionInputTokenDetails>.Write(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
             writer.WriteStartObject();
             JsonModelWriteCore(writer, options);
@@ -54,10 +54,10 @@ namespace OpenAI.Audio
 
         protected virtual void JsonModelWriteCore(Utf8JsonWriter writer, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalTranscriptTextUsageTokensInputTokenDetails>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<TranscriptionInputTokenDetails>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalTranscriptTextUsageTokensInputTokenDetails)} does not support writing '{format}' format.");
+                throw new FormatException($"The model {nameof(TranscriptionInputTokenDetails)} does not support writing '{format}' format.");
             }
             if (Optional.IsDefined(TextTokens) && _additionalBinaryDataProperties?.ContainsKey("text_tokens") != true)
             {
@@ -91,20 +91,20 @@ namespace OpenAI.Audio
             }
         }
 
-        InternalTranscriptTextUsageTokensInputTokenDetails IJsonModel<InternalTranscriptTextUsageTokensInputTokenDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
+        TranscriptionInputTokenDetails IJsonModel<TranscriptionInputTokenDetails>.Create(ref Utf8JsonReader reader, ModelReaderWriterOptions options) => JsonModelCreateCore(ref reader, options);
 
-        protected virtual InternalTranscriptTextUsageTokensInputTokenDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
+        protected virtual TranscriptionInputTokenDetails JsonModelCreateCore(ref Utf8JsonReader reader, ModelReaderWriterOptions options)
         {
-            string format = options.Format == "W" ? ((IPersistableModel<InternalTranscriptTextUsageTokensInputTokenDetails>)this).GetFormatFromOptions(options) : options.Format;
+            string format = options.Format == "W" ? ((IPersistableModel<TranscriptionInputTokenDetails>)this).GetFormatFromOptions(options) : options.Format;
             if (format != "J")
             {
-                throw new FormatException($"The model {nameof(InternalTranscriptTextUsageTokensInputTokenDetails)} does not support reading '{format}' format.");
+                throw new FormatException($"The model {nameof(TranscriptionInputTokenDetails)} does not support reading '{format}' format.");
             }
             using JsonDocument document = JsonDocument.ParseValue(ref reader);
-            return DeserializeInternalTranscriptTextUsageTokensInputTokenDetails(document.RootElement, options);
+            return DeserializeTranscriptionInputTokenDetails(document.RootElement, options);
         }
 
-        internal static InternalTranscriptTextUsageTokensInputTokenDetails DeserializeInternalTranscriptTextUsageTokensInputTokenDetails(JsonElement element, ModelReaderWriterOptions options)
+        internal static TranscriptionInputTokenDetails DeserializeTranscriptionInputTokenDetails(JsonElement element, ModelReaderWriterOptions options)
         {
             if (element.ValueKind == JsonValueKind.Null)
             {
@@ -136,7 +136,7 @@ namespace OpenAI.Audio
                 // Plugin customization: remove options.Format != "W" check
                 additionalBinaryDataProperties.Add(prop.Name, BinaryData.FromString(prop.Value.GetRawText()));
             }
-            return new InternalTranscriptTextUsageTokensInputTokenDetails(textTokens, audioTokens, additionalBinaryDataProperties);
+            return new TranscriptionInputTokenDetails(textTokens, audioTokens, additionalBinaryDataProperties);
         }
     }
 }
