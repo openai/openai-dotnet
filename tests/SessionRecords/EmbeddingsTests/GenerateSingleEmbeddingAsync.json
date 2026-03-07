@@ -8,7 +8,7 @@
         "Authorization": "Sanitized",
         "Content-Length": "85",
         "Content-Type": "application/json",
-        "User-Agent": "OpenAI/2.4.0 (.NET 9.0.9; Microsoft Windows 10.0.26100)"
+        "User-Agent": "OpenAI/2.9.1-alpha.1 (.NET 10.0.3; Ubuntu 24.04.3 LTS)"
       },
       "RequestBody": {
         "input": "Hello, world!",
@@ -20,22 +20,21 @@
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Expose-Headers": "X-Request-ID",
         "Alt-Svc": "h3=\":443\"",
-        "cf-cache-status": "DYNAMIC",
-        "CF-RAY": "980bc82dcdb4a3cb-SEA",
+        "CF-Cache-Status": "DYNAMIC",
+        "CF-Ray": "9d864b489acdd679-IAD",
         "Connection": "keep-alive",
         "Content-Length": "8414",
         "Content-Type": "application/json",
-        "Date": "Wed, 17 Sep 2025 21:43:55 GMT",
+        "Date": "Sanitized",
         "openai-model": "text-embedding-3-small",
         "openai-organization": "Sanitized",
-        "openai-processing-ms": "89",
+        "openai-processing-ms": "Sanitized",
         "openai-project": "Sanitized",
         "openai-version": "2020-10-01",
         "Server": "cloudflare",
         "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
-        "Via": "envoy-router-5cc8bd48fd-fwmzw",
+        "Via": "envoy-router-c9fd8cbb4-kztq4",
         "X-Content-Type-Options": "nosniff",
-        "x-envoy-upstream-service-time": "106",
         "x-openai-proxy-wasm": "v0.1",
         "x-ratelimit-limit-requests": "10000",
         "x-ratelimit-limit-tokens": "10000000",
@@ -63,6 +62,6 @@
     }
   ],
   "Variables": {
-    "OPEN-API-KEY": "api-key"
+    "OPENAI_API_KEY": "api-key"
   }
 }
