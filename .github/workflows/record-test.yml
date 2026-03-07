@@ -131,6 +131,7 @@ jobs:
             --base "$BASE_BRANCH" \
             --head "$RECORDING_BRANCH" \
             --title "Record tests for $BASE_BRANCH" \
+            --draft \
             --body-file "$BODY_FILE" \
             --assignee "${{ github.actor }}")
           
