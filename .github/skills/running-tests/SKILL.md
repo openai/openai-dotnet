@@ -52,16 +52,32 @@ $env:CLIENTMODEL_DISABLE_AUTO_RECORDING = "true"
 
 If one or more recorded tests fail because no recordings exist (e.g., the tests are new and have not been recorded yet) or because the recordings are outdated (e.g., the tests were modified), new recordings must be captured. **You cannot capture recordings yourself** — you must request a human to do it.
 
-When requesting recordings, provide the exact `dotnet test --filter` expression so the human can copy and paste it directly. Format the request like this:
+When requesting recordings, provide the exact `NUnit.Where` expression so the human can copy and paste it directly. Format the request like this:
 
-> Please record tests using the following filter expression:
+> Please record tests using the following `NUnit.Where` expression:
 > ```
-> FullyQualifiedName=Namespace.TestClass.TestMethodName
+> test =~ ".*Namespace\\.TestClass.*" and test =~ ".*TestMethodName$"
 > ```
 
-If multiple tests need recording, combine them in a single filter expression:
+Use `NUnit.Where` for all recording requests. It works for ordinary tests and for NUnit fixture-parameterized tests such as classes constructed with `bool isAsync`, where the underlying test names may include fixture arguments like `(True)` or `(False)`.
 
-> Please record tests using the following filter expression:
+If you need to run or record only one specific fixture instance, use an exact `test == ...` selector instead:
+
+> Please record tests using the following `NUnit.Where` expression:
 > ```
-> FullyQualifiedName=Namespace.TestClass.TestA|FullyQualifiedName=Namespace.TestClass.TestB
+> test == "Namespace.TestClass(True).TestMethodName"
+> ```
+
+If multiple tests need recording, combine them in a single `NUnit.Where` expression:
+
+> Please record tests using the following `NUnit.Where` expression:
+> ```
+> (test =~ ".*Namespace\\.TestClass.*" and test =~ ".*TestA$") or (test =~ ".*Namespace\\.TestClass.*" and test =~ ".*TestB$")
+> ```
+
+For example, to record both `GenerateSingleEmbedding` fixture instances from `EmbeddingsTests`, use:
+
+> Please record tests using the following `NUnit.Where` expression:
+> ```
+> test =~ ".*OpenAI\\.Tests\\.Embeddings\\.EmbeddingsTests.*" and test =~ ".*GenerateSingleEmbedding$"
 > ```
