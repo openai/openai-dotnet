@@ -15,6 +15,7 @@ namespace OpenAI.Assistants
 
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateCreateThreadAndRunRequest(BinaryContent content, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -30,6 +31,7 @@ namespace OpenAI.Assistants
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateCreateRunRequest(string threadId, BinaryContent content, IEnumerable<InternalIncludedRunStepProperty> include, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -51,6 +53,7 @@ namespace OpenAI.Assistants
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetRunsRequest(string threadId, int? limit, string order, string after, string before, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -82,6 +85,7 @@ namespace OpenAI.Assistants
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetRunRequest(string threadId, string runId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -98,6 +102,7 @@ namespace OpenAI.Assistants
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateModifyRunRequest(string threadId, string runId, BinaryContent content, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -116,6 +121,7 @@ namespace OpenAI.Assistants
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateCancelRunRequest(string threadId, string runId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -133,6 +139,7 @@ namespace OpenAI.Assistants
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateSubmitToolOutputsToRunRequest(string threadId, string runId, BinaryContent content, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -152,6 +159,7 @@ namespace OpenAI.Assistants
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetRunStepsRequest(string threadId, string runId, int? limit, string order, string after, string before, IEnumerable<InternalIncludedRunStepProperty> include, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -189,6 +197,7 @@ namespace OpenAI.Assistants
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetRunStepRequest(string threadId, string runId, string stepId, IEnumerable<InternalIncludedRunStepProperty> include, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
