@@ -33,7 +33,10 @@ param(
   [string]$BranchName = "typespec/update-http-client-csharp-$PackageVersion",
 
   [Parameter(Mandatory = $false)]
-  [string]$RepoPath = "."
+  [string]$RepoPath = ".",
+
+  [Parameter(Mandatory = $false)]
+  [string]$ActionRunUrl = ""
 )
 
 # Set up variables for the PR
@@ -297,7 +300,7 @@ Please run the existing test suites to ensure the generated code works correctly
 
 ## Notes
 This PR was created automatically by the **Update TypeSpec Generator Version** workflow. The workflow runs weekly and when manually triggered to keep the generator version current with the latest TypeSpec improvements and fixes.
-
+$(if ($ActionRunUrl) { "`n- [Action Run]($ActionRunUrl)" })
 If there are any issues with the generated code, please review the [TypeSpec release notes](https://github.com/microsoft/typespec/releases) for breaking changes or new features that may require manual adjustments.
 "@
     
