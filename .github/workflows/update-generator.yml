@@ -73,4 +73,5 @@ jobs:
           pwsh ./scripts/Submit-GeneratorUpdatePr.ps1 \
             -PackageVersion "$LATEST_VERSION" \
             -AuthToken "${{ secrets.GITHUB_TOKEN }}" \
-            -RepoPath "."
+            -RepoPath "." \
+            -ActionRunUrl "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
