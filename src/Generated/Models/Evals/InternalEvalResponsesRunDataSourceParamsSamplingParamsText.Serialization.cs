@@ -7,7 +7,6 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
-using OpenAI.Responses;
 
 namespace OpenAI.Evals
 {
@@ -106,7 +105,7 @@ namespace OpenAI.Evals
             {
                 return null;
             }
-            ResponseTextFormat format = default;
+            ResponseTextFormatConfiguration format = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -116,7 +115,7 @@ namespace OpenAI.Evals
                     {
                         continue;
                     }
-                    format = ResponseTextFormat.DeserializeResponseTextFormat(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    format = ResponseTextFormatConfiguration.DeserializeResponseTextFormatConfiguration(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

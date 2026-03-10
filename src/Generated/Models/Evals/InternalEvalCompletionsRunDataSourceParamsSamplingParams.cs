@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using OpenAI;
 using OpenAI.Chat;
-using OpenAI.Responses;
 
 namespace OpenAI.Evals
 {
@@ -18,7 +17,7 @@ namespace OpenAI.Evals
         {
         }
 
-        internal InternalEvalCompletionsRunDataSourceParamsSamplingParams(float? temperature, int? maxCompletionTokens, float? topP, int? seed, ResponseTextFormat responseFormat, IList<ChatTool> tools, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalEvalCompletionsRunDataSourceParamsSamplingParams(float? temperature, int? maxCompletionTokens, float? topP, int? seed, ResponseTextFormatConfiguration responseFormat, IList<ChatTool> tools, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Temperature = temperature;
@@ -38,7 +37,7 @@ namespace OpenAI.Evals
 
         public int? Seed { get; set; }
 
-        public ResponseTextFormat ResponseFormat { get; set; }
+        public ResponseTextFormatConfiguration ResponseFormat { get; set; }
 
         public IList<ChatTool> Tools { get; }
 
