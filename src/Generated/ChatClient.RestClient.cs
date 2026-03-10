@@ -15,6 +15,7 @@ namespace OpenAI.Chat
 
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetChatCompletionsRequest(string after, int? limit, string order, IDictionary<string, string> metadata, string model, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -53,6 +54,7 @@ namespace OpenAI.Chat
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateCompleteChatRequest(BinaryContent content, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -67,6 +69,7 @@ namespace OpenAI.Chat
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetChatCompletionRequest(string completionId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -80,6 +83,7 @@ namespace OpenAI.Chat
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateUpdateChatCompletionRequest(string completionId, BinaryContent content, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -95,6 +99,7 @@ namespace OpenAI.Chat
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateDeleteChatCompletionRequest(string completionId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -108,6 +113,7 @@ namespace OpenAI.Chat
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetChatCompletionMessagesRequest(string completionId, string after, int? limit, string order, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();

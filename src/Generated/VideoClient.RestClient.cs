@@ -14,6 +14,7 @@ namespace OpenAI.Videos
 
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetVideosRequest(int? limit, string order, string after, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -38,6 +39,7 @@ namespace OpenAI.Videos
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateCreateVideoRequest(BinaryContent content, string contentType, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -52,6 +54,7 @@ namespace OpenAI.Videos
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateDeleteVideoRequest(string videoId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -65,6 +68,7 @@ namespace OpenAI.Videos
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetVideoRequest(string videoId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -78,6 +82,7 @@ namespace OpenAI.Videos
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateDownloadVideoRequest(string videoId, string variant, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -96,6 +101,7 @@ namespace OpenAI.Videos
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateCreateVideoRemixRequest(string videoId, BinaryContent content, string contentType, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();

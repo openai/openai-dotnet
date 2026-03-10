@@ -13,6 +13,7 @@ namespace OpenAI.Models
 
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetModelsRequest(RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -25,6 +26,7 @@ namespace OpenAI.Models
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateDeleteModelRequest(string model, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -38,6 +40,7 @@ namespace OpenAI.Models
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetModelRequest(string model, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
