@@ -7,7 +7,6 @@ using System.ClientModel.Primitives;
 using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
-using OpenAI.Responses;
 
 namespace OpenAI.Evals
 {
@@ -84,7 +83,7 @@ namespace OpenAI.Evals
             {
                 writer.WritePropertyName("tools"u8);
                 writer.WriteStartArray();
-                foreach (ResponseTool item in Tools)
+                foreach (Tool item in Tools)
                 {
                     writer.WriteObjectValue(item, options);
                 }
@@ -140,7 +139,7 @@ namespace OpenAI.Evals
             int? maxCompletionTokens = default;
             float? topP = default;
             int? seed = default;
-            IList<ResponseTool> tools = default;
+            IList<Tool> tools = default;
             InternalEvalResponsesRunDataSourceParamsSamplingParamsText text = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -187,10 +186,10 @@ namespace OpenAI.Evals
                     {
                         continue;
                     }
-                    List<ResponseTool> array = new List<ResponseTool>();
+                    List<Tool> array = new List<Tool>();
                     foreach (var item in prop.Value.EnumerateArray())
                     {
-                        array.Add(ResponseTool.DeserializeResponseTool(item, item.GetUtf8Bytes(), options));
+                        array.Add(Tool.DeserializeTool(item, item.GetUtf8Bytes(), options));
                     }
                     tools = array;
                     continue;
@@ -212,7 +211,7 @@ namespace OpenAI.Evals
                 maxCompletionTokens,
                 topP,
                 seed,
-                tools ?? new ChangeTrackingList<ResponseTool>(),
+                tools ?? new ChangeTrackingList<Tool>(),
                 text,
                 additionalBinaryDataProperties);
         }

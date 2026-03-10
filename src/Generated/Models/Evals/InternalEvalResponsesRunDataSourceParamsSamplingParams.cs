@@ -5,7 +5,6 @@
 using System;
 using System.Collections.Generic;
 using OpenAI;
-using OpenAI.Responses;
 
 namespace OpenAI.Evals
 {
@@ -17,14 +16,14 @@ namespace OpenAI.Evals
         {
         }
 
-        internal InternalEvalResponsesRunDataSourceParamsSamplingParams(float? temperature, int? maxCompletionTokens, float? topP, int? seed, IList<ResponseTool> tools, InternalEvalResponsesRunDataSourceParamsSamplingParamsText text, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalEvalResponsesRunDataSourceParamsSamplingParams(float? temperature, int? maxCompletionTokens, float? topP, int? seed, IList<Tool> tools, InternalEvalResponsesRunDataSourceParamsSamplingParamsText text, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Temperature = temperature;
             MaxCompletionTokens = maxCompletionTokens;
             TopP = topP;
             Seed = seed;
-            Tools = tools ?? new ChangeTrackingList<ResponseTool>();
+            Tools = tools ?? new ChangeTrackingList<Tool>();
             Text = text;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
@@ -37,7 +36,7 @@ namespace OpenAI.Evals
 
         public int? Seed { get; set; }
 
-        public IList<ResponseTool> Tools { get; }
+        public IList<Tool> Tools { get; }
 
         internal InternalEvalResponsesRunDataSourceParamsSamplingParamsText Text { get; set; }
 

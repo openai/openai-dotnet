@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Text.Json;
 using OpenAI;
 using OpenAI.Chat;
-using OpenAI.Responses;
 
 namespace OpenAI.Evals
 {
@@ -141,7 +140,7 @@ namespace OpenAI.Evals
             int? maxCompletionTokens = default;
             float? topP = default;
             int? seed = default;
-            ResponseTextFormat responseFormat = default;
+            ResponseTextFormatConfiguration responseFormat = default;
             IList<ChatTool> tools = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
@@ -188,7 +187,7 @@ namespace OpenAI.Evals
                     {
                         continue;
                     }
-                    responseFormat = ResponseTextFormat.DeserializeResponseTextFormat(prop.Value, prop.Value.GetUtf8Bytes(), options);
+                    responseFormat = ResponseTextFormatConfiguration.DeserializeResponseTextFormatConfiguration(prop.Value, prop.Value.GetUtf8Bytes(), options);
                     continue;
                 }
                 if (prop.NameEquals("tools"u8))
