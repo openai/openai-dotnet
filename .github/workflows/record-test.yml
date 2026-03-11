@@ -1,14 +1,20 @@
 # This workflow is triggered manually for a target branch and requires an NUnit.Where expression to run a
-# subset of tests in Record mode. It commits the resulting session recordings and creates a PR
+# subset of tests in Record mode. It commits the resulting session recordings and creates a PR 
 # against the target branch. Use this workflow to record new tests or re-record existing tests on
 # behalf of the Copilot Coding Agent.
+#
+# For more information, about expressions using NUnit's Test Selection Language, see:
+# https://docs.nunit.org/articles/nunit/running-tests/Test-Selection-Language.html
+#
+# Example:
+# test =~ ".*ChatTests.*" or test == "OpenAI.Tests.Embeddings.EmbeddingsTests(True).GenerateSingleEmbedding"
 name: "[Test] Record tests"
 
 on:
   workflow_dispatch:
     inputs:
       nunit_where:
-        description: 'NUnit.Where expression (e.g., test =~ ".*ChatTests.*" or test == "OpenAI.Tests.Embeddings.EmbeddingsTests(True).GenerateSingleEmbedding")'
+        description: 'NUnit.Where expression'
         required: true
         type: string
 

@@ -56,32 +56,64 @@ Recordings must be captured by a human. **You cannot capture recordings yourself
 
 2. **Existing recorded tests fail in Playback mode** because recordings are missing or outdated (e.g., the tests were modified and the existing recordings no longer match). Request a human to re-record the affected tests.
 
-When requesting recordings, provide the exact `NUnit.Where` expression so the human can copy and paste it directly. Format the request like this:
+When requesting recordings, provide the exact `NUnit.Where` expression so the human can copy and paste it directly, and include both the GitHub Action and the manual `dotnet test` command the human can use to capture the recordings. Format the request like this:
 
-> Please record tests using the following `NUnit.Where` expression:
+> Please record tests using the recording worflow:
+> https://github.com/openai/openai-dotnet/actions/workflows/record-test.yml
+>
+> Use the following `NUnit.Where` expression:
 > ```
-> test =~ ".*Namespace\\.TestClass.*" and test =~ ".*TestMethodName$"
+> test =~ '.*Namespace\\.TestClass.*' and test =~ '.*TestMethodName$'
+> ```
+>
+> Alternatively, you can run the following command to record the tests locally and push the recordings manually:
+> ```powershell
+> dotnet test ./tests/OpenAI.Tests.csproj --configuration Release --framework "net10.0" -- NUnit.Where="test =~ '.*Namespace\\.TestClass.*' and test =~ '.*TestMethodName$'"
 > ```
 
 Use `NUnit.Where` for all recording requests. It works for ordinary tests and for NUnit fixture-parameterized tests such as classes constructed with `bool isAsync`, where the underlying test names may include fixture arguments like `(True)` or `(False)`.
 
 If you need to run or record only one specific fixture instance, use an exact `test == ...` selector instead:
 
-> Please record tests using the following `NUnit.Where` expression:
+> Please record tests using the recording worflow:
+> https://github.com/openai/openai-dotnet/actions/workflows/record-test.yml
+>
+> Use the following `NUnit.Where` expression:
 > ```
-> test == "Namespace.TestClass(True).TestMethodName"
+> test == 'Namespace.TestClass(True).TestMethodName'
+> ```
+>
+> Alternatively, you can run the following command to record the tests locally and push the recordings manually:
+> ```powershell
+> dotnet test ./tests/OpenAI.Tests.csproj --configuration Release --framework "net10.0" -- NUnit.Where="test == 'Namespace.TestClass(True).TestMethodName'"
 > ```
 
 If multiple tests need recording, combine them in a single `NUnit.Where` expression:
 
-> Please record tests using the following `NUnit.Where` expression:
+> Please record tests using the recording worflow:
+> https://github.com/openai/openai-dotnet/actions/workflows/record-test.yml
+>
+> Use the following `NUnit.Where` expression:
 > ```
-> (test =~ ".*Namespace\\.TestClass.*" and test =~ ".*TestA$") or (test =~ ".*Namespace\\.TestClass.*" and test =~ ".*TestB$")
+> (test =~ '.*Namespace\\.TestClass.*' and test =~ '.*TestA$') or (test =~ '.*Namespace\\.TestClass.*' and test =~ '.*TestB$')
+> ```
+>
+> Alternatively, you can run the following command to record the tests locally and push the recordings manually:
+> ```powershell
+> dotnet test ./tests/OpenAI.Tests.csproj --configuration Release --framework "net10.0" -- NUnit.Where="(test =~ '.*Namespace\\.TestClass.*' and test =~ '.*TestA$') or (test =~ '.*Namespace\\.TestClass.*' and test =~ '.*TestB$')"
 > ```
 
 For example, to record both `GenerateSingleEmbedding` fixture instances from `EmbeddingsTests`, use:
 
-> Please record tests using the following `NUnit.Where` expression:
+> Please record tests using the recording worflow:
+> https://github.com/openai/openai-dotnet/actions/workflows/record-test.yml
+>
+> Use the following `NUnit.Where` expression:
 > ```
-> test =~ ".*OpenAI\\.Tests\\.Embeddings\\.EmbeddingsTests.*" and test =~ ".*GenerateSingleEmbedding$"
+> test =~ '.*OpenAI\\.Tests\\.Embeddings\\.EmbeddingsTests.*' and test =~ '.*GenerateSingleEmbedding$'
+> ```
+>
+> Alternatively, you can run the following command to record the tests locally and push the recordings manually:
+> ```powershell
+> dotnet test ./tests/OpenAI.Tests.csproj --configuration Release --framework "net10.0" -- NUnit.Where="test =~ '.*OpenAI\\.Tests\\.Embeddings\\.EmbeddingsTests.*' and test =~ '.*GenerateSingleEmbedding$'"
 > ```
