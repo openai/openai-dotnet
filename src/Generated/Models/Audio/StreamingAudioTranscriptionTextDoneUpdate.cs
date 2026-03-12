@@ -18,7 +18,7 @@ namespace OpenAI.Audio
             TranscriptionTokenLogProbabilities = new ChangeTrackingList<AudioTokenLogProbabilityDetails>();
         }
 
-        internal StreamingAudioTranscriptionTextDoneUpdate(StreamingAudioTranscriptionUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string text, IReadOnlyList<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities, TranscriptionTokenUsage usage) : base(kind, additionalBinaryDataProperties)
+        internal StreamingAudioTranscriptionTextDoneUpdate(StreamingAudioTranscriptionUpdateKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties, string text, IReadOnlyList<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities, AudioTranscriptionTokenUsage usage) : base(kind, additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Text = text;
@@ -28,6 +28,6 @@ namespace OpenAI.Audio
 
         public string Text { get; }
 
-        public TranscriptionTokenUsage Usage { get; }
+        public AudioTranscriptionTokenUsage Usage { get; }
     }
 }

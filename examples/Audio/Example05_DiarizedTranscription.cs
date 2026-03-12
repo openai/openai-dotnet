@@ -42,21 +42,21 @@ public partial class AudioExamples
 
         Console.WriteLine();
         Console.WriteLine($"Usage:");
-        if (transcription.Usage is TranscriptionTokenUsage tokenUsage)
+        if (transcription.Usage is AudioTranscriptionTokenUsage tokenUsage)
         {
-            Console.WriteLine($"  Input tokens:  {tokenUsage.InputTokens}");
-            Console.WriteLine($"  Output tokens: {tokenUsage.OutputTokens}");
-            Console.WriteLine($"  Total tokens:  {tokenUsage.TotalTokens}");
+            Console.WriteLine($"  Input tokens:  {tokenUsage.InputTokenCount}");
+            Console.WriteLine($"  Output tokens: {tokenUsage.OutputTokenCount}");
+            Console.WriteLine($"  Total tokens:  {tokenUsage.TotalTokenCount}");
             if (tokenUsage.InputTokenDetails is not null)
             {
                 Console.WriteLine($"  Input token details:");
-                Console.WriteLine($"    Text tokens:  {tokenUsage.InputTokenDetails.TextTokens}");
-                Console.WriteLine($"    Audio tokens: {tokenUsage.InputTokenDetails.AudioTokens}");
+                Console.WriteLine($"    Text tokens:  {tokenUsage.InputTokenDetails.TextTokenCount}");
+                Console.WriteLine($"    Audio tokens: {tokenUsage.InputTokenDetails.AudioTokenCount}");
             }
         }
-        else if (transcription.Usage is TranscriptionDurationUsage durationUsage)
+        else if (transcription.Usage is AudioTranscriptionDurationUsage durationUsage)
         {
-            Console.WriteLine($"  Duration: {durationUsage.Seconds.TotalSeconds:0.00}s");
+            Console.WriteLine($"  Duration: {durationUsage.Duration.TotalSeconds:0.00}s");
         }
     }
 }

@@ -139,7 +139,7 @@ namespace OpenAI.Audio
             TimeSpan duration = default;
             string text = default;
             IReadOnlyList<DiarizedTranscriptionSegment> segments = default;
-            TranscriptionUsage usage = default;
+            AudioTranscriptionUsage usage = default;
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             foreach (var prop in element.EnumerateObject())
             {
@@ -174,7 +174,7 @@ namespace OpenAI.Audio
                     {
                         continue;
                     }
-                    usage = TranscriptionUsage.DeserializeTranscriptionUsage(prop.Value, options);
+                    usage = AudioTranscriptionUsage.DeserializeAudioTranscriptionUsage(prop.Value, options);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check

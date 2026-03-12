@@ -9,24 +9,22 @@ using System.Diagnostics.CodeAnalysis;
 namespace OpenAI.Audio
 {
     [Experimental("OPENAI001")]
-    public partial class TranscriptionInputTokenDetails
+    public partial class AudioTranscriptionUsage
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        internal TranscriptionInputTokenDetails()
+        private protected AudioTranscriptionUsage(AudioTranscriptionUsageKind kind)
         {
+            Kind = kind;
         }
 
-        internal TranscriptionInputTokenDetails(int? textTokens, int? audioTokens, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal AudioTranscriptionUsage(AudioTranscriptionUsageKind kind, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
-            TextTokens = textTokens;
-            AudioTokens = audioTokens;
+            Kind = kind;
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
-        public int? TextTokens { get; }
-
-        public int? AudioTokens { get; }
+        public AudioTranscriptionUsageKind Kind { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

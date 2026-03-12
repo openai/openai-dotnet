@@ -4,6 +4,6 @@ namespace OpenAI.Audio;
 
 // CUSTOM: Renamed.
 [CodeGenType("CreateTranscriptionResponseJsonUsageType")]
-public readonly partial struct TranscriptionUsageKind
+public readonly partial struct AudioTranscriptionUsageKind
 {
 }

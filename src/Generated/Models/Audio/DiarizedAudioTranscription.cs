@@ -21,7 +21,7 @@ namespace OpenAI.Audio
             Segments = new ChangeTrackingList<DiarizedTranscriptionSegment>();
         }
 
-        internal DiarizedAudioTranscription(string task, TimeSpan duration, string text, IReadOnlyList<DiarizedTranscriptionSegment> segments, TranscriptionUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal DiarizedAudioTranscription(string task, TimeSpan duration, string text, IReadOnlyList<DiarizedTranscriptionSegment> segments, AudioTranscriptionUsage usage, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             Task = task;
@@ -38,7 +38,7 @@ namespace OpenAI.Audio
 
         public IReadOnlyList<DiarizedTranscriptionSegment> Segments { get; }
 
-        public TranscriptionUsage Usage { get; }
+        public AudioTranscriptionUsage Usage { get; }
 
         internal IDictionary<string, BinaryData> SerializedAdditionalRawData
         {

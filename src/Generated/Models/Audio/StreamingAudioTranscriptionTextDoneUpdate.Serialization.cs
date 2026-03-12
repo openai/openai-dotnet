@@ -109,7 +109,7 @@ namespace OpenAI.Audio
             IDictionary<string, BinaryData> additionalBinaryDataProperties = new ChangeTrackingDictionary<string, BinaryData>();
             string text = default;
             IReadOnlyList<AudioTokenLogProbabilityDetails> transcriptionTokenLogProbabilities = default;
-            TranscriptionTokenUsage usage = default;
+            AudioTranscriptionTokenUsage usage = default;
             foreach (var prop in element.EnumerateObject())
             {
                 if (prop.NameEquals("type"u8))
@@ -142,7 +142,7 @@ namespace OpenAI.Audio
                     {
                         continue;
                     }
-                    usage = TranscriptionTokenUsage.DeserializeTranscriptionTokenUsage(prop.Value, options);
+                    usage = AudioTranscriptionTokenUsage.DeserializeAudioTranscriptionTokenUsage(prop.Value, options);
                     continue;
                 }
                 // Plugin customization: remove options.Format != "W" check
