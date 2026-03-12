@@ -1,119 +1,113 @@
 ---
 name: running-tests
-description: Guide for running tests in the openai-dotnet repository. Use this when asked to run, debug, or validate tests, or when writing new tests. Explains test modes (Playback, Record, Live), how to identify recorded vs non-recorded tests, environment variable configuration, and what to do when recordings are missing or outdated.
+description: Guide for running tests in the openai-dotnet repository. Use this when asked to run, debug, or validate tests, or when writing new tests. Explains test modes (Playback, Record, Live), how to identify recorded vs non-recorded tests, environment variable configuration, and what to do when recordings are missing or stale.
 ---
 
 # Running Tests
 
 ## Overview
 
-Tests in this repository use the [Microsoft.ClientModel.TestFramework](https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/core/Microsoft.ClientModel.TestFramework/README.md) and NUnit. Many tests rely on **session recordings** — pre-recorded HTTP interactions stored in `tests/SessionRecords/` — so they can run without hitting a live API.
+Tests in this repository use the [Microsoft.ClientModel.TestFramework](https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/core/Microsoft.ClientModel.TestFramework/README.md) and NUnit.
+
+Many tests rely on **session recordings** — pre-recorded HTTP interactions stored in `tests/SessionRecords/` — so they can run without live service access. The repository defaults to `Playback` mode unless overridden in the environment.
 
 ## Test Modes
 
 | Mode | Description |
 |------|-------------|
-| **Playback** | Tests run against pre-recorded session data in `tests/SessionRecords/`. No API key required. |
-| **Record** | Tests run against the live OpenAI API and record HTTP interactions for later playback. Requires an API key. |
-| **Live** | Tests run against the live OpenAI API without recording. Requires an API key. |
+| **Playback** | Tests run against pre-recorded session data in `tests/SessionRecords/`. No API key is required. |
+| **Record** | Tests run against the live OpenAI API and produce or update session recordings. Requires an API key. |
+| **Live** | Tests run against the live OpenAI API without producing or updating session recordings. Requires an API key. |
 
-The mode is controlled by the `CLIENTMODEL_TEST_MODE` environment variable (`Playback`, `Record`, or `Live`).
+The mode is controlled by the `CLIENTMODEL_TEST_MODE` environment variable and accepts `Playback`, `Record`, or `Live`.
 
-In Playback mode, if an existing session record does not match the test's requests, the framework will automatically attempt to re-record the test against the live API. To disable this auto-recording behavior, set `CLIENTMODEL_DISABLE_AUTO_RECORDING` to `true`.
+In Playback mode, the framework may attempt to auto-record when a session recording is missing or stale. Disable that behavior by explicitly setting `CLIENTMODEL_DISABLE_AUTO_RECORDING` to `true`.
 
-## Identifying Recorded Tests vs Non-Recorded Tests
+## Agent Rules
 
-### A test IS a recorded test if **all** of the following are true:
+As the agent, only execute tests in `Playback` mode.
 
-- The test needs to hit a live cloud service.
-- The test method has the `[RecordedTest]` attribute.
-- The test class extends `OpenAIRecordedTestBase`.
-- The test obtains a client via `GetProxiedOpenAIClient`.
+Do not run `Record` or `Live` mode yourself. Those paths require live credentials which you do not have.
 
-### A test is NOT a recorded test if **any** of the following are true:
-
-- The test does not need to hit a live cloud service.
-- The test method has the plain `[Test]` attribute instead of `[RecordedTest]`.
-- The test class extends `ClientTestBase` (or has no special test base class).
-- The test uses `MockPipelineTransport`, `MockPipelineResponse`, or `GetClientOptionsWithMockResponse` to simulate HTTP responses.
-
-## Running Tests as an Agent
-
-**You can ONLY run tests in Playback mode.** You cannot run tests in Live or Record mode because those require a live API key and access to the OpenAI API.
-
-Before running tests, always set the following environment variables:
+Before running tests, always set:
 
 ```powershell
 $env:CLIENTMODEL_TEST_MODE = "Playback"
 $env:CLIENTMODEL_DISABLE_AUTO_RECORDING = "true"
 ```
 
-## When Recordings Are Missing or Outdated
+If a recorded test needs new recordings or updated recordings, you must follow the instructions below to ask a human to capture them for you instead of trying to capture them yourself.
 
-Recordings must be captured by a human. **You cannot capture recordings yourself.** There are two scenarios where you must request recordings:
+## Identifying Recorded Tests vs Non-Recorded Tests
 
-1. **You wrote new recorded tests.** You must proactively request a human to record them as part of your workflow — do not wait for tests to fail. New recorded tests will not have session recordings and cannot pass in Playback mode until recordings are captured. Request recordings before considering your work complete.
+Treat these as practical indicators instead of a rigid checklist.
 
-2. **Existing recorded tests fail in Playback mode** because recordings are missing or outdated (e.g., the tests were modified and the existing recordings no longer match). Request a human to re-record the affected tests.
+### Strong signals that a test is a recorded test:
 
-When requesting recordings, provide the exact `NUnit.Where` expression so the human can copy and paste it directly, and include both the GitHub Action and the manual `dotnet test` command the human can use to capture the recordings. Format the request like this:
+- The test class inherits from `OpenAIRecordedTestBase`.
+- The test method uses `[RecordedTest]`.
+- The test gets clients through `GetProxiedOpenAIClient`.
+- The test exercises real service behavior rather than mocked responses.
 
-> Please record tests using the recording worflow:
+### Strong signals that a test is not a recorded test:
+
+- The test class does not rely on `OpenAIRecordedTestBase` (instead it inherits from `ClientTestBase` or has no special test base class).
+- The test method uses plain `[Test]` instead of `[RecordedTest]`.
+- The test uses mocked transports or handcrafted responses to simulate HTTP responses, such as `MockPipelineTransport`, `MockPipelineResponse`, or `GetClientOptionsWithMockResponse`.
+- The test does not need to reach a live cloud service.
+
+## When Recordings Are Missing or Stale
+
+Recordings must be captured by a human.
+
+Request recordings from a human before considering your work complete in either of the following cases:
+
+1. You added a new recorded test (which implies its recording is missing because it has never been recorded before).
+2. An existing recorded test fails in Playback mode because its recording is missing or stale (for example, if the recorded test was modified and the existing recording no longer matches).
+
+When asking for recordings, always provide:
+
+1. The link to the recording workflow
+2. The exact `NUnit.Where` expression
+3. A copy-pasteable `dotnet test` command
+
+Use this template:
+
+> Please record tests using the recording workflow:
 > https://github.com/openai/openai-dotnet/actions/workflows/record-test.yml
 >
 > Use the following `NUnit.Where` expression:
-> ```
-> test =~ '.*Namespace\\.TestClass.*' and test =~ '.*TestMethodName$'
+> ```text
+> test =~ '.*Namespace.TestClass.*' and test =~ '.*TestMethodName$'
 > ```
 >
-> Alternatively, you can run the following command to record the tests locally and push the recordings manually:
+> Alternatively, run the following command locally and push the recordings manually:
 > ```powershell
-> dotnet test ./tests/OpenAI.Tests.csproj --configuration Release --framework "net10.0" -- NUnit.Where="test =~ '.*Namespace\\.TestClass.*' and test =~ '.*TestMethodName$'"
+> dotnet test ./tests/OpenAI.Tests.csproj --configuration Release --framework "net10.0" -- NUnit.Where="test =~ '.*Namespace.TestClass.*' and test =~ '.*TestMethodName$'"
 > ```
 
-Use `NUnit.Where` for all recording requests. It works for ordinary tests and for NUnit fixture-parameterized tests such as classes constructed with `bool isAsync`, where the underlying test names may include fixture arguments like `(True)` or `(False)`.
+Use `NUnit.Where` for recording requests even when `dotnet test --filter` would work locally. `NUnit.Where` is the contract used by the recording workflow. It works for ordinary tests and for NUnit fixture-parameterized tests such as classes constructed with `bool isAsync`, where the underlying test names may include fixture arguments like `(True)` or `(False)`.
 
-If you need to run or record only one specific fixture instance, use an exact `test == ...` selector instead:
+If you need one exact fixture instance, use `test == ...` instead of a regex match:
 
-> Please record tests using the recording worflow:
-> https://github.com/openai/openai-dotnet/actions/workflows/record-test.yml
->
-> Use the following `NUnit.Where` expression:
-> ```
-> test == 'Namespace.TestClass(True).TestMethodName'
-> ```
->
-> Alternatively, you can run the following command to record the tests locally and push the recordings manually:
-> ```powershell
-> dotnet test ./tests/OpenAI.Tests.csproj --configuration Release --framework "net10.0" -- NUnit.Where="test == 'Namespace.TestClass(True).TestMethodName'"
-> ```
+```text
+test == 'Namespace.TestClass(True).TestMethodName'
+```
+
+Example for async fixture instance of the `GenerateSingleEmbedding` recorded test:
+
+```text
+test == 'OpenAI.Tests.Embeddings.EmbeddingsTests(True).GenerateSingleEmbedding'
+```
 
 If multiple tests need recording, combine them in a single `NUnit.Where` expression:
 
-> Please record tests using the recording worflow:
-> https://github.com/openai/openai-dotnet/actions/workflows/record-test.yml
->
-> Use the following `NUnit.Where` expression:
-> ```
-> (test =~ '.*Namespace\\.TestClass.*' and test =~ '.*TestA$') or (test =~ '.*Namespace\\.TestClass.*' and test =~ '.*TestB$')
-> ```
->
-> Alternatively, you can run the following command to record the tests locally and push the recordings manually:
-> ```powershell
-> dotnet test ./tests/OpenAI.Tests.csproj --configuration Release --framework "net10.0" -- NUnit.Where="(test =~ '.*Namespace\\.TestClass.*' and test =~ '.*TestA$') or (test =~ '.*Namespace\\.TestClass.*' and test =~ '.*TestB$')"
-> ```
+```text
+(test =~ '.*Namespace.TestClass.*' and test =~ '.*TestA$') or (test =~ '.*Namespace.TestClass.*' and test =~ '.*TestB$')
+```
 
-For example, to record both `GenerateSingleEmbedding` fixture instances from `EmbeddingsTests`, use:
+Example for both fixture instances of the `GenerateSingleEmbedding` recorded test:
 
-> Please record tests using the recording worflow:
-> https://github.com/openai/openai-dotnet/actions/workflows/record-test.yml
->
-> Use the following `NUnit.Where` expression:
-> ```
-> test =~ '.*OpenAI\\.Tests\\.Embeddings\\.EmbeddingsTests.*' and test =~ '.*GenerateSingleEmbedding$'
-> ```
->
-> Alternatively, you can run the following command to record the tests locally and push the recordings manually:
-> ```powershell
-> dotnet test ./tests/OpenAI.Tests.csproj --configuration Release --framework "net10.0" -- NUnit.Where="test =~ '.*OpenAI\\.Tests\\.Embeddings\\.EmbeddingsTests.*' and test =~ '.*GenerateSingleEmbedding$'"
-> ```
+```text
+test =~ '.*OpenAI.Tests.Embeddings.EmbeddingsTests.*' and test =~ '.*GenerateSingleEmbedding$'
+```
