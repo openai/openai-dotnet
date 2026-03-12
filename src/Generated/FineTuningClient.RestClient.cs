@@ -14,6 +14,7 @@ namespace OpenAI.FineTuning
 
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetFineTuningCheckpointPermissionsRequest(string fineTunedModelCheckpoint, string after, int? limit, string order, string projectId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -44,6 +45,7 @@ namespace OpenAI.FineTuning
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateCreateFineTuningCheckpointPermissionRequest(string fineTunedModelCheckpoint, BinaryContent content, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -60,6 +62,7 @@ namespace OpenAI.FineTuning
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateDeleteFineTuningCheckpointPermissionRequest(string fineTunedModelCheckpoint, string permissionId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -75,6 +78,7 @@ namespace OpenAI.FineTuning
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateCreateFineTuningJobRequest(BinaryContent content, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -89,6 +93,7 @@ namespace OpenAI.FineTuning
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetPaginatedFineTuningJobsRequest(string after, int? limit, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -109,6 +114,7 @@ namespace OpenAI.FineTuning
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateRetrieveFineTuningJobRequest(string fineTuningJobId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -122,6 +128,7 @@ namespace OpenAI.FineTuning
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateCancelFineTuningJobRequest(string fineTuningJobId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -136,6 +143,7 @@ namespace OpenAI.FineTuning
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetFineTuningJobCheckpointsRequest(string fineTuningJobId, string after, int? limit, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -158,6 +166,7 @@ namespace OpenAI.FineTuning
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetFineTuningEventsRequest(string fineTuningJobId, string after, int? limit, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -180,6 +189,7 @@ namespace OpenAI.FineTuning
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreatePauseFineTuningJobRequest(string fineTuningJobId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -194,6 +204,7 @@ namespace OpenAI.FineTuning
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateResumeFineTuningJobRequest(string fineTuningJobId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();

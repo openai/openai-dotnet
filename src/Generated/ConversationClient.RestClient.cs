@@ -15,7 +15,8 @@ namespace OpenAI.Conversations
 
         private static PipelineMessageClassifier PipelineMessageClassifier200 => _pipelineMessageClassifier200 ??= PipelineMessageClassifier.Create(stackalloc ushort[] { 200 });
 
-        internal virtual PipelineMessage CreateGetConversationItemsRequest(string conversationId, long? limit, string order, string after, IEnumerable<IncludedConversationItemProperty> include, RequestOptions options)
+        // Plugin customization: make PipelineMessage creation methods virtual
+        internal virtual PipelineMessage CreateGetConversationItemsRequest(string conversationId, int? limit, string order, string after, IEnumerable<IncludedConversationItemProperty> include, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
             uri.Reset(_endpoint);
@@ -48,6 +49,7 @@ namespace OpenAI.Conversations
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateCreateConversationItemsRequest(string conversationId, BinaryContent content, IEnumerable<IncludedConversationItemProperty> include, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -71,6 +73,7 @@ namespace OpenAI.Conversations
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateDeleteConversationItemRequest(string conversationId, string itemId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -86,6 +89,7 @@ namespace OpenAI.Conversations
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetConversationItemRequest(string conversationId, string itemId, IEnumerable<IncludedConversationItemProperty> include, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -108,6 +112,7 @@ namespace OpenAI.Conversations
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateCreateConversationRequest(BinaryContent content, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -122,6 +127,7 @@ namespace OpenAI.Conversations
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateDeleteConversationRequest(string conversationId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -135,6 +141,7 @@ namespace OpenAI.Conversations
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateGetConversationRequest(string conversationId, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();
@@ -148,6 +155,7 @@ namespace OpenAI.Conversations
             return message;
         }
 
+        // Plugin customization: make PipelineMessage creation methods virtual
         internal virtual PipelineMessage CreateUpdateConversationRequest(string conversationId, BinaryContent content, RequestOptions options)
         {
             ClientUriBuilder uri = new ClientUriBuilder();

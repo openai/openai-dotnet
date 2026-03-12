@@ -22,12 +22,12 @@ namespace OpenAI.Videos
 
         public ClientPipeline Pipeline { get; }
 
-        public virtual CollectionResult GetVideos(long? limit = default, string order = default, string after = default, RequestOptions options = null)
+        public virtual CollectionResult GetVideos(int? limit = default, string order = default, string after = default, RequestOptions options = null)
         {
             return new VideoClientGetVideosCollectionResult(this, limit, order, after, options);
         }
 
-        public virtual AsyncCollectionResult GetVideosAsync(long? limit = default, string order = default, string after = default, RequestOptions options = null)
+        public virtual AsyncCollectionResult GetVideosAsync(int? limit = default, string order = default, string after = default, RequestOptions options = null)
         {
             return new VideoClientGetVideosAsyncCollectionResult(this, limit, order, after, options);
         }

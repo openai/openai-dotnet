@@ -5,6 +5,7 @@
 
 import "../common";
 import "./custom.tsp";
+import "../specialized-types/models.tsp";
 
 using Http;
 using TypeSpec.OpenAPI;

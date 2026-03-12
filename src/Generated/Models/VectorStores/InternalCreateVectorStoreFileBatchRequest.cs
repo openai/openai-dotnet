@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using OpenAI;
 
 namespace OpenAI.VectorStores
@@ -13,22 +12,23 @@ namespace OpenAI.VectorStores
     {
         private protected IDictionary<string, BinaryData> _additionalBinaryDataProperties;
 
-        public InternalCreateVectorStoreFileBatchRequest(IEnumerable<string> fileIds)
+        public InternalCreateVectorStoreFileBatchRequest() : this(null, null, null, null, null)
         {
-            FileIds = fileIds.ToList();
-            Attributes = new ChangeTrackingDictionary<string, BinaryData>();
         }
 
-        internal InternalCreateVectorStoreFileBatchRequest(IList<string> fileIds, InternalChunkingStrategyRequestParam chunkingStrategy, IDictionary<string, BinaryData> attributes, IDictionary<string, BinaryData> additionalBinaryDataProperties)
+        internal InternalCreateVectorStoreFileBatchRequest(IList<string> fileIds, IList<InternalCreateVectorStoreFileRequest> files, InternalChunkingStrategyRequestParam chunkingStrategy, IDictionary<string, BinaryData> attributes, IDictionary<string, BinaryData> additionalBinaryDataProperties)
         {
             // Plugin customization: ensure initialization of collections
             FileIds = fileIds ?? new ChangeTrackingList<string>();
+            Files = files ?? new ChangeTrackingList<InternalCreateVectorStoreFileRequest>();
             ChunkingStrategy = chunkingStrategy;
             Attributes = attributes ?? new ChangeTrackingDictionary<string, BinaryData>();
             _additionalBinaryDataProperties = additionalBinaryDataProperties;
         }
 
         public IList<string> FileIds { get; }
+
+        internal IList<InternalCreateVectorStoreFileRequest> Files { get; }
 
         internal InternalChunkingStrategyRequestParam ChunkingStrategy { get; set; }
 

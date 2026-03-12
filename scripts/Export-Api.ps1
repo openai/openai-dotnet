@@ -70,6 +70,7 @@ $buildArgs = @(
     "-t:ExportApi"
     "-c:$configuration"
     "-p:ExportingApi=true"
+    "-m"
 )
 
 Write-Host "Output Directory: $outputDirectory"

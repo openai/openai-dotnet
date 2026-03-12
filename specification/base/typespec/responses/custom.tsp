@@ -1,5 +1,4 @@
 import "@typespec/openapi";
-import "../../entrypoints/sdk.dotnet/specialized-types.tsp";
 import "../common";
 import "./custom/items.tsp";
 
