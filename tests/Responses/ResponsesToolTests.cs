@@ -405,6 +405,93 @@ public partial class ResponsesToolTests : OpenAIRecordedTestBase
     }
 
     [RecordedTest]
+    public async Task FileSearchCallStreaming()
+    {
+        OpenAIFileClient fileClient = GetProxiedOpenAIClient<OpenAIFileClient>();
+        OpenAIFile testFile = await fileClient.UploadFileAsync(
+            BinaryData.FromString("""
+                    Travis's favorite food is pizza.
+                    """),
+            "test_favorite_foods.txt",
+            FileUploadPurpose.UserData);
+        Validate(testFile);
+
+        VectorStoreClient vscClient = GetProxiedOpenAIClient<VectorStoreClient>();
+        VectorStore vectorStore = await vscClient.CreateVectorStoreAsync(
+            new VectorStoreCreationOptions()
+            {
+                FileIds = { testFile.Id },
+            });
+        Validate(vectorStore);
+
+        if (Mode != RecordedTestMode.Playback)
+        {
+            await Task.Delay(TimeSpan.FromSeconds(5));
+        }
+
+        ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
+
+        CreateResponseOptions responseOptions = new(TestModel.Responses, [ResponseItem.CreateUserMessageItem("Using the file search tool, what's Travis's favorite food?")])
+        {
+            Tools =
+            {
+                ResponseTool.CreateFileSearchTool(vectorStoreIds: [vectorStore.Id]),
+            },
+            StreamingEnabled = true,
+        };
+
+        string searchItemId = null;
+        int inProgressCount = 0;
+        int searchingCount = 0;
+        int completedCount = 0;
+        bool gotFinishedSearchItem = false;
+
+        await foreach (StreamingResponseUpdate update
+            in client.CreateResponseStreamingAsync(responseOptions))
+        {
+            if (update is StreamingResponseFileSearchCallInProgressUpdate fileSearchCallInProgressUpdate)
+            {
+                Assert.That(fileSearchCallInProgressUpdate.ItemId, Is.Not.Null.And.Not.Empty);
+                searchItemId ??= fileSearchCallInProgressUpdate.ItemId;
+                Assert.That(searchItemId, Is.EqualTo(fileSearchCallInProgressUpdate.ItemId));
+                Assert.That(fileSearchCallInProgressUpdate.OutputIndex, Is.EqualTo(0));
+                inProgressCount++;
+            }
+            else if (update is StreamingResponseFileSearchCallSearchingUpdate fileSearchCallSearchingUpdate)
+            {
+                Assert.That(fileSearchCallSearchingUpdate.ItemId, Is.Not.Null.And.Not.Empty);
+                searchItemId ??= fileSearchCallSearchingUpdate.ItemId;
+                Assert.That(searchItemId, Is.EqualTo(fileSearchCallSearchingUpdate.ItemId));
+                Assert.That(fileSearchCallSearchingUpdate.OutputIndex, Is.EqualTo(0));
+                searchingCount++;
+            }
+            else if (update is StreamingResponseFileSearchCallCompletedUpdate fileSearchCallCompletedUpdate)
+            {
+                Assert.That(fileSearchCallCompletedUpdate.ItemId, Is.Not.Null.And.Not.Empty);
+                searchItemId ??= fileSearchCallCompletedUpdate.ItemId;
+                Assert.That(searchItemId, Is.EqualTo(fileSearchCallCompletedUpdate.ItemId));
+                Assert.That(fileSearchCallCompletedUpdate.OutputIndex, Is.EqualTo(0));
+                completedCount++;
+            }
+            else if (update is StreamingResponseOutputItemDoneUpdate outputItemDoneUpdate)
+            {
+                if (outputItemDoneUpdate.Item is FileSearchCallResponseItem fileSearchCallItem)
+                {
+                    Assert.That(fileSearchCallItem.Status, Is.EqualTo(FileSearchCallStatus.Completed));
+                    Assert.That(fileSearchCallItem.Id, Is.EqualTo(searchItemId));
+                    gotFinishedSearchItem = true;
+                }
+            }
+        }
+
+        Assert.That(gotFinishedSearchItem, Is.True);
+        Assert.That(searchingCount, Is.EqualTo(1));
+        Assert.That(inProgressCount, Is.EqualTo(1));
+        Assert.That(completedCount, Is.EqualTo(1));
+        Assert.That(searchItemId, Is.Not.Null.And.Not.Empty);
+    }
+
+    [RecordedTest]
     public async Task CodeInterpreterToolWithoutFileIds()
     {
         ResponsesClient client = GetProxiedOpenAIClient<ResponsesClient>();
