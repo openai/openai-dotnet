@@ -1,0 +1,269 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/files",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "479",
+        "Content-Type": "multipart/form-data; boundary=\"rE39CMa7oHWq386YZGXDcdoFRWahFJCl2JiHhhYQxeztMZGSswVDgpqRoGjya49STngXdj\"",
+        "User-Agent": "OpenAI/2.9.1-alpha.4 (.NET 10.0.4; Ubuntu 24.04.3 LTS)"
+      },
+      "RequestBody": [
+        "--rE39CMa7oHWq386YZGXDcdoFRWahFJCl2JiHhhYQxeztMZGSswVDgpqRoGjya49STngXdj\r\n",
+        "Content-Disposition: form-data; name=file; filename=test_favorite_foods.txt; filename*=utf-8''test_favorite_foods.txt\r\n",
+        "\r\n",
+        "b64:VHJhdmlzJ3MgZmF2b3JpdGUgZm9vZCBpcyBwaXp6YS4=",
+        "\r\n",
+        "--rE39CMa7oHWq386YZGXDcdoFRWahFJCl2JiHhhYQxeztMZGSswVDgpqRoGjya49STngXdj\r\n",
+        "Content-Type: text/plain; charset=utf-8\r\n",
+        "Content-Disposition: form-data; name=purpose\r\n",
+        "\r\n",
+        "user_data",
+        "\r\n",
+        "--rE39CMa7oHWq386YZGXDcdoFRWahFJCl2JiHhhYQxeztMZGSswVDgpqRoGjya49STngXdj--\r\n"
+      ],
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Allow-Origin": "*",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9daefe902ed0c9b8-IAD",
+        "Connection": "keep-alive",
+        "Content-Length": "245",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "file",
+        "id": "file-3iUVjAhhs93n6RzL8Suhc1",
+        "purpose": "user_data",
+        "filename": "test_favorite_foods.txt",
+        "bytes": 32,
+        "created_at": 1773278615,
+        "expires_at": null,
+        "status": "processed",
+        "status_details": null
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/vector_stores",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "44",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.9.1-alpha.4 (.NET 10.0.4; Ubuntu 24.04.3 LTS)"
+      },
+      "RequestBody": {
+        "file_ids": [
+          "file-3iUVjAhhs93n6RzL8Suhc1"
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9daefe9339c2c9b8-IAD",
+        "Connection": "keep-alive",
+        "Content-Length": "406",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "vs_69b215979a60819187f9cd7bbb4013c8",
+        "object": "vector_store",
+        "created_at": 1773278615,
+        "name": null,
+        "description": null,
+        "usage_bytes": 0,
+        "file_counts": {
+          "in_progress": 1,
+          "completed": 0,
+          "failed": 0,
+          "cancelled": 0,
+          "total": 1
+        },
+        "status": "in_progress",
+        "expires_after": null,
+        "expires_at": null,
+        "last_active_at": 1773278615,
+        "metadata": {}
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "274",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.9.1-alpha.4 (.NET 10.0.4; Ubuntu 24.04.3 LTS)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "tools": [
+          {
+            "type": "file_search",
+            "vector_store_ids": [
+              "vs_69b215979a60819187f9cd7bbb4013c8"
+            ]
+          }
+        ],
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Using the file search tool, what's Travis's favorite food?"
+              }
+            ]
+          }
+        ],
+        "stream": true
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9daefeb7fd96c9b8-IAD",
+        "Connection": "keep-alive",
+        "Content-Type": "text/event-stream; charset=utf-8",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": [
+        "event: response.created\n",
+        "data: {\"type\":\"response.created\",\"response\":{\"id\":\"resp_0fa3177aa4f1dbc90069b2159d7a748190a3a150b245461bef\",\"object\":\"response\",\"created_at\":1773278621,\"status\":\"in_progress\",\"background\":false,\"completed_at\":null,\"error\":null,\"frequency_penalty\":0.0,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-4o-mini-2024-07-18\",\"output\":[],\"parallel_tool_calls\":true,\"presence_penalty\":0.0,\"previous_response_id\":null,\"prompt_cache_key\":null,\"prompt_cache_retention\":null,\"reasoning\":{\"effort\":null,\"summary\":null},\"safety_identifier\":null,\"service_tier\":\"auto\",\"store\":true,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":\"auto\",\"tools\":[{\"type\":\"file_search\",\"filters\":null,\"max_num_results\":20,\"ranking_options\":{\"ranker\":\"auto\",\"score_threshold\":0.0},\"vector_store_ids\":[\"vs_69b215979a60819187f9cd7bbb4013c8\"]}],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":null,\"user\":null,\"metadata\":{}},\"sequence_number\":0}\n\n",
+        "event: response.in_progress\n",
+        "data: {\"type\":\"response.in_progress\",\"response\":{\"id\":\"resp_0fa3177aa4f1dbc90069b2159d7a748190a3a150b245461bef\",\"object\":\"response\",\"created_at\":1773278621,\"status\":\"in_progress\",\"background\":false,\"completed_at\":null,\"error\":null,\"frequency_penalty\":0.0,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-4o-mini-2024-07-18\",\"output\":[],\"parallel_tool_calls\":true,\"presence_penalty\":0.0,\"previous_response_id\":null,\"prompt_cache_key\":null,\"prompt_cache_retention\":null,\"reasoning\":{\"effort\":null,\"summary\":null},\"safety_identifier\":null,\"service_tier\":\"auto\",\"store\":true,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":\"auto\",\"tools\":[{\"type\":\"file_search\",\"filters\":null,\"max_num_results\":20,\"ranking_options\":{\"ranker\":\"auto\",\"score_threshold\":0.0},\"vector_store_ids\":[\"vs_69b215979a60819187f9cd7bbb4013c8\"]}],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":null,\"user\":null,\"metadata\":{}},\"sequence_number\":1}\n\n",
+        "event: response.output_item.added\n",
+        "data: {\"type\":\"response.output_item.added\",\"item\":{\"id\":\"fs_0fa3177aa4f1dbc90069b2159e28cc81909fa83ec545b8d4a6\",\"type\":\"file_search_call\",\"status\":\"in_progress\",\"queries\":[],\"results\":null},\"output_index\":0,\"sequence_number\":2}\n\n",
+        "event: response.file_search_call.in_progress\n",
+        "data: {\"type\":\"response.file_search_call.in_progress\",\"item_id\":\"fs_0fa3177aa4f1dbc90069b2159e28cc81909fa83ec545b8d4a6\",\"output_index\":0,\"sequence_number\":3}\n\n",
+        "event: response.file_search_call.searching\n",
+        "data: {\"type\":\"response.file_search_call.searching\",\"item_id\":\"fs_0fa3177aa4f1dbc90069b2159e28cc81909fa83ec545b8d4a6\",\"output_index\":0,\"sequence_number\":4}\n\n",
+        "event: response.file_search_call.completed\n",
+        "data: {\"type\":\"response.file_search_call.completed\",\"item_id\":\"fs_0fa3177aa4f1dbc90069b2159e28cc81909fa83ec545b8d4a6\",\"output_index\":0,\"sequence_number\":5}\n\n",
+        "event: response.output_item.done\n",
+        "data: {\"type\":\"response.output_item.done\",\"item\":{\"id\":\"fs_0fa3177aa4f1dbc90069b2159e28cc81909fa83ec545b8d4a6\",\"type\":\"file_search_call\",\"status\":\"completed\",\"queries\":[\"What is Travis's favorite food?\",\"Travis food preference\",\"Travis favorite meal\"],\"results\":null},\"output_index\":0,\"sequence_number\":6}\n\n",
+        "event: response.output_item.added\n",
+        "data: {\"type\":\"response.output_item.added\",\"item\":{\"id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"type\":\"message\",\"status\":\"in_progress\",\"content\":[],\"role\":\"assistant\"},\"output_index\":1,\"sequence_number\":7}\n\n",
+        "event: response.content_part.added\n",
+        "data: {\"type\":\"response.content_part.added\",\"content_index\":0,\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"output_index\":1,\"part\":{\"type\":\"output_text\",\"annotations\":[],\"logprobs\":[],\"text\":\"\"},\"sequence_number\":8}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\"It\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"meIwHfI2Rik80P\",\"output_index\":1,\"sequence_number\":9}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" seems\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"uYKvh2JuZP\",\"output_index\":1,\"sequence_number\":10}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" that\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"ohycrVPFh2y\",\"output_index\":1,\"sequence_number\":11}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" I\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"nj70wFUoesdq2f\",\"output_index\":1,\"sequence_number\":12}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" couldn't\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"bg4aH1f\",\"output_index\":1,\"sequence_number\":13}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" find\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"9G0qAmHhD85\",\"output_index\":1,\"sequence_number\":14}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" any\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"mhvyPZ0hF1WP\",\"output_index\":1,\"sequence_number\":15}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" information\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"Bd35\",\"output_index\":1,\"sequence_number\":16}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" about\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"rRae5azoZI\",\"output_index\":1,\"sequence_number\":17}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" Travis\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"dtz5JM5L1\",\"output_index\":1,\"sequence_number\":18}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\"'s\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"3vKAfvRWiFfMqJ\",\"output_index\":1,\"sequence_number\":19}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" favorite\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"ouSIAPA\",\"output_index\":1,\"sequence_number\":20}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" food\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"uvg2712ATuF\",\"output_index\":1,\"sequence_number\":21}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" in\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"OSnIuVg6koIqj\",\"output_index\":1,\"sequence_number\":22}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" the\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"flBjxyjrV9z5\",\"output_index\":1,\"sequence_number\":23}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" uploaded\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"Y5WGJ0D\",\"output_index\":1,\"sequence_number\":24}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" files\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"8dBxyZ1VAP\",\"output_index\":1,\"sequence_number\":25}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\".\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"uKXRPq0uvMSV5SA\",\"output_index\":1,\"sequence_number\":26}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" If\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"Kg3Q0sEjZjfp5\",\"output_index\":1,\"sequence_number\":27}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" you\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"eDS3upfCKiyA\",\"output_index\":1,\"sequence_number\":28}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" have\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"l7Ul96kqlo5\",\"output_index\":1,\"sequence_number\":29}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" any\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"LYtvjSlCM1D1\",\"output_index\":1,\"sequence_number\":30}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" specific\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"Ty2crVy\",\"output_index\":1,\"sequence_number\":31}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" text\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"rnY8KkErHd4\",\"output_index\":1,\"sequence_number\":32}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" or\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"H2XvjbIR7A0Xv\",\"output_index\":1,\"sequence_number\":33}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" context\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"wZjhHBvv\",\"output_index\":1,\"sequence_number\":34}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" you\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"yIjq9gJNoe5I\",\"output_index\":1,\"sequence_number\":35}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" can\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"6TqUlLYlkEgV\",\"output_index\":1,\"sequence_number\":36}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" provide\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"xtj7cYwB\",\"output_index\":1,\"sequence_number\":37}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\",\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"ujgMM5KzfrKlsJF\",\"output_index\":1,\"sequence_number\":38}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" I\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"qkjWe61eaaZKAN\",\"output_index\":1,\"sequence_number\":39}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" could\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"LHL93sJakk\",\"output_index\":1,\"sequence_number\":40}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" help\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"klmLAB3Ay3G\",\"output_index\":1,\"sequence_number\":41}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" better\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"e3W1F6CJM\",\"output_index\":1,\"sequence_number\":42}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\"!\",\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"obfuscation\":\"GLGwldz0Ct4P2Pb\",\"output_index\":1,\"sequence_number\":43}\n\n",
+        "event: response.output_text.done\n",
+        "data: {\"type\":\"response.output_text.done\",\"content_index\":0,\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"logprobs\":[],\"output_index\":1,\"sequence_number\":44,\"text\":\"It seems that I couldn't find any information about Travis's favorite food in the uploaded files. If you have any specific text or context you can provide, I could help better!\"}\n\n",
+        "event: response.content_part.done\n",
+        "data: {\"type\":\"response.content_part.done\",\"content_index\":0,\"item_id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"output_index\":1,\"part\":{\"type\":\"output_text\",\"annotations\":[],\"logprobs\":[],\"text\":\"It seems that I couldn't find any information about Travis's favorite food in the uploaded files. If you have any specific text or context you can provide, I could help better!\"},\"sequence_number\":45}\n\n",
+        "event: response.output_item.done\n",
+        "data: {\"type\":\"response.output_item.done\",\"item\":{\"id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"type\":\"message\",\"status\":\"completed\",\"content\":[{\"type\":\"output_text\",\"annotations\":[],\"logprobs\":[],\"text\":\"It seems that I couldn't find any information about Travis's favorite food in the uploaded files. If you have any specific text or context you can provide, I could help better!\"}],\"role\":\"assistant\"},\"output_index\":1,\"sequence_number\":46}\n\n",
+        "event: response.completed\n",
+        "data: {\"type\":\"response.completed\",\"response\":{\"id\":\"resp_0fa3177aa4f1dbc90069b2159d7a748190a3a150b245461bef\",\"object\":\"response\",\"created_at\":1773278621,\"status\":\"completed\",\"background\":false,\"completed_at\":1773278623,\"error\":null,\"frequency_penalty\":0.0,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-4o-mini-2024-07-18\",\"output\":[{\"id\":\"fs_0fa3177aa4f1dbc90069b2159e28cc81909fa83ec545b8d4a6\",\"type\":\"file_search_call\",\"status\":\"completed\",\"queries\":[\"What is Travis's favorite food?\",\"Travis food preference\",\"Travis favorite meal\"],\"results\":null},{\"id\":\"msg_0fa3177aa4f1dbc90069b2159f3b54819092162c9aef6134a8\",\"type\":\"message\",\"status\":\"completed\",\"content\":[{\"type\":\"output_text\",\"annotations\":[],\"logprobs\":[],\"text\":\"It seems that I couldn't find any information about Travis's favorite food in the uploaded files. If you have any specific text or context you can provide, I could help better!\"}],\"role\":\"assistant\"}],\"parallel_tool_calls\":true,\"presence_penalty\":0.0,\"previous_response_id\":null,\"prompt_cache_key\":null,\"prompt_cache_retention\":null,\"reasoning\":{\"effort\":null,\"summary\":null},\"safety_identifier\":null,\"service_tier\":\"default\",\"store\":true,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":\"auto\",\"tools\":[{\"type\":\"file_search\",\"filters\":null,\"max_num_results\":20,\"ranking_options\":{\"ranker\":\"auto\",\"score_threshold\":0.0},\"vector_store_ids\":[\"vs_69b215979a60819187f9cd7bbb4013c8\"]}],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":{\"input_tokens\":874,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":67,\"output_tokens_details\":{\"reasoning_tokens\":0},\"total_tokens\":941},\"user\":null,\"metadata\":{}},\"sequence_number\":47}\n\n"
+      ]
+    }
+  ],
+  "Variables": {
+    "OPENAI_API_KEY": "api-key"
+  }
+}
