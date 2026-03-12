@@ -1,0 +1,218 @@
+{
+  "Entries": [
+    {
+      "RequestUri": "https://api.openai.com/v1/files",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "479",
+        "Content-Type": "multipart/form-data; boundary=\"kTEiZl3OcOeAJpftw_JpqHSOiUn6U_=97gxm7LeoLJvQQq2JZYoh7XvBvWhr0rSLXYwtq9\"",
+        "User-Agent": "OpenAI/2.9.1-alpha.4 (.NET 10.0.4; Ubuntu 24.04.3 LTS)"
+      },
+      "RequestBody": [
+        "--kTEiZl3OcOeAJpftw_JpqHSOiUn6U_=97gxm7LeoLJvQQq2JZYoh7XvBvWhr0rSLXYwtq9\r\n",
+        "Content-Disposition: form-data; name=file; filename=test_favorite_foods.txt; filename*=utf-8''test_favorite_foods.txt\r\n",
+        "\r\n",
+        "b64:VHJhdmlzJ3MgZmF2b3JpdGUgZm9vZCBpcyBwaXp6YS4=",
+        "\r\n",
+        "--kTEiZl3OcOeAJpftw_JpqHSOiUn6U_=97gxm7LeoLJvQQq2JZYoh7XvBvWhr0rSLXYwtq9\r\n",
+        "Content-Type: text/plain; charset=utf-8\r\n",
+        "Content-Disposition: form-data; name=purpose\r\n",
+        "\r\n",
+        "user_data",
+        "\r\n",
+        "--kTEiZl3OcOeAJpftw_JpqHSOiUn6U_=97gxm7LeoLJvQQq2JZYoh7XvBvWhr0rSLXYwtq9--\r\n"
+      ],
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Access-Control-Allow-Origin": "*",
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9daefe4c4feec9b8-IAD",
+        "Connection": "keep-alive",
+        "Content-Length": "245",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Set-Cookie": "Sanitized",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "object": "file",
+        "id": "file-PUWh7o9VX3GxErR9k1zAfs",
+        "purpose": "user_data",
+        "filename": "test_favorite_foods.txt",
+        "bytes": 32,
+        "created_at": 1773278604,
+        "expires_at": null,
+        "status": "processed",
+        "status_details": null
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/vector_stores",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json",
+        "Authorization": "Sanitized",
+        "Content-Length": "44",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.9.1-alpha.4 (.NET 10.0.4; Ubuntu 24.04.3 LTS)"
+      },
+      "RequestBody": {
+        "file_ids": [
+          "file-PUWh7o9VX3GxErR9k1zAfs"
+        ]
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9daefe51aa6fc9b8-IAD",
+        "Connection": "keep-alive",
+        "Content-Length": "406",
+        "Content-Type": "application/json",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "X-Content-Type-Options": "nosniff",
+        "x-openai-proxy-wasm": "v0.1",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": {
+        "id": "vs_69b2158d6bb88191ac8093b46c575115",
+        "object": "vector_store",
+        "created_at": 1773278605,
+        "name": null,
+        "description": null,
+        "usage_bytes": 0,
+        "file_counts": {
+          "in_progress": 1,
+          "completed": 0,
+          "failed": 0,
+          "cancelled": 0,
+          "total": 1
+        },
+        "status": "in_progress",
+        "expires_after": null,
+        "expires_at": null,
+        "last_active_at": 1773278605,
+        "metadata": {}
+      }
+    },
+    {
+      "RequestUri": "https://api.openai.com/v1/responses",
+      "RequestMethod": "POST",
+      "RequestHeaders": {
+        "Accept": "application/json, text/event-stream",
+        "Authorization": "Sanitized",
+        "Content-Length": "274",
+        "Content-Type": "application/json",
+        "User-Agent": "OpenAI/2.9.1-alpha.4 (.NET 10.0.4; Ubuntu 24.04.3 LTS)"
+      },
+      "RequestBody": {
+        "model": "gpt-4o-mini",
+        "tools": [
+          {
+            "type": "file_search",
+            "vector_store_ids": [
+              "vs_69b2158d6bb88191ac8093b46c575115"
+            ]
+          }
+        ],
+        "input": [
+          {
+            "type": "message",
+            "role": "user",
+            "content": [
+              {
+                "type": "input_text",
+                "text": "Using the file search tool, what's Travis's favorite food?"
+              }
+            ]
+          }
+        ],
+        "stream": true
+      },
+      "StatusCode": 200,
+      "ResponseHeaders": {
+        "Alt-Svc": "h3=\":443\"",
+        "cf-cache-status": "DYNAMIC",
+        "CF-RAY": "9daefe788af2c9b8-IAD",
+        "Connection": "keep-alive",
+        "Content-Type": "text/event-stream; charset=utf-8",
+        "Date": "Sanitized",
+        "openai-organization": "Sanitized",
+        "openai-processing-ms": "Sanitized",
+        "openai-project": "Sanitized",
+        "openai-version": "2020-10-01",
+        "Server": "cloudflare",
+        "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+        "Transfer-Encoding": "chunked",
+        "X-Content-Type-Options": "nosniff",
+        "X-Request-ID": "Sanitized"
+      },
+      "ResponseBody": [
+        "event: response.created\n",
+        "data: {\"type\":\"response.created\",\"response\":{\"id\":\"resp_09db531d569e457b0069b21593b82881949b9bf4ddc19dcbc7\",\"object\":\"response\",\"created_at\":1773278611,\"status\":\"in_progress\",\"background\":false,\"completed_at\":null,\"error\":null,\"frequency_penalty\":0.0,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-4o-mini-2024-07-18\",\"output\":[],\"parallel_tool_calls\":true,\"presence_penalty\":0.0,\"previous_response_id\":null,\"prompt_cache_key\":null,\"prompt_cache_retention\":null,\"reasoning\":{\"effort\":null,\"summary\":null},\"safety_identifier\":null,\"service_tier\":\"auto\",\"store\":true,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":\"auto\",\"tools\":[{\"type\":\"file_search\",\"filters\":null,\"max_num_results\":20,\"ranking_options\":{\"ranker\":\"auto\",\"score_threshold\":0.0},\"vector_store_ids\":[\"vs_69b2158d6bb88191ac8093b46c575115\"]}],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":null,\"user\":null,\"metadata\":{}},\"sequence_number\":0}\n\n",
+        "event: response.in_progress\n",
+        "data: {\"type\":\"response.in_progress\",\"response\":{\"id\":\"resp_09db531d569e457b0069b21593b82881949b9bf4ddc19dcbc7\",\"object\":\"response\",\"created_at\":1773278611,\"status\":\"in_progress\",\"background\":false,\"completed_at\":null,\"error\":null,\"frequency_penalty\":0.0,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-4o-mini-2024-07-18\",\"output\":[],\"parallel_tool_calls\":true,\"presence_penalty\":0.0,\"previous_response_id\":null,\"prompt_cache_key\":null,\"prompt_cache_retention\":null,\"reasoning\":{\"effort\":null,\"summary\":null},\"safety_identifier\":null,\"service_tier\":\"auto\",\"store\":true,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":\"auto\",\"tools\":[{\"type\":\"file_search\",\"filters\":null,\"max_num_results\":20,\"ranking_options\":{\"ranker\":\"auto\",\"score_threshold\":0.0},\"vector_store_ids\":[\"vs_69b2158d6bb88191ac8093b46c575115\"]}],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":null,\"user\":null,\"metadata\":{}},\"sequence_number\":1}\n\n",
+        "event: response.output_item.added\n",
+        "data: {\"type\":\"response.output_item.added\",\"item\":{\"id\":\"fs_09db531d569e457b0069b21594b28c8194bc4dfc6c713cb3cc\",\"type\":\"file_search_call\",\"status\":\"in_progress\",\"queries\":[],\"results\":null},\"output_index\":0,\"sequence_number\":2}\n\n",
+        "event: response.file_search_call.in_progress\n",
+        "data: {\"type\":\"response.file_search_call.in_progress\",\"item_id\":\"fs_09db531d569e457b0069b21594b28c8194bc4dfc6c713cb3cc\",\"output_index\":0,\"sequence_number\":3}\n\n",
+        "event: response.file_search_call.searching\n",
+        "data: {\"type\":\"response.file_search_call.searching\",\"item_id\":\"fs_09db531d569e457b0069b21594b28c8194bc4dfc6c713cb3cc\",\"output_index\":0,\"sequence_number\":4}\n\n",
+        "event: response.file_search_call.completed\n",
+        "data: {\"type\":\"response.file_search_call.completed\",\"item_id\":\"fs_09db531d569e457b0069b21594b28c8194bc4dfc6c713cb3cc\",\"output_index\":0,\"sequence_number\":5}\n\n",
+        "event: response.output_item.done\n",
+        "data: {\"type\":\"response.output_item.done\",\"item\":{\"id\":\"fs_09db531d569e457b0069b21594b28c8194bc4dfc6c713cb3cc\",\"type\":\"file_search_call\",\"status\":\"completed\",\"queries\":[\"What is Travis's favorite food?\",\"Travis favorite food\",\"favorite food of Travis\"],\"results\":null},\"output_index\":0,\"sequence_number\":6}\n\n",
+        "event: response.output_item.added\n",
+        "data: {\"type\":\"response.output_item.added\",\"item\":{\"id\":\"msg_09db531d569e457b0069b2159683cc81949f825f031148ebe0\",\"type\":\"message\",\"status\":\"in_progress\",\"content\":[],\"role\":\"assistant\"},\"output_index\":1,\"sequence_number\":7}\n\n",
+        "event: response.content_part.added\n",
+        "data: {\"type\":\"response.content_part.added\",\"content_index\":0,\"item_id\":\"msg_09db531d569e457b0069b2159683cc81949f825f031148ebe0\",\"output_index\":1,\"part\":{\"type\":\"output_text\",\"annotations\":[],\"logprobs\":[],\"text\":\"\"},\"sequence_number\":8}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\"Tr\",\"item_id\":\"msg_09db531d569e457b0069b2159683cc81949f825f031148ebe0\",\"logprobs\":[],\"obfuscation\":\"Pc9nsfarP7cqPv\",\"output_index\":1,\"sequence_number\":9}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\"avis\",\"item_id\":\"msg_09db531d569e457b0069b2159683cc81949f825f031148ebe0\",\"logprobs\":[],\"obfuscation\":\"txoTFyjFFmQP\",\"output_index\":1,\"sequence_number\":10}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\"'s\",\"item_id\":\"msg_09db531d569e457b0069b2159683cc81949f825f031148ebe0\",\"logprobs\":[],\"obfuscation\":\"Z34lgA8JL2GvHX\",\"output_index\":1,\"sequence_number\":11}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" favorite\",\"item_id\":\"msg_09db531d569e457b0069b2159683cc81949f825f031148ebe0\",\"logprobs\":[],\"obfuscation\":\"SBBOWo2\",\"output_index\":1,\"sequence_number\":12}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" food\",\"item_id\":\"msg_09db531d569e457b0069b2159683cc81949f825f031148ebe0\",\"logprobs\":[],\"obfuscation\":\"lhrc7Fx6Bsc\",\"output_index\":1,\"sequence_number\":13}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" is\",\"item_id\":\"msg_09db531d569e457b0069b2159683cc81949f825f031148ebe0\",\"logprobs\":[],\"obfuscation\":\"1c8uQ2RTjHxpW\",\"output_index\":1,\"sequence_number\":14}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\" pizza\",\"item_id\":\"msg_09db531d569e457b0069b2159683cc81949f825f031148ebe0\",\"logprobs\":[],\"obfuscation\":\"yn0g1TOkHa\",\"output_index\":1,\"sequence_number\":15}\n\n",
+        "event: response.output_text.annotation.added\n",
+        "data: {\"type\":\"response.output_text.annotation.added\",\"annotation\":{\"type\":\"file_citation\",\"file_id\":\"file-PUWh7o9VX3GxErR9k1zAfs\",\"filename\":\"test_favorite_foods.txt\",\"index\":31},\"annotation_index\":0,\"content_index\":0,\"item_id\":\"msg_09db531d569e457b0069b2159683cc81949f825f031148ebe0\",\"output_index\":1,\"sequence_number\":16}\n\n",
+        "event: response.output_text.delta\n",
+        "data: {\"type\":\"response.output_text.delta\",\"content_index\":0,\"delta\":\".\",\"item_id\":\"msg_09db531d569e457b0069b2159683cc81949f825f031148ebe0\",\"logprobs\":[],\"obfuscation\":\"ScMt1fz19O1xHHF\",\"output_index\":1,\"sequence_number\":17}\n\n",
+        "event: response.output_text.done\n",
+        "data: {\"type\":\"response.output_text.done\",\"content_index\":0,\"item_id\":\"msg_09db531d569e457b0069b2159683cc81949f825f031148ebe0\",\"logprobs\":[],\"output_index\":1,\"sequence_number\":18,\"text\":\"Travis's favorite food is pizza.\"}\n\n",
+        "event: response.content_part.done\n",
+        "data: {\"type\":\"response.content_part.done\",\"content_index\":0,\"item_id\":\"msg_09db531d569e457b0069b2159683cc81949f825f031148ebe0\",\"output_index\":1,\"part\":{\"type\":\"output_text\",\"annotations\":[{\"type\":\"file_citation\",\"file_id\":\"file-PUWh7o9VX3GxErR9k1zAfs\",\"filename\":\"test_favorite_foods.txt\",\"index\":31}],\"logprobs\":[],\"text\":\"Travis's favorite food is pizza.\"},\"sequence_number\":19}\n\n",
+        "event: response.output_item.done\n",
+        "data: {\"type\":\"response.output_item.done\",\"item\":{\"id\":\"msg_09db531d569e457b0069b2159683cc81949f825f031148ebe0\",\"type\":\"message\",\"status\":\"completed\",\"content\":[{\"type\":\"output_text\",\"annotations\":[{\"type\":\"file_citation\",\"file_id\":\"file-PUWh7o9VX3GxErR9k1zAfs\",\"filename\":\"test_favorite_foods.txt\",\"index\":31}],\"logprobs\":[],\"text\":\"Travis's favorite food is pizza.\"}],\"role\":\"assistant\"},\"output_index\":1,\"sequence_number\":20}\n\n",
+        "event: response.completed\n",
+        "data: {\"type\":\"response.completed\",\"response\":{\"id\":\"resp_09db531d569e457b0069b21593b82881949b9bf4ddc19dcbc7\",\"object\":\"response\",\"created_at\":1773278611,\"status\":\"completed\",\"background\":false,\"completed_at\":1773278614,\"error\":null,\"frequency_penalty\":0.0,\"incomplete_details\":null,\"instructions\":null,\"max_output_tokens\":null,\"max_tool_calls\":null,\"model\":\"gpt-4o-mini-2024-07-18\",\"output\":[{\"id\":\"fs_09db531d569e457b0069b21594b28c8194bc4dfc6c713cb3cc\",\"type\":\"file_search_call\",\"status\":\"completed\",\"queries\":[\"What is Travis's favorite food?\",\"Travis favorite food\",\"favorite food of Travis\"],\"results\":null},{\"id\":\"msg_09db531d569e457b0069b2159683cc81949f825f031148ebe0\",\"type\":\"message\",\"status\":\"completed\",\"content\":[{\"type\":\"output_text\",\"annotations\":[{\"type\":\"file_citation\",\"file_id\":\"file-PUWh7o9VX3GxErR9k1zAfs\",\"filename\":\"test_favorite_foods.txt\",\"index\":31}],\"logprobs\":[],\"text\":\"Travis's favorite food is pizza.\"}],\"role\":\"assistant\"}],\"parallel_tool_calls\":true,\"presence_penalty\":0.0,\"previous_response_id\":null,\"prompt_cache_key\":null,\"prompt_cache_retention\":null,\"reasoning\":{\"effort\":null,\"summary\":null},\"safety_identifier\":null,\"service_tier\":\"default\",\"store\":true,\"temperature\":1.0,\"text\":{\"format\":{\"type\":\"text\"},\"verbosity\":\"medium\"},\"tool_choice\":\"auto\",\"tools\":[{\"type\":\"file_search\",\"filters\":null,\"max_num_results\":20,\"ranking_options\":{\"ranker\":\"auto\",\"score_threshold\":0.0},\"vector_store_ids\":[\"vs_69b2158d6bb88191ac8093b46c575115\"]}],\"top_logprobs\":0,\"top_p\":1.0,\"truncation\":\"disabled\",\"usage\":{\"input_tokens\":1172,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":54,\"output_tokens_details\":{\"reasoning_tokens\":0},\"total_tokens\":1226},\"user\":null,\"metadata\":{}},\"sequence_number\":21}\n\n"
+      ]
+    }
+  ],
+  "Variables": {
+    "OPENAI_API_KEY": "api-key"
+  }
+}
